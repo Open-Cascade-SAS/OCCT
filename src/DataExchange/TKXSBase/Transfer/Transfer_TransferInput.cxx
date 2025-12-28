@@ -53,8 +53,9 @@ Interface_EntityIterator Transfer_TransferInput::Entities(Transfer_TransferItera
     }
     else if (!multi.IsNull())
     {
-      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> mulres = multi->MultipleResult();
-      int                     nbres  = 0;
+      occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> mulres =
+        multi->MultipleResult();
+      int nbres = 0;
       if (!mulres.IsNull())
         nbres = mulres->Length();
       for (int i = 1; i <= nbres; i++)
@@ -78,7 +79,7 @@ void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProce
 void Transfer_TransferInput::FillModel(const occ::handle<Transfer_TransientProcess>& proc,
                                        const occ::handle<Interface_InterfaceModel>&  amodel,
                                        const occ::handle<Interface_Protocol>&        proto,
-                                       const bool                   roots) const
+                                       const bool                                    roots) const
 {
   Transfer_TransferIterator list;
   if (roots)
@@ -101,7 +102,7 @@ void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>
 void Transfer_TransferInput::FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
                                        const occ::handle<Interface_InterfaceModel>& amodel,
                                        const occ::handle<Interface_Protocol>&       proto,
-                                       const bool                  roots) const
+                                       const bool                                   roots) const
 {
   Transfer_TransferIterator list;
   if (roots)

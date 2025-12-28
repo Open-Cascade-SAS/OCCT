@@ -32,7 +32,7 @@ RWStepVisual_RWTessellatedVertex::RWStepVisual_RWTessellatedVertex() {}
 
 void RWStepVisual_RWTessellatedVertex::ReadStep(
   const occ::handle<StepData_StepReaderData>&      theData,
-  const int                      theNum,
+  const int                                        theNum,
   occ::handle<Interface_Check>&                    theCheck,
   const occ::handle<StepVisual_TessellatedVertex>& theEnt) const
 {
@@ -58,7 +58,7 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
                       aCoordinates);
 
   occ::handle<StepShape_VertexPoint> aTopologicalLink;
-  bool              hasTopologicalLink = true;
+  bool                               hasTopologicalLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -88,7 +88,7 @@ void RWStepVisual_RWTessellatedVertex::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedVertex::WriteStep(
-  StepData_StepWriter&                        theSW,
+  StepData_StepWriter&                             theSW,
   const occ::handle<StepVisual_TessellatedVertex>& theEnt) const
 {
 
@@ -114,8 +114,9 @@ void RWStepVisual_RWTessellatedVertex::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedVertex::Share(const occ::handle<StepVisual_TessellatedVertex>& theEnt,
-                                             Interface_EntityIterator& theIter) const
+void RWStepVisual_RWTessellatedVertex::Share(
+  const occ::handle<StepVisual_TessellatedVertex>& theEnt,
+  Interface_EntityIterator&                        theIter) const
 {
 
   // Inherited fields of RepresentationItem

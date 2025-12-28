@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font, OpenGl_Resource)
 
 //=================================================================================================
 
-OpenGl_Font::OpenGl_Font(const occ::handle<Font_FTFont>& theFont, const TCollection_AsciiString& theKey)
+OpenGl_Font::OpenGl_Font(const occ::handle<Font_FTFont>& theFont,
+                         const TCollection_AsciiString&  theKey)
     : myKey(theKey),
       myFont(theFont),
       myAscender(0.0f),
@@ -74,7 +75,8 @@ void OpenGl_Font::Release(OpenGl_Context* theCtx)
 size_t OpenGl_Font::EstimatedDataSize() const
 {
   size_t aSize = 0;
-  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures); aTexIter.More();
+  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures);
+       aTexIter.More();
        aTexIter.Next())
   {
     aSize += aTexIter.Value()->EstimatedDataSize();
@@ -118,9 +120,8 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
     std::min(THE_MAX_GLYPHS_PER_TEXTURE, myFont->GlyphsNumber(true) - myLastTileId + 1);
   const int aMaxTileSizeX = myFont->GlyphMaxSizeX(true);
   const int aMaxSize      = theCtx->MaxTextureSize();
-  const int aTextureSizeX =
-    OpenGl_Context::GetPowerOfTwo(aGlyphsNb * aMaxTileSizeX, aMaxSize);
-  const int aTilesPerRow = aTextureSizeX / aMaxTileSizeX;
+  const int aTextureSizeX = OpenGl_Context::GetPowerOfTwo(aGlyphsNb * aMaxTileSizeX, aMaxSize);
+  const int aTilesPerRow  = aTextureSizeX / aMaxTileSizeX;
   const int aTextureSizeY =
     OpenGl_Context::GetPowerOfTwo(GLint((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY, aMaxSize);
 
@@ -137,9 +138,7 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   occ::handle<OpenGl_Texture>& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;
-  if (!aBlackImg.InitZero(Image_Format_Alpha,
-                          size_t(aTextureSizeX),
-                          size_t(aTextureSizeY))
+  if (!aBlackImg.InitZero(Image_Format_Alpha, size_t(aTextureSizeX), size_t(aTextureSizeY))
       || !aTexture->Init(theCtx, aBlackImg, Graphic3d_TypeOfTexture_2D, true)) // myTextureFormat
   {
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -156,8 +155,7 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
 
 //=================================================================================================
 
-bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx,
-                              const char32_t      theChar)
+bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx, const char32_t theChar)
 {
   if (!myFont->RenderGlyph(theChar))
   {
@@ -170,10 +168,10 @@ bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx,
     return false;
   }
 
-  const Image_PixMap&    anImg   = myFont->GlyphImage();
-  const int aTileId = myLastTileId + 1;
-  myLastTilePx.Left              = myLastTilePx.Right + 3;
-  myLastTilePx.Right             = myLastTilePx.Left + (int)anImg.SizeX();
+  const Image_PixMap& anImg   = myFont->GlyphImage();
+  const int           aTileId = myLastTileId + 1;
+  myLastTilePx.Left           = myLastTilePx.Right + 3;
+  myLastTilePx.Right          = myLastTilePx.Left + (int)anImg.SizeX();
   if (myLastTilePx.Right > aTexture->SizeX() || (int)anImg.SizeY() > myTileSizeY)
   {
     myTileSizeY = myFont->GlyphMaxSizeY(true);
@@ -230,8 +228,8 @@ bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx,
 //=================================================================================================
 
 bool OpenGl_Font::RenderGlyph(const occ::handle<OpenGl_Context>& theCtx,
-                              const char32_t      theUChar,
-                              Tile&                         theGlyph)
+                              const char32_t                     theUChar,
+                              Tile&                              theGlyph)
 {
   int aTileId = 0;
   if (!myGlyphMap.Find(theUChar, aTileId))

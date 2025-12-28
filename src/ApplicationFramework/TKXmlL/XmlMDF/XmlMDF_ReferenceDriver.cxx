@@ -43,9 +43,9 @@ occ::handle<TDF_Attribute> XmlMDF_ReferenceDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                               const occ::handle<TDF_Attribute>& theTarget,
-                                               XmlObjMgt_RRelocationTable&) const
+bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                   const occ::handle<TDF_Attribute>& theTarget,
+                                   XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString anXPath = XmlObjMgt::GetStringValue(theSource);
 
@@ -90,7 +90,7 @@ bool XmlMDF_ReferenceDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 //           </TDF_Reference>    <This is reference to label 0:4:1>
 //=======================================================================
 void XmlMDF_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   XmlObjMgt_Persistent&        theTarget,
+                                   XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theSource);

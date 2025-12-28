@@ -23,7 +23,7 @@ RWStepRepr_RWGlobalUnitAssignedContext::RWStepRepr_RWGlobalUnitAssignedContext()
 
 void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepRepr_GlobalUnitAssignedContext>& ent) const
 {
@@ -48,12 +48,12 @@ void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
   // --- own field : units ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> aUnits;
-  occ::handle<StepBasic_NamedUnit>          anent3;
-  int                     nsub3;
+  occ::handle<StepBasic_NamedUnit>                                   anent3;
+  int                                                                nsub3;
   if (data->ReadSubList(num, 3, "units", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aUnits               = new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, nb3);
+    aUnits  = new NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -68,7 +68,7 @@ void RWStepRepr_RWGlobalUnitAssignedContext::ReadStep(
 }
 
 void RWStepRepr_RWGlobalUnitAssignedContext::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepRepr_GlobalUnitAssignedContext>& ent) const
 {
 
@@ -92,7 +92,7 @@ void RWStepRepr_RWGlobalUnitAssignedContext::WriteStep(
 
 void RWStepRepr_RWGlobalUnitAssignedContext::Share(
   const occ::handle<StepRepr_GlobalUnitAssignedContext>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   int nbElem1 = ent->NbUnits();

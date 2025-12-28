@@ -23,7 +23,6 @@
 
 #include <AdvApp2Var_Patch.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class AdvApp2Var_Patch;
 
@@ -35,8 +34,8 @@ public:
   Standard_EXPORT AdvApp2Var_Network();
 
   Standard_EXPORT AdvApp2Var_Network(const NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>& Net,
-                                     const NCollection_Sequence<double>&     TheU,
-                                     const NCollection_Sequence<double>&     TheV);
+                                     const NCollection_Sequence<double>& TheU,
+                                     const NCollection_Sequence<double>& TheV);
 
   //! search the Index of the first Patch not approximated,
   //! if all Patches are approximated false is returned
@@ -50,10 +49,7 @@ public:
 
   Standard_EXPORT void UpdateInV(const double CuttingValue);
 
-  Standard_EXPORT void SameDegree(const int iu,
-                                  const int iv,
-                                  int&      ncfu,
-                                  int&      ncfv);
+  Standard_EXPORT void SameDegree(const int iu, const int iv, int& ncfu, int& ncfv);
 
   Standard_EXPORT int NbPatch() const;
 
@@ -70,16 +66,15 @@ public:
     return *myNet.Value((VIndex - 1) * (myUParameters.Length() - 1) + UIndex);
   }
 
-  const AdvApp2Var_Patch& operator()(const int UIndex,
-                                     const int VIndex) const
+  const AdvApp2Var_Patch& operator()(const int UIndex, const int VIndex) const
   {
     return Patch(UIndex, VIndex);
   }
 
 private:
   NCollection_Sequence<occ::handle<AdvApp2Var_Patch>> myNet;
-  NCollection_Sequence<double>     myUParameters;
-  NCollection_Sequence<double>     myVParameters;
+  NCollection_Sequence<double>                        myUParameters;
+  NCollection_Sequence<double>                        myVParameters;
 };
 
 #endif // _AdvApp2Var_Network_HeaderFile

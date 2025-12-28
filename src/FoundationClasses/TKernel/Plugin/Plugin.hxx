@@ -27,9 +27,8 @@ class Standard_GUID;
 class Plugin
 {
 public:
-  Standard_EXPORT static occ::handle<Standard_Transient> Load(
-    const Standard_GUID&   aGUID,
-    const bool theVerbose = true);
+  Standard_EXPORT static occ::handle<Standard_Transient> Load(const Standard_GUID& aGUID,
+                                                              const bool theVerbose = true);
 };
 
 #endif // _Plugin_HeaderFile

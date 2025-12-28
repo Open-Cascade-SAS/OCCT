@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepShape_CompoundShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_CompoundShapeRepresentation, StepShape_ShapeRepresentation)
-
 };
 
 #endif // _StepShape_CompoundShapeRepresentation_HeaderFile

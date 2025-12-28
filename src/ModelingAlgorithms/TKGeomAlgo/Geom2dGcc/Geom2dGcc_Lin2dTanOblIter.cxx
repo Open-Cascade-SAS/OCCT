@@ -36,9 +36,9 @@
 
 Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qualified1,
                                                      const gp_Lin2d&         TheLin,
-                                                     const double     Param1,
-                                                     const double     TolAng,
-                                                     const double     Angle)
+                                                     const double            Param1,
+                                                     const double            TolAng,
+                                                     const double            Angle)
     : par2sol(0.0),
       pararg2(0.0)
 {
@@ -54,11 +54,11 @@ Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qua
   }
   Paral2                  = false;
   Geom2dAdaptor_Curve Cu1 = Qualified1.Qualified();
-  double       U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
-  double       U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
+  double              U1  = Geom2dGcc_CurveTool::FirstParameter(Cu1);
+  double              U2  = Geom2dGcc_CurveTool::LastParameter(Cu1);
   gp_Dir2d            Dir(TheLin.Direction());
-  double       A = Dir.X();
-  double       B = Dir.Y();
+  double              A = Dir.X();
+  double              B = Dir.Y();
   gp_Dir2d            TheDirection(Dir);
   if (std::abs(Angle) > std::abs(TolAng))
   {
@@ -94,9 +94,9 @@ Geom2dGcc_Lin2dTanOblIter::Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qua
                         100);
   if (sol.IsDone())
   {
-    double Usol = sol.Root();
-    gp_Pnt2d      Origine;
-    gp_Vec2d      Vect1, Vect2;
+    double   Usol = sol.Root();
+    gp_Pnt2d Origine;
+    gp_Vec2d Vect1, Vect2;
     Geom2dGcc_CurveTool::D2(Cu1, Usol, Origine, Vect1, Vect2);
     double sign1 = Vect1.XY().Dot(TheDirection.XY());
     double sign2 = Vect2.XY().Crossed(TheDirection.XY());
@@ -157,9 +157,7 @@ bool Geom2dGcc_Lin2dTanOblIter::IsParallel2() const
   return Paral2;
 }
 
-void Geom2dGcc_Lin2dTanOblIter::Tangency1(double& ParSol,
-                                          double& ParArg,
-                                          gp_Pnt2d&      PntSol) const
+void Geom2dGcc_Lin2dTanOblIter::Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -173,9 +171,9 @@ void Geom2dGcc_Lin2dTanOblIter::Tangency1(double& ParSol,
   }
 }
 
-void Geom2dGcc_Lin2dTanOblIter::Intersection2(double& ParSol,
-                                              double& ParArg,
-                                              gp_Pnt2d&      PntSol) const
+void Geom2dGcc_Lin2dTanOblIter::Intersection2(double&   ParSol,
+                                              double&   ParArg,
+                                              gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

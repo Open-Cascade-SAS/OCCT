@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepGeom_UniformCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_UniformCurve, StepGeom_BSplineCurve)
-
 };
 
 #endif // _StepGeom_UniformCurve_HeaderFile

@@ -48,12 +48,12 @@ public:
   //! are also assumed to be equal. If this is not the case,
   //! Set uses the first value(s) as last value(s).
   Standard_EXPORT void Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                           const bool      Periodic = false);
+                           const bool                          Periodic = false);
 
   Standard_EXPORT void SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                                     const double         Ud,
-                                     const double         Uf,
-                                     const bool      Periodic = false);
+                                     const double                        Ud,
+                                     const double                        Uf,
+                                     const bool                          Periodic = false);
 
   //! Defines this evolution law by interpolating the set of 2D
   //! points ParAndRad. The Y coordinate of a point of
@@ -71,19 +71,18 @@ public:
   //! are also assumed to be equal. If this is not the case,
   //! Set uses the first value(s) as last value(s).
   Standard_EXPORT void Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                           const double         Dd,
-                           const double         Df,
-                           const bool      Periodic = false);
+                           const double                        Dd,
+                           const double                        Df,
+                           const bool                          Periodic = false);
 
   Standard_EXPORT void SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                                     const double         Ud,
-                                     const double         Uf,
-                                     const double         Dd,
-                                     const double         Df,
-                                     const bool      Periodic = false);
+                                     const double                        Ud,
+                                     const double                        Uf,
+                                     const double                        Dd,
+                                     const double                        Df,
+                                     const bool                          Periodic = false);
 
   DEFINE_STANDARD_RTTIEXT(Law_Interpol, Law_BSpFunc)
-
 };
 
 #endif // _Law_Interpol_HeaderFile

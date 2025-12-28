@@ -111,13 +111,13 @@ public:
 
   //! Returns the unique Parent recorded for <ent>.
   //! Returns a Null Handle if there is none
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> Parent(const occ::handle<IGESData_IGESEntity>& ent) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Parent(
+    const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! Returns True if the Parent, if there is one, is defined by
   //! a SingleParentEntity Associativity
   //! Else, if HasParent is True, it is by Reference
-  Standard_EXPORT bool
-    HasParentByAssociativity(const occ::handle<IGESData_IGESEntity>& ent) const;
+  Standard_EXPORT bool HasParentByAssociativity(const occ::handle<IGESData_IGESEntity>& ent) const;
 
   //! Returns the effective Location of the Parent of <ent>, if
   //! there is one : this Location is itself given as compound
@@ -145,19 +145,19 @@ public:
   //! in meters. It concerns the translation part (to be converted.
   //!
   //! As a class method, it can be called separately
-  Standard_EXPORT static bool ConvertLocation(const double prec,
-                                                          const gp_GTrsf&     loc,
-                                                          gp_Trsf&            result,
-                                                          const double uni = 1);
+  Standard_EXPORT static bool ConvertLocation(const double    prec,
+                                              const gp_GTrsf& loc,
+                                              gp_Trsf&        result,
+                                              const double    uni = 1);
 
   DEFINE_STANDARD_RTTIEXT(IGESData_ToolLocation, Standard_Transient)
 
 private:
-  double              theprec;
+  double                          theprec;
   occ::handle<IGESData_IGESModel> themodel;
-  Interface_GeneralLib       thelib;
-  NCollection_Array1<int>    therefs;
-  NCollection_Array1<int>    theassocs;
+  Interface_GeneralLib            thelib;
+  NCollection_Array1<int>         therefs;
+  NCollection_Array1<int>         theassocs;
 };
 
 #endif // _IGESData_ToolLocation_HeaderFile

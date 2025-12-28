@@ -32,9 +32,7 @@ public:
   Graphic3d_Vertex() { SetCoord(0.0f, 0.0f, 0.0f); }
 
   //! Creates a point with theX, theY and theZ coordinates.
-  Graphic3d_Vertex(const float theX,
-                   const float theY,
-                   const float theZ)
+  Graphic3d_Vertex(const float theX, const float theY, const float theZ)
   {
     SetCoord(theX, theY, theZ);
   }
@@ -46,9 +44,7 @@ public:
   }
 
   //! Modifies the coordinates.
-  void SetCoord(const float theX,
-                const float theY,
-                const float theZ)
+  void SetCoord(const float theX, const float theY, const float theZ)
   {
     xyz[0] = theX;
     xyz[1] = theY;

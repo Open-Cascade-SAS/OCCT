@@ -84,11 +84,11 @@ void Draft_Modification::Init(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-bool Draft_Modification::Add(const TopoDS_Face&     F,
-                                         const gp_Dir&          Direction,
-                                         const double    Angle,
-                                         const gp_Pln&          NeutralPlane,
-                                         const bool Flag)
+bool Draft_Modification::Add(const TopoDS_Face& F,
+                             const gp_Dir&      Direction,
+                             const double       Angle,
+                             const gp_Pln&      NeutralPlane,
+                             const bool         Flag)
 {
   if (!badShape.IsNull())
   {
@@ -223,12 +223,12 @@ const NCollection_List<TopoDS_Shape>& Draft_Modification::ModifiedFaces()
 
 //=================================================================================================
 
-bool Draft_Modification::NewSurface(const TopoDS_Face&    F,
-                                                occ::handle<Geom_Surface>& S,
-                                                TopLoc_Location&      L,
-                                                double&        Tol,
-                                                bool&     RevWires,
-                                                bool&     RevFace)
+bool Draft_Modification::NewSurface(const TopoDS_Face&         F,
+                                    occ::handle<Geom_Surface>& S,
+                                    TopLoc_Location&           L,
+                                    double&                    Tol,
+                                    bool&                      RevWires,
+                                    bool&                      RevFace)
 {
   if (!IsDone())
   {
@@ -255,10 +255,10 @@ bool Draft_Modification::NewSurface(const TopoDS_Face&    F,
 
 //=================================================================================================
 
-bool Draft_Modification::NewCurve(const TopoDS_Edge&  E,
-                                              occ::handle<Geom_Curve>& C,
-                                              TopLoc_Location&    L,
-                                              double&      Tol)
+bool Draft_Modification::NewCurve(const TopoDS_Edge&       E,
+                                  occ::handle<Geom_Curve>& C,
+                                  TopLoc_Location&         L,
+                                  double&                  Tol)
 {
   if (!IsDone())
   {
@@ -302,11 +302,11 @@ bool Draft_Modification::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol
 //=================================================================================================
 
 bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
-                                                const TopoDS_Face& F,
-                                                const TopoDS_Edge& NewE,
-                                                const TopoDS_Face&,
-                                                occ::handle<Geom2d_Curve>& C,
-                                                double&        Tol)
+                                    const TopoDS_Face& F,
+                                    const TopoDS_Edge& NewE,
+                                    const TopoDS_Face&,
+                                    occ::handle<Geom2d_Curve>& C,
+                                    double&                    Tol)
 {
 
   if (!IsDone())
@@ -350,9 +350,10 @@ bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
 
     //  if (!BRep_Tool::IsClosed(E,F)) {
     BRep_Tool::Range(NewE, Fp, Lp);
-    occ::handle<Geom_TrimmedCurve> TC = new Geom_TrimmedCurve(myEMap.FindFromKey(E).Geometry(), Fp, Lp);
-    Fp                           = TC->FirstParameter();
-    Lp                           = TC->LastParameter();
+    occ::handle<Geom_TrimmedCurve> TC =
+      new Geom_TrimmedCurve(myEMap.FindFromKey(E).Geometry(), Fp, Lp);
+    Fp = TC->FirstParameter();
+    Lp = TC->LastParameter();
     BRep_Builder B;
     B.Range(NewE, Fp, Lp);
     C = GeomProjLib::Curve2d(TC, Fp, Lp, SB, Tol);
@@ -368,7 +369,7 @@ bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
   bool JeRecadre = false;
   if (typs == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
   {
-    occ::handle<Geom_Curve>    aC   = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(SB)->BasisCurve();
+    occ::handle<Geom_Curve>    aC = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(SB)->BasisCurve();
     occ::handle<Standard_Type> typc = aC->DynamicType();
     if (typc == STANDARD_TYPE(Geom_Circle))
       JeRecadre = true;
@@ -380,10 +381,10 @@ bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
 
   if (JeRecadre)
   {
-    bool     bTranslate;
-    double        aD2, aT1, aT2;
-    gp_Pnt2d             PF, NewPF;
-    gp_Vec2d             aV2DT, vectra(2. * M_PI, 0.);
+    bool                      bTranslate;
+    double                    aD2, aT1, aT2;
+    gp_Pnt2d                  PF, NewPF;
+    gp_Vec2d                  aV2DT, vectra(2. * M_PI, 0.);
     occ::handle<Geom2d_Curve> aC2DE;
     //
     aC2DE = BRep_Tool::CurveOnSurface(E, F, aT1, aT2);
@@ -413,16 +414,16 @@ bool Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
   }
   //
   occ::handle<Geom_Curve> aC3d = BRep_Tool::Curve(NewE, Fp, Lp);
-  Tol                     = BRepTools::EvalAndUpdateTol(NewE, aC3d, C, SB, Fp, Lp);
+  Tol                          = BRepTools::EvalAndUpdateTol(NewE, aC3d, C, SB, Fp, Lp);
   return true;
 }
 
 //=================================================================================================
 
 bool Draft_Modification::NewParameter(const TopoDS_Vertex& V,
-                                                  const TopoDS_Edge&   E,
-                                                  double&       P,
-                                                  double&       Tol)
+                                      const TopoDS_Edge&   E,
+                                      double&              P,
+                                      double&              Tol)
 {
 
   if (!IsDone())
@@ -435,7 +436,7 @@ bool Draft_Modification::NewParameter(const TopoDS_Vertex& V,
     return false;
   }
 
-  P                          = myVMap.ChangeFromKey(V).Parameter(E);
+  P                               = myVMap.ChangeFromKey(V).Parameter(E);
   occ::handle<Geom_Curve>    GC   = myEMap.FindFromKey(E).Geometry();
   occ::handle<Standard_Type> typc = GC->DynamicType();
   if (typc == STANDARD_TYPE(Geom_TrimmedCurve))
@@ -447,7 +448,7 @@ bool Draft_Modification::NewParameter(const TopoDS_Vertex& V,
   if (GC->IsClosed())
   {
     TopoDS_Vertex FV = TopExp::FirstVertex(E);
-    double paramf;
+    double        paramf;
     if (myVMap.Contains(FV))
     {
       paramf = myVMap.ChangeFromKey(FV).Parameter(E);

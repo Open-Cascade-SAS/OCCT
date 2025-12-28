@@ -20,7 +20,6 @@
 
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -242,8 +241,8 @@ private:
   int    myMultBuffer[Size];
 
 public:
-  NCollection_Array1<double>    Knot;
-  NCollection_Array1<int> Mult;
+  NCollection_Array1<double> Knot;
+  NCollection_Array1<int>    Mult;
 };
 
 //! Maximum supported degree for B-spline curves.
@@ -302,22 +301,22 @@ void BSplCLib_Reverse(Array& theArray, const int theL)
 // @param[in] Tolerance - tolerance for knot removal
 // @returns true if knot removal was successful
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-bool BSplCLib_RemoveKnot(const int         Index,
-                                     const int         Mult,
-                                     const int         Degree,
-                                     const bool         Periodic,
-                                     const Array1OfPoints&          Poles,
-                                     const NCollection_Array1<double>*    Weights,
-                                     const NCollection_Array1<double>&    Knots,
-                                     const NCollection_Array1<int>& Mults,
-                                     Array1OfPoints&                NewPoles,
-                                     NCollection_Array1<double>*          NewWeights,
-                                     NCollection_Array1<double>&          NewKnots,
-                                     NCollection_Array1<int>&       NewMults,
-                                     const double            Tolerance)
+bool BSplCLib_RemoveKnot(const int                         Index,
+                         const int                         Mult,
+                         const int                         Degree,
+                         const bool                        Periodic,
+                         const Array1OfPoints&             Poles,
+                         const NCollection_Array1<double>* Weights,
+                         const NCollection_Array1<double>& Knots,
+                         const NCollection_Array1<int>&    Mults,
+                         Array1OfPoints&                   NewPoles,
+                         NCollection_Array1<double>*       NewWeights,
+                         NCollection_Array1<double>&       NewKnots,
+                         NCollection_Array1<int>&          NewMults,
+                         const double                      Tolerance)
 {
   bool rational = Weights != NULL;
-  int dim;
+  int  dim;
   dim = Dimension;
   if (rational)
     dim++;
@@ -367,23 +366,23 @@ bool BSplCLib_RemoveKnot(const int         Index,
 // @param[in] Epsilon - tolerance for knot comparison
 // @param[in] Add - whether to add or replace knots
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_InsertKnots(const int         Degree,
-                          const bool         Periodic,
-                          const Array1OfPoints&          Poles,
-                          const NCollection_Array1<double>*    Weights,
-                          const NCollection_Array1<double>&    Knots,
-                          const NCollection_Array1<int>& Mults,
-                          const NCollection_Array1<double>&    AddKnots,
-                          const NCollection_Array1<int>* AddMults,
-                          Array1OfPoints&                NewPoles,
-                          NCollection_Array1<double>*          NewWeights,
-                          NCollection_Array1<double>&          NewKnots,
-                          NCollection_Array1<int>&       NewMults,
-                          const double            Epsilon,
-                          const bool         Add)
+void BSplCLib_InsertKnots(const int                         Degree,
+                          const bool                        Periodic,
+                          const Array1OfPoints&             Poles,
+                          const NCollection_Array1<double>* Weights,
+                          const NCollection_Array1<double>& Knots,
+                          const NCollection_Array1<int>&    Mults,
+                          const NCollection_Array1<double>& AddKnots,
+                          const NCollection_Array1<int>*    AddMults,
+                          Array1OfPoints&                   NewPoles,
+                          NCollection_Array1<double>*       NewWeights,
+                          NCollection_Array1<double>&       NewKnots,
+                          NCollection_Array1<int>&          NewMults,
+                          const double                      Epsilon,
+                          const bool                        Add)
 {
   bool rational = Weights != NULL;
-  int dim;
+  int  dim;
   dim = Dimension;
   if (rational)
     dim++;
@@ -429,20 +428,20 @@ void BSplCLib_InsertKnots(const int         Degree,
 // @param[out] NewWeights - resulting weights
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 void BSplCLib_InsertKnot(const int,
-                         const double            U,
-                         const int         UMult,
-                         const int         Degree,
-                         const bool         Periodic,
-                         const Array1OfPoints&          Poles,
-                         const NCollection_Array1<double>*    Weights,
-                         const NCollection_Array1<double>&    Knots,
-                         const NCollection_Array1<int>& Mults,
-                         Array1OfPoints&                NewPoles,
-                         NCollection_Array1<double>*          NewWeights)
+                         const double                      U,
+                         const int                         UMult,
+                         const int                         Degree,
+                         const bool                        Periodic,
+                         const Array1OfPoints&             Poles,
+                         const NCollection_Array1<double>* Weights,
+                         const NCollection_Array1<double>& Knots,
+                         const NCollection_Array1<int>&    Mults,
+                         Array1OfPoints&                   NewPoles,
+                         NCollection_Array1<double>*       NewWeights)
 {
-  BSplCLib_KnotArrays<1>  aSingleKnot(U, UMult);
-  NCollection_Array1<double>    aNewKnots(1, Knots.Length() + 1);
-  NCollection_Array1<int> aNewMults(1, Knots.Length() + 1);
+  BSplCLib_KnotArrays<1>     aSingleKnot(U, UMult);
+  NCollection_Array1<double> aNewKnots(1, Knots.Length() + 1);
+  NCollection_Array1<int>    aNewMults(1, Knots.Length() + 1);
   BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
                                                                  Periodic,
                                                                  Poles,
@@ -471,20 +470,20 @@ void BSplCLib_InsertKnot(const int,
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_RaiseMultiplicity(const int         KnotIndex,
-                                const int         Mult,
-                                const int         Degree,
-                                const bool         Periodic,
-                                const Array1OfPoints&          Poles,
-                                const NCollection_Array1<double>*    Weights,
-                                const NCollection_Array1<double>&    Knots,
-                                const NCollection_Array1<int>& Mults,
-                                Array1OfPoints&                NewPoles,
-                                NCollection_Array1<double>*          NewWeights)
+void BSplCLib_RaiseMultiplicity(const int                         KnotIndex,
+                                const int                         Mult,
+                                const int                         Degree,
+                                const bool                        Periodic,
+                                const Array1OfPoints&             Poles,
+                                const NCollection_Array1<double>* Weights,
+                                const NCollection_Array1<double>& Knots,
+                                const NCollection_Array1<int>&    Mults,
+                                Array1OfPoints&                   NewPoles,
+                                NCollection_Array1<double>*       NewWeights)
 {
-  BSplCLib_KnotArrays<1>  aSingleKnot(Knots(KnotIndex), Mult - Mults(KnotIndex));
-  NCollection_Array1<double>    aNewKnots(1, Knots.Length());
-  NCollection_Array1<int> aNewMults(1, Knots.Length());
+  BSplCLib_KnotArrays<1>     aSingleKnot(Knots(KnotIndex), Mult - Mults(KnotIndex));
+  NCollection_Array1<double> aNewKnots(1, Knots.Length());
+  NCollection_Array1<int>    aNewMults(1, Knots.Length());
   BSplCLib_InsertKnots<Point, Vector, Array1OfPoints, Dimension>(Degree,
                                                                  Periodic,
                                                                  Poles,
@@ -514,20 +513,20 @@ void BSplCLib_RaiseMultiplicity(const int         KnotIndex,
 // @param[out] NewKnots - resulting knot sequence
 // @param[out] NewMults - resulting multiplicities
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_IncreaseDegree(const int         Degree,
-                             const int         NewDegree,
-                             const bool         Periodic,
-                             const Array1OfPoints&          Poles,
-                             const NCollection_Array1<double>*    Weights,
-                             const NCollection_Array1<double>&    Knots,
-                             const NCollection_Array1<int>& Mults,
-                             Array1OfPoints&                NewPoles,
-                             NCollection_Array1<double>*          NewWeights,
-                             NCollection_Array1<double>&          NewKnots,
-                             NCollection_Array1<int>&       NewMults)
+void BSplCLib_IncreaseDegree(const int                         Degree,
+                             const int                         NewDegree,
+                             const bool                        Periodic,
+                             const Array1OfPoints&             Poles,
+                             const NCollection_Array1<double>* Weights,
+                             const NCollection_Array1<double>& Knots,
+                             const NCollection_Array1<int>&    Mults,
+                             Array1OfPoints&                   NewPoles,
+                             NCollection_Array1<double>*       NewWeights,
+                             NCollection_Array1<double>&       NewKnots,
+                             NCollection_Array1<int>&          NewMults)
 {
   bool rational = Weights != NULL;
-  int dim;
+  int  dim;
   dim = Dimension;
   if (rational)
     dim++;
@@ -568,18 +567,18 @@ void BSplCLib_IncreaseDegree(const int         Degree,
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Unperiodize(const int         Degree,
-                          const NCollection_Array1<int>& Mults,
-                          const NCollection_Array1<double>&    Knots,
-                          const Array1OfPoints&          Poles,
-                          const NCollection_Array1<double>*    Weights,
-                          NCollection_Array1<int>&       NewMults,
-                          NCollection_Array1<double>&          NewKnots,
-                          Array1OfPoints&                NewPoles,
-                          NCollection_Array1<double>*          NewWeights)
+void BSplCLib_Unperiodize(const int                         Degree,
+                          const NCollection_Array1<int>&    Mults,
+                          const NCollection_Array1<double>& Knots,
+                          const Array1OfPoints&             Poles,
+                          const NCollection_Array1<double>* Weights,
+                          NCollection_Array1<int>&          NewMults,
+                          NCollection_Array1<double>&       NewKnots,
+                          Array1OfPoints&                   NewPoles,
+                          NCollection_Array1<double>*       NewWeights)
 {
   bool rational = Weights != NULL;
-  int dim;
+  int  dim;
   dim = Dimension;
   if (rational)
     dim++;
@@ -614,21 +613,21 @@ void BSplCLib_Unperiodize(const int         Degree,
 // @param[out] NewPoles - resulting poles
 // @param[out] NewWeights - resulting weights
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Trimming(const int         Degree,
-                       const bool         Periodic,
-                       const NCollection_Array1<double>&    Knots,
-                       const NCollection_Array1<int>& Mults,
-                       const Array1OfPoints&          Poles,
-                       const NCollection_Array1<double>*    Weights,
-                       const double            U1,
-                       const double            U2,
-                       NCollection_Array1<double>&          NewKnots,
-                       NCollection_Array1<int>&       NewMults,
-                       Array1OfPoints&                NewPoles,
-                       NCollection_Array1<double>*          NewWeights)
+void BSplCLib_Trimming(const int                         Degree,
+                       const bool                        Periodic,
+                       const NCollection_Array1<double>& Knots,
+                       const NCollection_Array1<int>&    Mults,
+                       const Array1OfPoints&             Poles,
+                       const NCollection_Array1<double>* Weights,
+                       const double                      U1,
+                       const double                      U2,
+                       NCollection_Array1<double>&       NewKnots,
+                       NCollection_Array1<int>&          NewMults,
+                       Array1OfPoints&                   NewPoles,
+                       NCollection_Array1<double>*       NewWeights)
 {
   bool rational = Weights != NULL;
-  int dim;
+  int  dim;
   dim = Dimension;
   if (rational)
     dim++;
@@ -666,19 +665,19 @@ void BSplCLib_Trimming(const int         Degree,
 // @param[in] Weights - optional weights for rational curves
 // @param[out] LP - local poles array for evaluation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_BuildEval(const int      Degree,
-                        const int      Index,
-                        const Array1OfPoints&       Poles,
+void BSplCLib_BuildEval(const int                         Degree,
+                        const int                         Index,
+                        const Array1OfPoints&             Poles,
                         const NCollection_Array1<double>* Weights,
-                        double&              LP)
+                        double&                           LP)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  double    w, *pole = &LP;
-  int PLower = Poles.Lower();
-  int PUpper = Poles.Upper();
-  int i;
-  int ip = PLower + Index - 1;
+  double w, *pole = &LP;
+  int    PLower = Poles.Lower();
+  int    PUpper = Poles.Upper();
+  int    i;
+  int    ip = PLower + Index - 1;
   if (Weights == NULL)
   {
     for (i = 0; i <= Degree; i++)
@@ -719,15 +718,15 @@ void BSplCLib_BuildEval(const int      Degree,
 // @param[in] Mults - multiplicities
 // @param[out] dc - data container for evaluation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-static void PrepareEval_T(double&                       u,
-                          int&                    index,
-                          int&                    dim,
-                          bool&                    rational,
-                          const int               Degree,
-                          const bool               Periodic,
+static void PrepareEval_T(double&                              u,
+                          int&                                 index,
+                          int&                                 dim,
+                          bool&                                rational,
+                          const int                            Degree,
+                          const bool                           Periodic,
                           const Array1OfPoints&                Poles,
-                          const NCollection_Array1<double>*          Weights,
-                          const NCollection_Array1<double>&          Knots,
+                          const NCollection_Array1<double>*    Weights,
+                          const NCollection_Array1<double>&    Knots,
                           const NCollection_Array1<int>*       Mults,
                           BSplCLib_DataContainer_T<Dimension>& dc)
 {
@@ -746,7 +745,7 @@ static void PrepareEval_T(double&                       u,
   if (rational)
   {
     int WLower = Weights->Lower() + index;
-    rational                = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
+    rational   = BSplCLib::IsRational(*Weights, WLower, WLower + Degree);
   }
 
   // make the poles
@@ -781,21 +780,21 @@ static void PrepareEval_T(double&                       u,
 // @param[in] Mults - multiplicities
 // @param[out] P - resulting point
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_D0(const double            U,
-                 const int         Index,
-                 const int         Degree,
-                 const bool         Periodic,
-                 const Array1OfPoints&          Poles,
-                 const NCollection_Array1<double>*    Weights,
-                 const NCollection_Array1<double>&    Knots,
-                 const NCollection_Array1<int>* Mults,
-                 Point&                         P)
+void BSplCLib_D0(const double                      U,
+                 const int                         Index,
+                 const int                         Degree,
+                 const bool                        Periodic,
+                 const Array1OfPoints&             Poles,
+                 const NCollection_Array1<double>* Weights,
+                 const NCollection_Array1<double>& Knots,
+                 const NCollection_Array1<int>*    Mults,
+                 Point&                            P)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
@@ -832,22 +831,22 @@ void BSplCLib_D0(const double            U,
 // @param[out] P - resulting point
 // @param[out] V - first derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_D1(const double            U,
-                 const int         Index,
-                 const int         Degree,
-                 const bool         Periodic,
-                 const Array1OfPoints&          Poles,
-                 const NCollection_Array1<double>*    Weights,
-                 const NCollection_Array1<double>&    Knots,
-                 const NCollection_Array1<int>* Mults,
-                 Point&                         P,
-                 Vector&                        V)
+void BSplCLib_D1(const double                      U,
+                 const int                         Index,
+                 const int                         Degree,
+                 const bool                        Periodic,
+                 const Array1OfPoints&             Poles,
+                 const NCollection_Array1<double>* Weights,
+                 const NCollection_Array1<double>& Knots,
+                 const NCollection_Array1<int>*    Mults,
+                 Point&                            P,
+                 Vector&                           V)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
@@ -886,23 +885,23 @@ void BSplCLib_D1(const double            U,
 // @param[out] V1 - first derivative vector
 // @param[out] V2 - second derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_D2(const double            U,
-                 const int         Index,
-                 const int         Degree,
-                 const bool         Periodic,
-                 const Array1OfPoints&          Poles,
-                 const NCollection_Array1<double>*    Weights,
-                 const NCollection_Array1<double>&    Knots,
-                 const NCollection_Array1<int>* Mults,
-                 Point&                         P,
-                 Vector&                        V1,
-                 Vector&                        V2)
+void BSplCLib_D2(const double                      U,
+                 const int                         Index,
+                 const int                         Degree,
+                 const bool                        Periodic,
+                 const Array1OfPoints&             Poles,
+                 const NCollection_Array1<double>* Weights,
+                 const NCollection_Array1<double>& Knots,
+                 const NCollection_Array1<int>*    Mults,
+                 Point&                            P,
+                 Vector&                           V1,
+                 Vector&                           V2)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
@@ -946,24 +945,24 @@ void BSplCLib_D2(const double            U,
 // @param[out] V2 - second derivative vector
 // @param[out] V3 - third derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_D3(const double            U,
-                 const int         Index,
-                 const int         Degree,
-                 const bool         Periodic,
-                 const Array1OfPoints&          Poles,
-                 const NCollection_Array1<double>*    Weights,
-                 const NCollection_Array1<double>&    Knots,
-                 const NCollection_Array1<int>* Mults,
-                 Point&                         P,
-                 Vector&                        V1,
-                 Vector&                        V2,
-                 Vector&                        V3)
+void BSplCLib_D3(const double                      U,
+                 const int                         Index,
+                 const int                         Degree,
+                 const bool                        Periodic,
+                 const Array1OfPoints&             Poles,
+                 const NCollection_Array1<double>* Weights,
+                 const NCollection_Array1<double>& Knots,
+                 const NCollection_Array1<int>*    Mults,
+                 Point&                            P,
+                 Vector&                           V1,
+                 Vector&                           V2,
+                 Vector&                           V3)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
@@ -1009,22 +1008,22 @@ void BSplCLib_D3(const double            U,
 // @param[in] Mults - multiplicities
 // @param[out] VN - Nth derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_DN(const double            U,
-                 const int         N,
-                 const int         Index,
-                 const int         Degree,
-                 const bool         Periodic,
-                 const Array1OfPoints&          Poles,
-                 const NCollection_Array1<double>*    Weights,
-                 const NCollection_Array1<double>&    Knots,
-                 const NCollection_Array1<int>* Mults,
-                 Vector&                        VN)
+void BSplCLib_DN(const double                      U,
+                 const int                         N,
+                 const int                         Index,
+                 const int                         Degree,
+                 const bool                        Periodic,
+                 const Array1OfPoints&             Poles,
+                 const NCollection_Array1<double>* Weights,
+                 const NCollection_Array1<double>& Knots,
+                 const NCollection_Array1<int>*    Mults,
+                 Vector&                           VN)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int dim, index = Index;
-  double    u = U;
-  bool rational;
+  int    dim, index = Index;
+  double u = U;
+  bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
@@ -1065,10 +1064,10 @@ void BSplCLib_DN(const double            U,
 // @param[in,out] PolesArray - poles array containing right-hand side and receiving solution
 // @returns error status
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-int BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
-                                            const int UpperBandWidth,
-                                            const int LowerBandWidth,
-                                            Array1OfPoints&        PolesArray)
+int BSplCLib_SolveBandedSystem(const math_Matrix& Matrix,
+                               const int          UpperBandWidth,
+                               const int          LowerBandWidth,
+                               Array1OfPoints&    PolesArray)
 {
   double* PArray;
   PArray = (double*)&PolesArray(PolesArray.Lower());
@@ -1085,12 +1084,12 @@ int BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
 // @param[in,out] WeightsArray - weights array
 // @returns error status
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-int BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
-                                            const int UpperBandWidth,
-                                            const int LowerBandWidth,
-                                            const bool HomogeneousFlag,
-                                            Array1OfPoints&        PolesArray,
-                                            NCollection_Array1<double>&  WeightsArray)
+int BSplCLib_SolveBandedSystem(const math_Matrix&          Matrix,
+                               const int                   UpperBandWidth,
+                               const int                   LowerBandWidth,
+                               const bool                  HomogeneousFlag,
+                               Array1OfPoints&             PolesArray,
+                               NCollection_Array1<double>& WeightsArray)
 {
   double *PArray, *WArray;
   PArray = (double*)&PolesArray(PolesArray.Lower());
@@ -1116,19 +1115,19 @@ int BSplCLib_SolveBandedSystem(const math_Matrix&     Matrix,
 // @param[out] aPoint - resulting point
 // @param[out] aWeight - resulting weight
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Eval(const double         Parameter,
-                   const bool      PeriodicFlag,
-                   const bool      HomogeneousFlag,
-                   int&           ExtrapMode,
-                   const int      Degree,
+void BSplCLib_Eval(const double                      Parameter,
+                   const bool                        PeriodicFlag,
+                   const bool                        HomogeneousFlag,
+                   int&                              ExtrapMode,
+                   const int                         Degree,
                    const NCollection_Array1<double>& FlatKnots,
-                   const Array1OfPoints&       PolesArray,
+                   const Array1OfPoints&             PolesArray,
                    const NCollection_Array1<double>& WeightsArray,
-                   Point&                      aPoint,
-                   double&              aWeight)
+                   Point&                            aPoint,
+                   double&                           aWeight)
 {
-  double    Inverse, P[Dimension], *PArray, *WArray;
-  int kk;
+  double Inverse, P[Dimension], *PArray, *WArray;
+  int    kk;
   PArray = (double*)&PolesArray(PolesArray.Lower());
   WArray = (double*)&WeightsArray(WeightsArray.Lower());
   if (HomogeneousFlag)
@@ -1186,20 +1185,20 @@ void BSplCLib_Eval(const double         Parameter,
 // @param[in] WeightsArray - optional cached weights
 // @param[out] aPoint - resulting point
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_CacheD0(const double         Parameter,
-                      const int      Degree,
-                      const double         CacheParameter,
-                      const double         SpanLenght,
-                      const Array1OfPoints&       PolesArray,
+void BSplCLib_CacheD0(const double                      Parameter,
+                      const int                         Degree,
+                      const double                      CacheParameter,
+                      const double                      SpanLenght,
+                      const Array1OfPoints&             PolesArray,
                       const NCollection_Array1<double>* WeightsArray,
-                      Point&                      aPoint)
+                      Point&                            aPoint)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
   double  NewParameter, Inverse;
   double* PArray  = (double*)&(PolesArray(PolesArray.Lower()));
   double* myPoint = (double*)&aPoint;
-  NewParameter           = (Parameter - CacheParameter) / SpanLenght;
+  NewParameter    = (Parameter - CacheParameter) / SpanLenght;
   PLib::NoDerivativeEvalPolynomial(NewParameter,
                                    Degree,
                                    Dimension,
@@ -1209,7 +1208,7 @@ void BSplCLib_CacheD0(const double         Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*              WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
     PLib::NoDerivativeEvalPolynomial(NewParameter, Degree, 1, Degree, WArray[0], Inverse);
 
     Inverse = 1.0e0 / Inverse;
@@ -1227,14 +1226,14 @@ void BSplCLib_CacheD0(const double         Parameter,
 // @param[out] aPoint - resulting point
 // @param[out] aVector - first derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_CacheD1(const double         Parameter,
-                      const int      Degree,
-                      const double         CacheParameter,
-                      const double         SpanLenght,
-                      const Array1OfPoints&       PolesArray,
+void BSplCLib_CacheD1(const double                      Parameter,
+                      const int                         Degree,
+                      const double                      CacheParameter,
+                      const double                      SpanLenght,
+                      const Array1OfPoints&             PolesArray,
                       const NCollection_Array1<double>* WeightsArray,
-                      Point&                      aPoint,
-                      Vector&                     aVector)
+                      Point&                            aPoint,
+                      Vector&                           aVector)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
@@ -1244,7 +1243,7 @@ void BSplCLib_CacheD1(const double         Parameter,
   double* PArray   = (double*)&(PolesArray(PolesArray.Lower()));
   double* myPoint  = (double*)&aPoint;
   double* myVector = (double*)&aVector;
-  NewParameter            = (Parameter - CacheParameter) / SpanLenght;
+  NewParameter     = (Parameter - CacheParameter) / SpanLenght;
   PLib::EvalPolynomial(NewParameter, 1, Degree, Dimension, PArray[0], LocalPDerivatives[0]);
 
   Traits::ModifyCoordsDivide(LocalPDerivatives + Dimension, SpanLenght);
@@ -1252,7 +1251,7 @@ void BSplCLib_CacheD1(const double         Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*              WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
     PLib::EvalPolynomial(NewParameter, 1, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
     LocalWDerivatives[1] /= SpanLenght;
@@ -1279,26 +1278,26 @@ void BSplCLib_CacheD1(const double         Parameter,
 // @param[out] aVector1 - first derivative vector
 // @param[out] aVector2 - second derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_CacheD2(const double         Parameter,
-                      const int      Degree,
-                      const double         CacheParameter,
-                      const double         SpanLenght,
-                      const Array1OfPoints&       PolesArray,
+void BSplCLib_CacheD2(const double                      Parameter,
+                      const int                         Degree,
+                      const double                      CacheParameter,
+                      const double                      SpanLenght,
+                      const Array1OfPoints&             PolesArray,
                       const NCollection_Array1<double>* WeightsArray,
-                      Point&                      aPoint,
-                      Vector&                     aVector1,
-                      Vector&                     aVector2)
+                      Point&                            aPoint,
+                      Vector&                           aVector1,
+                      Vector&                           aVector2)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int ii, Index, EndIndex;
-  double    LocalPDerivatives[(Dimension << 1) + Dimension];
-  double    LocalWDerivatives[3], NewParameter, Factor;
-  double*   PArray    = (double*)&(PolesArray(PolesArray.Lower()));
-  double*   myPoint   = (double*)&aPoint;
-  double*   myVector1 = (double*)&aVector1;
-  double*   myVector2 = (double*)&aVector2;
-  NewParameter               = (Parameter - CacheParameter) / SpanLenght;
+  int     ii, Index, EndIndex;
+  double  LocalPDerivatives[(Dimension << 1) + Dimension];
+  double  LocalWDerivatives[3], NewParameter, Factor;
+  double* PArray    = (double*)&(PolesArray(PolesArray.Lower()));
+  double* myPoint   = (double*)&aPoint;
+  double* myVector1 = (double*)&aVector1;
+  double* myVector2 = (double*)&aVector2;
+  NewParameter      = (Parameter - CacheParameter) / SpanLenght;
   PLib::EvalPolynomial(NewParameter, 2, Degree, Dimension, PArray[0], LocalPDerivatives[0]);
 
   Factor   = 1.0e0 / SpanLenght;
@@ -1322,7 +1321,7 @@ void BSplCLib_CacheD2(const double         Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*              WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
 
     PLib::EvalPolynomial(NewParameter, 2, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
@@ -1362,28 +1361,28 @@ void BSplCLib_CacheD2(const double         Parameter,
 // @param[out] aVector2 - second derivative vector
 // @param[out] aVector3 - third derivative vector
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_CacheD3(const double         Parameter,
-                      const int      Degree,
-                      const double         CacheParameter,
-                      const double         SpanLenght,
-                      const Array1OfPoints&       PolesArray,
+void BSplCLib_CacheD3(const double                      Parameter,
+                      const int                         Degree,
+                      const double                      CacheParameter,
+                      const double                      SpanLenght,
+                      const Array1OfPoints&             PolesArray,
                       const NCollection_Array1<double>* WeightsArray,
-                      Point&                      aPoint,
-                      Vector&                     aVector1,
-                      Vector&                     aVector2,
-                      Vector&                     aVector3)
+                      Point&                            aPoint,
+                      Vector&                           aVector1,
+                      Vector&                           aVector2,
+                      Vector&                           aVector3)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int ii, Index, EndIndex;
-  double    LocalPDerivatives[Dimension << 2];
-  double    LocalWDerivatives[4], Factor, NewParameter;
-  double*   PArray    = (double*)&(PolesArray(PolesArray.Lower()));
-  double*   myPoint   = (double*)&aPoint;
-  double*   myVector1 = (double*)&aVector1;
-  double*   myVector2 = (double*)&aVector2;
-  double*   myVector3 = (double*)&aVector3;
-  NewParameter               = (Parameter - CacheParameter) / SpanLenght;
+  int     ii, Index, EndIndex;
+  double  LocalPDerivatives[Dimension << 2];
+  double  LocalWDerivatives[4], Factor, NewParameter;
+  double* PArray    = (double*)&(PolesArray(PolesArray.Lower()));
+  double* myPoint   = (double*)&aPoint;
+  double* myVector1 = (double*)&aVector1;
+  double* myVector2 = (double*)&aVector2;
+  double* myVector3 = (double*)&aVector3;
+  NewParameter      = (Parameter - CacheParameter) / SpanLenght;
   PLib::EvalPolynomial(NewParameter, 3, Degree, Dimension, PArray[0], LocalPDerivatives[0]);
 
   Index = (Degree + 1) * Dimension;
@@ -1407,7 +1406,7 @@ void BSplCLib_CacheD3(const double         Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*              WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
 
     PLib::EvalPolynomial(NewParameter, 3, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
@@ -1447,21 +1446,21 @@ void BSplCLib_CacheD3(const double         Parameter,
 // @param[out] CachePoles - cached poles array
 // @param[out] CacheWeights - cached weights array
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_BuildCache(const double         U,
-                         const double         SpanDomain,
-                         const bool      Periodic,
-                         const int      Degree,
+void BSplCLib_BuildCache(const double                      U,
+                         const double                      SpanDomain,
+                         const bool                        Periodic,
+                         const int                         Degree,
                          const NCollection_Array1<double>& FlatKnots,
-                         const Array1OfPoints&       Poles,
+                         const Array1OfPoints&             Poles,
                          const NCollection_Array1<double>* Weights,
-                         Array1OfPoints&             CachePoles,
+                         Array1OfPoints&                   CachePoles,
                          NCollection_Array1<double>*       CacheWeights)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  int ii, LocalDimension, LocalIndex, index = 0;
-  double    u = U, LocalValue;
-  bool rational;
+  int    ii, LocalDimension, LocalIndex, index = 0;
+  double u = U, LocalValue;
+  bool   rational;
 
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
@@ -1531,20 +1530,20 @@ void BSplCLib_BuildCache(const double         U,
 // @param[in] theWeights - optional weights for rational curves
 // @param[out] theCacheArray - 2D cache array
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_BuildCache(const double         theParameter,
-                         const double         theSpanDomain,
-                         const bool      thePeriodicFlag,
-                         const int      theDegree,
-                         const int      theSpanIndex,
+void BSplCLib_BuildCache(const double                      theParameter,
+                         const double                      theSpanDomain,
+                         const bool                        thePeriodicFlag,
+                         const int                         theDegree,
+                         const int                         theSpanIndex,
                          const NCollection_Array1<double>& theFlatKnots,
-                         const Array1OfPoints&       thePoles,
+                         const Array1OfPoints&             thePoles,
                          const NCollection_Array1<double>* theWeights,
                          NCollection_Array2<double>&       theCacheArray)
 {
-  double    aParam  = theParameter;
-  int anIndex = theSpanIndex;
-  int aDimension;
-  bool isRational;
+  double aParam  = theParameter;
+  int    anIndex = theSpanIndex;
+  int    aDimension;
+  bool   isRational;
 
   validateBSplineDegree(theDegree);
   BSplCLib_DataContainer_T<Dimension> dc;
@@ -1565,8 +1564,7 @@ void BSplCLib_BuildCache(const double         theParameter,
   BSplCLib::Bohm(aParam, theDegree, theDegree, *dc.knots, aDimension, *dc.poles);
 
   double  aCoeff = 1.0;
-  double* aCache =
-    (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+  double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
   double* aPolyCoeffs = dc.poles;
 
   for (int i = 0; i <= theDegree; i++)
@@ -1597,12 +1595,12 @@ void BSplCLib_BuildCache(const double         theParameter,
 // @param[in,out] Poles - poles array to be computed
 // @param[out] InversionProblem - status of matrix inversion
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Interpolate(const int         Degree,
-                          const NCollection_Array1<double>&    FlatKnots,
-                          const NCollection_Array1<double>&    Parameters,
-                          const NCollection_Array1<int>& ContactOrderArray,
-                          Array1OfPoints&                Poles,
-                          int&              InversionProblem)
+void BSplCLib_Interpolate(const int                         Degree,
+                          const NCollection_Array1<double>& FlatKnots,
+                          const NCollection_Array1<double>& Parameters,
+                          const NCollection_Array1<int>&    ContactOrderArray,
+                          Array1OfPoints&                   Poles,
+                          int&                              InversionProblem)
 
 {
   double* PArray;
@@ -1627,13 +1625,13 @@ void BSplCLib_Interpolate(const int         Degree,
 // @param[in,out] Weights - weights array
 // @param[out] InversionProblem - status of matrix inversion
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Interpolate(const int         Degree,
-                          const NCollection_Array1<double>&    FlatKnots,
-                          const NCollection_Array1<double>&    Parameters,
-                          const NCollection_Array1<int>& ContactOrderArray,
-                          Array1OfPoints&                Poles,
-                          NCollection_Array1<double>&          Weights,
-                          int&              InversionProblem)
+void BSplCLib_Interpolate(const int                         Degree,
+                          const NCollection_Array1<double>& FlatKnots,
+                          const NCollection_Array1<double>& Parameters,
+                          const NCollection_Array1<int>&    ContactOrderArray,
+                          Array1OfPoints&                   Poles,
+                          NCollection_Array1<double>&       Weights,
+                          int&                              InversionProblem)
 {
   double *PArray, *WArray;
   PArray = (double*)&Poles(Poles.Lower());
@@ -1661,22 +1659,22 @@ void BSplCLib_Interpolate(const int         Degree,
 // @param[out] LastIndex - last modified pole index
 // @param[out] NewPoles - resulting poles
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_MovePoint(const double         U,
-                        const Vector&               Displ,
-                        const int      Index1,
-                        const int      Index2,
-                        const int      Degree,
-                        const Array1OfPoints&       Poles,
+void BSplCLib_MovePoint(const double                      U,
+                        const Vector&                     Displ,
+                        const int                         Index1,
+                        const int                         Index2,
+                        const int                         Degree,
+                        const Array1OfPoints&             Poles,
                         const NCollection_Array1<double>* Weights,
                         const NCollection_Array1<double>& FlatKnots,
-                        int&           FirstIndex,
-                        int&           LastIndex,
-                        Array1OfPoints&             NewPoles)
+                        int&                              FirstIndex,
+                        int&                              LastIndex,
+                        Array1OfPoints&                   NewPoles)
 {
   // calculate the BSplineBasis in the parameter U
-  int FirstNonZeroBsplineIndex;
-  math_Matrix      BSplineBasis(1, 1, 1, Degree + 1);
-  int ErrorCode =
+  int         FirstNonZeroBsplineIndex;
+  math_Matrix BSplineBasis(1, 1, 1, Degree + 1);
+  int         ErrorCode =
     BSplCLib::EvalBsplineBasis(0, Degree + 1, FlatKnots, U, FirstNonZeroBsplineIndex, BSplineBasis);
   if (ErrorCode != 0)
   {
@@ -1698,8 +1696,8 @@ void BSplCLib_MovePoint(const double         U,
   if (LastIndex > Index2)
     LastIndex = Index2;
 
-  double    maxValue = 0.0;
-  int i, kk1 = 0, kk2, ii;
+  double maxValue = 0.0;
+  int    i, kk1 = 0, kk2, ii;
 
   for (i = FirstIndex - FirstNonZeroBsplineIndex + 1; i <= LastIndex - FirstNonZeroBsplineIndex + 1;
        i++)
@@ -1807,18 +1805,18 @@ void BSplCLib_MovePoint(const double         U,
 // @param[out] NewPoles - resulting poles
 // @param[out] ErrorStatus - error status of the operation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_MovePointAndTangent(const double         U,
-                                  const Vector&               Delta,
-                                  const Vector&               DeltaDerivatives,
-                                  const double         Tolerance,
-                                  const int      Degree,
-                                  const int      StartingCondition,
-                                  const int      EndingCondition,
-                                  const Array1OfPoints&       Poles,
+void BSplCLib_MovePointAndTangent(const double                      U,
+                                  const Vector&                     Delta,
+                                  const Vector&                     DeltaDerivatives,
+                                  const double                      Tolerance,
+                                  const int                         Degree,
+                                  const int                         StartingCondition,
+                                  const int                         EndingCondition,
+                                  const Array1OfPoints&             Poles,
                                   const NCollection_Array1<double>* Weights,
                                   const NCollection_Array1<double>& FlatKnots,
-                                  Array1OfPoints&             NewPoles,
-                                  int&           ErrorStatus)
+                                  Array1OfPoints&                   NewPoles,
+                                  int&                              ErrorStatus)
 {
   double *delta_array, *delta_derivative_array, *poles_array, *new_poles_array;
 
@@ -1858,13 +1856,13 @@ void BSplCLib_MovePointAndTangent(const double         U,
 // @param[in] Tolerance3D - 3D tolerance
 // @param[out] UTolerance - computed parametric tolerance
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_Resolution(const Array1OfPoints&       Poles,
+void BSplCLib_Resolution(const Array1OfPoints&             Poles,
                          const NCollection_Array1<double>* Weights,
-                         const int      NumPoles,
+                         const int                         NumPoles,
                          const NCollection_Array1<double>& FlatKnots,
-                         const int      Degree,
-                         const double         Tolerance3D,
-                         double&              UTolerance)
+                         const int                         Degree,
+                         const double                      Tolerance3D,
+                         double&                           UTolerance)
 {
   double* PolesArray;
   PolesArray = (double*)&Poles(Poles.Lower());
@@ -1889,13 +1887,13 @@ void BSplCLib_Resolution(const Array1OfPoints&       Poles,
 // @param[out] theStatus - status of the operation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 void BSplCLib_FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                               const int            BSplineDegree,
-                               const NCollection_Array1<double>&       BSplineFlatKnots,
+                               const int                         BSplineDegree,
+                               const NCollection_Array1<double>& BSplineFlatKnots,
                                const Array1OfPoints&             Poles,
-                               const NCollection_Array1<double>&       FlatKnots,
-                               const int            NewDegree,
+                               const NCollection_Array1<double>& FlatKnots,
+                               const int                         NewDegree,
                                Array1OfPoints&                   NewPoles,
-                               int&                 theStatus)
+                               int&                              theStatus)
 {
   int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
   int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
@@ -1928,13 +1926,13 @@ void BSplCLib_FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
 // @param[out] theStatus - status of the operation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 void BSplCLib_FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
-                                     const int            BSplineDegree,
-                                     const NCollection_Array1<double>&       BSplineFlatKnots,
+                                     const int                         BSplineDegree,
+                                     const NCollection_Array1<double>& BSplineFlatKnots,
                                      const Array1OfPoints&             Poles,
-                                     const NCollection_Array1<double>&       FlatKnots,
-                                     const int            NewDegree,
+                                     const NCollection_Array1<double>& FlatKnots,
+                                     const int                         NewDegree,
                                      Array1OfPoints&                   NewPoles,
-                                     int&                 theStatus)
+                                     int&                              theStatus)
 {
   int num_bspline_poles = BSplineFlatKnots.Length() - BSplineDegree - 1;
   int num_new_poles     = FlatKnots.Length() - NewDegree - 1;
@@ -1963,13 +1961,15 @@ void BSplCLib_FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionP
 // @param[out] CachePoles - cached poles array
 // @param[out] CacheWeights - cached weights array
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_PolesCoefficients_Bezier(const Array1OfPoints&       Poles,
+void BSplCLib_PolesCoefficients_Bezier(const Array1OfPoints&             Poles,
                                        const NCollection_Array1<double>* Weights,
-                                       Array1OfPoints&             CachePoles,
+                                       Array1OfPoints&                   CachePoles,
                                        NCollection_Array1<double>*       CacheWeights)
 {
-  const int            aDegree = Poles.Length() - 1;
-  NCollection_Array1<double> aBidFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
+  const int                  aDegree = Poles.Length() - 1;
+  NCollection_Array1<double> aBidFlatKnots(BSplCLib::FlatBezierKnots(aDegree),
+                                           1,
+                                           2 * (aDegree + 1));
   BSplCLib_BuildCache<Point, Vector, Array1OfPoints, Dimension>(0.,
                                                                 1.,
                                                                 false,
@@ -1989,10 +1989,10 @@ void BSplCLib_PolesCoefficients_Bezier(const Array1OfPoints&       Poles,
 // @param[out] NewPoles - resulting poles array
 // @param[out] NewWeights - resulting weights array
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
-void BSplCLib_IncreaseDegree_Bezier(const int      NewDegree,
-                                    const Array1OfPoints&       Poles,
+void BSplCLib_IncreaseDegree_Bezier(const int                         NewDegree,
+                                    const Array1OfPoints&             Poles,
                                     const NCollection_Array1<double>* Weights,
-                                    Array1OfPoints&             NewPoles,
+                                    Array1OfPoints&                   NewPoles,
                                     NCollection_Array1<double>*       NewWeights)
 {
   const int              aDegree = Poles.Length() - 1;

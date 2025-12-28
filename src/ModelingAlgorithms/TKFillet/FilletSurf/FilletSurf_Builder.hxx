@@ -56,12 +56,12 @@ public:
   //! Ta is the angular tolerance
   //! Tapp3d is the 3d approximation tolerance
   //! Tapp2d is the 2d approximation tolerance
-  Standard_EXPORT FilletSurf_Builder(const TopoDS_Shape&         S,
+  Standard_EXPORT FilletSurf_Builder(const TopoDS_Shape&                   S,
                                      const NCollection_List<TopoDS_Shape>& E,
-                                     const double         R,
-                                     const double         Ta     = 1.0e-2,
-                                     const double         Tapp3d = 1.0e-4,
-                                     const double         Tapp2d = 1.0e-5);
+                                     const double                          R,
+                                     const double                          Ta     = 1.0e-2,
+                                     const double                          Tapp3d = 1.0e-4,
+                                     const double                          Tapp2d = 1.0e-5);
 
   //! ---Purpose computation of the fillet (list of NUBS)
   Standard_EXPORT void Perform();
@@ -132,8 +132,8 @@ public:
 
   Standard_EXPORT int NbSection(const int IndexSurf) const;
 
-  Standard_EXPORT void Section(const int     IndexSurf,
-                               const int     IndexSec,
+  Standard_EXPORT void Section(const int                       IndexSurf,
+                               const int                       IndexSec,
                                occ::handle<Geom_TrimmedCurve>& Circ) const;
 
 private:

@@ -318,9 +318,7 @@ public:
     return aT;
   }
 
-  constexpr void Transforms(double& theX,
-                            double& theY,
-                            double& theZ) const noexcept;
+  constexpr void Transforms(double& theX, double& theY, double& theZ) const noexcept;
 
   //! Transformation of a triplet XYZ with a Trsf
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
@@ -357,8 +355,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
-                                                int&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
   friend class gp_GTrsf;
 
@@ -367,10 +364,10 @@ protected:
   Standard_EXPORT void Orthogonalize();
 
 private:
-  double scale;
-  gp_TrsfForm   shape;
-  gp_Mat        matrix;
-  gp_XYZ        loc;
+  double      scale;
+  gp_TrsfForm shape;
+  gp_Mat      matrix;
+  gp_XYZ      loc;
 };
 
 #include <gp_Trsf2d.hxx>
@@ -420,8 +417,7 @@ inline constexpr void gp_Trsf::SetTranslation(const gp_Pnt& theP1, const gp_Pnt&
 
 //=================================================================================================
 
-inline constexpr double gp_Trsf::Value(const int theRow,
-                                              const int theCol) const
+inline constexpr double gp_Trsf::Value(const int theRow, const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol < 4)
@@ -437,9 +433,7 @@ inline constexpr double gp_Trsf::Value(const int theRow,
 
 //=================================================================================================
 
-inline constexpr void gp_Trsf::Transforms(double& theX,
-                                          double& theY,
-                                          double& theZ) const noexcept
+inline constexpr void gp_Trsf::Transforms(double& theX, double& theY, double& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

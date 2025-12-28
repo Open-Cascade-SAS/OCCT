@@ -30,9 +30,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CircularArc, IGESData_IGESEntity)
 IGESGeom_CircularArc::IGESGeom_CircularArc() {}
 
 void IGESGeom_CircularArc::Init(const double aZT,
-                                const gp_XY&        aCenter,
-                                const gp_XY&        aStart,
-                                const gp_XY&        anEnd)
+                                const gp_XY& aCenter,
+                                const gp_XY& aStart,
+                                const gp_XY& anEnd)
 {
   theZT     = aZT;
   theCenter = aCenter;

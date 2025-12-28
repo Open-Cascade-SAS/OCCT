@@ -39,7 +39,8 @@ Message_Report::Message_Report()
 
 //=================================================================================================
 
-void Message_Report::AddAlert(Message_Gravity theGravity, const occ::handle<Message_Alert>& theAlert)
+void Message_Report::AddAlert(Message_Gravity                   theGravity,
+                              const occ::handle<Message_Alert>& theAlert)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 
@@ -53,7 +54,8 @@ void Message_Report::AddAlert(Message_Gravity theGravity, const occ::handle<Mess
     }
 
     // remove alerts under the report only
-    const NCollection_List<occ::handle<Message_Alert>>& anAlerts = aCompositeAlert->Alerts(theGravity);
+    const NCollection_List<occ::handle<Message_Alert>>& anAlerts =
+      aCompositeAlert->Alerts(theGravity);
     if (anAlerts.Extent() > myLimit)
     {
       aCompositeAlert->RemoveAlert(theGravity, anAlerts.First());
@@ -67,7 +69,8 @@ void Message_Report::AddAlert(Message_Gravity theGravity, const occ::handle<Mess
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<Message_Alert>>& Message_Report::GetAlerts(Message_Gravity theGravity) const
+const NCollection_List<occ::handle<Message_Alert>>& Message_Report::GetAlerts(
+  Message_Gravity theGravity) const
 {
   static const NCollection_List<occ::handle<Message_Alert>> anEmptyList;
   if (myCompositAlerts.IsNull())
@@ -91,8 +94,7 @@ bool Message_Report::HasAlert(const occ::handle<Standard_Type>& theType)
 
 //=================================================================================================
 
-bool Message_Report::HasAlert(const occ::handle<Standard_Type>& theType,
-                                          Message_Gravity              theGravity)
+bool Message_Report::HasAlert(const occ::handle<Standard_Type>& theType, Message_Gravity theGravity)
 {
   if (compositeAlerts().IsNull())
   {
@@ -111,7 +113,7 @@ bool Message_Report::IsActiveInMessenger(const occ::handle<Message_Messenger>&) 
 
 //=================================================================================================
 
-void Message_Report::ActivateInMessenger(const bool           toActivate,
+void Message_Report::ActivateInMessenger(const bool                            toActivate,
                                          const occ::handle<Message_Messenger>& theMessenger)
 {
   if (toActivate == IsActiveInMessenger())
@@ -129,7 +131,9 @@ void Message_Report::ActivateInMessenger(const bool           toActivate,
   else // deactivate
   {
     NCollection_Sequence<occ::handle<Message_Printer>> aPrintersToRemove;
-    for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(aMessenger->Printers()); anIterator.More();
+    for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(
+           aMessenger->Printers());
+         anIterator.More();
          anIterator.Next())
     {
       const occ::handle<Message_Printer>& aPrinter = anIterator.Value();
@@ -137,7 +141,8 @@ void Message_Report::ActivateInMessenger(const bool           toActivate,
           && occ::down_cast<Message_PrinterToReport>(aPrinter)->Report() == this)
         aPrintersToRemove.Append(aPrinter);
     }
-    for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(aPrintersToRemove); anIterator.More();
+    for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(aPrintersToRemove);
+         anIterator.More();
          anIterator.Next())
     {
       aMessenger->RemovePrinter(anIterator.Value());
@@ -151,7 +156,9 @@ void Message_Report::UpdateActiveInMessenger(const occ::handle<Message_Messenger
 {
   occ::handle<Message_Messenger> aMessenger =
     theMessenger.IsNull() ? Message::DefaultMessenger() : theMessenger;
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(aMessenger->Printers()); anIterator.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(
+         aMessenger->Printers());
+       anIterator.More();
        anIterator.Next())
   {
     if (anIterator.Value()->IsKind(STANDARD_TYPE(Message_PrinterToReport))
@@ -266,8 +273,7 @@ void Message_Report::Clear(const occ::handle<Standard_Type>& theType)
 
 //=================================================================================================
 
-void Message_Report::SetActiveMetric(const Message_MetricType theMetricType,
-                                     const bool   theActivate)
+void Message_Report::SetActiveMetric(const Message_MetricType theMetricType, const bool theActivate)
 {
   if (theActivate == myActiveMetrics.Contains(theMetricType))
   {
@@ -324,7 +330,7 @@ void Message_Report::SendMessages(const occ::handle<Message_Messenger>& theMesse
 //=================================================================================================
 
 void Message_Report::SendMessages(const occ::handle<Message_Messenger>& theMessenger,
-                                  Message_Gravity                  theGravity)
+                                  Message_Gravity                       theGravity)
 {
   if (compositeAlerts().IsNull())
   {
@@ -348,7 +354,8 @@ void Message_Report::Merge(const occ::handle<Message_Report>& theOther)
 
 void Message_Report::Merge(const occ::handle<Message_Report>& theOther, Message_Gravity theGravity)
 {
-  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(theOther->GetAlerts(theGravity)); anIt.More();
+  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(theOther->GetAlerts(theGravity));
+       anIt.More();
        anIt.Next())
   {
     AddAlert(theGravity, anIt.Value());
@@ -357,8 +364,7 @@ void Message_Report::Merge(const occ::handle<Message_Report>& theOther, Message_
 
 //=================================================================================================
 
-const occ::handle<Message_CompositeAlerts>& Message_Report::compositeAlerts(
-  const bool isCreate)
+const occ::handle<Message_CompositeAlerts>& Message_Report::compositeAlerts(const bool isCreate)
 {
   if (myCompositAlerts.IsNull() && isCreate)
   {
@@ -371,7 +377,7 @@ const occ::handle<Message_CompositeAlerts>& Message_Report::compositeAlerts(
 //=================================================================================================
 
 void Message_Report::sendMessages(const occ::handle<Message_Messenger>&       theMessenger,
-                                  Message_Gravity                        theGravity,
+                                  Message_Gravity                             theGravity,
                                   const occ::handle<Message_CompositeAlerts>& theCompositeAlert)
 {
   if (theCompositeAlert.IsNull())
@@ -379,8 +385,10 @@ void Message_Report::sendMessages(const occ::handle<Message_Messenger>&       th
     return;
   }
 
-  const NCollection_List<occ::handle<Message_Alert>>& anAlerts = theCompositeAlert->Alerts(theGravity);
-  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
+  const NCollection_List<occ::handle<Message_Alert>>& anAlerts =
+    theCompositeAlert->Alerts(theGravity);
+  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(anAlerts); anIt.More();
+       anIt.Next())
   {
     theMessenger->Send(anIt.Value()->GetMessageKey(), theGravity);
     occ::handle<Message_AlertExtended> anExtendedAlert =
@@ -402,8 +410,8 @@ void Message_Report::sendMessages(const occ::handle<Message_Messenger>&       th
 
 //=================================================================================================
 
-void Message_Report::dumpMessages(Standard_OStream&                      theOS,
-                                  Message_Gravity                        theGravity,
+void Message_Report::dumpMessages(Standard_OStream&                           theOS,
+                                  Message_Gravity                             theGravity,
                                   const occ::handle<Message_CompositeAlerts>& theCompositeAlert)
 {
   if (theCompositeAlert.IsNull())
@@ -411,8 +419,10 @@ void Message_Report::dumpMessages(Standard_OStream&                      theOS,
     return;
   }
 
-  const NCollection_List<occ::handle<Message_Alert>>& anAlerts = theCompositeAlert->Alerts(theGravity);
-  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(anAlerts); anIt.More(); anIt.Next())
+  const NCollection_List<occ::handle<Message_Alert>>& anAlerts =
+    theCompositeAlert->Alerts(theGravity);
+  for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(anAlerts); anIt.More();
+       anIt.Next())
   {
     theOS << anIt.Value()->GetMessageKey() << std::endl;
 

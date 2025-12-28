@@ -70,15 +70,9 @@
 #include <ShapeConstruct_Curve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 
 //: 36
 // S3767
@@ -89,10 +83,10 @@
 //           Send corresponding messages. The function returns false
 //           if curve can not be created, true otherwise.
 //=======================================================================
-static bool checkBSplineCurve(IGESToBRep_BasicCurve*               theCurve,
-                                          const occ::handle<IGESGeom_BSplineCurve>& theBSplineCurve,
-                                          NCollection_Array1<double>&                CKnots,
-                                          const NCollection_Array1<double>&          CWeights)
+static bool checkBSplineCurve(IGESToBRep_BasicCurve*                    theCurve,
+                              const occ::handle<IGESGeom_BSplineCurve>& theBSplineCurve,
+                              NCollection_Array1<double>&               CKnots,
+                              const NCollection_Array1<double>&         CWeights)
 {
   // check whether difference between values of weights more than 1000.
   if (!theBSplineCurve->IsPolynomial())
@@ -147,12 +141,12 @@ IGESToBRep_BasicCurve::IGESToBRep_BasicCurve(const IGESToBRep_CurveAndSurface& C
 
 //=================================================================================================
 
-IGESToBRep_BasicCurve::IGESToBRep_BasicCurve(const double    eps,
-                                             const double    epsCoeff,
-                                             const double    epsGeom,
-                                             const bool mode,
-                                             const bool modeapprox,
-                                             const bool optimized)
+IGESToBRep_BasicCurve::IGESToBRep_BasicCurve(const double eps,
+                                             const double epsCoeff,
+                                             const double epsGeom,
+                                             const bool   mode,
+                                             const bool   modeapprox,
+                                             const bool   optimized)
     : IGESToBRep_CurveAndSurface(eps, epsCoeff, epsGeom, mode, modeapprox, optimized)
 {
 }
@@ -300,7 +294,8 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBasicCurve(
 // A,B,C,D,E,F are the coefficients recorded in IGES. a,b,c,d,e,f are used to
 // simplify the equations of conversion. They are already used in Euclid.
 
-occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(const occ::handle<IGESGeom_ConicArc>& st)
+occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(
+  const occ::handle<IGESGeom_ConicArc>& st)
 {
   occ::handle<Geom_Curve> res;
   if (st.IsNull())
@@ -324,8 +319,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(const occ::handl
 
   ZT = st->ZPlane();
 
-  gp_Pnt        center, startPoint, endPoint;
-  gp_Dir        mainAxis, normAxis;
+  gp_Pnt center, startPoint, endPoint;
+  gp_Dir mainAxis, normAxis;
   double minorRadius, majorRadius;
 
   if (!GetModeTransfer() && st->HasTransf())
@@ -345,7 +340,7 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(const occ::handl
     startPoint.SetCoord(st->StartPoint().X(), st->StartPoint().Y(), ZT);
     endPoint.SetCoord(st->EndPoint().X(), st->EndPoint().Y(), ZT);
   }
-  gp_Ax2        frame(center, normAxis, mainAxis);
+  gp_Ax2 frame(center, normAxis, mainAxis);
   double t1 = 0.0, t2 = 0.0;
   if (st->IsFromEllipse())
   {
@@ -477,7 +472,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferConicArc(const occ::handl
 // purpose  : Transfer 2d of a ConicArc to be used as a boundary of a Face
 //=======================================================================
 
-occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(const occ::handle<IGESGeom_ConicArc>& st)
+occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(
+  const occ::handle<IGESGeom_ConicArc>& st)
 {
   occ::handle<Geom2d_Curve> res;
   if (st.IsNull())
@@ -498,10 +494,10 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(const occ::h
   // Conic = ax2+bxy+cy2+dx+ey+f=0.
   st->Equation(a, b, c, d, e, f);
 
-  gp_Pnt        center3d;
-  gp_Dir        mainAxis3d;
-  gp_Pnt2d      startPoint, endPoint;
-  double minorRadius, majorRadius;
+  gp_Pnt   center3d;
+  gp_Dir   mainAxis3d;
+  gp_Pnt2d startPoint, endPoint;
+  double   minorRadius, majorRadius;
 
   SetEpsilon(1.E-03);
   if (!st->TransformedAxis().IsParallel /*#45 rln 23.11.98 IsEqual*/ (st->Axis(), GetEpsilon()))
@@ -526,10 +522,10 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dConicArc(const occ::h
     endPoint   = st->EndPoint();
   }
 
-  gp_Pnt2d      center(center3d.X(), center3d.Y());
-  gp_Dir2d      mainAxis(mainAxis3d.X(), mainAxis3d.Y());
-  gp_Ax2d       frame(center, mainAxis);
-  double t1 = 0.0, t2 = 0.0;
+  gp_Pnt2d center(center3d.X(), center3d.Y());
+  gp_Dir2d mainAxis(mainAxis3d.X(), mainAxis3d.Y());
+  gp_Ax2d  frame(center, mainAxis);
+  double   t1 = 0.0, t2 = 0.0;
   if (st->IsFromEllipse())
   {
 
@@ -903,9 +899,9 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dSplineCurve(
   int nbPoles = res3d->NbPoles();
   int nbKnots = res3d->NbKnots();
 
-  NCollection_Array1<gp_Pnt2d>    bspoles2d(1, nbPoles);
-  NCollection_Array1<double>    knots(1, nbKnots);
-  NCollection_Array1<int> multi(1, nbKnots);
+  NCollection_Array1<gp_Pnt2d> bspoles2d(1, nbPoles);
+  NCollection_Array1<double>   knots(1, nbKnots);
+  NCollection_Array1<int>      multi(1, nbKnots);
 
   res3d->Knots(knots);
   res3d->Multiplicities(multi);
@@ -958,8 +954,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   }
 
   NCollection_Array1<gp_Pnt> Pole(1, NbPoles);
-  int   PoleIndex = Pole.Lower();
-  int   i; // szv#4:S4163:12Mar99 j unused
+  int                        PoleIndex = Pole.Lower();
+  int                        i; // szv#4:S4163:12Mar99 j unused
 
   if (!GetModeTransfer() && start->HasTransf())
     for (i = 0; i <= start->UpperIndex(); i++)
@@ -971,9 +967,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   //  Filling knots & multiplicities arrays :
   //  ========================================
 
-  int        NbKnots = start->NbKnots();
-  NCollection_Array1<double>    TempKnot(1, NbKnots);
-  NCollection_Array1<int> TempMult(1, NbKnots);
+  int                        NbKnots = start->NbKnots();
+  NCollection_Array1<double> TempKnot(1, NbKnots);
+  NCollection_Array1<int>    TempMult(1, NbKnots);
   TempMult.Init(1);
   int KnotIndex = TempKnot.Lower();
 
@@ -1000,21 +996,21 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   //  filled
   //  =======================================================================
 
-  NCollection_Array1<double>    Knot(1, KnotIndex);
-  NCollection_Array1<int> Mult(1, KnotIndex);
+  NCollection_Array1<double> Knot(1, KnotIndex);
+  NCollection_Array1<int>    Mult(1, KnotIndex);
 
   int SumOfMult = 0;
 
   NCollection_Sequence<int> SeqIndex;
-  int          DelIndex;
-  int          OldSumOfMult = 0;
+  int                       DelIndex;
+  int                       OldSumOfMult = 0;
   for (i = 1; i <= KnotIndex; i++)
   { //: k5 abv 25 Dec 98: cycle modified
     int aMult   = TempMult.Value(i);
     int maxMult = (i == 1 || i == KnotIndex ? Degree + 1 : Degree);
     if (aMult > maxMult)
     {
-      Message_Msg            msg1200("IGES_1200"); // #61 rln 05.01.99
+      Message_Msg msg1200("IGES_1200"); // #61 rln 05.01.99
       const char* vide("");
       msg1200.Arg(vide);
       msg1200.Arg(vide);
@@ -1033,8 +1029,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   }
 
   // Update of the poles array during multiplicity correction
-  NCollection_Array1<gp_Pnt>        Poles(1, newNbPoles);
-  NCollection_Sequence<int> PoleInd;
+  NCollection_Array1<gp_Pnt> Poles(1, newNbPoles);
+  NCollection_Sequence<int>  PoleInd;
 
   if (newNbPoles < NbPoles)
   {
@@ -1068,7 +1064,7 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
 
   if (!(SumOfMult == newNbPoles + Degree + 1))
   {
-    Message_Msg            msg1210("IGES_1210");
+    Message_Msg msg1210("IGES_1210");
     const char* vide("");
     msg1210.Arg(vide);
     msg1210.Arg(vide);
@@ -1088,9 +1084,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
   else
   {
     NCollection_Array1<double> PoleWeight(1, NbPoles);
-    bool     polynomial      = true;
-    double        WeightReference = start->Weight(0);
-    int     WeightIndex     = PoleWeight.Lower();
+    bool                       polynomial      = true;
+    double                     WeightReference = start->Weight(0);
+    int                        WeightIndex     = PoleWeight.Lower();
 
     for (i = 0; i <= start->UpperIndex(); i++)
     {
@@ -1189,7 +1185,7 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     catch (Standard_Failure const&)
     {
       occ::handle<Geom_TrimmedCurve> gtc = new Geom_TrimmedCurve(BSplineRes2, Udeb, Ufin);
-      res                           = gtc;
+      res                                = gtc;
     }
   }
   else
@@ -1213,8 +1209,8 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
 
   occ::handle<Geom2d_BSplineCurve> BSplineC;
   occ::handle<Geom_BSplineCurve>   Bspline;
-  bool            IsTrimmed = false;
-  double               Deb = 0., Fin = 0.;
+  bool                             IsTrimmed = false;
+  double                           Deb = 0., Fin = 0.;
 
   //  3d transfer first :
   //  ===================
@@ -1231,9 +1227,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
   {
     DeclareAndCast(Geom_TrimmedCurve, TrimC, res3d);
     occ::handle<Geom_Curve> BasicCurve = TrimC->BasisCurve();
-    Deb                           = TrimC->FirstParameter();
-    Fin                           = TrimC->LastParameter();
-    IsTrimmed                     = true;
+    Deb                                = TrimC->FirstParameter();
+    Fin                                = TrimC->LastParameter();
+    IsTrimmed                          = true;
     if (BasicCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
     {
       DeclareAndCast(Geom_BSplineCurve, BSpline, BasicCurve);
@@ -1253,7 +1249,7 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
   //  Creating 2d poles :
   //  ===================
 
-  int     NbPoles = Bspline->NbPoles();
+  int                          NbPoles = Bspline->NbPoles();
   NCollection_Array1<gp_Pnt2d> Pole(1, NbPoles);
 
   for (int i = 1; i <= NbPoles; i++)
@@ -1290,7 +1286,7 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
   if (IsTrimmed)
   {
     occ::handle<Geom2d_TrimmedCurve> TC = new Geom2d_TrimmedCurve(BSplineC, Deb, Fin, true);
-    res                            = TC;
+    res                                 = TC;
   }
 
   return res;
@@ -1325,9 +1321,9 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferLine(const occ::handle<IG
   // many points confused at GetEpsGeom()*GetUnitFactor()
   if (!Ps.IsEqual(Pe, Precision::Confusion()))
   { //: l3 abv 11 Jan 99: GetEpsGeom()*GetUnitFactor()/10.)) {
-    gp_Lin            line(Ps, gp_Dir(gp_Vec(Ps, Pe)));
-    double     t1    = ElCLib::Parameter(line, Ps);
-    double     t2    = ElCLib::Parameter(line, Pe);
+    gp_Lin                 line(Ps, gp_Dir(gp_Vec(Ps, Pe)));
+    double                 t1    = ElCLib::Parameter(line, Ps);
+    double                 t2    = ElCLib::Parameter(line, Pe);
     occ::handle<Geom_Line> Gline = new Geom_Line(line);
     if (Precision::IsNegativeInfinite(t1))
       t1 = -Precision::Infinite();
@@ -1347,7 +1343,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferLine(const occ::handle<IG
 
 //=================================================================================================
 
-occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dLine(const occ::handle<IGESGeom_Line>& start)
+occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dLine(
+  const occ::handle<IGESGeom_Line>& start)
 {
   occ::handle<Geom2d_Curve> res;
   if (start.IsNull())
@@ -1372,9 +1369,9 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dLine(const occ::handl
 
   if (!beg.IsEqual(end, Precision::PConfusion()))
   { //: l3 abv 11 Jan 99: GetEpsCoeff())) {
-    gp_Lin2d            line2d(beg, gp_Dir2d(gp_Vec2d(beg, end)));
-    double       t1      = ElCLib::Parameter(line2d, beg);
-    double       t2      = ElCLib::Parameter(line2d, end);
+    gp_Lin2d                 line2d(beg, gp_Dir2d(gp_Vec2d(beg, end)));
+    double                   t1      = ElCLib::Parameter(line2d, beg);
+    double                   t2      = ElCLib::Parameter(line2d, end);
     occ::handle<Geom2d_Line> Gline2d = new Geom2d_Line(line2d);
     if (Precision::IsNegativeInfinite(t1))
       t1 = -Precision::Infinite();
@@ -1452,7 +1449,7 @@ occ::handle<Geom_BSplineCurve> IGESToBRep_BasicCurve::TransferCopiousData(
   //  ========================
 
   NCollection_Array1<gp_Pnt> TempPole(1, NbPoints);
-  int   TempIndex = TempPole.Lower();
+  int                        TempIndex = TempPole.Lower();
 
   if (!GetModeTransfer() && start->HasTransf())
   {
@@ -1505,8 +1502,8 @@ occ::handle<Geom_BSplineCurve> IGESToBRep_BasicCurve::TransferCopiousData(
 
   for (i = Knot.Lower() + 1; i <= Knot.Upper(); i++)
   {
-    gp_Pnt        Pole1    = Pole.Value(i);
-    gp_Pnt        Pole2    = Pole.Value(i - 1);
+    gp_Pnt Pole1    = Pole.Value(i);
+    gp_Pnt Pole2    = Pole.Value(i - 1);
     double KnotDist = Pole1.Distance(Pole2);
     Knot.SetValue(i, Knot.Value(i - 1) + KnotDist);
   }
@@ -1562,7 +1559,7 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
   //  ========================
 
   NCollection_Array1<gp_Pnt2d> TempPole(1, NbPoints);
-  int     TempIndex = TempPole.Lower();
+  int                          TempIndex = TempPole.Lower();
 
   if (!GetModeTransfer() && start->HasTransf())
     TempPole.SetValue(TempIndex,
@@ -1610,9 +1607,9 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dCopiousData(
 
   for (i = Knot.Lower() + 1; i <= Knot.Upper(); i++)
   {
-    gp_Pnt2d      Pole1    = Pole.Value(i);
-    gp_Pnt2d      Pole2    = Pole.Value(i - 1);
-    double KnotDist = Pole1.Distance(Pole2);
+    gp_Pnt2d Pole1    = Pole.Value(i);
+    gp_Pnt2d Pole2    = Pole.Value(i - 1);
+    double   KnotDist = Pole1.Distance(Pole2);
     Knot.SetValue(i, Knot.Value(i - 1) + KnotDist);
   }
 

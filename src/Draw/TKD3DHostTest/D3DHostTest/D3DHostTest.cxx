@@ -20,7 +20,8 @@
 
 void D3DHostTest::Factory(Draw_Interpretor&)
 {
-  static const occ::handle<D3DHost_GraphicDriverFactory> aFactory = new D3DHost_GraphicDriverFactory();
+  static const occ::handle<D3DHost_GraphicDriverFactory> aFactory =
+    new D3DHost_GraphicDriverFactory();
   Graphic3d_GraphicDriverFactory::RegisterFactory(aFactory);
 #ifdef DEB
   theDI << "Draw Plugin : D3DHost commands are loaded.\n";

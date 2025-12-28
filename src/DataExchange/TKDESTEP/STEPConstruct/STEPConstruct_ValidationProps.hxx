@@ -58,19 +58,19 @@ public:
   //! It uses FindTarget() to find target STEP entity
   //! resulting from given shape, and associated context
   //! Returns True if success, False in case of fail
-  Standard_EXPORT bool AddProp(const TopoDS_Shape&                        Shape,
-                                           const occ::handle<StepRepr_RepresentationItem>& Prop,
-                                           const char*                     Descr,
-                                           const bool instance = false);
+  Standard_EXPORT bool AddProp(const TopoDS_Shape&                             Shape,
+                               const occ::handle<StepRepr_RepresentationItem>& Prop,
+                               const char*                                     Descr,
+                               const bool                                      instance = false);
 
   //! General method for adding (writing) a validation property
   //! for shape which should be already mapped on writing itself.
   //! It takes target and Context entities which correspond to shape
   //! Returns True if success, False in case of fail
-  Standard_EXPORT bool AddProp(const StepRepr_CharacterizedDefinition&       target,
-                                           const occ::handle<StepRepr_RepresentationContext>& Context,
-                                           const occ::handle<StepRepr_RepresentationItem>&    Prop,
-                                           const char*                        Descr);
+  Standard_EXPORT bool AddProp(const StepRepr_CharacterizedDefinition&            target,
+                               const occ::handle<StepRepr_RepresentationContext>& Context,
+                               const occ::handle<StepRepr_RepresentationItem>&    Prop,
+                               const char*                                        Descr);
 
   //! Adds surface area property for given shape (already mapped).
   //! Returns True if success, False in case of fail
@@ -84,17 +84,17 @@ public:
   //! Returns True if success, False in case of fail
   //! If instance is True, then centroid is assigned to
   //! an instance of component in assembly
-  Standard_EXPORT bool AddCentroid(const TopoDS_Shape&    Shape,
-                                               const gp_Pnt&          Pnt,
-                                               const bool instance = false);
+  Standard_EXPORT bool AddCentroid(const TopoDS_Shape& Shape,
+                                   const gp_Pnt&       Pnt,
+                                   const bool          instance = false);
 
   //! Finds target STEP entity to which validation props should
   //! be assigned, and corresponding context, starting from shape
   //! Returns True if success, False in case of fail
-  Standard_EXPORT bool FindTarget(const TopoDS_Shape&                     S,
-                                              StepRepr_CharacterizedDefinition&       target,
-                                              occ::handle<StepRepr_RepresentationContext>& Context,
-                                              const bool instance = false);
+  Standard_EXPORT bool FindTarget(const TopoDS_Shape&                          S,
+                                  StepRepr_CharacterizedDefinition&            target,
+                                  occ::handle<StepRepr_RepresentationContext>& Context,
+                                  const bool                                   instance = false);
 
   //! Searches for entities of the type PropertyDefinitionRepresentation
   //! in the model and fills the sequence by them
@@ -117,31 +117,32 @@ public:
 
   //! Returns Shape associated with given PpD or Null Shape
   //! if not found
-  Standard_EXPORT TopoDS_Shape GetPropShape(const occ::handle<StepRepr_PropertyDefinition>& PD) const;
+  Standard_EXPORT TopoDS_Shape
+    GetPropShape(const occ::handle<StepRepr_PropertyDefinition>& PD) const;
 
   //! Returns value of Real-Valued property (Area or Volume)
   //! If Property is neither Area nor Volume, returns False
   //! Else returns True and isArea indicates whether property
   //! is area or volume
-  Standard_EXPORT bool
-    GetPropReal(const occ::handle<StepRepr_RepresentationItem>& item,
-                double&                             Val,
-                bool&                          isArea,
-                const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetPropReal(
+    const occ::handle<StepRepr_RepresentationItem>& item,
+    double&                                         Val,
+    bool&                                           isArea,
+    const StepData_Factors&                         theLocalFactors = StepData_Factors()) const;
 
   //! Returns value of Centroid property (or False if it is not)
-  Standard_EXPORT bool
-    GetPropPnt(const occ::handle<StepRepr_RepresentationItem>&    item,
-               const occ::handle<StepRepr_RepresentationContext>& Context,
-               gp_Pnt&                                       Pnt,
-               const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+  Standard_EXPORT bool GetPropPnt(
+    const occ::handle<StepRepr_RepresentationItem>&    item,
+    const occ::handle<StepRepr_RepresentationContext>& Context,
+    gp_Pnt&                                            Pnt,
+    const StepData_Factors&                            theLocalFactors = StepData_Factors()) const;
 
   //! Sets current assembly shape SDR (for FindCDSR calls)
   Standard_EXPORT void SetAssemblyShape(const TopoDS_Shape& shape);
 
 private:
-  StepBasic_Unit                      areaUnit;
-  StepBasic_Unit                      volUnit;
+  StepBasic_Unit                           areaUnit;
+  StepBasic_Unit                           volUnit;
   occ::handle<StepBasic_ProductDefinition> myAssemblyPD;
 };
 

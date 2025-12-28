@@ -101,9 +101,9 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
 
   myTypePerform = 1;
 
-  gp_Pnt2d           pa, pb; //,pa1,pb1;
-  double             a, b, d, tol;
-  float ta, tb;
+  gp_Pnt2d pa, pb; //,pa1,pb1;
+  double   a, b, d, tol;
+  float    ta, tb;
 
   theEdge1->Status().Bounds(a, ta, b, tb);
   d = b - a;
@@ -148,10 +148,10 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
 
   myTypePerform = 1;
 
-  gp_Pnt2d           pa1, pb1, pa2, pb2;
-  gp_Vec2d           va1, vb1, va2, vb2;
-  double             a1, b1, a2, b2, d, dd, tol, tol1, tol2;
-  float ta, tb;
+  gp_Pnt2d pa1, pb1, pa2, pb2;
+  gp_Vec2d va1, vb1, va2, vb2;
+  double   a1, b1, a2, b2, d, dd, tol, tol1, tol2;
+  float    ta, tb;
 
   // modified by jgv, 18.04.2016 for OCC27341
   // tol1 = theEdge1->Tolerance();
@@ -649,8 +649,7 @@ const IntRes2d_IntersectionPoint& HLRBRep_Intersector::Point(const int N) const
 
 //=================================================================================================
 
-const IntCurveSurface_IntersectionPoint& HLRBRep_Intersector::CSPoint(
-  const int N) const
+const IntCurveSurface_IntersectionPoint& HLRBRep_Intersector::CSPoint(const int N) const
 {
   return myCSIntersector.Point(N);
 }
@@ -676,8 +675,7 @@ const IntRes2d_IntersectionSegment& HLRBRep_Intersector::Segment(const int N) co
 
 //=================================================================================================
 
-const IntCurveSurface_IntersectionSegment& HLRBRep_Intersector::CSSegment(
-  const int N) const
+const IntCurveSurface_IntersectionSegment& HLRBRep_Intersector::CSSegment(const int N) const
 {
   return myCSIntersector.Segment(N);
 }

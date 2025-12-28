@@ -37,10 +37,10 @@ DEOBJ_Provider::DEOBJ_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
+bool DEOBJ_Provider::Read(const TCollection_AsciiString&       thePath,
                           const occ::handle<TDocStd_Document>& theDocument,
                           occ::handle<XSControl_WorkSession>&  theWS,
-                          const Message_ProgressRange&    theProgress)
+                          const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Read(thePath, theDocument, theProgress);
@@ -48,10 +48,10 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Write(const TCollection_AsciiString&  thePath,
+bool DEOBJ_Provider::Write(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&    theProgress)
+                           const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -59,9 +59,9 @@ bool DEOBJ_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
+bool DEOBJ_Provider::Read(const TCollection_AsciiString&       thePath,
                           const occ::handle<TDocStd_Document>& theDocument,
-                          const Message_ProgressRange&    theProgress)
+                          const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
@@ -75,7 +75,7 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
     return false;
   }
   occ::handle<DEOBJ_ConfigurationNode> aNode = occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
-  RWObj_CafReader                 aReader;
+  RWObj_CafReader                      aReader;
   aReader.SetSinglePrecision(aNode->InternalParameters.ReadSinglePrecision);
   aReader.SetSystemLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
   aReader.SetSystemCoordinateSystem(aNode->InternalParameters.SystemCS);
@@ -98,9 +98,9 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Write(const TCollection_AsciiString&  thePath,
+bool DEOBJ_Provider::Write(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&    theProgress)
+                           const Message_ProgressRange&         theProgress)
 {
   if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEOBJ_ConfigurationNode)))
   {
@@ -121,7 +121,7 @@ bool DEOBJ_Provider::Write(const TCollection_AsciiString&  thePath,
   }
 
   RWMesh_CoordinateSystemConverter aConverter;
-  double                    aScaleFactorMM = 1.;
+  double                           aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
                                           UnitsMethods_LengthUnit_Millimeter))
@@ -152,10 +152,10 @@ bool DEOBJ_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Read(const TCollection_AsciiString& thePath,
-                          TopoDS_Shape&                  theShape,
+bool DEOBJ_Provider::Read(const TCollection_AsciiString&      thePath,
+                          TopoDS_Shape&                       theShape,
                           occ::handle<XSControl_WorkSession>& theWS,
-                          const Message_ProgressRange&   theProgress)
+                          const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Read(thePath, theShape, theProgress);
@@ -163,10 +163,10 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DEOBJ_Provider::Write(const TCollection_AsciiString& thePath,
-                           const TopoDS_Shape&            theShape,
+bool DEOBJ_Provider::Write(const TCollection_AsciiString&      thePath,
+                           const TopoDS_Shape&                 theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&   theProgress)
+                           const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);
@@ -184,8 +184,8 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString& thePath,
                         << thePath << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  occ::handle<DEOBJ_ConfigurationNode>  aNode = occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
-  RWMesh_CoordinateSystemConverter aConverter;
+  occ::handle<DEOBJ_ConfigurationNode> aNode = occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
+  RWMesh_CoordinateSystemConverter     aConverter;
   aConverter.SetOutputLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
   aConverter.SetOutputCoordinateSystem(aNode->InternalParameters.SystemCS);
   aConverter.SetInputLengthUnit(aNode->InternalParameters.FileLengthUnit);
@@ -204,8 +204,8 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   occ::handle<Poly_Triangulation> aTriangulation = aSimpleReader.GetTriangulation();
-  TopoDS_Face                aFace;
-  BRep_Builder               aBuiler;
+  TopoDS_Face                     aFace;
+  BRep_Builder                    aBuiler;
   aBuiler.MakeFace(aFace);
   aBuiler.UpdateFace(aFace, aTriangulation);
   theShape = aFace;

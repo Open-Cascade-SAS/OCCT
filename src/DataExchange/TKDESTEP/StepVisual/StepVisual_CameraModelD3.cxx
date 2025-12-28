@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3, StepVisual_CameraModel)
 
 StepVisual_CameraModelD3::StepVisual_CameraModelD3() {}
 
-void StepVisual_CameraModelD3::Init(const occ::handle<TCollection_HAsciiString>&  aName,
-                                    const occ::handle<StepGeom_Axis2Placement3d>& aViewReferenceSystem,
-                                    const occ::handle<StepVisual_ViewVolume>&     aPerspectiveOfVolume)
+void StepVisual_CameraModelD3::Init(
+  const occ::handle<TCollection_HAsciiString>&  aName,
+  const occ::handle<StepGeom_Axis2Placement3d>& aViewReferenceSystem,
+  const occ::handle<StepVisual_ViewVolume>&     aPerspectiveOfVolume)
 {
   // --- classe own fields ---
   viewReferenceSystem = aViewReferenceSystem;

@@ -51,7 +51,6 @@ public:
 
   //! returns Value as a DateAndTime (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_DateAndTime> DateAndTime() const;
-
 };
 
 #endif // _StepBasic_DateTimeSelect_HeaderFile

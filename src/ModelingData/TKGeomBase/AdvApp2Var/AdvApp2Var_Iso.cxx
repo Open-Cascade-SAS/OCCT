@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
@@ -50,15 +48,15 @@ AdvApp2Var_Iso::AdvApp2Var_Iso()
 
 //=================================================================================================
 
-AdvApp2Var_Iso::AdvApp2Var_Iso(const GeomAbs_IsoType  type,
-                               const double    cte,
-                               const double    Ufirst,
-                               const double    Ulast,
-                               const double    Vfirst,
-                               const double    Vlast,
-                               const int pos,
-                               const int iu,
-                               const int iv)
+AdvApp2Var_Iso::AdvApp2Var_Iso(const GeomAbs_IsoType type,
+                               const double          cte,
+                               const double          Ufirst,
+                               const double          Ulast,
+                               const double          Vfirst,
+                               const double          Vlast,
+                               const int             pos,
+                               const int             iu,
+                               const int             iv)
     : myType(type),
       myConstPar(cte),
       myU0(Ufirst),
@@ -99,10 +97,10 @@ bool AdvApp2Var_Iso::HasResult() const
 //=================================================================================================
 
 void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
-                                const double                 U0,
-                                const double                 U1,
-                                const double                 V0,
-                                const double                 V1,
+                                const double                        U0,
+                                const double                        U1,
+                                const double                        V0,
+                                const double                        V1,
                                 const AdvApp2Var_EvaluatorFunc2Var& Func,
                                 AdvApp2Var_Node&                    NodeBegin,
                                 AdvApp2Var_Node&                    NodeEnd)
@@ -123,15 +121,15 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
   UVFONC[3] = V1;
 
   // data related to the processed iso
-  int IORDRE = myExtremOrder, IDERIV = myDerivOrder;
-  double    TCONST = myConstPar;
+  int    IORDRE = myExtremOrder, IDERIV = myDerivOrder;
+  double TCONST = myConstPar;
 
   // data related to the type of the iso
-  int              ISOFAV = 0, NBROOT = 0, NDGJAC = 0, NCFLIM = 1;
-  double                 TABDEC[2];
+  int                                      ISOFAV = 0, NBROOT = 0, NDGJAC = 0, NCFLIM = 1;
+  double                                   TABDEC[2];
   occ::handle<NCollection_HArray1<double>> HUROOT = Conditions.URoots();
   occ::handle<NCollection_HArray1<double>> HVROOT = Conditions.VRoots();
-  double*                ROOTLG = NULL;
+  double*                                  ROOTLG = NULL;
   switch (myType)
   {
     case GeomAbs_IsoV:
@@ -171,7 +169,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
 
   // data relative to the position of iso (front or cut line)
   occ::handle<NCollection_HArray1<double>> HEPSAPR = new NCollection_HArray1<double>(1, NBSESP);
-  int              iesp;
+  int                                      iesp;
   switch (myPosition)
   {
     case 0:
@@ -208,24 +206,31 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
   double* EPSAPR = (double*)&HEPSAPR->ChangeArray1()(HEPSAPR->Lower());
 
   // the tables of approximations
-  int              SZCRB   = NDIMEN * NCFLIM;
-  occ::handle<NCollection_HArray1<double>> HCOURBE = new NCollection_HArray1<double>(1, SZCRB * (IDERIV + 1));
-  double*                COURBE = (double*)&HCOURBE->ChangeArray1()(HCOURBE->Lower());
-  double*                CRBAPP = COURBE;
-  int              SZTAB  = (1 + NBROOT / 2) * NDIMEN;
-  occ::handle<NCollection_HArray1<double>> HSOMTAB = new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
-  double*                SOMTAB = (double*)&HSOMTAB->ChangeArray1()(HSOMTAB->Lower());
-  double*                SOMAPP = SOMTAB;
-  occ::handle<NCollection_HArray1<double>> HDIFTAB = new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
-  double*                DIFTAB = (double*)&HDIFTAB->ChangeArray1()(HDIFTAB->Lower());
-  double*                DIFAPP = DIFTAB;
-  occ::handle<NCollection_HArray1<double>> HCONTR1 = new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
-  double*                CONTR1 = (double*)&HCONTR1->ChangeArray1()(HCONTR1->Lower());
-  occ::handle<NCollection_HArray1<double>> HCONTR2 = new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
-  double*                CONTR2 = (double*)&HCONTR2->ChangeArray1()(HCONTR2->Lower());
-  occ::handle<NCollection_HArray2<double>> HERRMAX = new NCollection_HArray2<double>(1, NBSESP, 1, IDERIV + 1);
-  double*                EMXAPP  = new double[NBSESP];
-  occ::handle<NCollection_HArray2<double>> HERRMOY = new NCollection_HArray2<double>(1, NBSESP, 1, IDERIV + 1);
+  int                                      SZCRB = NDIMEN * NCFLIM;
+  occ::handle<NCollection_HArray1<double>> HCOURBE =
+    new NCollection_HArray1<double>(1, SZCRB * (IDERIV + 1));
+  double* COURBE = (double*)&HCOURBE->ChangeArray1()(HCOURBE->Lower());
+  double* CRBAPP = COURBE;
+  int     SZTAB  = (1 + NBROOT / 2) * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HSOMTAB =
+    new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
+  double* SOMTAB = (double*)&HSOMTAB->ChangeArray1()(HSOMTAB->Lower());
+  double* SOMAPP = SOMTAB;
+  occ::handle<NCollection_HArray1<double>> HDIFTAB =
+    new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
+  double* DIFTAB = (double*)&HDIFTAB->ChangeArray1()(HDIFTAB->Lower());
+  double* DIFAPP = DIFTAB;
+  occ::handle<NCollection_HArray1<double>> HCONTR1 =
+    new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
+  double* CONTR1 = (double*)&HCONTR1->ChangeArray1()(HCONTR1->Lower());
+  occ::handle<NCollection_HArray1<double>> HCONTR2 =
+    new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
+  double* CONTR2 = (double*)&HCONTR2->ChangeArray1()(HCONTR2->Lower());
+  occ::handle<NCollection_HArray2<double>> HERRMAX =
+    new NCollection_HArray2<double>(1, NBSESP, 1, IDERIV + 1);
+  double*                                  EMXAPP = new double[NBSESP];
+  occ::handle<NCollection_HArray2<double>> HERRMOY =
+    new NCollection_HArray2<double>(1, NBSESP, 1, IDERIV + 1);
   // #ifdef OCCT_DEBUG
   // double *ERRMOY =
   // #endif
@@ -373,10 +378,7 @@ void AdvApp2Var_Iso::ChangeDomain(const double a, const double b)
 
 //=================================================================================================
 
-void AdvApp2Var_Iso::ChangeDomain(const double a,
-                                  const double b,
-                                  const double c,
-                                  const double d)
+void AdvApp2Var_Iso::ChangeDomain(const double a, const double b, const double c, const double d)
 {
   myU0 = a;
   myU1 = b;

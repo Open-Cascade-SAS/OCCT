@@ -39,10 +39,10 @@ TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF() {}
 //=================================================================================================
 
 TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const occ::handle<Geom2d_Curve>& PC,
-                                         const double         f2d,
-                                         const double         l2d,
-                                         const double         tol,
-                                         const TopoDS_Face&          F)
+                                         const double                     f2d,
+                                         const double                     l2d,
+                                         const double                     tol,
+                                         const TopoDS_Face&               F)
 {
   myPC   = PC;
   myf2d  = f2d;
@@ -54,9 +54,9 @@ TopOpeBRepTool_C2DF::TopOpeBRepTool_C2DF(const occ::handle<Geom2d_Curve>& PC,
 //=================================================================================================
 
 void TopOpeBRepTool_C2DF::SetPC(const occ::handle<Geom2d_Curve>& PC,
-                                const double         f2d,
-                                const double         l2d,
-                                const double         tol)
+                                const double                     f2d,
+                                const double                     l2d,
+                                const double                     tol)
 {
   myPC  = PC;
   myf2d = f2d;
@@ -74,8 +74,8 @@ void TopOpeBRepTool_C2DF::SetFace(const TopoDS_Face& F)
 //=================================================================================================
 
 const occ::handle<Geom2d_Curve>& TopOpeBRepTool_C2DF::PC(double& f2d,
-                                                    double& l2d,
-                                                    double& tol) const
+                                                         double& l2d,
+                                                         double& tol) const
 {
   f2d = myf2d;
   l2d = myl2d;

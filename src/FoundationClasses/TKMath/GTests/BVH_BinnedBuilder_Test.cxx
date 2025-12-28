@@ -35,9 +35,8 @@ TEST(BVH_BinnedBuilderTest, CustomParameters)
 
 TEST(BVH_BinnedBuilderTest, BuildEmptySet)
 {
-  opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder =
-    new BVH_BinnedBuilder<double, 3>();
-  BVH_BoxSet<double, 3> aBoxSet(aBuilder);
+  opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder = new BVH_BinnedBuilder<double, 3>();
+  BVH_BoxSet<double, 3>                             aBoxSet(aBuilder);
 
   aBoxSet.Build();
 
@@ -47,9 +46,8 @@ TEST(BVH_BinnedBuilderTest, BuildEmptySet)
 
 TEST(BVH_BinnedBuilderTest, BuildSingleElement)
 {
-  opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder =
-    new BVH_BinnedBuilder<double, 3>();
-  BVH_BoxSet<double, 3> aBoxSet(aBuilder);
+  opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder = new BVH_BinnedBuilder<double, 3>();
+  BVH_BoxSet<double, 3>                             aBoxSet(aBuilder);
 
   aBoxSet.Add(0, BVH_Box<double, 3>(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0)));
   aBoxSet.Build();
@@ -68,8 +66,7 @@ TEST(BVH_BinnedBuilderTest, BuildMultipleElements)
   // Add boxes along X axis
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
-                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -90,15 +87,14 @@ TEST(BVH_BinnedBuilderTest, SAHOptimization)
   // Two clusters: one near origin, one far away
   for (int i = 0; i < 5; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.1, 0.0, 0.0),
-                                   BVH_Vec3d(i * 0.1 + 0.1, 0.1, 0.1));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.1, 0.0, 0.0), BVH_Vec3d(i * 0.1 + 0.1, 0.1, 0.1));
     aBoxSet.Add(i, aBox);
   }
 
   for (int i = 0; i < 5; ++i)
   {
     BVH_Box<double, 3> aBox(BVH_Vec3d(100.0 + i * 0.1, 0.0, 0.0),
-                                   BVH_Vec3d(100.0 + i * 0.1 + 0.1, 0.1, 0.1));
+                            BVH_Vec3d(100.0 + i * 0.1 + 0.1, 0.1, 0.1));
     aBoxSet.Add(i + 5, aBox);
   }
 
@@ -113,15 +109,14 @@ TEST(BVH_BinnedBuilderTest, SAHOptimization)
 
 TEST(BVH_BinnedBuilderTest, LeafNodeSizeRespected)
 {
-  const int                                                aLeafSize = 3;
+  const int                                         aLeafSize = 3;
   opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder =
     new BVH_BinnedBuilder<double, 3>(aLeafSize, 32);
   BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
-                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -149,8 +144,7 @@ TEST(BVH_BinnedBuilderTest, BuildWithDifferentBinCounts)
 
   for (int i = 0; i < 20; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 1.0, 0.0, 0.0),
-                                   BVH_Vec3d(i * 1.0 + 0.5, 0.5, 0.5));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 1.0, 0.0, 0.0), BVH_Vec3d(i * 1.0 + 0.5, 0.5, 0.5));
     aBoxSet.Add(i, aBox);
   }
 
@@ -195,7 +189,7 @@ TEST(BVH_BinnedBuilderTest, RandomDistribution)
       for (int z = 0; z < 5; ++z)
       {
         BVH_Box<double, 3> aBox(BVH_Vec3d(x * 2.0, y * 2.0, z * 2.0),
-                                       BVH_Vec3d(x * 2.0 + 1.0, y * 2.0 + 1.0, z * 2.0 + 1.0));
+                                BVH_Vec3d(x * 2.0 + 1.0, y * 2.0 + 1.0, z * 2.0 + 1.0));
         aBoxSet.Add(aCount++, aBox);
       }
     }
@@ -231,8 +225,7 @@ TEST(BVH_BinnedBuilderTest, CompareTreeQuality)
 
   for (int i = 0; i < 50; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
-                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet1.Add(i, aBox);
     aBoxSet4.Add(i, aBox);
   }
@@ -249,15 +242,14 @@ TEST(BVH_BinnedBuilderTest, CompareTreeQuality)
 
 TEST(BVH_BinnedBuilderTest, MaxDepthRespected)
 {
-  const int                                                aMaxDepth = 5;
+  const int                                         aMaxDepth = 5;
   opencascade::handle<BVH_BinnedBuilder<double, 3>> aBuilder =
     new BVH_BinnedBuilder<double, 3>(1, aMaxDepth);
   BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   for (int i = 0; i < 100; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
-                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -276,8 +268,7 @@ TEST(BVH_BinnedBuilderTest, OverlappingBoxes)
   // Add overlapping boxes
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.5, 0.0, 0.0),
-                                   BVH_Vec3d(i * 0.5 + 2.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.5, 0.0, 0.0), BVH_Vec3d(i * 0.5 + 2.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 

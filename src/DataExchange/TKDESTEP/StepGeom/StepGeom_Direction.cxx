@@ -18,8 +18,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Direction, StepGeom_GeometricRepresentationI
 
 StepGeom_Direction::StepGeom_Direction() {}
 
-void StepGeom_Direction::Init(const occ::handle<TCollection_HAsciiString>& theName,
-                              const occ::handle<NCollection_HArray1<double>>&    theDirectionRatios)
+void StepGeom_Direction::Init(const occ::handle<TCollection_HAsciiString>&    theName,
+                              const occ::handle<NCollection_HArray1<double>>& theDirectionRatios)
 {
   // --- classe own fields ---
   SetDirectionRatios(theDirectionRatios);
@@ -28,9 +28,9 @@ void StepGeom_Direction::Init(const occ::handle<TCollection_HAsciiString>& theNa
 }
 
 void StepGeom_Direction::Init3D(const occ::handle<TCollection_HAsciiString>& theName,
-                                const double                     theDirectionRatios1,
-                                const double                     theDirectionRatios2,
-                                const double                     theDirectionRatios3)
+                                const double                                 theDirectionRatios1,
+                                const double                                 theDirectionRatios2,
+                                const double                                 theDirectionRatios3)
 {
   myNbCoord   = 3;
   myCoords[0] = theDirectionRatios1;
@@ -41,8 +41,8 @@ void StepGeom_Direction::Init3D(const occ::handle<TCollection_HAsciiString>& the
 }
 
 void StepGeom_Direction::Init2D(const occ::handle<TCollection_HAsciiString>& theName,
-                                const double                     theDirectionRatios1,
-                                const double                     theDirectionRatios2)
+                                const double                                 theDirectionRatios1,
+                                const double                                 theDirectionRatios2)
 {
   myNbCoord   = 2;
   myCoords[0] = theDirectionRatios1;
@@ -52,7 +52,8 @@ void StepGeom_Direction::Init2D(const occ::handle<TCollection_HAsciiString>& the
   StepRepr_RepresentationItem::Init(theName);
 }
 
-void StepGeom_Direction::SetDirectionRatios(const occ::handle<NCollection_HArray1<double>>& theDirectionRatios)
+void StepGeom_Direction::SetDirectionRatios(
+  const occ::handle<NCollection_HArray1<double>>& theDirectionRatios)
 {
   myNbCoord = theDirectionRatios->Length();
   if (myNbCoord > 0)

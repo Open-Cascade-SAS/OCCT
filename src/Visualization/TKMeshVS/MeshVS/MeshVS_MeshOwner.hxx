@@ -30,9 +30,9 @@ class MeshVS_MeshOwner : public SelectMgr_EntityOwner
 {
 
 public:
-  Standard_EXPORT MeshVS_MeshOwner(const SelectMgr_SelectableObject* theSelObj,
-                                   const occ::handle<MeshVS_DataSource>&  theDS,
-                                   const int            thePriority = 0);
+  Standard_EXPORT MeshVS_MeshOwner(const SelectMgr_SelectableObject*     theSelObj,
+                                   const occ::handle<MeshVS_DataSource>& theDS,
+                                   const int                             thePriority = 0);
 
   Standard_EXPORT const occ::handle<MeshVS_DataSource>& GetDataSource() const;
 
@@ -60,9 +60,10 @@ public:
   Standard_EXPORT void SetDetectedEntities(const occ::handle<TColStd_HPackedMapOfInteger>& Nodes,
                                            const occ::handle<TColStd_HPackedMapOfInteger>& Elems);
 
-  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                                const occ::handle<Prs3d_Drawer>&               theColor,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(
+    const occ::handle<PrsMgr_PresentationManager>& thePM,
+    const occ::handle<Prs3d_Drawer>&               theColor,
+    const int                                      theMode) override;
 
   Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
                                          const int Mode = 0) override;
@@ -79,7 +80,7 @@ private:
   occ::handle<MeshVS_DataSource>           myDataSource;
   occ::handle<TColStd_HPackedMapOfInteger> myDetectedNodes;
   occ::handle<TColStd_HPackedMapOfInteger> myDetectedElems;
-  int                    myLastID;
+  int                                      myLastID;
 };
 
 #endif // _MeshVS_MeshOwner_HeaderFile

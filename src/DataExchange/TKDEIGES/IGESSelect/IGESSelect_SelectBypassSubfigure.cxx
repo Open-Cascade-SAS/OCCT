@@ -34,9 +34,9 @@ IGESSelect_SelectBypassSubfigure::IGESSelect_SelectBypassSubfigure(const int lev
 }
 
 bool IGESSelect_SelectBypassSubfigure::Explore(const int /*level*/,
-                                                           const occ::handle<Standard_Transient>& ent,
-                                                           const Interface_Graph& /*G*/,
-                                                           Interface_EntityIterator& explored) const
+                                               const occ::handle<Standard_Transient>& ent,
+                                               const Interface_Graph& /*G*/,
+                                               Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())

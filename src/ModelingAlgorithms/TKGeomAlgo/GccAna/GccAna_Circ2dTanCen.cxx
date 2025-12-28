@@ -41,7 +41,7 @@
 //========================================================================
 GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
                                          const gp_Pnt2d&             Pcenter,
-                                         const double         Tolerance)
+                                         const double                Tolerance)
     :
 
       //========================================================================
@@ -56,23 +56,23 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
       pararg1(1, 2)
 {
 
-  NbrSol               = 0;
+  NbrSol        = 0;
   double Radius = 0.0;
-  WellDone             = false;
+  WellDone      = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
+  gp_Dir2d  dirx(gp_Dir2d::D::X);
   double    Tol = std::abs(Tolerance);
-  gp_Circ2d        C1  = Qualified1.Qualified();
+  gp_Circ2d C1  = Qualified1.Qualified();
   double    R1  = C1.Radius();
-  gp_Pnt2d         center1(C1.Location());
+  gp_Pnt2d  center1(C1.Location());
   double    dist;
-  int signe  = 0;
-  int signe1 = 0;
+  int       signe  = 0;
+  int       signe1 = 0;
 
   if (!Qualified1.IsUnqualified())
   {
@@ -210,16 +210,16 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double rayon = Linetan.Distance(Pcenter);
-  cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   rayon = Linetan.Distance(Pcenter);
+  cirsol(1)      = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // ==================================================
-  qualifier1(1)      = GccEnt_noqualifier;
-  TheSame1(1)        = 0;
-  double xloc = Linetan.Location().X();
-  double yloc = Linetan.Location().Y();
-  double xdir = Linetan.Direction().X();
-  double ydir = Linetan.Direction().Y();
+  qualifier1(1) = GccEnt_noqualifier;
+  TheSame1(1)   = 0;
+  double xloc   = Linetan.Location().X();
+  double yloc   = Linetan.Location().Y();
+  double xdir   = Linetan.Direction().X();
+  double ydir   = Linetan.Direction().Y();
 
   if (gp_Dir2d(xloc - Pcenter.X(), yloc - Pcenter.Y()).Dot(gp_Dir2d(-ydir, xdir)) > 0.0)
   {
@@ -258,9 +258,9 @@ GccAna_Circ2dTanCen::GccAna_Circ2dTanCen(const gp_Pnt2d& Point1, const gp_Pnt2d&
       pararg1(1, 1)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double rayon = Point1.Distance(Pcenter);
-  cirsol(1)           = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   rayon = Point1.Distance(Pcenter);
+  cirsol(1)      = gp_Circ2d(gp_Ax2d(Pcenter, dirx), rayon);
   // =================================================
   qualifier1(1) = GccEnt_noqualifier;
   TheSame1(1)   = 0;
@@ -292,8 +292,7 @@ gp_Circ2d GccAna_Circ2dTanCen::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2dTanCen::WhichQualifier(const int Index,
-                                         GccEnt_Position&       Qualif1) const
+void GccAna_Circ2dTanCen::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -310,9 +309,9 @@ void GccAna_Circ2dTanCen::WhichQualifier(const int Index,
 }
 
 void GccAna_Circ2dTanCen::Tangency1(const int Index,
-                                    double&         ParSol,
-                                    double&         ParArg,
-                                    gp_Pnt2d&              PntSol) const
+                                    double&   ParSol,
+                                    double&   ParArg,
+                                    gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

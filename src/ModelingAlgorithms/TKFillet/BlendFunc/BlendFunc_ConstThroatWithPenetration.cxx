@@ -34,8 +34,7 @@ BlendFunc_ConstThroatWithPenetration::BlendFunc_ConstThroatWithPenetration(
 
 //=================================================================================================
 
-bool BlendFunc_ConstThroatWithPenetration::IsSolution(const math_Vector&  Sol,
-                                                                  const double Tol)
+bool BlendFunc_ConstThroatWithPenetration::IsSolution(const math_Vector& Sol, const double Tol)
 {
   math_Vector secmember(1, 4), valsol(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
@@ -109,8 +108,7 @@ bool BlendFunc_ConstThroatWithPenetration::Value(const math_Vector& X, math_Vect
 
 //=================================================================================================
 
-bool BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Vector& X,
-                                                                   math_Matrix&       D)
+bool BlendFunc_ConstThroatWithPenetration::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   surf1->D1(X(1), X(2), pts1, d1u1, d1v1);
   surf2->D1(X(3), X(4), pts2, d1u2, d1v2);

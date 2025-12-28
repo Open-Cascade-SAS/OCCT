@@ -21,7 +21,7 @@
 RWStepBasic_RWOrganization::RWStepBasic_RWOrganization() {}
 
 void RWStepBasic_RWOrganization::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepBasic_Organization>&  ent) const
 {
@@ -34,7 +34,7 @@ void RWStepBasic_RWOrganization::ReadStep(const occ::handle<StepData_StepReaderD
   // --- own field : id ---
 
   occ::handle<TCollection_HAsciiString> aId;
-  bool                 hasAid = true;
+  bool                                  hasAid = true;
   if (data->IsParamDefined(num, 1))
   {
     // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -65,7 +65,7 @@ void RWStepBasic_RWOrganization::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(hasAid, aId, aName, aDescription);
 }
 
-void RWStepBasic_RWOrganization::WriteStep(StepData_StepWriter&                  SW,
+void RWStepBasic_RWOrganization::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepBasic_Organization>& ent) const
 {
 

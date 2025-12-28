@@ -32,7 +32,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedWireframeShapeRepresentation,
                           StepShape_ShapeRepresentation)
-
 };
 
 #endif // _StepShape_GeometricallyBoundedWireframeShapeRepresentation_HeaderFile

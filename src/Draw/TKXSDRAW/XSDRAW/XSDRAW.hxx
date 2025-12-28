@@ -26,8 +26,6 @@
 #include <NCollection_HSequence.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 class IFSelect_SessionPilot;
 class XSControl_WorkSession;
 class XSControl_Controller;
@@ -54,8 +52,7 @@ public:
   //! Changes the name under which a command of xstep is known by
   //! Draw. This allows to avoid collisions
   //! To be called before LoadDraw or any other xstep initialisation
-  Standard_EXPORT static void ChangeCommand(const char* oldname,
-                                            const char* newname);
+  Standard_EXPORT static void ChangeCommand(const char* oldname, const char* newname);
 
   //! Removes a command from the interpretation list of Draw
   //! To be called before LoadDraw or any other xstep initialisation
@@ -97,8 +94,7 @@ public:
   //! Form with a variable text part : add %s for the variable :
   //! Execute ("command args %s args..",var) [var is a CString]
   //! Returns the same value as returned by call from DRAW
-  Standard_EXPORT static int Execute(const char* command,
-                                                  const char* var = "");
+  Standard_EXPORT static int Execute(const char* command, const char* var = "");
 
   //! Returns the SessionPilot (can be used for direct call)
   Standard_EXPORT static occ::handle<IFSelect_SessionPilot> Pilot();
@@ -131,7 +127,7 @@ public:
   //! Sets a Model in session (it is Session()->SetModel(model) )
   //! If <file> is defined, SetLoadedFile is also done
   Standard_EXPORT static void SetModel(const occ::handle<Interface_InterfaceModel>& model,
-                                       const char*                  file = "");
+                                       const char*                                  file = "");
 
   //! Produces a new model (from the Controller), can be Null
   //! Does not set it in the session
@@ -187,9 +183,8 @@ public:
   //! first : name of a selection, evaluated from a list defined by
   //! second
   //! In case of failure, returns a Null Handle
-  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GetList(
-    const char* first  = "",
-    const char* second = "");
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    GetList(const char* first = "", const char* second = "");
 
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
@@ -202,11 +197,11 @@ public:
   //! If <var> is neither null nor empty, resvar = var
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
-  Standard_EXPORT static bool FileAndVar(const char*   file,
-                                                     const char*   var,
-                                                     const char*   def,
-                                                     TCollection_AsciiString& resfile,
-                                                     TCollection_AsciiString& resvar);
+  Standard_EXPORT static bool FileAndVar(const char*              file,
+                                         const char*              var,
+                                         const char*              def,
+                                         TCollection_AsciiString& resfile,
+                                         TCollection_AsciiString& resvar);
 
   //! Analyses a name as designating Shapes from DRAW variables or
   //! XSTEP transfer (last Transfer on Reading). <name> can be :
@@ -219,7 +214,7 @@ public:
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
   Standard_EXPORT static int MoreShapes(occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                                     const char*             name);
+                                        const char*                                       name);
 
   //! Extracts length unit from the static interface or document.
   //! Document unit has the highest priority.
@@ -235,9 +230,10 @@ public:
   //! @param[in] theWS the session object
   //! @param[in] theName the session file name
   //! @param[out] theMap collection to keep session info
-  Standard_EXPORT static void CollectActiveWorkSessions(const occ::handle<XSControl_WorkSession>& theWS,
-                                                        const TCollection_AsciiString& theName,
-                                                        XSControl_WorkSessionMap&      theMap);
+  Standard_EXPORT static void CollectActiveWorkSessions(
+    const occ::handle<XSControl_WorkSession>& theWS,
+    const TCollection_AsciiString&            theName,
+    XSControl_WorkSessionMap&                 theMap);
 
   //! Binds current session with input name.
   //! @param[in] theName the session file name

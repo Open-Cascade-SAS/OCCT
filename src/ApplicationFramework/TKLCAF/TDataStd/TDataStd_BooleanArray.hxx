@@ -38,15 +38,15 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds or creates an attribute with internal boolean array.
-  Standard_EXPORT static occ::handle<TDataStd_BooleanArray> Set(const TDF_Label&       label,
-                                                           const int lower,
-                                                           const int upper);
+  Standard_EXPORT static occ::handle<TDataStd_BooleanArray> Set(const TDF_Label& label,
+                                                                const int        lower,
+                                                                const int        upper);
 
   //! Finds or creates an attribute with the array using explicit user defined <guid>.
-  Standard_EXPORT static occ::handle<TDataStd_BooleanArray> Set(const TDF_Label&       label,
-                                                           const Standard_GUID&   theGuid,
-                                                           const int lower,
-                                                           const int upper);
+  Standard_EXPORT static occ::handle<TDataStd_BooleanArray> Set(const TDF_Label&     label,
+                                                                const Standard_GUID& theGuid,
+                                                                const int            lower,
+                                                                const int            upper);
 
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init(const int lower, const int upper);
@@ -95,15 +95,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanArray, TDF_Attribute)
 
 private:
   occ::handle<NCollection_HArray1<uint8_t>> myValues;
-  int              myLower;
-  int              myUpper;
-  Standard_GUID                 myID;
+  int                                       myLower;
+  int                                       myUpper;
+  Standard_GUID                             myID;
 };
 
 #endif // _TDataStd_BooleanArray_HeaderFile

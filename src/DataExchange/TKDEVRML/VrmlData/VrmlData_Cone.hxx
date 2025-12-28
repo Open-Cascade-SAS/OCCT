@@ -44,8 +44,8 @@ public:
    */
   inline VrmlData_Cone(const VrmlData_Scene& theScene,
                        const char*           theName,
-                       const double   theBottomRadius = 1.,
-                       const double   theHeight       = 2.)
+                       const double          theBottomRadius = 1.,
+                       const double          theHeight       = 2.)
       : VrmlData_Geometry(theScene, theName),
         myBottomRadius(theBottomRadius),
         myHeight(theHeight),
@@ -113,8 +113,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
-    override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
+    const occ::handle<VrmlData_Node>& theOther) const override;
 
   /**
    * Fill the Node internal data from the given input stream.
@@ -129,10 +129,10 @@ public:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  double    myBottomRadius;
-  double    myHeight;
-  bool myHasSide : 1;
-  bool myHasBottom : 1;
+  double myBottomRadius;
+  double myHeight;
+  bool   myHasSide : 1;
+  bool   myHasBottom : 1;
 
 public:
   // Declaration of CASCADE RTTI

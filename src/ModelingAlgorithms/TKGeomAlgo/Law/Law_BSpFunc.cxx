@@ -40,9 +40,7 @@ Law_BSpFunc::Law_BSpFunc()
 
 //=================================================================================================
 
-Law_BSpFunc::Law_BSpFunc(const occ::handle<Law_BSpline>& C,
-                         const double        First,
-                         const double        Last)
+Law_BSpFunc::Law_BSpFunc(const occ::handle<Law_BSpline>& C, const double First, const double Last)
     : curv(C),
       first(First),
       last(Last)
@@ -89,16 +87,16 @@ int Law_BSpFunc::NbIntervals(const GeomAbs_Shape S) const
         else
           Cont = curv->Degree();
         Law_BSplineKnotSplitting Convector(curv, Cont);
-        int         NbInt = Convector.NbSplits() - 1;
+        int                      NbInt = Convector.NbSplits() - 1;
         NCollection_Array1<int>  Inter(1, NbInt + 1);
         Convector.Splitting(Inter);
 
-        int        Nb     = curv->NbKnots();
-        int        Index1 = 0;
-        int        Index2 = 0;
-        double           newFirst, newLast;
-        NCollection_Array1<double>    TK(1, Nb);
-        NCollection_Array1<int> TM(1, Nb);
+        int                        Nb     = curv->NbKnots();
+        int                        Index1 = 0;
+        int                        Index2 = 0;
+        double                     newFirst, newLast;
+        NCollection_Array1<double> TK(1, Nb);
+        NCollection_Array1<int>    TM(1, Nb);
         curv->Knots(TK);
         curv->Multiplicities(TM);
         BSplCLib::LocateParameter(curv->Degree(),
@@ -169,16 +167,16 @@ void Law_BSpFunc::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S
         else
           Cont = curv->Degree();
         Law_BSplineKnotSplitting Convector(curv, Cont);
-        int         NbInt = Convector.NbSplits() - 1;
+        int                      NbInt = Convector.NbSplits() - 1;
         NCollection_Array1<int>  Inter(1, NbInt + 1);
         Convector.Splitting(Inter);
 
-        int        Nb     = curv->NbKnots();
-        int        Index1 = 0;
-        int        Index2 = 0;
-        double           newFirst, newLast;
-        NCollection_Array1<double>    TK(1, Nb);
-        NCollection_Array1<int> TM(1, Nb);
+        int                        Nb     = curv->NbKnots();
+        int                        Index1 = 0;
+        int                        Index2 = 0;
+        double                     newFirst, newLast;
+        NCollection_Array1<double> TK(1, Nb);
+        NCollection_Array1<int>    TM(1, Nb);
         curv->Knots(TK);
         curv->Multiplicities(TM);
         BSplCLib::LocateParameter(curv->Degree(),
@@ -324,9 +322,9 @@ void Law_BSpFunc::D2(const double X, double& F, double& D, double& D2)
 //=================================================================================================
 
 occ::handle<Law_Function> Law_BSpFunc::Trim(const double PFirst,
-                                       const double PLast,
-                                       //				       const double Tol) const
-                                       const double) const
+                                            const double PLast,
+                                            //				       const double Tol) const
+                                            const double) const
 {
   occ::handle<Law_BSpFunc> l = new (Law_BSpFunc)(curv, PFirst, PLast);
   return l;

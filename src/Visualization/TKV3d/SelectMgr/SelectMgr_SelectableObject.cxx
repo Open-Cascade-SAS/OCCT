@@ -51,7 +51,8 @@ SelectMgr_SelectableObject::SelectMgr_SelectableObject(
 //==================================================
 SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     aSelIter.Value()->Clear();
@@ -70,7 +71,8 @@ SelectMgr_SelectableObject::~SelectMgr_SelectableObject()
 //==================================================
 void SelectMgr_SelectableObject::RecomputePrimitives()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     RecomputePrimitives(aSelIter.Value()->Mode());
@@ -90,7 +92,8 @@ void SelectMgr_SelectableObject::RecomputePrimitives()
 void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
 {
   SelectMgr_SelectableObject* aSelParent = dynamic_cast<SelectMgr_SelectableObject*>(Parent());
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -132,7 +135,8 @@ void SelectMgr_SelectableObject::RecomputePrimitives(const int theMode)
 
 void SelectMgr_SelectableObject::ClearSelections(const bool theToUpdate)
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -155,7 +159,8 @@ const occ::handle<SelectMgr_Selection>& SelectMgr_SelectableObject::Selection(
     return THE_NULL_SELECTION;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -170,7 +175,7 @@ const occ::handle<SelectMgr_Selection>& SelectMgr_SelectableObject::Selection(
 //=================================================================================================
 
 void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                              const int             theMode)
+                                              const int                               theMode)
 {
   if (theSel->IsEmpty())
   {
@@ -180,7 +185,8 @@ void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Select
   }
 
   bool isReplaced = false;
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     if (aSelIter.Value()->Mode() == theMode)
@@ -214,7 +220,8 @@ void SelectMgr_SelectableObject::AddSelection(const occ::handle<SelectMgr_Select
 
 void SelectMgr_SelectableObject::ResetTransformation()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -229,7 +236,8 @@ void SelectMgr_SelectableObject::ResetTransformation()
 
 void SelectMgr_SelectableObject::UpdateTransformation()
 {
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     aSelIter.Value()->UpdateStatus(SelectMgr_TOU_Partial);
@@ -248,7 +256,8 @@ void SelectMgr_SelectableObject::UpdateTransformation()
 
 //=================================================================================================
 
-void SelectMgr_SelectableObject::UpdateTransformations(const occ::handle<SelectMgr_Selection>& theSel)
+void SelectMgr_SelectableObject::UpdateTransformations(
+  const occ::handle<SelectMgr_Selection>& theSel)
 {
   const TopLoc_Location aSelfLocation(Transformation());
   for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
@@ -256,7 +265,8 @@ void SelectMgr_SelectableObject::UpdateTransformations(const occ::handle<SelectM
        aSelEntIter.More();
        aSelEntIter.Next())
   {
-    if (const occ::handle<Select3D_SensitiveEntity>& aSensEntity = aSelEntIter.Value()->BaseSensitive())
+    if (const occ::handle<Select3D_SensitiveEntity>& aSensEntity =
+          aSelEntIter.Value()->BaseSensitive())
     {
       if (const occ::handle<SelectMgr_EntityOwner>& aEOwner = aSensEntity->OwnerId())
       {
@@ -268,8 +278,9 @@ void SelectMgr_SelectableObject::UpdateTransformations(const occ::handle<SelectM
 
 //=================================================================================================
 
-void SelectMgr_SelectableObject::HilightSelected(const occ::handle<PrsMgr_PresentationManager>&,
-                                                 const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&)
+void SelectMgr_SelectableObject::HilightSelected(
+  const occ::handle<PrsMgr_PresentationManager>&,
+  const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&)
 {
   throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightSelected");
 }
@@ -294,9 +305,10 @@ void SelectMgr_SelectableObject::ClearDynamicHighlight(
 
 //=================================================================================================
 
-void SelectMgr_SelectableObject::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationManager>&,
-                                                       const occ::handle<Prs3d_Drawer>&,
-                                                       const occ::handle<SelectMgr_EntityOwner>&)
+void SelectMgr_SelectableObject::HilightOwnerWithColor(
+  const occ::handle<PrsMgr_PresentationManager>&,
+  const occ::handle<Prs3d_Drawer>&,
+  const occ::handle<SelectMgr_EntityOwner>&)
 {
   throw Standard_NotImplemented("SelectMgr_SelectableObject::HilightOwnerWithColor");
 }
@@ -372,7 +384,8 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
     myHilightPrs->SetZLayer(theLayerId);
 
   // update all entity owner presentations
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -381,7 +394,8 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
          aSelEntIter.More();
          aSelEntIter.Next())
     {
-      if (const occ::handle<Select3D_SensitiveEntity>& aEntity = aSelEntIter.Value()->BaseSensitive())
+      if (const occ::handle<Select3D_SensitiveEntity>& aEntity =
+            aSelEntIter.Value()->BaseSensitive())
       {
         if (const occ::handle<SelectMgr_EntityOwner>& aOwner = aEntity->OwnerId())
         {
@@ -417,7 +431,8 @@ void SelectMgr_SelectableObject::updateSelection(const int theMode)
 {
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+         aSelIter.More();
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -426,7 +441,8 @@ void SelectMgr_SelectableObject::updateSelection(const int theMode)
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -442,12 +458,14 @@ void SelectMgr_SelectableObject::updateSelection(const int theMode)
 // function : SetAssemblyOwner
 // purpose  : Sets common entity owner for assembly sensitive object entities
 //=======================================================================
-void SelectMgr_SelectableObject::SetAssemblyOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                  const int               theMode)
+void SelectMgr_SelectableObject::SetAssemblyOwner(
+  const occ::handle<SelectMgr_EntityOwner>& theOwner,
+  const int                                 theMode)
 {
   if (theMode == -1)
   {
-    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+    for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+         aSelIter.More();
          aSelIter.Next())
     {
       const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -462,7 +480,8 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(const occ::handle<SelectMgr_En
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -483,13 +502,15 @@ void SelectMgr_SelectableObject::SetAssemblyOwner(const occ::handle<SelectMgr_En
 //=================================================================================================
 
 Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
-  const occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>& theOwners)
+  const occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>&
+    theOwners)
 {
   if (theOwners->IsEmpty())
     return Bnd_Box();
 
   Bnd_Box aBnd;
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections); aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
+       aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -542,8 +563,7 @@ const occ::handle<SelectMgr_EntityOwner>& SelectMgr_SelectableObject::GetAssembl
 
 //=================================================================================================
 
-void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream,
-                                          int  theDepth) const
+void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -552,7 +572,8 @@ void SelectMgr_SelectableObject::DumpJson(Standard_OStream& theOStream,
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySelectionPrs.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myHilightPrs.get())
 
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator anIterator(myselections); anIterator.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator anIterator(myselections);
+       anIterator.More();
        anIterator.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSelection = anIterator.Value();

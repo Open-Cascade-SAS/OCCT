@@ -23,7 +23,7 @@
 void Extrema_GlobOptFuncConicS::value(double su, double sv, double& F)
 {
   double ct;
-  gp_Pnt        aPS = myS->Value(su, sv);
+  gp_Pnt aPS = myS->Value(su, sv);
   switch (myCType)
   {
     case GeomAbs_Line:
@@ -65,13 +65,11 @@ void Extrema_GlobOptFuncConicS::value(double su, double sv, double& F)
 
 //=================================================================================================
 
-bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X,
-                                                           double&     su,
-                                                           double&     sv)
+bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X, double& su, double& sv)
 {
   int aStartIndex = X.Lower();
-  su                           = X(aStartIndex);
-  sv                           = X(aStartIndex + 1);
+  su              = X(aStartIndex);
+  sv              = X(aStartIndex + 1);
 
   if (su < myUf || su > myUl || sv < myVf || sv > myVl)
   {
@@ -83,10 +81,10 @@ bool Extrema_GlobOptFuncConicS::checkInputData(const math_Vector& X,
 //=================================================================================================
 
 Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Surface* S,
-                                                     const double      theUf,
-                                                     const double      theUl,
-                                                     const double      theVf,
-                                                     const double      theVl)
+                                                     const double             theUf,
+                                                     const double             theUl,
+                                                     const double             theVf,
+                                                     const double             theVl)
     : myS(S),
       myUf(theUf),
       myUl(theUl),
@@ -124,8 +122,8 @@ Extrema_GlobOptFuncConicS::Extrema_GlobOptFuncConicS(const Adaptor3d_Curve*   C,
 //=================================================================================================
 
 void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve* C,
-                                          const double    theTf,
-                                          const double    theTl)
+                                          const double           theTf,
+                                          const double           theTl)
 {
   myC  = C;
   myTf = theTf;
@@ -195,7 +193,7 @@ bool Extrema_GlobOptFuncConicS::Value(const math_Vector& X, double& F)
 double Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV) const
 {
   double ct;
-  gp_Pnt        aPS = myS->Value(theUV(1), theUV(2));
+  gp_Pnt aPS = myS->Value(theUV(1), theUV(2));
   switch (myCType)
   {
     case GeomAbs_Line:

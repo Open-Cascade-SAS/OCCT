@@ -37,8 +37,8 @@ public:
   Standard_EXPORT virtual ~IntTools_ShrunkRange();
 
   Standard_EXPORT void SetData(const TopoDS_Edge&   aE,
-                               const double  aT1,
-                               const double  aT2,
+                               const double         aT1,
+                               const double         aT2,
                                const TopoDS_Vertex& aV1,
                                const TopoDS_Vertex& aV2);
 
@@ -68,19 +68,18 @@ public:
   double Length() const { return myLength; }
 
 protected:
-  TopoDS_Edge              myEdge;
-  TopoDS_Vertex            myV1;
-  TopoDS_Vertex            myV2;
-  double            myT1;
-  double            myT2;
-  double            myTS1;
-  double            myTS2;
-  Bnd_Box                  myBndBox;
+  TopoDS_Edge                   myEdge;
+  TopoDS_Vertex                 myV1;
+  TopoDS_Vertex                 myV2;
+  double                        myT1;
+  double                        myT2;
+  double                        myTS1;
+  double                        myTS2;
+  Bnd_Box                       myBndBox;
   occ::handle<IntTools_Context> myCtx;
-  bool         myIsDone;
-  bool         myIsSplittable;
-  double            myLength;
-
+  bool                          myIsDone;
+  bool                          myIsSplittable;
+  double                        myLength;
 };
 
 #endif // _IntTools_ShrunkRange_HeaderFile

@@ -32,14 +32,10 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_CircSection.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <ChFiDS_SurfData.hxx>
-#include <NCollection_Sequence.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
 #include <FilletSurf_StatusType.hxx>
 #include <Geom2d_Curve.hxx>
@@ -72,21 +68,21 @@ static bool isinlist(const TopoDS_Shape& E, const NCollection_List<TopoDS_Shape>
 }
 
 static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
-                                    const gp_Pln&              P,
-                                    double&             w,
-                                    const double        tol3d)
+                        const gp_Pln&                   P,
+                        double&                         w,
+                        const double                    tol3d)
 {
-  bool            done = 0;
-  double               f    = Ed->FirstParameter();
-  double               l    = Ed->LastParameter();
-  gp_Pnt                      Or   = P.Location();
+  bool                             done = 0;
+  double                           f    = Ed->FirstParameter();
+  double                           l    = Ed->LastParameter();
+  gp_Pnt                           Or   = P.Location();
   occ::handle<Geom_Plane>          Pln  = new Geom_Plane(P);
   occ::handle<GeomAdaptor_Surface> Plan = new GeomAdaptor_Surface(GeomAdaptor_Surface(Pln));
 
   IntCurveSurface_HInter            Intersection;
-  int                  nbp, iip;
+  int                               nbp, iip;
   IntCurveSurface_IntersectionPoint IP;
-  double                     dist = RealLast();
+  double                            dist = RealLast();
 
   Intersection.Perform(Ed, Plan);
 
@@ -95,8 +91,8 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
     nbp = Intersection.NbPoints();
     for (iip = 1; iip <= nbp; iip++)
     {
-      IP                 = Intersection.Point(iip);
-      gp_Pnt        pint = IP.Pnt();
+      IP          = Intersection.Point(iip);
+      gp_Pnt pint = IP.Pnt();
       double d    = pint.Distance(Or);
       if (d < dist)
       {
@@ -106,12 +102,12 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
       }
     }
   }
-  gp_Pnt        pdeb = Ed->Value(f);
-  gp_Pnt        pfin = Ed->Value(l);
+  gp_Pnt pdeb = Ed->Value(f);
+  gp_Pnt pfin = Ed->Value(l);
   double u, v;
   // check if the extremities are not solution
   ElSLib::Parameters(P, pdeb, u, v);
-  gp_Pnt        projdeb  = ElSLib::Value(u, v, P);
+  gp_Pnt projdeb  = ElSLib::Value(u, v, P);
   double dprojdeb = pdeb.Distance(projdeb);
   if (dprojdeb < tol3d)
   {
@@ -124,7 +120,7 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
     }
   }
   ElSLib::Parameters(P, pfin, u, v);
-  gp_Pnt        projfin  = ElSLib::Value(u, v, P);
+  gp_Pnt projfin  = ElSLib::Value(u, v, P);
   double dprojfin = pfin.Distance(projfin);
   if (dprojfin < tol3d)
   {
@@ -140,16 +136,16 @@ static bool IntPlanEdge(occ::handle<BRepAdaptor_Curve>& Ed,
 }
 
 static bool ComputeEdgeParameter(const occ::handle<ChFiDS_Spine>& Spine,
-                                             const int      ind,
-                                             const double         pelsp,
-                                             double&              ped,
-                                             const double         tol3d)
+                                 const int                        ind,
+                                 const double                     pelsp,
+                                 double&                          ped,
+                                 const double                     tol3d)
 {
   occ::handle<ChFiDS_ElSpine> Guide = Spine->ElSpine(ind);
-  gp_Pnt                 P;
-  gp_Vec                 V;
+  gp_Pnt                      P;
+  gp_Vec                      V;
   Guide->D1(pelsp, P, V);
-  gp_Pln                    pln(P, V);
+  gp_Pln                         pln(P, V);
   occ::handle<BRepAdaptor_Curve> ed = new BRepAdaptor_Curve(Spine->CurrentElementarySpine(ind));
   return IntPlanEdge(ed, pln, ped, tol3d);
 }
@@ -158,9 +154,9 @@ static bool ComputeEdgeParameter(const occ::handle<ChFiDS_Spine>& Spine,
 
 FilletSurf_InternalBuilder::FilletSurf_InternalBuilder(const TopoDS_Shape&      S,
                                                        const ChFi3d_FilletShape FShape,
-                                                       const double      Ta,
-                                                       const double      Tapp3d,
-                                                       const double      Tapp2d)
+                                                       const double             Ta,
+                                                       const double             Tapp3d,
+                                                       const double             Tapp2d)
     : ChFi3d_FilBuilder(S, FShape, Ta)
 {
   SetParams(Ta, Tapp3d, Tapp2d, Tapp3d, Tapp2d, 1.e-3);
@@ -179,8 +175,7 @@ FilletSurf_InternalBuilder::FilletSurf_InternalBuilder(const TopoDS_Shape&      
 //  5 : edge is not alive
 //=======================================================================
 
-int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E,
-                                                 const double         R)
+int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, const double R)
 {
   if (E.IsEmpty())
     return 1;
@@ -221,7 +216,7 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E,
   ChFi3d_FilBuilder::Add(R, ed);
   occ::handle<ChFiDS_Stripe> st       = myListStripe.First();
   occ::handle<ChFiDS_Spine>& sp       = st->ChangeSpine();
-  bool      periodic = sp->IsPeriodic();
+  bool                       periodic = sp->IsPeriodic();
 
   // It is checked if edges of list E are in the contour,
   // the edges that arenot in the list are removed from the contour,
@@ -235,9 +230,9 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E,
   }
 
   occ::handle<ChFiDS_FilSpine> newsp              = new ChFiDS_FilSpine();
-  bool        debut              = 0;
-  int        premierquinyestpas = 0;
-  int        yatrou             = 0;
+  bool                         debut              = 0;
+  int                          premierquinyestpas = 0;
+  int                          yatrou             = 0;
   for (int i = 1; i <= sp->NbEdges(); i++)
   {
     TopoDS_Edge cured = sp->Edges(i);
@@ -283,8 +278,8 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E,
 
   // ElSpine is immediately constructed
   occ::handle<ChFiDS_ElSpine> hels = new ChFiDS_ElSpine();
-  gp_Vec                 TFirst, TLast;
-  gp_Pnt                 PFirst, PLast;
+  gp_Vec                      TFirst, TLast;
+  gp_Pnt                      PFirst, PLast;
   sp->D1(sp->FirstParameter(), PFirst, TFirst);
   sp->D1(sp->LastParameter(), PLast, TLast);
   hels->FirstParameter(sp->FirstParameter());
@@ -303,12 +298,13 @@ void FilletSurf_InternalBuilder::Perform()
 {
   // PerformSetOfSurfOnElSpine is enough.
 
-  occ::handle<ChFiDS_Stripe> Stripe = myListStripe.First();
-  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData  = Stripe->ChangeSetOfSurfData();
-  HData                        = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
-  occ::handle<ChFiDS_Spine>& Spine  = Stripe->ChangeSpine();
-  TopAbs_Orientation    RefOr1, RefOr2;
-  int      RefChoix;
+  occ::handle<ChFiDS_Stripe>                                        Stripe = myListStripe.First();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData =
+    Stripe->ChangeSetOfSurfData();
+  HData                            = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
+  occ::handle<ChFiDS_Spine>& Spine = Stripe->ChangeSpine();
+  TopAbs_Orientation         RefOr1, RefOr2;
+  int                        RefChoix;
   StripeOrientations(Spine, RefOr1, RefOr2, RefChoix);
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
@@ -318,34 +314,35 @@ void FilletSurf_InternalBuilder::Perform()
 
 //=================================================================================================
 
-bool FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
-                                                         const occ::handle<ChFiDS_ElSpine>&      Guide,
-                                                         const occ::handle<ChFiDS_Spine>&        Spine,
-                                                         const int             Choix,
-                                                         const occ::handle<BRepAdaptor_Surface>& S1,
-                                                         const occ::handle<Adaptor3d_TopolTool>& I1,
-                                                         const occ::handle<BRepAdaptor_Surface>& S2,
-                                                         const occ::handle<Adaptor3d_TopolTool>& I2,
-                                                         const double                MaxStep,
-                                                         const double                Fleche,
-                                                         const double    TolGuide,
-                                                         double&         First,
-                                                         double&         Last,
-                                                         const bool Inside,
-                                                         const bool Appro,
-                                                         const bool Forward,
-                                                         const bool RecOnS1,
-                                                         const bool RecOnS2,
-                                                         const math_Vector&     Soldep,
-                                                         int&      Intf,
-                                                         int&      Intl)
+bool FilletSurf_InternalBuilder::PerformSurf(
+  NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+  const occ::handle<ChFiDS_ElSpine>&                  Guide,
+  const occ::handle<ChFiDS_Spine>&                    Spine,
+  const int                                           Choix,
+  const occ::handle<BRepAdaptor_Surface>&             S1,
+  const occ::handle<Adaptor3d_TopolTool>&             I1,
+  const occ::handle<BRepAdaptor_Surface>&             S2,
+  const occ::handle<Adaptor3d_TopolTool>&             I2,
+  const double                                        MaxStep,
+  const double                                        Fleche,
+  const double                                        TolGuide,
+  double&                                             First,
+  double&                                             Last,
+  const bool                                          Inside,
+  const bool                                          Appro,
+  const bool                                          Forward,
+  const bool                                          RecOnS1,
+  const bool                                          RecOnS2,
+  const math_Vector&                                  Soldep,
+  int&                                                Intf,
+  int&                                                Intl)
 {
   occ::handle<ChFiDS_SurfData> Data = SeqData(1);
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   occ::handle<BRepBlend_Line> lin;
-  TopAbs_Orientation     Or = S1->Face().Orientation();
+  TopAbs_Orientation          Or = S1->Face().Orientation();
   if (!fsp->IsConstant())
     throw Standard_ConstructionError("PerformSurf : no variable radiuses");
   // bool maybesingular; //pour scinder les Surfdata singulieres
@@ -368,7 +365,7 @@ bool FilletSurf_InternalBuilder::PerformSurf(NCollection_Sequence<occ::handle<Ch
       Func.Set(BlendFunc_Polynomial);
   }
   double PFirst = First;
-  done                 = SimulData(Data,
+  done          = SimulData(Data,
                    Guide,
                    EmptyGuide,
                    lin,
@@ -587,8 +584,7 @@ int FilletSurf_InternalBuilder::NbSurface() const
 // purpose  : gives the NUBS surface of index Index
 //=======================================================================
 
-const occ::handle<Geom_Surface>& FilletSurf_InternalBuilder::SurfaceFillet(
-  const int Index) const
+const occ::handle<Geom_Surface>& FilletSurf_InternalBuilder::SurfaceFillet(const int Index) const
 {
   int isurf = myListStripe.First()->SetOfSurfData()->Value(Index)->Surf();
 
@@ -634,11 +630,9 @@ const TopoDS_Face& FilletSurf_InternalBuilder::SupportFace2(const int Index) con
 // purpose  :  gives  the 3d curve  of SurfaceFillet(Index)  on SupportFace1(Index)
 //===============================================================================
 
-const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace1(
-  const int Index) const
+const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace1(const int Index) const
 {
-  int icurv =
-    myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().LineIndex();
+  int icurv = myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().LineIndex();
   return myDS->Curve(icurv).Curve();
 }
 
@@ -647,11 +641,9 @@ const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace1(
 // purpose  : gives the 3d  curve of  SurfaceFillet(Index) on SupportFace2(Index
 //=======================================================================
 
-const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace2(
-  const int Index) const
+const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace2(const int Index) const
 {
-  int icurv =
-    myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().LineIndex();
+  int icurv = myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().LineIndex();
   return myDS->Curve(icurv).Curve();
 }
 
@@ -659,8 +651,7 @@ const occ::handle<Geom_Curve>& FilletSurf_InternalBuilder::CurveOnFace2(
 // function : PCurveOnFace1
 // purpose  : gives the  PCurve associated to CurvOnSup1(Index)  on the support face
 //=======================================================================
-const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace1(
-  const int Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace1(const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().PCurveOnFace();
 }
@@ -670,8 +661,7 @@ const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace1(
 // purpose  : gives the PCurve associated to CurveOnFace1(Index) on the Fillet
 //=======================================================================
 
-const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve1OnFillet(
-  const int Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve1OnFillet(const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS1().PCurveOnSurf();
 }
@@ -680,8 +670,7 @@ const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve1OnFillet(
 // function : PCurveOnFace2
 // purpose  : gives the  PCurve associated to CurvOnSup2(Index)  on the support face
 //=======================================================================
-const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace2(
-  const int Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace2(const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().PCurveOnFace();
 }
@@ -690,8 +679,7 @@ const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurveOnFace2(
 // function : PCurveOnFillet2
 // purpose  : gives the PCurve associated to CurveOnFace2(Index) on the Fillet
 //=======================================================================
-const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve2OnFillet(
-  const int Index) const
+const occ::handle<Geom2d_Curve>& FilletSurf_InternalBuilder::PCurve2OnFillet(const int Index) const
 {
   return myListStripe.First()->SetOfSurfData()->Value(Index)->InterferenceOnS2().PCurveOnSurf();
 }
@@ -706,8 +694,8 @@ double FilletSurf_InternalBuilder::FirstParameter() const
   const occ::handle<ChFiDS_Stripe>&   st  = myListStripe.First();
   const occ::handle<ChFiDS_Spine>&    sp  = st->Spine();
   const occ::handle<ChFiDS_SurfData>& sd  = st->SetOfSurfData()->Value(1);
-  double                  p   = sd->FirstSpineParam();
-  int               ind = 1;
+  double                              p   = sd->FirstSpineParam();
+  int                                 ind = 1;
   if (sp->IsPeriodic())
     ind = sp->Index(p);
   double ep;
@@ -725,8 +713,8 @@ double FilletSurf_InternalBuilder::LastParameter() const
   const occ::handle<ChFiDS_Stripe>&   st  = myListStripe.First();
   const occ::handle<ChFiDS_Spine>&    sp  = st->Spine();
   const occ::handle<ChFiDS_SurfData>& sd  = st->SetOfSurfData()->Value(NbSurface());
-  double                  p   = sd->LastSpineParam();
-  int               ind = sp->NbEdges();
+  double                              p   = sd->LastSpineParam();
+  int                                 ind = sp->NbEdges();
   if (sp->IsPeriodic())
     ind = sp->Index(p);
   double ep;
@@ -749,10 +737,8 @@ double FilletSurf_InternalBuilder::LastParameter() const
 FilletSurf_StatusType FilletSurf_InternalBuilder::StartSectionStatus() const
 {
 
-  bool isonedge1 =
-    myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS1().IsOnArc();
-  bool isonedge2 =
-    myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS2().IsOnArc();
+  bool isonedge1 = myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS1().IsOnArc();
+  bool isonedge2 = myListStripe.First()->SetOfSurfData()->Value(1)->VertexFirstOnS2().IsOnArc();
 
   if (isonedge1 && isonedge2)
   {
@@ -806,12 +792,13 @@ FilletSurf_StatusType FilletSurf_InternalBuilder::EndSectionStatus() const
 void FilletSurf_InternalBuilder::Simulate()
 {
   // ChFi3d_FilBuilder::Simulate(1);
-  occ::handle<ChFiDS_Stripe> Stripe = myListStripe.First();
-  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData  = Stripe->ChangeSetOfSurfData();
-  HData                        = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
-  occ::handle<ChFiDS_Spine>& Spine  = Stripe->ChangeSpine();
-  TopAbs_Orientation    RefOr1, RefOr2;
-  int      RefChoix;
+  occ::handle<ChFiDS_Stripe>                                        Stripe = myListStripe.First();
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& HData =
+    Stripe->ChangeSetOfSurfData();
+  HData                            = new NCollection_HSequence<occ::handle<ChFiDS_SurfData>>();
+  occ::handle<ChFiDS_Spine>& Spine = Stripe->ChangeSpine();
+  TopAbs_Orientation         RefOr1, RefOr2;
+  int                        RefChoix;
   StripeOrientations(Spine, RefOr1, RefOr2, RefChoix);
   Stripe->OrientationOnFace1(RefOr1);
   Stripe->OrientationOnFace2(RefOr2);
@@ -834,13 +821,13 @@ int FilletSurf_InternalBuilder::NbSection(const int IndexSurf) const
 //           IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 //           trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_InternalBuilder::Section(const int     IndexSurf,
-                                         const int     IndexSec,
+void FilletSurf_InternalBuilder::Section(const int                       IndexSurf,
+                                         const int                       IndexSec,
                                          occ::handle<Geom_TrimmedCurve>& Circ) const
 {
-  gp_Circ       c;
-  double deb, fin;
+  gp_Circ c;
+  double  deb, fin;
   Sect(1, IndexSurf)->Value(IndexSec).Get(c, deb, fin);
   occ::handle<Geom_Circle> Gc = new Geom_Circle(c);
-  Circ                   = new Geom_TrimmedCurve(Gc, deb, fin);
+  Circ                        = new Geom_TrimmedCurve(Gc, deb, fin);
 }

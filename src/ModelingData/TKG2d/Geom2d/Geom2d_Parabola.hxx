@@ -69,9 +69,9 @@ public:
   //! parabola and is in the direct sense if Sense is True.
   //! The "Location" point of "MirrorAxis" is the vertex of the parabola
   //! Raised if Focal < 0.0
-  Standard_EXPORT Geom2d_Parabola(const gp_Ax2d&         MirrorAxis,
-                                  const double    Focal,
-                                  const bool Sense = true);
+  Standard_EXPORT Geom2d_Parabola(const gp_Ax2d& MirrorAxis,
+                                  const double   Focal,
+                                  const bool     Sense = true);
 
   //! Creates a parabola with its Axis and it's focal
   //! length "Focal".
@@ -154,24 +154,20 @@ public:
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! Returns the point P of parameter U, the first second and third
   //! derivatives V1 V2 and V3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
   //! For the point of parameter U of this parabola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! Applies the transformation T to this parabola.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
@@ -180,8 +176,7 @@ public:
   //! parabola, for the point of parameter U on this parabola.
   //! For a parabola, the returned value is equal to U
   //! multiplied by the scale factor of transformation T.
-  Standard_EXPORT double TransformedParameter(const double U,
-                                                     const gp_Trsf2d&    T) const override;
+  Standard_EXPORT double TransformedParameter(const double U, const gp_Trsf2d& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -194,15 +189,14 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods returns T.ScaleFactor()
-  Standard_EXPORT double
-    ParametricTransformation(const gp_Trsf2d& T) const override;
+  Standard_EXPORT double ParametricTransformation(const gp_Trsf2d& T) const override;
 
   //! Creates a new object, which is a copy of this parabola.
   Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Parabola, Geom2d_Conic)
 

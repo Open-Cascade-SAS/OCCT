@@ -63,23 +63,23 @@ namespace
 
 // list of supported extensions
 static const char* Font_FontMgr_Extensions[] = {"ttf",
-                                                     "otf",
-                                                     "ttc",
-                                                     "pfa",
-                                                     "pfb",
+                                                "otf",
+                                                "ttc",
+                                                "pfa",
+                                                "pfb",
   #ifdef __APPLE__
   // Datafork TrueType (OS X), obsolete
   //"dfont",
   #endif
-                                                     NULL};
+                                                NULL};
 
   #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__)                       \
     && !defined(__EMSCRIPTEN__)
 // X11 configuration file in plain text format (obsolete - doesn't exists in modern distributives)
 static const char* myFontServiceConf[] = {"/etc/X11/fs/config",
-                                               "/usr/X11R6/lib/X11/fs/config",
-                                               "/usr/X11/lib/X11/fs/config",
-                                               NULL};
+                                          "/usr/X11R6/lib/X11/fs/config",
+                                          "/usr/X11/lib/X11/fs/config",
+                                          NULL};
 
     // Although fontconfig library can be built for various platforms,
     // practically it is useful only on desktop Linux distributions, where it is always packaged.
@@ -92,9 +92,9 @@ static const char* myDefaultFontsDirs[] = {"/System/Library/Fonts", "/Library/Fo
   #else
 // default fonts paths in most Unix systems (Linux and others)
 static const char* myDefaultFontsDirs[] = {"/system/fonts", // Android
-                                                "/usr/share/fonts",
-                                                "/usr/local/share/fonts",
-                                                NULL};
+                                           "/usr/share/fonts",
+                                           "/usr/local/share/fonts",
+                                           NULL};
   #endif
 
 static void addDirsRecursively(const OSD_Path&                           thePath,
@@ -135,8 +135,8 @@ static void addDirsRecursively(const OSD_Path&                           thePath
 //! @return TRUE if at least one font face has been detected
 static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
                       const occ::handle<Font_FTLibrary>&                  theFTLib,
-                      const TCollection_AsciiString&                 theFontPath,
-                      signed long                                    theFaceId = -1) // FT_Long
+                      const TCollection_AsciiString&                      theFontPath,
+                      signed long                                         theFaceId = -1) // FT_Long
 {
 #ifdef HAVE_FREETYPE
   const FT_Long aFaceId = theFaceId != -1 ? theFaceId : 0;
@@ -165,7 +165,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   Font_FontAspect         anAspect = Font_FA_Regular;
   if (aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD))
   {
-    anAspect                             = Font_FA_BoldItalic;
+    anAspect                = Font_FA_BoldItalic;
     const int aRemoveItalic = aStyle.Search("Italic");
     if (aRemoveItalic != -1)
     {
@@ -189,7 +189,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   }
   else if (aFontFace->style_flags == FT_STYLE_FLAG_ITALIC)
   {
-    anAspect                             = Font_FA_Italic;
+    anAspect                = Font_FA_Italic;
     const int aRemoveItalic = aStyle.Search("Italic");
     if (aRemoveItalic != -1)
     {
@@ -207,7 +207,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   }
   else if (aFontFace->style_flags == FT_STYLE_FLAG_BOLD)
   {
-    anAspect                           = Font_FA_Bold;
+    anAspect              = Font_FA_Bold;
     const int aRemoveBold = aStyle.Search("Bold");
     if (aRemoveBold != -1)
     {
@@ -378,7 +378,8 @@ bool Font_FontMgr::RemoveFontAlias(const TCollection_AsciiString& theAliasName,
 
 //=================================================================================================
 
-void Font_FontMgr::GetAllAliases(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theAliases) const
+void Font_FontMgr::GetAllAliases(
+  NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theAliases) const
 {
   for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Font_FontAliasSequence>>::Iterator
          anAliasIter(myFontAliases);
@@ -391,8 +392,9 @@ void Font_FontMgr::GetAllAliases(NCollection_Sequence<occ::handle<TCollection_HA
 
 //=================================================================================================
 
-void Font_FontMgr::GetFontAliases(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontNames,
-                                  const TCollection_AsciiString&  theAliasName) const
+void Font_FontMgr::GetFontAliases(
+  NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontNames,
+  const TCollection_AsciiString&                               theAliasName) const
 {
   TCollection_AsciiString anAliasName(theAliasName);
   anAliasName.LowerCase();
@@ -410,9 +412,9 @@ void Font_FontMgr::GetFontAliases(NCollection_Sequence<occ::handle<TCollection_H
 
 //=================================================================================================
 
-void Font_FontMgr::addFontAlias(const TCollection_AsciiString&        theAliasName,
+void Font_FontMgr::addFontAlias(const TCollection_AsciiString&             theAliasName,
                                 const occ::handle<Font_FontAliasSequence>& theAliases,
-                                Font_FontAspect                       theAspect)
+                                Font_FontAspect                            theAspect)
 {
   if (theAliases.IsNull() || theAliases->IsEmpty())
   {
@@ -544,7 +546,7 @@ Font_FontMgr::Font_FontMgr()
 //=================================================================================================
 
 bool Font_FontMgr::CheckFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
-                                         const TCollection_AsciiString& theFontPath) const
+                             const TCollection_AsciiString&                      theFontPath) const
 {
   occ::handle<Font_FTLibrary> aFtLibrary = new Font_FTLibrary();
   return checkFont(theFonts, aFtLibrary, theFontPath, 0);
@@ -556,13 +558,14 @@ occ::handle<Font_SystemFont> Font_FontMgr::CheckFont(const char* theFontPath) co
 {
   occ::handle<Font_FTLibrary>                        aFtLibrary = new Font_FTLibrary();
   NCollection_Sequence<occ::handle<Font_SystemFont>> aFonts;
-  return checkFont(aFonts, aFtLibrary, theFontPath, 0) ? aFonts.First() : occ::handle<Font_SystemFont>();
+  return checkFont(aFonts, aFtLibrary, theFontPath, 0) ? aFonts.First()
+                                                       : occ::handle<Font_SystemFont>();
 }
 
 //=================================================================================================
 
 bool Font_FontMgr::RegisterFont(const occ::handle<Font_SystemFont>& theFont,
-                                            const bool         theToOverride)
+                                const bool                          theToOverride)
 {
   if (theFont.IsNull())
   {
@@ -744,8 +747,8 @@ void Font_FontMgr::InitFontDataBase()
         continue;
       }
 
-      int        aNByte = 256;
-      int        aNbyteRead;
+      int                     aNByte = 256;
+      int                     aNbyteRead;
       TCollection_AsciiString aStr; // read string with information
       while (!aFile.IsAtEnd())
       {
@@ -764,7 +767,7 @@ void Font_FontMgr::InitFontDataBase()
         {
           aStr = aStr.Split(aPathLocation - 1);
           TCollection_AsciiString aFontPath;
-          int        aPathNumber = 1;
+          int                     aPathNumber = 1;
           do
           {
             // Getting directory paths, which can be split by "," or ":"
@@ -787,7 +790,7 @@ void Font_FontMgr::InitFontDataBase()
   // append default directories
   for (int anIter = 0; myDefaultFontsDirs[anIter] != NULL; ++anIter)
   {
-    const char*        anItem = myDefaultFontsDirs[anIter];
+    const char*             anItem = myDefaultFontsDirs[anIter];
     TCollection_AsciiString aPathStr(anItem);
     OSD_Path                aPath(aPathStr);
     addDirsRecursively(aPath, aMapOfFontsDirs);
@@ -835,9 +838,9 @@ void Font_FontMgr::InitFontDataBase()
       continue; // invalid fonts directory
     }
 
-    int              aNbyteRead, aNByte = 256;
+    int                           aNbyteRead, aNByte = 256;
     TCollection_AsciiString       aLine(aNByte);
-    bool              isFirstLine = true;
+    bool                          isFirstLine = true;
     const TCollection_AsciiString anEncoding("iso8859-1\n");
     while (!aReadFile.IsAtEnd())
     {
@@ -856,8 +859,7 @@ void Font_FontMgr::InitFontDataBase()
         continue; // can't find extension position in the font description
       }
 
-      int anEndOfFileName =
-        aLine.Location(" ", anExtensionPosition, aLine.Length()) - 1;
+      int anEndOfFileName = aLine.Location(" ", anExtensionPosition, aLine.Length()) - 1;
       if (anEndOfFileName < 0 || anEndOfFileName < anExtensionPosition)
       {
         continue; // font description have empty extension
@@ -921,7 +923,8 @@ void Font_FontMgr::InitFontDataBase()
 
 //=================================================================================================
 
-void Font_FontMgr::GetAvailableFontsNames(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontsNames) const
+void Font_FontMgr::GetAvailableFontsNames(
+  NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontsNames) const
 {
   theFontsNames.Clear();
   for (Font_FontMap::Iterator aFontIter(myFontMap); aFontIter.More(); aFontIter.Next())
@@ -933,9 +936,10 @@ void Font_FontMgr::GetAvailableFontsNames(NCollection_Sequence<occ::handle<TColl
 
 //=================================================================================================
 
-occ::handle<Font_SystemFont> Font_FontMgr::GetFont(const occ::handle<TCollection_HAsciiString>& theFontName,
-                                              const Font_FontAspect                   theFontAspect,
-                                              const int theFontSize) const
+occ::handle<Font_SystemFont> Font_FontMgr::GetFont(
+  const occ::handle<TCollection_HAsciiString>& theFontName,
+  const Font_FontAspect                        theFontAspect,
+  const int                                    theFontSize) const
 {
   if ((theFontSize < 2 && theFontSize != -1) || theFontName.IsNull())
   {
@@ -959,9 +963,9 @@ occ::handle<Font_SystemFont> Font_FontMgr::GetFont(const TCollection_AsciiString
 //=================================================================================================
 
 occ::handle<Font_SystemFont> Font_FontMgr::FindFallbackFont(Font_UnicodeSubset theSubset,
-                                                       Font_FontAspect    theFontAspect) const
+                                                            Font_FontAspect    theFontAspect) const
 {
-  Font_FontAspect         aFontAspect = theFontAspect;
+  Font_FontAspect              aFontAspect = theFontAspect;
   occ::handle<Font_SystemFont> aFont;
   switch (theSubset)
   {
@@ -1005,9 +1009,9 @@ occ::handle<Font_SystemFont> Font_FontMgr::FindFallbackFont(Font_UnicodeSubset t
 //=================================================================================================
 
 occ::handle<Font_SystemFont> Font_FontMgr::FindFont(const TCollection_AsciiString& theFontName,
-                                               Font_StrictLevel               theStrictLevel,
-                                               Font_FontAspect&               theFontAspect,
-                                               bool               theDoFailMsg) const
+                                                    Font_StrictLevel               theStrictLevel,
+                                                    Font_FontAspect&               theFontAspect,
+                                                    bool theDoFailMsg) const
 {
   TCollection_AsciiString aFontName(theFontName);
   aFontName.LowerCase();
@@ -1127,7 +1131,7 @@ occ::handle<Font_SystemFont> Font_FontMgr::Font_FontMap::Find(
     return FindKey(1); // return any font
   }
   occ::handle<Font_SystemFont> aTmpFont = new Font_SystemFont(theFontName);
-  const int               anInd    = FindIndex(aTmpFont);
+  const int                    anInd    = FindIndex(aTmpFont);
   if (anInd > 0)
   {
     return FindKey(anInd);

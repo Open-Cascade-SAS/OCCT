@@ -46,7 +46,7 @@ public:
 
   //! Creates a transaction context on <aDF>, ready to
   //! be opened.
-  Standard_EXPORT TDF_Transaction(const occ::handle<TDF_Data>&        aDF,
+  Standard_EXPORT TDF_Transaction(const occ::handle<TDF_Data>&   aDF,
                                   const TCollection_AsciiString& aName = "");
 
   //! Aborts all the transactions on <myDF> and sets
@@ -94,9 +94,9 @@ private:
   TDF_Transaction& operator=(const TDF_Transaction& theOther);
 
 private:
-  occ::handle<TDF_Data>        myDF;
+  occ::handle<TDF_Data>   myDF;
   TCollection_AsciiString myName;
-  int        myUntilTransaction;
+  int                     myUntilTransaction;
 };
 
 #include <TDF_Transaction.lxx>

@@ -31,7 +31,7 @@ class StepBasic_ApprovalDateTime : public Standard_Transient
 public:
   Standard_EXPORT StepBasic_ApprovalDateTime();
 
-  Standard_EXPORT void Init(const StepBasic_DateTimeSelect&   aDateTime,
+  Standard_EXPORT void Init(const StepBasic_DateTimeSelect&        aDateTime,
                             const occ::handle<StepBasic_Approval>& aDatedApproval);
 
   Standard_EXPORT void SetDateTime(const StepBasic_DateTimeSelect& aDateTime);
@@ -45,7 +45,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_ApprovalDateTime, Standard_Transient)
 
 private:
-  StepBasic_DateTimeSelect   theDateTime;
+  StepBasic_DateTimeSelect        theDateTime;
   occ::handle<StepBasic_Approval> theDatedApproval;
 };
 

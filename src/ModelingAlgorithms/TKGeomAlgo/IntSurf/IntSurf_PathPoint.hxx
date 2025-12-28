@@ -65,11 +65,11 @@ public:
   void Parameters(const int Index, double& U, double& V) const;
 
 private:
-  gp_Pnt                       pt;
-  bool             ispass;
-  bool             istgt;
-  gp_Vec                       vectg;
-  gp_Dir2d                     dirtg;
+  gp_Pnt                                    pt;
+  bool                                      ispass;
+  bool                                      istgt;
+  gp_Vec                                    vectg;
+  gp_Dir2d                                  dirtg;
   occ::handle<NCollection_HSequence<gp_XY>> sequv;
 };
 

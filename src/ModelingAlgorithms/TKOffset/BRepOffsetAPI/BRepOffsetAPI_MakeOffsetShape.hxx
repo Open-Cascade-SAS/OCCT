@@ -46,8 +46,7 @@ public:
 
   //! Constructs offset shape for the given one using simple algorithm without intersections
   //! computation.
-  Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS,
-                                       const double theOffsetValue);
+  Standard_EXPORT void PerformBySimple(const TopoDS_Shape& theS, const double theOffsetValue);
 
   //! Constructs a shape parallel to the shape S, where
   //! - S may be a face, a shell, a solid or a compound of these shape kinds;
@@ -106,13 +105,13 @@ public:
   //! geometry of S is BSpline with continuity C0.
   Standard_EXPORT void PerformByJoin(
     const TopoDS_Shape&          S,
-    const double          Offset,
-    const double          Tol,
+    const double                 Offset,
+    const double                 Tol,
     const BRepOffset_Mode        Mode           = BRepOffset_Skin,
-    const bool       Intersection   = false,
-    const bool       SelfInter      = false,
+    const bool                   Intersection   = false,
+    const bool                   SelfInter      = false,
     const GeomAbs_JoinType       Join           = GeomAbs_Arc,
-    const bool       RemoveIntEdges = false,
+    const bool                   RemoveIntEdges = false,
     const Message_ProgressRange& theRange       = Message_ProgressRange());
 
   //! Returns instance of the underlying intersection / arc algorithm.
@@ -123,12 +122,12 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! Returns the list of shapes generated from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   //! Returns the list of shapes Modified from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& S) override;
 
   //! Returns true if the shape has been removed from the result.
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;

@@ -38,8 +38,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT Vrml_Cone(const Vrml_ConeParts aParts        = Vrml_ConeALL,
-                            const double  aBottomRadius = 1,
-                            const double  aHeight       = 2);
+                            const double         aBottomRadius = 1,
+                            const double         aHeight       = 2);
 
   Standard_EXPORT void SetParts(const Vrml_ConeParts aParts);
 
@@ -57,8 +57,8 @@ public:
 
 private:
   Vrml_ConeParts myParts;
-  double  myBottomRadius;
-  double  myHeight;
+  double         myBottomRadius;
+  double         myHeight;
 };
 
 #endif // _Vrml_Cone_HeaderFile

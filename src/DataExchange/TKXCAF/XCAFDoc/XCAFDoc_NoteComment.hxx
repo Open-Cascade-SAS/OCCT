@@ -51,11 +51,11 @@ public:
 
 public:
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT const Standard_GUID&  ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const override;
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
-  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
-  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
-                             const occ::handle<TDF_RelocationTable>& theRT) const override;
+  Standard_EXPORT void              Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
+  Standard_EXPORT void              Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
+                                          const occ::handle<TDF_RelocationTable>& theRT) const override;
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 protected:

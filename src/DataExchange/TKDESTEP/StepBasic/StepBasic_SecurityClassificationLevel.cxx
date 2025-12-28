@@ -24,7 +24,8 @@ void StepBasic_SecurityClassificationLevel::Init(const occ::handle<TCollection_H
   name = aName;
 }
 
-void StepBasic_SecurityClassificationLevel::SetName(const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_SecurityClassificationLevel::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }

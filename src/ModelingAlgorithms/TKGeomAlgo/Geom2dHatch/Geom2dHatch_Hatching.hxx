@@ -27,7 +27,6 @@
 #include <NCollection_Sequence.hxx>
 #include <HatchGen_ErrorStatus.hxx>
 #include <HatchGen_Domain.hxx>
-#include <NCollection_Sequence.hxx>
 
 class gp_Pnt2d;
 
@@ -80,8 +79,7 @@ public:
   Standard_EXPORT HatchGen_ErrorStatus Status() const;
 
   //! Adds an intersection point to the hatching.
-  Standard_EXPORT void AddPoint(const HatchGen_PointOnHatching& Point,
-                                const double             Confusion);
+  Standard_EXPORT void AddPoint(const HatchGen_PointOnHatching& Point, const double Confusion);
 
   //! Returns the number of intersection points
   //! of the hatching.
@@ -132,12 +130,12 @@ public:
   Standard_EXPORT gp_Pnt2d ClassificationPoint() const;
 
 private:
-  Geom2dAdaptor_Curve       myCurve;
-  bool          myTrimDone;
-  bool          myTrimFailed;
+  Geom2dAdaptor_Curve                            myCurve;
+  bool                                           myTrimDone;
+  bool                                           myTrimFailed;
   NCollection_Sequence<HatchGen_PointOnHatching> myPoints;
-  bool          myIsDone;
-  HatchGen_ErrorStatus      myStatus;
+  bool                                           myIsDone;
+  HatchGen_ErrorStatus                           myStatus;
   NCollection_Sequence<HatchGen_Domain>          myDomains;
 };
 

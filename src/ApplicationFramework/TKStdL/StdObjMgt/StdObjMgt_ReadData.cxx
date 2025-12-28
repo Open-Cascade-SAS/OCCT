@@ -17,7 +17,7 @@
 #include <Standard_GUID.hxx>
 
 StdObjMgt_ReadData::StdObjMgt_ReadData(const occ::handle<Storage_BaseDriver>& theDriver,
-                                       const int            theNumberOfObjects)
+                                       const int                              theNumberOfObjects)
     : myDriver(theDriver),
       myPersistentObjects(1, theNumberOfObjects)
 {
@@ -53,7 +53,7 @@ StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, Standard_GUID& t
 
   int      a32b;
   char16_t a16b[3];
-  char    a8b[6];
+  char     a8b[6];
 
   theReadData >> a32b >> a16b[0] >> a16b[1] >> a16b[2];
   theReadData >> a8b[0] >> a8b[1] >> a8b[2] >> a8b[3] >> a8b[4] >> a8b[5];

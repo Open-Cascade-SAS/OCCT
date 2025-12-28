@@ -38,15 +38,13 @@ public:
 
   //! Recognizes a kind of CurveElementPurpose select type
   //! return 0
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Recognizes a items of select member CurveElementPurposeMember
   //! 1 -> EnumeratedCurveElementPurpose
   //! 2 -> ApplicationDefinedElementPurpose
   //! 0 else
-  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const
-    override;
+  Standard_EXPORT virtual int CaseMem(const occ::handle<StepData_SelectMember>& ent) const override;
 
   //! Returns a new select member the type CurveElementPurposeMember
   Standard_EXPORT virtual occ::handle<StepData_SelectMember> NewMember() const override;
@@ -64,7 +62,6 @@ public:
 
   //! Returns Value as ApplicationDefinedElementPurpose (or Null if another type)
   Standard_EXPORT occ::handle<TCollection_HAsciiString> ApplicationDefinedElementPurpose() const;
-
 };
 
 #endif // _StepElement_CurveElementPurpose_HeaderFile

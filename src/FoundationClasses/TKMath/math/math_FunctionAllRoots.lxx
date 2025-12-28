@@ -15,7 +15,6 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 
 inline bool math_FunctionAllRoots::IsDone() const
 {
@@ -34,18 +33,14 @@ inline int math_FunctionAllRoots::NbIntervals() const
   return pdeb.Length();
 }
 
-inline void math_FunctionAllRoots::GetInterval(const int Index,
-                                               double&         A,
-                                               double&         B) const
+inline void math_FunctionAllRoots::GetInterval(const int Index, double& A, double& B) const
 {
   StdFail_NotDone_Raise_if(!done, " ");
   A = pdeb.Value(Index);
   B = pfin.Value(Index);
 }
 
-inline void math_FunctionAllRoots::GetIntervalState(const int Index,
-                                                    int&      IFirst,
-                                                    int&      ILast) const
+inline void math_FunctionAllRoots::GetIntervalState(const int Index, int& IFirst, int& ILast) const
 {
   StdFail_NotDone_Raise_if(!done, " ");
   IFirst = ideb.Value(Index);

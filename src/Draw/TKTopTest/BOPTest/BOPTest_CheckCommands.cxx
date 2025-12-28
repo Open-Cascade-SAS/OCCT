@@ -32,11 +32,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
 #include <algorithm>
@@ -48,9 +44,9 @@ static void MakeShapeForFullOutput(const TCollection_AsciiString&,
                                    const NCollection_List<TopoDS_Shape>&,
                                    int&,
                                    Draw_Interpretor&,
-                                   bool bCurveOnSurf  = false,
-                                   double    aMaxDist      = 0.,
-                                   double    aMaxParameter = 0.);
+                                   bool   bCurveOnSurf  = false,
+                                   double aMaxDist      = 0.,
+                                   double aMaxParameter = 0.);
 //
 static int bopcheck(Draw_Interpretor&, int, const char**);
 static int bopargcheck(Draw_Interpretor&, int, const char**);
@@ -193,9 +189,9 @@ int bopcheck(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  bool bRunParallel, bShowTime;
-  int i, aLevel, aNbInterfTypes;
-  double    aTol;
+  bool   bRunParallel, bShowTime;
+  int    i, aLevel, aNbInterfTypes;
+  double aTol;
   //
   aNbInterfTypes = BOPDS_DS::NbInterfTypes();
   //
@@ -232,10 +228,10 @@ int bopcheck(Draw_Interpretor& di, int n, const char** a)
   char buf[256], aName1[32], aName2[32];
   char aInterfTypes[10][4] = {"V/V", "V/E", "E/E", "V/F", "E/F", "F/F", "V/Z", "E/Z", "F/Z", "Z/Z"};
   //
-  int             iErr, iCnt, n1, n2, iT;
-  TopAbs_ShapeEnum             aType1, aType2;
-  BOPAlgo_CheckerSI            aChecker;
-  NCollection_List<TopoDS_Shape>         aLS;
+  int                                   iErr, iCnt, n1, n2, iT;
+  TopAbs_ShapeEnum                      aType1, aType2;
+  BOPAlgo_CheckerSI                     aChecker;
+  NCollection_List<TopoDS_Shape>        aLS;
   NCollection_Map<BOPDS_Pair>::Iterator aItMPK;
   //
   if (aLevel < (aNbInterfTypes - 1))
@@ -409,16 +405,16 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  bool isBO       = false;
-  int indxBO     = 0;
-  bool isOP       = false;
-  int indxOP     = 0;
-  bool isAD       = false;
-  int indxAD     = 0;
-  bool isS2       = false;
-  int indxS2     = 0;
-  double    aTolerance = 0;
-  bool bRunParallel;
+  bool   isBO       = false;
+  int    indxBO     = 0;
+  bool   isOP       = false;
+  int    indxOP     = 0;
+  bool   isAD       = false;
+  int    indxAD     = 0;
+  bool   isS2       = false;
+  int    indxS2     = 0;
+  double aTolerance = 0;
+  bool   bRunParallel;
   //
   bRunParallel = BOPTest_Objects::RunParallel();
   aTolerance   = BOPTest_Objects::FuzzyValue();
@@ -627,20 +623,16 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
     }
     else
     {
-      const NCollection_List<BOPAlgo_CheckResult>&        aResultList = aChecker.GetCheckResult();
+      const NCollection_List<BOPAlgo_CheckResult>&    aResultList = aChecker.GetCheckResult();
       NCollection_List<BOPAlgo_CheckResult>::Iterator anIt(aResultList);
 
-      int S1_BadType = 0, S1_SelfInt = 0, S1_SmalE = 0, S1_BadF = 0, S1_BadV = 0,
-                       S1_BadE       = 0;
-      int S1_SelfIntAll = 0, S1_SmalEAll = 0, S1_BadFAll = 0, S1_BadVAll = 0,
-                       S1_BadEAll = 0;
-      int S2_BadType = 0, S2_SelfInt = 0, S2_SmalE = 0, S2_BadF = 0, S2_BadV = 0,
-                       S2_BadE       = 0;
-      int S2_SelfIntAll = 0, S2_SmalEAll = 0, S2_BadFAll = 0, S2_BadVAll = 0,
-                       S2_BadEAll = 0;
-      int S1_OpAb = 0, S2_OpAb = 0;
-      int S1_C0 = 0, S2_C0 = 0, S1_C0All = 0, S2_C0All = 0;
-      int S1_COnS = 0, S2_COnS = 0, S1_COnSAll = 0, S2_COnSAll = 0;
+      int  S1_BadType = 0, S1_SelfInt = 0, S1_SmalE = 0, S1_BadF = 0, S1_BadV = 0, S1_BadE = 0;
+      int  S1_SelfIntAll = 0, S1_SmalEAll = 0, S1_BadFAll = 0, S1_BadVAll = 0, S1_BadEAll = 0;
+      int  S2_BadType = 0, S2_SelfInt = 0, S2_SmalE = 0, S2_BadF = 0, S2_BadV = 0, S2_BadE = 0;
+      int  S2_SelfIntAll = 0, S2_SmalEAll = 0, S2_BadFAll = 0, S2_BadVAll = 0, S2_BadEAll = 0;
+      int  S1_OpAb = 0, S2_OpAb = 0;
+      int  S1_C0 = 0, S2_C0 = 0, S1_C0All = 0, S2_C0All = 0;
+      int  S1_COnS = 0, S2_COnS = 0, S1_COnSAll = 0, S2_COnSAll = 0;
       bool hasUnknown = false;
 
       TCollection_AsciiString aS1SIBaseName("s1si_");
@@ -660,13 +652,13 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
 
       for (; anIt.More(); anIt.Next())
       {
-        const BOPAlgo_CheckResult&  aResult = anIt.Value();
-        const TopoDS_Shape&         aSS1    = aResult.GetShape1();
-        const TopoDS_Shape&         aSS2    = aResult.GetShape2();
+        const BOPAlgo_CheckResult&            aResult = anIt.Value();
+        const TopoDS_Shape&                   aSS1    = aResult.GetShape1();
+        const TopoDS_Shape&                   aSS2    = aResult.GetShape2();
         const NCollection_List<TopoDS_Shape>& aLS1    = aResult.GetFaultyShapes1();
         const NCollection_List<TopoDS_Shape>& aLS2    = aResult.GetFaultyShapes2();
-        bool            isL1    = !aLS1.IsEmpty();
-        bool            isL2    = !aLS2.IsEmpty();
+        bool                                  isL1    = !aLS1.IsEmpty();
+        bool                                  isL2    = !aLS2.IsEmpty();
 
         switch (aResult.GetCheckStatus())
         {
@@ -835,11 +827,9 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
         } // switch
       } // faulties
 
-      int FS1 =
-        S1_SelfInt + S1_SmalE + S1_BadF + S1_BadV + S1_BadE + S1_OpAb + S1_C0 + S1_COnS;
+      int FS1 = S1_SelfInt + S1_SmalE + S1_BadF + S1_BadV + S1_BadE + S1_OpAb + S1_C0 + S1_COnS;
       FS1 += (S1_BadType != 0) ? 1 : 0;
-      int FS2 =
-        S2_SelfInt + S2_SmalE + S2_BadF + S2_BadV + S2_BadE + S2_OpAb + S2_C0 + S2_COnS;
+      int FS2 = S2_SelfInt + S2_SmalE + S2_BadF + S2_BadV + S2_BadE + S2_OpAb + S2_C0 + S2_COnS;
       FS2 += (S2_BadType != 0) ? 1 : 0;
 
       // output for first shape
@@ -1054,8 +1044,8 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
   }
 
   BOPAlgo_Operation anOp    = BOPAlgo_UNKNOWN;
-  bool  bTestSE = true;
-  bool  bTestSI = true;
+  bool              bTestSE = true;
+  bool              bTestSI = true;
 
   for (int i = aS2.IsNull() ? 2 : 3; i < n; ++i)
   {
@@ -1101,8 +1091,8 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
   // Shapes seem to be invalid.
   // Analyze the invalidity.
 
-  bool                        isInv1 = false, isInv2 = false;
-  bool                        isBadOp = false;
+  bool                                            isInv1 = false, isInv2 = false;
+  bool                                            isBadOp = false;
   NCollection_List<BOPAlgo_CheckResult>::Iterator itF(aChecker.Result());
   for (; itF.More(); itF.Next())
   {
@@ -1206,12 +1196,12 @@ int checkcurveonsurf(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int nE, nF, anECounter, aFCounter;
-  double    aT, aTolE, aDMax;
-  TopExp_Explorer  aExpF, aExpE;
-  char             buf[200], aFName[10], anEName[10];
+  int             nE, nF, anECounter, aFCounter;
+  double          aT, aTolE, aDMax;
+  TopExp_Explorer aExpF, aExpE;
+  char            buf[200], aFName[10], anEName[10];
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aDMETol;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>                                            aMSI;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>    aMSI;
   //
   anECounter = 0;
   aFCounter  = 0;
@@ -1329,18 +1319,18 @@ int checkcurveonsurf(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-void MakeShapeForFullOutput(const TCollection_AsciiString& aBaseName,
-                            const int         aIndex,
-                            const NCollection_List<TopoDS_Shape>&    aList,
-                            int&              aCount,
-                            Draw_Interpretor&              di,
-                            bool               bCurveOnSurf,
-                            double                  aMaxDist,
-                            double                  aMaxParameter)
+void MakeShapeForFullOutput(const TCollection_AsciiString&        aBaseName,
+                            const int                             aIndex,
+                            const NCollection_List<TopoDS_Shape>& aList,
+                            int&                                  aCount,
+                            Draw_Interpretor&                     di,
+                            bool                                  bCurveOnSurf,
+                            double                                aMaxDist,
+                            double                                aMaxParameter)
 {
   TCollection_AsciiString aNum(aIndex);
   TCollection_AsciiString aName = aBaseName + aNum;
-  const char*        name  = aName.ToCString();
+  const char*             name  = aName.ToCString();
 
   TopoDS_Compound cmp;
   BRep_Builder    BB;

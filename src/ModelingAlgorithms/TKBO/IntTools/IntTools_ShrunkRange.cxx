@@ -40,8 +40,8 @@ IntTools_ShrunkRange::~IntTools_ShrunkRange() {}
 //=================================================================================================
 
 void IntTools_ShrunkRange::SetData(const TopoDS_Edge&   aE,
-                                   const double  aT1,
-                                   const double  aT2,
+                                   const double         aT1,
+                                   const double         aT2,
                                    const TopoDS_Vertex& aV1,
                                    const TopoDS_Vertex& aV2)
 {
@@ -119,8 +119,8 @@ void IntTools_ShrunkRange::Perform()
     return;
   }
   //
-  gp_Pnt        aP1 = BRep_Tool::Pnt(myV1);
-  gp_Pnt        aP2 = BRep_Tool::Pnt(myV2);
+  gp_Pnt aP1 = BRep_Tool::Pnt(myV1);
+  gp_Pnt aP2 = BRep_Tool::Pnt(myV2);
   double aTolE, aTolV1, aTolV2;
   aTolE  = BRep_Tool::Tolerance(myEdge);
   aTolV1 = BRep_Tool::Tolerance(myV1);

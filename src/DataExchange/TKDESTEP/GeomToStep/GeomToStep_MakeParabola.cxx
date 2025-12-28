@@ -30,15 +30,15 @@
 // Geom2d
 //=============================================================================
 GeomToStep_MakeParabola::GeomToStep_MakeParabola(const occ::handle<Geom2d_Parabola>& C,
-                                                 const StepData_Factors&        theLocalFactors)
+                                                 const StepData_Factors& theLocalFactors)
 {
   gp_Parab2d gpPar;
   gpPar = C->Parab2d();
 
   occ::handle<StepGeom_Parabola>         PStep = new StepGeom_Parabola;
-  StepGeom_Axis2Placement           Ax2;
+  StepGeom_Axis2Placement                Ax2;
   occ::handle<StepGeom_Axis2Placement2d> Ax2Step;
-  double                     focal;
+  double                                 focal;
 
   GeomToStep_MakeAxis2Placement2d MkAxis2(gpPar.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
@@ -56,15 +56,15 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const occ::handle<Geom2d_Parabo
 //=============================================================================
 
 GeomToStep_MakeParabola::GeomToStep_MakeParabola(const occ::handle<Geom_Parabola>& C,
-                                                 const StepData_Factors&      theLocalFactors)
+                                                 const StepData_Factors&           theLocalFactors)
 {
   gp_Parab gpPar;
   gpPar = C->Parab();
 
   occ::handle<StepGeom_Parabola>         PStep = new StepGeom_Parabola;
-  StepGeom_Axis2Placement           Ax2;
+  StepGeom_Axis2Placement                Ax2;
   occ::handle<StepGeom_Axis2Placement3d> Ax2Step;
-  double                     focal;
+  double                                 focal;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(gpPar.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();

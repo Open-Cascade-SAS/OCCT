@@ -21,12 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 class TopoDS_Face;
 class TopoDS_Wire;
@@ -70,16 +67,16 @@ public:
   //! the left part of the wire. If <ModifyRight> is set
   //! to <false>,no draft angle is applied to
   //! the right part of the wire.
-  Standard_EXPORT void Perform(const TopoDS_Face&     F,
-                               const TopoDS_Wire&     W,
-                               const gp_Dir&          Extractg,
-                               const gp_Pln&          NPlg,
-                               const double    Angleg,
-                               const gp_Dir&          Extractd,
-                               const gp_Pln&          NPld,
-                               const double    Angled,
-                               const bool ModifyLeft  = true,
-                               const bool ModifyRight = true);
+  Standard_EXPORT void Perform(const TopoDS_Face& F,
+                               const TopoDS_Wire& W,
+                               const gp_Dir&      Extractg,
+                               const gp_Pln&      NPlg,
+                               const double       Angleg,
+                               const gp_Dir&      Extractd,
+                               const gp_Pln&      NPld,
+                               const double       Angled,
+                               const bool         ModifyLeft  = true,
+                               const bool         ModifyRight = true);
 
   //! Splits the face <F> of the former given shape with
   //! the wire <W>. The wire is assumed to lie on the
@@ -89,11 +86,11 @@ public:
   //! plane (points belonging to the neutral plane are
   //! not modified). <Angle> is the value of the draft
   //! angle.
-  Standard_EXPORT void Perform(const TopoDS_Face&  F,
-                               const TopoDS_Wire&  W,
-                               const gp_Dir&       Extract,
-                               const gp_Pln&       NPl,
-                               const double Angle);
+  Standard_EXPORT void Perform(const TopoDS_Face& F,
+                               const TopoDS_Wire& W,
+                               const gp_Dir&      Extract,
+                               const gp_Pln&      NPl,
+                               const double       Angle);
 
   //! Returns <true> if the modification has been successfully performed.
   bool IsDone() const { return !myResult.IsNull(); }
@@ -104,11 +101,12 @@ public:
   Standard_EXPORT const TopoDS_Shape& Shape() const;
 
   //! Manages the descendant shapes.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ShapesFromShape(const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ShapesFromShape(
+    const TopoDS_Shape& S) const;
 
 private:
-  TopoDS_Shape                       myShape;
-  TopoDS_Shape                       myResult;
+  TopoDS_Shape myShape;
+  TopoDS_Shape myResult;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 

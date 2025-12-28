@@ -37,12 +37,12 @@ IGESDimen_ToolOrdinateDimension::IGESDimen_ToolOrdinateDimension() {}
 void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
   const occ::handle<IGESDimen_OrdinateDimension>& theEnt,
   const occ::handle<IGESData_IGESReaderData>&     IR,
-  IGESData_ParamReader&                      PR) const
+  IGESData_ParamReader&                           PR) const
 {
   occ::handle<IGESDimen_GeneralNote> tempNote;
   occ::handle<IGESDimen_WitnessLine> witLine;
   occ::handle<IGESDimen_LeaderArrow> leadArr;
-  bool              isLine = false;
+  bool                               isLine = false;
 
   PR.ReadEntity(IR, PR.Current(), "General Note", STANDARD_TYPE(IGESDimen_GeneralNote), tempNote);
 
@@ -75,8 +75,9 @@ void IGESDimen_ToolOrdinateDimension::ReadOwnParams(
   theEnt->Init(tempNote, isLine, witLine, leadArr);
 }
 
-void IGESDimen_ToolOrdinateDimension::WriteOwnParams(const occ::handle<IGESDimen_OrdinateDimension>& ent,
-                                                     IGESData_IGESWriter& IW) const
+void IGESDimen_ToolOrdinateDimension::WriteOwnParams(
+  const occ::handle<IGESDimen_OrdinateDimension>& ent,
+  IGESData_IGESWriter&                            IW) const
 {
   IW.Send(ent->Note());
   if (ent->FormNumber() == 0) // either WitnessLine or  LeaderArrow
@@ -101,9 +102,10 @@ void IGESDimen_ToolOrdinateDimension::OwnShared(const occ::handle<IGESDimen_Ordi
   iter.GetOneItem(ent->Leader());
 }
 
-void IGESDimen_ToolOrdinateDimension::OwnCopy(const occ::handle<IGESDimen_OrdinateDimension>& another,
-                                              const occ::handle<IGESDimen_OrdinateDimension>& ent,
-                                              Interface_CopyTool&                        TC) const
+void IGESDimen_ToolOrdinateDimension::OwnCopy(
+  const occ::handle<IGESDimen_OrdinateDimension>& another,
+  const occ::handle<IGESDimen_OrdinateDimension>& ent,
+  Interface_CopyTool&                             TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_WitnessLine, witLine, TC.Transferred(another->WitnessLine()));
@@ -146,9 +148,9 @@ void IGESDimen_ToolOrdinateDimension::OwnCheck(const occ::handle<IGESDimen_Ordin
 }
 
 void IGESDimen_ToolOrdinateDimension::OwnDump(const occ::handle<IGESDimen_OrdinateDimension>& ent,
-                                              const IGESData_IGESDumper&                 dumper,
-                                              Standard_OStream&                          S,
-                                              const int level) const
+                                              const IGESData_IGESDumper& dumper,
+                                              Standard_OStream&          S,
+                                              const int                  level) const
 {
   S << "IGESDimen_OrdinateDimension\n";
   int sublevel = (level <= 4) ? 0 : 1;

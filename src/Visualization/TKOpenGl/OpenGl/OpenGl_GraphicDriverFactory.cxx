@@ -38,7 +38,7 @@ occ::handle<Graphic3d_GraphicDriver> OpenGl_GraphicDriverFactory::CreateDriver(
   const occ::handle<Aspect_DisplayConnection>& theDisp)
 {
   occ::handle<OpenGl_GraphicDriver> aDriver = new OpenGl_GraphicDriver(theDisp, false);
-  aDriver->ChangeOptions()             = *myDefaultCaps;
+  aDriver->ChangeOptions()                  = *myDefaultCaps;
   aDriver->InitContext();
   return aDriver;
 }

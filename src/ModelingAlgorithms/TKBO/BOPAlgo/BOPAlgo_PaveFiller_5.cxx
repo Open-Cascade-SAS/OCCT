@@ -27,7 +27,6 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -40,14 +39,12 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_EdgeFace.hxx>
 #include <IntTools_Range.hxx>
-#include <IntTools_CommonPrt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Map.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -113,9 +110,9 @@ public:
     {
       return;
     }
-    TopoDS_Face      aFace   = myFace;
-    TopoDS_Edge      anEdge  = myEdge;
-    bool hasTrsf = false;
+    TopoDS_Face aFace   = myFace;
+    TopoDS_Edge anEdge  = myEdge;
+    bool        hasTrsf = false;
     try
     {
       OCC_CATCH_SIGNALS
@@ -152,12 +149,12 @@ public:
 
   //
 protected:
-  int        myIE;
-  int        myIF;
-  IntTools_Range          myNewSR;
+  int                          myIE;
+  int                          myIF;
+  IntTools_Range               myNewSR;
   occ::handle<BOPDS_PaveBlock> myPB;
-  Bnd_Box                 myBox1;
-  Bnd_Box                 myBox2;
+  Bnd_Box                      myBox1;
+  Bnd_Box                      myBox2;
 };
 
 //
@@ -172,7 +169,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_FACE);
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
-  int      iSize = myIterator->ExpectedLength();
+  int                   iSize = myIterator->ExpectedLength();
   if (!iSize)
   {
     return;
@@ -195,24 +192,27 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     return;
   }
   //
-  bool                    bV[2], bIsPBSplittable;
-  bool                    bV1, bV2, bExpressCompute;
-  int                    nV1, nV2;
-  int                    i, aNbCPrts, iX, nV[2];
-  int                    aNbEdgeFace, k;
-  double                       aTolE, aTolF, aTS1, aTS2, aT1, aT2;
-  occ::handle<NCollection_BaseAllocator>   aAllocator;
-  TopAbs_ShapeEnum                    aType;
+  bool                                                     bV[2], bIsPBSplittable;
+  bool                                                     bV1, bV2, bExpressCompute;
+  int                                                      nV1, nV2;
+  int                                                      i, aNbCPrts, iX, nV[2];
+  int                                                      aNbEdgeFace, k;
+  double                                                   aTolE, aTolF, aTS1, aTS2, aT1, aT2;
+  occ::handle<NCollection_BaseAllocator>                   aAllocator;
+  TopAbs_ShapeEnum                                         aType;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt;
-  BOPAlgo_VectorOfEdgeFace            aVEdgeFace;
+  BOPAlgo_VectorOfEdgeFace                                 aVEdgeFace;
   //-----------------------------------------------------scope f
   //
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  NCollection_Map<int>                          aMIEFC(100, aAllocator);
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> aMVCPB(100, aAllocator);
-  NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>  aMPBLI(100, aAllocator);
-  BOPAlgo_DataMapOfPaveBlockBndBox              aDMPBBox(100, aAllocator);
+  NCollection_Map<int> aMIEFC(100, aAllocator);
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
+    aMVCPB(100, aAllocator);
+  NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>> aMPBLI(
+    100,
+    aAllocator);
+  BOPAlgo_DataMapOfPaveBlockBndBox aDMPBBox(100, aAllocator);
   //
   NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   aEFs.SetIncrement(iSize);
@@ -235,7 +235,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     const TopoDS_Face& aF   = (*(TopoDS_Face*)(&myDS->Shape(nF)));
     const Bnd_Box&     aBBF = myDS->ShapeInfo(nF).Box();
     //
-    BOPDS_FaceInfo&                    aFI   = myDS->ChangeFaceInfo(nF);
+    BOPDS_FaceInfo&                                             aFI   = myDS->ChangeFaceInfo(nF);
     const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBF = aFI.PaveBlocksOn();
     //
     const NCollection_Map<int>& aMVIn = aFI.VerticesIn();
@@ -343,7 +343,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     aTolF = BRep_Tool::Tolerance(aF);
     //
     const NCollection_Sequence<IntTools_CommonPrt>& aCPrts = aEdgeFace.CommonParts();
-    aNbCPrts                                    = aCPrts.Length();
+    aNbCPrts                                               = aCPrts.Length();
     if (!aNbCPrts)
     {
       if (aEdgeFace.MinimalDistance() < RealLast() && aEdgeFace.MinimalDistance() > aTolE + aTolF)
@@ -358,7 +358,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
       continue;
     }
     //
-    const IntTools_Range&    anewSR = aEdgeFace.NewSR();
+    const IntTools_Range&         anewSR = aEdgeFace.NewSR();
     occ::handle<BOPDS_PaveBlock>& aPB    = aEdgeFace.PaveBlock();
     //
     aPB->Range(aT1, aT2);
@@ -401,10 +401,10 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
       switch (aType)
       {
         case TopAbs_VERTEX: {
-          bool bIsOnPave[2];
-          int j;
-          double    aT, aTolToDecide;
-          TopoDS_Vertex    aVnew;
+          bool          bIsOnPave[2];
+          int           j;
+          double        aT, aTolToDecide;
+          TopoDS_Vertex aVnew;
           //
           IntTools_Tools::VertexParameter(aCPart, aT);
           BOPTools_AlgoTools::MakeNewVertex(aE, aT, aF, aVnew);
@@ -462,10 +462,9 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
             GeomAPI_ProjectPointOnSurf& aProjPS = myContext->ProjPS(aF);
             const gp_Pnt                aPnew   = BRep_Tool::Pnt(aVnew);
             aProjPS.Perform(aPnew);
-            double    aMinDistEF          = (aProjPS.IsDone() && aProjPS.NbPoints())
-                                                     ? aProjPS.LowerDistance()
-                                                     : Precision::Infinite();
-            bool hasRealIntersection = aMinDistEF < Precision::Intersection();
+            double aMinDistEF = (aProjPS.IsDone() && aProjPS.NbPoints()) ? aProjPS.LowerDistance()
+                                                                         : Precision::Infinite();
+            bool   hasRealIntersection = aMinDistEF < Precision::Intersection();
 
             if (!hasRealIntersection)
               // no intersection point
@@ -479,9 +478,9 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
               {
                 const TopoDS_Vertex& aV       = TopoDS::Vertex(myDS->Shape(nV[j]));
                 const gp_Pnt         aP       = BRep_Tool::Pnt(aV);
-                double        aDistPP  = aP.Distance(aPnew);
-                double        aTol     = BRep_Tool::Tolerance(aV);
-                double        aMaxDist = 1.e4 * aTol;
+                double               aDistPP  = aP.Distance(aPnew);
+                double               aTol     = BRep_Tool::Tolerance(aV);
+                double               aMaxDist = 1.e4 * aTol;
                 if (aTol < .01)
                 {
                   aMaxDist = std::min(aMaxDist, 0.1);
@@ -502,7 +501,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
           }
           //
           double aTolVnew = BRep_Tool::Tolerance(aVnew);
-          aTolVnew               = std::max(aTolVnew, std::max(aTolE, aTolF));
+          aTolVnew        = std::max(aTolVnew, std::max(aTolE, aTolF));
           BRep_Builder().UpdateVertex(aVnew, aTolVnew);
           if (bLinePlane)
           {
@@ -587,9 +586,9 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-bool BOPAlgo_PaveFiller::CheckFacePaves(const int      nVx,
-                                                    const NCollection_Map<int>& aMIFOn,
-                                                    const NCollection_Map<int>& aMIFIn)
+bool BOPAlgo_PaveFiller::CheckFacePaves(const int                   nVx,
+                                        const NCollection_Map<int>& aMIFOn,
+                                        const NCollection_Map<int>& aMIFIn)
 {
   if (aMIFOn.Contains(nVx) || aMIFIn.Contains(nVx))
   {
@@ -601,10 +600,10 @@ bool BOPAlgo_PaveFiller::CheckFacePaves(const int      nVx,
 //=================================================================================================
 
 bool BOPAlgo_PaveFiller::CheckFacePaves(const TopoDS_Vertex&        aVnew,
-                                                    const NCollection_Map<int>& aMIF)
+                                        const NCollection_Map<int>& aMIF)
 {
-  bool                  bRet;
-  int                  nV, iFlag;
+  bool                           bRet;
+  int                            nV, iFlag;
   NCollection_Map<int>::Iterator aIt;
   //
   bRet = true;
@@ -626,12 +625,11 @@ bool BOPAlgo_PaveFiller::CheckFacePaves(const TopoDS_Vertex&        aVnew,
 
 //=================================================================================================
 
-bool BOPAlgo_PaveFiller::ForceInterfVF(const int nV,
-                                                   const int nF)
+bool BOPAlgo_PaveFiller::ForceInterfVF(const int nV, const int nF)
 {
-  bool bRet;
-  int iFlag, nVx;
-  double    U, V, aTolVNew;
+  bool   bRet;
+  int    iFlag, nVx;
+  double U, V, aTolVNew;
   //
   bRet                    = false;
   const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
@@ -685,8 +683,8 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const int theV1,
                                                  const int theV2,
                                                  const int theE,
                                                  const int theF,
-                                                 double&         theTS1,
-                                                 double&         theTS2)
+                                                 double&   theTS1,
+                                                 double&   theTS2)
 {
   if (!myDS->IsNewShape(theV1) && !myDS->IsNewShape(theV2))
   {
@@ -699,18 +697,18 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const int theV1,
   }
   //
   NCollection_Vector<BOPDS_InterfEE>& aEEs   = myDS->InterfEE();
-  int        aNbEEs = aEEs.Length();
+  int                                 aNbEEs = aEEs.Length();
   if (!aNbEEs)
   {
     return;
   }
   //
-  int i, nV, nE1, nE2;
-  double    aTR1, aTR2;
+  int    i, nV, nE1, nE2;
+  double aTR1, aTR2;
   //
   // get face's edges to check that E/E contains the edge from the face
-  NCollection_Map<int>                aMFE;
-  const NCollection_List<int>&        aLI = myDS->ShapeInfo(theF).SubShapes();
+  NCollection_Map<int>            aMFE;
+  const NCollection_List<int>&    aLI = myDS->ShapeInfo(theF).SubShapes();
   NCollection_List<int>::Iterator aItLI(aLI);
   for (; aItLI.More(); aItLI.Next())
   {
@@ -782,7 +780,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const Message_ProgressRange& theRange)
 
   // Collect all pave blocks
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPB;
-  const int      aNbS = myDS->NbSourceShapes();
+  const int                                            aNbS = myDS->NbSourceShapes();
   for (int nE = 0; nE < aNbS; ++nE)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nE);
@@ -802,7 +800,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const Message_ProgressRange& theRange)
     {
       return;
     }
-    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aLPB = myDS->PaveBlocks(nE);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPB = myDS->PaveBlocks(nE);
     NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next())
     {
@@ -819,9 +817,10 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMPB,
-                                       const Message_ProgressRange&       theRange,
-                                       const bool             theAddInterf)
+void BOPAlgo_PaveFiller::ForceInterfEF(
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMPB,
+  const Message_ProgressRange&                                theRange,
+  const bool                                                  theAddInterf)
 {
   // Split progress on preparation, intersection and post-treatment stages
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
@@ -830,8 +829,8 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
   // Fill the tree with bounding boxes of the pave blocks
   BOPTools_BoxTree aBBTree;
 
-  occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator;
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>      aPBMap(1, anAlloc);
+  occ::handle<NCollection_IncAllocator>                anAlloc = new NCollection_IncAllocator;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aPBMap(1, anAlloc);
 
   int aNbPB = theMPB.Extent();
   for (int iPB = 1; iPB <= aNbPB; ++iPB)
@@ -848,9 +847,9 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
       return;
     }
 
-    double    f, l;
-    Bnd_Box          aPBBox;
-    bool isSplit;
+    double  f, l;
+    Bnd_Box aPBBox;
+    bool    isSplit;
     aPB->ShrunkData(f, l, aPBBox, isSplit);
 
     aBBTree.Add(aPBMap.Add(aPB), Bnd_Tools::Bnd2BVH(aPBBox));
@@ -903,8 +902,8 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
 
     // Pave Blocks of the face
     const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* pMPBF[] = {&aFI.PaveBlocksOn(),
-                                                  &aFI.PaveBlocksIn(),
-                                                  &aFI.PaveBlocksSc()};
+                                                                           &aFI.PaveBlocksIn(),
+                                                                           &aFI.PaveBlocksSc()};
     for (int iM = 0; iM < 3; ++iM)
     {
       const int aNb = pMPBF[iM]->Extent();
@@ -960,9 +959,9 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
       // tolerance, as it may lead to undesired unification of edge with the face.
       bool bUseAddTol = true;
 
-      double    aTS[2];
-      Bnd_Box          aPBBox;
-      bool isSplit;
+      double  aTS[2];
+      Bnd_Box aPBBox;
+      bool    isSplit;
       aPB->ShrunkData(aTS[0], aTS[1], aPBBox, isSplit);
 
       // Middle point
@@ -1044,7 +1043,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
       if (!bIntersect)
       {
         const NCollection_Map<occ::handle<BOPDS_PaveBlock>>* pMPB = myFPBDone.Seek(nF);
-        bIntersect                       = !pMPB || !(pMPB->Contains(aPB));
+        bIntersect                                                = !pMPB || !(pMPB->Contains(aPB));
       }
 
       if (bIntersect)
@@ -1096,7 +1095,8 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const NCollection_IndexedMap<occ::handle<
   // intersection type only.
 
   // Collect all pairs for common block creation
-  NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>> aMPBLI(1, anAlloc);
+  NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>> aMPBLI(1,
+                                                                                         anAlloc);
   for (int i = 0; i < aNbEFs; ++i)
   {
     if (UserBreak(aPSOuter))

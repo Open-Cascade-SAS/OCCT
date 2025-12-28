@@ -15,21 +15,9 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_DataMap.hxx>
 
 static const TCollection_ExtendedString& String(occ::handle<StdObjMgt_Persistent> theValue)
 {

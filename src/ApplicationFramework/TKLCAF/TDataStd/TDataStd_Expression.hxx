@@ -73,13 +73,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Expression, TDF_Attribute)
 
 protected:
-  TCollection_ExtendedString myExpression;
-  NCollection_List<occ::handle<TDF_Attribute>>          myVariables;
+  TCollection_ExtendedString                   myExpression;
+  NCollection_List<occ::handle<TDF_Attribute>> myVariables;
 };
 
 #endif // _TDataStd_Expression_HeaderFile

@@ -34,7 +34,7 @@ RWStepKinematics_RWRevolutePairWithRange::RWStepKinematics_RWRevolutePairWithRan
 
 void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&              theData,
-  const int                              theNum,
+  const int                                                theNum,
   occ::handle<Interface_Check>&                            theArch,
   const occ::handle<StepKinematics_RevolutePairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
 
   // Own fields of RevolutePairWithRange
 
-  double    aLowerLimitActualRotation;
-  bool hasLowerLimitActualRotation = true;
+  double aLowerLimitActualRotation;
+  bool   hasLowerLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -160,8 +160,8 @@ void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
     aLowerLimitActualRotation   = 0;
   }
 
-  double    aUpperLimitActualRotation;
-  bool hasUpperLimitActualRotation = true;
+  double aUpperLimitActualRotation;
+  bool   hasUpperLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum,
@@ -199,7 +199,7 @@ void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePairWithRange::WriteStep(
-  StepData_StepWriter&                                theSW,
+  StepData_StepWriter&                                     theSW,
   const occ::handle<StepKinematics_RevolutePairWithRange>& theEnt) const
 {
 
@@ -261,7 +261,7 @@ void RWStepKinematics_RWRevolutePairWithRange::WriteStep(
 
 void RWStepKinematics_RWRevolutePairWithRange::Share(
   const occ::handle<StepKinematics_RevolutePairWithRange>& theEnt,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of RepresentationItem

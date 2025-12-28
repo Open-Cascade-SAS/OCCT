@@ -23,7 +23,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -35,7 +34,8 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_ShapeData();
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences()
+    const;
 
   Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences();
 
@@ -47,14 +47,14 @@ public:
 
 private:
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myInterferences;
-  NCollection_List<TopoDS_Shape>            mySameDomain;
-  int                mySameDomainRef;
-  TopOpeBRepDS_Config             mySameDomainOri;
-  int                mySameDomainInd;
-  TopAbs_Orientation              myOrientation;
-  bool                myOrientationDef;
-  int                myAncestorRank;
-  bool                myKeep;
+  NCollection_List<TopoDS_Shape>                           mySameDomain;
+  int                                                      mySameDomainRef;
+  TopOpeBRepDS_Config                                      mySameDomainOri;
+  int                                                      mySameDomainInd;
+  TopAbs_Orientation                                       myOrientation;
+  bool                                                     myOrientationDef;
+  int                                                      myAncestorRank;
+  bool                                                     myKeep;
 };
 
 #endif // _TopOpeBRepDS_ShapeData_HeaderFile

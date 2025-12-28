@@ -40,7 +40,8 @@ TopOpeBRepDS_InterferenceIterator::TopOpeBRepDS_InterferenceIterator(
 
 //=================================================================================================
 
-void TopOpeBRepDS_InterferenceIterator::Init(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+void TopOpeBRepDS_InterferenceIterator::Init(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
 {
   myIterator.Initialize(L);
   Match();
@@ -85,7 +86,7 @@ void TopOpeBRepDS_InterferenceIterator::Match()
   while (myIterator.More())
   {
     occ::handle<TopOpeBRepDS_Interference> I = myIterator.Value();
-    bool                  b = MatchInterference(I);
+    bool                                   b = MatchInterference(I);
     if (!b)
     {
       myIterator.Next();
@@ -134,7 +135,8 @@ const occ::handle<TopOpeBRepDS_Interference>& TopOpeBRepDS_InterferenceIterator:
 
 //=================================================================================================
 
-NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& TopOpeBRepDS_InterferenceIterator::ChangeIterator()
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator&
+  TopOpeBRepDS_InterferenceIterator::ChangeIterator()
 {
   return myIterator;
 }

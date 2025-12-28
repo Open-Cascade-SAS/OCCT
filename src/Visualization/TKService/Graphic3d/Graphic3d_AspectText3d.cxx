@@ -30,7 +30,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d()
 //=================================================================================================
 
 Graphic3d_AspectText3d::Graphic3d_AspectText3d(const Quantity_Color& theColor,
-                                               const char*      theFont,
+                                               const char*           theFont,
                                                double,
                                                double,
                                                Aspect_TypeOfStyleText   theStyle,

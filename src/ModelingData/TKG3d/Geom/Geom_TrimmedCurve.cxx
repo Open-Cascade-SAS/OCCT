@@ -52,10 +52,10 @@ occ::handle<Geom_Geometry> Geom_TrimmedCurve::Copy() const
 //=================================================================================================
 
 Geom_TrimmedCurve::Geom_TrimmedCurve(const occ::handle<Geom_Curve>& C,
-                                     const double       U1,
-                                     const double       U2,
-                                     const bool    Sense,
-                                     const bool    theAdjustPeriodic)
+                                     const double                   U1,
+                                     const double                   U2,
+                                     const bool                     Sense,
+                                     const bool                     theAdjustPeriodic)
     : uTrim1(U1),
       uTrim2(U2)
 {
@@ -88,10 +88,10 @@ double Geom_TrimmedCurve::ReversedParameter(const double U) const
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::SetTrim(const double    U1,
-                                const double    U2,
-                                const bool Sense,
-                                const bool theAdjustPeriodic)
+void Geom_TrimmedCurve::SetTrim(const double U1,
+                                const double U2,
+                                const bool   Sense,
+                                const bool   theAdjustPeriodic)
 {
   bool sameSense = true;
   if (U1 == U2)

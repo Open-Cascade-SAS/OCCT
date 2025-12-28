@@ -29,7 +29,7 @@ RWStepDimTol_RWToleranceZoneDefinition::RWStepDimTol_RWToleranceZoneDefinition()
 
 void RWStepDimTol_RWToleranceZoneDefinition::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepDimTol_ToleranceZoneDefinition>& ent) const
 {
@@ -43,12 +43,12 @@ void RWStepDimTol_RWToleranceZoneDefinition::ReadStep(
   data->ReadEntity(num, 1, "zone", ach, STANDARD_TYPE(StepDimTol_ToleranceZone), aToleranceZone);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> anItems;
-  occ::handle<StepRepr_ShapeAspect>          anEnt;
-  int                      nbSub;
+  occ::handle<StepRepr_ShapeAspect>                                   anEnt;
+  int                                                                 nbSub;
   if (data->ReadSubList(num, 2, "boundaries", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    anItems                     = new NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>(1, nbElements);
+    anItems        = new NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data
@@ -64,7 +64,7 @@ void RWStepDimTol_RWToleranceZoneDefinition::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWToleranceZoneDefinition::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepDimTol_ToleranceZoneDefinition>& ent) const
 {
   // Own fields of ToleranceZoneDefinition
@@ -83,7 +83,7 @@ void RWStepDimTol_RWToleranceZoneDefinition::WriteStep(
 
 void RWStepDimTol_RWToleranceZoneDefinition::Share(
   const occ::handle<StepDimTol_ToleranceZoneDefinition>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Own fields of ToleranceZoneDefinition

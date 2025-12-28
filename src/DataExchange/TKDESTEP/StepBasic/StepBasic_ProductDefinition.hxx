@@ -32,10 +32,11 @@ public:
   //! Returns a ProductDefinition
   Standard_EXPORT StepBasic_ProductDefinition();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&             aId,
-                            const occ::handle<TCollection_HAsciiString>&             aDescription,
-                            const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation,
-                            const occ::handle<StepBasic_ProductDefinitionContext>&   aFrameOfReference);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&             aId,
+    const occ::handle<TCollection_HAsciiString>&             aDescription,
+    const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation,
+    const occ::handle<StepBasic_ProductDefinitionContext>&   aFrameOfReference);
 
   Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& aId);
 
@@ -45,7 +46,8 @@ public:
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
-  Standard_EXPORT void SetFormation(const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation);
+  Standard_EXPORT void SetFormation(
+    const occ::handle<StepBasic_ProductDefinitionFormation>& aFormation);
 
   Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> Formation() const;
 

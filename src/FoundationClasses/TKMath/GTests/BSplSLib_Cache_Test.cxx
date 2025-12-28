@@ -17,12 +17,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 
 #include <gtest/gtest.h>
 
@@ -41,9 +38,9 @@ protected:
   void SetUp() override {}
 
   //! Creates flat knots array from knots and multiplicities
-  void createFlatKnots(const NCollection_Array1<double>&    theKnots,
-                       const NCollection_Array1<int>& theMults,
-                       NCollection_Array1<double>&          theFlatKnots) const
+  void createFlatKnots(const NCollection_Array1<double>& theKnots,
+                       const NCollection_Array1<int>&    theMults,
+                       NCollection_Array1<double>&       theFlatKnots) const
   {
     int aFlatIndex = theFlatKnots.Lower();
     for (int i = theKnots.Lower(); i <= theKnots.Upper(); ++i)
@@ -432,16 +429,16 @@ TEST_F(BSplSLib_CacheTest, D0_RationalSurface)
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
-  const double         aSqrt2_2 = 0.707106781186548;
-  aWeights(1, 1)                = 1.0;
-  aWeights(2, 1)                = aSqrt2_2;
-  aWeights(3, 1)                = 1.0;
-  aWeights(1, 2)                = aSqrt2_2;
-  aWeights(2, 2)                = 0.5;
-  aWeights(3, 2)                = aSqrt2_2;
-  aWeights(1, 3)                = 1.0;
-  aWeights(2, 3)                = aSqrt2_2;
-  aWeights(3, 3)                = 1.0;
+  const double               aSqrt2_2 = 0.707106781186548;
+  aWeights(1, 1)                      = 1.0;
+  aWeights(2, 1)                      = aSqrt2_2;
+  aWeights(3, 1)                      = 1.0;
+  aWeights(1, 2)                      = aSqrt2_2;
+  aWeights(2, 2)                      = 0.5;
+  aWeights(3, 2)                      = aSqrt2_2;
+  aWeights(1, 3)                      = 1.0;
+  aWeights(2, 3)                      = aSqrt2_2;
+  aWeights(3, 3)                      = 1.0;
 
   NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
@@ -538,16 +535,16 @@ TEST_F(BSplSLib_CacheTest, D1_RationalSurface)
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
-  const double         aSqrt2_2 = 0.707106781186548;
-  aWeights(1, 1)                = 1.0;
-  aWeights(2, 1)                = aSqrt2_2;
-  aWeights(3, 1)                = 1.0;
-  aWeights(1, 2)                = aSqrt2_2;
-  aWeights(2, 2)                = 0.5;
-  aWeights(3, 2)                = aSqrt2_2;
-  aWeights(1, 3)                = 1.0;
-  aWeights(2, 3)                = aSqrt2_2;
-  aWeights(3, 3)                = 1.0;
+  const double               aSqrt2_2 = 0.707106781186548;
+  aWeights(1, 1)                      = 1.0;
+  aWeights(2, 1)                      = aSqrt2_2;
+  aWeights(3, 1)                      = 1.0;
+  aWeights(1, 2)                      = aSqrt2_2;
+  aWeights(2, 2)                      = 0.5;
+  aWeights(3, 2)                      = aSqrt2_2;
+  aWeights(1, 3)                      = 1.0;
+  aWeights(2, 3)                      = aSqrt2_2;
+  aWeights(3, 3)                      = 1.0;
 
   NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;
@@ -663,16 +660,16 @@ TEST_F(BSplSLib_CacheTest, D2_RationalSurface)
   aPoles(3, 3) = gp_Pnt(0, 0, 1);
 
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
-  const double         aSqrt2_2 = 0.707106781186548;
-  aWeights(1, 1)                = 1.0;
-  aWeights(2, 1)                = aSqrt2_2;
-  aWeights(3, 1)                = 1.0;
-  aWeights(1, 2)                = aSqrt2_2;
-  aWeights(2, 2)                = 0.5;
-  aWeights(3, 2)                = aSqrt2_2;
-  aWeights(1, 3)                = 1.0;
-  aWeights(2, 3)                = aSqrt2_2;
-  aWeights(3, 3)                = 1.0;
+  const double               aSqrt2_2 = 0.707106781186548;
+  aWeights(1, 1)                      = 1.0;
+  aWeights(2, 1)                      = aSqrt2_2;
+  aWeights(3, 1)                      = 1.0;
+  aWeights(1, 2)                      = aSqrt2_2;
+  aWeights(2, 2)                      = 0.5;
+  aWeights(3, 2)                      = aSqrt2_2;
+  aWeights(1, 3)                      = 1.0;
+  aWeights(2, 3)                      = aSqrt2_2;
+  aWeights(3, 3)                      = 1.0;
 
   NCollection_Array1<double> aKnotsU(1, 2);
   aKnotsU(1) = 0.0;

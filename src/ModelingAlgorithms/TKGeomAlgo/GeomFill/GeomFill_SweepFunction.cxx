@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SweepFunction, Approx_SweepFunction)
 
 GeomFill_SweepFunction::GeomFill_SweepFunction(const occ::handle<GeomFill_SectionLaw>&  Section,
                                                const occ::handle<GeomFill_LocationLaw>& Location,
-                                               const double                 FirstParameter,
+                                               const double FirstParameter,
                                                const double FirstParameterOnS,
                                                const double RatioParameterOnS)
 {
@@ -49,16 +49,16 @@ GeomFill_SweepFunction::GeomFill_SweepFunction(const occ::handle<GeomFill_Sectio
 //=================================================================================================
 
 bool GeomFill_SweepFunction::D0(const double Param,
-                                            const double,
-                                            const double,
-                                            NCollection_Array1<gp_Pnt>&   Poles,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<double>& Weigths)
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<double>&   Weigths)
 {
-  int ii, L;
-  bool Ok;
-  double    T = myfOnS + (Param - myf) * myRatio;
-  L                  = Poles.Length();
+  int    ii, L;
+  bool   Ok;
+  double T = myfOnS + (Param - myf) * myRatio;
+  L        = Poles.Length();
 
   Ok = myLoc->D0(Param, M, V, Poles2d);
   if (!Ok)
@@ -79,19 +79,19 @@ bool GeomFill_SweepFunction::D0(const double Param,
 //=================================================================================================
 
 bool GeomFill_SweepFunction::D1(const double Param,
-                                            const double,
-                                            const double,
-                                            NCollection_Array1<gp_Pnt>&   Poles,
-                                            NCollection_Array1<gp_Vec>&   DPoles,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                            NCollection_Array1<double>& Weigths,
-                                            NCollection_Array1<double>& DWeigths)
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<double>&   Weigths,
+                                NCollection_Array1<double>&   DWeigths)
 {
-  int ii, L;
-  bool Ok;
-  double    T = myfOnS + (Param - myf) * myRatio;
-  gp_XYZ           PPrim;
+  int    ii, L;
+  bool   Ok;
+  double T = myfOnS + (Param - myf) * myRatio;
+  gp_XYZ PPrim;
   L = Poles.Length();
 
   Ok = myLoc->D1(Param, M, V, DM, DV, Poles2d, DPoles2d);
@@ -121,23 +121,23 @@ bool GeomFill_SweepFunction::D1(const double Param,
 //=================================================================================================
 
 bool GeomFill_SweepFunction::D2(const double Param,
-                                            const double,
-                                            const double,
-                                            NCollection_Array1<gp_Pnt>&   Poles,
-                                            NCollection_Array1<gp_Vec>&   DPoles,
-                                            NCollection_Array1<gp_Vec>&   D2Poles,
-                                            NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                            NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                            NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                            NCollection_Array1<double>& Weigths,
-                                            NCollection_Array1<double>& DWeigths,
-                                            NCollection_Array1<double>& D2Weigths)
+                                const double,
+                                const double,
+                                NCollection_Array1<gp_Pnt>&   Poles,
+                                NCollection_Array1<gp_Vec>&   DPoles,
+                                NCollection_Array1<gp_Vec>&   D2Poles,
+                                NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                NCollection_Array1<double>&   Weigths,
+                                NCollection_Array1<double>&   DWeigths,
+                                NCollection_Array1<double>&   D2Weigths)
 {
-  int ii, L;
-  bool Ok;
-  double    T           = myfOnS + (Param - myf) * myRatio;
-  double    squareratio = myRatio * myRatio;
-  L                            = Poles.Length();
+  int    ii, L;
+  bool   Ok;
+  double T           = myfOnS + (Param - myf) * myRatio;
+  double squareratio = myRatio * myRatio;
+  L                  = Poles.Length();
 
   Ok = myLoc->D2(Param, M, V, DM, DV, D2M, D2V, Poles2d, DPoles2d, D2Poles2d);
   if (!Ok)
@@ -182,9 +182,7 @@ int GeomFill_SweepFunction::Nb2dCurves() const
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::SectionShape(int& NbPoles,
-                                          int& NbKnots,
-                                          int& Degree) const
+void GeomFill_SweepFunction::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   mySec->SectionShape(NbPoles, NbKnots, Degree);
 }
@@ -230,8 +228,8 @@ int GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) const
   NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
   NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
   NCollection_Sequence<double> Inter;
-  double          T;
-  int       ii;
+  double                       T;
+  int                          ii;
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
   {
@@ -272,7 +270,7 @@ void GeomFill_SweepFunction::Intervals(NCollection_Array1<double>& T, const Geom
   NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
   NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
   NCollection_Sequence<double> Inter;
-  double          t;
+  double                       t;
 
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
@@ -300,9 +298,9 @@ void GeomFill_SweepFunction::SetInterval(const double First, const double Last)
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::GetTolerance(const double   BoundTol,
-                                          const double   SurfTol,
-                                          const double   AngleTol,
+void GeomFill_SweepFunction::GetTolerance(const double                BoundTol,
+                                          const double                SurfTol,
+                                          const double                AngleTol,
                                           NCollection_Array1<double>& Tol3d) const
 {
   mySec->GetTolerance(BoundTol, SurfTol, AngleTol, Tol3d);
@@ -310,10 +308,10 @@ void GeomFill_SweepFunction::GetTolerance(const double   BoundTol,
 
 //=================================================================================================
 
-void GeomFill_SweepFunction::Resolution(const int Index,
-                                        const double    Tol,
-                                        double&         TolU,
-                                        double&         TolV) const
+void GeomFill_SweepFunction::Resolution(const int    Index,
+                                        const double Tol,
+                                        double&      TolU,
+                                        double&      TolV) const
 {
   myLoc->Resolution(Index, Tol, TolU, TolV);
 }

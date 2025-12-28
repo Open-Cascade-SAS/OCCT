@@ -28,7 +28,7 @@ RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface() {}
 //=================================================================================================
 
 void RWStepGeom_RWOrientedSurface::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepGeom_OrientedSurface>& ent) const
 {
@@ -52,7 +52,7 @@ void RWStepGeom_RWOrientedSurface::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepGeom_RWOrientedSurface::WriteStep(StepData_StepWriter&                    SW,
+void RWStepGeom_RWOrientedSurface::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepGeom_OrientedSurface>& ent) const
 {
 

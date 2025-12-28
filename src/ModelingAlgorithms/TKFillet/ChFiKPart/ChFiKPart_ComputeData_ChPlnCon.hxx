@@ -17,20 +17,20 @@
 #ifndef _ChFiKPart_ComputeData_ChPlnCon_HeaderFile
 #define _ChFiKPart_ComputeData_ChPlnCon_HeaderFile
 
-bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const occ::handle<ChFiDS_SurfData>& Data,
-                                       const ChFiDS_ChamfMode         theMode,
-                                       const gp_Pln&                  Pln,
-                                       const gp_Cone&                 Con,
-                                       const double            fu,
-                                       const double            lu,
-                                       const TopAbs_Orientation       Or1,
-                                       const TopAbs_Orientation       Or2,
-                                       const double            Dis1,
-                                       const double            Dis2,
-                                       const gp_Circ&                 Spine,
-                                       const double            First,
-                                       const TopAbs_Orientation       Ofpl,
-                                       const bool         plandab);
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
+                           const occ::handle<ChFiDS_SurfData>& Data,
+                           const ChFiDS_ChamfMode              theMode,
+                           const gp_Pln&                       Pln,
+                           const gp_Cone&                      Con,
+                           const double                        fu,
+                           const double                        lu,
+                           const TopAbs_Orientation            Or1,
+                           const TopAbs_Orientation            Or2,
+                           const double                        Dis1,
+                           const double                        Dis2,
+                           const gp_Circ&                      Spine,
+                           const double                        First,
+                           const TopAbs_Orientation            Ofpl,
+                           const bool                          plandab);
 
 #endif

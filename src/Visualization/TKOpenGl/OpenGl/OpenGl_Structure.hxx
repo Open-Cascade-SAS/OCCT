@@ -53,8 +53,8 @@ public:
   Standard_EXPORT virtual void Disconnect(Graphic3d_CStructure& theStructure) override;
 
   //! Synchronize structure transformation
-  Standard_EXPORT virtual void SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
-    override;
+  Standard_EXPORT virtual void SetTransformation(
+    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
 
   //! Set transformation persistence.
   Standard_EXPORT virtual void SetTransformPersistence(
@@ -80,8 +80,7 @@ public:
     const occ::handle<Graphic3d_Structure>& theStruct) override;
 
   //! Remove group from this structure
-  Standard_EXPORT virtual void RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup)
-    override;
+  Standard_EXPORT virtual void RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup) override;
 
 public:
   //! Access graphic driver
@@ -123,7 +122,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   Standard_EXPORT virtual ~OpenGl_Structure();
@@ -136,7 +135,7 @@ protected:
   //! @param theHasClosed flag will be set to TRUE if structure contains at least one group of
   //! closed primitives
   Standard_EXPORT void renderGeometry(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                      bool&                           theHasClosed) const;
+                                      bool&                                theHasClosed) const;
 
   //! Render the bounding box.
   Standard_EXPORT void renderBoundingBox(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
@@ -146,8 +145,8 @@ protected:
   //! @param theTrsf transformation
   //! @param toEnable flag to switch ON/OFF transformation
   Standard_EXPORT void applyTransformation(const occ::handle<OpenGl_Context>& theContext,
-                                           const gp_Trsf&                theTrsf,
-                                           const bool        toEnable) const;
+                                           const gp_Trsf&                     theTrsf,
+                                           const bool                         toEnable) const;
 
   //! Apply transform persistence into context.
   //! It disables shadows on non-3d objects when toEnable is true and restores otherwise.
@@ -156,10 +155,11 @@ protected:
   //! @param[in]  theIsLocal specifies if transform persistence is defined locally or to entire
   //! presentation
   //! @param[out] theOldCastShadows state of the previous cast shadows state
-  Standard_EXPORT void applyPersistence(const occ::handle<OpenGl_Context>&          theCtx,
-                                        const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
-                                        const bool                 theIsLocal,
-                                        bool& theOldCastShadows) const;
+  Standard_EXPORT void applyPersistence(
+    const occ::handle<OpenGl_Context>&          theCtx,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
+    const bool                                  theIsLocal,
+    bool&                                       theOldCastShadows) const;
 
   //! Restore context from transform persistence changes.
   //! @param[in] theCtx current context
@@ -167,10 +167,11 @@ protected:
   //! @param[in] theIsLocal specifies if transform persistence is defined locally or to entire
   //! presentation
   //! @param[in] theOldCastShadows state of the previous cast shadows state
-  Standard_EXPORT void revertPersistence(const occ::handle<OpenGl_Context>&          theCtx,
-                                         const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
-                                         const bool                 theIsLocal,
-                                         const bool theOldCastShadows) const;
+  Standard_EXPORT void revertPersistence(
+    const occ::handle<OpenGl_Context>&          theCtx,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPersistence,
+    const bool                                  theIsLocal,
+    const bool                                  theOldCastShadows) const;
 
 protected:
   OpenGl_Structure* myInstancedStructure;

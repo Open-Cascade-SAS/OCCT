@@ -31,7 +31,7 @@ public:
   Standard_EXPORT StepBasic_ExternallyDefinedItem();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepBasic_SourceItem&             aItemId,
+  Standard_EXPORT void Init(const StepBasic_SourceItem&                  aItemId,
                             const occ::handle<StepBasic_ExternalSource>& aSource);
 
   //! Returns field ItemId
@@ -49,7 +49,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_ExternallyDefinedItem, Standard_Transient)
 
 private:
-  StepBasic_SourceItem             theItemId;
+  StepBasic_SourceItem                  theItemId;
   occ::handle<StepBasic_ExternalSource> theSource;
 };
 

@@ -29,7 +29,8 @@ class StepBasic_ApprovalAssignment : public Standard_Transient
 public:
   Standard_EXPORT void Init(const occ::handle<StepBasic_Approval>& aAssignedApproval);
 
-  Standard_EXPORT void SetAssignedApproval(const occ::handle<StepBasic_Approval>& aAssignedApproval);
+  Standard_EXPORT void SetAssignedApproval(
+    const occ::handle<StepBasic_Approval>& aAssignedApproval);
 
   Standard_EXPORT occ::handle<StepBasic_Approval> AssignedApproval() const;
 

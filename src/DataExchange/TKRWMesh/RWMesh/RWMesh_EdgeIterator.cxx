@@ -23,7 +23,7 @@
 
 RWMesh_EdgeIterator::RWMesh_EdgeIterator(const TDF_Label&       theLabel,
                                          const TopLoc_Location& theLocation,
-                                         const bool theToMapColors,
+                                         const bool             theToMapColors,
                                          const XCAFPrs_Style&   theStyle)
     : RWMesh_ShapeIterator(theLabel,
                            theLocation,

@@ -31,9 +31,9 @@ class TopOpeBRepTool_STATE
 
 public:
   TopOpeBRepTool_STATE(const char* name, const bool b = false);
-  void             Set(const bool b);
-  void             Set(const TopAbs_State S, const bool b);
-  void             Set(const bool b, int n, char** a);
+  void Set(const bool b);
+  void Set(const TopAbs_State S, const bool b);
+  void Set(const bool b, int n, char** a);
   bool Get(const TopAbs_State S);
 
   bool Get() { return myonetrue; }
@@ -43,7 +43,7 @@ public:
 private:
   bool myin, myout, myon, myunknown;
   bool myonetrue;
-  char             myname[100];
+  char myname[100];
 };
 
 #endif /* OCCT_DEBUG */

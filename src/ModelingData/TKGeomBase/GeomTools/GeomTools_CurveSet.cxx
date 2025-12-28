@@ -42,8 +42,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 #define LINE 1
 #define CIRCLE 2
@@ -144,9 +142,7 @@ static void Print(const occ::handle<Geom_Line>& L, Standard_OStream& OS, const b
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_Circle>& CC,
-                  Standard_OStream&          OS,
-                  const bool     compact)
+static void Print(const occ::handle<Geom_Circle>& CC, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << CIRCLE << " ";
@@ -176,9 +172,7 @@ static void Print(const occ::handle<Geom_Circle>& CC,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_Ellipse>& E,
-                  Standard_OStream&           OS,
-                  const bool      compact)
+static void Print(const occ::handle<Geom_Ellipse>& E, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << ELLIPSE << " ";
@@ -212,9 +206,7 @@ static void Print(const occ::handle<Geom_Ellipse>& E,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_Parabola>& P,
-                  Standard_OStream&            OS,
-                  const bool       compact)
+static void Print(const occ::handle<Geom_Parabola>& P, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << PARABOLA << " ";
@@ -244,9 +236,7 @@ static void Print(const occ::handle<Geom_Parabola>& P,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_Hyperbola>& H,
-                  Standard_OStream&             OS,
-                  const bool        compact)
+static void Print(const occ::handle<Geom_Hyperbola>& H, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << HYPERBOLA << " ";
@@ -280,9 +270,7 @@ static void Print(const occ::handle<Geom_Hyperbola>& H,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_BezierCurve>& B,
-                  Standard_OStream&               OS,
-                  const bool          compact)
+static void Print(const occ::handle<Geom_BezierCurve>& B, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << BEZIER << " ";
@@ -321,9 +309,7 @@ static void Print(const occ::handle<Geom_BezierCurve>& B,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_BSplineCurve>& B,
-                  Standard_OStream&                OS,
-                  const bool           compact)
+static void Print(const occ::handle<Geom_BSplineCurve>& B, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << BSPLINE << " ";
@@ -399,9 +385,7 @@ static void Print(const occ::handle<Geom_BSplineCurve>& B,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_TrimmedCurve>& C,
-                  Standard_OStream&                OS,
-                  const bool           compact)
+static void Print(const occ::handle<Geom_TrimmedCurve>& C, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << TRIMMED << " ";
@@ -417,9 +401,7 @@ static void Print(const occ::handle<Geom_TrimmedCurve>& C,
 
 //=================================================================================================
 
-static void Print(const occ::handle<Geom_OffsetCurve>& C,
-                  Standard_OStream&               OS,
-                  const bool          compact)
+static void Print(const occ::handle<Geom_OffsetCurve>& C, Standard_OStream& OS, const bool compact)
 {
   if (compact)
     OS << OFFSET << " ";
@@ -440,8 +422,8 @@ static void Print(const occ::handle<Geom_OffsetCurve>& C,
 //=================================================================================================
 
 void GeomTools_CurveSet::PrintCurve(const occ::handle<Geom_Curve>& C,
-                                    Standard_OStream&         OS,
-                                    const bool    compact)
+                                    Standard_OStream&              OS,
+                                    const bool                     compact)
 {
   occ::handle<Standard_Type> TheType = C->DynamicType();
 
@@ -562,8 +544,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Line>
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Circle>& C)
 {
-  gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt P(0., 0., 0.);
+  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R);
@@ -575,8 +557,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Circl
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Ellipse>& E)
 {
-  gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt P(0., 0., 0.);
+  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -589,8 +571,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Ellip
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Parabola>& C)
 {
-  gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt P(0., 0., 0.);
+  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -602,8 +584,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Parab
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Hyperbola>& H)
 {
-  gp_Pnt        P(0., 0., 0.);
-  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt P(0., 0., 0.);
+  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
@@ -623,7 +605,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   int i = 0, degree = 0;
   IS >> degree;
 
-  NCollection_Array1<gp_Pnt>   poles(1, degree + 1);
+  NCollection_Array1<gp_Pnt> poles(1, degree + 1);
   NCollection_Array1<double> weights(1, degree + 1);
 
   for (i = 1; i <= degree + 1; i++)
@@ -653,7 +635,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   int i = 0, degree = 0, nbpoles = 0, nbknots = 0;
   IS >> degree >> nbpoles >> nbknots;
 
-  NCollection_Array1<gp_Pnt>   poles(1, nbpoles);
+  NCollection_Array1<gp_Pnt> poles(1, nbpoles);
   NCollection_Array1<double> weights(1, nbpoles);
 
   for (i = 1; i <= nbpoles; i++)
@@ -663,8 +645,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
       GeomTools::GetReal(IS, weights(i));
   }
 
-  NCollection_Array1<double>    knots(1, nbknots);
-  NCollection_Array1<int> mults(1, nbknots);
+  NCollection_Array1<double> knots(1, nbknots);
+  NCollection_Array1<int>    mults(1, nbknots);
 
   for (i = 1; i <= nbknots; i++)
   {
@@ -688,7 +670,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Trimm
   GeomTools::GetReal(IS, p1);
   GeomTools::GetReal(IS, p2);
   occ::handle<Geom_Curve> BC = GeomTools_CurveSet::ReadCurve(IS);
-  C                     = new Geom_TrimmedCurve(BC, p1, p2);
+  C                          = new Geom_TrimmedCurve(BC, p1, p2);
   return IS;
 }
 
@@ -701,7 +683,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
   gp_Dir D(gp_Dir::D::X);
   IS >> D;
   occ::handle<Geom_Curve> BC = GeomTools_CurveSet::ReadCurve(IS);
-  C                     = new Geom_OffsetCurve(BC, p, D);
+  C                          = new Geom_OffsetCurve(BC, p, D);
   return IS;
 }
 

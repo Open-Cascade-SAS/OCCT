@@ -58,7 +58,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
@@ -86,8 +85,8 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
        << "  more : all shapes(D)  v vertices  e edges  f faces  c combined(faces)\n";
     return (argc < 2 ? 0 : 1 /* Error */);
   }
-  const char* arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -117,7 +116,7 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
   else
   {
     //  Analyse plus fouillee
-    int nextarg = 2;
+    int              nextarg = 2;
     char             opt     = argv[2][0];
     TopAbs_ShapeEnum type    = TopAbs_SHAPE;
     if (opt == 'a')
@@ -151,8 +150,9 @@ static int tolerance(Draw_Interpretor& di, int argc, const char** argv)
     if (nextarg < argc - 1)
       tol2 = Draw::Atof(argv[nextarg + 1]);
     //    double tol = Draw::Atof (argv[2]);
-    occ::handle<NCollection_HSequence<TopoDS_Shape>> list = sat.InTolerance(Shape, tol1, tol2, type);
-    int                  i, nb = list->Length();
+    occ::handle<NCollection_HSequence<TopoDS_Shape>> list =
+      sat.InTolerance(Shape, tol1, tol2, type);
+    int i, nb = list->Length();
     switch (type)
     {
       case TopAbs_VERTEX:
@@ -198,8 +198,8 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
     di << "Give FACE name and X Y [Z]\n";
     return 1;
   }
-  const char* arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -210,9 +210,9 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
     di << "Not a face\n";
     return 1 /* Error */;
   }
-  TopoDS_Face             F       = TopoDS::Face(Shape);
-  occ::handle<Geom_Surface>    thesurf = BRep_Tool::Surface(F); // pas locface
-  BRepTopAdaptor_FClass2d aClassifier(F, Precision::Confusion());
+  TopoDS_Face               F       = TopoDS::Face(Shape);
+  occ::handle<Geom_Surface> thesurf = BRep_Tool::Surface(F); // pas locface
+  BRepTopAdaptor_FClass2d   aClassifier(F, Precision::Confusion());
   //  On y va
   double X, Y, Z, U, V;
   X = U = Draw::Atof(argv[2]);
@@ -237,9 +237,9 @@ static int projface(Draw_Interpretor& di, int argc, const char** argv)
     double dv = std::abs(vl - vf) / 10;
 
     GeomAPI_ProjectPointOnSurf proj(P3D, thesurf, uf - du, ul + du, vf - dv, vl + dv);
-    int           sol, nPSurf = proj.NbPoints();
-    int           anIndSol = 0, anIndMin = 0;
-    double              aMinDist = RealLast();
+    int                        sol, nPSurf = proj.NbPoints();
+    int                        anIndSol = 0, anIndMin = 0;
+    double                     aMinDist = RealLast();
     for (sol = 1; sol <= nPSurf; sol++)
     {
 
@@ -297,12 +297,12 @@ static int projcurve(Draw_Interpretor& di, int argc, const char** argv)
     di << "Give : EDGE X Y Z  or  CURVE3D X Y Z  or  CURVE3D first last X Y Z\n";
     return 1 /* Error */;
   }
-  const char*      arg1  = argv[1];
-  int i0    = 0;
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  int          i0    = 0;
+  TopoDS_Shape Shape = DBRep::Get(arg1);
 
   occ::handle<Geom_Curve> C;
-  double      cf, cl;
+  double                  cf, cl;
   if (!Shape.IsNull())
   {
     if (Shape.ShapeType() == TopAbs_EDGE)
@@ -344,8 +344,8 @@ static int projcurve(Draw_Interpretor& di, int argc, const char** argv)
   di << "Precision (BRepBuilderAPI) : " << BRepBuilderAPI::Precision() << "  Projection : " << X
      << "  " << Y << "  " << Z << "\n";
 
-  gp_Pnt        P3D(X, Y, Z);
-  gp_Pnt        res;
+  gp_Pnt P3D(X, Y, Z);
+  gp_Pnt res;
   double param, dist;
 
   dist = ShapeAnalysis_Curve().Project(C, P3D, BRepBuilderAPI::Precision(), res, param, cf, cl);
@@ -385,8 +385,8 @@ static int projpcurve(Draw_Interpretor& di, int argc, const char** argv)
 
   gp_Pnt aP3D(X, Y, Z);
 
-  bool IsStartPoint = false;
-  double    startpar     = 0.;
+  bool   IsStartPoint = false;
+  double startpar     = 0.;
   if (argc > 7)
   {
     startpar     = Draw::Atof(argv[7]);
@@ -398,9 +398,9 @@ static int projpcurve(Draw_Interpretor& di, int argc, const char** argv)
                              new BRepAdaptor_Surface(BRepAdaptor_Surface(aFace, false)));
 
   gp_Pnt              aPnt;
-  double       aParam;
+  double              aParam;
   ShapeAnalysis_Curve aTool;
-  double       aDist = RealLast();
+  double              aDist = RealLast();
   if (IsStartPoint)
   {
     aDist = aTool.NextProject(startpar, aCOnS, aP3D, aTol, aPnt, aParam);
@@ -423,8 +423,8 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
     di << "donner un nom de face\n";
     return 1 /* Error */;
   }
-  const char* arg1  = argv[1];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << arg1 << " inconnu\n";
@@ -433,9 +433,9 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
   //  if (Shape.ShapeType() != TopAbs_FACE) { di<<"Pas une FACE\n"; return 1 /* Error */; }
 
   //  On regarde les wires, sont-ils bien fermes
-  int     nbw = 0, nbe = 0;
+  int                       nbw = 0, nbe = 0;
   occ::handle<Geom_Surface> surface;
-  TopoDS_Face          Face;
+  TopoDS_Face               Face;
   if (Shape.ShapeType() == TopAbs_FACE)
   {
     Face    = TopoDS::Face(Shape);
@@ -468,15 +468,15 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
       di << " (FWD)\n";
     else
       di << " (REV)\n";
-    gp_Pnt           fin, debut;
-    gp_Pnt2d         finuv, debuv;
-    gp_XY            baseuv;
-    TopoDS_Vertex    fv, lv;
-    double    maxp3d = 0., maxuv = 0., maxvtx = 0.;
-    double    df3d = 0., dl3d = 0., dvtx = 0., duv = 0.;
-    bool iaw2d = iasurf;
-    double    u1 = 0., u2 = 0., v1 = 0., v2 = 0., umin = 0., umax = 0., vmin = 0., vmax = 0.,
-                  totcross = 0.;
+    gp_Pnt        fin, debut;
+    gp_Pnt2d      finuv, debuv;
+    gp_XY         baseuv;
+    TopoDS_Vertex fv, lv;
+    double        maxp3d = 0., maxuv = 0., maxvtx = 0.;
+    double        df3d = 0., dl3d = 0., dvtx = 0., duv = 0.;
+    bool          iaw2d = iasurf;
+    double        u1 = 0., u2 = 0., v1 = 0., v2 = 0., umin = 0., umax = 0., vmin = 0., vmax = 0.,
+           totcross = 0.;
 
     //: sw    STW.ClearWire();  STW.Load (Wire);
     //    if (STW.Reorder()) di<<"Wire reordered to explore\n";
@@ -496,7 +496,7 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
       else
         di << " (REV";
       di << " , Tol= " << BRep_Tool::Tolerance(Edge) << " )\n";
-      double        f3d, l3d, f2d, l2d;
+      double                    f3d, l3d, f2d, l2d;
       occ::handle<Geom_Curve>   curve3d = BRep_Tool::Curve(Edge, f3d, l3d);
       occ::handle<Geom2d_Curve> curve2d;
       if (iasurf)
@@ -620,8 +620,8 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
       di << "TotCross=" << totcross;
       di << "  UMin-Max:" << umin << " , " << umax << "  VMin-Max:" << vmin << " , " << vmax
          << "\n";
-      double difu = umax - umin, difv = vmax - vmin;
-      GProp_GProps  G;
+      double       difu = umax - umin, difv = vmax - vmin;
+      GProp_GProps G;
       BRepGProp::SurfaceProperties(Face, G);
       if (G.Mass() > 0)
         di << "GProps:Mass Out\n";
@@ -656,9 +656,7 @@ static int anaface(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int XSHAPE_statshape(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int XSHAPE_statshape(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -678,8 +676,8 @@ static int XSHAPE_statshape(Draw_Interpretor& di,
     di << "Shape unknown : " << arg1 << "\n";
     return 1 /* Error */;
   }
-  char             nompart[100];
-  int nb;
+  char nompart[100];
+  int  nb;
 
   ShapeAnalysis_ShapeContents analyzer;
   if (argc > 3)
@@ -837,9 +835,7 @@ static int XSHAPE_statshape(Draw_Interpretor& di,
   return 0;
 }
 
-static int XSHAPE_comptoledge(Draw_Interpretor& di,
-                                           int  argc,
-                                           const char**      argv)
+static int XSHAPE_comptoledge(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -860,7 +856,7 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di,
     di << "Shape name \"" << argv[1] << "\" is invalid\n";
     return 1;
   }
-  int nbpnts = 371;
+  int         nbpnts = 371;
   const char* prefix = 0;
   if (argc > 2)
   {
@@ -876,15 +872,15 @@ static int XSHAPE_comptoledge(Draw_Interpretor& di,
       prefix = argv[2];
   }
 
-  int   num = 0;
-  double      max = 0, min = 0, ave = 0.;
-  double      relmax = 0, relmin = 0, relave = 0.;
+  int                num = 0;
+  double             max = 0, min = 0, ave = 0.;
+  double             relmax = 0, relmin = 0, relave = 0.;
   ShapeAnalysis_Edge sae;
   TopoDS_Edge        edmax, edmaxrel;
   for (TopExp_Explorer exp(shape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    double tol;
-    TopoDS_Edge   edge = TopoDS::Edge(exp.Current());
+    double      tol;
+    TopoDS_Edge edge = TopoDS::Edge(exp.Current());
     sae.CheckSameParameter(edge, tol, nbpnts);
     double t   = BRep_Tool::Tolerance(edge);
     double rel = tol / (t > Precision::Confusion() ? t : Precision::Confusion());
@@ -984,8 +980,8 @@ static int freebounds(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
     return 1;
-  double    toler       = Draw::Atof(a[2]);
-  bool splitclosed = false, splitopen = false;
+  double toler       = Draw::Atof(a[2]);
+  bool   splitclosed = false, splitopen = false;
   if (n > 3)
     splitclosed = Draw::Atoi(a[3]) != 0;
   if (n > 4)
@@ -1014,17 +1010,17 @@ static int freebounds(Draw_Interpretor& di, int n, const char** a)
 // function : PrintProps
 // purpose  : auxiliary for FreeBoundsProps
 //=======================================================================
-static void PrintProps(int                           i,
+static void PrintProps(int                                             i,
                        const occ::handle<ShapeAnalysis_FreeBoundData>& fbd,
-                       Draw_Interpretor&                          di)
+                       Draw_Interpretor&                               di)
 {
   char str[100];
 
-  double    area      = fbd->Area();
-  double    perimeter = fbd->Perimeter();
-  double    ratio     = fbd->Ratio();
-  double    width     = fbd->Width();
-  int notch     = fbd->NbNotches();
+  double area      = fbd->Area();
+  double perimeter = fbd->Perimeter();
+  double ratio     = fbd->Ratio();
+  double width     = fbd->Width();
+  int    notch     = fbd->NbNotches();
   Sprintf(str, " %d\t%12.5f\t%12.5f\t%12.5f\t%12.5f\t%d", i, area, perimeter, ratio, width, notch);
   di << str << "\n";
 }
@@ -1046,8 +1042,8 @@ static int FreeBoundsProps(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  double    toler       = 0.;
-  bool splitclosed = false, splitopen = false;
+  double toler       = 0.;
+  bool   splitclosed = false, splitopen = false;
   if (n > 2)
     toler = Draw::Atof(a[2]);
   if (n > 3)
@@ -1110,8 +1106,8 @@ static int closefreebounds(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull())
     return 1;
-  double    sewtoler = Draw::Atof(a[2]), closetoler = Draw::Atof(a[3]);
-  bool splitclosed = false, splitopen = false;
+  double sewtoler = Draw::Atof(a[2]), closetoler = Draw::Atof(a[3]);
+  bool   splitclosed = false, splitopen = false;
   if (n > 4)
     splitclosed = Draw::Atoi(a[3]) != 0;
   if (n > 5)
@@ -1157,9 +1153,7 @@ static int getareacontour(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-static int checkselfintersection(Draw_Interpretor& di,
-                                              int  argc,
-                                              const char**      argv)
+static int checkselfintersection(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -1203,7 +1197,7 @@ static int checkselfintersection(Draw_Interpretor& di,
   }
 
   ShapeAnalysis_Wire analyser(TopoDS::Wire(wire), TopoDS::Face(face), Precision::Confusion());
-  bool   result = analyser.CheckSelfIntersection();
+  bool               result = analyser.CheckSelfIntersection();
 
   if (result == true)
     di << "A self-intersecting wire.\n";
@@ -1244,7 +1238,7 @@ static int checkedge(Draw_Interpretor& di, int argc, const char** argv)
 
   // Analysis of the edge.
   ShapeAnalysis_Edge analyser;
-  bool   isOk(true);
+  bool               isOk(true);
 
   // Curve 3D.
   if (analyser.HasCurve3d(TopoDS::Edge(edge)))
@@ -1317,7 +1311,7 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
   }
 
   GeomAbs_SurfaceType aTargets[] = {GeomAbs_Plane, GeomAbs_Cylinder, GeomAbs_Cone, GeomAbs_Sphere};
-  int    isurf      = 0;
+  int                 isurf      = 0;
   if (n > 3)
   {
     if (strcmp(a[3], "pln") == 0)
@@ -1354,7 +1348,7 @@ static int getanasurf(Draw_Interpretor& di, int n, const char** a)
   }
 
   ShapeAnalysis_CanonicalRecognition aCanonRec(sh);
-  occ::handle<Geom_Surface>               aRes;
+  occ::handle<Geom_Surface>          aRes;
   switch (aTargets[isurf])
   {
     case GeomAbs_Plane: {
@@ -1427,7 +1421,7 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
   }
 
   GeomAbs_CurveType aTargets[] = {GeomAbs_Line, GeomAbs_Circle, GeomAbs_Ellipse};
-  int  icurv      = 0;
+  int               icurv      = 0;
   if (n > 3)
   {
     if (strcmp(a[3], "lin") == 0)
@@ -1443,7 +1437,7 @@ int getanacurve(Draw_Interpretor& di, int n, const char** a)
     tol = Draw::Atof(a[4]);
 
   ShapeAnalysis_CanonicalRecognition aCanonRec(sh);
-  occ::handle<Geom_Curve>                 aRes;
+  occ::handle<Geom_Curve>            aRes;
   switch (aTargets[icurv])
   {
     case GeomAbs_Line: {

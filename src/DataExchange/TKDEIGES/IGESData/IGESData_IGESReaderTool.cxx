@@ -41,7 +41,7 @@
 // MGE 17/06/98
 // To use Msg class
 IGESData_IGESReaderTool::IGESData_IGESReaderTool(const occ::handle<IGESData_IGESReaderData>& reader,
-                                                 const occ::handle<IGESData_Protocol>&       protocol)
+                                                 const occ::handle<IGESData_Protocol>& protocol)
     : theglib(protocol),
       therlib(protocol)
 {
@@ -60,15 +60,15 @@ void IGESData_IGESReaderTool::Prepare(const occ::handle<IGESData_FileRecognizer>
   thelist = igesdat->Params(0);
 }
 
-bool IGESData_IGESReaderTool::Recognize(const int      num,
-                                                    occ::handle<Interface_Check>&    ach,
-                                                    occ::handle<Standard_Transient>& ent)
+bool IGESData_IGESReaderTool::Recognize(const int                        num,
+                                        occ::handle<Interface_Check>&    ach,
+                                        occ::handle<Standard_Transient>& ent)
 {
   DeclareAndCast(IGESData_IGESReaderData, igesdat, Data());
   thecnum = num;
   thectyp = igesdat->DirType(num);
   occ::handle<IGESData_IGESEntity> anent;
-  bool            res = false;
+  bool                             res = false;
 
   //  Recognizer -> Liste limitative
   if (!thereco.IsNull())
@@ -107,9 +107,9 @@ void IGESData_IGESReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
 }
 
 // Missing error recovery procedures during the process ...
-bool IGESData_IGESReaderTool::AnalyseRecord(const int            num,
-                                                        const occ::handle<Standard_Transient>& anent,
-                                                        occ::handle<Interface_Check>&          ach)
+bool IGESData_IGESReaderTool::AnalyseRecord(const int                              num,
+                                            const occ::handle<Standard_Transient>& anent,
+                                            occ::handle<Interface_Check>&          ach)
 {
 
   occ::handle<TCollection_HAsciiString> lab;
@@ -202,11 +202,11 @@ void IGESData_IGESReaderTool::EndRead(const occ::handle<Interface_InterfaceModel
 
 void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&     ent,
                                       const occ::handle<IGESData_IGESReaderData>& IR,
-                                      const IGESData_DirPart&                DP,
+                                      const IGESData_DirPart&                     DP,
                                       occ::handle<Interface_Check>&               ach) const
 {
 
-  int   v[17]   = {};
+  int  v[17]   = {};
   char nom[9]  = {};
   char snum[9] = {}, theRes1[9] = {}, theRes2[9] = {};
   DP.Values(v[0],
@@ -359,9 +359,9 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
 
   //    Remaining to analyze name (short label) and snum (subscript number)
   occ::handle<TCollection_HAsciiString> ShortLabel;
-  int                 SubScriptN = -1;
-  int                 iacar      = 0;
-  int                 i; // svv Jan11 2000 : porting on DEC
+  int                                   SubScriptN = -1;
+  int                                   iacar      = 0;
+  int                                   i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < 8; i++)
   {
     if (nom[i] > ' ')
@@ -389,16 +389,17 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
 
 void IGESData_IGESReaderTool::ReadOwnParams(const occ::handle<IGESData_IGESEntity>&     ent,
                                             const occ::handle<IGESData_IGESReaderData>& IR,
-                                            IGESData_ParamReader&                  PR) const
+                                            IGESData_ParamReader&                       PR) const
 {
   occ::handle<Interface_Check>        ach = new Interface_Check();
   occ::handle<Interface_ReaderModule> imodule;
-  int               CN;
+  int                                 CN;
 
   //  The Modules do everything
   if (therlib.Select(ent, imodule, CN))
   {
-    occ::handle<IGESData_ReadWriteModule> module = occ::down_cast<IGESData_ReadWriteModule>(imodule);
+    occ::handle<IGESData_ReadWriteModule> module =
+      occ::down_cast<IGESData_ReadWriteModule>(imodule);
     module->ReadOwnParams(CN, ent, IR, PR);
   }
   else if (ent.IsNull())
@@ -430,7 +431,7 @@ void IGESData_IGESReaderTool::ReadOwnParams(const occ::handle<IGESData_IGESEntit
 
 void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>&     ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,
-                                        IGESData_ParamReader&                  PR) const
+                                        IGESData_ParamReader&                       PR) const
 {
   // MGE 17/06/98
   // Building of Messages
@@ -477,7 +478,7 @@ void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>& 
 
 void IGESData_IGESReaderTool::ReadAssocs(const occ::handle<IGESData_IGESEntity>&     ent,
                                          const occ::handle<IGESData_IGESReaderData>& IR,
-                                         IGESData_ParamReader&                  PR) const
+                                         IGESData_ParamReader&                       PR) const
 {
   // MGE 17/06/98
   // Building of Messages

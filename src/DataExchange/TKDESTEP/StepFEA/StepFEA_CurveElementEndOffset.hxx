@@ -32,8 +32,8 @@ public:
   Standard_EXPORT StepFEA_CurveElementEndOffset();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem,
-                            const occ::handle<NCollection_HArray1<double>>&           aOffsetVector);
+  Standard_EXPORT void Init(const StepFEA_CurveElementEndCoordinateSystem&  aCoordinateSystem,
+                            const occ::handle<NCollection_HArray1<double>>& aOffsetVector);
 
   //! Returns field CoordinateSystem
   Standard_EXPORT StepFEA_CurveElementEndCoordinateSystem CoordinateSystem() const;
@@ -46,13 +46,14 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> OffsetVector() const;
 
   //! Set field OffsetVector
-  Standard_EXPORT void SetOffsetVector(const occ::handle<NCollection_HArray1<double>>& OffsetVector);
+  Standard_EXPORT void SetOffsetVector(
+    const occ::handle<NCollection_HArray1<double>>& OffsetVector);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementEndOffset, Standard_Transient)
 
 private:
-  StepFEA_CurveElementEndCoordinateSystem theCoordinateSystem;
-  occ::handle<NCollection_HArray1<double>>           theOffsetVector;
+  StepFEA_CurveElementEndCoordinateSystem  theCoordinateSystem;
+  occ::handle<NCollection_HArray1<double>> theOffsetVector;
 };
 
 #endif // _StepFEA_CurveElementEndOffset_HeaderFile

@@ -32,13 +32,13 @@ StepRepr_QuantifiedAssemblyComponentUsage::StepRepr_QuantifiedAssemblyComponentU
 void StepRepr_QuantifiedAssemblyComponentUsage::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                  hasProductDefinitionRelationship_Description,
+  const bool                                   hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const occ::handle<StepBasic_ProductDefinition>&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const occ::handle<StepBasic_ProductDefinition>&
-                                          aProductDefinitionRelationship_RelatedProductDefinition,
-  const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+             aProductDefinitionRelationship_RelatedProductDefinition,
+  const bool hasAssemblyComponentUsage_ReferenceDesignator,
   const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
   const occ::handle<Standard_Transient>&       aQuantity)
 {
@@ -59,13 +59,13 @@ void StepRepr_QuantifiedAssemblyComponentUsage::Init(
 void StepRepr_QuantifiedAssemblyComponentUsage::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                  hasProductDefinitionRelationship_Description,
+  const bool                                   hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
-                                          aProductDefinitionRelationship_RelatedProductDefinition,
-  const bool                  hasAssemblyComponentUsage_ReferenceDesignator,
+             aProductDefinitionRelationship_RelatedProductDefinition,
+  const bool hasAssemblyComponentUsage_ReferenceDesignator,
   const occ::handle<TCollection_HAsciiString>& aAssemblyComponentUsage_ReferenceDesignator,
   const occ::handle<Standard_Transient>&       aQuantity)
 {

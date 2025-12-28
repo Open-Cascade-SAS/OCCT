@@ -29,18 +29,15 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 BRepSweep_Trsf::BRepSweep_Trsf(const BRep_Builder&    aBuilder,
                                const TopoDS_Shape&    aGenShape,
                                const Sweep_NumShape&  aDirWire,
                                const TopLoc_Location& aLocation,
-                               const bool aCopy)
+                               const bool             aCopy)
     : BRepSweep_NumLinearRegularSweep(aBuilder, aGenShape, aDirWire),
       myLocation(aLocation),
       myCopy(aCopy)
@@ -62,8 +59,8 @@ void BRepSweep_Trsf::Init()
 bool BRepSweep_Trsf::Process(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirV)
 {
   bool dotrsf = (aDirV.Index() == 2 && !myDirWire.Closed());
-  int iD     = myDirShapeTool.Index(aDirV);
-  int iG     = myGenShapeTool.Index(aGenS);
+  int  iD     = myDirShapeTool.Index(aDirV);
+  int  iG     = myGenShapeTool.Index(aGenS);
   if (IsInvariant(aGenS))
   {
     myShapes(iG, iD)      = aGenS;
@@ -73,7 +70,7 @@ bool BRepSweep_Trsf::Process(const TopoDS_Shape& aGenS, const Sweep_NumShape& aD
   else
   {
     BRepSweep_Iterator Jt;
-    bool   touch = false;
+    bool               touch = false;
     for (Jt.Init(aGenS); Jt.More(); Jt.Next())
     {
       if (Process(Jt.Value(), aDirV))
@@ -97,7 +94,7 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
 {
   constexpr double tl = Precision::Confusion();
   // angular etant un peu severe pour les contours sketches.
-  double ta = 0.00175; // environ 0.1 degre
+  double        ta = 0.00175; // environ 0.1 degre
   GeomAbs_Shape cont;
   BRep_Builder  B = myBuilder.Builder();
   if (aGenS.ShapeType() == TopAbs_EDGE)
@@ -106,14 +103,13 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
     {
       TopoDS_Edge       E = TopoDS::Edge(aGenS);
       BRepAdaptor_Curve e;
-      double     ud, uf;
+      double            ud, uf;
       TopoDS_Vertex     d, f;
       TopExp::Vertices(E, d, f);
       if (d.IsSame(f))
       {
         //	tol3d = std::max(tl,BRep_Tool::Tolerance(d));
-        const double tol3d =
-          std::max(tl, 2. * BRep_Tool::Tolerance(d)); // IFV 24.05.00 buc60684
+        const double tol3d = std::max(tl, 2. * BRep_Tool::Tolerance(d)); // IFV 24.05.00 buc60684
         e.Initialize(E);
         ud   = BRep_Tool::Parameter(d, TopoDS::Edge(aGenS));
         uf   = BRep_Tool::Parameter(f, TopoDS::Edge(aGenS));
@@ -133,7 +129,7 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
         if (GDDShapeIsToAdd(Shape(aGenS, aDirS), Shape(aGenS, dirv), aGenS, aDirS, dirv))
         {
           TopLoc_Location Lo;
-          double   fi, la;
+          double          fi, la;
           cont = BRep_Tool::Curve(E, Lo, fi, la)->Continuity();
           if (cont >= 1)
           {
@@ -149,16 +145,19 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
   }
   else if (aGenS.ShapeType() == TopAbs_WIRE)
   {
-    TopoDS_Edge                               E1, E2;
-    BRepAdaptor_Curve                         e1, e2;
-    double                             u1, u2;
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> M;
+    TopoDS_Edge       E1, E2;
+    BRepAdaptor_Curve e1, e2;
+    double            u1, u2;
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      M;
     TopExp::MapShapesAndAncestors(aGenS, TopAbs_VERTEX, TopAbs_EDGE, M);
     NCollection_List<TopoDS_Shape>::Iterator It, Jt;
     for (int i = 1; i <= M.Extent(); i++)
     {
-      TopoDS_Vertex    V = TopoDS::Vertex(M.FindKey(i));
-      int j = 1;
+      TopoDS_Vertex V = TopoDS::Vertex(M.FindKey(i));
+      int           j = 1;
       for (It.Initialize(M.FindFromIndex(i)); It.More(); It.Next(), j++)
       {
         Jt.Initialize(M.FindFromIndex(i));

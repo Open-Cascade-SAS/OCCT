@@ -115,9 +115,7 @@ public:
   //! Remember that all the coordinates of a unit vector are
   //! implicitly modified when any single one is changed directly.
   //! @note Constexpr-compatible when input is already normalized.
-  constexpr void SetCoord(const double theXv,
-                          const double theYv,
-                          const double theZv);
+  constexpr void SetCoord(const double theXv, const double theYv, const double theZv);
 
   //! Assigns the given value to the X coordinate of this unit vector.
   //! @note Constexpr-compatible when result is already normalized.
@@ -141,15 +139,10 @@ public:
   //! theIndex = 3 => Z is returned
   //! Exceptions
   //! Standard_OutOfRange if theIndex is not 1, 2, or 3.
-  constexpr double Coord(const int theIndex) const
-  {
-    return coord.Coord(theIndex);
-  }
+  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
 
   //! Returns for the unit vector its three coordinates theXv, theYv, and theZv.
-  constexpr void Coord(double& theXv,
-                       double& theYv,
-                       double& theZv) const noexcept
+  constexpr void Coord(double& theXv, double& theYv, double& theZv) const noexcept
   {
     coord.Coord(theXv, theYv, theZv);
   }
@@ -253,10 +246,7 @@ public:
   [[nodiscard]] constexpr gp_Dir CrossCrossed(const gp_Dir& theV1, const gp_Dir& theV2) const;
 
   //! Computes the scalar product
-  constexpr double Dot(const gp_Dir& theOther) const noexcept
-  {
-    return coord.Dot(theOther.coord);
-  }
+  constexpr double Dot(const gp_Dir& theOther) const noexcept { return coord.Dot(theOther.coord); }
 
   constexpr double operator*(const gp_Dir& theOther) const noexcept { return Dot(theOther); }
 
@@ -335,8 +325,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
-                                                int&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
 private:
   gp_XYZ coord;
@@ -360,9 +349,7 @@ inline constexpr gp_Dir::gp_Dir(const gp_XYZ& theXYZ)
 
 //=================================================================================================
 
-inline constexpr gp_Dir::gp_Dir(const double theXv,
-                                const double theYv,
-                                const double theZv)
+inline constexpr gp_Dir::gp_Dir(const double theXv, const double theYv, const double theZv)
 {
   const double aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
 
@@ -402,9 +389,7 @@ inline constexpr void gp_Dir::SetCoord(const int theIndex, const double theXi)
 
 //=================================================================================================
 
-inline constexpr void gp_Dir::SetCoord(const double theXv,
-                                       const double theYv,
-                                       const double theZv)
+inline constexpr void gp_Dir::SetCoord(const double theXv, const double theYv, const double theZv)
 {
   const double aSqMod = theXv * theXv + theYv * theYv + theZv * theZv;
 

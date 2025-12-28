@@ -29,7 +29,7 @@ public:
   //! Constructs the sensitive circle object defined by the
   //! owner theOwnerId, the circle theCircle and the boolean theIsFilled.
   Standard_EXPORT Select3D_SensitiveCircle(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                           const gp_Circ&                       theCircle,
+                                           const gp_Circ&                            theCircle,
                                            const bool theIsFilled = false);
 
   //! Constructs the sensitive circle object defined by the
@@ -37,8 +37,8 @@ public:
   //! theIsFilled and the number of points theNbPnts.
   Standard_DEPRECATED("Deprecated constructor, theNbPnts parameter will be ignored")
   Select3D_SensitiveCircle(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                           const gp_Circ&                       theCircle,
-                           const bool               theIsFilled,
+                           const gp_Circ&                            theCircle,
+                           const bool                                theIsFilled,
                            const int /*theNbPnts*/)
       : Select3D_SensitiveCircle(theOwnerId, theCircle, theIsFilled)
   {
@@ -46,8 +46,7 @@ public:
 
   //! Checks whether the circle overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    override;
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns a copy of this sensitive circle
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
@@ -78,7 +77,7 @@ public:
 private:
   Select3D_TypeOfSensitivity mySensType; //!< Type of sensitivity: boundary or interior
   gp_Trsf                    myTrsf;     //!< Circle transformation to apply
-  double              myRadius;   //!< Circle radius
+  double                     myRadius;   //!< Circle radius
 };
 
 #endif // _Select3D_SensitiveCircle_HeaderFile

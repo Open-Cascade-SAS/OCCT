@@ -24,11 +24,6 @@
 #include <NCollection_HArray1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MeshVS_DataSource.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
 
 class MeshVS_DataSource3D : public MeshVS_DataSource
 {
@@ -40,17 +35,19 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> GetPyramidTopology(
     const int BasePoints) const;
 
-  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> CreatePrismTopology(
-    const int BasePoints);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>
+    CreatePrismTopology(const int BasePoints);
 
-  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> CreatePyramidTopology(
-    const int BasePoints);
+  Standard_EXPORT static occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>
+    CreatePyramidTopology(const int BasePoints);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource3D, MeshVS_DataSource)
 
 private:
-  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>> myPrismTopos;
-  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>> myPyramidTopos;
+  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>>
+    myPrismTopos;
+  NCollection_DataMap<int, occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>>
+    myPyramidTopos;
 };
 
 #endif // _MeshVS_DataSource3D_HeaderFile

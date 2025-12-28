@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_BrepWithVoids, StepShape_ManifoldSolidBrep)
 
 StepShape_BrepWithVoids::StepShape_BrepWithVoids() {}
 
-void StepShape_BrepWithVoids::Init(const occ::handle<TCollection_HAsciiString>&               aName,
-                                   const occ::handle<StepShape_ClosedShell>&                  aOuter,
-                                   const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
+void StepShape_BrepWithVoids::Init(
+  const occ::handle<TCollection_HAsciiString>&                                        aName,
+  const occ::handle<StepShape_ClosedShell>&                                           aOuter,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
 {
   // --- classe own fields ---
   voids = aVoids;
@@ -30,18 +31,19 @@ void StepShape_BrepWithVoids::Init(const occ::handle<TCollection_HAsciiString>& 
   StepShape_ManifoldSolidBrep::Init(aName, aOuter);
 }
 
-void StepShape_BrepWithVoids::SetVoids(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
+void StepShape_BrepWithVoids::SetVoids(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
 {
   voids = aVoids;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> StepShape_BrepWithVoids::Voids() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>
+  StepShape_BrepWithVoids::Voids() const
 {
   return voids;
 }
 
-occ::handle<StepShape_OrientedClosedShell> StepShape_BrepWithVoids::VoidsValue(
-  const int num) const
+occ::handle<StepShape_OrientedClosedShell> StepShape_BrepWithVoids::VoidsValue(const int num) const
 {
   return voids->Value(num);
 }

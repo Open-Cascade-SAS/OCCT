@@ -21,7 +21,7 @@
 RWStepShape_RWBlock::RWStepShape_RWBlock() {}
 
 void RWStepShape_RWBlock::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                 num,
+                                   const int                                   num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepShape_Block>&         ent) const
 {
@@ -66,7 +66,7 @@ void RWStepShape_RWBlock::ReadStep(const occ::handle<StepData_StepReaderData>& d
   ent->Init(aName, aPosition, aX, aY, aZ);
 }
 
-void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
+void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&                SW,
                                     const occ::handle<StepShape_Block>& ent) const
 {
 
@@ -92,7 +92,7 @@ void RWStepShape_RWBlock::WriteStep(StepData_StepWriter&           SW,
 }
 
 void RWStepShape_RWBlock::Share(const occ::handle<StepShape_Block>& ent,
-                                Interface_EntityIterator&      iter) const
+                                Interface_EntityIterator&           iter) const
 {
 
   iter.GetOneItem(ent->Position());

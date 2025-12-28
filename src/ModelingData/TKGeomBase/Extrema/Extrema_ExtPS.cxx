@@ -30,19 +30,19 @@
 //=================================================================================================
 
 static bool IsoIsDeg(const Adaptor3d_Surface& S,
-                                 const double      Param,
-                                 const GeomAbs_IsoType    IT,
-                                 const double      TolMin,
-                                 const double      TolMax)
+                     const double             Param,
+                     const GeomAbs_IsoType    IT,
+                     const double             TolMin,
+                     const double             TolMax)
 {
-  double    U1 = 0., U2 = 0., V1 = 0., V2 = 0., T;
-  bool Along = true;
-  U1                     = S.FirstUParameter();
-  U2                     = S.LastUParameter();
-  V1                     = S.FirstVParameter();
-  V2                     = S.LastVParameter();
-  gp_Vec        D1U, D1V;
-  gp_Pnt        P;
+  double U1 = 0., U2 = 0., V1 = 0., V2 = 0., T;
+  bool   Along = true;
+  U1           = S.FirstUParameter();
+  U2           = S.LastUParameter();
+  V1           = S.FirstVParameter();
+  V2           = S.LastVParameter();
+  gp_Vec D1U, D1V;
+  gp_Pnt P;
   double Step, D1NormMax;
   if (IT == GeomAbs_IsoV)
   {
@@ -145,8 +145,8 @@ Extrema_ExtPS::Extrema_ExtPS()
 
 Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
                              const Adaptor3d_Surface& theS,
-                             const double      theTolU,
-                             const double      theTolV,
+                             const double             theTolU,
+                             const double             theTolV,
                              const Extrema_ExtFlag    theF,
                              const Extrema_ExtAlgo    theA)
 {
@@ -168,12 +168,12 @@ Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
 
 Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
                              const Adaptor3d_Surface& theS,
-                             const double      theUinf,
-                             const double      theUsup,
-                             const double      theVinf,
-                             const double      theVsup,
-                             const double      theTolU,
-                             const double      theTolV,
+                             const double             theUinf,
+                             const double             theUsup,
+                             const double             theVinf,
+                             const double             theVsup,
+                             const double             theTolU,
+                             const double             theTolV,
                              const Extrema_ExtFlag    theF,
                              const Extrema_ExtAlgo    theA)
 {
@@ -188,12 +188,12 @@ Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&            theP,
 //=================================================================================================
 
 void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
-                               const double      theUinf,
-                               const double      theUsup,
-                               const double      theVinf,
-                               const double      theVsup,
-                               const double      theTolU,
-                               const double      theTolV)
+                               const double             theUinf,
+                               const double             theUsup,
+                               const double             theVinf,
+                               const double             theVsup,
+                               const double             theTolU,
+                               const double             theTolV)
 {
   myS    = &theS;
   myuinf = theUinf;
@@ -214,8 +214,7 @@ void Extrema_ExtPS::Initialize(const Adaptor3d_Surface& theS,
   mytolv = theTolV;
   mytype = myS->GetType();
 
-  bool isB =
-    (myS->GetType() == GeomAbs_BSplineSurface || myS->GetType() == GeomAbs_BezierSurface);
+  bool isB = (myS->GetType() == GeomAbs_BSplineSurface || myS->GetType() == GeomAbs_BezierSurface);
 
   int nbU = (isB) ? 44 : 32;
   int nbV = (isB) ? 44 : 32;
@@ -269,8 +268,9 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
     case GeomAbs_SurfaceOfExtrusion: {
       if (myExtPExtS.IsNull())
       {
-        occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> aS(new GeomAdaptor_SurfaceOfLinearExtrusion(
-          GeomAdaptor_SurfaceOfLinearExtrusion(myS->BasisCurve(), myS->Direction())));
+        occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> aS(
+          new GeomAdaptor_SurfaceOfLinearExtrusion(
+            GeomAdaptor_SurfaceOfLinearExtrusion(myS->BasisCurve(), myS->Direction())));
 
         myExtPExtS =
           new Extrema_ExtPExtS(thePoint, aS, myuinf, myusup, myvinf, myvsup, mytolu, mytolv);
@@ -372,10 +372,10 @@ void Extrema_ExtPS::TrimmedSquareDistances(double& dUfVf,
                                            double& dUfVl,
                                            double& dUlVf,
                                            double& dUlVl,
-                                           gp_Pnt&        PUfVf,
-                                           gp_Pnt&        PUfVl,
-                                           gp_Pnt&        PUlVf,
-                                           gp_Pnt&        PUlVl) const
+                                           gp_Pnt& PUfVf,
+                                           gp_Pnt& PUfVl,
+                                           gp_Pnt& PUlVf,
+                                           gp_Pnt& PUlVl) const
 {
   dUfVf = d11;
   dUfVl = d12;

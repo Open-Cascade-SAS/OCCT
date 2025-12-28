@@ -53,7 +53,7 @@
 static int OCC332bug(Draw_Interpretor& di, int argc, const char** argv)
 {
   // Used to Display Geometry or Topolgy
-  char             name[255];
+  char name[255];
   bool check = true;
 
   // Set default arguments
@@ -413,7 +413,7 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   // Used to Display Geometry or Topolgy
-  char             name[255];
+  char name[255];
   bool check = true;
 
   // Set default arguments
@@ -785,8 +785,6 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBndLib.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -830,9 +828,9 @@ static int OCC817(Draw_Interpretor& di, int argc, const char** argv)
   const TopoDS_Shape& cut_shape = cut.Shape();
 
   // see if we have a solid
-  int found_solid = 0;
-  TopoDS_Solid     cutSolid;
-  TopExp_Explorer  Ex;
+  int             found_solid = 0;
+  TopoDS_Solid    cutSolid;
+  TopExp_Explorer Ex;
   for (Ex.Init(cut_shape, TopAbs_SOLID); Ex.More(); Ex.Next())
   {
     TopoDS_Solid sol = TopoDS::Solid(Ex.Current());
@@ -880,10 +878,10 @@ static int OCC817(Draw_Interpretor& di, int argc, const char** argv)
   int NumZsubvolumes = (int)((Zmax - Zmin) / mesh_delt);
   if (NumZsubvolumes <= 0)
     NumZsubvolumes = 1;
-  const double    StepX         = (Xmax - Xmin) / NumXsubvolumes;
-  const double    StepY         = (Ymax - Ymin) / NumYsubvolumes;
-  const double    StepZ         = (Zmax - Zmin) / NumZsubvolumes;
-  const int NumSubvolumes = NumXsubvolumes * NumYsubvolumes * NumZsubvolumes;
+  const double StepX         = (Xmax - Xmin) / NumXsubvolumes;
+  const double StepY         = (Ymax - Ymin) / NumYsubvolumes;
+  const double StepZ         = (Zmax - Zmin) / NumZsubvolumes;
+  const int    NumSubvolumes = NumXsubvolumes * NumYsubvolumes * NumZsubvolumes;
   di << "Info: NumSubvolumesX = " << NumXsubvolumes << "\n";
   di << "Info: NumSubvolumesY = " << NumYsubvolumes << "\n";
   di << "Info: NumSubvolumesZ = " << NumZsubvolumes << "\n";
@@ -893,10 +891,10 @@ static int OCC817(Draw_Interpretor& di, int argc, const char** argv)
   // construct initial mesh of cutSolid
   //
   NCollection_Array1<TopoDS_Shape> SubvolumeSolid(0, NumSubvolumes - 1);
-  NCollection_Array1<double>   SubvolumeVol(0, NumSubvolumes - 1);
-  double          accumulatedVolume = 0.0;
-  int       i, j, k, l = 0;
-  double          x = Xmin;
+  NCollection_Array1<double>       SubvolumeVol(0, NumSubvolumes - 1);
+  double                           accumulatedVolume = 0.0;
+  int                              i, j, k, l = 0;
+  double                           x = Xmin;
   for (i = 0; i < NumXsubvolumes; i++)
   {
     double y = Ymin;
@@ -972,8 +970,8 @@ static int OCC817(Draw_Interpretor& di, int argc, const char** argv)
       SubvolumeSolid.SetValue(l, commonShape);
       GProp_GProps subvolumeVProps;
       BRepGProp::VolumeProperties(SubvolumeSolid(l), subvolumeVProps);
-      const double    vol = subvolumeVProps.Mass();
-      const bool err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
+      const double vol = subvolumeVProps.Mass();
+      const bool   err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
       // std::cout << (err? "ERROR" : "Info") << ": final subvolume " << l << " volume = " << vol <<
       // std::endl;
       if (err)

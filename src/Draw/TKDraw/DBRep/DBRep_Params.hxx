@@ -20,18 +20,18 @@
 struct DBRep_Params
 {
 public:
-  int NbIsos; //!< number of iso in U and V
-  double    Size;
-  int Discretization; //!< Discretization number of points for curves
-  bool DispTriangles;
-  bool DisplayPolygons;
-  double    HLRAngle; //!< Discretization angle for edges
-  double    HAngMin;
-  double    HAngMax;
-  bool WithHLR; //!< True if HLR, False if wireframe
-  bool WithRg1; //!< True if display Rg1Lines
-  bool WithRgN; //!< True if display RgNLines
-  bool WithHid; //!< True if display HiddenLines
+  int    NbIsos; //!< number of iso in U and V
+  double Size;
+  int    Discretization; //!< Discretization number of points for curves
+  bool   DispTriangles;
+  bool   DisplayPolygons;
+  double HLRAngle; //!< Discretization angle for edges
+  double HAngMin;
+  double HAngMax;
+  bool   WithHLR; //!< True if HLR, False if wireframe
+  bool   WithRg1; //!< True if display Rg1Lines
+  bool   WithRgN; //!< True if display RgNLines
+  bool   WithHid; //!< True if display HiddenLines
 
   DBRep_Params()
       : NbIsos(2),

@@ -39,12 +39,9 @@ public:
 
   Standard_EXPORT bool Value(const double X, double& F) override;
 
-  Standard_EXPORT bool Derivative(const double X,
-                                              double&      D) override;
+  Standard_EXPORT bool Derivative(const double X, double& D) override;
 
-  Standard_EXPORT bool Values(const double X,
-                                          double&      F,
-                                          double&      D) override;
+  Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
   Standard_EXPORT int NbSamples() const;
 
@@ -65,9 +62,9 @@ public:
 private:
   occ::handle<Adaptor2d_Curve2d> myArc;
   occ::handle<Adaptor3d_Surface> mySurf;
-  IntSurf_Quadric           myQuad;
-  gp_Pnt                    ptsol;
-  NCollection_Sequence<gp_Pnt>      seqpt;
+  IntSurf_Quadric                myQuad;
+  gp_Pnt                         ptsol;
+  NCollection_Sequence<gp_Pnt>   seqpt;
 };
 
 #include <IntPatch_ArcFunction.lxx>

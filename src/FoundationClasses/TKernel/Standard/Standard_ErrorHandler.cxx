@@ -130,8 +130,8 @@ void Standard_ErrorHandler::Unlink()
   myPrevious = 0;
 
   // unlink and destroy all registered callbacks
-  void* aPtr = aCurrent->myCallbackPtr;
-  myCallbackPtr         = 0;
+  void* aPtr    = aCurrent->myCallbackPtr;
+  myCallbackPtr = 0;
   while (aPtr)
   {
     Standard_ErrorHandler::Callback* aCallback = (Standard_ErrorHandler::Callback*)aPtr;
@@ -202,7 +202,7 @@ bool Standard_ErrorHandler::Catches(const occ::handle<Standard_Type>& AType)
 occ::handle<Standard_Failure> Standard_ErrorHandler::LastCaughtError()
 {
   occ::handle<Standard_Failure> aHandle;
-  Standard_ErrorHandler*   anActive = FindHandler(Standard_HandlerProcessed, false);
+  Standard_ErrorHandler*        anActive = FindHandler(Standard_HandlerProcessed, false);
   if (anActive != 0)
     aHandle = anActive->myCaughtError;
 
@@ -224,7 +224,7 @@ void Standard_ErrorHandler::Error(const occ::handle<Standard_Failure>& theError)
 }
 
 Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_HandlerStatus theStatus,
-                                                          const bool       theUnlink)
+                                                          const bool                   theUnlink)
 {
   // Use shared lock for read-only access (most common case), exclusive lock only when modifying
   if (!theUnlink)
@@ -258,7 +258,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
     Standard_ErrorHandler* aPrevious = 0;
     Standard_ErrorHandler* aCurrent  = Top;
     Standard_ErrorHandler* anActive  = 0;
-    bool       aStop     = false;
+    bool                   aStop     = false;
     Standard_ThreadId      aTreadId  = GetThreadID();
 
     // searching an exception with correct ID number
@@ -327,8 +327,7 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
     return; // already registered
 
   // find current active exception handler
-  Standard_ErrorHandler* aHandler =
-    Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, false);
+  Standard_ErrorHandler* aHandler = Standard_ErrorHandler::FindHandler(Standard_HandlerVoid, false);
 
   // if found, add this callback object first to the list
   if (aHandler)

@@ -23,31 +23,17 @@
 #include <GeomPlate_CurveConstraint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GeomPlate_PointConstraint.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <Plate_Plate.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <gp_XY.hxx>
-#include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 class Geom_Surface;
 class GeomPlate_Surface;
 class GeomPlate_CurveConstraint;
@@ -80,26 +66,27 @@ public:
   //! are identical in the parametric space of the initial surface Tol3d is used to test if two
   //! identical points in the 2d space are identical in 3d space TolAng is used to compare the angle
   //! between normal of two identical points in the 2d space Raises ConstructionError;
-  Standard_EXPORT GeomPlate_BuildPlateSurface(const occ::handle<NCollection_HArray1<int>>&  NPoints,
-                                              const occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>>& TabCurve,
-                                              const occ::handle<NCollection_HArray1<int>>&  Tang,
-                                              const int                   Degree,
-                                              const int                   NbIter = 3,
-                                              const double    Tol2d       = 0.00001,
-                                              const double    Tol3d       = 0.0001,
-                                              const double    TolAng      = 0.01,
-                                              const double    TolCurv     = 0.1,
-                                              const bool Anisotropie = false);
+  Standard_EXPORT GeomPlate_BuildPlateSurface(
+    const occ::handle<NCollection_HArray1<int>>&                          NPoints,
+    const occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>>& TabCurve,
+    const occ::handle<NCollection_HArray1<int>>&                          Tang,
+    const int                                                             Degree,
+    const int                                                             NbIter      = 3,
+    const double                                                          Tol2d       = 0.00001,
+    const double                                                          Tol3d       = 0.0001,
+    const double                                                          TolAng      = 0.01,
+    const double                                                          TolCurv     = 0.1,
+    const bool                                                            Anisotropie = false);
 
   Standard_EXPORT GeomPlate_BuildPlateSurface(const occ::handle<Geom_Surface>& Surf,
-                                              const int      Degree     = 3,
-                                              const int      NbPtsOnCur = 10,
-                                              const int      NbIter     = 3,
-                                              const double         Tol2d      = 0.00001,
-                                              const double         Tol3d      = 0.0001,
-                                              const double         TolAng     = 0.01,
-                                              const double         TolCurv    = 0.1,
-                                              const bool Anisotropie = false);
+                                              const int                        Degree     = 3,
+                                              const int                        NbPtsOnCur = 10,
+                                              const int                        NbIter     = 3,
+                                              const double                     Tol2d      = 0.00001,
+                                              const double                     Tol3d      = 0.0001,
+                                              const double                     TolAng     = 0.01,
+                                              const double                     TolCurv    = 0.1,
+                                              const bool                       Anisotropie = false);
 
   //! Initializes the BuildPlateSurface framework for
   //! deforming plate surfaces using curve and point
@@ -127,14 +114,14 @@ public:
   //! between the constraint and the target surface.
   //! Exceptions
   //! Standard_ConstructionError if NbIter is less than 1 or Degree is less than 3.
-  Standard_EXPORT GeomPlate_BuildPlateSurface(const int Degree      = 3,
-                                              const int NbPtsOnCur  = 10,
-                                              const int NbIter      = 3,
-                                              const double    Tol2d       = 0.00001,
-                                              const double    Tol3d       = 0.0001,
-                                              const double    TolAng      = 0.01,
-                                              const double    TolCurv     = 0.1,
-                                              const bool Anisotropie = false);
+  Standard_EXPORT GeomPlate_BuildPlateSurface(const int    Degree      = 3,
+                                              const int    NbPtsOnCur  = 10,
+                                              const int    NbIter      = 3,
+                                              const double Tol2d       = 0.00001,
+                                              const double Tol3d       = 0.0001,
+                                              const double TolAng      = 0.01,
+                                              const double TolCurv     = 0.1,
+                                              const bool   Anisotropie = false);
 
   //! Resets all constraints
   Standard_EXPORT void Init();
@@ -159,18 +146,16 @@ public:
   Standard_EXPORT void Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! returns the CurveConstraints of order order
-  Standard_EXPORT occ::handle<GeomPlate_CurveConstraint> CurveConstraint(
-    const int order) const;
+  Standard_EXPORT occ::handle<GeomPlate_CurveConstraint> CurveConstraint(const int order) const;
 
   //! returns the PointConstraint of order order
-  Standard_EXPORT occ::handle<GeomPlate_PointConstraint> PointConstraint(
-    const int order) const;
+  Standard_EXPORT occ::handle<GeomPlate_PointConstraint> PointConstraint(const int order) const;
 
   Standard_EXPORT void Disc2dContour(const int nbp, NCollection_Sequence<gp_XY>& Seq2d);
 
-  Standard_EXPORT void Disc3dContour(const int nbp,
-                                     const int iordre,
-                                     NCollection_Sequence<gp_XYZ>&  Seq3d);
+  Standard_EXPORT void Disc3dContour(const int                     nbp,
+                                     const int                     iordre,
+                                     NCollection_Sequence<gp_XYZ>& Seq3d);
 
   //! Tests whether computation of the plate has been completed.
   Standard_EXPORT bool IsDone() const;
@@ -223,7 +208,7 @@ private:
   //! Evaluates the distance, the angle between normals, and the "courbure"
   //! on middle points of constraints and corresponding points on the GeomPlate_Surface
   //! the results are given for a curve c
-  Standard_EXPORT void EcartContraintesMil(const int         c,
+  Standard_EXPORT void EcartContraintesMil(const int                                 c,
                                            occ::handle<NCollection_HArray1<double>>& d,
                                            occ::handle<NCollection_HArray1<double>>& an,
                                            occ::handle<NCollection_HArray1<double>>& courb);
@@ -236,25 +221,23 @@ private:
 
   Standard_EXPORT void ComputeSurfInit(const Message_ProgressRange& theProgress);
 
-  Standard_EXPORT void Intersect(occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
-                                 occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1);
+  Standard_EXPORT void Intersect(
+    occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
+    occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1);
 
-  Standard_EXPORT void Discretise(const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
-                                  const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1);
+  Standard_EXPORT void Discretise(
+    const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
+    const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1);
 
-  Standard_EXPORT void LoadCurve(const int NbBoucle,
-                                 const int OrderMax = 2);
+  Standard_EXPORT void LoadCurve(const int NbBoucle, const int OrderMax = 2);
 
-  Standard_EXPORT void LoadPoint(const int NbBoucle,
-                                 const int OrderMax = 2);
+  Standard_EXPORT void LoadPoint(const int NbBoucle, const int OrderMax = 2);
 
   Standard_EXPORT void CalculNbPtsInit();
 
   Standard_EXPORT bool VerifSurface(const int NbLoop);
 
-  Standard_EXPORT void VerifPoints(double& dist,
-                                   double& ang,
-                                   double& curv) const;
+  Standard_EXPORT void VerifPoints(double& dist, double& ang, double& curv) const;
 
   Standard_EXPORT bool CourbeJointive(const double tolerance);
 
@@ -263,33 +246,33 @@ private:
   Standard_EXPORT bool IsOrderG1() const;
 
   occ::handle<NCollection_HSequence<occ::handle<GeomPlate_CurveConstraint>>> myLinCont;
-  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>    myParCont;
-  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>    myPlateCont;
+  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>             myParCont;
+  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>             myPlateCont;
   occ::handle<NCollection_HSequence<occ::handle<GeomPlate_PointConstraint>>> myPntCont;
-  occ::handle<Geom_Surface>                         mySurfInit;
-  occ::handle<Geom_Surface>                         myPlanarSurfInit;
-  occ::handle<GeomPlate_Surface>                    myGeomPlateSurface;
-  Plate_Plate                                  myPlate;
-  Plate_Plate                                  myPrevPlate;
-  bool                             myAnisotropie;
-  occ::handle<NCollection_HArray1<int>>             mySense;
-  int                             myDegree;
-  occ::handle<NCollection_HArray1<int>>             myInitOrder;
-  double                                myG0Error;
-  double                                myG1Error;
-  double                                myG2Error;
-  int                             myNbPtsOnCur;
-  bool                             mySurfInitIsGive;
-  int                             myNbIter;
-  Extrema_ExtPS                                myProj;
-  double                                myTol2d;
-  double                                myTol3d;
-  double                                myTolAng;
-  double                                myTolU;
-  double                                myTolV;
-  int                             myNbBounds;
-  bool                             myIsLinear;
-  bool                             myFree;
+  occ::handle<Geom_Surface>                                                  mySurfInit;
+  occ::handle<Geom_Surface>                                                  myPlanarSurfInit;
+  occ::handle<GeomPlate_Surface>                                             myGeomPlateSurface;
+  Plate_Plate                                                                myPlate;
+  Plate_Plate                                                                myPrevPlate;
+  bool                                                                       myAnisotropie;
+  occ::handle<NCollection_HArray1<int>>                                      mySense;
+  int                                                                        myDegree;
+  occ::handle<NCollection_HArray1<int>>                                      myInitOrder;
+  double                                                                     myG0Error;
+  double                                                                     myG1Error;
+  double                                                                     myG2Error;
+  int                                                                        myNbPtsOnCur;
+  bool                                                                       mySurfInitIsGive;
+  int                                                                        myNbIter;
+  Extrema_ExtPS                                                              myProj;
+  double                                                                     myTol2d;
+  double                                                                     myTol3d;
+  double                                                                     myTolAng;
+  double                                                                     myTolU;
+  double                                                                     myTolV;
+  int                                                                        myNbBounds;
+  bool                                                                       myIsLinear;
+  bool                                                                       myFree;
 };
 
 #endif // _GeomPlate_BuildPlateSurface_HeaderFile

@@ -73,9 +73,9 @@ const char* TDocStd_Application::ResourcesName()
 
 //=================================================================================================
 
-void TDocStd_Application::DefineFormat(const TCollection_AsciiString&      theFormat,
-                                       const TCollection_AsciiString&      theDescription,
-                                       const TCollection_AsciiString&      theExtension,
+void TDocStd_Application::DefineFormat(const TCollection_AsciiString&           theFormat,
+                                       const TCollection_AsciiString&           theDescription,
+                                       const TCollection_AsciiString&           theExtension,
                                        const occ::handle<PCDM_RetrievalDriver>& theReader,
                                        const occ::handle<PCDM_StorageDriver>&   theWriter)
 {
@@ -103,8 +103,8 @@ void TDocStd_Application::ReadingFormats(NCollection_Sequence<TCollection_AsciiS
 {
   theFormats.Clear();
 
-  NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_RetrievalDriver>>::Iterator
-    anIter(myReaders);
+  NCollection_IndexedDataMap<TCollection_ExtendedString,
+                             occ::handle<PCDM_RetrievalDriver>>::Iterator anIter(myReaders);
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<PCDM_RetrievalDriver>& aDriver = anIter.Value();
@@ -142,18 +142,17 @@ int TDocStd_Application::NbDocuments() const
 
 //=================================================================================================
 
-void TDocStd_Application::GetDocument(const int    index,
-                                      occ::handle<TDocStd_Document>& theDoc) const
+void TDocStd_Application::GetDocument(const int index, occ::handle<TDocStd_Document>& theDoc) const
 {
   CDF_DirectoryIterator it(myDirectory);
-  int      current = 0;
+  int                   current = 0;
   for (; it.MoreDocument(); it.NextDocument())
   {
     current++;
     if (index == current)
     {
       occ::handle<TDocStd_Document> D = occ::down_cast<TDocStd_Document>(it.Document());
-      theDoc                     = D;
+      theDoc                          = D;
       return;
     }
   }
@@ -162,7 +161,7 @@ void TDocStd_Application::GetDocument(const int    index,
 //=================================================================================================
 
 void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format,
-                                      occ::handle<CDM_Document>&             theDoc)
+                                      occ::handle<CDM_Document>&        theDoc)
 {
   occ::handle<TDocStd_Document> D = new TDocStd_Document(format);
   InitDocument(D);
@@ -177,7 +176,7 @@ void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format,
 //=======================================================================
 
 void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format,
-                                      occ::handle<TDocStd_Document>&         theDoc)
+                                      occ::handle<TDocStd_Document>&    theDoc)
 {
   occ::handle<CDM_Document> aCDMDoc;
   NewDocument(format, aCDMDoc);
@@ -215,7 +214,7 @@ int TDocStd_Application::IsInSession(const TCollection_ExtendedString& path) con
   unifiedPath.ChangeAll('/', '|');
   unifiedPath.ChangeAll('\\', '|');
 
-  int         nbdoc = NbDocuments();
+  int                           nbdoc = NbDocuments();
   occ::handle<TDocStd_Document> D;
   for (int i = 1; i <= nbdoc; i++)
   {
@@ -235,10 +234,10 @@ int TDocStd_Application::IsInSession(const TCollection_ExtendedString& path) con
 
 //=================================================================================================
 
-PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& path,
-                                            occ::handle<TDocStd_Document>&         theDoc,
-                                            const occ::handle<PCDM_ReaderFilter>&  theFilter,
-                                            const Message_ProgressRange&      theRange)
+PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString&     path,
+                                            occ::handle<TDocStd_Document>&        theDoc,
+                                            const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                            const Message_ProgressRange&          theRange)
 {
   PCDM_ReaderStatus          status = PCDM_RS_DriverFailure;
   TDocStd_PathParser         tool(path);
@@ -256,8 +255,8 @@ PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& pa
   try
   {
     OCC_CATCH_SIGNALS
-    occ::handle<TDocStd_Document> D = occ::down_cast<TDocStd_Document>(
-      Retrieve(directory, file, true, theFilter, theRange));
+    occ::handle<TDocStd_Document> D =
+      occ::down_cast<TDocStd_Document>(Retrieve(directory, file, true, theFilter, theRange));
     if (theFilter.IsNull() || !theFilter->IsAppendMode())
       CDF_Application::Open(D);
     theDoc = D;
@@ -283,10 +282,10 @@ PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& pa
 
 //=================================================================================================
 
-PCDM_ReaderStatus TDocStd_Application::Open(Standard_IStream&                theIStream,
+PCDM_ReaderStatus TDocStd_Application::Open(Standard_IStream&                     theIStream,
                                             occ::handle<TDocStd_Document>&        theDoc,
                                             const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                            const Message_ProgressRange&     theRange)
+                                            const Message_ProgressRange&          theRange)
 {
   try
   {
@@ -316,9 +315,9 @@ PCDM_ReaderStatus TDocStd_Application::Open(Standard_IStream&                the
 
 //=================================================================================================
 
-PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>&   theDoc,
-                                             const TCollection_ExtendedString& path,
-                                             const Message_ProgressRange&      theRange)
+PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>& theDoc,
+                                             const TCollection_ExtendedString&    path,
+                                             const Message_ProgressRange&         theRange)
 {
   TDocStd_PathParser         tool(path);
   TCollection_ExtendedString directory = tool.Trek();
@@ -363,8 +362,8 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
 //=================================================================================================
 
 PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>& theDoc,
-                                             Standard_OStream&               theOStream,
-                                             const Message_ProgressRange&    theRange)
+                                             Standard_OStream&                    theOStream,
+                                             const Message_ProgressRange&         theRange)
 {
   try
   {
@@ -399,7 +398,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
 //=================================================================================================
 
 PCDM_StoreStatus TDocStd_Application::Save(const occ::handle<TDocStd_Document>& D,
-                                           const Message_ProgressRange&    theRange)
+                                           const Message_ProgressRange&         theRange)
 {
   PCDM_StoreStatus status = PCDM_SS_OK;
   if (D->IsSaved())
@@ -439,10 +438,10 @@ PCDM_StoreStatus TDocStd_Application::Save(const occ::handle<TDocStd_Document>& 
 
 //=================================================================================================
 
-PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>&   D,
-                                             const TCollection_ExtendedString& path,
-                                             TCollection_ExtendedString&       theStatusMessage,
-                                             const Message_ProgressRange&      theRange)
+PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>& D,
+                                             const TCollection_ExtendedString&    path,
+                                             TCollection_ExtendedString&          theStatusMessage,
+                                             const Message_ProgressRange&         theRange)
 {
   TDocStd_PathParser         tool(path);
   PCDM_StoreStatus           aStatus   = PCDM_SS_Failure;
@@ -486,9 +485,9 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
 //=================================================================================================
 
 PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>& theDoc,
-                                             Standard_OStream&               theOStream,
-                                             TCollection_ExtendedString&     theStatusMessage,
-                                             const Message_ProgressRange&    theRange)
+                                             Standard_OStream&                    theOStream,
+                                             TCollection_ExtendedString&          theStatusMessage,
+                                             const Message_ProgressRange&         theRange)
 {
   try
   {
@@ -524,8 +523,8 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
 //=================================================================================================
 
 PCDM_StoreStatus TDocStd_Application::Save(const occ::handle<TDocStd_Document>& D,
-                                           TCollection_ExtendedString&     theStatusMessage,
-                                           const Message_ProgressRange&    theRange)
+                                           TCollection_ExtendedString&          theStatusMessage,
+                                           const Message_ProgressRange&         theRange)
 {
   PCDM_StoreStatus status = PCDM_SS_OK;
   if (D->IsSaved())

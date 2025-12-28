@@ -29,7 +29,7 @@ RWStepBasic_RWDocument::RWStepBasic_RWDocument() {}
 //=================================================================================================
 
 void RWStepBasic_RWDocument::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepBasic_Document>&      ent) const
 {
@@ -46,7 +46,7 @@ void RWStepBasic_RWDocument::ReadStep(const occ::handle<StepData_StepReaderData>
   data->ReadString(num, 2, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
@@ -65,7 +65,7 @@ void RWStepBasic_RWDocument::ReadStep(const occ::handle<StepData_StepReaderData>
 
 //=================================================================================================
 
-void RWStepBasic_RWDocument::WriteStep(StepData_StepWriter&              SW,
+void RWStepBasic_RWDocument::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepBasic_Document>& ent) const
 {
 
@@ -88,7 +88,7 @@ void RWStepBasic_RWDocument::WriteStep(StepData_StepWriter&              SW,
 //=================================================================================================
 
 void RWStepBasic_RWDocument::Share(const occ::handle<StepBasic_Document>& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&              iter) const
 {
 
   // Own fields of Document

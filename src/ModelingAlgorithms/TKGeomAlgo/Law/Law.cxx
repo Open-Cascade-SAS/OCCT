@@ -24,34 +24,31 @@
 #include <Law_Interpolate.hxx>
 #include <Law_Linear.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 occ::handle<Law_BSpFunc> Law::MixBnd(const occ::handle<Law_Linear>& Lin)
 {
   double f, l;
   Lin->Bounds(f, l);
-  NCollection_Array1<double>    Knots(1, 4);
-  NCollection_Array1<int> Mults(1, 4);
+  NCollection_Array1<double> Knots(1, 4);
+  NCollection_Array1<int>    Mults(1, 4);
   Knots(1) = f;
   Knots(4) = l;
   Knots(2) = 0.75 * f + 0.25 * l;
   Knots(3) = 0.25 * f + 0.75 * l;
   Mults(1) = Mults(4) = 4;
-  Mults(2) = Mults(3)               = 1;
+  Mults(2) = Mults(3)                          = 1;
   occ::handle<NCollection_HArray1<double>> pol = Law::MixBnd(3, Knots, Mults, Lin);
-  occ::handle<Law_BSpline>           bs  = new Law_BSpline(pol->Array1(), Knots, Mults, 3);
-  occ::handle<Law_BSpFunc>           bsf = new Law_BSpFunc();
+  occ::handle<Law_BSpline>                 bs  = new Law_BSpline(pol->Array1(), Knots, Mults, 3);
+  occ::handle<Law_BSpFunc>                 bsf = new Law_BSpFunc();
   bsf->SetCurve(bs);
   return bsf;
 }
 
-occ::handle<NCollection_HArray1<double>> Law::MixBnd(const int         Degree,
-                                          const NCollection_Array1<double>&    Knots,
-                                          const NCollection_Array1<int>& Mults,
-                                          const occ::handle<Law_Linear>&      Lin)
+occ::handle<NCollection_HArray1<double>> Law::MixBnd(const int                         Degree,
+                                                     const NCollection_Array1<double>& Knots,
+                                                     const NCollection_Array1<int>&    Mults,
+                                                     const occ::handle<Law_Linear>&    Lin)
 {
   int nbpol = 0, nbfk = 0, i, j, k = 0;
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
@@ -70,7 +67,7 @@ occ::handle<NCollection_HArray1<double>> Law::MixBnd(const int         Degree,
   NCollection_Array1<double> par(1, nbpol);
   BSplCLib::BuildSchoenbergPoints(Degree, fk, par);
   occ::handle<NCollection_HArray1<double>> res = new NCollection_HArray1<double>(1, nbpol);
-  NCollection_Array1<double>&         pol = res->ChangeArray1();
+  NCollection_Array1<double>&              pol = res->ChangeArray1();
   for (i = 1; i <= nbpol; i++)
   {
     pol(i) = Lin->Value(par(i));
@@ -86,11 +83,11 @@ occ::handle<NCollection_HArray1<double>> Law::MixBnd(const int         Degree,
   return res;
 }
 
-static double eval1(const double    p,
-                           const double    first,
-                           const double    last,
-                           const double    piv,
-                           const bool nulr)
+static double eval1(const double p,
+                    const double first,
+                    const double last,
+                    const double piv,
+                    const bool   nulr)
 {
   if ((nulr && p >= piv) || (!nulr && p <= piv))
     return 0.;
@@ -98,7 +95,7 @@ static double eval1(const double    p,
   {
     double a = piv - first;
     a *= a;
-    a               = 1. / a;
+    a        = 1. / a;
     double b = p - first;
     a *= b;
     b = piv - p;
@@ -110,7 +107,7 @@ static double eval1(const double    p,
   {
     double a = last - piv;
     a *= a;
-    a               = 1. / a;
+    a        = 1. / a;
     double b = last - p;
     a *= b;
     b = p - piv;
@@ -120,16 +117,16 @@ static double eval1(const double    p,
   }
 }
 
-occ::handle<NCollection_HArray1<double>> Law::MixTgt(const int         Degree,
-                                          const NCollection_Array1<double>&    Knots,
-                                          const NCollection_Array1<int>& Mults,
-                                          const bool         NulOnTheRight,
-                                          const int         Index)
+occ::handle<NCollection_HArray1<double>> Law::MixTgt(const int                         Degree,
+                                                     const NCollection_Array1<double>& Knots,
+                                                     const NCollection_Array1<int>&    Mults,
+                                                     const bool NulOnTheRight,
+                                                     const int  Index)
 {
-  double    first = Knots(Knots.Lower());
-  double    last  = Knots(Knots.Upper());
-  double    piv   = Knots(Index);
-  int nbpol = 0, nbfk = 0, i, j, k = 0;
+  double first = Knots(Knots.Lower());
+  double last  = Knots(Knots.Upper());
+  double piv   = Knots(Index);
+  int    nbpol = 0, nbfk = 0, i, j, k = 0;
   for (i = Mults.Lower(); i <= Mults.Upper(); i++)
   {
     nbfk += Mults(i);
@@ -146,7 +143,7 @@ occ::handle<NCollection_HArray1<double>> Law::MixTgt(const int         Degree,
   NCollection_Array1<double> par(1, nbpol);
   BSplCLib::BuildSchoenbergPoints(Degree, fk, par);
   occ::handle<NCollection_HArray1<double>> res = new NCollection_HArray1<double>(1, nbpol);
-  NCollection_Array1<double>&         pol = res->ChangeArray1();
+  NCollection_Array1<double>&              pol = res->ChangeArray1();
   for (i = 1; i <= nbpol; i++)
   {
     pol(i) = eval1(par(i), first, last, piv, NulOnTheRight);
@@ -158,29 +155,29 @@ occ::handle<NCollection_HArray1<double>> Law::MixTgt(const int         Degree,
 }
 
 occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
-                                       const double    First,
-                                       const double    Last,
-                                       const bool HasDF,
-                                       const bool HasDL,
-                                       const double    DFirst,
-                                       const double    DLast,
-                                       const bool Rev,
-                                       const int NbPoints)
+                                            const double           First,
+                                            const double           Last,
+                                            const bool             HasDF,
+                                            const bool             HasDL,
+                                            const double           DFirst,
+                                            const double           DLast,
+                                            const bool             Rev,
+                                            const int              NbPoints)
 {
   // On evalue la longeur approximative de la courbe.
 
-  int i;
-  double    DDFirst = DFirst, DDLast = DLast;
+  int    i;
+  double DDFirst = DFirst, DDLast = DLast;
   if (HasDF && Rev)
     DDFirst = -DFirst;
   if (HasDL && Rev)
     DDLast = -DLast;
   NCollection_Array1<double> cumdist(1, 2 * NbPoints);
   NCollection_Array1<double> ucourbe(1, 2 * NbPoints);
-  gp_Pnt               P1, P2;
-  double        U1 = Curve.FirstParameter();
-  double        U2 = Curve.LastParameter();
-  double        U, DU, Length = 0.;
+  gp_Pnt                     P1, P2;
+  double                     U1 = Curve.FirstParameter();
+  double                     U2 = Curve.LastParameter();
+  double                     U, DU, Length = 0.;
   if (!Rev)
   {
     P1 = Curve.Value(U1);
@@ -210,11 +207,11 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
   occ::handle<NCollection_HArray1<double>> point = new NCollection_HArray1<double>(1, NbPoints);
   occ::handle<NCollection_HArray1<double>> param = new NCollection_HArray1<double>(1, NbPoints);
 
-  double    DCorde = Length / (NbPoints - 1);
-  double    Corde  = DCorde;
-  int Index  = 1;
-  double    Alpha;
-  double    fac = 1. / (NbPoints - 1);
+  double DCorde = Length / (NbPoints - 1);
+  double Corde  = DCorde;
+  int    Index  = 1;
+  double Alpha;
+  double fac = 1. / (NbPoints - 1);
 
   point->SetValue(1, ucourbe(1));
   param->SetValue(1, First);
@@ -258,15 +255,15 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
 }
 
 static double eval2(const double p,
-                           //			   const double        first,
-                           const double,
-                           //			   const double        last,
-                           const double,
-                           const double        mil,
-                           const bool     hasfirst,
-                           const bool     haslast,
-                           const occ::handle<Law_BSpline>& bs1,
-                           const occ::handle<Law_BSpline>& bs2)
+                    //			   const double        first,
+                    const double,
+                    //			   const double        last,
+                    const double,
+                    const double                    mil,
+                    const bool                      hasfirst,
+                    const bool                      haslast,
+                    const occ::handle<Law_BSpline>& bs1,
+                    const occ::handle<Law_BSpline>& bs2)
 {
   if (hasfirst && p < mil)
     return bs1->Value(p);
@@ -276,18 +273,18 @@ static double eval2(const double p,
     return 1.;
 }
 
-occ::handle<Law_BSpline> Law::Scale(const double    First,
-                               const double    Last,
-                               const bool HasF,
-                               const bool HasL,
-                               const double    VFirst,
-                               const double    VLast)
+occ::handle<Law_BSpline> Law::Scale(const double First,
+                                    const double Last,
+                                    const bool   HasF,
+                                    const bool   HasL,
+                                    const double VFirst,
+                                    const double VLast)
 {
-  int        i;
-  double           Milieu = 0.5 * (First + Last);
-  NCollection_Array1<double>    knot(1, 3);
-  NCollection_Array1<double>    fknot(1, 10);
-  NCollection_Array1<int> mult(1, 3);
+  int                        i;
+  double                     Milieu = 0.5 * (First + Last);
+  NCollection_Array1<double> knot(1, 3);
+  NCollection_Array1<double> fknot(1, 10);
+  NCollection_Array1<int>    mult(1, 3);
   knot(1)  = First;
   knot(2)  = Milieu;
   knot(3)  = Last;
@@ -298,9 +295,9 @@ occ::handle<Law_BSpline> Law::Scale(const double    First,
   mult(3)             = 4;
   mult(2)             = 2;
 
-  NCollection_Array1<double>    pbs(1, 4);
-  NCollection_Array1<double>    kbs(1, 2);
-  NCollection_Array1<int> mbs(1, 2);
+  NCollection_Array1<double> pbs(1, 4);
+  NCollection_Array1<double> kbs(1, 2);
+  NCollection_Array1<int>    mbs(1, 2);
   mbs(1) = mbs(2) = 4;
   occ::handle<Law_BSpline> bs1, bs2;
   if (HasF)
@@ -334,18 +331,18 @@ occ::handle<Law_BSpline> Law::Scale(const double    First,
   return bs1;
 }
 
-occ::handle<Law_BSpline> Law::ScaleCub(const double    First,
-                                  const double    Last,
-                                  const bool HasF,
-                                  const bool HasL,
-                                  const double    VFirst,
-                                  const double    VLast)
+occ::handle<Law_BSpline> Law::ScaleCub(const double First,
+                                       const double Last,
+                                       const bool   HasF,
+                                       const bool   HasL,
+                                       const double VFirst,
+                                       const double VLast)
 {
   // int i;
-  double           Milieu = 0.5 * (First + Last);
-  NCollection_Array1<double>    pol(1, 5);
-  NCollection_Array1<double>    knot(1, 3);
-  NCollection_Array1<int> mult(1, 3);
+  double                     Milieu = 0.5 * (First + Last);
+  NCollection_Array1<double> pol(1, 5);
+  NCollection_Array1<double> knot(1, 3);
+  NCollection_Array1<int>    mult(1, 3);
   knot(1) = First;
   knot(2) = Milieu;
   knot(3) = Last;

@@ -21,18 +21,10 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_PurgeInternalEdges.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=======================================================================
@@ -40,9 +32,8 @@
 // purpose  : Initializes some variables for the algorithm and perform
 // the computation of the internal edges of the shape
 //=======================================================================
-TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(
-  const TopoDS_Shape&    theShape,
-  const bool PerformNow)
+TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(const TopoDS_Shape& theShape,
+                                                                     const bool          PerformNow)
     : myShape(theShape),
       myIsDone(false)
 {
@@ -58,7 +49,9 @@ TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(
 
 //=================================================================================================
 
-void TopOpeBRepTool_PurgeInternalEdges::Faces(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapFacLstEdg)
+void TopOpeBRepTool_PurgeInternalEdges::Faces(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    theMapFacLstEdg)
 {
 
   if (!myIsDone)
@@ -81,12 +74,13 @@ int TopOpeBRepTool_PurgeInternalEdges::NbEdges() const
   if (myMapFacLstEdg.Extent() > 0)
   {
 
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itFacEdg;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+      Iterator itFacEdg;
     //    NCollection_List<TopoDS_Shape>::Iterator itEdg;
 
     for (itFacEdg.Initialize(myMapFacLstEdg); itFacEdg.More(); itFacEdg.Next())
     {
-      const TopoDS_Shape&         facecur = itFacEdg.Key();
+      const TopoDS_Shape&                   facecur = itFacEdg.Key();
       const NCollection_List<TopoDS_Shape>& LmapEdg = myMapFacLstEdg.Find(facecur);
 
       nbedges += LmapEdg.Extent();
@@ -131,15 +125,15 @@ void TopOpeBRepTool_PurgeInternalEdges::BuildList()
   // or external edges which have no connex faces
   //----------------------------------------------------------------
 
-  bool                   ToKeep;
-  int                   iEdg;
+  bool                                     ToKeep;
+  int                                      iEdg;
   NCollection_List<TopoDS_Shape>::Iterator itFac, itFacToTreat;
-  NCollection_List<TopoDS_Shape>               LstFacToTreat;
+  NCollection_List<TopoDS_Shape>           LstFacToTreat;
 
   // for each edge of myMapEdgLstFac
   for (iEdg = 1; iEdg <= myMapEdgLstFac.Extent(); iEdg++)
   {
-    const TopoDS_Shape&         edgecur = myMapEdgLstFac.FindKey(iEdg);
+    const TopoDS_Shape&                   edgecur = myMapEdgLstFac.FindKey(iEdg);
     const NCollection_List<TopoDS_Shape>& LmapFac = myMapEdgLstFac.FindFromKey(edgecur);
 
     // if there are more than on face connex to the edge then examine the orientation of
@@ -248,14 +242,15 @@ void TopOpeBRepTool_PurgeInternalEdges::Perform()
   if (myMapFacLstEdg.Extent() > 0)
   {
 
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itFacEdg;
-    NCollection_List<TopoDS_Shape>::Iterator                  itEdg;
-    NCollection_List<TopoDS_Shape>                                EmptyList;
-    BRepTools_Substitution                              Bsub;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+      Iterator                               itFacEdg;
+    NCollection_List<TopoDS_Shape>::Iterator itEdg;
+    NCollection_List<TopoDS_Shape>           EmptyList;
+    BRepTools_Substitution                   Bsub;
 
     for (itFacEdg.Initialize(myMapFacLstEdg); itFacEdg.More(); itFacEdg.Next())
     {
-      const TopoDS_Shape&         facecur = itFacEdg.Key();
+      const TopoDS_Shape&                   facecur = itFacEdg.Key();
       const NCollection_List<TopoDS_Shape>& LmapEdg = myMapFacLstEdg.Find(facecur);
 
       for (itEdg.Initialize(LmapEdg); itEdg.More(); itEdg.Next())

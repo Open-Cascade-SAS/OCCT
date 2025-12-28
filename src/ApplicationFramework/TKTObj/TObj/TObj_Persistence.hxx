@@ -45,8 +45,8 @@ public:
 
   //! Creates and returns a new object of the registered type
   //! If the type is not registered, returns Null handle
-  static Standard_EXPORT occ::handle<TObj_Object> CreateNewObject(const char* theType,
-                                                             const TDF_Label&       theLabel);
+  static Standard_EXPORT occ::handle<TObj_Object> CreateNewObject(const char*      theType,
+                                                                  const TDF_Label& theLabel);
 
   //! Dumps names of all the types registered for persistence to the
   //! specified stream
@@ -103,7 +103,7 @@ private:
         : TObj_Persistence(#name)                                                                  \
     {                                                                                              \
     } /* register the tool */                                                                      \
-    virtual occ::handle<TObj_Object> New(const TDF_Label& aLabel) const;                                \
+    virtual occ::handle<TObj_Object> New(const TDF_Label& aLabel) const;                           \
     /* Creates an object of a proper type */                                                       \
   };                                                                                               \
   friend class Persistence_;                                                                       \
@@ -112,8 +112,8 @@ private:
 //! Implement mechanism for registration the type for persistence
 //! This should not be used for abstract classes (while DECLARE should)
 #define IMPLEMENT_TOBJOCAF_PERSISTENCE(name)                                                       \
-  name::Persistence_  name::myPersistence_;                                                        \
-  occ::handle<TObj_Object> name::Persistence_::New(const TDF_Label& aLabel) const                       \
+  name::Persistence_       name::myPersistence_;                                                   \
+  occ::handle<TObj_Object> name::Persistence_::New(const TDF_Label& aLabel) const                  \
   {                                                                                                \
     return new name((const TObj_Persistence*)0, aLabel);                                           \
   }

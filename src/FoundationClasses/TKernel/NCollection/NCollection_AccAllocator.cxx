@@ -119,7 +119,7 @@ void NCollection_AccAllocator::Free(void* theAddress)
     else
     {
       const size_t aRoundSize  = (myBlockSize + 3) & ~0x3;
-      void*    aNewAddress = Standard::Reallocate(anAddress, aRoundSize);
+      void*        aNewAddress = Standard::Reallocate(anAddress, aRoundSize);
       if (aNewAddress == anAddress)
       {
         // Normally, the reallocation keeps the block at the same address
@@ -157,9 +157,8 @@ void NCollection_AccAllocator::Free(void* theAddress)
 // function : findBlock
 // purpose  : Find a block that the given allocation unit belongs to
 //=======================================================================
-NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(
-  void* const theAddress,
-  Key&                   theKey) noexcept
+NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(void* const theAddress,
+                                                                     Key&        theKey) noexcept
 {
   theKey = getKey(theAddress);
 
@@ -183,18 +182,16 @@ NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(
 // function : allocateNewBlock
 // purpose  : Allocate a new block and return a pointer to it
 //=======================================================================
-NCollection_AccAllocator::Block* NCollection_AccAllocator::allocateNewBlock(
-  const size_t theSize)
+NCollection_AccAllocator::Block* NCollection_AccAllocator::allocateNewBlock(const size_t theSize)
 {
   const size_t aRoundSize = (theSize + 3) & ~0x3;
-  void*    anAddress  = Standard::Allocate(aRoundSize);
+  void*        anAddress  = Standard::Allocate(aRoundSize);
   // we depend on the fact that Standard::Allocate always returns
   // a pointer aligned to a 4 byte boundary
   mypLastBlock = myBlocks.Bound(getKey(anAddress), Block(anAddress, theSize, mypLastBlock));
 #ifdef OCCT_DEBUG_FINDBLOCK
   Key aKey;
-  Standard_ASSERT_VOID(mypLastBlock
-                         == findBlock((uint8_t*)mypLastBlock->allocStart - 1, aKey),
+  Standard_ASSERT_VOID(mypLastBlock == findBlock((uint8_t*)mypLastBlock->allocStart - 1, aKey),
                        "improper work of NCollection_AccAllocator::findBlock");
 #endif
   return mypLastBlock;

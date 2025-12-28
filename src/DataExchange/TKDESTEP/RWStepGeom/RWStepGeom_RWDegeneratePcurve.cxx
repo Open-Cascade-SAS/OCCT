@@ -21,10 +21,11 @@
 
 RWStepGeom_RWDegeneratePcurve::RWStepGeom_RWDegeneratePcurve() {}
 
-void RWStepGeom_RWDegeneratePcurve::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
-                                             const int                   num,
-                                             occ::handle<Interface_Check>&                 ach,
-                                             const occ::handle<StepGeom_DegeneratePcurve>& ent) const
+void RWStepGeom_RWDegeneratePcurve::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepGeom_DegeneratePcurve>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -60,8 +61,9 @@ void RWStepGeom_RWDegeneratePcurve::ReadStep(const occ::handle<StepData_StepRead
   ent->Init(aName, aBasisSurface, aReferenceToCurve);
 }
 
-void RWStepGeom_RWDegeneratePcurve::WriteStep(StepData_StepWriter&                     SW,
-                                              const occ::handle<StepGeom_DegeneratePcurve>& ent) const
+void RWStepGeom_RWDegeneratePcurve::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepGeom_DegeneratePcurve>& ent) const
 {
 
   // --- inherited field name ---
@@ -78,7 +80,7 @@ void RWStepGeom_RWDegeneratePcurve::WriteStep(StepData_StepWriter&              
 }
 
 void RWStepGeom_RWDegeneratePcurve::Share(const occ::handle<StepGeom_DegeneratePcurve>& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                     iter) const
 {
 
   iter.GetOneItem(ent->BasisSurface());

@@ -26,8 +26,7 @@ StepShape_DimensionalCharacteristic::StepShape_DimensionalCharacteristic() {}
 
 //=================================================================================================
 
-int StepShape_DimensionalCharacteristic::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepShape_DimensionalCharacteristic::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,8 +39,8 @@ int StepShape_DimensionalCharacteristic::CaseNum(
 
 //=================================================================================================
 
-occ::handle<StepShape_DimensionalLocation> StepShape_DimensionalCharacteristic::DimensionalLocation()
-  const
+occ::handle<StepShape_DimensionalLocation> StepShape_DimensionalCharacteristic::
+  DimensionalLocation() const
 {
   return occ::down_cast<StepShape_DimensionalLocation>(Value());
 }

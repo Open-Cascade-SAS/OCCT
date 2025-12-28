@@ -145,7 +145,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  int              i;
+  int                                      i;
   occ::handle<NCollection_HArray1<double>> aRealArr = aCurAtt->Array();
   if (aRealArr.IsNull())
     return;
@@ -154,7 +154,8 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
       aRealArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
   else if (aCase == 2)
   {
-    occ::handle<NCollection_HArray1<double>> realArr = new NCollection_HArray1<double>(aRealArr->Lower(), myUp1);
+    occ::handle<NCollection_HArray1<double>> realArr =
+      new NCollection_HArray1<double>(aRealArr->Lower(), myUp1);
     for (i = aRealArr->Lower(); i <= myUp1 && i <= aRealArr->Upper(); i++)
       realArr->SetValue(i, aRealArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -164,7 +165,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
   }
   else
   { // == 3
-    int              low     = aRealArr->Lower();
+    int                                      low     = aRealArr->Lower();
     occ::handle<NCollection_HArray1<double>> realArr = new NCollection_HArray1<double>(low, myUp1);
     for (i = aRealArr->Lower(); i <= myUp2 && i <= aRealArr->Upper(); i++)
       realArr->SetValue(i, aRealArr->Value(i));

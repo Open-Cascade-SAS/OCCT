@@ -56,15 +56,16 @@ void StepRepr_ReprItemAndMeasureWithUnit::SetMeasureWithUnit(
 
 //=================================================================================================
 
-occ::handle<StepBasic_MeasureWithUnit> StepRepr_ReprItemAndMeasureWithUnit::GetMeasureWithUnit() const
+occ::handle<StepBasic_MeasureWithUnit> StepRepr_ReprItemAndMeasureWithUnit::GetMeasureWithUnit()
+  const
 {
   return myMeasureWithUnit;
 }
 
 //=================================================================================================
 
-occ::handle<StepRepr_RepresentationItem> StepRepr_ReprItemAndMeasureWithUnit::GetRepresentationItem()
-  const
+occ::handle<StepRepr_RepresentationItem> StepRepr_ReprItemAndMeasureWithUnit::
+  GetRepresentationItem() const
 {
   occ::handle<StepRepr_RepresentationItem> RI = new StepRepr_RepresentationItem();
   RI->Init(Name());

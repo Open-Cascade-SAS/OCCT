@@ -28,8 +28,7 @@ inline bool BOPDS_Tools::IsInterfering(const TopAbs_ShapeEnum aTi)
 
 //=================================================================================================
 
-inline int BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
-                                                   const TopAbs_ShapeEnum aType2)
+inline int BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1, const TopAbs_ShapeEnum aType2)
 {
   int iRet, iT1, iT2, iX;
   //

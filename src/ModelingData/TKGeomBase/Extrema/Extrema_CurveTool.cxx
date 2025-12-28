@@ -34,20 +34,21 @@ bool Extrema_CurveTool::IsPeriodic(const Adaptor3d_Curve& C)
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> Extrema_CurveTool::DeflCurvIntervals(const Adaptor3d_Curve& C)
+occ::handle<NCollection_HArray1<double>> Extrema_CurveTool::DeflCurvIntervals(
+  const Adaptor3d_Curve& C)
 {
-  const double           epsd    = 1.e-3;
-  const double           maxdefl = 1.e3;
-  const double           mindefl = 1.e-3;
+  const double                             epsd    = 1.e-3;
+  const double                             maxdefl = 1.e3;
+  const double                             mindefl = 1.e-3;
   occ::handle<NCollection_HArray1<double>> Intervals;
-  int              nbpnts = 23, i;
-  double                 L      = 0.;
-  double                 tf = C.FirstParameter(), tl = C.LastParameter();
-  gp_Pnt                        aP = C.Value(tf);
+  int                                      nbpnts = 23, i;
+  double                                   L      = 0.;
+  double                                   tf = C.FirstParameter(), tl = C.LastParameter();
+  gp_Pnt                                   aP = C.Value(tf);
   for (i = 2; i <= nbpnts; ++i)
   {
     double t   = (tf * (nbpnts - i) + (i - 1) * tl) / (nbpnts - 1);
-    gp_Pnt        aP1 = C.Value(t);
+    gp_Pnt aP1 = C.Value(t);
     L += aP.Distance(aP1);
   }
   //

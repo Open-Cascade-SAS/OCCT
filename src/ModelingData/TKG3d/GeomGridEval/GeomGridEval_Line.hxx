@@ -18,7 +18,6 @@
 #include <GeomGridEval.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for line grid points.
 //!
@@ -208,7 +207,8 @@ public:
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing),
   //!         or empty array if geometry is null or no parameters
-  NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams, int theN) const
+  NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams,
+                                            int                               theN) const
   {
     if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
     {

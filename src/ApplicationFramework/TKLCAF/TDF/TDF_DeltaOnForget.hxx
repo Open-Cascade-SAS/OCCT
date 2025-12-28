@@ -37,7 +37,6 @@ public:
   Standard_EXPORT void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnForget, TDF_AttributeDelta)
-
 };
 
 #endif // _TDF_DeltaOnForget_HeaderFile

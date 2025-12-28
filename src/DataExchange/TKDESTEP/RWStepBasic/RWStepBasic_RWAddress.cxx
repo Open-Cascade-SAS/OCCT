@@ -19,7 +19,7 @@
 RWStepBasic_RWAddress::RWStepBasic_RWAddress() {}
 
 void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                 num,
+                                     const int                                   num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepBasic_Address>&       ent) const
 {
@@ -31,7 +31,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : internalLocation ---
 
   occ::handle<TCollection_HAsciiString> aInternalLocation;
-  bool                 hasAinternalLocation = true;
+  bool                                  hasAinternalLocation = true;
   if (data->IsParamDefined(num, 1))
   {
     // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -46,7 +46,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : streetNumber ---
 
   occ::handle<TCollection_HAsciiString> aStreetNumber;
-  bool                 hasAstreetNumber = true;
+  bool                                  hasAstreetNumber = true;
   if (data->IsParamDefined(num, 2))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -61,7 +61,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : street ---
 
   occ::handle<TCollection_HAsciiString> aStreet;
-  bool                 hasAstreet = true;
+  bool                                  hasAstreet = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -76,7 +76,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : postalBox ---
 
   occ::handle<TCollection_HAsciiString> aPostalBox;
-  bool                 hasApostalBox = true;
+  bool                                  hasApostalBox = true;
   if (data->IsParamDefined(num, 4))
   {
     // szv#4:S4163:12Mar99 `bool stat4 =` not needed
@@ -91,7 +91,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : town ---
 
   occ::handle<TCollection_HAsciiString> aTown;
-  bool                 hasAtown = true;
+  bool                                  hasAtown = true;
   if (data->IsParamDefined(num, 5))
   {
     // szv#4:S4163:12Mar99 `bool stat5 =` not needed
@@ -106,7 +106,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : region ---
 
   occ::handle<TCollection_HAsciiString> aRegion;
-  bool                 hasAregion = true;
+  bool                                  hasAregion = true;
   if (data->IsParamDefined(num, 6))
   {
     // szv#4:S4163:12Mar99 `bool stat6 =` not needed
@@ -121,7 +121,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : postalCode ---
 
   occ::handle<TCollection_HAsciiString> aPostalCode;
-  bool                 hasApostalCode = true;
+  bool                                  hasApostalCode = true;
   if (data->IsParamDefined(num, 7))
   {
     // szv#4:S4163:12Mar99 `bool stat7 =` not needed
@@ -136,7 +136,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : country ---
 
   occ::handle<TCollection_HAsciiString> aCountry;
-  bool                 hasAcountry = true;
+  bool                                  hasAcountry = true;
   if (data->IsParamDefined(num, 8))
   {
     // szv#4:S4163:12Mar99 `bool stat8 =` not needed
@@ -151,7 +151,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : facsimileNumber ---
 
   occ::handle<TCollection_HAsciiString> aFacsimileNumber;
-  bool                 hasAfacsimileNumber = true;
+  bool                                  hasAfacsimileNumber = true;
   if (data->IsParamDefined(num, 9))
   {
     // szv#4:S4163:12Mar99 `bool stat9 =` not needed
@@ -166,7 +166,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : telephoneNumber ---
 
   occ::handle<TCollection_HAsciiString> aTelephoneNumber;
-  bool                 hasAtelephoneNumber = true;
+  bool                                  hasAtelephoneNumber = true;
   if (data->IsParamDefined(num, 10))
   {
     // szv#4:S4163:12Mar99 `bool stat10 =` not needed
@@ -181,7 +181,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : electronicMailAddress ---
 
   occ::handle<TCollection_HAsciiString> aElectronicMailAddress;
-  bool                 hasAelectronicMailAddress = true;
+  bool                                  hasAelectronicMailAddress = true;
   if (data->IsParamDefined(num, 11))
   {
     // szv#4:S4163:12Mar99 `bool stat11 =` not needed
@@ -196,7 +196,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : telexNumber ---
 
   occ::handle<TCollection_HAsciiString> aTelexNumber;
-  bool                 hasAtelexNumber = true;
+  bool                                  hasAtelexNumber = true;
   if (data->IsParamDefined(num, 12))
   {
     // szv#4:S4163:12Mar99 `bool stat12 =` not needed
@@ -236,7 +236,7 @@ void RWStepBasic_RWAddress::ReadStep(const occ::handle<StepData_StepReaderData>&
             aTelexNumber);
 }
 
-void RWStepBasic_RWAddress::WriteStep(StepData_StepWriter&             SW,
+void RWStepBasic_RWAddress::WriteStep(StepData_StepWriter&                  SW,
                                       const occ::handle<StepBasic_Address>& ent) const
 {
 

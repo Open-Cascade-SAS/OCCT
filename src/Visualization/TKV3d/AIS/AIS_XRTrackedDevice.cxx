@@ -29,7 +29,7 @@ class AIS_XRTrackedDevice::XRTexture : public Graphic3d_Texture2D
 public:
   //! Constructor.
   XRTexture(const occ::handle<Image_Texture>& theImageSource,
-            const Graphic3d_TextureUnit  theUnit = Graphic3d_TextureUnit_BaseColor)
+            const Graphic3d_TextureUnit       theUnit = Graphic3d_TextureUnit_BaseColor)
       : Graphic3d_Texture2D(""),
         myImageSource(theImageSource)
   {
@@ -43,8 +43,8 @@ public:
   }
 
   //! Image reader.
-  virtual occ::handle<Image_PixMap> GetImage(const occ::handle<Image_SupportedFormats>& theSupported)
-    override
+  virtual occ::handle<Image_PixMap> GetImage(
+    const occ::handle<Image_SupportedFormats>& theSupported) override
   {
     return myImageSource->ReadImage(theSupported);
   }
@@ -140,7 +140,7 @@ void AIS_XRTrackedDevice::computeLaserRay()
 
 void AIS_XRTrackedDevice::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                   const occ::handle<Prs3d_Presentation>& thePrs,
-                                  const int            theMode)
+                                  const int                              theMode)
 {
   if (theMode != 0)
   {
@@ -177,7 +177,7 @@ void AIS_XRTrackedDevice::Compute(const occ::handle<PrsMgr_PresentationManager>&
 //=================================================================================================
 
 void AIS_XRTrackedDevice::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                           const int             theMode)
+                                           const int                               theMode)
 {
   if (theMode != 0)
   {

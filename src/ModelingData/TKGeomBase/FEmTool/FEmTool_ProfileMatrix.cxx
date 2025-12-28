@@ -70,8 +70,7 @@ void FEmTool_ProfileMatrix::Init(const double Value)
 
 //=================================================================================================
 
-double& FEmTool_ProfileMatrix::ChangeValue(const int I,
-                                                  const int J)
+double& FEmTool_ProfileMatrix::ChangeValue(const int I, const int J)
 {
   int Ind;
   Ind = I - J;
@@ -95,8 +94,8 @@ double& FEmTool_ProfileMatrix::ChangeValue(const int I,
 //=======================================================================
 bool FEmTool_ProfileMatrix::Decompose()
 {
-  int i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;
-  double    Sum, a, Eps = 1.e-32;
+  int    i, j, k, ik, jk, DiagAddr, CurrAddr, Kmin, Kj;
+  double Sum, a, Eps = 1.e-32;
 
   SMatrix->Init(0.);
   double* SMA = &SMatrix->ChangeValue(1);
@@ -151,8 +150,8 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
   if (!IsDecomp)
     throw StdFail_NotDone("Decomposition must be done");
 
-  int i, j, jj, DiagAddr, CurrAddr;
-  double    Sum;
+  int    i, j, jj, DiagAddr, CurrAddr;
+  double Sum;
 
   double* x = &X(X.Lower());
   x--;
@@ -212,8 +211,8 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector&,
 //=======================================================================
 void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X, math_Vector& MX) const
 {
-  int i, j, jj, DiagAddr, CurrAddr;
-  double*   m = &MX(MX.Lower());
+  int     i, j, jj, DiagAddr, CurrAddr;
+  double* m = &MX(MX.Lower());
   m--;
   const double* x = &X(X.Lower());
   x--;
@@ -248,8 +247,7 @@ int FEmTool_ProfileMatrix::ColNumber() const
   return profile.RowLength();
 }
 
-bool FEmTool_ProfileMatrix::IsInProfile(const int i,
-                                                    const int j) const
+bool FEmTool_ProfileMatrix::IsInProfile(const int i, const int j) const
 {
   if (j <= i)
   {

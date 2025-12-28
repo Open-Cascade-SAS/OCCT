@@ -50,9 +50,7 @@ public:
   //! @param theLower lower bound of the array
   //! @param theUpper upper bound of the array
   //! @param theValue initial value for all elements
-  NCollection_HArray1(const int theLower,
-                      const int theUpper,
-                      const TheItemType&     theValue)
+  NCollection_HArray1(const int theLower, const int theUpper, const TheItemType& theValue)
       : Array1Type(theLower, theUpper)
   {
     Array1Type::Init(theValue);
@@ -63,10 +61,10 @@ public:
   //! @param theLower lower bound of the array
   //! @param theUpper upper bound of the array
   //! @param theUseBuffer flag indicating whether to use external buffer (must be explicit)
-  explicit NCollection_HArray1(const TheItemType&     theBegin,
-                               const int theLower,
-                               const int theUpper,
-                               const bool             theUseBuffer)
+  explicit NCollection_HArray1(const TheItemType& theBegin,
+                               const int          theLower,
+                               const int          theUpper,
+                               const bool         theUseBuffer)
       : Array1Type(theBegin, theLower, theUpper, theUseBuffer)
   {
   }

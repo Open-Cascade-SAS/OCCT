@@ -32,8 +32,9 @@ public:
   //! Constructor for OCC IShape implementation.
   //! @param[in] theShape  shape to display
   //! @param[in] theDrawerLink  default attributes to link
-  Standard_EXPORT IVtkOCC_Shape(const TopoDS_Shape&         theShape,
-                                const occ::handle<Prs3d_Drawer>& theDrawerLink = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT IVtkOCC_Shape(
+    const TopoDS_Shape&              theShape,
+    const occ::handle<Prs3d_Drawer>& theDrawerLink = occ::handle<Prs3d_Drawer>());
 
   //! Destructor
   Standard_EXPORT virtual ~IVtkOCC_Shape();
@@ -76,7 +77,10 @@ public:
   }
 
   //! @return Handle to the selectable object for this shape.
-  const occ::handle<SelectMgr_SelectableObject>& GetSelectableObject() const { return mySelectable; }
+  const occ::handle<SelectMgr_SelectableObject>& GetSelectableObject() const
+  {
+    return mySelectable;
+  }
 
   //! Return presentation attributes.
   const occ::handle<Prs3d_Drawer>& Attributes() const { return myOCCTDrawer; }
@@ -93,10 +97,12 @@ private:
   void buildSubShapeIdMap();
 
 private:
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         mySubShapeIds; //!< Map of sub-shapes by their IDs
-  TopoDS_Shape                       myTopoDSShape; //!< The wrapped main OCCT shape
-  occ::handle<Prs3d_Drawer>               myOCCTDrawer;  //!< presentation attributes
-  occ::handle<SelectMgr_SelectableObject> mySelectable;  //!< Link to a holder of selection primitives
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+                            mySubShapeIds; //!< Map of sub-shapes by their IDs
+  TopoDS_Shape              myTopoDSShape; //!< The wrapped main OCCT shape
+  occ::handle<Prs3d_Drawer> myOCCTDrawer;  //!< presentation attributes
+  occ::handle<SelectMgr_SelectableObject>
+    mySelectable; //!< Link to a holder of selection primitives
 };
 
 #endif // __IVTKOCC_SHAPE_H__

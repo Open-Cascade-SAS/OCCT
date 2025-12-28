@@ -171,8 +171,8 @@ TEST_F(NCollection_DataMapTest, IteratorAccess)
   NCollection_DataMap<int, TCollection_AsciiString>::Iterator it(aMap);
 
   // Create sets to check all keys and values are visited
-  std::set<int> foundKeys;
-  std::set<std::string>      foundValues;
+  std::set<int>         foundKeys;
+  std::set<std::string> foundValues;
 
   for (; it.More(); it.Next())
   {
@@ -225,7 +225,7 @@ TEST_F(NCollection_DataMapTest, ExhaustiveIterator)
   EXPECT_EQ(NUM_ELEMENTS, aMap.Size());
 
   // Count elements using iterator
-  int                                                               count = 0;
+  int                                     count = 0;
   NCollection_DataMap<int, int>::Iterator it(aMap);
   for (; it.More(); it.Next())
   {

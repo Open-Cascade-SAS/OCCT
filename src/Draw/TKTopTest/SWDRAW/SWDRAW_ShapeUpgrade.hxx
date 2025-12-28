@@ -41,7 +41,6 @@ public:
 
   //! Loads commands defined in ShapeUpgrade
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
-
 };
 
 #endif // _SWDRAW_ShapeUpgrade_HeaderFile

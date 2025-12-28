@@ -38,7 +38,6 @@
 #include <FilletSurf_Builder.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <FilletSurf_StatusType.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
@@ -48,12 +47,12 @@
 
 #include <stdio.h>
 
-static double tesp       = 1.0e-4;
-static double t3d        = 1.e-4;
-static double t2d        = 1.e-5;
-static double ta         = 1.e-2;
-static double fl         = 1.e-3;
-static double tapp_angle = 1.e-2;
+static double        tesp       = 1.0e-4;
+static double        t3d        = 1.e-4;
+static double        t2d        = 1.e-5;
+static double        ta         = 1.e-2;
+static double        fl         = 1.e-3;
+static double        tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
@@ -174,9 +173,9 @@ static int BLEND(Draw_Interpretor& di, int narg, const char** a)
   Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
   Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rakk->SetContinuity(blend_cont, tapp_angle);
-  double    Rad;
-  TopoDS_Edge      E;
-  int nbedge = 0;
+  double      Rad;
+  TopoDS_Edge E;
+  int         nbedge = 0;
   for (int ii = 1; ii < (narg - 1) / 2; ii++)
   {
     Rad = Draw::Atof(a[2 * ii + 1]);
@@ -208,9 +207,9 @@ static int BLEND(Draw_Interpretor& di, int narg, const char** a)
   return 0;
 }
 
-static void PrintHist(const TopoDS_Shape&                 S,
+static void PrintHist(const TopoDS_Shape&                       S,
                       NCollection_List<TopoDS_Shape>::Iterator& It,
-                      int&                   nbgen)
+                      int&                                      nbgen)
 {
   TopoDS_Compound C;
   BRep_Builder    B;
@@ -250,10 +249,10 @@ static int CheckHist(Draw_Interpretor& di, int, const char**)
     di << "Active Builder Not Done\n";
     return 1;
   }
-  int                   nbc   = Rakk->NbContours();
-  int                   nbgen = 0;
+  int                                      nbc   = Rakk->NbContours();
+  int                                      nbgen = 0;
   NCollection_List<TopoDS_Shape>::Iterator It;
-  TopoDS_Shape                       curshape;
+  TopoDS_Shape                             curshape;
   for (int i = 1; i <= nbc; i++)
   {
     curshape = Rakk->FirstVertex(i);
@@ -317,9 +316,9 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
   if (narg % 2 != 0 || narg < 4)
     return 1;
   NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
-  double        Rad, Par;
-  TopoDS_Shape         aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
-  TopoDS_Edge          E = TopoDS::Edge(aLocalEdge);
+  double                       Rad, Par;
+  TopoDS_Shape                 aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
+  TopoDS_Edge                  E = TopoDS::Edge(aLocalEdge);
   //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
   for (int ii = 1; ii <= (narg / 2) - 1; ii++)
   {
@@ -372,16 +371,16 @@ int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
     return 1;
   }
 
-  bool fuse = !strcmp(a[0], "bfuseblend");
-  TopoDS_Shape     S1   = DBRep::Get(a[2]);
-  TopoDS_Shape     S2   = DBRep::Get(a[3]);
+  bool         fuse = !strcmp(a[0], "bfuseblend");
+  TopoDS_Shape S1   = DBRep::Get(a[2]);
+  TopoDS_Shape S2   = DBRep::Get(a[3]);
   if (S1.IsNull() || S2.IsNull())
   {
     Message::SendFail() << " Null shapes are not allowed";
     return 1;
   }
-  double    Rad     = Draw::Atof(a[4]);
-  bool isDebug = false;
+  double Rad     = Draw::Atof(a[4]);
+  bool   isDebug = false;
 
   if (narg == 6)
   {
@@ -391,10 +390,10 @@ int boptopoblend(Draw_Interpretor& di, int narg, const char** a)
     }
   }
 
-  BOPAlgo_PaveFiller             theDSFiller;
+  BOPAlgo_PaveFiller                  theDSFiller;
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
-  Message_ProgressScope          aPS(aProgress->Start(), NULL, 10);
-  NCollection_List<TopoDS_Shape>           aLS;
+  Message_ProgressScope               aPS(aProgress->Start(), NULL, 10);
+  NCollection_List<TopoDS_Shape>      aLS;
   aLS.Append(S1);
   aLS.Append(S2);
   theDSFiller.SetArguments(aLS);
@@ -487,11 +486,11 @@ static int blend1(Draw_Interpretor& di, int narg, const char** a)
   TopoDS_Shape V = DBRep::Get(a[2]);
   if (V.IsNull())
     return 1;
-  int nb, i;
-  double    Rad;
-  bool simul = false;
-  const char*      ns0   = (a[1]);
-  Rad                    = Draw::Atof(a[3]);
+  int         nb, i;
+  double      Rad;
+  bool        simul = false;
+  const char* ns0   = (a[1]);
+  Rad               = Draw::Atof(a[3]);
   NCollection_List<TopoDS_Shape> E;
   for (i = 4; i <= (narg - 1); i++)
   {
@@ -749,7 +748,7 @@ int rollingball(Draw_Interpretor& di, int n, const char** a)
   Roll.Perform(BuildShape);
 
   bool ComputeBranches = (!strcmp(a[0], "trollingball"));
-  char             localname[100];
+  char localname[100];
   if (ComputeBranches)
   {
     int NbBranches = Roll.NbBranches();

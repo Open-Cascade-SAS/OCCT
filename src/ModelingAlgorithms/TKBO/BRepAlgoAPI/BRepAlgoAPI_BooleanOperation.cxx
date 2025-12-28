@@ -72,9 +72,9 @@ public:
             BOPAlgo_Operation   theOperation);
   //
 protected:
-  bool myIsDump;
-  bool myIsDumpArgs;
-  bool myIsDumpRes;
+  bool        myIsDump;
+  bool        myIsDumpArgs;
+  bool        myIsDumpRes;
   const char* myPath;
 };
 
@@ -238,8 +238,8 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
   //
   TCollection_AsciiString aPath(myPath);
   aPath += "/";
-  int        aNumOper = 1;
-  bool        isExist  = true;
+  int                     aNumOper = 1;
+  bool                    isExist  = true;
   TCollection_AsciiString aFileName;
 
   while (isExist)

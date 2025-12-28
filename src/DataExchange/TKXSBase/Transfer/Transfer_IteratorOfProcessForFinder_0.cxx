@@ -22,15 +22,11 @@
 #include <Transfer_ProcessForFinder.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
-#include <Transfer_FindHasher.hxx>
 #include <Transfer_ActorOfProcessForFinder.hxx>
-#include <Transfer_Binder.hxx>
 
 //=================================================================================================
 
-Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(
-  const bool withstarts)
+Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const bool withstarts)
     : Transfer_TransferIterator()
 {
   if (withstarts)
@@ -59,16 +55,20 @@ void Transfer_IteratorOfProcessForFinder::Add(const occ::handle<Transfer_Binder>
 
 //=================================================================================================
 
-void Transfer_IteratorOfProcessForFinder::Filter(const occ::handle<NCollection_HSequence<occ::handle<Transfer_Finder>>>& list,
-                                                 const bool                    keep)
+void Transfer_IteratorOfProcessForFinder::Filter(
+  const occ::handle<NCollection_HSequence<occ::handle<Transfer_Finder>>>& list,
+  const bool                                                              keep)
 {
   if (list.IsNull() || thestarts.IsNull())
     return;
   int i, j, nb = thestarts->Length();
   if (nb == 0)
     return;
-  occ::handle<Transfer_Binder>                factice;
-  NCollection_IndexedDataMap<occ::handle<Transfer_Finder>, occ::handle<Transfer_Binder>, Transfer_FindHasher> amap(nb);
+  occ::handle<Transfer_Binder> factice;
+  NCollection_IndexedDataMap<occ::handle<Transfer_Finder>,
+                             occ::handle<Transfer_Binder>,
+                             Transfer_FindHasher>
+    amap(nb);
   for (i = 1; i <= nb; i++)
   {
     j = amap.Add(thestarts->Value(i), factice);

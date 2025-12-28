@@ -62,10 +62,10 @@ public:
   //! else if Or is FORWARD the curv is after the
   //! intersection and if Or is INTERNAL the
   //! intersection is in the middle of the curv.
-  Standard_EXPORT void Compare(const double      Tole,
+  Standard_EXPORT void Compare(const double             Tole,
                                const gp_Dir&            Tang,
                                const gp_Dir&            Norm,
-                               const double      Curv,
+                               const double             Curv,
                                const TopAbs_Orientation S,
                                const TopAbs_Orientation Or);
 
@@ -84,29 +84,27 @@ public:
 private:
   //! Compare two curvature and return true if N1,C1 is
   //! before N2,C2 in the edge orientation
-  Standard_EXPORT bool IsBefore(const double Tole,
-                                            const double Angl,
-                                            const gp_Dir&       Nor1,
-                                            const double Cur1,
-                                            const gp_Dir&       Nor2,
-                                            const double Cur2) const;
+  Standard_EXPORT bool IsBefore(const double  Tole,
+                                const double  Angl,
+                                const gp_Dir& Nor1,
+                                const double  Cur1,
+                                const gp_Dir& Nor2,
+                                const double  Cur2) const;
 
   //! Compare two angles at tolerance Tole
-  Standard_EXPORT int Compare(const double Ang1,
-                                           const double Ang2,
-                                           const double Tole) const;
+  Standard_EXPORT int Compare(const double Ang1, const double Ang2, const double Tole) const;
 
   gp_Dir             myTgt;
   gp_Dir             myNorm;
-  double      myCurv;
-  bool   Init;
+  double             myCurv;
+  bool               Init;
   gp_Dir             TgtFirst;
   gp_Dir             NormFirst;
-  double      CurvFirst;
+  double             CurvFirst;
   TopAbs_Orientation TranFirst;
   gp_Dir             TgtLast;
   gp_Dir             NormLast;
-  double      CurvLast;
+  double             CurvLast;
   TopAbs_Orientation TranLast;
 };
 

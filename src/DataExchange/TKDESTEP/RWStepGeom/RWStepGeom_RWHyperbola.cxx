@@ -20,7 +20,7 @@
 RWStepGeom_RWHyperbola::RWStepGeom_RWHyperbola() {}
 
 void RWStepGeom_RWHyperbola::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepGeom_Hyperbola>&      ent) const
 {
@@ -59,7 +59,7 @@ void RWStepGeom_RWHyperbola::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aPosition, aSemiAxis, aSemiImagAxis);
 }
 
-void RWStepGeom_RWHyperbola::WriteStep(StepData_StepWriter&              SW,
+void RWStepGeom_RWHyperbola::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepGeom_Hyperbola>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepGeom_RWHyperbola::WriteStep(StepData_StepWriter&              SW,
 }
 
 void RWStepGeom_RWHyperbola::Share(const occ::handle<StepGeom_Hyperbola>& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->Position().Value());

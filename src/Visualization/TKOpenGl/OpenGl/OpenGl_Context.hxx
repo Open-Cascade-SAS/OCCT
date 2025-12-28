@@ -160,15 +160,15 @@ class OpenGl_Context : public Standard_Transient
   friend struct OpenGl_GlFunctions;
 
 public:
-  typedef NCollection_Shared<NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>
+  typedef NCollection_Shared<
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>
     OpenGl_ResourcesMap;
 
   //! Function for getting power of to number larger or equal to input number.
   //! @param theNumber    number to 'power of two'
   //! @param theThreshold upper threshold
   //! @return power of two number
-  inline static int GetPowerOfTwo(const int theNumber,
-                                               const int theThreshold)
+  inline static int GetPowerOfTwo(const int theNumber, const int theThreshold)
   {
     for (int p2 = 2; p2 <= theThreshold; p2 <<= 1)
     {
@@ -222,8 +222,8 @@ public:
   //!   EGLSurface theEglSurf = eglCreateWindowSurface (theEglDisp, anEglConfig,
   //!   (EGLNativeWindowType )theAspWin->NativeHandle(), NULL); EGLDisplay theEglDisp =
   //!   eglGetDisplay (EGL_DEFAULT_DISPLAY); EGLContext theEglCtx  = eglCreateContext ((EGLDisplay
-  //!   )theEglDisp, anEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs); occ::handle<OpenGl_Context> aGlCtx =
-  //!   new OpenGl_Context(); aGlCtx->Init ((Aspect_Drawable )theEglSurf, (Aspect_Display
+  //!   )theEglDisp, anEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs); occ::handle<OpenGl_Context>
+  //!   aGlCtx = new OpenGl_Context(); aGlCtx->Init ((Aspect_Drawable )theEglSurf, (Aspect_Display
   //!   )theEglDisp,  (Aspect_RenderingContext )theEglCtx);
   //! @endcode
   //!
@@ -257,9 +257,9 @@ public:
   //! with Core Profile
   //! @return false if OpenGL context can not be bound to specified surface
   Standard_EXPORT bool Init(const Aspect_Drawable         theSurface,
-                                        const Aspect_Display          theDisplay,
-                                        const Aspect_RenderingContext theContext,
-                                        const bool theIsCoreProfile = false);
+                            const Aspect_Display          theDisplay,
+                            const Aspect_RenderingContext theContext,
+                            const bool                    theIsCoreProfile = false);
 
   //! Return window handle currently bound to this OpenGL context (EGLSurface | HWND | GLXDrawable).
   Aspect_Drawable Window() const { return myWindow; }
@@ -275,8 +275,7 @@ public:
 
   //! Initialize class from specified OpenGL ES context (EAGLContext). Method should be called only
   //! once.
-  bool Init(EAGLContext*           theGContext,
-                        const bool theIsCoreProfile = false)
+  bool Init(EAGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
                 (Aspect_Display)0,
@@ -286,8 +285,7 @@ public:
   #else
   //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only
   //! once.
-  bool Init(NSOpenGLContext*       theGContext,
-                        const bool theIsCoreProfile = false)
+  bool Init(NSOpenGLContext* theGContext, const bool theIsCoreProfile = false)
   {
     return Init((Aspect_Drawable)0,
                 (Aspect_Display)0,
@@ -298,15 +296,13 @@ public:
 #endif
 
   //! Read OpenGL version information from active context.
-  Standard_EXPORT static void ReadGlVersion(int& theGlVerMajor,
-                                            int& theGlVerMinor);
+  Standard_EXPORT static void ReadGlVersion(int& theGlVerMajor, int& theGlVerMinor);
 
   //! Check if theExtName extension is supported by active GL context.
   Standard_EXPORT bool CheckExtension(const char* theExtName) const;
 
   //! Check if theExtName extension is in extensions string.
-  Standard_EXPORT static bool CheckExtension(const char* theExtString,
-                                                         const char* theExtName);
+  Standard_EXPORT static bool CheckExtension(const char* theExtString, const char* theExtName);
 
   //! Auxiliary template to retrieve GL function pointer.
   //! Pointer to function retrieved from library is statically casted
@@ -318,8 +314,8 @@ public:
   //! @return TRUE on success
   template <typename FuncType_t>
   bool FindProcVerbose(const char*& theLastFailFuncName,
-                                   const char*  theFuncName,
-                                   FuncType_t&  theFuncPtr)
+                       const char*  theFuncName,
+                       FuncType_t&  theFuncPtr)
   {
     theFuncPtr = (FuncType_t)findProc(theFuncName);
     if (theFuncPtr == NULL)
@@ -343,8 +339,7 @@ public:
   Aspect_GraphicsLibrary GraphicsLibrary() const { return myGapi; }
 
   //! @return true if detected GL version is greater or equal to requested one.
-  inline bool IsGlGreaterEqual(const int theVerMajor,
-                                           const int theVerMinor) const
+  inline bool IsGlGreaterEqual(const int theVerMajor, const int theVerMinor) const
   {
     return (myGlVerMajor > theVerMajor)
            || (myGlVerMajor == theVerMajor && myGlVerMinor >= theVerMinor);
@@ -397,12 +392,14 @@ public:
   Standard_EXPORT TCollection_AsciiString MemoryInfo() const;
 
   //! This function retrieves information from GL about GPU memory.
-  Standard_EXPORT void MemoryInfo(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict) const;
+  Standard_EXPORT void MemoryInfo(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict) const;
 
   //! Fill in the dictionary with OpenGL info.
   //! Should be called with bound context.
-  Standard_EXPORT void DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                                             Graphic3d_DiagnosticInfo              theFlags) const;
+  Standard_EXPORT void DiagnosticInformation(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+    Graphic3d_DiagnosticInfo                                                      theFlags) const;
 
   //! Fetches information about window buffer pixel format.
   Standard_EXPORT void WindowBufferBits(NCollection_Vec4<int>& theColorBits,
@@ -436,8 +433,8 @@ public:
   //! it will be automatically released on context destruction.
   //! @param theKey      - unique identifier, shouldn't be empty;
   //! @param theResource - new resource to register, shouldn't be NULL.
-  Standard_EXPORT bool ShareResource(const TCollection_AsciiString& theKey,
-                                                 const occ::handle<OpenGl_Resource>& theResource);
+  Standard_EXPORT bool ShareResource(const TCollection_AsciiString&      theKey,
+                                     const occ::handle<OpenGl_Resource>& theResource);
 
   //! Release shared resource.
   //! If there are more than one reference to this resource
@@ -448,7 +445,7 @@ public:
   //! @param theKey     unique identifier
   //! @param theToDelay postpone release until next redraw call
   Standard_EXPORT void ReleaseResource(const TCollection_AsciiString& theKey,
-                                       const bool         theToDelay = false);
+                                       const bool                     theToDelay = false);
 
   //! Append resource to queue for delayed clean up.
   //! Resources in this queue will be released at next redraw call.
@@ -542,10 +539,7 @@ public:
   bool HasRayTracingAdaptiveSampling() const { return myHasRayTracingAdaptiveSampling; }
 
   //! @return TRUE if atomic adaptive screen sampling in ray tracing mode is supported
-  bool HasRayTracingAdaptiveSamplingAtomic() const
-  {
-    return myHasRayTracingAdaptiveSamplingAtomic;
-  }
+  bool HasRayTracingAdaptiveSamplingAtomic() const { return myHasRayTracingAdaptiveSamplingAtomic; }
 
   //! Returns TRUE if sRGB rendering is supported.
   bool HasSRGB() const { return hasTexSRGB && hasFboSRGB; }
@@ -585,7 +579,8 @@ public:
 
   //! Convert Quantity_ColorRGBA into vec4.
   //! Quantity_Color is expected to be linear RGB, hence conversion is NOT required
-  const NCollection_Vec4<float>& Vec4LinearFromQuantityColor(const NCollection_Vec4<float>& theColor) const
+  const NCollection_Vec4<float>& Vec4LinearFromQuantityColor(
+    const NCollection_Vec4<float>& theColor) const
   {
     return theColor;
   }
@@ -665,8 +660,7 @@ public:
   //! OpenGl_LineAttributes (Aspect_HatchStyle) or the type supported by custom
   //! implementation derived from OpenGl_LineAttributes class.
   //! @return old type of hatch.
-  Standard_EXPORT int
-    SetPolygonHatchStyle(const occ::handle<Graphic3d_HatchStyle>& theStyle);
+  Standard_EXPORT int SetPolygonHatchStyle(const occ::handle<Graphic3d_HatchStyle>& theStyle);
 
   //! Sets and applies current polygon offset.
   Standard_EXPORT void SetPolygonOffset(const Graphic3d_PolygonOffset& theOffset);
@@ -721,12 +715,10 @@ public:
                                    const TCollection_ExtendedString& theMessage);
 
   //! Adds a filter for messages with theId and theSource (GL_DEBUG_SOURCE_)
-  Standard_EXPORT bool ExcludeMessage(const unsigned int theSource,
-                                                  const unsigned int theId);
+  Standard_EXPORT bool ExcludeMessage(const unsigned int theSource, const unsigned int theId);
 
   //! Removes a filter for messages with theId and theSource (GL_DEBUG_SOURCE_)
-  Standard_EXPORT bool IncludeMessage(const unsigned int theSource,
-                                                  const unsigned int theId);
+  Standard_EXPORT bool IncludeMessage(const unsigned int theSource, const unsigned int theId);
 
   //! @return true if OpenGl context supports left and right rendering buffers.
   bool HasStereoBuffers() const { return myIsStereoBuffers; }
@@ -767,8 +759,7 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetDrawBuffer(const int theDrawBuffer);
 
   //! Switch draw buffer, wrapper for ::glDrawBuffers (GLsizei, const GLenum*).
-  Standard_EXPORT void SetDrawBuffers(const int  theNb,
-                                      const int* theDrawBuffers);
+  Standard_EXPORT void SetDrawBuffers(const int theNb, const int* theDrawBuffers);
 
   //! Switch read/draw buffers.
   void SetReadDrawBuffer(const int theBuffer)
@@ -875,20 +866,19 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current shading material.
   Standard_EXPORT void SetShadingMaterial(
-    const OpenGl_Aspects*                           theAspect,
+    const OpenGl_Aspects*                                theAspect,
     const occ::handle<Graphic3d_PresentationAttributes>& theHighlight);
 
   //! Checks if transparency is required for the given aspect and highlight style.
   Standard_EXPORT static bool CheckIsTransparent(
-    const OpenGl_Aspects*                           theAspect,
+    const OpenGl_Aspects*                                theAspect,
     const occ::handle<Graphic3d_PresentationAttributes>& theHighlight,
-    float&                             theAlphaFront,
-    float&                             theAlphaBack);
+    float&                                               theAlphaFront,
+    float&                                               theAlphaBack);
 
   //! Checks if transparency is required for the given aspect and highlight style.
-  static bool CheckIsTransparent(
-    const OpenGl_Aspects*                           theAspect,
-    const occ::handle<Graphic3d_PresentationAttributes>& theHighlight)
+  static bool CheckIsTransparent(const OpenGl_Aspects*                                theAspect,
+                                 const occ::handle<Graphic3d_PresentationAttributes>& theHighlight)
   {
     float anAlphaFront = 1.0f, anAlphaBack = 1.0f;
     return CheckIsTransparent(theAspect, theHighlight, anAlphaFront, anAlphaBack);
@@ -898,15 +888,13 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetColor4fv(const NCollection_Vec4<float>& theColor);
 
   //! Setup type of line.
-  Standard_EXPORT void SetTypeOfLine(const Aspect_TypeOfLine  theType,
-                                     const float theFactor = 1.0f);
+  Standard_EXPORT void SetTypeOfLine(const Aspect_TypeOfLine theType, const float theFactor = 1.0f);
 
   //! Setup stipple line pattern with 1.0f factor; wrapper for glLineStipple().
   void SetLineStipple(const uint16_t thePattern) { SetLineStipple(1.0f, thePattern); }
 
   //! Setup type of line; wrapper for glLineStipple().
-  Standard_EXPORT void SetLineStipple(const float theFactor,
-                                      const uint16_t           thePattern);
+  Standard_EXPORT void SetLineStipple(const float theFactor, const uint16_t thePattern);
 
   //! Setup width of line.
   Standard_EXPORT void SetLineWidth(const float theWidth);
@@ -925,7 +913,7 @@ public: //! @name methods to alter or retrieve current state
   //! @param[in] theParams     texture parameters
   //! @param[in] theIsTopDown  texture top-down flag
   Standard_EXPORT void SetTextureMatrix(const occ::handle<Graphic3d_TextureParams>& theParams,
-                                        const bool                 theIsTopDown);
+                                        const bool                                  theIsTopDown);
 
   //! Bind default Vertex Array Object
   Standard_EXPORT void BindDefaultVao();
@@ -967,9 +955,7 @@ public: //! @name methods to alter or retrieve current state
 
   //! Set resolution ratio.
   //! Note that this method rounds @theRatio to nearest integer.
-  void SetResolution(unsigned int       theResolution,
-                     float theRatio,
-                     float theScale)
+  void SetResolution(unsigned int theResolution, float theRatio, float theScale)
   {
     myResolution     = (unsigned int)(theScale * theResolution + 0.5f);
     myRenderScale    = theScale;
@@ -1012,8 +998,7 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Dumps the content of openGL state into the stream
-  Standard_EXPORT void DumpJsonOpenGlState(Standard_OStream& theOStream,
-                                           int  theDepth = -1);
+  Standard_EXPORT void DumpJsonOpenGlState(Standard_OStream& theOStream, int theDepth = -1);
 
   //! Set GL_SHADE_MODEL value.
   Standard_EXPORT void SetShadeModel(Graphic3d_TypeOfShadingModel theModel);
@@ -1028,9 +1013,9 @@ private:
   //! @param theGlVerMajor the OpenGL major version with missing functions
   //! @param theGlVerMinor the OpenGL minor version with missing functions
   //! @param theLastFailedProc function name which cannot be found
-  Standard_EXPORT void checkWrongVersion(int theGlVerMajor,
-                                         int theGlVerMinor,
-                                         const char*      theLastFailedProc);
+  Standard_EXPORT void checkWrongVersion(int         theGlVerMajor,
+                                         int         theGlVerMinor,
+                                         const char* theLastFailedProc);
 
   //! Private initialization function that should be called only once.
   Standard_EXPORT void init(const bool theIsCoreProfile);
@@ -1104,7 +1089,7 @@ public: //! @name extensions
   bool oesSampleVariables; //!< GL_OES_sample_variables
   bool oesStdDerivatives;  //!< GL_OES_standard_derivatives
 
-public: //! @name public properties tracking current state
+public:                                      //! @name public properties tracking current state
   OpenGl_MatrixState<float> ModelWorldState; //!< state of orientation matrix
   OpenGl_MatrixState<float> WorldViewState;  //!< state of orientation matrix
   OpenGl_MatrixState<float> ProjectionState; //!< state of projection  matrix
@@ -1112,7 +1097,7 @@ public: //! @name public properties tracking current state
 private:                     // system-dependent fields
   Aspect_Drawable myWindow;  //!< surface           EGLSurface | HWND  | GLXDrawable
   Aspect_Display  myDisplay; //!< display           EGLDisplay | HDC   | Display*
-                             // clang-format off
+                            // clang-format off
   Aspect_RenderingContext myGContext; //!< rendering context EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*
 
 private: // context info
@@ -1121,38 +1106,37 @@ private: // context info
   typedef NCollection_Shared< NCollection_List<occ::handle<OpenGl_Resource>> > OpenGl_ResourcesStack;
 
   occ::handle<OpenGl_ResourcesMap>    mySharedResources; //!< shared resources with unique identification key
-                                                // clang-format on
-  occ::handle<OpenGl_DelayReleaseMap> myDelayed;         //!< shared resources for delayed release
-  occ::handle<OpenGl_ResourcesStack>  myUnusedResources; //!< stack of resources for delayed clean up
+                       // clang-format on
+  occ::handle<OpenGl_DelayReleaseMap> myDelayed;        //!< shared resources for delayed release
+  occ::handle<OpenGl_ResourcesStack> myUnusedResources; //!< stack of resources for delayed clean up
 
   OpenGl_Clipping myClippingState; //!< state of clip planes
 
   void*                               myGlLibHandle;      //!< optional handle to GL library
   std::unique_ptr<OpenGl_GlFunctions> myFuncs;            //!< mega structure for all GL functions
   Aspect_GraphicsLibrary              myGapi;             //!< GAPI name
-  occ::handle<Image_SupportedFormats>      mySupportedFormats; //!< map of supported texture formats
-  int                    myAnisoMax; //!< maximum level of anisotropy texture filter
-  int myTexClamp;            //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
-  int myMaxTexDim;           //!< value for GL_MAX_TEXTURE_SIZE
-  int myMaxTexCombined;      //!< value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
-                                          // clang-format off
+  occ::handle<Image_SupportedFormats> mySupportedFormats; //!< map of supported texture formats
+  int                                 myAnisoMax; //!< maximum level of anisotropy texture filter
+  int myTexClamp;              //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
+  int myMaxTexDim;             //!< value for GL_MAX_TEXTURE_SIZE
+  int myMaxTexCombined;        //!< value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+                               // clang-format off
   int myMaxTexUnitsFFP;       //!< value for GL_MAX_TEXTURE_UNITS (fixed-function pipeline only)
-                                          // clang-format on
-  int myMaxDumpSizeX;        //!< maximum FBO width  for image dump
-  int myMaxDumpSizeY;        //!< maximum FBO height for image dump
-  int myMaxClipPlanes;       //!< value for GL_MAX_CLIP_PLANES
-  int myMaxMsaaSamples;      //!< value for GL_MAX_SAMPLES
-  int myMaxDrawBuffers;      //!< value for GL_MAX_DRAW_BUFFERS
-  int myMaxColorAttachments; //!< value for GL_MAX_COLOR_ATTACHMENTS
-  int myGlVerMajor;          //!< cached GL version major number
-  int myGlVerMinor;          //!< cached GL version minor number
-  bool myIsInitialized;       //!< flag indicates initialization state
-  bool myIsStereoBuffers;     //!< context supports stereo buffering
-  bool myHasMsaaTextures;     //!< context supports MSAA textures
-  bool
-    myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
-                            //!< Used to tell OpenGl that normals should be normalized
-                            // clang-format off
+                               // clang-format on
+  int  myMaxDumpSizeX;         //!< maximum FBO width  for image dump
+  int  myMaxDumpSizeY;         //!< maximum FBO height for image dump
+  int  myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
+  int  myMaxMsaaSamples;       //!< value for GL_MAX_SAMPLES
+  int  myMaxDrawBuffers;       //!< value for GL_MAX_DRAW_BUFFERS
+  int  myMaxColorAttachments;  //!< value for GL_MAX_COLOR_ATTACHMENTS
+  int  myGlVerMajor;           //!< cached GL version major number
+  int  myGlVerMinor;           //!< cached GL version minor number
+  bool myIsInitialized;        //!< flag indicates initialization state
+  bool myIsStereoBuffers;      //!< context supports stereo buffering
+  bool myHasMsaaTextures;      //!< context supports MSAA textures
+  bool myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
+                               //!< Used to tell OpenGl that normals should be normalized
+                               // clang-format off
   Graphic3d_TextureUnit mySpriteTexUnit;   //!< sampler2D occSamplerPointSprite, texture unit for point sprite texture
 
   bool myHasRayTracing;                 //! indicates whether ray tracing mode is supported
@@ -1173,13 +1157,13 @@ private: // context info
 
   occ::handle<OpenGl_ShaderManager> myShaderManager; //! support object for managing shader programs
 
-private:                                           //! @name fields tracking current state
+private:                                                //! @name fields tracking current state
   occ::handle<Graphic3d_Camera>     myCamera;           //!< active camera object
   occ::handle<OpenGl_FrameStats>    myFrameStats;       //!< structure accumulating frame statistics
   occ::handle<OpenGl_ShaderProgram> myActiveProgram;    //!< currently active GLSL program
   occ::handle<OpenGl_TextureSet>    myActiveTextures;   //!< currently bound textures
-                                                   //!< currently active sampler objects
-  int           myActiveMockTextures; //!< currently active mock sampler objects
+                                                        //!< currently active sampler objects
+  int                             myActiveMockTextures; //!< currently active mock sampler objects
   occ::handle<OpenGl_FrameBuffer> myDefaultFbo;         //!< default Frame Buffer Object
   // clang-format off
   occ::handle<OpenGl_LineAttributes> myHatchStyles;     //!< resource holding predefined hatch styles patterns

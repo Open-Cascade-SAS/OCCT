@@ -49,19 +49,16 @@ public:
   //! functions for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  double&     F,
-                                                  math_Vector&       G) = 0;
+  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G) = 0;
 
   //! computes the value <F>, the gradient <G> and the
   //! hessian <H> of the functions for the variable <X>.
   //! Returns True if the computation was done
   //! successfully, False otherwise.
   Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  double&     F,
-                                                  math_Vector&       G,
-                                                  math_Matrix&       H) = 0;
-
+                                      double&            F,
+                                      math_Vector&       G,
+                                      math_Matrix&       H) = 0;
 };
 
 #endif // _math_MultipleVarFunctionWithHessian_HeaderFile

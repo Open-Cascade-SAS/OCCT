@@ -40,8 +40,8 @@ public:
   //! Instantiates error
   //! This is only used by OSD methods to instantiates an error code.
   //! No description is done for the programmer.
-  Standard_EXPORT void SetValue(const int         Errcode,
-                                const int         From,
+  Standard_EXPORT void SetValue(const int                      Errcode,
+                                const int                      From,
                                 const TCollection_AsciiString& Message);
 
   //! Returns an accurate error code.
@@ -58,9 +58,9 @@ public:
 
 private:
   TCollection_AsciiString myMessage;
-  int        myErrno;
+  int                     myErrno;
   OSD_WhoAmI              myCode;
-  int        extCode{};
+  int                     extCode{};
 };
 
 #endif // _OSD_Error_HeaderFile

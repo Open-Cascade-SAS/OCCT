@@ -31,7 +31,8 @@ void StepRepr_MappedItem::Init(const occ::handle<TCollection_HAsciiString>&    a
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepRepr_MappedItem::SetMappingSource(const occ::handle<StepRepr_RepresentationMap>& aMappingSource)
+void StepRepr_MappedItem::SetMappingSource(
+  const occ::handle<StepRepr_RepresentationMap>& aMappingSource)
 {
   mappingSource = aMappingSource;
 }

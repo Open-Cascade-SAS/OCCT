@@ -40,11 +40,12 @@ public:
   void Invalidate() { myIsTextureReady = false; }
 
   //! Return textures array.
-  const occ::handle<OpenGl_TextureSet>& TextureSet(const occ::handle<OpenGl_Context>&     theCtx,
-                                              const occ::handle<Graphic3d_Aspects>&  theAspect,
-                                              const occ::handle<OpenGl_PointSprite>& theSprite,
-                                              const occ::handle<OpenGl_PointSprite>& theSpriteA,
-                                              bool                              theToHighlight)
+  const occ::handle<OpenGl_TextureSet>& TextureSet(
+    const occ::handle<OpenGl_Context>&     theCtx,
+    const occ::handle<Graphic3d_Aspects>&  theAspect,
+    const occ::handle<OpenGl_PointSprite>& theSprite,
+    const occ::handle<OpenGl_PointSprite>& theSpriteA,
+    bool                                   theToHighlight)
   {
     if (!myIsTextureReady)
     {
@@ -69,7 +70,7 @@ private:
 
 private:
   occ::handle<OpenGl_TextureSet> myTextures[2];
-  bool          myIsTextureReady;
+  bool                           myIsTextureReady;
 };
 
 #endif // _OpenGl_AspectsTextureSet_Header

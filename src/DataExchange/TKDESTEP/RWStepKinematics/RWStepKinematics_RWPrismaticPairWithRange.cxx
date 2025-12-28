@@ -34,7 +34,7 @@ RWStepKinematics_RWPrismaticPairWithRange::RWStepKinematics_RWPrismaticPairWithR
 
 void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                               theNum,
+  const int                                                 theNum,
   occ::handle<Interface_Check>&                             theArch,
   const occ::handle<StepKinematics_PrismaticPairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
 
   // Own fields of PrismaticPairWithRange
 
-  double    aLowerLimitActualTranslation;
-  bool hasLowerLimitActualTranslation = true;
+  double aLowerLimitActualTranslation;
+  bool   hasLowerLimitActualTranslation = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -160,8 +160,8 @@ void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
     aLowerLimitActualTranslation   = 0;
   }
 
-  double    aUpperLimitActualTranslation;
-  bool hasUpperLimitActualTranslation = true;
+  double aUpperLimitActualTranslation;
+  bool   hasUpperLimitActualTranslation = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum,
@@ -199,7 +199,7 @@ void RWStepKinematics_RWPrismaticPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPrismaticPairWithRange::WriteStep(
-  StepData_StepWriter&                                 theSW,
+  StepData_StepWriter&                                      theSW,
   const occ::handle<StepKinematics_PrismaticPairWithRange>& theEnt) const
 {
 
@@ -261,7 +261,7 @@ void RWStepKinematics_RWPrismaticPairWithRange::WriteStep(
 
 void RWStepKinematics_RWPrismaticPairWithRange::Share(
   const occ::handle<StepKinematics_PrismaticPairWithRange>& theEnt,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of RepresentationItem

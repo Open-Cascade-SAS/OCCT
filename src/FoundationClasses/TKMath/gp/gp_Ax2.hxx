@@ -181,18 +181,18 @@ public:
   //! Returns the "YDirection" of <me>.
   constexpr const gp_Dir& YDirection() const noexcept { return vydir; }
 
-  bool IsCoplanar(const gp_Ax2&       Other,
-                              const double LinearTolerance,
-                              const double AngularTolerance) const;
+  bool IsCoplanar(const gp_Ax2& Other,
+                  const double  LinearTolerance,
+                  const double  AngularTolerance) const;
 
   //! Returns True if:
   //! . the distance between <me> and the "Location" point of A1
   //! is lower of equal to LinearTolerance and
   //! . the main direction of <me> and the direction of A1 are normal.
   //! Note: the tolerance criterion for angular equality is given by AngularTolerance.
-  bool IsCoplanar(const gp_Ax1&       A1,
-                              const double LinearTolerance,
-                              const double AngularTolerance) const;
+  bool IsCoplanar(const gp_Ax1& A1,
+                  const double  LinearTolerance,
+                  const double  AngularTolerance) const;
 
   //! Performs a symmetrical transformation of this coordinate
   //! system with respect to:
@@ -336,8 +336,7 @@ public:
   //! . the main direction of the axis placement is not changed.
   //! . The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  [[nodiscard]] constexpr gp_Ax2 Scaled(const gp_Pnt&       theP,
-                                             const double theS) const noexcept
+  [[nodiscard]] constexpr gp_Ax2 Scaled(const gp_Pnt& theP, const double theS) const noexcept
   {
     gp_Ax2 aTemp = *this;
     aTemp.Scale(theP, theS);
@@ -382,8 +381,7 @@ public:
   }
 
   //! Translates an axis placement from the point <theP1> to the point <theP2>.
-  [[nodiscard]] constexpr gp_Ax2 Translated(const gp_Pnt& theP1,
-                                                 const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Ax2 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Ax2 aTemp = *this;
     aTemp.Translate(theP1, theP2);
@@ -394,8 +392,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
-                                                int&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
 protected:
   //! Helper to compute perpendicular X direction for standard main directions
@@ -575,14 +572,14 @@ inline void gp_Ax2::SetDirection(const gp_Dir& theV)
 
 //=================================================================================================
 
-inline bool gp_Ax2::IsCoplanar(const gp_Ax2&       theOther,
-                                           const double theLinearTolerance,
-                                           const double theAngularTolerance) const
+inline bool gp_Ax2::IsCoplanar(const gp_Ax2& theOther,
+                               const double  theLinearTolerance,
+                               const double  theAngularTolerance) const
 {
   const gp_Dir& DD = axis.Direction();
   const gp_Pnt& PP = axis.Location();
   const gp_Pnt& OP = theOther.axis.Location();
-  double D1 =
+  double        D1 =
     (DD.X() * (OP.X() - PP.X()) + DD.Y() * (OP.Y() - PP.Y()) + DD.Z() * (OP.Z() - PP.Z()));
   if (D1 < 0)
   {
@@ -593,14 +590,14 @@ inline bool gp_Ax2::IsCoplanar(const gp_Ax2&       theOther,
 
 //=================================================================================================
 
-inline bool gp_Ax2::IsCoplanar(const gp_Ax1&       theA,
-                                           const double theLinearTolerance,
-                                           const double theAngularTolerance) const
+inline bool gp_Ax2::IsCoplanar(const gp_Ax1& theA,
+                               const double  theLinearTolerance,
+                               const double  theAngularTolerance) const
 {
   const gp_Dir& DD = axis.Direction();
   const gp_Pnt& PP = axis.Location();
   const gp_Pnt& AP = theA.Location();
-  double D1 =
+  double        D1 =
     (DD.X() * (AP.X() - PP.X()) + DD.Y() * (AP.Y() - PP.Y()) + DD.Z() * (AP.Z() - PP.Z()));
   if (D1 < 0)
   {

@@ -24,14 +24,14 @@
 #include <Extrema_POnCurv2d.hxx>
 
 double HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
-                                                         const gp_Pnt2d&         P,
-                                                         const double     LowParameter,
-                                                         const double     HighParameter,
-                                                         const double)
+                                                  const gp_Pnt2d&         P,
+                                                  const double            LowParameter,
+                                                  const double            HighParameter,
+                                                  const double)
 {
-  double     theparam, defaultparam;
-  int  NbPts   = HLRBRep_CurveTool::NbSamples(C);
-  double     theEpsX = HLRBRep_CurveTool::EpsX(C);
+  double            theparam, defaultparam;
+  int               NbPts   = HLRBRep_CurveTool::NbSamples(C);
+  double            theEpsX = HLRBRep_CurveTool::EpsX(C);
   Extrema_POnCurv2d POnC;
 
   HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter::Locate(P,
@@ -64,8 +64,8 @@ double HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
 }
 
 double HLRBRep_TheProjPCurOfCInter::FindParameter(const HLRBRep_CurvePtr& C,
-                                                         const gp_Pnt2d&         P,
-                                                         const double     Tol)
+                                                  const gp_Pnt2d&         P,
+                                                  const double            Tol)
 {
 
   double theParam;

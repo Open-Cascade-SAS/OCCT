@@ -31,9 +31,9 @@ LDOM_BasicAttribute::LDOM_BasicAttribute(const LDOM_Attr& anAttr)
 // purpose  : construction in the Document's data pool
 //=======================================================================
 
-LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&         theName,
+LDOM_BasicAttribute& LDOM_BasicAttribute::Create(const LDOMBasicString&              theName,
                                                  const occ::handle<LDOM_MemManager>& theDoc,
-                                                 int&              theHash)
+                                                 int&                                theHash)
 {
   void*                aMem    = theDoc->Allocate(sizeof(LDOM_BasicAttribute));
   LDOM_BasicAttribute* aNewAtt = new (aMem) LDOM_BasicAttribute;

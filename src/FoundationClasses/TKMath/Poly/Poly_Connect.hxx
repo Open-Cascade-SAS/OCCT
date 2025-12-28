@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Poly_Triangulation;
 
@@ -90,15 +89,12 @@ public:
   //! Warning
   //! Null indices are returned when there are fewer than 3
   //! adjacent triangles.
-  void Triangles(const int T,
-                 int&      t1,
-                 int&      t2,
-                 int&      t3) const
+  void Triangles(const int T, int& t1, int& t2, int& t3) const
   {
     int index = 6 * (T - 1);
-    t1                     = myAdjacents(index + 1);
-    t2                     = myAdjacents(index + 2);
-    t3                     = myAdjacents(index + 3);
+    t1        = myAdjacents(index + 1);
+    t2        = myAdjacents(index + 2);
+    t3        = myAdjacents(index + 3);
   }
 
   //! Returns, in n1, n2 and n3, the indices of the 3 nodes
@@ -106,15 +102,12 @@ public:
   //! triangles table specific to the triangulation analyzed by this tool.
   //! Warning
   //! Null indices are returned when there are fewer than 3 adjacent nodes.
-  void Nodes(const int T,
-             int&      n1,
-             int&      n2,
-             int&      n3) const
+  void Nodes(const int T, int& n1, int& n2, int& n3) const
   {
     int index = 6 * (T - 1);
-    n1                     = myAdjacents(index + 4);
-    n2                     = myAdjacents(index + 5);
-    n3                     = myAdjacents(index + 6);
+    n1        = myAdjacents(index + 4);
+    n2        = myAdjacents(index + 5);
+    n3        = myAdjacents(index + 6);
   }
 
 public:
@@ -156,15 +149,15 @@ public:
 
 private:
   occ::handle<Poly_Triangulation> myTriangulation;
-  NCollection_Array1<int>    myTriangles;
-  NCollection_Array1<int>    myAdjacents;
-  int           mytr;
-  int           myfirst;
-  int           mynode;
-  int           myothernode;
-  bool           mysense;
-  bool           mymore;
-  TColStd_PackedMapOfInteger myPassedTr;
+  NCollection_Array1<int>         myTriangles;
+  NCollection_Array1<int>         myAdjacents;
+  int                             mytr;
+  int                             myfirst;
+  int                             mynode;
+  int                             myothernode;
+  bool                            mysense;
+  bool                            mymore;
+  TColStd_PackedMapOfInteger      myPassedTr;
 };
 
 #endif // _Poly_Connect_HeaderFile

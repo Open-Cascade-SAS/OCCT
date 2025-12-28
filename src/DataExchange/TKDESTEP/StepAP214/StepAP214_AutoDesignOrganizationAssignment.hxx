@@ -35,13 +35,16 @@ public:
   //! Returns a AutoDesignOrganizationAssignment
   Standard_EXPORT StepAP214_AutoDesignOrganizationAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_Organization>&     aAssignedOrganization,
-                            const occ::handle<StepBasic_OrganizationRole>& aRole,
-                            const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_Organization>&     aAssignedOrganization,
+    const occ::handle<StepBasic_OrganizationRole>& aRole,
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items()
+    const;
 
   Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem ItemsValue(const int num) const;
 

@@ -44,8 +44,9 @@ public:
 
   //! Recherche parmi l'ensemble des points d'Interference
   //! la Liste <LI> des points qui correspondent au point d'indice <Index>
-  Standard_EXPORT void FindAssociatedPoints(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&         LI);
+  Standard_EXPORT void FindAssociatedPoints(
+    const occ::handle<TopOpeBRepDS_Interference>&             I,
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
   //! Enchaine les sections via les points d'Interferences deja
   //! associe; Renvoit dans <L> les points extremites des Lignes.
@@ -53,37 +54,43 @@ public:
   //! peuvent correspondre a une Point donne.
   Standard_EXPORT bool CheckConnexity(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
-  Standard_EXPORT void AddPointsOnShape(const TopoDS_Shape& S, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT void AddPointsOnShape(
+    const TopoDS_Shape&                                       S,
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
   //! Methodes pour reduire la liste des Points qui
   //! peuvent correspondre a une Point donne.
-  Standard_EXPORT void AddPointsOnConnexShape(const TopoDS_Shape&                    F,
-                                              const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT void AddPointsOnConnexShape(
+    const TopoDS_Shape&                                             F,
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
-  Standard_EXPORT void FilterByFace(const TopoDS_Face& F, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT void FilterByFace(const TopoDS_Face&                                        F,
+                                    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
-  Standard_EXPORT void FilterByEdge(const TopoDS_Edge& E, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT void FilterByEdge(const TopoDS_Edge&                                        E,
+                                    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
-  Standard_EXPORT void FilterByIncidentDistance(const TopoDS_Face&                       F,
-                                                const occ::handle<TopOpeBRepDS_Interference>& I,
-                                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&         LI);
+  Standard_EXPORT void FilterByIncidentDistance(
+    const TopoDS_Face&                                        F,
+    const occ::handle<TopOpeBRepDS_Interference>&             I,
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
   //! Return TRUE si I a ete obtenu par une intersection
   //! avec <F>.
   Standard_EXPORT bool IsOnFace(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                            const TopoDS_Face&                       F) const;
+                                const TopoDS_Face&                            F) const;
 
   //! Return TRUE si I ou une de ses representaions a
   //! pour support <E>.
   //! Methodes de reconstructions des geometries des point
   //! et des courbes de section
   Standard_EXPORT bool IsOnEdge(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                            const TopoDS_Edge&                       E) const;
+                                const TopoDS_Edge&                            E) const;
 
   Standard_EXPORT void BuildNewGeometries();
 
   Standard_EXPORT void ReBuildGeom(const occ::handle<TopOpeBRepDS_Interference>& I1,
-                                   NCollection_Map<int>&                    Done);
+                                   NCollection_Map<int>&                         Done);
 
 private:
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;

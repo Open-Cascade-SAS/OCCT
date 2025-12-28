@@ -50,9 +50,9 @@ Bisector_BisecPC::Bisector_BisecPC()
 //=================================================================================================
 
 Bisector_BisecPC::Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
-                                   const gp_Pnt2d&             P,
-                                   const double         Side,
-                                   const double         DistMax)
+                                   const gp_Pnt2d&                  P,
+                                   const double                     Side,
+                                   const double                     DistMax)
 {
   Perform(Cu, P, Side, DistMax);
 }
@@ -60,10 +60,10 @@ Bisector_BisecPC::Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
 //=================================================================================================
 
 Bisector_BisecPC::Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
-                                   const gp_Pnt2d&             P,
-                                   const double         Side,
-                                   const double         UMin,
-                                   const double         UMax)
+                                   const gp_Pnt2d&                  P,
+                                   const double                     Side,
+                                   const double                     UMin,
+                                   const double                     UMax)
 
 {
   curve = occ::down_cast<Geom2d_Curve>(Cu->Copy());
@@ -82,9 +82,9 @@ Bisector_BisecPC::Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
 //=================================================================================================
 
 void Bisector_BisecPC::Perform(const occ::handle<Geom2d_Curve>& Cu,
-                               const gp_Pnt2d&             P,
-                               const double         Side,
-                               const double         DistMax)
+                               const gp_Pnt2d&                  P,
+                               const double                     Side,
+                               const double                     DistMax)
 {
   curve    = occ::down_cast<Geom2d_Curve>(Cu->Copy());
   point    = P;
@@ -111,15 +111,15 @@ void Bisector_BisecPC::Perform(const occ::handle<Geom2d_Curve>& Cu,
   {
     if (point.IsEqual(curve->Value(curve->FirstParameter()), Precision::Confusion()))
     {
-      extensionStart       = true;
-      double UFirst = startIntervals.First() - P.Distance(pointStartBis);
+      extensionStart = true;
+      double UFirst  = startIntervals.First() - P.Distance(pointStartBis);
       startIntervals.InsertBefore(1, UFirst);
       endIntervals.InsertBefore(1, startIntervals.Value(2));
       bisInterval = 2;
     }
     else if (point.IsEqual(curve->Value(curve->LastParameter()), Precision::Confusion()))
     {
-      extensionEnd        = true;
+      extensionEnd = true;
       double ULast = endIntervals.Last() + P.Distance(pointEndBis);
       startIntervals.Append(endIntervals.Last());
       endIntervals.Append(ULast);
@@ -302,10 +302,10 @@ bool Bisector_BisecPC::IsPeriodic() const
 //=================================================================================================
 
 void Bisector_BisecPC::Extension(const double U,
-                                 gp_Pnt2d&           P,
-                                 gp_Vec2d&           V1,
-                                 gp_Vec2d&           V2,
-                                 gp_Vec2d&           V3) const
+                                 gp_Pnt2d&    P,
+                                 gp_Vec2d&    V1,
+                                 gp_Vec2d&    V2,
+                                 gp_Vec2d&    V3) const
 {
   double dU;
 
@@ -349,12 +349,12 @@ void Bisector_BisecPC::Extension(const double U,
 //           N(u) normal to the curve by u.
 //           ( | ) designation of the scalar product.
 //=============================================================================
-void Bisector_BisecPC::Values(const double    U,
-                              const int N,
-                              gp_Pnt2d&              P,
-                              gp_Vec2d&              V1,
-                              gp_Vec2d&              V2,
-                              gp_Vec2d&              V3) const
+void Bisector_BisecPC::Values(const double U,
+                              const int    N,
+                              gp_Pnt2d&    P,
+                              gp_Vec2d&    V1,
+                              gp_Vec2d&    V2,
+                              gp_Vec2d&    V3) const
 {
   if (U < startIntervals.Value(bisInterval))
   {
@@ -407,11 +407,11 @@ void Bisector_BisecPC::Values(const double    U,
   if (N == 0)
     return; // End Calculation Point;
 
-  gp_Vec2d      Nu(-Tuu.Y(), Tuu.X()); // derivative of the normal by U.
-  double NuPPC    = Nu.Dot(aPPC);
-  double TuPPC    = Tu.Dot(aPPC);
-  double NorPPCE2 = NorPPC * NorPPC;
-  double A2       = TuPPC / NorPPC - 0.5 * NuPPC * SquarePPC / NorPPCE2;
+  gp_Vec2d Nu(-Tuu.Y(), Tuu.X()); // derivative of the normal by U.
+  double   NuPPC    = Nu.Dot(aPPC);
+  double   TuPPC    = Tu.Dot(aPPC);
+  double   NorPPCE2 = NorPPC * NorPPC;
+  double   A2       = TuPPC / NorPPC - 0.5 * NuPPC * SquarePPC / NorPPCE2;
 
   //--------------------------
   V1 = Tu - A1 * Nu - A2 * Nor;
@@ -427,7 +427,7 @@ void Bisector_BisecPC::Values(const double    U,
 
   double A21 = TuuPPC / NorPPC - TuPPC * NuPPC / NorPPCE2;
   double A22 = (0.5 * NuuPPC * SquarePPC + NuPPC * TuPPC) / NorPPCE2
-                      - NuPPC * SquarePPC * NorPPC * NuPPC / NorPPCE4;
+               - NuPPC * SquarePPC * NorPPC * NuPPC / NorPPCE4;
   double A2u = A21 - A22;
   //----------------------------------------
   V2 = Tuu - 2 * A2 * Nu - A1 * Nuu - A2u * Nor;
@@ -440,9 +440,9 @@ void Bisector_BisecPC::Values(const double    U,
 #ifdef OCCT_DEBUG_CUR
 static double Curvature(const occ::handle<Geom2d_Curve>& C, double U, double Tol)
 {
-  double K1;
-  gp_Vec2d      D1, D2;
-  gp_Pnt2d      P;
+  double   K1;
+  gp_Vec2d D1, D2;
+  gp_Pnt2d P;
   C->D2(U, P, D1, D2);
   double Norm2 = D1.SquareMagnitude();
   if (Norm2 < Tol)
@@ -560,10 +560,10 @@ void Bisector_BisecPC::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V
 //=================================================================================================
 
 void Bisector_BisecPC::D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const
 {
   P = point;
   V1.SetCoord(0., 0.);
@@ -603,9 +603,9 @@ double Bisector_BisecPC::SearchBound(const double U1, const double U2) const
   double           UMid     = 0.;
   constexpr double Tol      = Precision::PConfusion();
   double           DistMax2 = distMax * distMax;
-  U11                              = U1;
-  U22                              = U2;
-  Dist1                            = Distance(U11);
+  U11                       = U1;
+  U22                       = U2;
+  Dist1                     = Distance(U11);
 
   while ((U22 - U11) > Tol)
   {
@@ -638,10 +638,10 @@ void Bisector_BisecPC::ComputeIntervals()
   double U1 = 0., U2 = 0., UProj = 0.;
   double UStart = 0., UEnd = 0.;
   double Dist1, Dist2, DistProj;
-  isEmpty                   = false;
-  shiftParameter            = 0.;
-  bool YaProj   = false;
-  double    DistMax2 = distMax * distMax;
+  isEmpty         = false;
+  shiftParameter  = 0.;
+  bool   YaProj   = false;
+  double DistMax2 = distMax * distMax;
 
   U1       = curve->FirstParameter();
   U2       = curve->LastParameter();
@@ -767,9 +767,9 @@ double Bisector_BisecPC::Parameter(const gp_Pnt2d& P) const
 
   if (extensionStart)
   {
-    gp_Ax2d Axe(pointStartBis, gp_Dir2d(pointStartBis.X() - P.X(), pointStartBis.Y() - P.Y()));
-    double U    = ElCLib::LineParameter(Axe, P);
-    gp_Pnt2d      Proj = ElCLib::LineValue(U, Axe);
+    gp_Ax2d  Axe(pointStartBis, gp_Dir2d(pointStartBis.X() - P.X(), pointStartBis.Y() - P.Y()));
+    double   U    = ElCLib::LineParameter(Axe, P);
+    gp_Pnt2d Proj = ElCLib::LineValue(U, Axe);
     if (Proj.IsEqual(P, Tol) && U < 0.)
     {
       return U + startIntervals.Value(bisInterval);
@@ -777,15 +777,15 @@ double Bisector_BisecPC::Parameter(const gp_Pnt2d& P) const
   }
   if (extensionEnd)
   {
-    gp_Ax2d       Axe(pointEndBis, gp_Dir2d(P.X() - pointEndBis.X(), P.Y() - pointEndBis.Y()));
-    double U    = ElCLib::LineParameter(Axe, P);
-    gp_Pnt2d      Proj = ElCLib::LineValue(U, Axe);
+    gp_Ax2d  Axe(pointEndBis, gp_Dir2d(P.X() - pointEndBis.X(), P.Y() - pointEndBis.Y()));
+    double   U    = ElCLib::LineParameter(Axe, P);
+    gp_Pnt2d Proj = ElCLib::LineValue(U, Axe);
     if (Proj.IsEqual(P, Tol) && U > 0.)
     {
       return U + endIntervals.Value(bisInterval);
     }
   }
-  double                 UOnCurve = 0.;
+  double                        UOnCurve = 0.;
   Geom2dAPI_ProjectPointOnCurve Proj(P, curve, curve->FirstParameter(), curve->LastParameter());
   if (Proj.NbPoints() > 0)
   {
@@ -809,21 +809,21 @@ static void Indent(const int Offset)
 
 //=================================================================================================
 
-void Bisector_BisecPC::Init(const occ::handle<Geom2d_Curve>&   Curve,
-                            const gp_Pnt2d&               Point,
-                            const double           Sign,
+void Bisector_BisecPC::Init(const occ::handle<Geom2d_Curve>&    Curve,
+                            const gp_Pnt2d&                     Point,
+                            const double                        Sign,
                             const NCollection_Sequence<double>& StartIntervals,
                             const NCollection_Sequence<double>& EndIntervals,
-                            const int        BisInterval,
-                            const int        CurrentInterval,
-                            const double           ShiftParameter,
-                            const double           DistMax,
-                            const bool        IsEmpty,
-                            const bool        IsConvex,
-                            const bool        ExtensionStart,
-                            const bool        ExtensionEnd,
-                            const gp_Pnt2d&               PointStartBis,
-                            const gp_Pnt2d&               PointEndBis)
+                            const int                           BisInterval,
+                            const int                           CurrentInterval,
+                            const double                        ShiftParameter,
+                            const double                        DistMax,
+                            const bool                          IsEmpty,
+                            const bool                          IsConvex,
+                            const bool                          ExtensionStart,
+                            const bool                          ExtensionEnd,
+                            const gp_Pnt2d&                     PointStartBis,
+                            const gp_Pnt2d&                     PointEndBis)
 {
   curve           = Curve;
   point           = Point;

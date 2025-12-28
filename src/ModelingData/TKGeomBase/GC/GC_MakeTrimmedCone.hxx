@@ -69,10 +69,10 @@ public:
   //! -   the points P1, P2, P3 and P4 are collinear;
   //! -   gce_NegativeRadius if R1 or R2 is negative; or
   //! -   gce_NullAxis if points P1 and P2 are coincident (2nd syntax only).
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt&       P1,
-                                     const gp_Pnt&       P2,
-                                     const double R1,
-                                     const double R2);
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1,
+                                     const gp_Pnt& P2,
+                                     const double  R1,
+                                     const double  R2);
 
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.

@@ -25,18 +25,16 @@
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_GenericData, IGESData_IGESEntity)
 
 IGESDefs_GenericData::IGESDefs_GenericData() {}
 
-void IGESDefs_GenericData::Init(const int                    nbPropVal,
-                                const occ::handle<TCollection_HAsciiString>&   aName,
-                                const occ::handle<NCollection_HArray1<int>>&   allTypes,
-                                const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& allValues)
+void IGESDefs_GenericData::Init(
+  const int                                                                nbPropVal,
+  const occ::handle<TCollection_HAsciiString>&                             aName,
+  const occ::handle<NCollection_HArray1<int>>&                             allTypes,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& allValues)
 {
   // rln May 11, 2000 BUC60660
   // Number of TYPE/VALUE pairs is 0 and arrays are null handles,
@@ -88,8 +86,7 @@ double IGESDefs_GenericData::ValueAsReal(const int Index) const
   return GetCasted(NCollection_HArray1<double>, theValues->Value(Index))->Value(1);
 }
 
-occ::handle<TCollection_HAsciiString> IGESDefs_GenericData::ValueAsString(
-  const int Index) const
+occ::handle<TCollection_HAsciiString> IGESDefs_GenericData::ValueAsString(const int Index) const
 {
   return GetCasted(TCollection_HAsciiString, theValues->Value(Index));
 }

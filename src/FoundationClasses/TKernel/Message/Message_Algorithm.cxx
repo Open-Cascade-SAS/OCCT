@@ -26,7 +26,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TCollection_HExtendedString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
@@ -71,8 +70,9 @@ void Message_Algorithm::SetStatus(const Message_Status& theStat, const int theIn
 
   // Create map of integer parameters for a given flag, if not yet done
   if (myReportIntegers.IsNull())
-    myReportIntegers = new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
-                                                      Message_ExecStatus::LastStatus);
+    myReportIntegers =
+      new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
+                                                               Message_ExecStatus::LastStatus);
   occ::handle<Standard_Transient>& aData = myReportIntegers->ChangeValue(aFlagIndex);
   if (aData.IsNull())
     aData = new TColStd_HPackedMapOfInteger;
@@ -83,9 +83,9 @@ void Message_Algorithm::SetStatus(const Message_Status& theStat, const int theIn
 
 //=================================================================================================
 
-void Message_Algorithm::SetStatus(const Message_Status&                      theStat,
+void Message_Algorithm::SetStatus(const Message_Status&                           theStat,
                                   const occ::handle<TCollection_HExtendedString>& theStr,
-                                  const bool                     noRepetitions)
+                                  const bool                                      noRepetitions)
 {
   // Set status flag
   SetStatus(theStat);
@@ -99,8 +99,9 @@ void Message_Algorithm::SetStatus(const Message_Status&                      the
 
   // Create sequence of string parameters for a given flag, if not yet done
   if (myReportStrings.IsNull())
-    myReportStrings = new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
-                                                     Message_ExecStatus::LastStatus);
+    myReportStrings =
+      new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
+                                                               Message_ExecStatus::LastStatus);
   occ::handle<Standard_Transient>& aData = myReportStrings->ChangeValue(aFlagIndex);
   if (aData.IsNull())
     aData = new NCollection_HSequence<occ::handle<TCollection_HExtendedString>>;
@@ -139,7 +140,8 @@ void Message_Algorithm::SetStatus(const Message_Status& theStat, const Message_M
   if (myReportMessages.IsNull())
   {
     myReportMessages =
-      new NCollection_Array1<NCollection_Handle<Message_Msg>>(Message_ExecStatus::FirstStatus, Message_ExecStatus::LastStatus);
+      new NCollection_Array1<NCollection_Handle<Message_Msg>>(Message_ExecStatus::FirstStatus,
+                                                              Message_ExecStatus::LastStatus);
   }
 
   myReportMessages->ChangeValue(aFlagIndex) = new Message_Msg(theMsg);
@@ -159,7 +161,7 @@ void Message_Algorithm::ClearStatus()
 
 void Message_Algorithm::SendStatusMessages(const Message_ExecStatus& theStatus,
                                            const Message_Gravity     theTraceLevel,
-                                           const int    theMaxCount) const
+                                           const int                 theMaxCount) const
 {
   occ::handle<Message_Messenger> aMsgr = GetMessenger();
   if (aMsgr.IsNull())
@@ -168,8 +170,7 @@ void Message_Algorithm::SendStatusMessages(const Message_ExecStatus& theStatus,
   }
 
   // Iterate on all set flags in the specified range
-  for (int i = Message_ExecStatus::FirstStatus; i <= Message_ExecStatus::LastStatus;
-       i++)
+  for (int i = Message_ExecStatus::FirstStatus; i <= Message_ExecStatus::LastStatus; i++)
   {
     Message_Status stat = Message_ExecStatus::StatusByIndex(i);
     if (!theStatus.IsSet(stat) || !myStatus.IsSet(stat))
@@ -235,7 +236,8 @@ void Message_Algorithm::SendStatusMessages(const Message_ExecStatus& theStatus,
     if (!myReportStrings.IsNull() && !myReportStrings->Value(i).IsNull())
     {
       occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aReportSeq =
-        occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>(myReportStrings->Value(i));
+        occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>(
+          myReportStrings->Value(i));
       if (!aReportSeq.IsNull())
       {
         aMsg << PrepareReport(aReportSeq->Sequence(), theMaxCount);
@@ -249,8 +251,8 @@ void Message_Algorithm::SendStatusMessages(const Message_ExecStatus& theStatus,
 
 //=================================================================================================
 
-void Message_Algorithm::SendMessages(const Message_Gravity  theTraceLevel,
-                                     const int theMaxCount) const
+void Message_Algorithm::SendMessages(const Message_Gravity theTraceLevel,
+                                     const int             theMaxCount) const
 {
   Message_ExecStatus aStat;
   aStat.SetAllWarn();
@@ -268,13 +270,12 @@ void Message_Algorithm::AddStatus(const occ::handle<Message_Algorithm>& theOther
 
 //=================================================================================================
 
-void Message_Algorithm::AddStatus(const Message_ExecStatus&        theAllowedStatus,
+void Message_Algorithm::AddStatus(const Message_ExecStatus&             theAllowedStatus,
                                   const occ::handle<Message_Algorithm>& theOtherAlgo)
 {
   // Iterate on all set flags in the specified range
   const Message_ExecStatus& aStatusOfAlgo = theOtherAlgo->GetStatus();
-  for (int i = Message_ExecStatus::FirstStatus; i <= Message_ExecStatus::LastStatus;
-       i++)
+  for (int i = Message_ExecStatus::FirstStatus; i <= Message_ExecStatus::LastStatus; i++)
   {
     Message_Status stat = Message_ExecStatus::StatusByIndex(i);
     if (!theAllowedStatus.IsSet(stat) || !aStatusOfAlgo.IsSet(stat))
@@ -290,8 +291,9 @@ void Message_Algorithm::AddStatus(const Message_ExecStatus&        theAllowedSta
     {
       // Create sequence of integer parameters for a given flag, if not yet done
       if (myReportIntegers.IsNull())
-        myReportIntegers = new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
-                                                          Message_ExecStatus::LastStatus);
+        myReportIntegers =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(Message_ExecStatus::FirstStatus,
+                                                                   Message_ExecStatus::LastStatus);
       occ::handle<Standard_Transient>& aData = myReportIntegers->ChangeValue(i);
       if (aData.IsNull())
         aData = new TColStd_HPackedMapOfInteger;
@@ -300,7 +302,8 @@ void Message_Algorithm::AddStatus(const Message_ExecStatus&        theAllowedSta
       occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap().Unite(aNumsOther->Map());
     }
     // b) strings
-    occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aStrsOther = theOtherAlgo->GetMessageStrings(stat);
+    occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aStrsOther =
+      theOtherAlgo->GetMessageStrings(stat);
     if (!aStrsOther.IsNull())
     {
       for (int n = 1; n < aStrsOther->Length(); n++)
@@ -327,8 +330,8 @@ occ::handle<TColStd_HPackedMapOfInteger> Message_Algorithm::GetMessageNumbers(
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> Message_Algorithm::GetMessageStrings(
-  const Message_Status& theStatus) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> Message_Algorithm::
+  GetMessageStrings(const Message_Status& theStatus) const
 {
   if (myReportStrings.IsNull())
     return 0;
@@ -338,18 +341,19 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> Mes
   if (!aFlagIndex)
     return 0;
 
-  return occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>(myReportStrings->Value(aFlagIndex));
+  return occ::down_cast<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>(
+    myReportStrings->Value(aFlagIndex));
 }
 
 //=================================================================================================
 
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const occ::handle<TColStd_HPackedMapOfInteger>& theMapError,
-  const int                     theMaxCount)
+  const int                                       theMaxCount)
 {
   TCollection_ExtendedString              aNewReport;
   TColStd_MapIteratorOfPackedMapOfInteger anIt(theMapError->Map());
-  int                        nb = 1;
+  int                                     nb = 1;
   for (; anIt.More() && nb <= theMaxCount; anIt.Next(), nb++)
   {
     if (nb > 1)
@@ -370,10 +374,10 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
 
 TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const NCollection_Sequence<occ::handle<TCollection_HExtendedString>>& theReportSeq,
-  const int                   theMaxCount)
+  const int                                                             theMaxCount)
 {
   TCollection_ExtendedString aNewReport;
-  int           nb = 1;
+  int                        nb = 1;
   for (; nb <= theReportSeq.Length() && nb <= theMaxCount; nb++)
   {
     aNewReport += (const char*)(nb > 1 ? ", \'" : "\'");

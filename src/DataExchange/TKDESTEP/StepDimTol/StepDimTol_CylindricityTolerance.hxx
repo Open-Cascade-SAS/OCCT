@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepDimTol_CylindricityTolerance();
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_CylindricityTolerance, StepDimTol_GeometricTolerance)
-
 };
 
 #endif // _StepDimTol_CylindricityTolerance_HeaderFile

@@ -16,10 +16,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Vrml_IndexedLineSet, Standard_Transient)
 
-Vrml_IndexedLineSet::Vrml_IndexedLineSet(const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
-                                         const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
-                                         const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
-                                         const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex)
+Vrml_IndexedLineSet::Vrml_IndexedLineSet(
+  const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
+  const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
+  const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
+  const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex)
 {
   myCoordIndex        = aCoordIndex;
   myMaterialIndex     = aMaterialIndex;
@@ -45,7 +46,8 @@ occ::handle<NCollection_HArray1<int>> Vrml_IndexedLineSet::CoordIndex() const
   return myCoordIndex;
 }
 
-void Vrml_IndexedLineSet::SetMaterialIndex(const occ::handle<NCollection_HArray1<int>>& aMaterialIndex)
+void Vrml_IndexedLineSet::SetMaterialIndex(
+  const occ::handle<NCollection_HArray1<int>>& aMaterialIndex)
 {
   myMaterialIndex = aMaterialIndex;
 }

@@ -35,9 +35,10 @@ TopoDS_AlertAttribute::TopoDS_AlertAttribute(const TopoDS_Shape&            theS
 //=================================================================================================
 
 void TopoDS_AlertAttribute::Send(const occ::handle<Message_Messenger>& theMessenger,
-                                 const TopoDS_Shape&              theShape)
+                                 const TopoDS_Shape&                   theShape)
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(theMessenger->Printers());
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(
+         theMessenger->Printers());
        aPrinterIter.More();
        aPrinterIter.Next())
   {

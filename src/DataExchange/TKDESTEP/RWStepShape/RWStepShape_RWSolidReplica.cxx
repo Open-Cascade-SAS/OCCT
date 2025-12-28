@@ -21,7 +21,7 @@
 RWStepShape_RWSolidReplica::RWStepShape_RWSolidReplica() {}
 
 void RWStepShape_RWSolidReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_SolidReplica>&  ent) const
 {
@@ -59,7 +59,7 @@ void RWStepShape_RWSolidReplica::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aParentSolid, aTransformation);
 }
 
-void RWStepShape_RWSolidReplica::WriteStep(StepData_StepWriter&                  SW,
+void RWStepShape_RWSolidReplica::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepShape_SolidReplica>& ent) const
 {
 
@@ -77,7 +77,7 @@ void RWStepShape_RWSolidReplica::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWSolidReplica::Share(const occ::handle<StepShape_SolidReplica>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->ParentSolid());

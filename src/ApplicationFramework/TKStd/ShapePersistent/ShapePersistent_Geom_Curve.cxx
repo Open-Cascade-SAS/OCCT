@@ -81,8 +81,8 @@ occ::handle<Geom_Curve> ShapePersistent_Geom_Curve::pOffset::Import() const
 // Line
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::
-  PName() const
+const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::PName()
+  const
 {
   return "PGeom_Line";
 }
@@ -96,7 +96,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_A
 }
 
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_Line>&          theCurve,
+  const occ::handle<Geom_Line>&                                                            theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -107,8 +107,8 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
     else
     {
       occ::handle<Line> aPT = new Line;
-      aPT->myTransient = theCurve;
-      aPC              = aPT;
+      aPT->myTransient      = theCurve;
+      aPC                   = aPT;
     }
   }
   return aPC;
@@ -118,8 +118,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
 // Conic
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName()
-  const
+const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName() const
 {
   return "PGeom_Conic";
 }
@@ -143,7 +142,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Circ
 }
 
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_Circle>&        theCurve,
+  const occ::handle<Geom_Circle>&                                                          theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -154,8 +153,8 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
     else
     {
       occ::handle<Circle> aPT = new Circle;
-      aPT->myTransient   = theCurve;
-      aPC                = aPT;
+      aPT->myTransient        = theCurve;
+      aPC                     = aPT;
     }
   }
   return aPC;
@@ -180,7 +179,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Elli
 }
 
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_Ellipse>&       theCurve,
+  const occ::handle<Geom_Ellipse>&                                                         theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -191,8 +190,8 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
     else
     {
       occ::handle<Ellipse> aPT = new Ellipse;
-      aPT->myTransient    = theCurve;
-      aPC                 = aPT;
+      aPT->myTransient         = theCurve;
+      aPC                      = aPT;
     }
   }
   return aPC;
@@ -217,7 +216,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Hype
 }
 
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_Hyperbola>&     theCurve,
+  const occ::handle<Geom_Hyperbola>&                                                       theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -228,8 +227,8 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
     else
     {
       occ::handle<Hyperbola> aPT = new Hyperbola;
-      aPT->myTransient      = theCurve;
-      aPC                   = aPT;
+      aPT->myTransient           = theCurve;
+      aPC                        = aPT;
     }
   }
   return aPC;
@@ -254,7 +253,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom_Curve::Conic, Geom_Para
 }
 
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_Parabola>&      theCurve,
+  const occ::handle<Geom_Parabola>&                                                        theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -265,8 +264,8 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
     else
     {
       occ::handle<Parabola> aPT = new Parabola;
-      aPT->myTransient     = theCurve;
-      aPC                  = aPT;
+      aPT->myTransient          = theCurve;
+      aPC                       = aPT;
     }
   }
   return aPC;
@@ -276,7 +275,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
 // BezierCurve
 //=======================================================================
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_BezierCurve>&   theCurve,
+  const occ::handle<Geom_BezierCurve>&                                                     theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -286,11 +285,12 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
       aPC = Handle(ShapePersistent_Geom::Curve)::DownCast(theMap.Find(theCurve));
     else
     {
-      occ::handle<Bezier>  aPBC  = new Bezier;
-      Handle(pBezier) aPpBC = new pBezier;
-      aPpBC->myRational     = theCurve->IsRational();
-      aPpBC->myPoles = StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt>>("PColgp_HArray1OfPnt",
-                                                                              theCurve->Poles());
+      occ::handle<Bezier> aPBC  = new Bezier;
+      Handle(pBezier)     aPpBC = new pBezier;
+      aPpBC->myRational         = theCurve->IsRational();
+      aPpBC->myPoles =
+        StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt>>("PColgp_HArray1OfPnt",
+                                                                       theCurve->Poles());
       if (theCurve->IsRational())
       {
         aPpBC->myWeights =
@@ -307,7 +307,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
 // BSplineCurve
 //=======================================================================
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_BSplineCurve>&  theCurve,
+  const occ::handle<Geom_BSplineCurve>&                                                    theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -317,20 +317,21 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
       aPC = Handle(ShapePersistent_Geom::Curve)::DownCast(theMap.Find(theCurve));
     else
     {
-      occ::handle<BSpline>  aPBSC  = new BSpline;
-      Handle(pBSpline) aPpBSC = new pBSpline;
-      aPpBSC->myRational      = theCurve->IsRational();
-      aPpBSC->myPeriodic      = theCurve->IsPeriodic();
-      aPpBSC->mySpineDegree   = theCurve->Degree();
+      occ::handle<BSpline> aPBSC  = new BSpline;
+      Handle(pBSpline)     aPpBSC = new pBSpline;
+      aPpBSC->myRational          = theCurve->IsRational();
+      aPpBSC->myPeriodic          = theCurve->IsPeriodic();
+      aPpBSC->mySpineDegree       = theCurve->Degree();
       aPpBSC->myPoles =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt>>("PColgp_HArray1OfPnt",
-                                                               theCurve->Poles());
+                                                                       theCurve->Poles());
       if (theCurve->IsRational())
       {
         aPpBSC->myWeights =
           StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(*theCurve->Weights());
       }
-      aPpBSC->myKnots = StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theCurve->Knots());
+      aPpBSC->myKnots =
+        StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theCurve->Knots());
       aPpBSC->myMultiplicities =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<int>>(theCurve->Multiplicities());
       aPBSC->myPersistent = aPpBSC;
@@ -344,7 +345,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
 // TrimmedCurve
 //=======================================================================
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_TrimmedCurve>&  theCurve,
+  const occ::handle<Geom_TrimmedCurve>&                                                    theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -354,13 +355,13 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
       aPC = Handle(ShapePersistent_Geom::Curve)::DownCast(theMap.Find(theCurve));
     else
     {
-      occ::handle<Trimmed>  aPTC  = new Trimmed;
-      Handle(pTrimmed) aPpTC = new pTrimmed;
-      aPpTC->myFirstU        = theCurve->FirstParameter();
-      aPpTC->myLastU         = theCurve->LastParameter();
-      aPpTC->myBasisCurve    = ShapePersistent_Geom::Translate(theCurve->BasisCurve(), theMap);
-      aPTC->myPersistent     = aPpTC;
-      aPC                    = aPTC;
+      occ::handle<Trimmed> aPTC  = new Trimmed;
+      Handle(pTrimmed)     aPpTC = new pTrimmed;
+      aPpTC->myFirstU            = theCurve->FirstParameter();
+      aPpTC->myLastU             = theCurve->LastParameter();
+      aPpTC->myBasisCurve        = ShapePersistent_Geom::Translate(theCurve->BasisCurve(), theMap);
+      aPTC->myPersistent         = aPpTC;
+      aPC                        = aPTC;
     }
   }
   return aPC;
@@ -370,7 +371,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
 // OffsetCurve
 //=======================================================================
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
-  const occ::handle<Geom_OffsetCurve>&   theCurve,
+  const occ::handle<Geom_OffsetCurve>&                                                     theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Curve) aPC;
@@ -380,13 +381,13 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom_Curve::Translate(
       aPC = Handle(ShapePersistent_Geom::Curve)::DownCast(theMap.Find(theCurve));
     else
     {
-      occ::handle<Offset>  aPOC     = new Offset;
-      Handle(pOffset) aPpOC    = new pOffset;
-      aPpOC->myOffsetDirection = theCurve->Direction();
-      aPpOC->myOffsetValue     = theCurve->Offset();
-      aPpOC->myBasisCurve      = ShapePersistent_Geom::Translate(theCurve->BasisCurve(), theMap);
-      aPOC->myPersistent       = aPpOC;
-      aPC                      = aPOC;
+      occ::handle<Offset> aPOC  = new Offset;
+      Handle(pOffset)     aPpOC = new pOffset;
+      aPpOC->myOffsetDirection  = theCurve->Direction();
+      aPpOC->myOffsetValue      = theCurve->Offset();
+      aPpOC->myBasisCurve       = ShapePersistent_Geom::Translate(theCurve->BasisCurve(), theMap);
+      aPOC->myPersistent        = aPpOC;
+      aPC                       = aPOC;
     }
   }
   return aPC;

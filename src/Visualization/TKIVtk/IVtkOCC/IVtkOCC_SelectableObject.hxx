@@ -57,7 +57,7 @@ private:
   //! @param[in]  selection container for sensitive primitives
   //! @param[in]  mode Selection mode
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int             theMode) override;
+                                const int                               theMode) override;
 
   //! Dummy.
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>&,

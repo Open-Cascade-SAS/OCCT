@@ -148,7 +148,7 @@ bool StepData_StepWriter::IsInScope(const int num) const
 //=================================================================================================
 
 void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protocol,
-                                    const bool           headeronly)
+                                    const bool                            headeronly)
 {
   StepData_WriterLib lib(protocol);
 
@@ -166,7 +166,7 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
 
     //   Write Entity via Lib  (similaire a SendEntity)
     occ::handle<StepData_ReadWriteModule> module;
-    int                 CN;
+    int                                   CN;
     if (lib.Select(anent, module, CN))
     {
       if (module->IsComplex(CN))
@@ -208,7 +208,7 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
   // ....                    Global Errors (if any)                    ....
 
   occ::handle<Interface_Check> achglob = themodel->GlobalCheck();
-  int        nbfails = achglob->NbFails();
+  int                          nbfails = achglob->NbFails();
   if (nbfails > 0)
   {
     Comment(true);
@@ -287,9 +287,9 @@ void StepData_StepWriter::EndFile()
 
 void StepData_StepWriter::SendEntity(const int num, const StepData_WriterLib& lib)
 {
-  char                       lident[20];
+  char                            lident[20];
   occ::handle<Standard_Transient> anent = themodel->Entity(num);
-  int           idnum = num, idtrue = 0;
+  int                             idnum = num, idtrue = 0;
 
   //   themodel->Number(anent) and/or IdentLabel(anent)
   if (thelabmode > 0)
@@ -329,7 +329,7 @@ void StepData_StepWriter::SendEntity(const int num, const StepData_WriterLib& li
   //   Write Entity via Lib
   thenum = num;
   occ::handle<StepData_ReadWriteModule> module;
-  int                 CN;
+  int                                   CN;
   if (themodel->IsRedefinedContent(num))
   {
     //    Error Entity: Write the Content + Errors as Comments
@@ -358,7 +358,7 @@ void StepData_StepWriter::SendEntity(const int num, const StepData_WriterLib& li
       SendComment("   ERRONEOUS ENTITY, DATA LOST");
     SendComment("On Entity above, Fail Messages recorded at Read time :");
     occ::handle<Interface_Check> ach     = rep->Check();
-    int        nbfails = ach->NbFails();
+    int                          nbfails = ach->NbFails();
     for (int ifail = 1; ifail <= nbfails; ifail++)
     {
       SendComment(ach->Fail(ifail));
@@ -536,11 +536,11 @@ void StepData_StepWriter::EndComplex()
 
 //=================================================================================================
 
-void StepData_StepWriter::SendField(const StepData_Field&          fild,
+void StepData_StepWriter::SendField(const StepData_Field&               fild,
                                     const occ::handle<StepData_PDescr>& descr)
 {
   bool done = true;
-  int kind = fild.Kind(false); // valeur interne
+  int  kind = fild.Kind(false); // valeur interne
 
   if (kind == 16)
   {
@@ -742,7 +742,7 @@ void StepData_StepWriter::SendSelect(const occ::handle<StepData_SelectMember>& s
 
 //=================================================================================================
 
-void StepData_StepWriter::SendList(const StepData_FieldList&       list,
+void StepData_StepWriter::SendList(const StepData_FieldList&            list,
                                    const occ::handle<StepData_ESDescr>& descr)
 {
   // start entity  ?
@@ -815,8 +815,8 @@ void StepData_StepWriter::Send(const int val)
 void StepData_StepWriter::Send(const double val)
 {
   //    Floating point value, cleaned of trailing "0000" and "E+00"
-  char             lval[24] = {};
-  int lng      = thefloatw.Write(val, lval);
+  char lval[24] = {};
+  int  lng      = thefloatw.Write(val, lval);
   AddParam();
   AddString(lval, lng); // handles specific format: if needed
 }
@@ -830,7 +830,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
   AddParam();
   // Use helper function to clean text while preserving control directives
   TCollection_AsciiString aVal = CleanTextForSend(val);
-  int        aNn  = aVal.Length();
+  int                     aNn  = aVal.Length();
 
   // Add surrounding quotes
   aVal.Insert(1, '\'');
@@ -1078,9 +1078,9 @@ void StepData_StepWriter::EndEntity()
   if (thelevel != 1) throw Interface_InterfaceMismatch("StepWriter : EndEntity");   // parentheses count is wrong ...
   // clang-format on
   AddString(textendent);
-  thelevel                = 0; // on garde theindval : sera traite au prochain NewLine
+  thelevel    = 0; // on garde theindval : sera traite au prochain NewLine
   bool indent = theindent;
-  theindent               = false;
+  theindent   = false;
   NewLine(false);
   theindent = indent;
   themult   = false;
@@ -1091,8 +1091,7 @@ void StepData_StepWriter::EndEntity()
 
 //=================================================================================================
 
-void StepData_StepWriter::AddString(const TCollection_AsciiString& astr,
-                                    const int         more)
+void StepData_StepWriter::AddString(const TCollection_AsciiString& astr, const int more)
 {
   while (!thecurr.CanGet(astr.Length() + more))
   {
@@ -1107,9 +1106,7 @@ void StepData_StepWriter::AddString(const TCollection_AsciiString& astr,
 
 //=================================================================================================
 
-void StepData_StepWriter::AddString(const char* astr,
-                                    const int lnstr,
-                                    const int more)
+void StepData_StepWriter::AddString(const char* astr, const int lnstr, const int more)
 {
   while (!thecurr.CanGet(lnstr + more))
   {
@@ -1150,7 +1147,7 @@ occ::handle<TCollection_HAsciiString> StepData_StepWriter::Line(const int num) c
 bool StepData_StepWriter::Print(Standard_OStream& S)
 {
   bool isGood = (S.good());
-  int nb     = thefile->Length();
+  int  nb     = thefile->Length();
   for (int i = 1; i <= nb && isGood; i++)
     S << thefile->Value(i)->ToCString() << "\n";
 
@@ -1166,7 +1163,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
   const TCollection_AsciiString& theText)
 {
   TCollection_AsciiString aResult;
-  const int  aNb = theText.Length();
+  const int               aNb = theText.Length();
 
   // Process characters from beginning to end
   for (int anI = 1; anI <= aNb; anI++)
@@ -1175,7 +1172,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
 
     // Check if we're at the start of a control directive
     bool anIsDirective    = false;
-    int aDirectiveLength = 0;
+    int  aDirectiveLength = 0;
 
     if (anUncar == '\\' && anI <= aNb)
     {

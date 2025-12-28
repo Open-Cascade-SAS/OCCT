@@ -29,7 +29,7 @@ IFSelect_ModifReorder::IFSelect_ModifReorder(const bool rootlast)
   thertl = rootlast;
 }
 
-void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                  ctx,
+void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                       ctx,
                                     const occ::handle<Interface_InterfaceModel>& target,
                                     const occ::handle<Interface_Protocol>& /*protocol*/,
                                     Interface_CopyTool& /*TC*/) const
@@ -43,8 +43,7 @@ void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                  ctx,
 
 TCollection_AsciiString IFSelect_ModifReorder::Label() const
 {
-  const char* astr =
-    (const char*)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
+  const char* astr = (const char*)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
   return TCollection_AsciiString(astr);
   //    ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
 }

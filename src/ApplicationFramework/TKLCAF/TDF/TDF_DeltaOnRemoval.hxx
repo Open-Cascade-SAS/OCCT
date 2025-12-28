@@ -35,7 +35,6 @@ public:
 protected:
   //! Initializes a TDF_DeltaOnRemoval.
   Standard_EXPORT TDF_DeltaOnRemoval(const occ::handle<TDF_Attribute>& anAtt);
-
 };
 
 #endif // _TDF_DeltaOnRemoval_HeaderFile

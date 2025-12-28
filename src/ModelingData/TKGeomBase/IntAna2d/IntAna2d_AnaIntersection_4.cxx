@@ -25,11 +25,11 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const IntAna2d_Conic& Conic)
 {
-  double    A, B, C, D, E, F;
-  double    px0, px1, px2;
-  double    DR_A, DR_B, DR_C, X0, Y0;
-  int i;
-  double    tx, ty, S;
+  double A, B, C, D, E, F;
+  double px0, px1, px2;
+  double DR_A, DR_B, DR_C, X0, Y0;
+  int    i;
+  double tx, ty, S;
 
   done = false;
   nbp  = 0;

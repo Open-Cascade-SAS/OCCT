@@ -22,21 +22,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array2.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
@@ -48,7 +37,8 @@ Geom_OsculatingSurface::Geom_OsculatingSurface()
 
 //=================================================================================================
 
-Geom_OsculatingSurface::Geom_OsculatingSurface(const occ::handle<Geom_Surface>& theBS, double theTol)
+Geom_OsculatingSurface::Geom_OsculatingSurface(const occ::handle<Geom_Surface>& theBS,
+                                               double                           theTol)
     : myAlong{false, false, false, false}
 {
   Init(theBS, theTol);
@@ -152,11 +142,11 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
       if (theBS->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
       {
         occ::handle<Geom_BezierSurface> BzS = occ::down_cast<Geom_BezierSurface>(theBS);
-        NCollection_Array2<gp_Pnt>         P(1, BzS->NbUPoles(), 1, BzS->NbVPoles());
-        NCollection_Array1<double>       UKnots(1, 2);
-        NCollection_Array1<double>       VKnots(1, 2);
-        NCollection_Array1<int>    UMults(1, 2);
-        NCollection_Array1<int>    VMults(1, 2);
+        NCollection_Array2<gp_Pnt>      P(1, BzS->NbUPoles(), 1, BzS->NbVPoles());
+        NCollection_Array1<double>      UKnots(1, 2);
+        NCollection_Array1<double>      VKnots(1, 2);
+        NCollection_Array1<int>         UMults(1, 2);
+        NCollection_Array1<int>         VMults(1, 2);
         for (i = 1; i <= 2; i++)
         {
           UKnots.SetValue(i, (i - 1));
@@ -382,9 +372,9 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
 
 //=================================================================================================
 
-bool Geom_OsculatingSurface::UOsculatingSurface(double                       theU,
-                                                double                       theV,
-                                                bool&                        theT,
+bool Geom_OsculatingSurface::UOsculatingSurface(double                            theU,
+                                                double                            theV,
+                                                bool&                             theT,
                                                 occ::handle<Geom_BSplineSurface>& theL) const
 {
   bool along = false;
@@ -399,8 +389,8 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                       the
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                             = BSur->NbUKnots();
-      NbVK                             = BSur->NbVKnots();
+      NbUK                                  = BSur->NbUKnots();
+      NbVK                                  = BSur->NbVKnots();
       NCollection_Array1<double> UKnots(1, NbUK);
       NCollection_Array1<double> VKnots(1, NbVK);
       BSur->UKnots(UKnots);
@@ -444,9 +434,9 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                       the
 
 //=================================================================================================
 
-bool Geom_OsculatingSurface::VOsculatingSurface(double                       theU,
-                                                double                       theV,
-                                                bool&                        theT,
+bool Geom_OsculatingSurface::VOsculatingSurface(double                            theU,
+                                                double                            theV,
+                                                bool&                             theT,
                                                 occ::handle<Geom_BSplineSurface>& theL) const
 {
   bool along = false;
@@ -461,8 +451,8 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                       the
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                             = BSur->NbUKnots();
-      NbVK                             = BSur->NbVKnots();
+      NbUK                                  = BSur->NbUKnots();
+      NbVK                                  = BSur->NbVKnots();
       NCollection_Array1<double> UKnots(1, NbUK);
       NCollection_Array1<double> VKnots(1, NbVK);
       BSur->UKnots(UKnots);
@@ -503,9 +493,9 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                       the
 
 //=================================================================================================
 
-bool Geom_OsculatingSurface::buildOsculatingSurface(double                             theParam,
-                                                    int                                theSUKnot,
-                                                    int                                theSVKnot,
+bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
+                                                    int    theSUKnot,
+                                                    int    theSVKnot,
                                                     const occ::handle<Geom_BSplineSurface>& theBS,
                                                     occ::handle<Geom_BSplineSurface>& theBSpl) const
 {
@@ -539,13 +529,16 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
     int MaxUDegree, MaxVDegree;
     int UContinuity, VContinuity;
 
-    occ::handle<NCollection_HArray2<int>> NumCoeffPerSurface = new NCollection_HArray2<int>(1, 1, 1, 2);
-    occ::handle<NCollection_HArray1<double>>    PolynomialUIntervals = new NCollection_HArray1<double>(1, 2);
-    occ::handle<NCollection_HArray1<double>>    PolynomialVIntervals = new NCollection_HArray1<double>(1, 2);
-    occ::handle<NCollection_HArray1<double>>    TrueUIntervals       = new NCollection_HArray1<double>(1, 2);
-    occ::handle<NCollection_HArray1<double>>    TrueVIntervals       = new NCollection_HArray1<double>(1, 2);
-    MaxUDegree                                            = (int)udeg;
-    MaxVDegree                                            = (int)vdeg;
+    occ::handle<NCollection_HArray2<int>> NumCoeffPerSurface =
+      new NCollection_HArray2<int>(1, 1, 1, 2);
+    occ::handle<NCollection_HArray1<double>> PolynomialUIntervals =
+      new NCollection_HArray1<double>(1, 2);
+    occ::handle<NCollection_HArray1<double>> PolynomialVIntervals =
+      new NCollection_HArray1<double>(1, 2);
+    occ::handle<NCollection_HArray1<double>> TrueUIntervals = new NCollection_HArray1<double>(1, 2);
+    occ::handle<NCollection_HArray1<double>> TrueVIntervals = new NCollection_HArray1<double>(1, 2);
+    MaxUDegree                                              = (int)udeg;
+    MaxVDegree                                              = (int)vdeg;
 
     for (int i = 1; i <= 2; i++)
     {
@@ -585,8 +578,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
     //    end for polynomial grid
 
     //    building the cache
-    int                ULocalIndex, VLocalIndex;
-    double             ucacheparameter, vcacheparameter, uspanlength, vspanlength;
+    int                        ULocalIndex, VLocalIndex;
+    double                     ucacheparameter, vcacheparameter, uspanlength, vspanlength;
     NCollection_Array2<gp_Pnt> NewPoles(1, theBS->NbUPoles(), 1, theBS->NbVPoles());
 
     int aUfKnotsLength = theBS->NbUPoles() + theBS->UDegree() + 1;
@@ -646,7 +639,7 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
                          BSplSLib::NoWeights(),
                          cachepoles,
                          BSplSLib::NoWeights());
-    int                m, n, index;
+    int                        m, n, index;
     NCollection_Array2<gp_Pnt> OscCoeff(1, OscUNumCoeff, 1, OscVNumCoeff);
 
     if (IsAlongU())
@@ -741,10 +734,10 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double                      
 //=================================================================================================
 
 bool Geom_OsculatingSurface::isQPunctual(const occ::handle<Geom_Surface>& theS,
-                                         double                      theParam,
-                                         GeomAbs_IsoType             theIT,
-                                         double                      theTolMin,
-                                         double                      theTolMax) const
+                                         double                           theParam,
+                                         GeomAbs_IsoType                  theIT,
+                                         double                           theTolMin,
+                                         double                           theTolMax) const
 {
   double U1 = 0, U2 = 0, V1 = 0, V2 = 0, T;
   bool   Along = true;

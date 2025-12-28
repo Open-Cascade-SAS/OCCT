@@ -46,11 +46,11 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_MaterialDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const occ::handle<TDF_Attribute>& theTarget,
-                                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       XmlObjMgt_RRelocationTable&) const
 {
-  double       aDensity;
+  double              aDensity;
   XmlObjMgt_DOMString aRealStr = XmlObjMgt::GetStringValue(theSource);
 
   if (XmlObjMgt::GetReal(aRealStr, aDensity) == false)
@@ -75,8 +75,9 @@ bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
     return false;
   }
 
-  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(aNameStr.GetString());
-  occ::handle<TCollection_HAsciiString> aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
+  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString(aNameStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDescr =
+    new TCollection_HAsciiString(aDescrStr.GetString());
   occ::handle<TCollection_HAsciiString> aDensName =
     new TCollection_HAsciiString(aDensNameStr.GetString());
   occ::handle<TCollection_HAsciiString> aDensType =
@@ -93,7 +94,7 @@ bool XmlMXCAFDoc_MaterialDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMXCAFDoc_MaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
+                                       XmlObjMgt_Persistent&             theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<XCAFDoc_Material> anAtt = occ::down_cast<XCAFDoc_Material>(theSource);

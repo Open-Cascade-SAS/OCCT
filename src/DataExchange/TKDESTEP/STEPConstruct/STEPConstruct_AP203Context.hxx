@@ -77,7 +77,7 @@ public:
   //! Returns default security_classification_level entity which
   //! is used when no other data are available
   Standard_EXPORT occ::handle<StepBasic_SecurityClassificationLevel>
-    DefaultSecurityClassificationLevel();
+                  DefaultSecurityClassificationLevel();
 
   //! Sets default security_classification_level
   Standard_EXPORT void SetDefaultSecurityClassificationLevel(
@@ -89,7 +89,8 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleDesignSupplier() const;
 
-  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleClassificationOfficer() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganizationRole> RoleClassificationOfficer()
+    const;
 
   Standard_EXPORT occ::handle<StepBasic_DateTimeRole> RoleCreationDate() const;
 
@@ -134,19 +135,21 @@ public:
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetCreator() const;
 
-  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetDesignOwner() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetDesignOwner()
+    const;
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment> GetDesignSupplier()
     const;
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignPersonAndOrganizationAssignment>
-    GetClassificationOfficer() const;
+                  GetClassificationOfficer() const;
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignSecurityClassification> GetSecurity() const;
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignDateAndTimeAssignment> GetCreationDate() const;
 
-  Standard_EXPORT occ::handle<StepAP203_CcDesignDateAndTimeAssignment> GetClassificationDate() const;
+  Standard_EXPORT occ::handle<StepAP203_CcDesignDateAndTimeAssignment> GetClassificationDate()
+    const;
 
   Standard_EXPORT occ::handle<StepAP203_CcDesignApproval> GetApproval() const;
 
@@ -155,8 +158,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ApprovalDateTime> GetApprovalDateTime() const;
 
   //! Return entities (roots) instantiated for the part by method Init
-  Standard_EXPORT occ::handle<StepBasic_ProductCategoryRelationship> GetProductCategoryRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductCategoryRelationship>
+                  GetProductCategoryRelationship() const;
 
   //! Clears all fields describing entities specific to each part
   Standard_EXPORT void Clear();

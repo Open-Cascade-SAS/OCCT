@@ -38,22 +38,20 @@ public:
   Standard_EXPORT IGESBasic_ReadWriteModule();
 
   //! Defines Case Numbers for Entities of IGESBasic
-  Standard_EXPORT int CaseIGES(const int typenum,
-                                            const int formnum) const override;
+  Standard_EXPORT int CaseIGES(const int typenum, const int formnum) const override;
 
   //! Reads own parameters from file for an Entity of IGESBasic
-  Standard_EXPORT void ReadOwnParams(const int                 CN,
+  Standard_EXPORT void ReadOwnParams(const int                                   CN,
                                      const occ::handle<IGESData_IGESEntity>&     ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader& PR) const override;
+                                     IGESData_ParamReader&                       PR) const override;
 
   //! Writes own parameters to IGESWriter
-  Standard_EXPORT void WriteOwnParams(const int             CN,
+  Standard_EXPORT void WriteOwnParams(const int                               CN,
                                       const occ::handle<IGESData_IGESEntity>& ent,
-                                      IGESData_IGESWriter& IW) const override;
+                                      IGESData_IGESWriter&                    IW) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_ReadWriteModule, IGESData_ReadWriteModule)
-
 };
 
 #endif // _IGESBasic_ReadWriteModule_HeaderFile

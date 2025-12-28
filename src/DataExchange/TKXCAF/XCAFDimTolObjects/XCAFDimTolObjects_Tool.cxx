@@ -22,11 +22,9 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <TDocStd_Document.hxx>
-#include <NCollection_DataMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
@@ -41,13 +39,14 @@ XCAFDimTolObjects_Tool::XCAFDimTolObjects_Tool(const occ::handle<TDocStd_Documen
 //=================================================================================================
 
 void XCAFDimTolObjects_Tool::GetDimensions(
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence)
+  const
 {
   theDimensionObjectSequence.Clear();
   TDF_ChildIterator aChildIterator(myDimTolTool->Label());
   for (; aChildIterator.More(); aChildIterator.Next())
   {
-    TDF_Label                 aL = aChildIterator.Value();
+    TDF_Label                      aL = aChildIterator.Value();
     occ::handle<XCAFDoc_Dimension> aDimension;
     if (aL.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
     {
@@ -59,15 +58,17 @@ void XCAFDimTolObjects_Tool::GetDimensions(
 //=================================================================================================
 
 void XCAFDimTolObjects_Tool::GetGeomTolerances(
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>& theGeomToleranceObjectSequence,
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>&         theDatumSequence,
-  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>, occ::handle<XCAFDimTolObjects_DatumObject>>&     theMap) const
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>&
+                                                                    theGeomToleranceObjectSequence,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>& theDatumSequence,
+  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>,
+                      occ::handle<XCAFDimTolObjects_DatumObject>>&  theMap) const
 {
   theGeomToleranceObjectSequence.Clear();
   TDF_ChildIterator aChildIterator(myDimTolTool->Label());
   for (; aChildIterator.More(); aChildIterator.Next())
   {
-    TDF_Label                     aL = aChildIterator.Value();
+    TDF_Label                          aL = aChildIterator.Value();
     occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
     if (aL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
     {
@@ -92,8 +93,9 @@ void XCAFDimTolObjects_Tool::GetGeomTolerances(
 //=================================================================================================
 
 bool XCAFDimTolObjects_Tool::GetRefDimensions(
-  const TopoDS_Shape&                        theShape,
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence) const
+  const TopoDS_Shape&                                                   theShape,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DimensionObject>>& theDimensionObjectSequence)
+  const
 {
   theDimensionObjectSequence.Clear();
   TDF_Label aShapeL;
@@ -118,10 +120,12 @@ bool XCAFDimTolObjects_Tool::GetRefDimensions(
 //=================================================================================================
 
 bool XCAFDimTolObjects_Tool::GetRefGeomTolerances(
-  const TopoDS_Shape&                            theShape,
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>& theGeomToleranceObjectSequence,
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>&         theDatumSequence,
-  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>, occ::handle<XCAFDimTolObjects_DatumObject>>&     theMap) const
+  const TopoDS_Shape& theShape,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_GeomToleranceObject>>&
+                                                                    theGeomToleranceObjectSequence,
+  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>& theDatumSequence,
+  NCollection_DataMap<occ::handle<XCAFDimTolObjects_GeomToleranceObject>,
+                      occ::handle<XCAFDimTolObjects_DatumObject>>&  theMap) const
 {
   theGeomToleranceObjectSequence.Clear();
   TDF_Label aShapeL;
@@ -161,7 +165,7 @@ bool XCAFDimTolObjects_Tool::GetRefGeomTolerances(
 //=================================================================================================
 
 bool XCAFDimTolObjects_Tool::GetRefDatum(
-  const TopoDS_Shape&                    theShape,
+  const TopoDS_Shape&                         theShape,
   occ::handle<XCAFDimTolObjects_DatumObject>& theDatumObject) const
 {
   TDF_Label aShapeL;

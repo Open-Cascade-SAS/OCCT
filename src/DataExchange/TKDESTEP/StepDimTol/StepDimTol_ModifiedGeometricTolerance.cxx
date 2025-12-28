@@ -34,7 +34,7 @@ void StepDimTol_ModifiedGeometricTolerance::Init(
   const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
   const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
   const occ::handle<StepRepr_ShapeAspect>&     theGeometricTolerance_TolerancedShapeAspect,
-  const StepDimTol_LimitCondition         theModifier)
+  const StepDimTol_LimitCondition              theModifier)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,
@@ -47,11 +47,11 @@ void StepDimTol_ModifiedGeometricTolerance::Init(
 //=================================================================================================
 
 void StepDimTol_ModifiedGeometricTolerance::Init(
-  const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Name,
-  const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Description,
-  const occ::handle<Standard_Transient>&          theGeometricTolerance_Magnitude,
-  const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
-  const StepDimTol_LimitCondition            theModifier)
+  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Name,
+  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
+  const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
+  const StepDimTol_GeometricToleranceTarget&   theGeometricTolerance_TolerancedShapeAspect,
+  const StepDimTol_LimitCondition              theModifier)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
                                       theGeometricTolerance_Description,

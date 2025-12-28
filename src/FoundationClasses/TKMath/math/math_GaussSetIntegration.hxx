@@ -52,8 +52,8 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  math_Vector      Val;
-  bool Done;
+  math_Vector Val;
+  bool        Done;
 };
 
 #include <math_GaussSetIntegration.lxx>

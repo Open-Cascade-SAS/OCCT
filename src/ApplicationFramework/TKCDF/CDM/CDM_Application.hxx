@@ -47,8 +47,8 @@ public:
 
   //! this method is called after the update of a document.
   //! By default, writes in MessageDriver().
-  Standard_EXPORT virtual void EndOfUpdate(const occ::handle<CDM_Document>&       aDocument,
-                                           const bool            theStatus,
+  Standard_EXPORT virtual void EndOfUpdate(const occ::handle<CDM_Document>&  aDocument,
+                                           const bool                        theStatus,
                                            const TCollection_ExtendedString& ErrorString);
 
   //! writes the string in the application MessagerDriver.
@@ -61,7 +61,9 @@ public:
   Standard_EXPORT virtual TCollection_AsciiString Version() const;
 
   //! Returns MetaData LookUpTable
-  Standard_EXPORT virtual NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& MetaDataLookUpTable();
+  Standard_EXPORT virtual NCollection_DataMap<TCollection_ExtendedString,
+                                              occ::handle<CDM_MetaData>>&
+    MetaDataLookUpTable();
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -78,21 +80,20 @@ protected:
                                           const occ::handle<CDM_MetaData>& aMetaData) const;
 
   Standard_EXPORT void SetReferenceCounter(const occ::handle<CDM_Document>& aDocument,
-                                           const int      aReferenceCounter);
+                                           const int                        aReferenceCounter);
 
 private:
   Standard_EXPORT virtual occ::handle<CDM_Document> Retrieve(
     const occ::handle<CDM_MetaData>&      aMetaData,
-    const bool           UseStorageConfiguration,
+    const bool                            UseStorageConfiguration,
     const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&     theRange  = Message_ProgressRange()) = 0;
+    const Message_ProgressRange&          theRange  = Message_ProgressRange()) = 0;
 
   //! returns -1 if the metadata has no modification counter.
-  Standard_EXPORT virtual int DocumentVersion(
-    const occ::handle<CDM_MetaData>& aMetaData) = 0;
+  Standard_EXPORT virtual int DocumentVersion(const occ::handle<CDM_MetaData>& aMetaData) = 0;
 
-  occ::handle<Message_Messenger> myMessenger;
-  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>   myMetaDataLookUpTable;
+  occ::handle<Message_Messenger>                                             myMessenger;
+  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>> myMetaDataLookUpTable;
 };
 
 #endif // _CDM_Application_HeaderFile

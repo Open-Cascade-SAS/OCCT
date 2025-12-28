@@ -52,15 +52,17 @@ public:
 
   //! Creates reference on TDF_Label <theLabel> to the object <theObject> and
   //! creates backreference from the object <theObject> to <theMaster> one.
-  static Standard_EXPORT occ::handle<TObj_TReference> Set(const TDF_Label&           theLabel,
-                                                     const occ::handle<TObj_Object>& theObject,
-                                                     const occ::handle<TObj_Object>& theMaster);
+  static Standard_EXPORT occ::handle<TObj_TReference> Set(
+    const TDF_Label&                theLabel,
+    const occ::handle<TObj_Object>& theObject,
+    const occ::handle<TObj_Object>& theMaster);
 
 public:
   //! Methods for setting and obtaining referenced object
 
   //! Sets the reference to the theObject
-  Standard_EXPORT void Set(const occ::handle<TObj_Object>& theObject, const TDF_Label& theMasterLabel);
+  Standard_EXPORT void Set(const occ::handle<TObj_Object>& theObject,
+                           const TDF_Label&                theMasterLabel);
 
   //! Sets the reference to the theObject at indicated Label.
   //! It is method for persistent only. Don`t use anywhere else.
@@ -95,21 +97,18 @@ public:
   virtual Standard_EXPORT void BeforeForget() override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT bool
-    BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-               const bool            isForced = false) override;
+  virtual Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                          const bool isForced = false) override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
-  virtual Standard_EXPORT bool
-    AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-              const bool            isForced = false) override;
+  virtual Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
+                                         const bool isForced = false) override;
 
   //! Check if back reference exists for reference.
   virtual Standard_EXPORT void AfterResume() override;
 
   //! Called after retrieval reference from file.
-  virtual Standard_EXPORT bool
-    AfterRetrieval(const bool forceIt = false) override;
+  virtual Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
 
 private:
   //! Fields

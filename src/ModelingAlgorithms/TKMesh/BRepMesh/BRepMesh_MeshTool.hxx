@@ -33,7 +33,7 @@ public:
   class NodeClassifier
   {
   public:
-    NodeClassifier(const BRepMesh_Edge&                          theConstraint,
+    NodeClassifier(const BRepMesh_Edge&                               theConstraint,
                    const occ::handle<BRepMesh_DataStructureOfDelaun>& theStructure)
         : myStructure(theStructure)
     {
@@ -68,13 +68,14 @@ public:
 
   private:
     const occ::handle<BRepMesh_DataStructureOfDelaun>& myStructure;
-    gp_Lin2d                                      myConstraint;
-    bool                              mySign;
+    gp_Lin2d                                           myConstraint;
+    bool                                               mySign;
   };
 
   //! Constructor.
   //! Initializes tool by the given data structure.
-  Standard_EXPORT BRepMesh_MeshTool(const occ::handle<BRepMesh_DataStructureOfDelaun>& theStructure);
+  Standard_EXPORT BRepMesh_MeshTool(
+    const occ::handle<BRepMesh_DataStructureOfDelaun>& theStructure);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_MeshTool();
@@ -87,9 +88,7 @@ public:
 
   //! Adds new triangle with specified nodes to mesh.
   //! Legalizes triangle in case if it violates circle criteria.
-  void AddAndLegalizeTriangle(const int thePoint1,
-                              const int thePoint2,
-                              const int thePoint3)
+  void AddAndLegalizeTriangle(const int thePoint1, const int thePoint2, const int thePoint3)
   {
     int aEdges[3];
     AddTriangle(thePoint1, thePoint2, thePoint3, aEdges);
@@ -115,10 +114,7 @@ public:
 
   //! Adds new link to mesh.
   //! Updates link index and link orientation parameters.
-  void AddLink(const int theFirstNode,
-               const int theLastNode,
-               int&      theLinkIndex,
-               bool&      theLinkOri)
+  void AddLink(const int theFirstNode, const int theLastNode, int& theLinkIndex, bool& theLinkOri)
   {
     const int aLinkIt =
       myStructure->AddLink(BRepMesh_Edge(theFirstNode, theLastNode, BRepMesh_Free));
@@ -144,7 +140,7 @@ public:
 
   //! Erases triangle with the given index and adds the free edges into the map.
   //! When an edge is suppressed more than one time it is destroyed.
-  Standard_EXPORT void EraseTriangle(const int          theTriangleIndex,
+  Standard_EXPORT void EraseTriangle(const int                       theTriangleIndex,
                                      IMeshData::MapOfIntegerInteger& theLoopEdges);
 
   //! Erases all links that have no elements connected to them.
@@ -167,19 +163,18 @@ private:
     const BRepMesh_Vertex& aVertex1 = myStructure->GetNode(aNodes[1]);
     const BRepMesh_Vertex& aVertex2 = myStructure->GetNode(aNodes[2]);
 
-    gp_XY                  aLocation;
-    double          aRadius;
+    gp_XY      aLocation;
+    double     aRadius;
     const bool isOk = BRepMesh_CircleTool::MakeCircle(aVertex0.Coord(),
-                                                                  aVertex1.Coord(),
-                                                                  aVertex2.Coord(),
-                                                                  aLocation,
-                                                                  aRadius);
+                                                      aVertex1.Coord(),
+                                                      aVertex2.Coord(),
+                                                      aLocation,
+                                                      aRadius);
 
     if (isOk)
     {
       const BRepMesh_Vertex& aVertex = myStructure->GetNode(thePoint);
-      const double    aDist =
-        (aVertex.Coord() - aLocation).SquareModulus() - (aRadius * aRadius);
+      const double aDist = (aVertex.Coord() - aLocation).SquareModulus() - (aRadius * aRadius);
       return (aDist < Precision::SquareConfusion());
     }
 
@@ -188,11 +183,11 @@ private:
 
   //! Adds new triangle with the given nodes and updates
   //! links stack by ones are not in used map.
-  void addTriangleAndUpdateStack(const int         theNode0,
-                                 const int         theNode1,
-                                 const int         theNode2,
+  void addTriangleAndUpdateStack(const int                      theNode0,
+                                 const int                      theNode1,
+                                 const int                      theNode2,
                                  const IMeshData::MapOfInteger& theUsedLinks,
-                                 std::stack<int>&  theStack)
+                                 std::stack<int>&               theStack)
   {
     int aEdges[3];
     AddTriangle(theNode0, theNode1, theNode2, aEdges);
@@ -210,7 +205,7 @@ private:
   //! of free links using the given link as starting front.
   //! Only triangles around the constraint's saddle nodes will be removed.
   void collectTrianglesOnFreeLinksAroundNodesOf(const BRepMesh_Edge&     theConstraint,
-                                                const int   theStartLink,
+                                                const int                theStartLink,
                                                 IMeshData::MapOfInteger& theTriangles);
 
 private:

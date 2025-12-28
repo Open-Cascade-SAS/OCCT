@@ -27,7 +27,7 @@ StepAP214_AppliedGroupAssignment::StepAP214_AppliedGroupAssignment() {}
 //=================================================================================================
 
 void StepAP214_AppliedGroupAssignment::Init(
-  const occ::handle<StepBasic_Group>&              aGroupAssignment_AssignedGroup,
+  const occ::handle<StepBasic_Group>&                          aGroupAssignment_AssignedGroup,
   const occ::handle<NCollection_HArray1<StepAP214_GroupItem>>& aItems)
 {
   StepBasic_GroupAssignment::Init(aGroupAssignment_AssignedGroup);
@@ -37,14 +37,16 @@ void StepAP214_AppliedGroupAssignment::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepAP214_GroupItem>> StepAP214_AppliedGroupAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_GroupItem>> StepAP214_AppliedGroupAssignment::Items()
+  const
 {
   return theItems;
 }
 
 //=================================================================================================
 
-void StepAP214_AppliedGroupAssignment::SetItems(const occ::handle<NCollection_HArray1<StepAP214_GroupItem>>& aItems)
+void StepAP214_AppliedGroupAssignment::SetItems(
+  const occ::handle<NCollection_HArray1<StepAP214_GroupItem>>& aItems)
 {
   theItems = aItems;
 }

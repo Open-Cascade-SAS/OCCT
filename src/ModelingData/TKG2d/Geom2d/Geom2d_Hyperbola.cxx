@@ -60,10 +60,10 @@ Geom2d_Hyperbola::Geom2d_Hyperbola(const gp_Hypr2d& H)
 
 //=================================================================================================
 
-Geom2d_Hyperbola::Geom2d_Hyperbola(const Ax2d&            A,
-                                   const double    MajorRadius,
-                                   const double    MinorRadius,
-                                   const bool Sense)
+Geom2d_Hyperbola::Geom2d_Hyperbola(const Ax2d&  A,
+                                   const double MajorRadius,
+                                   const double MinorRadius,
+                                   const bool   Sense)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {
@@ -74,9 +74,9 @@ Geom2d_Hyperbola::Geom2d_Hyperbola(const Ax2d&            A,
 
 //=================================================================================================
 
-Geom2d_Hyperbola::Geom2d_Hyperbola(const gp_Ax22d&     Axis,
-                                   const double MajorRadius,
-                                   const double MinorRadius)
+Geom2d_Hyperbola::Geom2d_Hyperbola(const gp_Ax22d& Axis,
+                                   const double    MajorRadius,
+                                   const double    MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {
@@ -224,7 +224,7 @@ double Geom2d_Hyperbola::Focal() const
 Pnt2d Geom2d_Hyperbola::Focus1() const
 {
   double C   = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
-  XY            Pxy = pos.XDirection().XY();
+  XY     Pxy = pos.XDirection().XY();
   Pxy.Multiply(C);
   Pxy.Add(pos.Location().XY());
   return Pnt2d(Pxy);
@@ -235,7 +235,7 @@ Pnt2d Geom2d_Hyperbola::Focus1() const
 Pnt2d Geom2d_Hyperbola::Focus2() const
 {
   double C   = std::sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
-  XY            Pxy = pos.XDirection().XY();
+  XY     Pxy = pos.XDirection().XY();
   Pxy.Multiply(-C);
   Pxy.Add(pos.Location().XY());
   return Pnt2d(Pxy);

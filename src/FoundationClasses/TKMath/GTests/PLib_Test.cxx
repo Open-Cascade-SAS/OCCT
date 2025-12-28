@@ -20,20 +20,16 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 
 namespace
 {
 // Helper function for comparing points with tolerance
-void checkPointsEqual(const gp_Pnt&       thePnt1,
-                      const gp_Pnt&       thePnt2,
-                      const double theTolerance = Precision::Confusion())
+void checkPointsEqual(const gp_Pnt& thePnt1,
+                      const gp_Pnt& thePnt2,
+                      const double  theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(thePnt1.X(), thePnt2.X(), theTolerance) << "X coordinates differ";
   EXPECT_NEAR(thePnt1.Y(), thePnt2.Y(), theTolerance) << "Y coordinates differ";
@@ -41,9 +37,9 @@ void checkPointsEqual(const gp_Pnt&       thePnt1,
 }
 
 // Helper function for comparing 2D points with tolerance
-void checkPoint2dEqual(const gp_Pnt2d&     thePnt1,
-                       const gp_Pnt2d&     thePnt2,
-                       const double theTolerance = Precision::Confusion())
+void checkPoint2dEqual(const gp_Pnt2d& thePnt1,
+                       const gp_Pnt2d& thePnt2,
+                       const double    theTolerance = Precision::Confusion())
 {
   EXPECT_NEAR(thePnt1.X(), thePnt2.X(), theTolerance) << "X coordinates differ";
   EXPECT_NEAR(thePnt1.Y(), thePnt2.Y(), theTolerance) << "Y coordinates differ";
@@ -111,7 +107,7 @@ TEST_F(PLibTest, SetGetPoles3DWithWeights)
   NCollection_Array1<double> aFP(1, 8); // 2 poles * (3 coords + 1 weight)
   PLib::SetPoles(aPoles, aWeights, aFP);
 
-  NCollection_Array1<gp_Pnt>   aResultPoles(1, 2);
+  NCollection_Array1<gp_Pnt> aResultPoles(1, 2);
   NCollection_Array1<double> aResultWeights(1, 2);
   PLib::GetPoles(aFP, aResultPoles, aResultWeights);
 
@@ -162,7 +158,7 @@ TEST_F(PLibTest, SetGetPoles2DWithWeights)
   PLib::SetPoles(aPoles, aWeights, aFP);
 
   NCollection_Array1<gp_Pnt2d> aResultPoles(1, 2);
-  NCollection_Array1<double> aResultWeights(1, 2);
+  NCollection_Array1<double>   aResultWeights(1, 2);
   PLib::GetPoles(aFP, aResultPoles, aResultWeights);
 
   // Verify results
@@ -417,8 +413,8 @@ TEST_F(PLibTest, ConstraintOrderConversion)
   // Test round-trip consistency
   for (int i = 0; i <= 2; i++)
   {
-    GeomAbs_Shape    aShape = PLib::ConstraintOrder(i);
-    int aLevel = PLib::NivConstr(aShape);
+    GeomAbs_Shape aShape = PLib::ConstraintOrder(i);
+    int           aLevel = PLib::NivConstr(aShape);
     EXPECT_EQ(aLevel, i) << "Round-trip conversion failed for level " << i;
   }
 }
@@ -427,11 +423,11 @@ TEST_F(PLibTest, ConstraintOrderConversion)
 TEST_F(PLibTest, HermiteInterpolate)
 {
 
-  const int aDimension  = 1;
-  const double    aFirstParam = 0.0;
-  const double    aLastParam  = 1.0;
-  const int aFirstOrder = 1; // value + 1st derivative
-  const int aLastOrder  = 1; // value + 1st derivative
+  const int    aDimension  = 1;
+  const double aFirstParam = 0.0;
+  const double aLastParam  = 1.0;
+  const int    aFirstOrder = 1; // value + 1st derivative
+  const int    aLastOrder  = 1; // value + 1st derivative
 
   // Define constraints: f(0) = 0, f'(0) = 1, f(1) = 1, f'(1) = 0
   NCollection_Array2<double> aFirstConstr(1, aDimension, 0, aFirstOrder);
@@ -445,18 +441,18 @@ TEST_F(PLibTest, HermiteInterpolate)
   const int aCoeffCount = aFirstOrder + aLastOrder + 2;
 
   NCollection_Array1<double> aCoeffs(0,
-                               aCoeffCount
-                                 - 1); // 0-based indexing as expected by HermiteInterpolate
+                                     aCoeffCount
+                                       - 1); // 0-based indexing as expected by HermiteInterpolate
 
   // Perform Hermite interpolation
   bool aResult = PLib::HermiteInterpolate(aDimension,
-                                                      aFirstParam,
-                                                      aLastParam,
-                                                      aFirstOrder,
-                                                      aLastOrder,
-                                                      aFirstConstr,
-                                                      aLastConstr,
-                                                      aCoeffs);
+                                          aFirstParam,
+                                          aLastParam,
+                                          aFirstOrder,
+                                          aLastOrder,
+                                          aFirstConstr,
+                                          aLastConstr,
+                                          aCoeffs);
 
   EXPECT_TRUE(aResult) << "Hermite interpolation failed";
 

@@ -32,7 +32,7 @@ RWStepRepr_RWMeasureRepresentationItem::RWStepRepr_RWMeasureRepresentationItem()
 
 void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepRepr_MeasureRepresentationItem>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepRepr_RWMeasureRepresentationItem::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWMeasureRepresentationItem::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepRepr_MeasureRepresentationItem>& ent) const
 {
   // --- inherited from representation_item : name ---
@@ -78,7 +78,7 @@ void RWStepRepr_RWMeasureRepresentationItem::WriteStep(
 
 void RWStepRepr_RWMeasureRepresentationItem::Share(
   const occ::handle<StepRepr_MeasureRepresentationItem>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->Measure()->UnitComponent().Value());

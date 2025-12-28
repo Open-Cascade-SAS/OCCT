@@ -33,16 +33,15 @@ static int Standard_Failure_DefaultStackTraceLength = 0;
 
 //=================================================================================================
 
-Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message(
-  const char* theString)
+Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message(const char* theString)
 {
   if (theString == NULL || *theString == '\0')
   {
     return NULL;
   }
 
-  const size_t aLen = strlen(theString);
-  StringRef* aStrPtr = (StringRef*)Standard::AllocateOptimal(aLen + sizeof(int) + 1);
+  const size_t aLen    = strlen(theString);
+  StringRef*   aStrPtr = (StringRef*)Standard::AllocateOptimal(aLen + sizeof(int) + 1);
   if (aStrPtr != NULL)
   {
     strcpy((char*)&aStrPtr->Message[0], theString);
@@ -106,7 +105,7 @@ Standard_Failure::Standard_Failure(const char* theDesc)
     : myMessage(NULL),
       myStackTrace(NULL)
 {
-  myMessage                           = StringRef::allocate_message(theDesc);
+  myMessage              = StringRef::allocate_message(theDesc);
   const int aStackLength = Standard_Failure_DefaultStackTraceLength;
   if (aStackLength > 0)
   {
@@ -123,8 +122,7 @@ Standard_Failure::Standard_Failure(const char* theDesc)
 
 //=================================================================================================
 
-Standard_Failure::Standard_Failure(const char* theDesc,
-                                   const char* theStackTrace)
+Standard_Failure::Standard_Failure(const char* theDesc, const char* theStackTrace)
     : myMessage(NULL),
       myStackTrace(NULL)
 {
@@ -277,7 +275,7 @@ occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theStrin
 //=================================================================================================
 
 occ::handle<Standard_Failure> Standard_Failure::NewInstance(const char* theMessage,
-                                                       const char* theStackTrace)
+                                                            const char* theStackTrace)
 {
   return new Standard_Failure(theMessage, theStackTrace);
 }

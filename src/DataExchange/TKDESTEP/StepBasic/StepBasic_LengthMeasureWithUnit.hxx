@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepBasic_LengthMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_LengthMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 };
 
 #endif // _StepBasic_LengthMeasureWithUnit_HeaderFile

@@ -21,7 +21,7 @@
 RWStepBasic_RWLocalTime::RWStepBasic_RWLocalTime() {}
 
 void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                       const int                 num,
+                                       const int                                   num,
                                        occ::handle<Interface_Check>&               ach,
                                        const occ::handle<StepBasic_LocalTime>&     ent) const
 {
@@ -39,7 +39,7 @@ void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData
 
   // --- own field : minuteComponent ---
 
-  int aMinuteComponent;
+  int  aMinuteComponent;
   bool hasAminuteComponent = true;
   if (data->IsParamDefined(num, 2))
   {
@@ -54,8 +54,8 @@ void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData
 
   // --- own field : secondComponent ---
 
-  double    aSecondComponent;
-  bool hasAsecondComponent = true;
+  double aSecondComponent;
+  bool   hasAsecondComponent = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -88,7 +88,7 @@ void RWStepBasic_RWLocalTime::ReadStep(const occ::handle<StepData_StepReaderData
             aZone);
 }
 
-void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
+void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&                    SW,
                                         const occ::handle<StepBasic_LocalTime>& ent) const
 {
 
@@ -126,7 +126,7 @@ void RWStepBasic_RWLocalTime::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepBasic_RWLocalTime::Share(const occ::handle<StepBasic_LocalTime>& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&               iter) const
 {
 
   iter.GetOneItem(ent->Zone());

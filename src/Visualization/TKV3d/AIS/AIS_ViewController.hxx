@@ -282,15 +282,20 @@ public: //! @name keyboard input
                                            double      thePressure) override;
 
   //! Fetch active navigation actions.
-  Standard_EXPORT AIS_WalkDelta FetchNavigationKeys(double theCrouchRatio,
-                                                    double theRunRatio);
+  Standard_EXPORT AIS_WalkDelta FetchNavigationKeys(double theCrouchRatio, double theRunRatio);
 
 public: //! @name mouse input
   //! Return map defining mouse gestures.
-  const NCollection_DataMap<unsigned int, AIS_MouseGesture>& MouseGestureMap() const { return myMouseGestureMap; }
+  const NCollection_DataMap<unsigned int, AIS_MouseGesture>& MouseGestureMap() const
+  {
+    return myMouseGestureMap;
+  }
 
   //! Return map defining mouse gestures.
-  NCollection_DataMap<unsigned int, AIS_MouseGesture>& ChangeMouseGestureMap() { return myMouseGestureMap; }
+  NCollection_DataMap<unsigned int, AIS_MouseGesture>& ChangeMouseGestureMap()
+  {
+    return myMouseGestureMap;
+  }
 
   //! Return map defining mouse selection schemes.
   const NCollection_DataMap<unsigned int, AIS_SelectionScheme>& MouseSelectionSchemes() const
@@ -299,7 +304,10 @@ public: //! @name mouse input
   }
 
   //! Return map defining mouse gestures.
-  NCollection_DataMap<unsigned int, AIS_SelectionScheme>& ChangeMouseSelectionSchemes() { return myMouseSelectionSchemes; }
+  NCollection_DataMap<unsigned int, AIS_SelectionScheme>& ChangeMouseSelectionSchemes()
+  {
+    return myMouseSelectionSchemes;
+  }
 
   //! Return double click interval in seconds; 0.4 by default.
   double MouseDoubleClickInterval() const { return myMouseDoubleClickInt; }
@@ -312,8 +320,8 @@ public: //! @name mouse input
   //! @param thePnt picking point
   //! @param theScheme selection scheme
   Standard_EXPORT virtual void SelectInViewer(
-    const NCollection_Vec2<int>&    thePnt,
-    const AIS_SelectionScheme theScheme = AIS_SelectionScheme_Replace);
+    const NCollection_Vec2<int>& thePnt,
+    const AIS_SelectionScheme    theScheme = AIS_SelectionScheme_Replace);
 
   //! Perform selection in 3D viewer.
   //! This method is expected to be called from UI thread.
@@ -321,7 +329,7 @@ public: //! @name mouse input
   //! @param theScheme selection scheme
   Standard_EXPORT virtual void SelectInViewer(
     const NCollection_Sequence<NCollection_Vec2<int>>& thePnts,
-    const AIS_SelectionScheme                    theScheme = AIS_SelectionScheme_Replace);
+    const AIS_SelectionScheme                          theScheme = AIS_SelectionScheme_Replace);
 
   //! Update rectangle selection tool.
   //! This method is expected to be called from UI thread.
@@ -334,7 +342,8 @@ public: //! @name mouse input
   //! This method is expected to be called from UI thread.
   //! @param thePnt new point to add to polygon
   //! @param theToAppend append new point or update the last point
-  Standard_EXPORT virtual void UpdatePolySelection(const NCollection_Vec2<int>& thePnt, bool theToAppend);
+  Standard_EXPORT virtual void UpdatePolySelection(const NCollection_Vec2<int>& thePnt,
+                                                   bool                         theToAppend);
 
   //! Update zoom event (e.g. from mouse scroll).
   //! This method is expected to be called from UI thread.
@@ -351,8 +360,7 @@ public: //! @name mouse input
   //! This method is expected to be called from UI thread.
   //! @param theDelta mouse cursor position and delta
   //! @return TRUE if new event has been created or FALSE if existing one has been updated
-  Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
-    override;
+  Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta) override;
 
   //! Handle mouse button press/release event.
   //! This method is expected to be called from UI thread.
@@ -363,8 +371,8 @@ public: //! @name mouse input
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if View should be redrawn
   Standard_EXPORT virtual bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                                  Aspect_VKeyMouse       theButtons,
-                                                  Aspect_VKeyFlags       theModifiers,
+                                                  Aspect_VKeyMouse             theButtons,
+                                                  Aspect_VKeyFlags             theModifiers,
                                                   bool theIsEmulated) override;
 
   //! Handle mouse cursor movement event.
@@ -376,8 +384,8 @@ public: //! @name mouse input
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if View should be redrawn
   Standard_EXPORT virtual bool UpdateMousePosition(const NCollection_Vec2<int>& thePoint,
-                                                   Aspect_VKeyMouse       theButtons,
-                                                   Aspect_VKeyFlags       theModifiers,
+                                                   Aspect_VKeyMouse             theButtons,
+                                                   Aspect_VKeyFlags             theModifiers,
                                                    bool theIsEmulated) override;
 
   //! Handle mouse button click event (emulated by UpdateMouseButtons() while releasing single
@@ -390,9 +398,9 @@ public: //! @name mouse input
   //! @param theIsDoubleClick flag indicating double mouse click
   //! @return TRUE if View should be redrawn
   Standard_EXPORT virtual bool UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
-                                                Aspect_VKeyMouse       theButton,
-                                                Aspect_VKeyFlags       theModifiers,
-                                                bool                   theIsDoubleClick);
+                                                Aspect_VKeyMouse             theButton,
+                                                Aspect_VKeyFlags             theModifiers,
+                                                bool                         theIsDoubleClick);
 
   using Aspect_WindowInputListener::PressMouseButton;
   using Aspect_WindowInputListener::ReleaseMouseButton;
@@ -414,26 +422,24 @@ public: //! @name multi-touch input
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
   //! @param theClearBefore if TRUE previously registered touches will be removed
-  Standard_EXPORT virtual void AddTouchPoint(size_t          theId,
+  Standard_EXPORT virtual void AddTouchPoint(size_t                          theId,
                                              const NCollection_Vec2<double>& thePnt,
-                                             bool       theClearBefore = false)
-    override;
+                                             bool theClearBefore = false) override;
 
   //! Remove touch point with the given ID.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param theClearSelectPnts if TRUE will initiate clearing of selection points
   //! @return TRUE if point has been removed
-  Standard_EXPORT virtual bool RemoveTouchPoint(size_t    theId,
-                                                bool theClearSelectPnts = false)
-    override;
+  Standard_EXPORT virtual bool RemoveTouchPoint(size_t theId,
+                                                bool   theClearSelectPnts = false) override;
 
   //! Update touch point with the given ID.
   //! If point with specified ID was not registered before, it will be added.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
-  Standard_EXPORT virtual void UpdateTouchPoint(size_t          theId,
+  Standard_EXPORT virtual void UpdateTouchPoint(size_t                          theId,
                                                 const NCollection_Vec2<double>& thePnt) override;
 
   using Aspect_WindowInputListener::HasTouchPoints;
@@ -500,19 +506,19 @@ public:
   //! Callback called by handleMoveTo() on Selection in 3D Viewer.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void OnSelectionChanged(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                  const occ::handle<V3d_View>&               theView);
+                                                  const occ::handle<V3d_View>& theView);
 
   //! Callback called by handleMoveTo() on dragging object in 3D Viewer.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void OnObjectDragged(const occ::handle<AIS_InteractiveContext>& theCtx,
                                                const occ::handle<V3d_View>&               theView,
-                                               AIS_DragAction                        theAction);
+                                               AIS_DragAction theAction);
 
   //! Callback called by HandleViewEvents() on Selection of another (sub)view.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void OnSubviewChanged(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                const occ::handle<V3d_View>&               theOldView,
-                                                const occ::handle<V3d_View>&               theNewView);
+                                                const occ::handle<V3d_View>& theOldView,
+                                                const occ::handle<V3d_View>& theNewView);
 
   //! Pick closest point under mouse cursor.
   //! This method is expected to be called from rendering thread.
@@ -522,11 +528,11 @@ public:
   //! @param[in] theCursor  mouse cursor
   //! @param[in] theToStickToPickRay  when TRUE, the result point will lie on picking ray
   //! @return TRUE if result has been found
-  Standard_EXPORT virtual bool PickPoint(gp_Pnt&                               thePnt,
+  Standard_EXPORT virtual bool PickPoint(gp_Pnt&                                    thePnt,
                                          const occ::handle<AIS_InteractiveContext>& theCtx,
                                          const occ::handle<V3d_View>&               theView,
-                                         const NCollection_Vec2<int>&                theCursor,
-                                         bool                                  theToStickToPickRay);
+                                         const NCollection_Vec2<int>&               theCursor,
+                                         bool theToStickToPickRay);
 
   //! Pick closest point by axis.
   //! This method is expected to be called from rendering thread.
@@ -535,10 +541,10 @@ public:
   //! @param[in] theView    active view
   //! @param[in] theAxis    selection axis
   //! @return TRUE if result has been found
-  Standard_EXPORT virtual bool PickAxis(gp_Pnt&                               theTopPnt,
+  Standard_EXPORT virtual bool PickAxis(gp_Pnt&                                    theTopPnt,
                                         const occ::handle<AIS_InteractiveContext>& theCtx,
                                         const occ::handle<V3d_View>&               theView,
-                                        const gp_Ax1&                         theAxis);
+                                        const gp_Ax1&                              theAxis);
 
   //! Compute rotation gravity center point depending on rotation mode.
   //! This method is expected to be called from rendering thread.
@@ -568,9 +574,10 @@ public:
 
   //! Perform immediate camera actions (rotate/zoom/pan) on gesture progress.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleCameraActions(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                   const occ::handle<V3d_View>&               theView,
-                                                   const AIS_WalkDelta&                  theWalk);
+  Standard_EXPORT virtual void handleCameraActions(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView,
+    const AIS_WalkDelta&                       theWalk);
 
   //! Perform moveto/selection/dragging.
   //! This method is expected to be called from rendering thread.
@@ -606,14 +613,14 @@ public:
 
   //! Handle zoom event myGL.ZoomActions.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleZoom(const occ::handle<V3d_View>&   theView,
-                                          const Aspect_ScrollDelta& theParams,
-                                          const gp_Pnt*             thePnt);
+  Standard_EXPORT virtual void handleZoom(const occ::handle<V3d_View>& theView,
+                                          const Aspect_ScrollDelta&    theParams,
+                                          const gp_Pnt*                thePnt);
 
   //! Handle ZScroll event myGL.ZoomActions.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleZFocusScroll(const occ::handle<V3d_View>&   theView,
-                                                  const Aspect_ScrollDelta& theParams);
+  Standard_EXPORT virtual void handleZFocusScroll(const occ::handle<V3d_View>& theView,
+                                                  const Aspect_ScrollDelta&    theParams);
 
   //! Handle orbital rotation events myGL.OrbitRotation.
   //! @param theView view to modify
@@ -621,8 +628,8 @@ public:
   //! @param theToLockZUp amend camera to exclude roll angle (put camera Up vector to plane
   //! containing global Z and view direction)
   Standard_EXPORT virtual void handleOrbitRotation(const occ::handle<V3d_View>& theView,
-                                                   const gp_Pnt&           thePnt,
-                                                   bool                    theToLockZUp);
+                                                   const gp_Pnt&                thePnt,
+                                                   bool                         theToLockZUp);
 
   //! Handle view direction rotation events myGL.ViewRotation.
   //! This method is expected to be called from rendering thread.
@@ -632,10 +639,10 @@ public:
   //! @param theRoll       roll value
   //! @param theToRestartOnIncrement flag indicating flight mode
   Standard_EXPORT virtual void handleViewRotation(const occ::handle<V3d_View>& theView,
-                                                  double                  theYawExtra,
-                                                  double                  thePitchExtra,
-                                                  double                  theRoll,
-                                                  bool                    theToRestartOnIncrement);
+                                                  double                       theYawExtra,
+                                                  double                       thePitchExtra,
+                                                  double                       theRoll,
+                                                  bool theToRestartOnIncrement);
 
   //! Handle view redraw.
   //! This method is expected to be called from rendering thread.
@@ -647,7 +654,7 @@ public:
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void handleXRInput(const occ::handle<AIS_InteractiveContext>& theCtx,
                                              const occ::handle<V3d_View>&               theView,
-                                             const AIS_WalkDelta&                  theWalk);
+                                             const AIS_WalkDelta&                       theWalk);
 
   //! Handle trackpad view turn action.
   Standard_EXPORT virtual void handleXRTurnPad(const occ::handle<AIS_InteractiveContext>& theCtx,
@@ -663,18 +670,18 @@ public:
 
   //! Perform dynamic highlighting for active hand.
   Standard_EXPORT virtual void handleXRHighlight(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                 const occ::handle<V3d_View>&               theView);
+                                                 const occ::handle<V3d_View>& theView);
 
   //! Display auxiliary XR presentations.
-  Standard_EXPORT virtual void handleXRPresentations(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                     const occ::handle<V3d_View>&               theView);
+  Standard_EXPORT virtual void handleXRPresentations(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView);
 
   //! Perform picking with/without dynamic highlighting for XR pose.
-  Standard_EXPORT virtual int handleXRMoveTo(
-    const occ::handle<AIS_InteractiveContext>& theCtx,
-    const occ::handle<V3d_View>&               theView,
-    const gp_Trsf&                        thePose,
-    const bool                theToHighlight);
+  Standard_EXPORT virtual int handleXRMoveTo(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                             const occ::handle<V3d_View>&               theView,
+                                             const gp_Trsf&                             thePose,
+                                             const bool theToHighlight);
 
 protected:
   //! Flush buffers.
@@ -698,23 +705,26 @@ protected:
 
   //! Perform selection via mouse click.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleSelectionPick(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                   const occ::handle<V3d_View>&               theView);
+  Standard_EXPORT virtual void handleSelectionPick(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView);
 
   //! Perform dynamic highlight on mouse move.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleDynamicHighlight(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                      const occ::handle<V3d_View>& theView);
+  Standard_EXPORT virtual void handleDynamicHighlight(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView);
 
   //! Perform rubber-band selection.
   //! This method is expected to be called from rendering thread.
-  Standard_EXPORT virtual void handleSelectionPoly(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                   const occ::handle<V3d_View>&               theView);
+  Standard_EXPORT virtual void handleSelectionPoly(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView);
 
   //! Lazy AIS_InteractiveContext::MoveTo() with myPrevMoveTo check.
   Standard_EXPORT virtual void contextLazyMoveTo(const occ::handle<AIS_InteractiveContext>& theCtx,
                                                  const occ::handle<V3d_View>&               theView,
-                                                 const NCollection_Vec2<int>&                thePnt);
+                                                 const NCollection_Vec2<int>&               thePnt);
 
 protected:
   AIS_ViewInputBuffer myUI; //!< buffer for UI thread
@@ -769,9 +779,9 @@ protected: //! @name XR input variables
   Aspect_XRHapticActionData  myXRTeleportHaptic;     //!< vibration on picking teleport destination
   Aspect_XRHapticActionData  myXRPickingHaptic;      //!< vibration on dynamic highlighting
   Aspect_XRHapticActionData  myXRSelectHaptic;       //!< vibration on selection
-  double              myXRLastPickDepthLeft;  //!< last picking depth for left  hand
-  double              myXRLastPickDepthRight; //!< last picking depth for right hand
-  double              myXRTurnAngle;          //!< discrete turn angle for XR trackpad
+  double                     myXRLastPickDepthLeft;  //!< last picking depth for left  hand
+  double                     myXRLastPickDepthRight; //!< last picking depth for right hand
+  double                     myXRTurnAngle;          //!< discrete turn angle for XR trackpad
   // clang-format off
   bool    myToDisplayXRAuxDevices;    //!< flag to display auxiliary tracked XR devices
   bool    myToDisplayXRHands;         //!< flag to display XR hands

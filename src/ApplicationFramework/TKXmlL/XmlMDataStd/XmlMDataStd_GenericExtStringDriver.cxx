@@ -48,9 +48,9 @@ occ::handle<Standard_Type> XmlMDataStd_GenericExtStringDriver::SourceType() cons
 
 //=================================================================================================
 
-bool XmlMDataStd_GenericExtStringDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                           const occ::handle<TDF_Attribute>& theTarget,
-                                                           XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_GenericExtStringDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               XmlObjMgt_RRelocationTable&) const
 {
   if (!theTarget.IsNull())
   {
@@ -76,15 +76,16 @@ bool XmlMDataStd_GenericExtStringDriver::Paste(const XmlObjMgt_Persistent&  theS
 //=================================================================================================
 
 void XmlMDataStd_GenericExtStringDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                               XmlObjMgt_Persistent&        theTarget,
+                                               XmlObjMgt_Persistent&             theTarget,
                                                XmlObjMgt_SRelocationTable&) const
 {
-  occ::handle<TDataStd_GenericExtString> aStr = occ::down_cast<TDataStd_GenericExtString>(theSource);
+  occ::handle<TDataStd_GenericExtString> aStr =
+    occ::down_cast<TDataStd_GenericExtString>(theSource);
   if (aStr.IsNull())
     return;
   XmlObjMgt::SetExtendedString(theTarget, aStr->Get());
   // convert GUID
-  char  aGuidStr[Standard_GUID_SIZE_ALLOC];
+  char                aGuidStr[Standard_GUID_SIZE_ALLOC];
   Standard_PCharacter pGuidStr = aGuidStr;
   aStr->ID().ToCString(pGuidStr);
   theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

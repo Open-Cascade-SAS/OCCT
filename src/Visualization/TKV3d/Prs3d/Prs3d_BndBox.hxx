@@ -32,7 +32,7 @@ public:
   //! @param[in] theBndBox  the bounding box.
   //! @param[in] theDrawer  the drawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
-                                  const Bnd_Box&                    theBndBox,
+                                  const Bnd_Box&                         theBndBox,
                                   const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Computes presentation of a bounding box.
@@ -40,7 +40,7 @@ public:
   //! @param[in] theBndBox  the bounding box.
   //! @param[in] theDrawer  the drawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePresentation,
-                                  const Bnd_OBB&                    theBndBox,
+                                  const Bnd_OBB&                         theBndBox,
                                   const occ::handle<Prs3d_Drawer>&       theDrawer);
 
 public:
@@ -77,7 +77,7 @@ public:
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
   static void FillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
-                           const Bnd_OBB&                           theBox)
+                           const Bnd_OBB&                                theBox)
   {
     if (!theBox.IsVoid())
     {
@@ -92,7 +92,7 @@ public:
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
   static void FillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
-                           const Bnd_Box&                           theBox)
+                           const Bnd_Box&                                theBox)
   {
     if (!theBox.IsVoid())
     {
@@ -118,7 +118,7 @@ public:
   //!                               should be at least 8 nodes and 24 edges in size
   //! @param[in] theBox  the box to add
   static void fillSegments(const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
-                           const gp_Pnt*                            theBox)
+                           const gp_Pnt*                                 theBox)
   {
     const int aFrom = theSegments->VertexNumber();
     for (int aVertIter = 0; aVertIter < 8; ++aVertIter)

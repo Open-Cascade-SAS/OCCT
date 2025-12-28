@@ -33,15 +33,16 @@ public:
   //! Returns a AutoDesignPresentedItem
   Standard_EXPORT StepAP214_AutoDesignPresentedItem();
 
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>>& aItems);
 
   Standard_EXPORT void SetItems(
     const occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>> Items()
+    const;
 
-  Standard_EXPORT StepAP214_AutoDesignPresentedItemSelect
-    ItemsValue(const int num) const;
+  Standard_EXPORT StepAP214_AutoDesignPresentedItemSelect ItemsValue(const int num) const;
 
   Standard_EXPORT int NbItems() const;
 

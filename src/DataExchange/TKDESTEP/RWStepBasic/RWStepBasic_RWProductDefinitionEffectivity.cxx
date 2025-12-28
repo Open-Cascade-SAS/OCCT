@@ -23,7 +23,7 @@ RWStepBasic_RWProductDefinitionEffectivity::RWStepBasic_RWProductDefinitionEffec
 
 void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                num,
+  const int                                                  num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent) const
 {
@@ -56,7 +56,7 @@ void RWStepBasic_RWProductDefinitionEffectivity::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionEffectivity::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent) const
 {
 
@@ -68,7 +68,7 @@ void RWStepBasic_RWProductDefinitionEffectivity::WriteStep(
 
 void RWStepBasic_RWProductDefinitionEffectivity::Share(
   const occ::handle<StepBasic_ProductDefinitionEffectivity>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                                  iter) const
 {
   iter.AddItem(ent->Usage());
 }

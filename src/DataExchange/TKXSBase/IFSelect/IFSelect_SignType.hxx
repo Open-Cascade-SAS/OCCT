@@ -38,9 +38,9 @@ public:
 
   //! Returns the Signature for a Transient object, as its Dynamic
   //! Type, with or without package name, according starting option
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignType, IFSelect_Signature)
 

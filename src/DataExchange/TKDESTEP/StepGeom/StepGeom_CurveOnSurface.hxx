@@ -51,7 +51,6 @@ public:
 
   //! returns Value as a CompositeCurveOnSurface (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_CompositeCurveOnSurface> CompositeCurveOnSurface() const;
-
 };
 
 #endif // _StepGeom_CurveOnSurface_HeaderFile

@@ -31,8 +31,7 @@
 
 StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem() {}
 
-int StepAP214_AutoDesignReferencingItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_AutoDesignReferencingItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -73,8 +72,8 @@ occ::handle<StepBasic_Approval> StepAP214_AutoDesignReferencingItem::Approval() 
   return GetCasted(StepBasic_Approval, Value());
 }
 
-occ::handle<StepBasic_DocumentRelationship> StepAP214_AutoDesignReferencingItem::DocumentRelationship()
-  const
+occ::handle<StepBasic_DocumentRelationship> StepAP214_AutoDesignReferencingItem::
+  DocumentRelationship() const
 {
   return GetCasted(StepBasic_DocumentRelationship, Value());
 }
@@ -96,12 +95,14 @@ occ::handle<StepRepr_MaterialDesignation> StepAP214_AutoDesignReferencingItem::M
   return GetCasted(StepRepr_MaterialDesignation, Value());
 }
 
-occ::handle<StepVisual_PresentationArea> StepAP214_AutoDesignReferencingItem::PresentationArea() const
+occ::handle<StepVisual_PresentationArea> StepAP214_AutoDesignReferencingItem::PresentationArea()
+  const
 {
   return GetCasted(StepVisual_PresentationArea, Value());
 }
 
-occ::handle<StepVisual_PresentationView> StepAP214_AutoDesignReferencingItem::PresentationView() const
+occ::handle<StepVisual_PresentationView> StepAP214_AutoDesignReferencingItem::PresentationView()
+  const
 {
   return GetCasted(StepVisual_PresentationView, Value());
 }
@@ -111,7 +112,8 @@ occ::handle<StepBasic_ProductCategory> StepAP214_AutoDesignReferencingItem::Prod
   return GetCasted(StepBasic_ProductCategory, Value());
 }
 
-occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignReferencingItem::ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignReferencingItem::ProductDefinition()
+  const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
@@ -122,7 +124,8 @@ occ::handle<StepBasic_ProductDefinitionRelationship> StepAP214_AutoDesignReferen
   return GetCasted(StepBasic_ProductDefinitionRelationship, Value());
 }
 
-occ::handle<StepRepr_PropertyDefinition> StepAP214_AutoDesignReferencingItem::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepAP214_AutoDesignReferencingItem::PropertyDefinition()
+  const
 {
   return GetCasted(StepRepr_PropertyDefinition, Value());
 }

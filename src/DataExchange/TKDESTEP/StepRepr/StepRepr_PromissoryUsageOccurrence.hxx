@@ -28,7 +28,6 @@ public:
   Standard_EXPORT StepRepr_PromissoryUsageOccurrence();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_PromissoryUsageOccurrence, StepRepr_AssemblyComponentUsage)
-
 };
 
 #endif // _StepRepr_PromissoryUsageOccurrence_HeaderFile

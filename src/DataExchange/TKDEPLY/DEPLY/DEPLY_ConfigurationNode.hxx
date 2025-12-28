@@ -44,8 +44,8 @@ public:
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @return true if theResource loading has ended correctly
-  Standard_EXPORT virtual bool Load(const occ::handle<DE_ConfigurationContext>& theResource)
-    override;
+  Standard_EXPORT virtual bool Load(
+    const occ::handle<DE_ConfigurationContext>& theResource) override;
 
   //! Writes configuration to the string
   //! @return result resource string
@@ -83,8 +83,8 @@ public:
   //! Checks the file content to verify a format
   //! @param[in] theBuffer read stream buffer to check content
   //! @return true if file is supported by a current provider
-  Standard_EXPORT virtual bool CheckContent(const occ::handle<NCollection_Buffer>& theBuffer) const
-    override;
+  Standard_EXPORT virtual bool CheckContent(
+    const occ::handle<NCollection_Buffer>& theBuffer) const override;
 
 public:
   struct RWPly_InternalSection

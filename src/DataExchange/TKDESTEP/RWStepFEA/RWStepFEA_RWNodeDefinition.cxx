@@ -29,7 +29,7 @@ RWStepFEA_RWNodeDefinition::RWStepFEA_RWNodeDefinition() {}
 //=================================================================================================
 
 void RWStepFEA_RWNodeDefinition::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepFEA_NodeDefinition>&  ent) const
 {
@@ -69,7 +69,7 @@ void RWStepFEA_RWNodeDefinition::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                  SW,
+void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepFEA_NodeDefinition>& ent) const
 {
 
@@ -87,7 +87,7 @@ void RWStepFEA_RWNodeDefinition::WriteStep(StepData_StepWriter&                 
 //=================================================================================================
 
 void RWStepFEA_RWNodeDefinition::Share(const occ::handle<StepFEA_NodeDefinition>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ShapeAspect

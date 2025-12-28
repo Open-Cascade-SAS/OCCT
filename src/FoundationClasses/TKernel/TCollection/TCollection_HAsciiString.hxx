@@ -50,8 +50,7 @@ public:
 
   //! Initializes a HAsciiString with <length> space allocated.
   //! and filled with <filler>.This is useful for buffers.
-  Standard_EXPORT TCollection_HAsciiString(const int   length,
-                                           const char filler);
+  Standard_EXPORT TCollection_HAsciiString(const int length, const char filler);
 
   //! Initializes a HAsciiString with an integer value
   Standard_EXPORT TCollection_HAsciiString(const int value);
@@ -147,7 +146,7 @@ public:
   //! "Father") );
   Standard_EXPORT void ChangeAll(const char aChar,
                                  const char NewChar,
-                                 const bool   CaseSensitive = true);
+                                 const bool CaseSensitive = true);
 
   //! Removes all characters contained in <me>.
   //! This produces an empty HAsciiString.
@@ -167,8 +166,8 @@ public:
   //! returns
   //! 1
   Standard_EXPORT int FirstLocationInSet(const occ::handle<TCollection_HAsciiString>& Set,
-                                                      const int FromIndex,
-                                                      const int ToIndex) const;
+                                         const int                                    FromIndex,
+                                         const int ToIndex) const;
 
   //! Returns the index of the first character of <me>
   //! that is not present in the set <Set>.
@@ -183,10 +182,9 @@ public:
   //! me = "aabAcAa"
   //! returns
   //! 3
-  Standard_EXPORT int
-    FirstLocationNotInSet(const occ::handle<TCollection_HAsciiString>& Set,
-                          const int                  FromIndex,
-                          const int                  ToIndex) const;
+  Standard_EXPORT int FirstLocationNotInSet(const occ::handle<TCollection_HAsciiString>& Set,
+                                            const int                                    FromIndex,
+                                            const int ToIndex) const;
 
   //! Insert a Character at position <where>.
   //! Example:
@@ -202,8 +200,7 @@ public:
   Standard_EXPORT void Insert(const int where, const char* what);
 
   //! Insert a HAsciiString at position <where>.
-  Standard_EXPORT void Insert(const int                  where,
-                              const occ::handle<TCollection_HAsciiString>& what);
+  Standard_EXPORT void Insert(const int where, const occ::handle<TCollection_HAsciiString>& what);
 
   //! Inserts the other ASCII string a after a specific index in the string <me>
   //! Example:
@@ -211,7 +208,7 @@ public:
   //! me = "cde" , Index = 0 , other = "ab"
   //! after
   //! me = "abcde" , other = "ab"
-  Standard_EXPORT void InsertAfter(const int                  Index,
+  Standard_EXPORT void InsertAfter(const int                                    Index,
                                    const occ::handle<TCollection_HAsciiString>& other);
 
   //! Inserts the other ASCII string a before a specific index in the string <me>
@@ -221,7 +218,7 @@ public:
   //! me = "cde" , Index = 1 , other = "ab"
   //! after
   //! me = "abcde" , other = "ab"
-  Standard_EXPORT void InsertBefore(const int                  Index,
+  Standard_EXPORT void InsertBefore(const int                                    Index,
                                     const occ::handle<TCollection_HAsciiString>& other);
 
   //! Returns True if the string <me> contains zero character
@@ -260,7 +257,7 @@ public:
   //! Returns True if the string S contains same characters than the
   //! string <me>.
   Standard_EXPORT bool IsSameString(const occ::handle<TCollection_HAsciiString>& S,
-                                                const bool CaseSensitive) const;
+                                    const bool CaseSensitive) const;
 
   //! Removes all space characters in the beginning of the string
   Standard_EXPORT void LeftAdjust();
@@ -294,8 +291,8 @@ public:
   //! returns
   //! 4
   Standard_EXPORT int Location(const occ::handle<TCollection_HAsciiString>& other,
-                                            const int                  FromIndex,
-                                            const int                  ToIndex) const;
+                               const int                                    FromIndex,
+                               const int                                    ToIndex) const;
 
   //! Returns the index of the nth occurrence of the character C
   //! in the string <me> from the starting index FromIndex to the
@@ -308,10 +305,10 @@ public:
   //! after
   //! me = "aabAa"
   //! returns 5
-  Standard_EXPORT int Location(const int   N,
-                                            const char C,
-                                            const int   FromIndex,
-                                            const int   ToIndex) const;
+  Standard_EXPORT int Location(const int  N,
+                               const char C,
+                               const int  FromIndex,
+                               const int  ToIndex) const;
 
   //! Converts <me> to its lower-case equivalent.
   Standard_EXPORT void LowerCase();
@@ -391,8 +388,7 @@ public:
   //! Searches a HAsciiString in another HAsciiString from the end
   //! and returns position of first item <what> matching.
   //! It returns -1 if not found.
-  Standard_EXPORT int
-    SearchFromEnd(const occ::handle<TCollection_HAsciiString>& what) const;
+  Standard_EXPORT int SearchFromEnd(const occ::handle<TCollection_HAsciiString>& what) const;
 
   //! Replaces one character in the string at position <where>.
   //! If <where> is less than zero or greater than the length of <me>
@@ -411,8 +407,7 @@ public:
   Standard_EXPORT void SetValue(const int where, const char* what);
 
   //! Replaces a part of <me> by another string.
-  Standard_EXPORT void SetValue(const int                  where,
-                                const occ::handle<TCollection_HAsciiString>& what);
+  Standard_EXPORT void SetValue(const int where, const occ::handle<TCollection_HAsciiString>& what);
 
   //! Splits a HAsciiString into two sub-strings.
   //! Example:
@@ -433,7 +428,7 @@ public:
   //! returns
   //! "cdef"
   Standard_EXPORT occ::handle<TCollection_HAsciiString> SubString(const int FromIndex,
-                                                             const int ToIndex) const;
+                                                                  const int ToIndex) const;
 
   //! Returns pointer to string (char *)
   //! This is useful for some casual manipulations
@@ -456,7 +451,7 @@ public:
   //! aString.Token("; :,",4) returns "value"
   //! aString.Token("; :,",2) returns "test"
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Token(const char* separators = " \t",
-                                                         const int whichone = 1) const;
+                                                              const int   whichone   = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.
   //! Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel"

@@ -74,9 +74,9 @@ public:
   //! dx,dy,dz should be positive
   Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
                                   const gp_Ax2&           Axes,
-                                  const double     dx,
-                                  const double     dy,
-                                  const double     dz);
+                                  const double            dx,
+                                  const double            dy,
+                                  const double            dz);
 
   //! Creates a GWedge primitive. <Axes> is the axis
   //! system for the primitive.
@@ -92,10 +92,10 @@ public:
   //! ltx should not be negative
   Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
                                   const gp_Ax2&           Axes,
-                                  const double     dx,
-                                  const double     dy,
-                                  const double     dz,
-                                  const double     ltx);
+                                  const double            dx,
+                                  const double            dy,
+                                  const double            dz,
+                                  const double            ltx);
 
   //! Create a GWedge primitive. <Axes> is the axis
   //! system for the primitive.
@@ -105,16 +105,16 @@ public:
   //! ZX2Max - ZX2Min should not be negative
   Standard_EXPORT BRepPrim_GWedge(const BRepPrim_Builder& B,
                                   const gp_Ax2&           Axes,
-                                  const double     xmin,
-                                  const double     ymin,
-                                  const double     zmin,
-                                  const double     z2min,
-                                  const double     x2min,
-                                  const double     xmax,
-                                  const double     ymax,
-                                  const double     zmax,
-                                  const double     z2max,
-                                  const double     x2max);
+                                  const double            xmin,
+                                  const double            ymin,
+                                  const double            zmin,
+                                  const double            z2min,
+                                  const double            x2min,
+                                  const double            xmax,
+                                  const double            ymax,
+                                  const double            zmax,
+                                  const double            z2max,
+                                  const double            x2max);
 
   //! Returns the coordinates system from <me>.
   Standard_EXPORT gp_Ax2 Axes() const;
@@ -180,8 +180,7 @@ public:
   Standard_EXPORT const TopoDS_Wire& Wire(const BRepPrim_Direction d1);
 
   //! Returns True if <me> has an Edge in <d1><d2> direction.
-  Standard_EXPORT bool HasEdge(const BRepPrim_Direction d1,
-                                           const BRepPrim_Direction d2) const;
+  Standard_EXPORT bool HasEdge(const BRepPrim_Direction d1, const BRepPrim_Direction d2) const;
 
   //! Returns the Edge of <me> located in <d1><d2> direction.
   Standard_EXPORT const TopoDS_Edge& Edge(const BRepPrim_Direction d1, const BRepPrim_Direction d2);
@@ -193,8 +192,8 @@ public:
   //! Returns True if <me> has a Vertex in <d1><d2><d3>
   //! direction.
   Standard_EXPORT bool HasVertex(const BRepPrim_Direction d1,
-                                             const BRepPrim_Direction d2,
-                                             const BRepPrim_Direction d3) const;
+                                 const BRepPrim_Direction d2,
+                                 const BRepPrim_Direction d3) const;
 
   //! Returns the Vertex of <me> located in <d1><d2><d3>
   //! direction.
@@ -215,27 +214,27 @@ public:
 private:
   BRepPrim_Builder myBuilder;
   gp_Ax2           myAxes;
-  double    XMin;
-  double    XMax;
-  double    YMin;
-  double    YMax;
-  double    ZMin;
-  double    ZMax;
-  double    Z2Min;
-  double    Z2Max;
-  double    X2Min;
-  double    X2Max;
+  double           XMin;
+  double           XMax;
+  double           YMin;
+  double           YMax;
+  double           ZMin;
+  double           ZMax;
+  double           Z2Min;
+  double           Z2Max;
+  double           X2Min;
+  double           X2Max;
   TopoDS_Shell     myShell;
-  bool ShellBuilt;
+  bool             ShellBuilt;
   TopoDS_Vertex    myVertices[8];
-  bool VerticesBuilt[8];
+  bool             VerticesBuilt[8];
   TopoDS_Edge      myEdges[12];
-  bool EdgesBuilt[12];
+  bool             EdgesBuilt[12];
   TopoDS_Wire      myWires[6];
-  bool WiresBuilt[6];
+  bool             WiresBuilt[6];
   TopoDS_Face      myFaces[6];
-  bool FacesBuilt[6];
-  bool myInfinite[6];
+  bool             FacesBuilt[6];
+  bool             myInfinite[6];
 };
 
 #endif // _BRepPrim_GWedge_HeaderFile

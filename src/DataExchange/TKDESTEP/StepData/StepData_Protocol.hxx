@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Interface_Protocol.hxx>
-#include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 class Interface_InterfaceModel;
@@ -49,19 +48,16 @@ public:
   Standard_EXPORT int NbResources() const override;
 
   //! Returns a Resource, given a rank. Here, none
-  Standard_EXPORT occ::handle<Interface_Protocol> Resource(const int num) const
-    override;
+  Standard_EXPORT occ::handle<Interface_Protocol> Resource(const int num) const override;
 
   //! Returns a unique positive number for any recognized entity
   //! Redefined to work by calling both TypeNumber and, for a
   //! Described Entity (late binding) DescrNumber
-  Standard_EXPORT virtual int CaseNumber(const occ::handle<Standard_Transient>& obj) const
-    override;
+  Standard_EXPORT virtual int CaseNumber(const occ::handle<Standard_Transient>& obj) const override;
 
   //! Returns a Case Number, specific of each recognized Type
   //! Here, only Unknown Entity is recognized
-  Standard_EXPORT int
-    TypeNumber(const occ::handle<Standard_Type>& atype) const override;
+  Standard_EXPORT int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
 
   //! Returns the Schema Name attached to each class of Protocol
   //! To be redefined by each sub-class
@@ -74,16 +70,15 @@ public:
   Standard_EXPORT occ::handle<Interface_InterfaceModel> NewModel() const override;
 
   //! Returns True if <model> is a Model of Step Norm
-  Standard_EXPORT bool
-    IsSuitableModel(const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool IsSuitableModel(
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Creates a new Unknown Entity for Step (UndefinedEntity)
   Standard_EXPORT occ::handle<Standard_Transient> UnknownEntity() const override;
 
   //! Returns True if <ent> is an Unknown Entity for the Norm, i.e.
   //! Type UndefinedEntity, status Unknown
-  Standard_EXPORT bool
-    IsUnknownEntity(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT bool IsUnknownEntity(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns a unique positive CaseNumber for types described by
   //! an EDescr (late binding)
@@ -106,21 +101,19 @@ public:
   //! Returns a description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_EDescr> Descr(
-    const char* name,
-    const bool anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_EDescr> Descr(const char* name,
+                                                     const bool  anylevel = true) const;
 
   //! Idem as Descr but cast to simple description
-  Standard_EXPORT occ::handle<StepData_ESDescr> ESDescr(
-    const char* name,
-    const bool anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_ESDescr> ESDescr(const char* name,
+                                                        const bool  anylevel = true) const;
 
   //! Returns a complex description according to list of names
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
   Standard_EXPORT occ::handle<StepData_ECDescr> ECDescr(
     const NCollection_Sequence<TCollection_AsciiString>& names,
-    const bool               anylevel = true) const;
+    const bool                                           anylevel = true) const;
 
   //! Records an PDescr
   Standard_EXPORT void AddPDescr(const occ::handle<StepData_PDescr>& pdescr);
@@ -128,9 +121,8 @@ public:
   //! Returns a parameter description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_PDescr> PDescr(
-    const char* name,
-    const bool anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_PDescr> PDescr(const char* name,
+                                                      const bool  anylevel = true) const;
 
   //! Records an ESDescr, intended to build complex descriptions
   Standard_EXPORT void AddBasicDescr(const occ::handle<StepData_ESDescr>& esdescr);
@@ -138,14 +130,13 @@ public:
   //! Returns a basic description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_EDescr> BasicDescr(
-    const char* name,
-    const bool anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_EDescr> BasicDescr(const char* name,
+                                                          const bool  anylevel = true) const;
 
   DEFINE_STANDARD_RTTIEXT(StepData_Protocol, Interface_Protocol)
 
 private:
-  NCollection_DataMap<occ::handle<Standard_Transient>, int>                                      thedscnum;
+  NCollection_DataMap<occ::handle<Standard_Transient>, int>                     thedscnum;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thedscnam;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thepdescr;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thedscbas;

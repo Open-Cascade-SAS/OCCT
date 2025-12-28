@@ -34,41 +34,32 @@
 #include <stdio.h>
 #ifdef OCCT_DEBUG
   #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
   #include <NCollection_Array1.hxx>
-  #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-  #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
-  #include <gp_Vec2d.hxx>
-#include <NCollection_Array1.hxx>
-  #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
   #include <Geom_BSplineCurve.hxx>
   #ifdef DRAW
     #include <DrawTrSurf.hxx>
   #endif
-static int IndexOfSection = 0;
+static int  IndexOfSection = 0;
 extern bool Blend_GettraceDRAWSECT();
 
   #ifdef OCCT_DEBUG_BBPP_N_TRDERIV
 //-----------------------------------------------------
 // For debug : visualisation of the section
-static bool BBPP(const double   param,
-                             Blend_RstRstFunction& Func,
-                             const math_Vector&    sol,
-                             const double   tol,
-                             Blend_Point&          BP)
+static bool BBPP(const double          param,
+                 Blend_RstRstFunction& Func,
+                 const math_Vector&    sol,
+                 const double          tol,
+                 Blend_Point&          BP)
 {
   if (!Func.IsSolution(sol, tol))
     return 0;
-  gp_Pnt        pntrst1 = Func.PointOnRst1();
-  gp_Pnt        pntrst2 = Func.PointOnRst2();
-  gp_Pnt2d      p2drst1 = Func.Pnt2dOnRst1();
-  gp_Pnt2d      p2drst2 = Func.Pnt2dOnRst2();
-  double w1      = Func.ParameterOnRst1();
-  double w2      = Func.ParameterOnRst2();
-  BP                    = Blend_Point(pntrst1,
+  gp_Pnt   pntrst1 = Func.PointOnRst1();
+  gp_Pnt   pntrst2 = Func.PointOnRst2();
+  gp_Pnt2d p2drst1 = Func.Pnt2dOnRst1();
+  gp_Pnt2d p2drst2 = Func.Pnt2dOnRst2();
+  double   w1      = Func.ParameterOnRst1();
+  double   w2      = Func.ParameterOnRst2();
+  BP               = Blend_Point(pntrst1,
                    pntrst2,
                    param,
                    p2drst1.X(),
@@ -89,16 +80,16 @@ static void tracederiv(Blend_RstRstFunction& Func, const Blend_Point& BP1, const
   NCollection_Array1<gp_Vec>   TDP1(1, hp);
   NCollection_Array1<gp_Pnt2d> TP2d1(1, hp2d);
   NCollection_Array1<gp_Vec2d> TDP2d1(1, hp2d);
-  NCollection_Array1<double> TW1(1, hp);
-  NCollection_Array1<double> TDW1(1, hp);
+  NCollection_Array1<double>   TW1(1, hp);
+  NCollection_Array1<double>   TDW1(1, hp);
   Func.Section(BP1, TP1, TDP1, TP2d1, TDP2d1, TW1, TDW1);
 
   NCollection_Array1<gp_Pnt>   TP2(1, hp);
   NCollection_Array1<gp_Vec>   TDP2(1, hp);
   NCollection_Array1<gp_Pnt2d> TP2d2(1, hp2d);
   NCollection_Array1<gp_Vec2d> TDP2d2(1, hp2d);
-  NCollection_Array1<double> TW2(1, hp);
-  NCollection_Array1<double> TDW2(1, hp);
+  NCollection_Array1<double>   TW2(1, hp);
+  NCollection_Array1<double>   TDW2(1, hp);
   Func.Section(BP2, TP2, TDP2, TP2d2, TDP2d2, TW2, TDW2);
 
   double param1 = BP1.Parameter();
@@ -136,14 +127,14 @@ static void tracederiv(Blend_RstRstFunction& Func, const Blend_Point& BP1, const
 //-----------------------------------------------------
 static void Drawsect(const double param, Blend_RstRstFunction& Func)
 {
-  gp_Pnt        pntrst1 = Func.PointOnRst1();
-  gp_Pnt        pntrst2 = Func.PointOnRst2();
-  gp_Pnt2d      p2drst1 = Func.Pnt2dOnRst1();
-  gp_Pnt2d      p2drst2 = Func.Pnt2dOnRst2();
-  double u       = Func.ParameterOnRst1();
-  double v       = Func.ParameterOnRst2();
+  gp_Pnt      pntrst1 = Func.PointOnRst1();
+  gp_Pnt      pntrst2 = Func.PointOnRst2();
+  gp_Pnt2d    p2drst1 = Func.Pnt2dOnRst1();
+  gp_Pnt2d    p2drst2 = Func.Pnt2dOnRst2();
+  double      u       = Func.ParameterOnRst1();
+  double      v       = Func.ParameterOnRst2();
   Blend_Point BP(pntrst1, pntrst2, param, p2drst1.X(), p2drst1.Y(), p2drst2.X(), p2drst2.Y(), u, v);
-  int hp, hk, hd, hp2d;
+  int         hp, hk, hd, hp2d;
   Func.GetShape(hp, hk, hd, hp2d);
   NCollection_Array1<double> TK(1, hk);
   Func.Knots(TK);
@@ -151,12 +142,12 @@ static void Drawsect(const double param, Blend_RstRstFunction& Func)
   Func.Mults(TMul);
   NCollection_Array1<gp_Pnt>   TP(1, hp);
   NCollection_Array1<gp_Pnt2d> TP2d(1, hp2d);
-  NCollection_Array1<double> TW(1, hp);
+  NCollection_Array1<double>   TW(1, hp);
   Func.Section(BP, TP, TP2d, TW);
   occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
   IndexOfSection++;
   #ifdef DRAW
-  char             tname[100];
+  char        tname[100];
   const char* name = tname;
   Sprintf(name, "%s_%d", "Section", IndexOfSection);
   DrawTrSurf::Set(name, sect);
@@ -166,12 +157,13 @@ static void Drawsect(const double param, Blend_RstRstFunction& Func)
 
 //=================================================================================================
 
-BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder(const occ::handle<Adaptor3d_Surface>&   Surf1,
-                                                         const occ::handle<Adaptor2d_Curve2d>&   Rst1,
-                                                         const occ::handle<Adaptor3d_TopolTool>& Domain1,
-                                                         const occ::handle<Adaptor3d_Surface>&   Surf2,
-                                                         const occ::handle<Adaptor2d_Curve2d>&   Rst2,
-                                                         const occ::handle<Adaptor3d_TopolTool>& Domain2)
+BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder(
+  const occ::handle<Adaptor3d_Surface>&   Surf1,
+  const occ::handle<Adaptor2d_Curve2d>&   Rst1,
+  const occ::handle<Adaptor3d_TopolTool>& Domain1,
+  const occ::handle<Adaptor3d_Surface>&   Surf2,
+  const occ::handle<Adaptor2d_Curve2d>&   Rst2,
+  const occ::handle<Adaptor3d_TopolTool>& Domain2)
     : done(false),
       sol(1, 2),
       surf1(Surf1),
@@ -201,14 +193,14 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
                                           Blend_CurvPointFuncInv& FinvP1,
                                           Blend_SurfCurvFuncInv&  Finv2,
                                           Blend_CurvPointFuncInv& FinvP2,
-                                          const double     Pdep,
-                                          const double     Pmax,
-                                          const double     MaxStep,
-                                          const double     Tol3d,
-                                          const double     TolGuide,
+                                          const double            Pdep,
+                                          const double            Pmax,
+                                          const double            MaxStep,
+                                          const double            Tol3d,
+                                          const double            TolGuide,
                                           const math_Vector&      ParDep,
-                                          const double     Fleche,
-                                          const bool  Appro)
+                                          const double            Fleche,
+                                          const bool              Appro)
 {
   done       = false;
   iscomplete = false;
@@ -303,21 +295,21 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
 //=======================================================================
 
 bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Func,
-                                                                  Blend_SurfCurvFuncInv&  Finv1,
-                                                                  Blend_CurvPointFuncInv& FinvP1,
-                                                                  Blend_SurfCurvFuncInv&  Finv2,
-                                                                  Blend_CurvPointFuncInv& FinvP2,
-                                                                  const double     Pdep,
-                                                                  const double     Pmax,
-                                                                  const math_Vector&      ParDep,
-                                                                  const double     Tol3d,
-                                                                  const double     TolGuide,
-                                                                  const bool  RecRst1,
-                                                                  const bool  RecP1,
-                                                                  const bool  RecRst2,
-                                                                  const bool  RecP2,
-                                                                  double&          Psol,
-                                                                  math_Vector&            ParSol)
+                                                      Blend_SurfCurvFuncInv&  Finv1,
+                                                      Blend_CurvPointFuncInv& FinvP1,
+                                                      Blend_SurfCurvFuncInv&  Finv2,
+                                                      Blend_CurvPointFuncInv& FinvP2,
+                                                      const double            Pdep,
+                                                      const double            Pmax,
+                                                      const math_Vector&      ParDep,
+                                                      const double            Tol3d,
+                                                      const double            TolGuide,
+                                                      const bool              RecRst1,
+                                                      const bool              RecP1,
+                                                      const bool              RecRst2,
+                                                      const bool              RecP2,
+                                                      double&                 Psol,
+                                                      math_Vector&            ParSol)
 {
   done       = false;
   iscomplete = false;
@@ -336,14 +328,14 @@ bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Fu
     sens = -1.;
   }
 
-  bool          recadp1, recadp2, recadrst1, recadrst2;
-  double             wp1, wp2, wrst1, wrst2;
-  Blend_Status              State  = Blend_OnRst12;
-  double             trst11 = 0., trst12 = 0., trst21 = 0., trst22 = 0.;
-  math_Vector               infbound(1, 2), supbound(1, 2), tolerance(1, 2);
-  math_Vector               solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
+  bool                           recadp1, recadp2, recadrst1, recadrst2;
+  double                         wp1, wp2, wrst1, wrst2;
+  Blend_Status                   State  = Blend_OnRst12;
+  double                         trst11 = 0., trst12 = 0., trst21 = 0., trst22 = 0.;
+  math_Vector                    infbound(1, 2), supbound(1, 2), tolerance(1, 2);
+  math_Vector                    solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
   occ::handle<Adaptor3d_HVertex> Vtxp1, Vtxp2, Vtxrst1, Vtxrst2, Vtxc;
-  bool          IsVtxp1 = 0, IsVtxp2 = 0, IsVtxrst1 = 0, IsVtxrst2 = 0;
+  bool                           IsVtxp1 = 0, IsVtxp2 = 0, IsVtxrst1 = 0, IsVtxrst2 = 0;
   occ::handle<Adaptor2d_Curve2d> Arc;
   wp1 = wp2 = wrst1 = wrst2 = Pmax;
   param                     = Pdep;
@@ -552,11 +544,11 @@ bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Fu
 //=================================================================================================
 
 bool BRepBlend_RstRstLineBuilder::Complete(Blend_RstRstFunction&   Func,
-                                                       Blend_SurfCurvFuncInv&  Finv1,
-                                                       Blend_CurvPointFuncInv& FinvP1,
-                                                       Blend_SurfCurvFuncInv&  Finv2,
-                                                       Blend_CurvPointFuncInv& FinvP2,
-                                                       const double     Pmin)
+                                           Blend_SurfCurvFuncInv&  Finv1,
+                                           Blend_CurvPointFuncInv& FinvP1,
+                                           Blend_SurfCurvFuncInv&  Finv2,
+                                           Blend_CurvPointFuncInv& FinvP2,
+                                           const double            Pmin)
 {
   if (!done)
   {
@@ -594,10 +586,10 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
                                                   Blend_CurvPointFuncInv& FinvP1,
                                                   Blend_SurfCurvFuncInv&  Finv2,
                                                   Blend_CurvPointFuncInv& FinvP2,
-                                                  const double     Bound)
+                                                  const double            Bound)
 {
-  double    stepw = pasmax;
-  int nbp   = line->NbPoints();
+  double stepw = pasmax;
+  int    nbp   = line->NbPoints();
   if (nbp >= 2)
   { // The last step is redone if it is not too small.
     if (sens < 0.)
@@ -615,18 +607,18 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
   {
     return;
   }
-  Blend_Status              State  = Blend_OnRst12;
-  double             trst11 = 0., trst12 = 0., trst21 = 0., trst22 = 0.;
-  TopAbs_State              situonc1 = TopAbs_UNKNOWN, situonc2 = TopAbs_UNKNOWN;
-  Blend_DecrochStatus       decroch = Blend_NoDecroch;
-  bool          Arrive, recadp1, recadp2, recadrst1, recadrst2, echecrecad;
-  double             wp1, wp2, wrst1, wrst2;
-  math_Vector               infbound(1, 2), supbound(1, 2);
-  math_Vector               parinit(1, 2), tolerance(1, 2);
-  math_Vector               solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
+  Blend_Status                   State  = Blend_OnRst12;
+  double                         trst11 = 0., trst12 = 0., trst21 = 0., trst22 = 0.;
+  TopAbs_State                   situonc1 = TopAbs_UNKNOWN, situonc2 = TopAbs_UNKNOWN;
+  Blend_DecrochStatus            decroch = Blend_NoDecroch;
+  bool                           Arrive, recadp1, recadp2, recadrst1, recadrst2, echecrecad;
+  double                         wp1, wp2, wrst1, wrst2;
+  math_Vector                    infbound(1, 2), supbound(1, 2);
+  math_Vector                    parinit(1, 2), tolerance(1, 2);
+  math_Vector                    solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
   occ::handle<Adaptor3d_HVertex> Vtxp1, Vtxp2, Vtxrst1, Vtxrst2;
-  bool          IsVtxp1 = 0, IsVtxp2 = 0, IsVtxrst1 = 0, IsVtxrst2 = 0;
-  BRepBlend_Extremity       Extrst1, Extrst2;
+  bool                           IsVtxp1 = 0, IsVtxp2 = 0, IsVtxrst1 = 0, IsVtxrst2 = 0;
+  BRepBlend_Extremity            Extrst1, Extrst2;
 
   // IntSurf_Transition Tline, Tarc;
 
@@ -1150,11 +1142,11 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
 //=================================================================================================
 
-bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&      Func,
-                                                       Blend_SurfCurvFuncInv&     Finv,
-                                                       math_Vector&               Solinv,
-                                                       bool&          IsVtx,
-                                                       occ::handle<Adaptor3d_HVertex>& Vtx)
+bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&           Func,
+                                           Blend_SurfCurvFuncInv&          Finv,
+                                           math_Vector&                    Solinv,
+                                           bool&                           IsVtx,
+                                           occ::handle<Adaptor3d_HVertex>& Vtx)
 {
   math_Vector toler(1, 3), infb(1, 3), supb(1, 3);
   Finv.GetTolerance(toler, tolpoint3d);
@@ -1233,11 +1225,11 @@ bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&      Func,
 
 //=================================================================================================
 
-bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&      Func,
-                                                       Blend_SurfCurvFuncInv&     Finv,
-                                                       math_Vector&               Solinv,
-                                                       bool&          IsVtx,
-                                                       occ::handle<Adaptor3d_HVertex>& Vtx)
+bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&           Func,
+                                           Blend_SurfCurvFuncInv&          Finv,
+                                           math_Vector&                    Solinv,
+                                           bool&                           IsVtx,
+                                           occ::handle<Adaptor3d_HVertex>& Vtx)
 {
   math_Vector toler(1, 3), infb(1, 3), supb(1, 3);
   Finv.GetTolerance(toler, tolpoint3d);
@@ -1316,17 +1308,17 @@ bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&      Func,
 // purpose  : This is the end of curve rst1
 //=======================================================================
 
-bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&    FinvP,
-                                                       math_Vector&               Solinv,
-                                                       bool&          IsVtx,
-                                                       occ::handle<Adaptor3d_HVertex>& Vtx)
+bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&         FinvP,
+                                           math_Vector&                    Solinv,
+                                           bool&                           IsVtx,
+                                           occ::handle<Adaptor3d_HVertex>& Vtx)
 {
   // One is located on the last or the first point, following the
   // direction of processing.
-  gp_Pnt2d      p2drst1;
-  double firstrst1 = rst1->FirstParameter();
-  double lastrst1  = rst1->LastParameter();
-  double upoint    = firstrst1;
+  gp_Pnt2d p2drst1;
+  double   firstrst1 = rst1->FirstParameter();
+  double   lastrst1  = rst1->LastParameter();
+  double   upoint    = firstrst1;
 
   if ((sol(1) - firstrst1) > (lastrst1 - sol(1)))
     upoint = lastrst1;
@@ -1390,17 +1382,17 @@ bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&    FinvP,
 // purpose  : This is the end of curve rst2
 //=======================================================================
 
-bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&    FinvP,
-                                                       math_Vector&               Solinv,
-                                                       bool&          IsVtx,
-                                                       occ::handle<Adaptor3d_HVertex>& Vtx)
+bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&         FinvP,
+                                           math_Vector&                    Solinv,
+                                           bool&                           IsVtx,
+                                           occ::handle<Adaptor3d_HVertex>& Vtx)
 {
   // One is located on the last or the first point, following the
   // direction of processing.
-  gp_Pnt2d      p2drst2;
-  double firstrst2 = rst2->FirstParameter();
-  double lastrst2  = rst2->LastParameter();
-  double vpoint    = firstrst2;
+  gp_Pnt2d p2drst2;
+  double   firstrst2 = rst2->FirstParameter();
+  double   lastrst2  = rst2->LastParameter();
+  double   vpoint    = firstrst2;
 
   if ((sol(2) - firstrst2) > (lastrst2 - sol(2)))
     vpoint = lastrst2;
@@ -1461,15 +1453,15 @@ bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&    FinvP,
 
 //=================================================================================================
 
-void BRepBlend_RstRstLineBuilder::Transition(const bool           OnFirst,
+void BRepBlend_RstRstLineBuilder::Transition(const bool                            OnFirst,
                                              const occ::handle<Adaptor2d_Curve2d>& Arc,
-                                             const double              Param,
-                                             IntSurf_Transition&              TLine,
-                                             IntSurf_Transition&              TArc)
+                                             const double                          Param,
+                                             IntSurf_Transition&                   TLine,
+                                             IntSurf_Transition&                   TArc)
 {
-  bool computetranstionaveclacorde = 0;
-  gp_Vec           tgline;
-  Blend_Point      prevprev;
+  bool        computetranstionaveclacorde = 0;
+  gp_Vec      tgline;
+  Blend_Point prevprev;
 
   if (previousP.IsTangencyPoint())
   {
@@ -1520,15 +1512,15 @@ void BRepBlend_RstRstLineBuilder::Transition(const bool           OnFirst,
 // purpose  : produce the extremity of a curve
 //=======================================================================
 
-void BRepBlend_RstRstLineBuilder::MakeExtremity(BRepBlend_Extremity&             Extrem,
-                                                const bool           OnFirst,
+void BRepBlend_RstRstLineBuilder::MakeExtremity(BRepBlend_Extremity&                  Extrem,
+                                                const bool                            OnFirst,
                                                 const occ::handle<Adaptor2d_Curve2d>& Arc,
-                                                const double              Param,
-                                                const bool           IsVtx,
+                                                const double                          Param,
+                                                const bool                            IsVtx,
                                                 const occ::handle<Adaptor3d_HVertex>& Vtx)
 {
-  IntSurf_Transition          Tline, Tarc;
-  double               prm;
+  IntSurf_Transition               Tline, Tarc;
+  double                           prm;
   occ::handle<Adaptor3d_TopolTool> Iter;
   if (OnFirst)
   {
@@ -1591,8 +1583,8 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst1(const Blend_Poin
   // rule by tests in U4 corresponds to 11.478
   const double CosRef3D = 0.98;
   double       Cosi, Cosi2;
-  bool    curpointistangent  = CurPoint.IsTangencyPoint();
-  bool    prevpointistangent = previousP.IsTangencyPoint();
+  bool         curpointistangent  = CurPoint.IsTangencyPoint();
+  bool         prevpointistangent = previousP.IsTangencyPoint();
 
   gp_Pnt Psurf = CurPoint.PointOnC1();
   gp_Vec Tgsurf;
@@ -1608,7 +1600,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst1(const Blend_Poin
   }
   double Norme;
   double prevNorme = 0.;
-  gp_Vec        Corde(prevP, Psurf);
+  gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent)
     prevNorme = prevTg.SquareMagnitude();
@@ -1677,8 +1669,8 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
   // rule by tests in U4 corresponding to 11.478 d
   const double CosRef3D = 0.98;
   double       Cosi, Cosi2;
-  bool    curpointistangent  = CurPoint.IsTangencyPoint();
-  bool    prevpointistangent = previousP.IsTangencyPoint();
+  bool         curpointistangent  = CurPoint.IsTangencyPoint();
+  bool         prevpointistangent = previousP.IsTangencyPoint();
 
   gp_Pnt Psurf = CurPoint.PointOnC2();
   gp_Vec Tgsurf;
@@ -1695,7 +1687,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
   }
   double Norme;
   double prevNorme = 0.;
-  gp_Vec        Corde(prevP, Psurf);
+  gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent)
     prevNorme = prevTg.SquareMagnitude();
@@ -1764,9 +1756,9 @@ static IntSurf_TypeTrans ConvOrToTra(const TopAbs_Orientation O)
 
 //=================================================================================================
 
-Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
-                                                    const bool TestDeflection,
-                                                    const Blend_Status     State)
+Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction& Func,
+                                                    const bool            TestDeflection,
+                                                    const Blend_Status    State)
 {
   gp_Pnt            ptrst1, ptrst2;
   gp_Pnt2d          pt2drst1, pt2drst2;
@@ -1779,10 +1771,10 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
   if (Func.IsSolution(sol, tolpoint3d))
   {
     bool curpointistangent = Func.IsTangencyPoint();
-    ptrst1                             = Func.PointOnRst1();
-    ptrst2                             = Func.PointOnRst2();
-    pt2drst1                           = Func.Pnt2dOnRst1();
-    pt2drst2                           = Func.Pnt2dOnRst2();
+    ptrst1                 = Func.PointOnRst1();
+    ptrst2                 = Func.PointOnRst2();
+    pt2drst1               = Func.Pnt2dOnRst1();
+    pt2drst2               = Func.Pnt2dOnRst2();
 
     if (curpointistangent)
     {
@@ -1845,7 +1837,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
       gp_Pnt2d p2drstref;
       gp_Vec2d tg2drstref;
       rst1->D1(sol(1), p2drstref, tg2drstref);
-      double      testra = tg2drst1.Dot(tg2drstref);
+      double             testra = tg2drst1.Dot(tg2drstref);
       TopAbs_Orientation Or     = domain1->Orientation(rst1);
 
       if (std::abs(testra) > tolpoint3d)
@@ -1910,9 +1902,9 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction&  Func,
 //=================================================================================================
 
 bool BRepBlend_RstRstLineBuilder::CheckInside(Blend_RstRstFunction& Func,
-                                                          TopAbs_State&         SituOnC1,
-                                                          TopAbs_State&         SituOnC2,
-                                                          Blend_DecrochStatus&  Decroch)
+                                              TopAbs_State&         SituOnC1,
+                                              TopAbs_State&         SituOnC2,
+                                              Blend_DecrochStatus&  Decroch)
 {
   //  bool inside = true;
   math_Vector tolerance(1, 2);

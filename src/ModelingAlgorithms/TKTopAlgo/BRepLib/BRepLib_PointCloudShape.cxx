@@ -32,8 +32,7 @@
 
 //=================================================================================================
 
-BRepLib_PointCloudShape::BRepLib_PointCloudShape(const TopoDS_Shape& theShape,
-                                                 const double theTol)
+BRepLib_PointCloudShape::BRepLib_PointCloudShape(const TopoDS_Shape& theShape, const double theTol)
     : myShape(theShape),
       myDist(0.0),
       myTol(theTol),
@@ -159,7 +158,7 @@ int BRepLib_PointCloudShape::NbPointsByTriangulation() const
   int aNbPoints = 0;
   for (TopExp_Explorer aExpF(myShape, TopAbs_FACE); aExpF.More(); aExpF.Next())
   {
-    TopLoc_Location            aLoc;
+    TopLoc_Location                 aLoc;
     occ::handle<Poly_Triangulation> aTriangulation =
       BRep_Tool::Triangulation(TopoDS::Face(aExpF.Current()), aLoc);
     if (aTriangulation.IsNull())
@@ -183,15 +182,15 @@ bool BRepLib_PointCloudShape::addDensityPoints(const TopoDS_Shape& theFace)
     return false;
   }
 
-  TopoDS_Face   aFace  = TopoDS::Face(theFace);
-  double anUMin = 0.0, anUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
+  TopoDS_Face aFace  = TopoDS::Face(theFace);
+  double      anUMin = 0.0, anUMax = 0.0, aVMin = 0.0, aVMax = 0.0;
   BRepTools::UVBounds(aFace, anUMin, anUMax, aVMin, aVMax);
   BRepTopAdaptor_FClass2d aClassifier(aFace, Precision::Confusion());
 
-  const TopLoc_Location& aLoc  = theFace.Location();
-  const gp_Trsf&         aTrsf = aLoc.Transformation();
-  TopLoc_Location        aLoc1;
-  occ::handle<Geom_Surface>   aSurf = BRep_Tool::Surface(aFace, aLoc1);
+  const TopLoc_Location&    aLoc  = theFace.Location();
+  const gp_Trsf&            aTrsf = aLoc.Transformation();
+  TopLoc_Location           aLoc1;
+  occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc1);
   if (aSurf.IsNull())
   {
     return false;
@@ -202,10 +201,10 @@ bool BRepLib_PointCloudShape::addDensityPoints(const TopoDS_Shape& theFace)
   std::uniform_real_distribution<> aVDistrib(aVMin, aVMax);
   for (int nbCurPnts = 1; nbCurPnts <= aNbPnts;)
   {
-    const double aU = anUDistrib(aRandomGenerator);
-    const double aV = aVDistrib(aRandomGenerator);
-    gp_Pnt2d            aUVNode(aU, aV);
-    const TopAbs_State  aState = aClassifier.Perform(aUVNode);
+    const double       aU = anUDistrib(aRandomGenerator);
+    const double       aV = aVDistrib(aRandomGenerator);
+    gp_Pnt2d           aUVNode(aU, aV);
+    const TopAbs_State aState = aClassifier.Perform(aUVNode);
     if (aState == TopAbs_OUT)
     {
       continue;
@@ -247,17 +246,17 @@ bool BRepLib_PointCloudShape::addDensityPoints(const TopoDS_Shape& theFace)
 
 bool BRepLib_PointCloudShape::addTriangulationPoints(const TopoDS_Shape& theFace)
 {
-  TopLoc_Location            aLoc;
-  TopoDS_Face                aFace          = TopoDS::Face(theFace);
+  TopLoc_Location                 aLoc;
+  TopoDS_Face                     aFace          = TopoDS::Face(theFace);
   occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
   if (aTriangulation.IsNull())
   {
     return false;
   }
 
-  TopLoc_Location      aLoc1;
+  TopLoc_Location           aLoc1;
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc1);
-  const gp_Trsf&       aTrsf = aLoc.Transformation();
+  const gp_Trsf&            aTrsf = aLoc.Transformation();
 
   BRepLib_ToolTriangulatedShape::ComputeNormals(aFace, aTriangulation);
   bool aHasUVNode = aTriangulation->HasUVNodes();

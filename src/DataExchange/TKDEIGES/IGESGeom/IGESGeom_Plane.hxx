@@ -38,13 +38,13 @@ class IGESGeom_Plane : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESGeom_Plane();
 
-  Standard_EXPORT void Init(const double                A,
-                            const double                B,
-                            const double                C,
-                            const double                D,
+  Standard_EXPORT void Init(const double                            A,
+                            const double                            B,
+                            const double                            C,
+                            const double                            D,
                             const occ::handle<IGESData_IGESEntity>& aCurve,
-                            const gp_XYZ&                      attach,
-                            const double                aSize);
+                            const gp_XYZ&                           attach,
+                            const double                            aSize);
 
   //! Changes FormNumber (indicates the Type of Bound :
   //! 0 no Bound, 1 (External) Bound, -1 Hole)
@@ -53,15 +53,9 @@ public:
   //! Error if not in ranges [0-1] or [10-12]
   Standard_EXPORT void SetFormNumber(const int form);
 
-  Standard_EXPORT void Equation(double& A,
-                                double& B,
-                                double& C,
-                                double& D) const;
+  Standard_EXPORT void Equation(double& A, double& B, double& C, double& D) const;
 
-  Standard_EXPORT void TransformedEquation(double& A,
-                                           double& B,
-                                           double& C,
-                                           double& D) const;
+  Standard_EXPORT void TransformedEquation(double& A, double& B, double& C, double& D) const;
 
   //! returns True if there exists a bounding curve
   Standard_EXPORT bool HasBoundingCurve() const;
@@ -89,13 +83,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Plane, IGESData_IGESEntity)
 
 private:
-  double               theA;
-  double               theB;
-  double               theC;
-  double               theD;
+  double                           theA;
+  double                           theB;
+  double                           theC;
+  double                           theD;
   occ::handle<IGESData_IGESEntity> theCurve;
-  gp_XYZ                      theAttach;
-  double               theSize;
+  gp_XYZ                           theAttach;
+  double                           theSize;
 };
 
 #endif // _IGESGeom_Plane_HeaderFile

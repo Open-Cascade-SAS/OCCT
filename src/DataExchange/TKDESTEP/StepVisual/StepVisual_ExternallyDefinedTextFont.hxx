@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepVisual_ExternallyDefinedTextFont();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedTextFont, StepBasic_ExternallyDefinedItem)
-
 };
 
 #endif // _StepVisual_ExternallyDefinedTextFont_HeaderFile

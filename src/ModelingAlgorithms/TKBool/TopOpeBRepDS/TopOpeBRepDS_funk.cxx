@@ -45,10 +45,10 @@ static TopAbs_State FUN_staPinF3d(const gp_Pnt& P, const TopoDS_Face& F)
 // prequesitory : the compute of state(P,3dmatter of F)
 // - solid classifier -
 {
-  TopAbs_State     st = TopAbs_UNKNOWN;
-  gp_Pnt2d         UV;
-  double    d  = 1.e2;
-  bool ok = FUN_tool_projPonboundedF(P, F, UV, d);
+  TopAbs_State st = TopAbs_UNKNOWN;
+  gp_Pnt2d     UV;
+  double       d  = 1.e2;
+  bool         ok = FUN_tool_projPonboundedF(P, F, UV, d);
   if (!ok)
     return st;
   double tolF = BRep_Tool::Tolerance(F);
@@ -59,16 +59,16 @@ static TopAbs_State FUN_staPinF3d(const gp_Pnt& P, const TopoDS_Face& F)
   gp_Dir ntF = FUN_tool_nggeomF(UV, F);
   if (F.Orientation() == TopAbs_REVERSED)
     ntF.Reverse();
-  gp_Dir        PpF(gp_Vec(P, pF));
+  gp_Dir PpF(gp_Vec(P, pF));
   double dot = ntF.Dot(PpF);
-  st                = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
+  st         = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
   return st;
 }
 
 Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
                                     const TopoDS_Face&              FS,
                                     const TopoDS_Edge&              EE,
-                                    const bool          EEofFF,
+                                    const bool                      EEofFF,
                                     TopAbs_State&                   stateb,
                                     TopAbs_State&                   statea,
                                     TopOpeBRepTool_PShapeClassifier pClassif)
@@ -76,7 +76,7 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   BRep_Builder BB;
 
   stateb = statea = TopAbs_UNKNOWN;
-  double      fE, lE;
+  double                  fE, lE;
   occ::handle<Geom_Curve> CEE = BRep_Tool::Curve(EE, fE, lE);
 
   if (CEE.IsNull())
@@ -85,8 +85,8 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
 
   double ttE  = 0.41237118973;
   double parE = (1 - ttE) * fE + ttE * lE;
-  gp_Pnt        PE;
-  gp_Vec        VE;
+  gp_Pnt PE;
+  gp_Vec VE;
   CEE->D1(parE, PE, VE);
 
   GeomAPI_ProjectPointOnSurf PonS(PE, SFF);
@@ -100,7 +100,7 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   gp_Vec d1u, d1v;
   gp_Pnt puv;
   SFF->D1(u, v, puv, d1u, d1v);
-  gp_Vec        N = d1u.Crossed(d1v);
+  gp_Vec N = d1u.Crossed(d1v);
   double FUMin, FUMax, FVMin, FVMax;
 
   // les bornes de FF
@@ -117,12 +117,12 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
     occ::handle<Geom2d_Curve> CEEFFx;
     if (CEE.IsNull())
     {
-      bool            compminmaxUV = false;
-      BRepAdaptor_Surface         BAS(FS, compminmaxUV);
+      bool                             compminmaxUV = false;
+      BRepAdaptor_Surface              BAS(FS, compminmaxUV);
       occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
-      BRepAdaptor_Curve           AC(EE, FS);
+      BRepAdaptor_Curve                AC(EE, FS);
       occ::handle<BRepAdaptor_Curve>   AHC = new BRepAdaptor_Curve(AC);
-      double               tolin;
+      double                           tolin;
       FTOL_FaceTolerances3d(FF, FS, tolin);
       ProjLib_ProjectedCurve projcurv(BAHS, AHC, tolin);
       CEEFFx = MakePCurve(projcurv);
@@ -205,9 +205,9 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   gp_Pnt Pa;
   SFF->D0(um, vm, Pa);
 
-  bool permute = false;
-  double    dot;
-  gp_Vec           VEcroN = VE.Crossed(N);
+  bool   permute = false;
+  double dot;
+  gp_Vec VEcroN = VE.Crossed(N);
   if (EisoV)
   {
     dot = VEcroN.Dot(d1u);

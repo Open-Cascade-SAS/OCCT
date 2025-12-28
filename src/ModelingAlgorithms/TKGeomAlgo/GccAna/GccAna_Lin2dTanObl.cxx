@@ -39,9 +39,9 @@
 //   by angle TheAngle ==> D1.                                            +
 //   create straight line passing through ThePoint of direction D1.              +
 //=========================================================================
-GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
-                                       const gp_Lin2d&     TheLine,
-                                       const double TheAngle)
+GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d& ThePoint,
+                                       const gp_Lin2d& TheLine,
+                                       const double    TheAngle)
     : linsol(1, 1),
       qualifier1(1, 1),
       pnttg1sol(1, 1),
@@ -98,7 +98,7 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
 
 GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
                                        const gp_Lin2d&             TheLine,
-                                       const double         TheAngle)
+                                       const double                TheAngle)
     : linsol(1, 2),
       qualifier1(1, 2),
       pnttg1sol(1, 2),
@@ -126,8 +126,8 @@ GccAna_Lin2dTanObl::GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
   }
   else
   {
-    gp_Circ2d     C1 = Qualified1.Qualified();
-    double R1 = C1.Radius();
+    gp_Circ2d C1 = Qualified1.Qualified();
+    double    R1 = C1.Radius();
     if (Qualified1.IsEnclosing())
     {
       //   =============================
@@ -246,8 +246,7 @@ gp_Lin2d GccAna_Lin2dTanObl::ThisSolution(const int Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanObl::WhichQualifier(const int Index,
-                                        GccEnt_Position&       Qualif1) const
+void GccAna_Lin2dTanObl::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -264,9 +263,9 @@ void GccAna_Lin2dTanObl::WhichQualifier(const int Index,
 }
 
 void GccAna_Lin2dTanObl::Tangency1(const int Index,
-                                   double&         ParSol,
-                                   double&         ParArg,
-                                   gp_Pnt2d&              PntSol) const
+                                   double&   ParSol,
+                                   double&   ParArg,
+                                   gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -285,9 +284,9 @@ void GccAna_Lin2dTanObl::Tangency1(const int Index,
 }
 
 void GccAna_Lin2dTanObl::Intersection2(const int Index,
-                                       double&         ParSol,
-                                       double&         ParArg,
-                                       gp_Pnt2d&              PntSol) const
+                                       double&   ParSol,
+                                       double&   ParArg,
+                                       gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

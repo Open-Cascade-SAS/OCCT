@@ -31,7 +31,6 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <NCollection_List.hxx>
-#include <IntSurf_PntOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
@@ -42,37 +41,37 @@
 static void SectionPointToParameters(const Intf_SectionPoint&   Sp,
                                      const IntPatch_Polyhedron& Surf1,
                                      const IntPatch_Polyhedron& Surf2,
-                                     double&             u1,
-                                     double&             v1,
-                                     double&             u2,
-                                     double&             v2);
+                                     double&                    u1,
+                                     double&                    v1,
+                                     double&                    u2,
+                                     double&                    v2);
 
-static void AdjustOnPeriodic(const occ::handle<Adaptor3d_Surface>& Surf1,
-                             const occ::handle<Adaptor3d_Surface>& Surf2,
-                             NCollection_Sequence<occ::handle<IntPatch_Line>>&         aSLin);
+static void AdjustOnPeriodic(const occ::handle<Adaptor3d_Surface>&             Surf1,
+                             const occ::handle<Adaptor3d_Surface>&             Surf2,
+                             NCollection_Sequence<occ::handle<IntPatch_Line>>& aSLin);
 
 static IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
                                     const IntSurf_PntOn2S& oldPnt,
-                                    const double*   Periods);
+                                    const double*          Periods);
 
-static bool IsPointOnLine(const IntSurf_PntOn2S&        thePOn2S,
-                                      const occ::handle<IntPatch_WLine>& theWLine,
-                                      const double           Deflection);
+static bool IsPointOnLine(const IntSurf_PntOn2S&             thePOn2S,
+                          const occ::handle<IntPatch_WLine>& theWLine,
+                          const double                       Deflection);
 
-static void AddWLine(NCollection_Sequence<occ::handle<IntPatch_Line>>&      theLines,
-                     const occ::handle<IntPatch_WLine>& theWLine,
-                     const double           Deflection);
+static void AddWLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& theLines,
+                     const occ::handle<IntPatch_WLine>&                theWLine,
+                     const double                                      Deflection);
 
 static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSurf1,
                                     const occ::handle<Adaptor3d_Surface>& theSurf2,
-                                    const NCollection_Sequence<occ::handle<IntPatch_Line>>&   theSLin,
-                                    const double* const       thePeriodsArr,
-                                    const IntSurf_TypeTrans          theTrans1,
-                                    const IntSurf_TypeTrans          theTrans2,
-                                    const double              theTol,
-                                    const double              theMaxStepS1,
-                                    const double              theMaxStepS2,
-                                    occ::handle<IntPatch_WLine>&          theWLline)
+                                    const NCollection_Sequence<occ::handle<IntPatch_Line>>& theSLin,
+                                    const double* const          thePeriodsArr,
+                                    const IntSurf_TypeTrans      theTrans1,
+                                    const IntSurf_TypeTrans      theTrans2,
+                                    const double                 theTol,
+                                    const double                 theMaxStepS1,
+                                    const double                 theMaxStepS2,
+                                    occ::handle<IntPatch_WLine>& theWLline)
 {
   if (theSLin.Length() == 0)
     return;
@@ -83,22 +82,22 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
   int ciV;
   for (ciV = 1; ciV <= cnbV; ciV++)
   {
-    double    pntDMin = 1.e+100;
-    int VDMin   = 0;
-    int WLDMin  = 0;
-    gp_Pnt           cPV     = theWLline->Vertex(ciV).Value();
+    double pntDMin = 1.e+100;
+    int    VDMin   = 0;
+    int    WLDMin  = 0;
+    gp_Pnt cPV     = theWLline->Vertex(ciV).Value();
     theWLline->Vertex(ciV).Parameters(aU1, aV1, aU2, aV2);
-    const gp_Pnt2d   aPCS1(aU1, aV1), aPCS2(aU2, aV2);
-    int iL;
+    const gp_Pnt2d aPCS1(aU1, aV1), aPCS2(aU2, aV2);
+    int            iL;
     for (iL = 1; iL <= theSLin.Length(); iL++)
     {
       const occ::handle<IntPatch_Line>& aSLine = theSLin.Value(iL);
-      IntPatch_IType               aType  = aSLine->ArcType();
+      IntPatch_IType                    aType  = aSLine->ArcType();
       if (aType != IntPatch_Walking)
         continue;
       const occ::handle<IntPatch_WLine> aWLine = occ::down_cast<IntPatch_WLine>(aSLine);
-      int             tnbV   = aWLine->NbVertex();
-      int             tiV;
+      int                               tnbV   = aWLine->NbVertex();
+      int                               tiV;
       for (tiV = 1; tiV <= tnbV; tiV++)
       {
         gp_Pnt tPV = aWLine->Vertex(tiV).Value();
@@ -119,7 +118,7 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
           if (pntDMin > tDistance && tDistance > Precision::PConfusion())
           {
             const double aSqDist1 = aPCS1.SquareDistance(aPTS1),
-                                aSqDist2 = aPCS2.SquareDistance(aPTS2);
+                         aSqDist2 = aPCS2.SquareDistance(aPTS2);
             if ((aSqDist1 < RmaxS1 * RmaxS1) && (aSqDist2 < RmaxS2 * RmaxS2))
             {
               pntDMin = tDistance;
@@ -135,23 +134,23 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
     {
       const occ::handle<IntPatch_Line>& aSLine = theSLin.Value(WLDMin);
       const occ::handle<IntPatch_WLine> aWLine = occ::down_cast<IntPatch_WLine>(aSLine);
-      int tiVpar = (int)aWLine->Vertex(VDMin).ParameterOnLine();
-      int ciVpar = (int)theWLline->Vertex(ciV).ParameterOnLine();
-      double    u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
-      double    u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
+      int                               tiVpar = (int)aWLine->Vertex(VDMin).ParameterOnLine();
+      int                               ciVpar = (int)theWLline->Vertex(ciV).ParameterOnLine();
+      double                            u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
+      double                            u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
       theWLline->Point(ciVpar).Parameters(u11, v11, u12, v12);
       aWLine->Point(tiVpar).Parameters(u21, v21, u22, v22);
 
       occ::handle<IntSurf_LineOn2S> newL2s     = new IntSurf_LineOn2S();
-      IntSurf_PntOn2S          replacePnt = aWLine->Point(tiVpar);
-      int         cNbP       = theWLline->NbPnts();
+      IntSurf_PntOn2S               replacePnt = aWLine->Point(tiVpar);
+      int                           cNbP       = theWLline->NbPnts();
 
       NCollection_Sequence<int> VPold;
-      int          iPo;
+      int                       iPo;
       for (iPo = 1; iPo <= cnbV; iPo++)
       {
-        double    Po  = theWLline->Vertex(iPo).ParameterOnLine();
-        int IPo = (int)Po;
+        double Po  = theWLline->Vertex(iPo).ParameterOnLine();
+        int    IPo = (int)Po;
         VPold.Append(IPo);
       }
 
@@ -229,8 +228,7 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
       newVtx.SetParameters(u21, v21, u22, v22);
       newVtx.SetParameter(VPold.Value(ciV));
 
-      occ::handle<IntPatch_WLine> NWLine =
-        new IntPatch_WLine(newL2s, false, theTrans1, theTrans2);
+      occ::handle<IntPatch_WLine> NWLine = new IntPatch_WLine(newL2s, false, theTrans1, theTrans2);
       NWLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
 
       int iV;
@@ -255,14 +253,15 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
 // function : DublicateOfLinesProcessing
 // purpose  : Decides, if rejecting current line is necessary
 //=======================================================================
-static void DublicateOfLinesProcessing(const IntWalk_PWalking&  thePW,
-                                       const int   theWLID,
+static void DublicateOfLinesProcessing(const IntWalk_PWalking&                           thePW,
+                                       const int                                         theWLID,
                                        NCollection_Sequence<occ::handle<IntPatch_Line>>& theLines,
-                                       bool&        theIsRejectReq)
+                                       bool& theIsRejectReq)
 {
-  const occ::handle<IntPatch_WLine>& anExistWL = *((occ::handle<IntPatch_WLine>*)&theLines.Value(theWLID));
-  const int        aNbPrevPoints = anExistWL->NbPnts();
-  const int        aNbCurrPoints = thePW.NbPoints();
+  const occ::handle<IntPatch_WLine>& anExistWL =
+    *((occ::handle<IntPatch_WLine>*)&theLines.Value(theWLID));
+  const int aNbPrevPoints = anExistWL->NbPnts();
+  const int aNbCurrPoints = thePW.NbPoints();
 
   if (aNbPrevPoints < aNbCurrPoints)
   { // Remove preview line
@@ -302,10 +301,10 @@ IntPatch_PrmPrmIntersection::IntPatch_PrmPrmIntersection()
 
 void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   IntPatch_Polyhedron Poly1(Surf1, D1->NbSamplesU(), D1->NbSamplesV());
   Perform(Surf1, Poly1, D1, TolTangency, Epsilon, Deflection, Increment);
@@ -314,14 +313,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 //=================================================================================================
 
 void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
-                                          const IntPatch_Polyhedron&         Poly1,
+                                          const IntPatch_Polyhedron&              Poly1,
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   IntPatch_Polyhedron Poly2(Surf2);
   Perform(Surf1, Poly1, D1, Surf2, Poly2, D2, TolTangency, Epsilon, Deflection, Increment);
@@ -332,12 +331,12 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
-                                          const IntPatch_Polyhedron&         Poly2,
+                                          const IntPatch_Polyhedron&              Poly2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   IntPatch_Polyhedron Poly1(Surf1);
   Perform(Surf1, Poly1, D1, Surf2, Poly2, D2, TolTangency, Epsilon, Deflection, Increment);
@@ -346,15 +345,15 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 //=================================================================================================
 
 void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
-                                          const IntPatch_Polyhedron&         Poly1,
+                                          const IntPatch_Polyhedron&              Poly1,
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
-                                          const IntPatch_Polyhedron&         Poly2,
+                                          const IntPatch_Polyhedron&              Poly2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   IntPatch_InterferencePolyhedron Interference(Poly1, Poly2);
   empt = true;
@@ -402,10 +401,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         int nb_A = Interference.LineValue(TabL[b - 1]).NumberOfPoints();
         if (nb_B > nb_A)
         {
-          int tyu = TabL[b];
-          TabL[b]              = TabL[b - 1];
-          TabL[b - 1]          = tyu;
-          triok                = false;
+          int tyu     = TabL[b];
+          TabL[b]     = TabL[b - 1];
+          TabL[b - 1] = tyu;
+          triok       = false;
         }
       }
     } while (triok == false);
@@ -413,7 +412,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     for (ls = 1; ls <= nbLigSec; ls++)
     {
       const Intf_SectionLine& LineSec = Interference.LineValue(TabL[ls]);
-      int        nbp     = LineSec.NumberOfPoints();
+      int                     nbp     = LineSec.NumberOfPoints();
 
       int* TabPtDep = new int[nbp + 1];
       int  ilig;
@@ -459,9 +458,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           VminLig2 = V2;
       }
 
-      int nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
-      int NombreDePointsDeDepartDuCheminement = 0;
-      int IndicePointdeDepart1 = 0, IndicePointdeDepart2 = 0;
+      int  nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
+      int  NombreDePointsDeDepartDuCheminement = 0;
+      int  IndicePointdeDepart1 = 0, IndicePointdeDepart2 = 0;
       bool lignetrouvee = false;
 
       do
@@ -469,7 +468,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         NombreDePointsDeDepartDuCheminement++;
         if (NombreDePointsDeDepartDuCheminement == 1)
         {
-          incidence               = 3.0;
+          incidence  = 3.0;
           int nbp1_4 = nbp / 4;
           int nbp3_4 = nbp - nbp1_4;
 
@@ -545,7 +544,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             int l;
             for (l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
             {
-              const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+              const occ::handle<IntPatch_WLine>& testwline =
+                *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
 
               if (IsPointOnLine(StartPOn2S, testwline, Deflection))
               {
@@ -604,10 +604,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   {
                     // Calculation transition
                     IntSurf_TypeTrans trans1, trans2;
-                    double     locu, locv;
+                    double            locu, locv;
                     gp_Vec            norm1, norm2, d1u, d1v;
                     gp_Pnt            ptbid;
-                    int  indextg;
+                    int               indextg;
                     gp_Vec            tgline(PW.TangentAtLine(indextg));
                     PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                     Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -626,26 +626,16 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                       trans2 = IntSurf_Out;
                     }
 
-                    double          TolTang = TolTangency;
+                    double                      TolTang = TolTangency;
                     occ::handle<IntPatch_WLine> wline =
                       new IntPatch_WLine(PW.Line(), false, trans1, trans2);
                     wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
 
                     // the method PutVertexOnLine can reduce the number of points in <wline>
-                    IntPatch_RstInt::PutVertexOnLine(wline,
-                                                     Surf1,
-                                                     D1,
-                                                     Surf2,
-                                                     true,
-                                                     TolTang);
+                    IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                     if (wline->NbPnts() < 2)
                       continue;
-                    IntPatch_RstInt::PutVertexOnLine(wline,
-                                                     Surf2,
-                                                     D2,
-                                                     Surf1,
-                                                     false,
-                                                     TolTang);
+                    IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                     if (wline->NbPnts() < 2)
                       continue;
 
@@ -723,7 +713,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   for (z = 1; z <= nbTanZon; z++)
   {
     const Intf_TangentZone& TangentZone = Interference.ZoneValue(z);
-    int        pz;
+    int                     pz;
     for (pz = 1; pz <= TangentZone.NumberOfPoints(); pz++)
     {
       SectionPointToParameters(TangentZone.GetPoint(pz), Poly1, Poly2, U1, V1, U2, V2);
@@ -742,7 +732,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         int l;
         for (l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
         {
-          const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+          const occ::handle<IntPatch_WLine>& testwline =
+            *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
 
           if (IsPointOnLine(StartPOn2S, testwline, Deflection))
           {
@@ -800,10 +791,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               if (!RejetLigne)
               {
                 IntSurf_TypeTrans trans1, trans2;
-                double     locu, locv;
+                double            locu, locv;
                 gp_Vec            norm1, norm2, d1u, d1v;
                 gp_Pnt            ptbid;
-                int  indextg;
+                int               indextg;
                 gp_Vec            tgline(PW.TangentAtLine(indextg));
                 PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                 Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -822,7 +813,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   trans2 = IntSurf_Out;
                 }
 
-                double          TolTang = TolTangency;
+                double                      TolTang = TolTangency;
                 occ::handle<IntPatch_WLine> wline =
                   new IntPatch_WLine(PW.Line(), false, trans1, trans2);
                 wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -867,12 +858,12 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 //=================================================================================================
 
 void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>&   Surf1,
-                                          const IntPatch_Polyhedron&         Poly1,
+                                          const IntPatch_Polyhedron&              Poly1,
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   IntPatch_InterferencePolyhedron Interference(Poly1);
   empt = true;
@@ -889,7 +880,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   double pu1, pu2, pv1, pv2;
 
   NCollection_Array1<double> StartParams(1, 4);
-  IntWalk_PWalking     PW(Surf1, Surf1, TolTangency, Epsilon, Deflection, Increment);
+  IntWalk_PWalking           PW(Surf1, Surf1, TolTangency, Epsilon, Deflection, Increment);
 
   double SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
   double incidence;
@@ -909,10 +900,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     for (ls = 1; ls <= nbLigSec; ls++)
     {
       const Intf_SectionLine& LineSec                             = Interference.LineValue(ls);
-      int        nbp                                 = LineSec.NumberOfPoints();
-      int        nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
-      int        NombreDePointsDeDepartDuCheminement = 0;
-      int        IndicePointdeDepart1 = 0, IndicePointdeDepart2 = 0;
+      int                     nbp                                 = LineSec.NumberOfPoints();
+      int                     nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
+      int                     NombreDePointsDeDepartDuCheminement = 0;
+      int                     IndicePointdeDepart1 = 0, IndicePointdeDepart2 = 0;
       do
       {
         NombreDePointsDeDepartDuCheminement++;
@@ -985,7 +976,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             int l;
             for (l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
             {
-              const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+              const occ::handle<IntPatch_WLine>& testwline =
+                *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
               if ((testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == false)
                   && (testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == false)
                   && (testwline->IsOutBox(StartPOn2S.Value()) == false))
@@ -1057,10 +1049,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   if (!RejetLigne)
                   {
                     IntSurf_TypeTrans trans1, trans2;
-                    double     locu, locv;
+                    double            locu, locv;
                     gp_Vec            norm1, norm2, d1u, d1v;
                     gp_Pnt            ptbid;
-                    int  indextg;
+                    int               indextg;
                     gp_Vec            tgline(PW.TangentAtLine(indextg));
                     PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                     Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -1080,7 +1072,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     }
 
                     IntSurf_LineOn2S LineOn2S;
-                    int nbpw, imin, imax, i;
+                    int              nbpw, imin, imax, i;
                     nbpw = PW.Line()->NbPoints();
                     double u1, v1, u2, v2;
                     i = 0;
@@ -1114,7 +1106,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                       for (i = imin; i <= imax; i++)
                         PWLine->Add(PW.Line()->Value(i));
 
-                      double          TolTang = TolTangency;
+                      double                      TolTang = TolTangency;
                       occ::handle<IntPatch_WLine> wline =
                         new IntPatch_WLine(PWLine, false, trans1, trans2);
                       wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -1132,12 +1124,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                         wline->SetPoint(wline->NbPnts(), vtx);
                       }
                       // the method PutVertexOnLine can reduce the number of points in <wline>
-                      IntPatch_RstInt::PutVertexOnLine(wline,
-                                                       Surf1,
-                                                       D1,
-                                                       Surf1,
-                                                       true,
-                                                       TolTang);
+                      IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf1, true, TolTang);
                       if (wline->NbPnts() < 2)
                         continue;
                       if (wline->NbVertex() == 0)
@@ -1194,7 +1181,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           int l;
           for (l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
           {
-            const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+            const occ::handle<IntPatch_WLine>& testwline =
+              *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
             if ((testwline->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == false)
                 && (testwline->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == false)
                 && (testwline->IsOutBox(StartPOn2S.Value()) == false))
@@ -1265,10 +1253,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 if (!RejetLigne)
                 {
                   IntSurf_TypeTrans trans1, trans2;
-                  double     locu, locv;
+                  double            locu, locv;
                   gp_Vec            norm1, norm2, d1u, d1v;
                   gp_Pnt            ptbid;
-                  int  indextg;
+                  int               indextg;
                   gp_Vec            tgline(PW.TangentAtLine(indextg));
                   PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                   Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -1288,7 +1276,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   }
 
                   IntSurf_LineOn2S LineOn2S;
-                  int nbp, imin, imax, i;
+                  int              nbp, imin, imax, i;
                   nbp = PW.Line()->NbPoints();
                   double u1, v1, u2, v2;
                   i = 0;
@@ -1321,7 +1309,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     for (i = imin; i <= imax; i++)
                       PWLine->Add(PW.Line()->Value(i));
 
-                    double          TolTang = TolTangency;
+                    double                      TolTang = TolTangency;
                     occ::handle<IntPatch_WLine> wline =
                       new IntPatch_WLine(PWLine, false, trans1, trans2);
                     wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -1340,12 +1328,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     }
 
                     // the method PutVertexOnLine can reduce the number of points in <wline>
-                    IntPatch_RstInt::PutVertexOnLine(wline,
-                                                     Surf1,
-                                                     D1,
-                                                     Surf1,
-                                                     true,
-                                                     TolTang);
+                    IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf1, true, TolTang);
                     if (wline->NbPnts() < 2)
                       continue;
 
@@ -1385,10 +1368,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
   const occ::handle<Adaptor3d_Surface>& Surf1,
   const occ::handle<Adaptor3d_Surface>& Surf2,
-  const int           NumLine,
-  const int           Low,
-  const int           High,
-  const int           NbPntsToInsert) const
+  const int                             NumLine,
+  const int                             Low,
+  const int                             High,
+  const int                             NbPntsToInsert) const
 {
   int NbPnts = NbPntsToInsert + High - Low;
   if (NumLine > NbLines() || NumLine < 1 || Low >= High)
@@ -1408,10 +1391,10 @@ occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
   NCollection_Array1<double> V2(Low, High);
   NCollection_Array1<double> AC(Low, High);
 
-  double          s, ds;
+  double                      s, ds;
   occ::handle<IntPatch_WLine> TheLine = occ::down_cast<IntPatch_WLine>(Line(NumLine));
-  const IntSurf_PntOn2S& Point   = TheLine->Point(Low);
-  double          u1, v1, u2, v2;
+  const IntSurf_PntOn2S&      Point   = TheLine->Point(Low);
+  double                      u1, v1, u2, v2;
   Point.Parameters(u1, v1, u2, v2);
   U1(Low) = u1;
   V1(Low) = v1;
@@ -1439,12 +1422,12 @@ occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
 
   occ::handle<IntSurf_LineOn2S> ResultPntOn2SLine = new IntSurf_LineOn2S();
 
-  IntSurf_PntOn2S      StartPOn2S;
+  IntSurf_PntOn2S            StartPOn2S;
   NCollection_Array1<double> StartParams(1, 4);
 
   ResultPntOn2SLine->Add(TheLine->Point(Low));
 
-  ds                      = AC(High) / (NbPnts - 1);
+  ds         = AC(High) / (NbPnts - 1);
   int Indice = Low;
 
   double dsmin = ds * 0.3;
@@ -1493,15 +1476,15 @@ occ::handle<IntPatch_Line> IntPatch_PrmPrmIntersection::NewLine(
 void SectionPointToParameters(const Intf_SectionPoint&   Sp,
                               const IntPatch_Polyhedron& Poly1,
                               const IntPatch_Polyhedron& Poly2,
-                              double&             u1,
-                              double&             v1,
-                              double&             u2,
-                              double&             v2)
+                              double&                    u1,
+                              double&                    v1,
+                              double&                    u2,
+                              double&                    v2)
 {
-  Intf_PIType      typ;
-  int Adr1, Adr2;
-  double    Param, u, v;
-  gp_Pnt           P(Sp.Pnt());
+  Intf_PIType typ;
+  int         Adr1, Adr2;
+  double      Param, u, v;
+  gp_Pnt      P(Sp.Pnt());
 
   int Pt1, Pt2, Pt3;
 
@@ -1596,12 +1579,12 @@ void SectionPointToParameters(const Intf_SectionPoint&   Sp,
 
 //=================================================================================================
 
-void IntPatch_PrmPrmIntersection::RemplitLin(const int              x1,
-                                             const int              y1,
-                                             const int              z1,
-                                             const int              x2,
-                                             const int              y2,
-                                             const int              z2,
+void IntPatch_PrmPrmIntersection::RemplitLin(const int                           x1,
+                                             const int                           y1,
+                                             const int                           z1,
+                                             const int                           x2,
+                                             const int                           y2,
+                                             const int                           z2,
                                              IntPatch_PrmPrmIntersection_T3Bits& Map) const
 {
   int xg, yg, zg;
@@ -1630,15 +1613,15 @@ void IntPatch_PrmPrmIntersection::RemplitLin(const int              x1,
 
 //=================================================================================================
 
-void IntPatch_PrmPrmIntersection::RemplitTri(const int              x1,
-                                             const int              y1,
-                                             const int              z1,
-                                             const int              x2,
-                                             const int              y2,
-                                             const int              z2,
-                                             const int              x3,
-                                             const int              y3,
-                                             const int              z3,
+void IntPatch_PrmPrmIntersection::RemplitTri(const int                           x1,
+                                             const int                           y1,
+                                             const int                           z1,
+                                             const int                           x2,
+                                             const int                           y2,
+                                             const int                           z2,
+                                             const int                           x3,
+                                             const int                           y3,
+                                             const int                           z3,
                                              IntPatch_PrmPrmIntersection_T3Bits& Map) const
 {
   if (x1 == x2 && x1 == x3 && y1 == y2 && y1 == y3 && z1 == z2 && z1 == z3)
@@ -1689,9 +1672,9 @@ void IntPatch_PrmPrmIntersection::RemplitTri(const int              x1,
 
 //=================================================================================================
 
-void IntPatch_PrmPrmIntersection::Remplit(const int              a,
-                                          const int              b,
-                                          const int              c,
+void IntPatch_PrmPrmIntersection::Remplit(const int                           a,
+                                          const int                           b,
+                                          const int                           c,
                                           IntPatch_PrmPrmIntersection_T3Bits& Map) const
 {
   int iax, iay, iaz, ibx, iby, ibz, icx, icy, icz;
@@ -1717,11 +1700,11 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment,
-                                          NCollection_List<IntSurf_PntOn2S>&             LOfPnts)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment,
+                                          NCollection_List<IntSurf_PntOn2S>&      LOfPnts)
 {
   if (LOfPnts.IsEmpty())
   {
@@ -1754,9 +1737,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   NCollection_List<IntSurf_PntOn2S>::Iterator IterLOP1(LOfPnts);
   if (Surf1->IsUClosed() || Surf1->IsVClosed() || Surf2->IsUClosed() || Surf2->IsVClosed())
   {
-    constexpr double TolPar = Precision::PConfusion();
-    NCollection_List<IntSurf_PntOn2S>   AdditionalPnts;
-    double           NewU1, NewV1, NewU2, NewV2;
+    constexpr double                  TolPar = Precision::PConfusion();
+    NCollection_List<IntSurf_PntOn2S> AdditionalPnts;
+    double                            NewU1, NewV1, NewU2, NewV2;
     for (; IterLOP1.More(); IterLOP1.Next())
     {
       IntSurf_PntOn2S Pnt = IterLOP1.Value();
@@ -1869,14 +1852,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 
   double SeuildPointLigne = 15.0 * Increment * Increment;
 
-  int NbLigCalculee = 0, ver;
-  double    pu1, pu2, pv1, pv2, dminiPointLigne;
-  bool HasStartPoint, RejetLigne;
-  IntSurf_PntOn2S  StartPOn2S;
-  gp_Pnt           Point3dDebut, Point3dFin;
+  int             NbLigCalculee = 0, ver;
+  double          pu1, pu2, pv1, pv2, dminiPointLigne;
+  bool            HasStartPoint, RejetLigne;
+  IntSurf_PntOn2S StartPOn2S;
+  gp_Pnt          Point3dDebut, Point3dFin;
 
   NCollection_Array1<double> StartParams(1, 4);
-  IntWalk_PWalking     PW(Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment);
+  IntWalk_PWalking           PW(Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment);
 
   NCollection_List<IntSurf_PntOn2S>::Iterator IterLOP2(LOfPnts);
   for (; IterLOP2.More(); IterLOP2.Next())
@@ -1899,7 +1882,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       int l;
       for (l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
       {
-        const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+        const occ::handle<IntPatch_WLine>& testwline =
+          *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
 
         if (IsPointOnLine(StartPOn2S, testwline, Deflection))
         {
@@ -1931,7 +1915,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             Point3dFin                      = PointFin.Value();
             for (ver = 1; ver <= NbLigCalculee; ver++)
             {
-              const occ::handle<IntPatch_WLine>& verwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(ver));
+              const occ::handle<IntPatch_WLine>& verwline =
+                *((occ::handle<IntPatch_WLine>*)&SLin.Value(ver));
 
               // Check end point if it is on existing line.
               // Start point is checked before.
@@ -1959,10 +1944,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             if (!RejetLigne)
             {
               IntSurf_TypeTrans trans1, trans2;
-              double     locu, locv;
+              double            locu, locv;
               gp_Vec            norm1, norm2, d1u, d1v;
               gp_Pnt            ptbid;
-              int  indextg;
+              int               indextg;
               gp_Vec            tgline(PW.TangentAtLine(indextg));
               PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
               Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -1981,7 +1966,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 trans2 = IntSurf_Out;
               }
 
-              double          TolTang = TolTangency;
+              double                      TolTang = TolTangency;
               occ::handle<IntPatch_WLine> wline =
                 new IntPatch_WLine(PW.Line(), false, trans1, trans2);
               wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -2041,14 +2026,14 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                U1Depart,
-                                          const double                V1Depart,
-                                          const double                U2Depart,
-                                          const double                V2Depart,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment)
+                                          const double                            U1Depart,
+                                          const double                            V1Depart,
+                                          const double                            U2Depart,
+                                          const double                            V2Depart,
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment)
 {
   //    int NbU1 = D1->NbSamplesU();
   //    int NbV1 = D1->NbSamplesV();
@@ -2123,10 +2108,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         Point3dFin   = PW.Value(PW.NbPoints()).Value();
 
         IntSurf_TypeTrans trans1, trans2;
-        double     locu, locv;
+        double            locu, locv;
         gp_Vec            norm1, norm2, d1u, d1v;
         gp_Pnt            ptbid;
-        int  indextg;
+        int               indextg;
         gp_Vec            tgline(PW.TangentAtLine(indextg));
         PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
         Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -2145,9 +2130,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           trans2 = IntSurf_Out;
         }
 
-        double          TolTang = TolTangency;
-        occ::handle<IntPatch_WLine> wline =
-          new IntPatch_WLine(PW.Line(), false, trans1, trans2);
+        double                      TolTang = TolTangency;
+        occ::handle<IntPatch_WLine> wline   = new IntPatch_WLine(PW.Line(), false, trans1, trans2);
         wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
 
         // the method PutVertexOnLine can reduce the number of points in <wline>
@@ -2187,13 +2171,13 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 
 //=================================================================================================
 
-void AdjustOnPeriodic(const occ::handle<Adaptor3d_Surface>& Surf1,
-                      const occ::handle<Adaptor3d_Surface>& Surf2,
-                      NCollection_Sequence<occ::handle<IntPatch_Line>>&         aSLin)
+void AdjustOnPeriodic(const occ::handle<Adaptor3d_Surface>&             Surf1,
+                      const occ::handle<Adaptor3d_Surface>&             Surf2,
+                      NCollection_Sequence<occ::handle<IntPatch_Line>>& aSLin)
 {
-  bool bIsPeriodic[4], bModified, bIsNull, bIsPeriod;
-  int i, j, k, aNbLines, aNbPx, aIndx, aIndq;
-  double    aPeriod[4], dPeriod[4], ux[4], uq[4], aEps, du;
+  bool   bIsPeriodic[4], bModified, bIsNull, bIsPeriod;
+  int    i, j, k, aNbLines, aNbPx, aIndx, aIndq;
+  double aPeriod[4], dPeriod[4], ux[4], uq[4], aEps, du;
   //
   aEps = Precision::Confusion();
   //
@@ -2312,7 +2296,7 @@ void AdjustOnPeriodic(const occ::handle<Adaptor3d_Surface>& Surf1,
 
 IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
                              const IntSurf_PntOn2S& oldPnt,
-                             const double*   Periods)
+                             const double*          Periods)
 {
   IntSurf_PntOn2S NewPoint;
   NewPoint.SetValue(replacePnt.Value());
@@ -2346,11 +2330,11 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                                           const occ::handle<Adaptor3d_TopolTool>& D1,
                                           const occ::handle<Adaptor3d_Surface>&   Surf2,
                                           const occ::handle<Adaptor3d_TopolTool>& D2,
-                                          const double                TolTangency,
-                                          const double                Epsilon,
-                                          const double                Deflection,
-                                          const double                Increment,
-                                          const bool             ClearFlag)
+                                          const double                            TolTangency,
+                                          const double                            Epsilon,
+                                          const double                            Deflection,
+                                          const double                            Increment,
+                                          const bool                              ClearFlag)
 {
   int Limit = 2500;
   int NbU1 = 10, NbV1 = 10, NbU2 = 10, NbV2 = 10;
@@ -2417,18 +2401,18 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       return;
     }
 
-    int nbLigSec         = Interference.NbSectionLines();
-    int nbTanZon         = Interference.NbTangentZones();
-    double    SeuildPointLigne = 15.0 * Increment * Increment;
+    int    nbLigSec         = Interference.NbSectionLines();
+    int    nbTanZon         = Interference.NbTangentZones();
+    double SeuildPointLigne = 15.0 * Increment * Increment;
 
-    int NbLigCalculee = 0, ver;
-    double    pu1, pu2, pv1, pv2, incidence, dminiPointLigne;
-    bool HasStartPoint = false, RejectLine = false;
-    IntSurf_PntOn2S  StartPOn2S;
-    gp_Pnt           Point3dDebut, Point3dFin;
+    int             NbLigCalculee = 0, ver;
+    double          pu1, pu2, pv1, pv2, incidence, dminiPointLigne;
+    bool            HasStartPoint = false, RejectLine = false;
+    IntSurf_PntOn2S StartPOn2S;
+    gp_Pnt          Point3dDebut, Point3dFin;
 
     NCollection_Array1<double> StartParams(1, 4);
-    IntWalk_PWalking     PW(Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment);
+    IntWalk_PWalking           PW(Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment);
 
     if (nbLigSec >= 1)
     {
@@ -2440,7 +2424,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       //----------------------------------------1.1
       {
         bool triok;
-        int nb_A, nb_B, tyu;
+        int  nb_A, nb_B, tyu;
         do
         {
           triok = true;
@@ -2517,7 +2501,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         // 1.3
         int       nbps2                               = (nbp > 3) ? (nbp / 2) : 1;
         int       NombreDePointsDeDepartDuCheminement = 0;
-        bool       lignetrouvee                        = false;
+        bool      lignetrouvee                        = false;
         const int NbDePointsDeDepartDuChmLimit        = 5;
         //
         do
@@ -2594,8 +2578,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                            VmaxLig2);
 
                 //
-                bool bPWIsDone;
-                double    aD11, aD12, aD21, aD22, aDx;
+                bool   bPWIsDone;
+                double aD11, aD12, aD21, aD22, aDx;
                 //
                 bPWIsDone = PW.IsDone();
 
@@ -2693,10 +2677,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                     if (!RejectLine)
                     {
                       IntSurf_TypeTrans trans1, trans2;
-                      double     locu, locv;
+                      double            locu, locv;
                       gp_Vec            norm1, norm2, d1u, d1v;
                       gp_Pnt            ptbid;
-                      int  indextg;
+                      int               indextg;
                       gp_Vec            tgline(PW.TangentAtLine(indextg));
                       PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                       Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -2715,26 +2699,16 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                         trans2 = IntSurf_Out;
                       }
 
-                      double          TolTang = TolTangency;
+                      double                      TolTang = TolTangency;
                       occ::handle<IntPatch_WLine> wline =
                         new IntPatch_WLine(PW.Line(), false, trans1, trans2);
                       wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
                       wline->EnablePurging(!hasBeenAdded);
                       // the method PutVertexOnLine can reduce the number of points in <wline>
-                      IntPatch_RstInt::PutVertexOnLine(wline,
-                                                       Surf1,
-                                                       D1,
-                                                       Surf2,
-                                                       true,
-                                                       TolTang);
+                      IntPatch_RstInt::PutVertexOnLine(wline, Surf1, D1, Surf2, true, TolTang);
                       if (wline->NbPnts() < 2)
                         continue;
-                      IntPatch_RstInt::PutVertexOnLine(wline,
-                                                       Surf2,
-                                                       D2,
-                                                       Surf1,
-                                                       false,
-                                                       TolTang);
+                      IntPatch_RstInt::PutVertexOnLine(wline, Surf2, D2, Surf1, false, TolTang);
                       if (wline->NbPnts() < 2)
                         continue;
                       if (wline->NbVertex() == 0)
@@ -2806,9 +2780,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     {
       // int NbPointsInTangentZone=Interference.NbPointsInTangentZone(z);
       // for(int pz=1; pz<=NbPointsInTangentZone; pz++) {
-      int pz = 1;
-      double    _x, _y, _z;
-      double    U1, U2, V1, V2;
+      int    pz = 1;
+      double _x, _y, _z;
+      double U1, U2, V1, V2;
       Interference.GetTangentZonePoint(z, pz, _x, _y, _z, U1, V1, U2, V2);
 
       if (U1 > UmaxLig1)
@@ -2835,9 +2809,9 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     {
       // int NbPointsInTangentZone=Interference.NbPointsInTangentZone(z);
       // for(int pz=1; pz<=NbPointsInTangentZone; pz++) {
-      int pz = 1;
-      double    _x, _y, _z;
-      double    U1, U2, V1, V2;
+      int    pz = 1;
+      double _x, _y, _z;
+      double U1, U2, V1, V2;
       Interference.GetTangentZonePoint(z, pz, _x, _y, _z, U1, V1, U2, V2);
 
       StartParams(1) = U1;
@@ -2861,10 +2835,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         NbLigCalculee   = SLin.Length();
         dminiPointLigne = SeuildPointLigne + SeuildPointLigne;
 
-        for (int l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne);
-             l++)
+        for (int l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
         {
-          const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+          const occ::handle<IntPatch_WLine>& testwline =
+            *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
 
           if (IsPointOnLine(StartPOn2S, testwline, Deflection))
           {
@@ -2944,10 +2918,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               if (!RejectLine)
               {
                 IntSurf_TypeTrans trans1, trans2;
-                double     locu, locv;
+                double            locu, locv;
                 gp_Vec            norm1, norm2, d1u, d1v;
                 gp_Pnt            ptbid;
-                int  indextg;
+                int               indextg;
                 gp_Vec            tgline(PW.TangentAtLine(indextg));
                 PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
                 Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -2966,7 +2940,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                   trans2 = IntSurf_Out;
                 }
 
-                double          TolTang = TolTangency;
+                double                      TolTang = TolTangency;
                 occ::handle<IntPatch_WLine> wline =
                   new IntPatch_WLine(PW.Line(), false, trans1, trans2);
                 wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -3028,12 +3002,12 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   empt = true;
   done = true;
 
-  int NbLigCalculee = 0;
-  double    U1, U2, V1, V2;
-  double    pu1, pu2, pv1, pv2;
+  int    NbLigCalculee = 0;
+  double U1, U2, V1, V2;
+  double pu1, pu2, pv1, pv2;
 
   NCollection_Array1<double> StartParams(1, 4);
-  int     MaxOscill = NbU1;
+  int                        MaxOscill = NbU1;
   if (MaxOscill < NbU2)
     MaxOscill = NbU2;
   if (MaxOscill < NbV1)
@@ -3046,11 +3020,11 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   // nIncrement/=0.5*MaxOscill;
 
   IntWalk_PWalking PW(Surf1, Surf2, TolTangency, Epsilon, Deflection, nIncrement);
-  double    SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
-  double    dminiPointLigne;
-  bool HasStartPoint, RejetLigne;
+  double           SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
+  double           dminiPointLigne;
+  bool             HasStartPoint, RejetLigne;
   IntSurf_PntOn2S  StartPOn2S;
-  int ver;
+  int              ver;
   gp_Pnt           Point3dDebut, Point3dFin;
 
   //------------------------------------------------------------
@@ -3082,10 +3056,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       NbLigCalculee   = SLin.Length();
       dminiPointLigne = SeuildPointLigne + SeuildPointLigne;
 
-      for (int l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne);
-           l++)
+      for (int l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)
       {
-        const occ::handle<IntPatch_WLine>& testwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
+        const occ::handle<IntPatch_WLine>& testwline =
+          *((occ::handle<IntPatch_WLine>*)&SLin.Value(l));
 
         if (IsPointOnLine(StartPOn2S, testwline, Deflection))
         {
@@ -3118,7 +3092,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
 
             for (ver = 1; ver <= NbLigCalculee; ver++)
             {
-              const occ::handle<IntPatch_WLine>& verwline = *((occ::handle<IntPatch_WLine>*)&SLin.Value(ver));
+              const occ::handle<IntPatch_WLine>& verwline =
+                *((occ::handle<IntPatch_WLine>*)&SLin.Value(ver));
               //-- occ::handle<IntPatch_WLine>
               // verwline=occ::down_cast<IntPatch_WLine>(SLin.Value(ver));
 
@@ -3148,10 +3123,10 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             if (!RejetLigne)
             {
               IntSurf_TypeTrans trans1, trans2;
-              double     locu, locv;
+              double            locu, locv;
               gp_Vec            norm1, norm2, d1u, d1v;
               gp_Pnt            ptbid;
-              int  indextg;
+              int               indextg;
               gp_Vec            tgline(PW.TangentAtLine(indextg));
               PW.Line()->Value(indextg).ParametersOnS1(locu, locv);
               Surf1->D1(locu, locv, ptbid, d1u, d1v);
@@ -3170,7 +3145,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 trans2 = IntSurf_Out;
               }
 
-              double          TolTang = TolTangency;
+              double                      TolTang = TolTangency;
               occ::handle<IntPatch_WLine> wline =
                 new IntPatch_WLine(PW.Line(), false, trans1, trans2);
               wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
@@ -3264,10 +3239,7 @@ public:
   };
 
   //---------------------------------------- Index
-  int Index(const int i, const int j) const
-  {
-    return i * myNBI + j;
-  };
+  int Index(const int i, const int j) const { return i * myNBI + j; };
 
   //---------------------------------------- NBI
   int NBI() const { return myNBI; };
@@ -3279,16 +3251,10 @@ public:
   char& xP2DS1(const int i, const int j) { return myP2DS1[Index(i, j)]; };
 
   //----------------------------------------xIP1
-  int& xIP1(const int i, const int j)
-  {
-    return myIP1[Index(i, j)];
-  };
+  int& xIP1(const int i, const int j) { return myIP1[Index(i, j)]; };
 
   //----------------------------------------xIP2
-  int& xIP2(const int i, const int j)
-  {
-    return myIP2[Index(i, j)];
-  };
+  int& xIP2(const int i, const int j) { return myIP2[Index(i, j)]; };
 
   //----------------------------------------xP1
   gp_Pnt& xP1(const int i, const int j) { return myP1[Index(i, j)]; };
@@ -3301,13 +3267,13 @@ private:
   IntPatch_InfoPD& operator=(const IntPatch_InfoPD&);
 
 private:
-  int  myNBI;
-  char*             myP1DS2;
-  char*             myP2DS1;
-  int* myIP1;
-  int* myIP2;
-  gp_Pnt*           myP1;
-  gp_Pnt*           myP2;
+  int     myNBI;
+  char*   myP1DS2;
+  char*   myP2DS1;
+  int*    myIP1;
+  int*    myIP2;
+  gp_Pnt* myP1;
+  gp_Pnt* myP2;
 };
 
 // modified by NIZNHY-PKV Tue May 24 11:38:55 2011t
@@ -3315,23 +3281,23 @@ private:
 
 void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&        LineOn2S,
                                               const occ::handle<Adaptor3d_Surface>& S1,
-                                              const int           SU_1,
-                                              const int           SV_1,
+                                              const int                             SU_1,
+                                              const int                             SV_1,
                                               const occ::handle<Adaptor3d_Surface>& S2,
-                                              const int           SU_2,
-                                              const int           SV_2) const
+                                              const int                             SU_2,
+                                              const int                             SV_2) const
 {
   int i, j, xNBI;
   // modified by NIZNHY-PKV Tue May 24 11:37:38 2011f
   xNBI = 200;
   IntPatch_InfoPD aIPD(xNBI);
   // modified by NIZNHY-PKV Wed May 25 06:47:12 2011t
-  int iC15, SU1, SV1, SU2, SV2;
-  double    U0, U1, V0, V1, U, V;
-  double    resu0, resv0;
-  double    du1, du2, dv1, dv2, dmaxOn1, dmaxOn2;
-  double    x0, y0, z0, x1, y1, z1, d;
-  Bnd_Box          Box1, Box2;
+  int     iC15, SU1, SV1, SU2, SV2;
+  double  U0, U1, V0, V1, U, V;
+  double  resu0, resv0;
+  double  du1, du2, dv1, dv2, dmaxOn1, dmaxOn2;
+  double  x0, y0, z0, x1, y1, z1, d;
+  Bnd_Box Box1, Box2;
   //
   iC15 = 15;
   SU1  = iC15 * SU_1;
@@ -3424,11 +3390,11 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
     return;
   }
   //
-  int aNbPG;
-  double    x10, y10, z10, x11, y11, z11;
-  double    x20, y20, z20, x21, y21, z21;
-  double    dx, dy, dz, dmax;
-  double    dx2, dy2, dz2;
+  int    aNbPG;
+  double x10, y10, z10, x11, y11, z11;
+  double x20, y20, z20, x21, y21, z21;
+  double dx, dy, dz, dmax;
+  double dx2, dy2, dz2;
   //
   Box1.Get(x10, y10, z10, x11, y11, z11);
   Box2.Get(x20, y20, z20, x21, y21, z21);
@@ -3586,9 +3552,9 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
   M1.ResetAnd();
   M2.ResetAnd();
   //
-  int              newind            = 0;
-  int              ok                = 0;
-  int              indicepointtraite = 0;
+  int newind            = 0;
+  int ok                = 0;
+  int indicepointtraite = 0;
   int k, nu, nv;
   //
   do
@@ -3814,13 +3780,13 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
 
 //=================================================================================================
 
-bool IsPointOnLine(const IntSurf_PntOn2S&        thePOn2S,
-                               const occ::handle<IntPatch_WLine>& theWLine,
-                               const double           Deflection)
+bool IsPointOnLine(const IntSurf_PntOn2S&             thePOn2S,
+                   const occ::handle<IntPatch_WLine>& theWLine,
+                   const double                       Deflection)
 {
-  bool isOnLine    = false;
-  double    Deflection2 = Deflection * Deflection;
-  double    pu1, pu2, pv1, pv2;
+  bool   isOnLine    = false;
+  double Deflection2 = Deflection * Deflection;
+  double pu1, pu2, pv1, pv2;
 
   thePOn2S.Parameters(pu1, pv1, pu2, pv2);
 
@@ -3833,19 +3799,19 @@ bool IsPointOnLine(const IntSurf_PntOn2S&        thePOn2S,
 
     for (ll = 1; ll < NbPntOn2SOnLine && !isOnLine; ll++)
     {
-      const gp_Pnt&       Pa     = theWLine->Point(ll).Value();
-      const gp_Pnt&       Pb     = theWLine->Point(ll + 1).Value();
-      const gp_Pnt&       PStart = thePOn2S.Value();
-      const gp_Vec        AM(Pa, PStart);
-      const gp_Vec        MB(PStart, Pb);
-      const double AMMB = AM.Dot(MB);
+      const gp_Pnt& Pa     = theWLine->Point(ll).Value();
+      const gp_Pnt& Pb     = theWLine->Point(ll + 1).Value();
+      const gp_Pnt& PStart = thePOn2S.Value();
+      const gp_Vec  AM(Pa, PStart);
+      const gp_Vec  MB(PStart, Pb);
+      const double  AMMB = AM.Dot(MB);
 
       if (AMMB > 0.0)
       {
-        gp_Dir        ABN(Pb.X() - Pa.X(), Pb.Y() - Pa.Y(), Pb.Z() - Pa.Z());
+        gp_Dir ABN(Pb.X() - Pa.X(), Pb.Y() - Pa.Y(), Pb.Z() - Pa.Z());
         double lan = ABN.X() * AM.X() + ABN.Y() * AM.Y() + ABN.Z() * AM.Z();
-        gp_Vec        AH(lan * ABN.X(), lan * ABN.Y(), lan * ABN.Z());
-        gp_Vec        HM(AM.X() - AH.X(), AM.Y() - AH.Y(), AM.Z() - AH.Z());
+        gp_Vec AH(lan * ABN.X(), lan * ABN.Y(), lan * ABN.Z());
+        gp_Vec HM(AM.X() - AH.X(), AM.Y() - AH.Y(), AM.Z() - AH.Z());
         double d = 0.0;
 
         if (HM.X() < Deflection)
@@ -3907,12 +3873,12 @@ bool IsPointOnLine(const IntSurf_PntOn2S&        thePOn2S,
 
 //=================================================================================================
 
-void AddWLine(NCollection_Sequence<occ::handle<IntPatch_Line>>&      theLines,
-              const occ::handle<IntPatch_WLine>& theWLine,
-              const double           Deflection)
+void AddWLine(NCollection_Sequence<occ::handle<IntPatch_Line>>& theLines,
+              const occ::handle<IntPatch_WLine>&                theWLine,
+              const double                                      Deflection)
 {
-  int i        = 1;
-  int aNbLines = theLines.Length();
+  int  i        = 1;
+  int  aNbLines = theLines.Length();
   bool isToRemove;
 
   // Check each line of theLines if it is on theWLine.

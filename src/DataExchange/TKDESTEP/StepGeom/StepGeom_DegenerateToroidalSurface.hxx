@@ -33,9 +33,9 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
                             const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                            const double                      aMajorRadius,
-                            const double                      aMinorRadius,
-                            const bool                   aSelectOuter);
+                            const double                                  aMajorRadius,
+                            const double                                  aMinorRadius,
+                            const bool                                    aSelectOuter);
 
   Standard_EXPORT void SetSelectOuter(const bool aSelectOuter);
 

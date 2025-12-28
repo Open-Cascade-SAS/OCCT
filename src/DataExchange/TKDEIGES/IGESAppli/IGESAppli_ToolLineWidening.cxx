@@ -35,12 +35,12 @@ void IGESAppli_ToolLineWidening::ReadOwnParams(const occ::handle<IGESAppli_LineW
                                                const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                                IGESData_ParamReader& PR) const
 {
-  int tempNbPropertyValues;
-  double    tempWidth;
-  int tempCorneringCode;
-  int tempExtensionFlag;
-  int tempJustificationFlag;
-  double    tempExtensionValue = 0.;
+  int    tempNbPropertyValues;
+  double tempWidth;
+  int    tempCorneringCode;
+  int    tempExtensionFlag;
+  int    tempJustificationFlag;
+  double tempExtensionValue = 0.;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -64,7 +64,7 @@ void IGESAppli_ToolLineWidening::ReadOwnParams(const occ::handle<IGESAppli_LineW
 }
 
 void IGESAppli_ToolLineWidening::WriteOwnParams(const occ::handle<IGESAppli_LineWidening>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->WidthOfMetalization());
@@ -91,8 +91,7 @@ void IGESAppli_ToolLineWidening::OwnCopy(const occ::handle<IGESAppli_LineWidenin
             another->ExtensionValue());
 }
 
-bool IGESAppli_ToolLineWidening::OwnCorrect(
-  const occ::handle<IGESAppli_LineWidening>& ent) const
+bool IGESAppli_ToolLineWidening::OwnCorrect(const occ::handle<IGESAppli_LineWidening>& ent) const
 {
   bool res = (ent->NbPropertyValues() != 5);
   if (res)

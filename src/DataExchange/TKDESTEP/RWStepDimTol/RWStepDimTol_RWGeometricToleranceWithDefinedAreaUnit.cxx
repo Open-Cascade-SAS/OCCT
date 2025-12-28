@@ -33,7 +33,7 @@ RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,
-  const int                                          num,
+  const int                                                            num,
   occ::handle<Interface_Check>&                                        ach,
   const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent) const
 {
@@ -92,7 +92,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
     ach->AddFail("Parameter #6 (area_type) is not enumerations");
 
   occ::handle<StepBasic_LengthMeasureWithUnit> aSecondUnitSize;
-  bool                        hasSecondUnitSize = data->IsParamDefined(num, 7);
+  bool                                         hasSecondUnitSize = data->IsParamDefined(num, 7);
   if (hasSecondUnitSize)
     data->ReadEntity(num,
                      7,
@@ -115,7 +115,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
-  StepData_StepWriter&                                            SW,
+  StepData_StepWriter&                                                 SW,
   const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent) const
 {
 
@@ -158,7 +158,7 @@ void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::WriteStep(
 
 void RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit::Share(
   const occ::handle<StepDimTol_GeometricToleranceWithDefinedAreaUnit>& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                            iter) const
 {
 
   // inherited fields from GeometricTolerance

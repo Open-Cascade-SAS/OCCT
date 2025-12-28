@@ -22,9 +22,9 @@ Vrml_SFImage::Vrml_SFImage()
   myArrayFlag = false;
 }
 
-Vrml_SFImage::Vrml_SFImage(const int                  aWidth,
-                           const int                  aHeight,
-                           const Vrml_SFImageNumber                aNumber,
+Vrml_SFImage::Vrml_SFImage(const int                                    aWidth,
+                           const int                                    aHeight,
+                           const Vrml_SFImageNumber                     aNumber,
                            const occ::handle<NCollection_HArray1<int>>& anArray)
 {
   int size = aWidth * aHeight;

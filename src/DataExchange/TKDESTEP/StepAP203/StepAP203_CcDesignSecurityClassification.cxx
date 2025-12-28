@@ -41,7 +41,8 @@ void StepAP203_CcDesignSecurityClassification::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>> StepAP203_CcDesignSecurityClassification::Items() const
+occ::handle<NCollection_HArray1<StepAP203_ClassifiedItem>>
+  StepAP203_CcDesignSecurityClassification::Items() const
 {
   return theItems;
 }

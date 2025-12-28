@@ -29,8 +29,9 @@ StepVisual_CameraModelD3MultiClippingIntersection::
 //=================================================================================================
 
 void StepVisual_CameraModelD3MultiClippingIntersection::Init(
-  const occ::handle<TCollection_HAsciiString>&                                        theName,
-  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>& theShapeClipping)
+  const occ::handle<TCollection_HAsciiString>& theName,
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>&
+    theShapeClipping)
 {
   // Own field
   myShapeClipping = theShapeClipping;

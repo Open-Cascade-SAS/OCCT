@@ -32,8 +32,8 @@
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                   anOStream,
-                                          const TopoDS_Shape&                 aShape,
+void VrmlConverter_WFDeflectionShape::Add(Standard_OStream&                        anOStream,
+                                          const TopoDS_Shape&                      aShape,
                                           const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
@@ -148,7 +148,7 @@ else {
 
   occ::handle<Poly_PolygonOnTriangulation> aPT;
   occ::handle<Poly_Triangulation>          aT;
-  TopLoc_Location                     aL;
+  TopLoc_Location                          aL;
 
   //   std::cout << "Quantity of Curves  = " << qnt << std::endl;
 
@@ -271,9 +271,9 @@ else {
   if (qnt != 0)
   {
     occ::handle<NCollection_HArray1<gp_Vec>> HAV = new NCollection_HArray1<gp_Vec>(1, qnt);
-    gp_Vec                      V;
-    gp_Pnt                      P;
-    int            i = 0;
+    gp_Vec                                   V;
+    gp_Pnt                                   P;
+    int                                      i = 0;
 
     for (Tool.InitVertex(); Tool.MoreVertex(); Tool.NextVertex())
     {
@@ -286,7 +286,7 @@ else {
     }
 
     occ::handle<VrmlConverter_PointAspect> PA = new VrmlConverter_PointAspect;
-    PA                                   = aDrawer->PointAspect();
+    PA                                        = aDrawer->PointAspect();
 
     // Separator P {
     Vrml_Separator SEP;

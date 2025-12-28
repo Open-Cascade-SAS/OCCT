@@ -23,10 +23,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 
 //=================================================================================================
 
-Units_ShiftedToken::Units_ShiftedToken(const char*          aword,
-                                       const char*          amean,
-                                       const double             avalue,
-                                       const double             amove,
+Units_ShiftedToken::Units_ShiftedToken(const char*                          aword,
+                                       const char*                          amean,
+                                       const double                         avalue,
+                                       const double                         amove,
                                        const occ::handle<Units_Dimensions>& adimensions)
     : Units_Token(aword, amean, avalue, adimensions)
 {

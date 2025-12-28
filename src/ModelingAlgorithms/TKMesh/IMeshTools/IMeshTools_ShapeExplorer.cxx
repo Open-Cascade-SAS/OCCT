@@ -21,7 +21,6 @@
 #include <NCollection_List.hxx>
 #include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -35,10 +34,10 @@ namespace
 //           criteria and visits each one in order to add it to data model.
 //=======================================================================
 void visitEdges(const occ::handle<IMeshTools_ShapeVisitor>& theVisitor,
-                const TopoDS_Shape&                    theShape,
-                const bool                 isResetLocation,
-                const TopAbs_ShapeEnum                 theToFind,
-                const TopAbs_ShapeEnum                 theToAvoid = TopAbs_SHAPE)
+                const TopoDS_Shape&                         theShape,
+                const bool                                  isResetLocation,
+                const TopAbs_ShapeEnum                      theToFind,
+                const TopAbs_ShapeEnum                      theToAvoid = TopAbs_SHAPE)
 {
   TopExp_Explorer aEdgesIt(theShape, theToFind, theToAvoid);
   for (; aEdgesIt.More(); aEdgesIt.Next())
@@ -78,7 +77,7 @@ void IMeshTools_ShapeExplorer::Accept(const occ::handle<IMeshTools_ShapeVisitor>
   BRepLib::ReverseSortFaces(GetShape(), aFaceList);
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aFaceMap;
 
-  const TopLoc_Location              aEmptyLoc;
+  const TopLoc_Location                    aEmptyLoc;
   NCollection_List<TopoDS_Shape>::Iterator aFaceIter(aFaceList);
   for (; aFaceIter.More(); aFaceIter.Next())
   {

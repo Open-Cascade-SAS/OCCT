@@ -34,8 +34,7 @@ public:
 
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
-  Standard_EXPORT virtual bool Perform(const double theArea = 0.)
-    override;
+  Standard_EXPORT virtual bool Perform(const double theArea = 0.) override;
 
   //! Set max area allowed for faces
   double& MaxArea();
@@ -56,11 +55,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivideArea, ShapeUpgrade_FaceDivide)
 
 private:
-  double    myMaxArea;
-  int myNbParts;
-  int myUnbSplit;
-  int myVnbSplit;
-  bool myIsSplittingByNumber;
+  double myMaxArea;
+  int    myNbParts;
+  int    myUnbSplit;
+  int    myVnbSplit;
+  bool   myIsSplittingByNumber;
 };
 
 #include <ShapeUpgrade_FaceDivideArea.lxx>

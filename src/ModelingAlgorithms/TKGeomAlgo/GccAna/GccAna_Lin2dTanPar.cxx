@@ -71,19 +71,19 @@ GccAna_Lin2dTanPar::GccAna_Lin2dTanPar(const GccEnt_QualifiedCirc& Qualified1, c
       pararg1(1, 2)
 {
 
-  WellDone               = false;
+  WellDone  = false;
   int signe = 0;
   int nbsol = 0;
-  NbrSol                 = 0;
+  NbrSol    = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Circ2d     C1   = Qualified1.Qualified();
-  double xdir = (Lin1.Direction()).X();
-  double ydir = (Lin1.Direction()).Y();
+  gp_Circ2d C1   = Qualified1.Qualified();
+  double    xdir = (Lin1.Direction()).X();
+  double    ydir = (Lin1.Direction()).Y();
 
   if (Qualified1.IsEnclosed())
   {
@@ -153,8 +153,7 @@ gp_Lin2d GccAna_Lin2dTanPar::ThisSolution(const int Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanPar::WhichQualifier(const int Index,
-                                        GccEnt_Position&       Qualif1) const
+void GccAna_Lin2dTanPar::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -171,9 +170,9 @@ void GccAna_Lin2dTanPar::WhichQualifier(const int Index,
 }
 
 void GccAna_Lin2dTanPar::Tangency1(const int Index,
-                                   double&         ParSol,
-                                   double&         ParArg,
-                                   gp_Pnt2d&              Pnt) const
+                                   double&   ParSol,
+                                   double&   ParArg,
+                                   gp_Pnt2d& Pnt) const
 {
   if (!WellDone)
   {

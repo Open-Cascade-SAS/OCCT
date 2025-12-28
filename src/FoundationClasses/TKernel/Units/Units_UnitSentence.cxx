@@ -22,7 +22,6 @@
 #include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <Units_UnitSentence.hxx>
-#include <Units_Unit.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
@@ -38,8 +37,9 @@ Units_UnitSentence::Units_UnitSentence(const char* astring)
 
 //=================================================================================================
 
-Units_UnitSentence::Units_UnitSentence(const char*                  astring,
-                                       const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
+Units_UnitSentence::Units_UnitSentence(
+  const char*                                                            astring,
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
     : Units_Sentence(Units::LexiconUnits(false), astring)
 {
   Analyse();
@@ -54,13 +54,13 @@ void Units_UnitSentence::Analyse()
   if (Sequence()->Length() == 0)
     return;
 
-  int             index;
-  TCollection_AsciiString      s;
-  occ::handle<Units_Token>          token;
-  occ::handle<Units_Token>          previoustoken;
-  occ::handle<Units_Token>          currenttoken;
-  occ::handle<Units_Token>          nexttoken;
-  occ::handle<Units_Token>          lasttoken;
+  int                                                          index;
+  TCollection_AsciiString                                      s;
+  occ::handle<Units_Token>                                     token;
+  occ::handle<Units_Token>                                     previoustoken;
+  occ::handle<Units_Token>                                     currenttoken;
+  occ::handle<Units_Token>                                     nexttoken;
+  occ::handle<Units_Token>                                     lasttoken;
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequence = Sequence();
 
   currenttoken = sequence->Value(1);
@@ -173,16 +173,17 @@ void Units_UnitSentence::Analyse()
 
 //=================================================================================================
 
-void Units_UnitSentence::SetUnits(const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
+void Units_UnitSentence::SetUnits(
+  const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
 {
-  int             index, jindex, kindex;
-  bool             istheend = 0;
-  occ::handle<Units_Quantity>       quantity;
+  int                                                          index, jindex, kindex;
+  bool                                                         istheend = 0;
+  occ::handle<Units_Quantity>                                  quantity;
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> sequenceoftokens;
-  occ::handle<Units_Token>          currenttoken;
+  occ::handle<Units_Token>                                     currenttoken;
   occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>  unitssequence;
-  occ::handle<Units_Unit>           unit;
-  TCollection_AsciiString      symbol;
+  occ::handle<Units_Unit>                                      unit;
+  TCollection_AsciiString                                      symbol;
 
   for (index = 1; index <= aquantitiessequence->Length(); index++)
   {

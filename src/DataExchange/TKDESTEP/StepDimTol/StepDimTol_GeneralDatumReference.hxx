@@ -34,13 +34,14 @@ public:
   Standard_EXPORT StepDimTol_GeneralDatumReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
-                            const occ::handle<TCollection_HAsciiString>&        theDescription,
-                            const occ::handle<StepRepr_ProductDefinitionShape>& theOfShape,
-                            const StepData_Logical                         theProductDefinitional,
-                            const StepDimTol_DatumOrCommonDatum&           theBase,
-                            const bool                         theHasModifiers,
-                            const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&        theName,
+    const occ::handle<TCollection_HAsciiString>&        theDescription,
+    const occ::handle<StepRepr_ProductDefinitionShape>& theOfShape,
+    const StepData_Logical                              theProductDefinitional,
+    const StepDimTol_DatumOrCommonDatum&                theBase,
+    const bool                                          theHasModifiers,
+    const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers);
 
   //! Returns field Base
   inline StepDimTol_DatumOrCommonDatum Base() { return myBase; }
@@ -49,25 +50,23 @@ public:
   inline void SetBase(const StepDimTol_DatumOrCommonDatum& theBase) { myBase = theBase; }
 
   //! Indicates is field Modifiers exist
-  inline bool HasModifiers() const
-  {
-    return !(myModifiers.IsNull() || myModifiers->Length() == 0);
-  }
+  inline bool HasModifiers() const { return !(myModifiers.IsNull() || myModifiers->Length() == 0); }
 
   //! Returns field Modifiers
-  inline occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> Modifiers() { return myModifiers; }
+  inline occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> Modifiers()
+  {
+    return myModifiers;
+  }
 
   //! Set field Modifiers
-  inline void SetModifiers(const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers)
+  inline void SetModifiers(
+    const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers)
   {
     myModifiers = theModifiers;
   }
 
   //! Returns number of Modifiers
-  inline int NbModifiers() const
-  {
-    return (myModifiers.IsNull() ? 0 : myModifiers->Length());
-  }
+  inline int NbModifiers() const { return (myModifiers.IsNull() ? 0 : myModifiers->Length()); }
 
   //! Returns Modifiers with the given number
   inline StepDimTol_DatumReferenceModifier ModifiersValue(const int theNum) const
@@ -76,8 +75,7 @@ public:
   }
 
   //! Sets Modifiers with given number
-  inline void ModifiersValue(const int                   theNum,
-                             const StepDimTol_DatumReferenceModifier& theItem)
+  inline void ModifiersValue(const int theNum, const StepDimTol_DatumReferenceModifier& theItem)
   {
     myModifiers->SetValue(theNum, theItem);
   }
@@ -85,7 +83,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeneralDatumReference, StepRepr_ShapeAspect)
 
 private:
-  StepDimTol_DatumOrCommonDatum                      myBase;
+  StepDimTol_DatumOrCommonDatum                                       myBase;
   occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> myModifiers;
 };
 #endif // _StepDimTol_GeneralDatumReference_HeaderFile

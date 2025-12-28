@@ -49,7 +49,8 @@ public:
 
   //! Adds a list of lines for file comment
   //! Each of them must comply with demand of AddLine
-  Standard_EXPORT void AddLines(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& lines);
+  Standard_EXPORT void AddLines(
+    const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& lines);
 
   //! Returns the count of stored lines
   Standard_EXPORT int NbLines() const;
@@ -58,7 +59,8 @@ public:
   Standard_EXPORT const char* Line(const int num) const;
 
   //! Returns the complete list of lines in once
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Lines() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Lines()
+    const;
 
   //! Sends the comment lines to the file (Start Section)
   Standard_EXPORT void Perform(IFSelect_ContextWrite& ctx,

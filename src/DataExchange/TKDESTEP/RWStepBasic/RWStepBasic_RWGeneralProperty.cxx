@@ -27,10 +27,11 @@ RWStepBasic_RWGeneralProperty::RWStepBasic_RWGeneralProperty() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGeneralProperty::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
-                                             const int                   num,
-                                             occ::handle<Interface_Check>&                 ach,
-                                             const occ::handle<StepBasic_GeneralProperty>& ent) const
+void RWStepBasic_RWGeneralProperty::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_GeneralProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "general_property"))
@@ -45,7 +46,7 @@ void RWStepBasic_RWGeneralProperty::ReadStep(const occ::handle<StepData_StepRead
   data->ReadString(num, 2, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                 hasDescription = true;
+  bool                                  hasDescription = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "description", ach, aDescription);
@@ -61,8 +62,9 @@ void RWStepBasic_RWGeneralProperty::ReadStep(const occ::handle<StepData_StepRead
 
 //=================================================================================================
 
-void RWStepBasic_RWGeneralProperty::WriteStep(StepData_StepWriter&                     SW,
-                                              const occ::handle<StepBasic_GeneralProperty>& ent) const
+void RWStepBasic_RWGeneralProperty::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_GeneralProperty>& ent) const
 {
 
   // Own fields of GeneralProperty

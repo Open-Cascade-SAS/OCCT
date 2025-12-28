@@ -36,17 +36,15 @@ public:
 
   //! Explores an entity, to take its faces
   //! Works recursively
-  Standard_EXPORT bool
-    Explore(const int            level,
-            const occ::handle<Standard_Transient>& ent,
-            const Interface_Graph&            G,
-            Interface_EntityIterator&         explored) const override;
+  Standard_EXPORT bool Explore(const int                              level,
+                               const occ::handle<Standard_Transient>& ent,
+                               const Interface_Graph&                 G,
+                               Interface_EntityIterator&              explored) const override;
 
   //! Returns a text defining the criterium : "Faces"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(STEPSelections_SelectFaces, IFSelect_SelectExplore)
-
 };
 
 #endif // _STEPSelections_SelectFaces_HeaderFile

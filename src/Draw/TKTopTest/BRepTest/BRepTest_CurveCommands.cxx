@@ -114,9 +114,9 @@ static int range(Draw_Interpretor&, int n, const char** a)
   //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
   if (E.IsNull())
     return 1;
-  double f = Draw::Atof(a[n - 2]);
-  double l = Draw::Atof(a[n - 1]);
-  BRep_Builder  B;
+  double       f = Draw::Atof(a[n - 2]);
+  double       l = Draw::Atof(a[n - 1]);
+  BRep_Builder B;
   if (n == 4)
     B.Range(E, f, l);
   else
@@ -158,10 +158,10 @@ static int trim(Draw_Interpretor& di, int n, const char** a)
     if (v2.ShapeType() != TopAbs_VERTEX)
       return 1;
   }
-  TopLoc_Location          L;
-  double            f, l;
+  TopLoc_Location               L;
+  double                        f, l;
   const occ::handle<Geom_Curve> C  = BRep_Tool::Curve(TopoDS::Edge(e), L, f, l);
-  TopLoc_Location          LI = L.Inverted();
+  TopLoc_Location               LI = L.Inverted();
   e.Orientation(TopAbs_FORWARD);
   e.Move(LI);
   v1.Move(LI);
@@ -200,7 +200,7 @@ static int polyline(Draw_Interpretor&, int n, const char** a)
     return 1;
   if (((n - 2) % 3) != 0)
     return 1;
-  int           i, j, np = (n - 2) / 3;
+  int                        i, j, np = (n - 2) / 3;
   BRepBuilderAPI_MakePolygon W;
   j = 2;
   for (i = 1; i <= np; i++)
@@ -220,7 +220,7 @@ static int polyvertex(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
     return 1;
-  int           i;
+  int                        i;
   BRepBuilderAPI_MakePolygon W;
   for (i = 2; i < n; i++)
   {
@@ -243,9 +243,9 @@ static int wire(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  int        i;
+  int                     i;
   BRepBuilderAPI_MakeWire MW;
-  bool        IsUnsorted = !strcmp(a[2], "-unsorted");
+  bool                    IsUnsorted = !strcmp(a[2], "-unsorted");
 
   if (!IsUnsorted)
     for (i = 2; i < n; i++)
@@ -338,7 +338,7 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
   else
   {
     occ::handle<Geom_Surface> S;
-    int     i = 0;
+    int                       i = 0;
     if (!C2d.IsNull())
     {
       S = DrawTrSurf::GetSurface(a[3]);
@@ -410,7 +410,7 @@ static int mkcurve(Draw_Interpretor& di, int n, const char** a)
   if (S.IsNull())
     return 1;
   TopLoc_Location L;
-  double   f, l;
+  double          f, l;
 
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(TopoDS::Edge(S), L, f, l);
   if (C.IsNull())
@@ -473,8 +473,8 @@ static int mk2dcurve(Draw_Interpretor& di, int na, const char** a)
 
   TopoDS_Edge E = TopoDS::Edge(S);
 
-  TopLoc_Location      L;
-  double        f = 0., l = 0.;
+  TopLoc_Location           L;
+  double                    f = 0., l = 0.;
   occ::handle<Geom2d_Curve> C;
   occ::handle<Geom_Surface> Surf;
 
@@ -547,16 +547,16 @@ static int isoedge(Draw_Interpretor&, int n, const char** a)
   if (n < 6)
     return 1;
 
-  bool uiso = *a[0] == 'u';
-  double    p    = Draw::Atof(a[3]);
-  double    p1   = Draw::Atof(a[4]);
-  double    p2   = Draw::Atof(a[5]);
-  TopoDS_Shape     Sh   = DBRep::Get(a[2], TopAbs_FACE);
+  bool         uiso = *a[0] == 'u';
+  double       p    = Draw::Atof(a[3]);
+  double       p1   = Draw::Atof(a[4]);
+  double       p2   = Draw::Atof(a[5]);
+  TopoDS_Shape Sh   = DBRep::Get(a[2], TopAbs_FACE);
   if (Sh.IsNull())
     return 1;
-  TopLoc_Location             Loc;
+  TopLoc_Location                  Loc;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(TopoDS::Face(Sh), Loc);
-  double               UMin, UMax, VMin, VMax;
+  double                           UMin, UMax, VMin, VMax;
   BRepTools::UVBounds(TopoDS::Face(Sh), UMin, UMax, VMin, VMax);
   if (uiso)
   {
@@ -687,8 +687,8 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
 
-  int        i  = 2;
-  double           x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
+  int                     i  = 2;
+  double                  x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
   BRepBuilderAPI_MakeWire MW;
   gp_Ax3                  DummyHP(gp::XOY());
   gp_Pln                  P(DummyHP);
@@ -700,13 +700,13 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
     none
   } move;
 
-  bool     face      = true;
-  bool     close     = true;
-  bool     first     = true;
-  bool     stayfirst = false;
-  bool     isplanar  = true;
-  TopoDS_Shape         S;
-  TopLoc_Location      TheLocation;
+  bool                      face      = true;
+  bool                      close     = true;
+  bool                      first     = true;
+  bool                      stayfirst = false;
+  bool                      isplanar  = true;
+  TopoDS_Shape              S;
+  TopLoc_Location           TheLocation;
   occ::handle<Geom_Surface> Surface;
   while (i < n)
   {
@@ -779,7 +779,7 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
             di << "profile : no face found";
             return 1;
           }
-          Surface                  = BRep_Tool::Surface(Face, TheLocation);
+          Surface                       = BRep_Tool::Surface(Face, TheLocation);
           occ::handle<Geom_Plane> Plane = occ::down_cast<Geom_Plane>(Surface);
           if (Plane.IsNull())
           {
@@ -869,8 +869,8 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
           double c = std::cos(angle);
           double s = std::sin(angle);
           double t = c * dx - s * dy;
-          dy              = s * dx + c * dy;
-          dx              = t;
+          dy       = s * dx + c * dy;
+          dx       = t;
         }
         break;
 
@@ -882,7 +882,7 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
-          length           = std::sqrt(vx * vx + vy * vy);
+          length    = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             // move = line; DUB
@@ -1099,22 +1099,22 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
 
-  gp_Pnt2d         last_point(0.0e0, 0.0e0);
-  gp_Pnt2d         first_point(0.0e0, 0.0e0);
-  int i    = 2;
-  bool wait = true;
+  gp_Pnt2d last_point(0.0e0, 0.0e0);
+  gp_Pnt2d first_point(0.0e0, 0.0e0);
+  int      i    = 2;
+  bool     wait = true;
   //  double x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
-  double           x = 0, y = 0, dx = 1, dy = 0;
+  double                  x = 0, y = 0, dx = 1, dy = 0;
   BRepBuilderAPI_MakeWire MW;
   gp_Ax3                  DummyHP(gp::XOY());
   gp_Pln                  P(DummyHP);
-  bool        face  = true;
-  bool        close = true;
+  bool                    face  = true;
+  bool                    close = true;
   //  bool first = true;
-  bool     isplanar = true;
-  double        length;
-  TopoDS_Shape         S;
-  TopLoc_Location      TheLocation;
+  bool                      isplanar = true;
+  double                    length;
+  TopoDS_Shape              S;
+  TopLoc_Location           TheLocation;
   occ::handle<Geom_Surface> Surface;
   if (n > 2)
   {
@@ -1136,7 +1136,7 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
               di << "profile : no face found";
               return 1;
             }
-            Surface                  = BRep_Tool::Surface(Face, TheLocation);
+            Surface                       = BRep_Tool::Surface(Face, TheLocation);
             occ::handle<Geom_Plane> Plane = occ::down_cast<Geom_Plane>(Surface);
             if (Plane.IsNull())
             {
@@ -1168,13 +1168,14 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
   //  to be done : close the profile using the first point of the contour
   //               and the point taken with mouse button 3
   //
-  occ::handle<Geom2d_BSplineCurve>   C;
-  occ::handle<Geom_Curve>            curve3d_ptr;
-  int              id, ii;
-  int              X, Y, b, not_done;
-  int              num_points = 0;
-  gp_Pnt2d                      a_point(0.0e0, 0.0e0);
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> points_array_ptr = new NCollection_HArray1<gp_Pnt2d>(1, 1);
+  occ::handle<Geom2d_BSplineCurve>           C;
+  occ::handle<Geom_Curve>                    curve3d_ptr;
+  int                                        id, ii;
+  int                                        X, Y, b, not_done;
+  int                                        num_points = 0;
+  gp_Pnt2d                                   a_point(0.0e0, 0.0e0);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> points_array_ptr =
+    new NCollection_HArray1<gp_Pnt2d>(1, 1);
   occ::handle<NCollection_HArray1<gp_Pnt2d>> new_points_array_ptr;
 
   not_done = 1;
@@ -1221,7 +1222,7 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
         dx = a_point.Coord(1) - x;
         dy = a_point.Coord(2) - y;
         gp_Vec2d a_vector(dx, dy);
-        length                = a_vector.Magnitude();
+        length                     = a_vector.Magnitude();
         occ::handle<Geom2d_Line> l = new Geom2d_Line(gp_Pnt2d(x, y), gp_Dir2d(dx, dy));
         if (isplanar)
         {
@@ -1267,7 +1268,7 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
     dx = a_point.Coord(1) - x;
     dy = a_point.Coord(2) - y;
     gp_Vec2d a_vector(dx, dy);
-    length                = a_vector.Magnitude();
+    length                     = a_vector.Magnitude();
     occ::handle<Geom2d_Line> l = new Geom2d_Line(gp_Pnt2d(x, y), gp_Dir2d(dx, dy));
     if (isplanar)
       MW.Add(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(l, P), 0, length));
@@ -1372,8 +1373,8 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
 
-  int i = 2, NbCurves = 0;
-  double    x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
+  int    i = 2, NbCurves = 0;
+  double x0 = 0, y0 = 0, x = 0, y = 0, dx = 1, dy = 0;
 
   enum
   {
@@ -1382,10 +1383,10 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
     none
   } move;
 
-  bool close     = true;
-  bool first     = true;
-  bool stayfirst = false;
-  char*            name      = new char[100];
+  bool  close     = true;
+  bool  first     = true;
+  bool  stayfirst = false;
+  char* name      = new char[100];
 
   while (i < n)
   {
@@ -1489,8 +1490,8 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
           double c = std::cos(angle);
           double s = std::sin(angle);
           double t = c * dx - s * dy;
-          dy              = s * dx + c * dy;
-          dx              = t;
+          dy       = s * dx + c * dy;
+          dx       = t;
         }
         break;
 
@@ -1502,7 +1503,7 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
-          length           = std::sqrt(vx * vx + vy * vy);
+          length    = std::sqrt(vx * vx + vy * vy);
           if (length > Precision::Confusion())
           {
             // move = line; DUB
@@ -1671,7 +1672,7 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
 
   BRepOffsetAPI_MakeOffset Paral;
 
-  bool ToApprox    = false;
+  bool             ToApprox    = false;
   GeomAbs_JoinType theJoinType = GeomAbs_Arc;
 
   int anIndArg = 6;
@@ -1709,8 +1710,8 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
   }
   Paral.SetApprox(ToApprox);
 
-  double    U, dU;
-  int Nb;
+  double U, dU;
+  int    Nb;
   dU = Draw::Atof(a[4]);
   Nb = Draw::Atoi(a[3]);
 
@@ -1751,7 +1752,7 @@ int openoffset(Draw_Interpretor& di, int n, const char** a)
 
   BRepOffsetAPI_MakeOffset Paral;
 
-  bool ToApprox    = false;
+  bool             ToApprox    = false;
   GeomAbs_JoinType theJoinType = GeomAbs_Arc;
 
   int anIndArg = 6;
@@ -1784,8 +1785,8 @@ int openoffset(Draw_Interpretor& di, int n, const char** a)
   }
   Paral.SetApprox(ToApprox);
 
-  double    U, dU;
-  int Nb;
+  double U, dU;
+  int    Nb;
   dU = Draw::Atof(a[4]);
   Nb = Draw::Atoi(a[3]);
 
@@ -1875,7 +1876,7 @@ int edgeintersector(Draw_Interpretor& di, int n, const char** a)
 
   BRep_Builder B;
 
-  int        NbV = 0;
+  int              NbV = 0;
   constexpr double Tol = Precision::PConfusion();
 
   bool rejectreducedsegmentpoints = true;
@@ -1935,9 +1936,7 @@ int edgeintersector(Draw_Interpretor& di, int n, const char** a)
 // purpose  : Convert a single face to a face with contour made of arcs and segments
 //=================================================================================
 
-static int arclinconvert(Draw_Interpretor& /*dout*/,
-                                      int n,
-                                      const char**     a)
+static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
 {
   // Check the command arguments
   if (n < 3)
@@ -1972,7 +1971,7 @@ static int arclinconvert(Draw_Interpretor& /*dout*/,
 
   if (aType == TopAbs_WIRE)
   {
-    bool        OnlyPlane = false;
+    bool                    OnlyPlane = false;
     BRepBuilderAPI_MakeFace aFaceMaker(TopoDS::Wire(aShape), OnlyPlane);
     if (aFaceMaker.Error() != BRepBuilderAPI_FaceDone)
     {
@@ -2060,8 +2059,8 @@ int build3d(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  bool Ok;
-  TopoDS_Shape     S = DBRep::Get(a[1]);
+  bool         Ok;
+  TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
     return 1;
 

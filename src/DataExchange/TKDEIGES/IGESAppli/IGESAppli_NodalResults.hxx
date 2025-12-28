@@ -21,12 +21,9 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESAppli_Node.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -54,12 +51,13 @@ public:
   //! result data
   //! raises exception if Lengths of allNodeIdentifiers, allNodes and
   //! allData (Cols) are not same
-  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&    aNote,
-                            const int                  aNumber,
-                            const double                     aTime,
-                            const occ::handle<NCollection_HArray1<int>>& allNodeIdentifiers,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&  allNodes,
-                            const occ::handle<NCollection_HArray2<double>>&    allData);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESDimen_GeneralNote>&                            aNote,
+    const int                                                            aNumber,
+    const double                                                         aTime,
+    const occ::handle<NCollection_HArray1<int>>&                         allNodeIdentifiers,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>& allNodes,
+    const occ::handle<NCollection_HArray2<double>>&                      allData);
 
   //! Changes the FormNumber (which indicates Type of Result)
   //! Error if not in range [0-34]
@@ -93,18 +91,17 @@ public:
   //! returns the finite element analysis result value
   //! raises exception if (NodeNum <= 0 or NodeNum > NbNodes()) or
   //! if (DataNum <=0 or DataNum > NbData())
-  Standard_EXPORT double Data(const int NodeNum,
-                                     const int DataNum) const;
+  Standard_EXPORT double Data(const int NodeNum, const int DataNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalResults, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESDimen_GeneralNote>    theNote;
-  int                 theSubCaseNum;
-  double                    theTime;
-  occ::handle<NCollection_HArray1<int>> theNodeIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  theNodes;
-  occ::handle<NCollection_HArray2<double>>    theData;
+  occ::handle<IGESDimen_GeneralNote>                            theNote;
+  int                                                           theSubCaseNum;
+  double                                                        theTime;
+  occ::handle<NCollection_HArray1<int>>                         theNodeIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> theNodes;
+  occ::handle<NCollection_HArray2<double>>                      theData;
 };
 
 #endif // _IGESAppli_NodalResults_HeaderFile

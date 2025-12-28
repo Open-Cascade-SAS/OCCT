@@ -70,13 +70,13 @@ public:
   //! Adds an entity into the list of results (binders) for
   //! shape stored in FinderProcess
   Standard_EXPORT static void AddResult(const occ::handle<Transfer_FinderProcess>& FP,
-                                        const TopoDS_Shape&                   Shape,
+                                        const TopoDS_Shape&                        Shape,
                                         const occ::handle<Standard_Transient>&     entity);
 
   //! Adds all entities recorded in Tool into the map of results
   //! (binders) stored in FinderProcess
   Standard_EXPORT static void AddResult(const occ::handle<Transfer_FinderProcess>& FP,
-                                        const TopoDSToStep_Tool&              Tool);
+                                        const TopoDSToStep_Tool&                   Tool);
 };
 
 #endif // _TopoDSToStep_HeaderFile

@@ -54,24 +54,24 @@ public:
   //! Depending on the mesh object type used in constructor this method can
   //! calculate the surface or volume properties of the mesh.
   Standard_EXPORT void Perform(const occ::handle<Poly_Triangulation>& theMesh,
-                               const TopLoc_Location&            theLoc,
-                               const TopAbs_Orientation          theOri);
+                               const TopLoc_Location&                 theLoc,
+                               const TopAbs_Orientation               theOri);
 
   Standard_EXPORT void Perform(const occ::handle<Poly_Triangulation>& theMesh,
-                               const TopAbs_Orientation          theOri);
+                               const TopAbs_Orientation               theOri);
 
   //! Computes the global properties of triangle {p1, p2, p3} relatively
   //! point Apex
   //! If isVolume = true, volume properties are calculated
   //! otherwise - surface ones
-  Standard_EXPORT static void CalculateProps(const gp_Pnt&          p1,
-                                             const gp_Pnt&          p2,
-                                             const gp_Pnt&          p3,
-                                             const gp_Pnt&          Apex,
-                                             const bool isVolume,
-                                             double          GProps[10],
-                                             const int NbGaussPoints,
-                                             const double*   GaussPnts);
+  Standard_EXPORT static void CalculateProps(const gp_Pnt& p1,
+                                             const gp_Pnt& p2,
+                                             const gp_Pnt& p3,
+                                             const gp_Pnt& Apex,
+                                             const bool    isVolume,
+                                             double        GProps[10],
+                                             const int     NbGaussPoints,
+                                             const double* GaussPnts);
 
   //! Get type of mesh object
   BRepGProp_MeshObjType GetMeshObjType() const { return myType; }

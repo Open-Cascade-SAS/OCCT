@@ -22,7 +22,7 @@ RWStepVisual_RWTextStyleForDefinedFont::RWStepVisual_RWTextStyleForDefinedFont()
 
 void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepVisual_TextStyleForDefinedFont>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepVisual_RWTextStyleForDefinedFont::ReadStep(
 }
 
 void RWStepVisual_RWTextStyleForDefinedFont::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepVisual_TextStyleForDefinedFont>& ent) const
 {
 
@@ -55,7 +55,7 @@ void RWStepVisual_RWTextStyleForDefinedFont::WriteStep(
 
 void RWStepVisual_RWTextStyleForDefinedFont::Share(
   const occ::handle<StepVisual_TextStyleForDefinedFont>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->TextColour());

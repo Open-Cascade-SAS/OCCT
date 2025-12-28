@@ -46,19 +46,17 @@ class Adaptor2d_Line2d : public Adaptor2d_Curve2d
 public:
   Standard_EXPORT Adaptor2d_Line2d();
 
-  Standard_EXPORT Adaptor2d_Line2d(const gp_Pnt2d&     P,
-                                   const gp_Dir2d&     D,
-                                   const double UFirst,
-                                   const double ULast);
+  Standard_EXPORT Adaptor2d_Line2d(const gp_Pnt2d& P,
+                                   const gp_Dir2d& D,
+                                   const double    UFirst,
+                                   const double    ULast);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
 
   Standard_EXPORT void Load(const gp_Lin2d& L);
 
-  Standard_EXPORT void Load(const gp_Lin2d&     L,
-                            const double UFirst,
-                            const double ULast);
+  Standard_EXPORT void Load(const gp_Lin2d& L, const double UFirst, const double ULast);
 
   Standard_EXPORT double FirstParameter() const override;
 
@@ -77,15 +75,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double First,
-                                                 const double Last,
-                                                 const double Tol) const override;
+                                                      const double Last,
+                                                      const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -99,19 +97,15 @@ public:
 
   Standard_EXPORT void D1(const double X, gp_Pnt2d& P, gp_Vec2d& V) const override;
 
-  Standard_EXPORT void D2(const double X,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double X, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   Standard_EXPORT void D3(const double X,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   Standard_EXPORT double Resolution(const double R3d) const override;
 
@@ -140,9 +134,9 @@ public:
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const override;
 
 private:
-  double myUfirst;
-  double myUlast;
-  gp_Ax2d       myAx2d;
+  double  myUfirst;
+  double  myUlast;
+  gp_Ax2d myAx2d;
 };
 
 #endif // _Adaptor2d_Line2d_HeaderFile

@@ -27,19 +27,19 @@
 
 math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
                                              const math_FunctionSample&   S,
-                                             const double          EpsX,
-                                             const double          EpsF,
-                                             const double          EpsNul)
+                                             const double                 EpsX,
+                                             const double                 EpsF,
+                                             const double                 EpsNul)
 {
 
   done = false;
 
-  bool Nul, PNul, InterNul, Nuld, Nulf;
-  double    DebNul = 0., FinNul = 0.;
-  int Indd = 0, Indf = 0;
-  double    cst, val, valsav = 0, valbid;
-  bool fini;
-  int Nbp, i;
+  bool   Nul, PNul, InterNul, Nuld, Nulf;
+  double DebNul = 0., FinNul = 0.;
+  int    Indd = 0, Indf = 0;
+  double cst, val, valsav = 0, valbid;
+  bool   fini;
+  int    Nbp, i;
 
   Nbp = S.NbPoints();
   F.Value(S.GetParameter(1), val);
@@ -215,10 +215,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre la fin du
       // dernier intervalle nul et Value(Nbp).
 
-      Nbrpt =
-        (int)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
-                                              / (S.GetParameter(Nbp) - S.GetParameter(1)))
-                                     * Nbp);
+      Nbrpt = (int)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
+                                       / (S.GetParameter(Nbp) - S.GetParameter(1)))
+                              * Nbp);
       math_FunctionRoots Res(F,
                              pfin.Value(pdeb.Length()),
                              S.GetParameter(Nbp),

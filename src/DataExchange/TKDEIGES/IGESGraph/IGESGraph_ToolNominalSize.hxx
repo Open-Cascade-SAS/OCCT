@@ -47,40 +47,40 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESGraph_NominalSize>&   ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader&                  PR) const;
+                                     IGESData_ParamReader&                       PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESGraph_NominalSize>& ent,
-                                      IGESData_IGESWriter&                 IW) const;
+                                      IGESData_IGESWriter&                      IW) const;
 
   //! Lists the Entities shared by a NominalSize <ent>, from
   //! its specific (own) parameters
   Standard_EXPORT void OwnShared(const occ::handle<IGESGraph_NominalSize>& ent,
-                                 Interface_EntityIterator&            iter) const;
+                                 Interface_EntityIterator&                 iter) const;
 
   //! Sets automatic unambiguous Correction on a NominalSize
   //! (NbPropertyValues forced to 2 or 3 according HasStandardName)
   Standard_EXPORT bool OwnCorrect(const occ::handle<IGESGraph_NominalSize>& ent) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESGraph_NominalSize>& ent) const;
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const occ::handle<IGESGraph_NominalSize>& ent) const;
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESGraph_NominalSize>& ent,
-                                const Interface_ShareTool&           shares,
+                                const Interface_ShareTool&                shares,
                                 occ::handle<Interface_Check>&             ach) const;
 
   //! Copies Specific Parameters
   Standard_EXPORT void OwnCopy(const occ::handle<IGESGraph_NominalSize>& entfrom,
                                const occ::handle<IGESGraph_NominalSize>& entto,
-                               Interface_CopyTool&                  TC) const;
+                               Interface_CopyTool&                       TC) const;
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESGraph_NominalSize>& ent,
-                               const IGESData_IGESDumper&           dumper,
-                               Standard_OStream&                    S,
-                               const int               own) const;
-
+                               const IGESData_IGESDumper&                dumper,
+                               Standard_OStream&                         S,
+                               const int                                 own) const;
 };
 
 #endif // _IGESGraph_ToolNominalSize_HeaderFile

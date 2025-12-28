@@ -27,7 +27,6 @@
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
-#include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <gp_Ax2.hxx>
 
 //! Access object to store datum
@@ -56,15 +55,16 @@ public:
   Standard_EXPORT NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> GetModifiers() const;
 
   //! Sets new sequence of datum modifiers.
-  Standard_EXPORT void SetModifiers(const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers);
+  Standard_EXPORT void SetModifiers(
+    const NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>& theModifiers);
 
   //! Retrieves datum modifier with value.
   Standard_EXPORT void GetModifierWithValue(XCAFDimTolObjects_DatumModifWithValue& theModifier,
-                                            double&                         theValue) const;
+                                            double&                                theValue) const;
 
   //! Sets datum modifier with value.
   Standard_EXPORT void SetModifierWithValue(const XCAFDimTolObjects_DatumModifWithValue theModifier,
-                                            const double                         theValue);
+                                            const double                                theValue);
 
   //! Adds a modifier to the datum sequence of modifiers.
   Standard_EXPORT void AddModifier(const XCAFDimTolObjects_DatumSingleModif theModifier);
@@ -162,7 +162,7 @@ public:
   bool HasPointText() const { return myHasPntText; }
 
   //! Set graphical presentation for object.
-  void SetPresentation(const TopoDS_Shape&                     thePresentation,
+  void SetPresentation(const TopoDS_Shape&                          thePresentation,
                        const occ::handle<TCollection_HAsciiString>& thePresentationName)
   {
     myPresentation     = thePresentation;
@@ -185,28 +185,28 @@ public:
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>         myName;
+  occ::handle<TCollection_HAsciiString>                    myName;
   NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> myModifiers;
-  XCAFDimTolObjects_DatumModifWithValue    myModifierWithValue;
-  double                            myValueOfModifier;
-  TopoDS_Shape                             myDatumTarget;
-  int                         myPosition;
-  bool                         myIsDTarget;
-  bool                         myIsValidDT;
-  XCAFDimTolObjects_DatumTargetType        myDTargetType;
-  double                            myLength;
-  double                            myWidth;
-  int                         myDatumTargetNumber;
-  gp_Ax2                                   myAxis;
-  gp_Ax2                                   myPlane;
-  gp_Pnt                                   myPnt;
-  gp_Pnt                                   myPntText;
-  bool                         myHasPlane;
-  bool                         myHasPnt;
-  bool                         myHasPntText;
-  TopoDS_Shape                             myPresentation;
-  occ::handle<TCollection_HAsciiString>         mySemanticName;
-  occ::handle<TCollection_HAsciiString>         myPresentationName;
+  XCAFDimTolObjects_DatumModifWithValue                    myModifierWithValue;
+  double                                                   myValueOfModifier;
+  TopoDS_Shape                                             myDatumTarget;
+  int                                                      myPosition;
+  bool                                                     myIsDTarget;
+  bool                                                     myIsValidDT;
+  XCAFDimTolObjects_DatumTargetType                        myDTargetType;
+  double                                                   myLength;
+  double                                                   myWidth;
+  int                                                      myDatumTargetNumber;
+  gp_Ax2                                                   myAxis;
+  gp_Ax2                                                   myPlane;
+  gp_Pnt                                                   myPnt;
+  gp_Pnt                                                   myPntText;
+  bool                                                     myHasPlane;
+  bool                                                     myHasPnt;
+  bool                                                     myHasPntText;
+  TopoDS_Shape                                             myPresentation;
+  occ::handle<TCollection_HAsciiString>                    mySemanticName;
+  occ::handle<TCollection_HAsciiString>                    myPresentationName;
 };
 
 #endif // _XCAFDimTolObjects_DatumObject_HeaderFile

@@ -34,10 +34,10 @@ void gp_Trsf2d::SetMirror(const gp_Ax2d& A) noexcept
   scale              = -1.0;
   const gp_Dir2d& V  = A.Direction();
   const gp_Pnt2d& P  = A.Location();
-  double   VX = V.X();
-  double   VY = V.Y();
-  double   X0 = P.X();
-  double   Y0 = P.Y();
+  double          VX = V.X();
+  double          VY = V.Y();
+  double          X0 = P.X();
+  double          Y0 = P.Y();
   matrix.SetCol(1, gp_XY(1.0 - 2.0 * VX * VX, -2.0 * VX * VY));
   matrix.SetCol(2, gp_XY(-2.0 * VX * VY, 1.0 - 2.0 * VY * VY));
 
@@ -413,7 +413,7 @@ void gp_Trsf2d::Power(const int N)
         if (Npower < 0)
           Npower = -Npower;
         Npower--;
-        gp_XY         Temploc   = loc;
+        gp_XY  Temploc   = loc;
         double Tempscale = scale;
         for (;;)
         {
@@ -478,15 +478,15 @@ void gp_Trsf2d::Power(const int N)
       }
       else
       {
-        shape                   = gp_CompoundTrsf;
+        shape      = gp_CompoundTrsf;
         int Npower = N;
         if (Npower < 0)
           Npower = -Npower;
         Npower--;
         matrix.SetDiagonal(scale * matrix.Value(1, 1), scale * matrix.Value(2, 2));
-        gp_XY         Temploc   = loc;
-        double Tempscale = scale;
-        gp_Mat2d      Tempmatrix(matrix);
+        gp_XY    Temploc   = loc;
+        double   Tempscale = scale;
+        gp_Mat2d Tempmatrix(matrix);
         for (;;)
         {
           if (IsOdd(Npower))
@@ -640,8 +640,8 @@ void gp_Trsf2d::SetValues(const double a11,
   gp_XY col2(a12, a22);
   gp_XY col3(a13, a23);
   // compute the determinant
-  gp_Mat2d      M(col1, col2);
-  double s = M.Determinant();
+  gp_Mat2d M(col1, col2);
+  double   s = M.Determinant();
   Standard_ConstructionError_Raise_if(std::abs(s) < gp::Resolution(),
                                       "gp_Trsf2d::SetValues, null determinant");
 

@@ -61,10 +61,10 @@ public:
   //! It is possible to create an ellipse with
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
-  constexpr gp_Elips2d(const gp_Ax2d&         theMajorAxis,
-                       const double    theMajorRadius,
-                       const double    theMinorRadius,
-                       const bool theIsSense = true)
+  constexpr gp_Elips2d(const gp_Ax2d& theMajorAxis,
+                       const double   theMajorRadius,
+                       const double   theMinorRadius,
+                       const bool     theIsSense = true)
       : pos(theMajorAxis, theIsSense),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -88,9 +88,9 @@ public:
   //! It is possible to create an ellipse with
   //! theMajorRadius = theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.0
-  constexpr gp_Elips2d(const gp_Ax22d&     theA,
-                       const double theMajorRadius,
-                       const double theMinorRadius)
+  constexpr gp_Elips2d(const gp_Ax22d& theA,
+                       const double    theMajorRadius,
+                       const double    theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -180,10 +180,7 @@ public:
 
   //! Returns the distance between the center of the ellipse
   //! and focus1 or focus2.
-  double Focal() const
-  {
-    return 2.0 * sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
-  }
+  double Focal() const { return 2.0 * sqrt(majorRadius * majorRadius - minorRadius * minorRadius); }
 
   //! Returns the first focus of the ellipse. This focus is on the
   //! positive side of the major axis of the ellipse.
@@ -282,7 +279,7 @@ public:
 
   //! Translates a ellipse from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Elips2d Translated(const gp_Pnt2d& theP1,
-                                                     const gp_Pnt2d& theP2) const noexcept
+                                                const gp_Pnt2d& theP2) const noexcept
   {
     gp_Elips2d anE = *this;
     anE.pos.Translate(theP1, theP2);
@@ -290,9 +287,9 @@ public:
   }
 
 private:
-  gp_Ax22d      pos;
-  double majorRadius;
-  double minorRadius;
+  gp_Ax22d pos;
+  double   majorRadius;
+  double   minorRadius;
 };
 
 //=================================================================================================
@@ -339,7 +336,7 @@ inline double gp_Elips2d::Eccentricity() const
 
 inline gp_Pnt2d gp_Elips2d::Focus1() const
 {
-  double   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double          aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt2d& aPP = pos.Location();
   const gp_Dir2d& aDD = pos.XDirection();
   return gp_Pnt2d(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y());
@@ -349,7 +346,7 @@ inline gp_Pnt2d gp_Elips2d::Focus1() const
 
 inline gp_Pnt2d gp_Elips2d::Focus2() const
 {
-  double   aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double          aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt2d& aPP = pos.Location();
   const gp_Dir2d& aDD = pos.XDirection();
   return gp_Pnt2d(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y());

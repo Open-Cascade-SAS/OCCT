@@ -49,8 +49,7 @@ TCollection_HExtendedString::TCollection_HExtendedString(const char16_t aChar)
 
 //=================================================================================================
 
-TCollection_HExtendedString::TCollection_HExtendedString(const int      length,
-                                                         const char16_t filler)
+TCollection_HExtendedString::TCollection_HExtendedString(const int length, const char16_t filler)
     : myString(length, filler)
 {
 }
@@ -95,8 +94,7 @@ occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Cat(
 
 //=================================================================================================
 
-void TCollection_HExtendedString::ChangeAll(const char16_t aChar,
-                                            const char16_t NewChar)
+void TCollection_HExtendedString::ChangeAll(const char16_t aChar, const char16_t NewChar)
 {
   myString.ChangeAll(aChar, NewChar);
 }
@@ -117,15 +115,14 @@ void TCollection_HExtendedString::Clear()
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Insert(const int      where,
-                                         const char16_t what)
+void TCollection_HExtendedString::Insert(const int where, const char16_t what)
 {
   myString.Insert(where, what);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Insert(const int                     where,
+void TCollection_HExtendedString::Insert(const int                                       where,
                                          const occ::handle<TCollection_HExtendedString>& what)
 {
   myString.Insert(where, what->ChangeString());
@@ -163,8 +160,7 @@ int TCollection_HExtendedString::Length() const
 
 //=================================================================================================
 
-void TCollection_HExtendedString::Remove(const int where,
-                                         const int ahowmany)
+void TCollection_HExtendedString::Remove(const int where, const int ahowmany)
 {
   myString.Remove(where, ahowmany);
 }
@@ -178,15 +174,14 @@ void TCollection_HExtendedString::RemoveAll(const char16_t what)
 
 //=================================================================================================
 
-void TCollection_HExtendedString::SetValue(const int      where,
-                                           const char16_t what)
+void TCollection_HExtendedString::SetValue(const int where, const char16_t what)
 {
   myString.SetValue(where, what);
 }
 
 //=================================================================================================
 
-void TCollection_HExtendedString::SetValue(const int                     where,
+void TCollection_HExtendedString::SetValue(const int                                       where,
                                            const occ::handle<TCollection_HExtendedString>& what)
 {
   myString.SetValue(where, what->ChangeString());
@@ -201,8 +196,7 @@ occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Split(cons
 
 //=================================================================================================
 
-int TCollection_HExtendedString::Search(
-  const occ::handle<TCollection_HExtendedString>& what) const
+int TCollection_HExtendedString::Search(const occ::handle<TCollection_HExtendedString>& what) const
 {
   return myString.Search(what->ChangeString());
 }
@@ -219,7 +213,7 @@ int TCollection_HExtendedString::SearchFromEnd(
 
 occ::handle<TCollection_HExtendedString> TCollection_HExtendedString::Token(
   const char16_t* separators,
-  const int   whichone) const
+  const int       whichone) const
 {
   return new TCollection_HExtendedString(myString.Token(separators, whichone));
 }

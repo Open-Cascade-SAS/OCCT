@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_CircularRunoutTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
 };
 
 #endif // _StepDimTol_CircularRunoutTolerance_HeaderFile

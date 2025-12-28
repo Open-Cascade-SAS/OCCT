@@ -24,11 +24,9 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <NCollection_DataMap.hxx>
@@ -64,8 +62,7 @@ public:
   //! Changes names
   //! if a name is empty, the formerly set one remains
   //! Remark : Does not call Record or AutoRecord
-  Standard_EXPORT void SetNames(const char* theLongName,
-                                const char* theShortName);
+  Standard_EXPORT void SetNames(const char* theLongName, const char* theShortName);
 
   //! Records <me> is a general dictionary under Short and Long
   //! Names (see method Name)
@@ -120,41 +117,32 @@ public:
   //! Erases formerly recorded bounds and values
   //! Actually only for shape
   //! Then, for each value a little help can be attached
-  Standard_EXPORT void SetModeWrite(const int modemin,
-                                    const int modemax,
-                                    const bool shape = true);
+  Standard_EXPORT void SetModeWrite(const int modemin, const int modemax, const bool shape = true);
 
   //! Attaches a short line of help to a value of modetrans (write)
-  Standard_EXPORT void SetModeWriteHelp(const int modetrans,
+  Standard_EXPORT void SetModeWriteHelp(const int   modetrans,
                                         const char* help,
-                                        const bool shape = true);
+                                        const bool  shape = true);
 
   //! Returns recorded min and max values for modetrans (write)
   //! Actually only for shapes
   //! Returns True if bounds are set, False else (then, free value)
-  Standard_EXPORT bool
-    ModeWriteBounds(int&      modemin,
-                    int&      modemax,
-                    const bool shape = true) const;
+  Standard_EXPORT bool ModeWriteBounds(int& modemin, int& modemax, const bool shape = true) const;
 
   //! Tells if a value of <modetrans> is a good value(within bounds)
   //! Actually only for shapes
-  Standard_EXPORT bool IsModeWrite(const int modetrans,
-                                               const bool shape = true) const;
+  Standard_EXPORT bool IsModeWrite(const int modetrans, const bool shape = true) const;
 
   //! Returns the help line recorded for a value of modetrans
   //! empty if help not defined or not within bounds or if values are free
-  Standard_EXPORT const char*
-    ModeWriteHelp(const int modetrans,
-                  const bool shape = true) const;
+  Standard_EXPORT const char* ModeWriteHelp(const int modetrans, const bool shape = true) const;
 
   //! Tells if <obj> (an application object) is a valid candidate
   //! for a transfer to a Model.
   //! By default, asks the ActorWrite if known (through a
   //! TransientMapper). Can be redefined
-  Standard_EXPORT virtual bool RecognizeWriteTransient(
-    const occ::handle<Standard_Transient>& obj,
-    const int            modetrans = 0) const;
+  Standard_EXPORT virtual bool RecognizeWriteTransient(const occ::handle<Standard_Transient>& obj,
+                                                       const int modetrans = 0) const;
 
   //! Takes one Transient Object and transfers it to an
   //! InterfaceModel (already created, e.g. by NewModel)
@@ -170,14 +158,13 @@ public:
     const occ::handle<Standard_Transient>&       obj,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,
-    const int                  modetrans   = 0,
-    const Message_ProgressRange&            theProgress = Message_ProgressRange()) const;
+    const int                                    modetrans   = 0,
+    const Message_ProgressRange&                 theProgress = Message_ProgressRange()) const;
 
   //! Tells if a shape is valid for a transfer to a model
   //! Asks the ActorWrite (through a ShapeMapper)
-  Standard_EXPORT virtual bool RecognizeWriteShape(
-    const TopoDS_Shape&    shape,
-    const int modetrans = 0) const;
+  Standard_EXPORT virtual bool RecognizeWriteShape(const TopoDS_Shape& shape,
+                                                   const int           modetrans = 0) const;
 
   //! Takes one Shape and transfers it to an
   //! InterfaceModel (already created, e.g. by NewModel)
@@ -186,11 +173,11 @@ public:
   //! Done  OK ,  Void : No Result ,  Fail : Fail (e.g. exception)
   //! Error : bad conditions , bad model or null model
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
-    const TopoDS_Shape&                     shape,
+    const TopoDS_Shape&                          shape,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,
-    const int                  modetrans   = 0,
-    const Message_ProgressRange&            theProgress = Message_ProgressRange()) const;
+    const int                                    modetrans   = 0,
+    const Message_ProgressRange&                 theProgress = Message_ProgressRange()) const;
 
   //! Records a Session Item, to be added for customisation of the Work Session.
   //! It must have a specific name.
@@ -201,8 +188,8 @@ public:
   //! the recorded items will be used by Customise
   //! Warning : if <name> conflicts, the last recorded item is kept
   Standard_EXPORT void AddSessionItem(const occ::handle<Standard_Transient>& theItem,
-                                      const char*            theName,
-                                      const bool            toApply = false);
+                                      const char*                            theName,
+                                      const bool                             toApply = false);
 
   //! Returns an item given its name to record in a Session
   //! If <name> is unknown, returns a Null Handle
@@ -211,8 +198,8 @@ public:
   //! Customises a WorkSession, by adding to it the recorded items (by AddSessionItem)
   Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS);
 
-  const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& AdaptorSession()
-    const
+  const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
+    AdaptorSession() const
   {
     return myAdaptorSession;
   }
@@ -223,14 +210,13 @@ protected:
   //! Initializing with names
   //! <theLongName>  is for the complete, official, long name
   //! <theShortName> is for the short name used for resources
-  Standard_EXPORT XSControl_Controller(const char* theLongName,
-                                       const char* theShortName);
+  Standard_EXPORT XSControl_Controller(const char* theLongName, const char* theShortName);
 
   //! Records the name of a Static to be traced for a given use
   Standard_EXPORT void TraceStatic(const char* theName, const int theUse);
 
-  TCollection_AsciiString      myShortName;
-  TCollection_AsciiString      myLongName;
+  TCollection_AsciiString           myShortName;
+  TCollection_AsciiString           myLongName;
   occ::handle<IFSelect_WorkLibrary> myAdaptorLibrary;
   occ::handle<Interface_Protocol>   myAdaptorProtocol;
   // szv:occ::handle<IFSelect_Signature> mySignType;
@@ -239,10 +225,10 @@ protected:
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> myAdaptorSession;
 
 private:
-  NCollection_Sequence<occ::handle<Standard_Transient>>                    myAdaptorApplied;
-  NCollection_Vector<occ::handle<Standard_Transient>> myParams;
-  NCollection_Vector<int>           myParamUses;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>        myModeWriteShapeN;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                   myAdaptorApplied;
+  NCollection_Vector<occ::handle<Standard_Transient>>                     myParams;
+  NCollection_Vector<int>                                                 myParamUses;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> myModeWriteShapeN;
 };
 
 #endif // _XSControl_Controller_HeaderFile

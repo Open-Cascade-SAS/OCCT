@@ -23,7 +23,7 @@ RWStepGeom_RWCartesianTransformationOperator3d::RWStepGeom_RWCartesianTransforma
 
 void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                    num,
+  const int                                                      num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepGeom_CartesianTransformationOperator3d>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
   // --- inherited field : axis1 ---
 
   occ::handle<StepGeom_Direction> aAxis1;
-  bool           hasAaxis1 = true;
+  bool                            hasAaxis1 = true;
   if (data->IsParamDefined(num, 4))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -62,7 +62,7 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
   // --- inherited field : axis2 ---
 
   occ::handle<StepGeom_Direction> aAxis2;
-  bool           hasAaxis2 = true;
+  bool                            hasAaxis2 = true;
   if (data->IsParamDefined(num, 5))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -83,8 +83,8 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
 
   // --- inherited field : scale ---
 
-  double    aScale;
-  bool hasAscale = true;
+  double aScale;
+  bool   hasAscale = true;
   if (data->IsParamDefined(num, 7))
   {
     // szv#4:S4163:12Mar99 `bool stat5 =` not needed
@@ -99,7 +99,7 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
   // --- own field : axis3 ---
 
   occ::handle<StepGeom_Direction> aAxis3;
-  bool           hasAaxis3 = true;
+  bool                            hasAaxis3 = true;
   if (data->IsParamDefined(num, 8))
   {
     // szv#4:S4163:12Mar99 `bool stat6 =` not needed
@@ -126,7 +126,7 @@ void RWStepGeom_RWCartesianTransformationOperator3d::ReadStep(
 }
 
 void RWStepGeom_RWCartesianTransformationOperator3d::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepGeom_CartesianTransformationOperator3d>& ent) const
 {
 
@@ -193,7 +193,7 @@ void RWStepGeom_RWCartesianTransformationOperator3d::WriteStep(
 
 void RWStepGeom_RWCartesianTransformationOperator3d::Share(
   const occ::handle<StepGeom_CartesianTransformationOperator3d>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                      iter) const
 {
   if (ent->HasAxis1())
   {

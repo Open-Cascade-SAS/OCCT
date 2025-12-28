@@ -38,9 +38,7 @@ public:
   //! Constructs a triangle and sets its three indices,
   //! where these node values are indices in the table of nodes specific to an existing
   //! triangulation of a shape.
-  Poly_Triangle(const int theN1,
-                const int theN2,
-                const int theN3)
+  Poly_Triangle(const int theN1, const int theN2, const int theN3)
   {
     myNodes[0] = theN1;
     myNodes[1] = theN2;

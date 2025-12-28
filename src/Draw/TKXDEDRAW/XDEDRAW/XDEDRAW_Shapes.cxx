@@ -73,7 +73,7 @@ static int addShape(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   occ::handle<XCAFDoc_ShapeTool> myAssembly   = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  bool          makeAssembly = true;
+  bool                           makeAssembly = true;
   if (argc == 4 && Draw::Atoi(argv[3]) == 0)
     makeAssembly = false;
   TDF_Label aLabel;
@@ -94,7 +94,7 @@ static int newShape(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<TDocStd_Document> Doc;
-  TDF_Label                aLabel;
+  TDF_Label                     aLabel;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
   {
@@ -166,8 +166,8 @@ static int getShape(Draw_Interpretor& di, int argc, const char** argv)
   //  XCAFDoc_ShapeTool myAssembly;
   //  myAssembly.Init(Doc);
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  aShape                               = myAssembly->GetShape(aLabel);
-  const char* name1               = argv[1];
+  aShape                                    = myAssembly->GetShape(aLabel);
+  const char* name1                         = argv[1];
   DBRep::Set(name1, aShape);
 
   return 0;
@@ -199,7 +199,7 @@ static int removeShape(Draw_Interpretor& di, int argc, const char** argv)
   //  XCAFDoc_ShapeTool myAssembly;
   //  myAssembly.Init(Doc);
   occ::handle<XCAFDoc_ShapeTool> myAssembly       = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  bool          removeCompletely = true;
+  bool                           removeCompletely = true;
   if (argc == 4 && Draw::Atoi(argv[3]) == 0)
     removeCompletely = false;
   myAssembly->RemoveShape(aLabel, removeCompletely);
@@ -228,8 +228,8 @@ static int findShape(Draw_Interpretor& di, int argc, const char** argv)
   //  XCAFDoc_ShapeTool myAssembly;
   //  myAssembly.Init(Doc);
   occ::handle<XCAFDoc_ShapeTool> myAssembly   = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  bool          findInstance = ((argc == 4) && argv[3][0] == '1');
-  aLabel                                 = myAssembly->FindShape(aShape, findInstance);
+  bool                           findInstance = ((argc == 4) && argv[3][0] == '1');
+  aLabel                                      = myAssembly->FindShape(aShape, findInstance);
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aLabel, Entry);
   di << Entry.ToCString();
@@ -258,7 +258,7 @@ static int findSubShape(Draw_Interpretor& di, int argc, const char** argv)
   TDF_Label aParentLabel;
   TDF_Tool::Label(aDoc->GetData(), argv[3], aParentLabel);
 
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShapeTool->FindSubShape(aParentLabel, aShape, aLabel);
 
@@ -268,9 +268,7 @@ static int findSubShape(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int findMainShape(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int findMainShape(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -289,7 +287,7 @@ static int findMainShape(Draw_Interpretor& di,
   aShape = DBRep::Get(argv[2]);
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-  TDF_Label                 aLabel     = aShapeTool->FindMainShape(aShape);
+  TDF_Label                      aLabel     = aShapeTool->FindMainShape(aShape);
 
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(aLabel, anEntry);
@@ -318,9 +316,9 @@ static int addSubShape(Draw_Interpretor& di, int argc, const char** argv)
   TDF_Label aParentLabel;
   TDF_Tool::Label(aDoc->GetData(), argv[3], aParentLabel);
 
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-  aLabel                               = aShapeTool->AddSubShape(aParentLabel, aShape);
+  aLabel                                    = aShapeTool->AddSubShape(aParentLabel, aShape);
 
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(aLabel, anEntry);
@@ -348,7 +346,7 @@ static int labelInfo(Draw_Interpretor& di, int argc, const char** argv)
   //  XCAFDoc_ShapeTool myAssembly;
   //  myAssembly.Init(Doc);
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TCollection_AsciiString   Entry;
+  TCollection_AsciiString        Entry;
 
   if (myAssembly->IsShape(aLabel))
   {
@@ -398,9 +396,9 @@ static int getUsers(Draw_Interpretor& di, int argc, const char** argv)
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  NCollection_Sequence<TDF_Label>         labseq;
-  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TCollection_AsciiString   Entry;
+  NCollection_Sequence<TDF_Label> labseq;
+  occ::handle<XCAFDoc_ShapeTool>  myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  TCollection_AsciiString         Entry;
   Entry = myAssembly->GetUsers(aLabel, labseq, getsubchilds);
   di << Entry.ToCString();
   // di<<myAssembly->GetUsers(aLabel, labseq, getsubchilds)<<" assemblies use this component\n";
@@ -458,7 +456,7 @@ static int addComponent(Draw_Interpretor& di, int argc, const char** argv)
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   TopoDS_Shape aShape;
-  aShape                               = DBRep::Get(argv[3]);
+  aShape                                    = DBRep::Get(argv[3]);
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   //  XCAFDoc_ShapeTool myAssembly->
   //  myAssembly->Init(Doc);
@@ -470,9 +468,7 @@ static int addComponent(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int removeComponent(Draw_Interpretor& di,
-                                        int  argc,
-                                        const char**      argv)
+static int removeComponent(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -496,9 +492,7 @@ static int removeComponent(Draw_Interpretor& di,
   return 0;
 }
 
-static int getReferredShape(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int getReferredShape(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -527,9 +521,7 @@ static int getReferredShape(Draw_Interpretor& di,
   return 0;
 }
 
-static int getTopLevelShapes(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int getTopLevelShapes(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -544,7 +536,7 @@ static int getTopLevelShapes(Draw_Interpretor& di,
     return 1;
   }
 
-  TDF_Label         aLabel;
+  TDF_Label                       aLabel;
   NCollection_Sequence<TDF_Label> Labels;
 
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
@@ -564,9 +556,7 @@ static int getTopLevelShapes(Draw_Interpretor& di,
   return 0;
 }
 
-static int getFreeShapes(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int getFreeShapes(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 2)
   {
@@ -582,8 +572,8 @@ static int getFreeShapes(Draw_Interpretor& di,
     return 1;
   }
 
-  NCollection_Sequence<TDF_Label>         Labels;
-  occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> Labels;
+  occ::handle<XCAFDoc_ShapeTool>  STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   STool->GetFreeShapes(Labels);
   if (Labels.Length() <= 0)
   {
@@ -622,9 +612,7 @@ static int getFreeShapes(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static int getOneShape(Draw_Interpretor& theDI,
-                                    int  theNbArgs,
-                                    const char**      theArgVec)
+static int getOneShape(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -641,7 +629,7 @@ static int getOneShape(Draw_Interpretor& theDI,
   }
 
   occ::handle<XCAFDoc_ShapeTool> aSTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-  TopoDS_Shape              aShape = aSTool->GetOneShape();
+  TopoDS_Shape                   aShape = aSTool->GetOneShape();
   if (aShape.IsNull())
   {
     theDI << "Error: Document " << theArgVec[2] << " contain no shapes\n";
@@ -656,9 +644,7 @@ static int getOneShape(Draw_Interpretor& theDI,
 // function : XDumpLocation
 // purpose  : Dump Transformation() of XCAFDoc_Location attribute
 //=======================================================================
-static int XDumpLocation(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int XDumpLocation(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -743,9 +729,7 @@ static int setSHUO(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getSHUOUpperUsage(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int getSHUOUpperUsage(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -766,8 +750,8 @@ static int getSHUOUpperUsage(Draw_Interpretor& di,
     di << argv[2] << " is null label" << "\n";
     return 1;
   }
-  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  NCollection_Sequence<TDF_Label>         labseq;
+  occ::handle<XCAFDoc_ShapeTool>  myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> labseq;
   myAssembly->GetSHUOUpperUsage(NL, labseq);
   TCollection_AsciiString Entry;
   if (labseq.Length() >= 1)
@@ -782,9 +766,7 @@ static int getSHUOUpperUsage(Draw_Interpretor& di,
   return 0;
 }
 
-static int getSHUONextUsage(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int getSHUONextUsage(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -805,8 +787,8 @@ static int getSHUONextUsage(Draw_Interpretor& di,
     di << argv[2] << " is null label" << "\n";
     return 1;
   }
-  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  NCollection_Sequence<TDF_Label>         labseq;
+  occ::handle<XCAFDoc_ShapeTool>  myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> labseq;
   myAssembly->GetSHUONextUsage(UL, labseq);
   TCollection_AsciiString Entry;
   if (labseq.Length() >= 1)
@@ -894,7 +876,7 @@ static int getAllSHUO(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TDF_Label                 UL;
+  TDF_Label                      UL;
   TDF_Tool::Label(Doc->GetData(), argv[2], UL);
   if (UL.IsNull())
   {
@@ -916,9 +898,7 @@ static int getAllSHUO(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int findComponent(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int findComponent(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -933,7 +913,7 @@ static int findComponent(Draw_Interpretor& di,
     return 1;
   }
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TopoDS_Shape              aShape;
+  TopoDS_Shape                   aShape;
   aShape = DBRep::Get(argv[2]);
   NCollection_Sequence<TDF_Label> labseq;
   myAssembly->FindComponent(aShape, labseq);
@@ -950,9 +930,7 @@ static int findComponent(Draw_Interpretor& di,
   return 0;
 }
 
-static int getStyledComponent(Draw_Interpretor& di,
-                                           int  argc,
-                                           const char**      argv)
+static int getStyledComponent(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 4)
   {
@@ -967,8 +945,8 @@ static int getStyledComponent(Draw_Interpretor& di,
     return 1;
   }
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TopoDS_Shape              aShape;
-  TDF_Label                 aLabel;
+  TopoDS_Shape                   aShape;
+  TDF_Label                      aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[3], aLabel);
   occ::handle<XCAFDoc_GraphNode> SHUO;
   if (myAssembly->GetSHUO(aLabel, SHUO))
@@ -984,9 +962,7 @@ static int getStyledComponent(Draw_Interpretor& di,
   return 0;
 }
 
-static int getAllStyledComponents(Draw_Interpretor& di,
-                                               int  argc,
-                                               const char**      argv)
+static int getAllStyledComponents(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 4)
   {
@@ -1000,9 +976,9 @@ static int getAllStyledComponents(Draw_Interpretor& di,
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  NCollection_Sequence<TopoDS_Shape>  aShapes;
-  TDF_Label                 aLabel;
+  occ::handle<XCAFDoc_ShapeTool>     myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TopoDS_Shape> aShapes;
+  TDF_Label                          aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[3], aLabel);
   occ::handle<XCAFDoc_GraphNode> SHUO;
   if (myAssembly->GetSHUO(aLabel, SHUO))
@@ -1037,8 +1013,8 @@ static int findSHUO(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  NCollection_Sequence<TDF_Label>         aLabSeq;
+  occ::handle<XCAFDoc_ShapeTool>  myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> aLabSeq;
   for (int i = 3; i <= argc; i++)
   {
     TDF_Label L;
@@ -1066,9 +1042,7 @@ static int findSHUO(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setStyledComponent(Draw_Interpretor& di,
-                                           int  argc,
-                                           const char**      argv)
+static int setStyledComponent(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -1083,7 +1057,7 @@ static int setStyledComponent(Draw_Interpretor& di,
     return 1;
   }
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  TopoDS_Shape              aShape;
+  TopoDS_Shape                   aShape;
   aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
   {
@@ -1104,9 +1078,7 @@ static int setStyledComponent(Draw_Interpretor& di,
   return 0;
 }
 
-static int updateAssemblies(Draw_Interpretor& di,
-                                         int  argc,
-                                         const char**      argv)
+static int updateAssemblies(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -1129,9 +1101,7 @@ static int updateAssemblies(Draw_Interpretor& di,
   return 0;
 }
 
-static int XGetProperties(Draw_Interpretor& theDI,
-                                       int  theArgc,
-                                       const char**      theArgv)
+static int XGetProperties(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 2)
   {
@@ -1189,7 +1159,8 @@ static int XGetProperties(Draw_Interpretor& theDI,
       }
     }
   }
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<TDataStd_NamedData>>::Iterator
+  for (NCollection_IndexedDataMap<TCollection_AsciiString,
+                                  occ::handle<TDataStd_NamedData>>::Iterator
          aNamedDataIter(aNameDataMap);
        aNamedDataIter.More();
        aNamedDataIter.Next())
@@ -1202,8 +1173,10 @@ static int XGetProperties(Draw_Interpretor& theDI,
     aNamedData->LoadDeferredData();
     if (aNamedData->HasIntegers())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, int>& anIntProperties = aNamedData->GetIntegersContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, int>::Iterator anIter(anIntProperties); anIter.More();
+      const NCollection_DataMap<TCollection_ExtendedString, int>& anIntProperties =
+        aNamedData->GetIntegersContainer();
+      for (NCollection_DataMap<TCollection_ExtendedString, int>::Iterator anIter(anIntProperties);
+           anIter.More();
            anIter.Next())
       {
         theDI << anIter.Key() << " : " << anIter.Value() << "\n";
@@ -1211,8 +1184,11 @@ static int XGetProperties(Draw_Interpretor& theDI,
     }
     if (aNamedData->HasReals())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, double>& aRealProperties = aNamedData->GetRealsContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, double>::Iterator anIter(aRealProperties); anIter.More();
+      const NCollection_DataMap<TCollection_ExtendedString, double>& aRealProperties =
+        aNamedData->GetRealsContainer();
+      for (NCollection_DataMap<TCollection_ExtendedString, double>::Iterator anIter(
+             aRealProperties);
+           anIter.More();
            anIter.Next())
       {
         theDI << anIter.Key() << " : " << anIter.Value() << "\n";
@@ -1220,8 +1196,11 @@ static int XGetProperties(Draw_Interpretor& theDI,
     }
     if (aNamedData->HasStrings())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aStringProperties = aNamedData->GetStringsContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator anIter(aStringProperties); anIter.More();
+      const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>&
+        aStringProperties = aNamedData->GetStringsContainer();
+      for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator
+             anIter(aStringProperties);
+           anIter.More();
            anIter.Next())
       {
         theDI << anIter.Key() << " : " << anIter.Value() << "\n";
@@ -1229,8 +1208,11 @@ static int XGetProperties(Draw_Interpretor& theDI,
     }
     if (aNamedData->HasBytes())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& aByteProperties = aNamedData->GetBytesContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator anIter(aByteProperties); anIter.More();
+      const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& aByteProperties =
+        aNamedData->GetBytesContainer();
+      for (NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator anIter(
+             aByteProperties);
+           anIter.More();
            anIter.Next())
       {
         theDI << anIter.Key() << " : " << anIter.Value() << "\n";
@@ -1238,9 +1220,11 @@ static int XGetProperties(Draw_Interpretor& theDI,
     }
     if (aNamedData->HasArraysOfIntegers())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& anArrayIntegerProperties =
-        aNamedData->GetArraysOfIntegersContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator anIter(anArrayIntegerProperties);
+      const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
+        anArrayIntegerProperties = aNamedData->GetArraysOfIntegersContainer();
+      for (NCollection_DataMap<TCollection_ExtendedString,
+                               occ::handle<NCollection_HArray1<int>>>::Iterator
+             anIter(anArrayIntegerProperties);
            anIter.More();
            anIter.Next())
       {
@@ -1257,14 +1241,18 @@ static int XGetProperties(Draw_Interpretor& theDI,
     }
     if (aNamedData->HasArraysOfReals())
     {
-      const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& anArrayRealsProperties =
+      const NCollection_DataMap<TCollection_ExtendedString,
+                                occ::handle<NCollection_HArray1<double>>>& anArrayRealsProperties =
         aNamedData->GetArraysOfRealsContainer();
-      for (NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator anIter(anArrayRealsProperties);
+      for (NCollection_DataMap<TCollection_ExtendedString,
+                               occ::handle<NCollection_HArray1<double>>>::Iterator
+             anIter(anArrayRealsProperties);
            anIter.More();
            anIter.Next())
       {
         TCollection_AsciiString aMessage(anIter.Key() + " : ");
-        for (NCollection_HArray1<double>::Iterator anSubIter(anIter.Value()->Array1()); anSubIter.More();
+        for (NCollection_HArray1<double>::Iterator anSubIter(anIter.Value()->Array1());
+             anSubIter.More();
              anSubIter.Next())
         {
           aMessage += " ";
@@ -1278,9 +1266,7 @@ static int XGetProperties(Draw_Interpretor& theDI,
   return 0;
 }
 
-static int XAutoNaming(Draw_Interpretor& theDI,
-                                    int  theNbArgs,
-                                    const char**      theArgVec)
+static int XAutoNaming(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2 && theNbArgs != 3)
   {
@@ -1321,8 +1307,7 @@ static int XAutoNaming(Draw_Interpretor& theDI,
 static bool parseXYZ(const char** theArgVec, gp_XYZ& thePnt)
 {
   const TCollection_AsciiString aXYZ[3] = {theArgVec[0], theArgVec[1], theArgVec[2]};
-  if (!aXYZ[0].IsRealValue(true) || !aXYZ[1].IsRealValue(true)
-      || !aXYZ[2].IsRealValue(true))
+  if (!aXYZ[0].IsRealValue(true) || !aXYZ[1].IsRealValue(true) || !aXYZ[2].IsRealValue(true))
   {
     return false;
   }
@@ -1335,9 +1320,7 @@ static bool parseXYZ(const char** theArgVec, gp_XYZ& thePnt)
 // function : setLocation
 // purpose  : Sets location to the shape at the label in XDE document
 //=======================================================================
-static int setLocation(Draw_Interpretor&,
-                                    int theArgNb,
-                                    const char**     theArgVec)
+static int setLocation(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 4)
   {
@@ -1367,7 +1350,7 @@ static int setLocation(Draw_Interpretor&,
   {
     gp_Trsf                 aCurTransformation;
     gp_XYZ                  aMoveXYZ, aRotPnt, aRotAxis, aScalePnt;
-    double           aRotAngle, aScale;
+    double                  aRotAngle, aScale;
     TCollection_AsciiString anArg = theArgVec[anArgIter];
     anArg.LowerCase();
 
@@ -1413,7 +1396,7 @@ static int setLocation(Draw_Interpretor&,
 
   // Create the ShapeTool and try to set location
   occ::handle<XCAFDoc_ShapeTool> anAssembly = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-  TDF_Label                 aRefLabel;
+  TDF_Label                      aRefLabel;
   if (anAssembly->SetLocation(aShapeLabel, aLoc, aRefLabel))
   {
     if (aShapeLabel == aRefLabel)

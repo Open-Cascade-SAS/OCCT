@@ -37,13 +37,10 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
@@ -53,9 +50,9 @@
 
 OSD_Chronometer chr_total, chr_init, chr_approx, chr_booltool;
 
-double                    t_total, t_init, t_approx, t_booltool;
-Standard_IMPORT double    t_init_point, t_dicho_bound;
-Standard_IMPORT int init_point_count, dicho_bound_count;
+double                 t_total, t_init, t_approx, t_booltool;
+Standard_IMPORT double t_init_point, t_dicho_bound;
+Standard_IMPORT int    init_point_count, dicho_bound_count;
 
 void InitChron(OSD_Chronometer& ch)
 {
@@ -116,11 +113,11 @@ void BRepAlgo_NormalProjection::Add(const TopoDS_Shape& ToProj)
 
 //=================================================================================================
 
-void BRepAlgo_NormalProjection::SetParams(const double    Tol3D,
-                                          const double    Tol2D,
-                                          const GeomAbs_Shape    InternalContinuity,
-                                          const int MaxDegree,
-                                          const int MaxSeg)
+void BRepAlgo_NormalProjection::SetParams(const double        Tol3D,
+                                          const double        Tol2D,
+                                          const GeomAbs_Shape InternalContinuity,
+                                          const int           MaxDegree,
+                                          const int           MaxSeg)
 {
   myTol3d      = Tol3D;
   myTol2d      = Tol2D;
@@ -182,20 +179,22 @@ void BRepAlgo_NormalProjection::Build()
 #endif
   myIsDone = false;
 
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> Edges = new NCollection_HSequence<TopoDS_Shape>();
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> Faces = new NCollection_HSequence<TopoDS_Shape>();
-  NCollection_List<TopoDS_Shape>              DescenList;
-  int                  NbEdges = 0, NbFaces = 0, i, j, k;
-  TopExp_Explorer                   ExpOfWire, ExpOfShape;
-  double                     Udeb, Ufin;
-  TopoDS_Shape                      VertexRes;
-  bool                  Only3d, Only2d, Elementary;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> Edges =
+    new NCollection_HSequence<TopoDS_Shape>();
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> Faces =
+    new NCollection_HSequence<TopoDS_Shape>();
+  NCollection_List<TopoDS_Shape> DescenList;
+  int                            NbEdges = 0, NbFaces = 0, i, j, k;
+  TopExp_Explorer                ExpOfWire, ExpOfShape;
+  double                         Udeb, Ufin;
+  TopoDS_Shape                   VertexRes;
+  bool                           Only3d, Only2d, Elementary;
 
   // for isoparametric cases
-  NCollection_Array1<gp_Pnt2d>    Poles(1, 2);
-  NCollection_Array1<double>    Knots(1, 2);
-  NCollection_Array1<int> Mults(1, 2);
-  int        Deg;
+  NCollection_Array1<gp_Pnt2d> Poles(1, 2);
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Mults(1, 2);
+  int                          Deg;
   Deg      = 1;
   Mults(1) = Deg + 1;
   Mults(2) = Deg + 1;
@@ -220,10 +219,11 @@ void BRepAlgo_NormalProjection::Build()
   {
     DescenList.Clear();
     occ::handle<BRepAdaptor_Curve> hcur = new BRepAdaptor_Curve(TopoDS::Edge(Edges->Value(i)));
-    Elementary                     = IsElementary(*hcur);
+    Elementary                          = IsElementary(*hcur);
     for (j = 1; j <= NbFaces; j++)
     {
-      occ::handle<BRepAdaptor_Surface> hsur = new BRepAdaptor_Surface(TopoDS::Face(Faces->Value(j)));
+      occ::handle<BRepAdaptor_Surface> hsur =
+        new BRepAdaptor_Surface(TopoDS::Face(Faces->Value(j)));
 
       // computation of  TolU and TolV
 
@@ -242,11 +242,11 @@ void BRepAlgo_NormalProjection::Build()
       init_count++;
 #endif
       //
-      TopoDS_Shape     prj;
-      bool Degenerated = false;
-      gp_Pnt2d         P2d, Pdeb, Pfin;
-      gp_Pnt           P;
-      double    UIso, VIso;
+      TopoDS_Shape prj;
+      bool         Degenerated = false;
+      gp_Pnt2d     P2d, Pdeb, Pfin;
+      gp_Pnt       P;
+      double       UIso, VIso;
 
       occ::handle<Adaptor2d_Curve2d> HPCur;
       occ::handle<Geom2d_Curve>      PCur2d; // Only for isoparametric projection
@@ -281,14 +281,15 @@ void BRepAlgo_NormalProjection::Build()
 #endif
             HProjector->D0(Udeb, Pdeb);
             HProjector->D0(Ufin, Pfin);
-            Poles(1)                         = Pdeb;
-            Poles(2)                         = Pfin;
-            Knots(1)                         = Udeb;
-            Knots(2)                         = Ufin;
-            occ::handle<Geom2d_BSplineCurve> BS2d = new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
-            PCur2d                           = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
-            HPCur                            = new Geom2dAdaptor_Curve(PCur2d);
-            Only3d                           = true;
+            Poles(1) = Pdeb;
+            Poles(2) = Pfin;
+            Knots(1) = Udeb;
+            Knots(2) = Ufin;
+            occ::handle<Geom2d_BSplineCurve> BS2d =
+              new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
+            PCur2d = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
+            HPCur  = new Geom2dAdaptor_Curve(PCur2d);
+            Only3d = true;
           }
           else if (HProjector->IsVIso(k, VIso))
           {
@@ -298,14 +299,15 @@ void BRepAlgo_NormalProjection::Build()
 #endif
             HProjector->D0(Udeb, Pdeb);
             HProjector->D0(Ufin, Pfin);
-            Poles(1)                         = Pdeb;
-            Poles(2)                         = Pfin;
-            Knots(1)                         = Udeb;
-            Knots(2)                         = Ufin;
-            occ::handle<Geom2d_BSplineCurve> BS2d = new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
-            PCur2d                           = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
-            HPCur                            = new Geom2dAdaptor_Curve(PCur2d);
-            Only3d                           = true;
+            Poles(1) = Pdeb;
+            Poles(2) = Pfin;
+            Knots(1) = Udeb;
+            Knots(2) = Ufin;
+            occ::handle<Geom2d_BSplineCurve> BS2d =
+              new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
+            PCur2d = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
+            HPCur  = new Geom2dAdaptor_Curve(PCur2d);
+            Only3d = true;
           }
           else
             HPCur = HProjector;
@@ -359,11 +361,11 @@ void BRepAlgo_NormalProjection::Build()
               // flag on edge, one takes several points, checks if the cloud of
               // points has less diameter than the tolerance 3D
               Degenerated = true;
-              double             Dist;
+              double                         Dist;
               occ::handle<Geom_BSplineCurve> BS3d = appr.Curve3d();
-              gp_Pnt                    P1(0., 0., 0.), PP; // skl : I change "P" to "PP"
-              int          NbPoint, ii;        // skl : I change "i" to "ii"
-              double             Par, DPar;
+              gp_Pnt                         P1(0., 0., 0.), PP; // skl : I change "P" to "PP"
+              int                            NbPoint, ii;        // skl : I change "i" to "ii"
+              double                         Par, DPar;
               // start from 3 points to reject non degenerated edges
               // very fast
               NbPoint = 3;
@@ -472,9 +474,9 @@ void BRepAlgo_NormalProjection::Build()
                 BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
                                                    Precision::Confusion());
                 gp_Pnt2d                Puv;
-                double           f    = PCur2d->FirstParameter();
-                double           l    = PCur2d->LastParameter();
-                double           pmil = (f + l) / 2;
+                double                  f    = PCur2d->FirstParameter();
+                double                  l    = PCur2d->LastParameter();
+                double                  pmil = (f + l) / 2;
                 PCur2d->D0(pmil, Puv);
                 TopAbs_State state;
                 state = classifier.Perform(Puv);
@@ -496,9 +498,9 @@ void BRepAlgo_NormalProjection::Build()
               BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
                                                  Precision::Confusion());
               gp_Pnt2d                Puv;
-              double           f    = PCur2d->FirstParameter();
-              double           l    = PCur2d->LastParameter();
-              double           pmil = (f + l) / 2;
+              double                  f    = PCur2d->FirstParameter();
+              double                  l    = PCur2d->LastParameter();
+              double                  pmil = (f + l) / 2;
               PCur2d->D0(pmil, Puv);
               TopAbs_State state;
               state = classifier.Perform(Puv);
@@ -629,8 +631,8 @@ bool BRepAlgo_NormalProjection::IsElementary(const Adaptor3d_Curve& C) const
 
 bool BRepAlgo_NormalProjection::BuildWire(NCollection_List<TopoDS_Shape>& ListOfWire) const
 {
-  TopExp_Explorer  ExpOfWire, ExpOfShape;
-  bool IsWire = false;
+  TopExp_Explorer ExpOfWire, ExpOfShape;
+  bool            IsWire = false;
   ExpOfShape.Init(myRes, TopAbs_EDGE);
   if (ExpOfShape.More())
   {
@@ -648,8 +650,8 @@ bool BRepAlgo_NormalProjection::BuildWire(NCollection_List<TopoDS_Shape>& ListOf
       const TopoDS_Shape& Wire = MW.Shape();
       // If the resulting wire contains the same edge as at the beginning OK
       // otherwise the result really consists of several wires.
-      TopExp_Explorer  exp2(Wire, TopAbs_EDGE);
-      int NbEdges = 0;
+      TopExp_Explorer exp2(Wire, TopAbs_EDGE);
+      int             NbEdges = 0;
       for (; exp2.More(); exp2.Next())
         NbEdges++;
       if (NbEdges == List.Extent())

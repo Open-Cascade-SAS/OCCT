@@ -25,8 +25,6 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 //! The class describes the Oriented Bounding Box (OBB),
@@ -49,13 +47,13 @@ public:
   }
 
   //! Constructor taking all defining parameters
-  Bnd_OBB(const gp_Pnt&       theCenter,
-          const gp_Dir&       theXDirection,
-          const gp_Dir&       theYDirection,
-          const gp_Dir&       theZDirection,
-          const double theHXSize,
-          const double theHYSize,
-          const double theHZSize)
+  Bnd_OBB(const gp_Pnt& theCenter,
+          const gp_Dir& theXDirection,
+          const gp_Dir& theYDirection,
+          const gp_Dir& theZDirection,
+          const double  theHXSize,
+          const double  theHYSize,
+          const double  theHZSize)
       : myCenter(theCenter.XYZ()),
         myIsAABox(false)
   {
@@ -105,9 +103,9 @@ public:
   //! Constructing Optimal box takes more time, but the resulting box is usually
   //! more tight. In case of construction of Optimal OBB more possible
   //! axes are checked.
-  Standard_EXPORT void ReBuild(const NCollection_Array1<gp_Pnt>&   theListOfPoints,
+  Standard_EXPORT void ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
                                const NCollection_Array1<double>* theListOfTolerances = 0,
-                               const bool      theIsOptimal        = false);
+                               const bool                        theIsOptimal        = false);
 
   //! Sets the center of OBB
   void SetCenter(const gp_Pnt& theCenter) { myCenter = theCenter.XYZ(); }
@@ -170,10 +168,7 @@ public:
   double ZHSize() const { return myHDims[2]; }
 
   //! Checks if the box is empty.
-  bool IsVoid() const
-  {
-    return ((myHDims[0] < 0.0) || (myHDims[1] < 0.0) || (myHDims[2] < 0.0));
-  }
+  bool IsVoid() const { return ((myHDims[0] < 0.0) || (myHDims[1] < 0.0) || (myHDims[2] < 0.0)); }
 
   //! Clears this box
   void SetVoid()

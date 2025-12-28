@@ -41,9 +41,9 @@ class TCollection_ExtendedString;
 //! - Method ::Length() return the number of bytes, not the number of Unicode symbols.
 //! - Methods taking/returning symbol index work with 8-bit code units, not true Unicode symbols,
 //!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
-//! If application needs to process multi-byte Unicode symbols explicitly, NCollection_UtfIterator<char>
-//! class can be used for iterating through Unicode string (UTF-32 code unit will be returned for
-//! each position).
+//! If application needs to process multi-byte Unicode symbols explicitly,
+//! NCollection_UtfIterator<char> class can be used for iterating through Unicode string (UTF-32
+//! code unit will be returned for each position).
 //!
 //! Class provides editing operations with built-in memory management to make AsciiString objects
 //! easier to use than ordinary character arrays. AsciiString objects follow value semantics; in
@@ -70,8 +70,7 @@ public:
   //! Initializes a AsciiString with a CString and explicit length.
   //! @param[in] theMessage the C string to initialize from
   //! @param[in] theLength the length of the string
-  Standard_EXPORT TCollection_AsciiString(const char* theMessage,
-                                          const int theLength);
+  Standard_EXPORT TCollection_AsciiString(const char* theMessage, const int theLength);
 
   //! Initializes a AsciiString with a single character.
   //! @param[in] theChar the character to initialize from
@@ -81,8 +80,7 @@ public:
   //! and filled with filler character. This is useful for buffers.
   //! @param[in] theLength the length to allocate
   //! @param[in] theFiller the character to fill with
-  Standard_EXPORT TCollection_AsciiString(const int   theLength,
-                                          const char theFiller);
+  Standard_EXPORT TCollection_AsciiString(const int theLength, const char theFiller);
 
   //! Initializes an AsciiString with an integer value
   //! @param[in] theValue the integer value to convert to string
@@ -105,14 +103,14 @@ public:
   //! @param[in] theString the string to copy
   //! @param[in] theChar the character to append
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& theString,
-                                          const char       theChar);
+                                          const char                     theChar);
 
   //! Initializes a AsciiString with copy of another AsciiString
   //! concatenated with the message string.
   //! @param[in] theString the string to copy
   //! @param[in] theMessage the C string to append
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& theString,
-                                          const char*         theMessage);
+                                          const char*                    theMessage);
 
   //! Initializes a AsciiString with copy of another AsciiString
   //! concatenated with the message string.
@@ -128,7 +126,7 @@ public:
   //! @param[in] theExtendedString the extended string to convert
   //! @param[in] theReplaceNonAscii replacement character for non-ASCII characters
   Standard_EXPORT TCollection_AsciiString(const TCollection_ExtendedString& theExtendedString,
-                                          const char          theReplaceNonAscii = 0);
+                                          const char                        theReplaceNonAscii = 0);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize UTF-8 Unicode string from wide-char string considering it as Unicode string
@@ -167,8 +165,7 @@ public:
   //! This is the primary implementation that all other AssignCat overloads redirect to.
   //! @param[in] theString pointer to the string to append
   //! @param[in] theLength length of the string to append
-  Standard_EXPORT void AssignCat(const char* theString,
-                                 const int theLength);
+  Standard_EXPORT void AssignCat(const char* theString, const int theLength);
 
   //! Appends other string to this string. This is an unary operator.
   //!
@@ -232,8 +229,7 @@ public:
   //! @param[in] theString pointer to the string to append
   //! @param[in] theLength length of the string to append
   //! @return new string with the string appended
-  Standard_EXPORT TCollection_AsciiString Cat(const char* theString,
-                                              const int theLength) const;
+  Standard_EXPORT TCollection_AsciiString Cat(const char* theString, const int theLength) const;
 
   //! Appends other character to this string.
   //!
@@ -364,7 +360,7 @@ public:
   //! @param[in] theCaseSensitive flag indicating case sensitivity
   Standard_EXPORT void ChangeAll(const char theChar,
                                  const char theNewChar,
-                                 const bool   theCaseSensitive = true);
+                                 const bool theCaseSensitive = true);
 
   //! Removes all characters contained in this string.
   //! This produces an empty AsciiString.
@@ -451,9 +447,9 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
   Standard_EXPORT int FirstLocationInSet(const char* theSet,
-                                                      const int theSetLength,
-                                                      const int theFromIndex,
-                                                      const int theToIndex) const;
+                                         const int   theSetLength,
+                                         const int   theFromIndex,
+                                         const int   theToIndex) const;
 
   //! Returns the index of the first character of this string that is
   //! present in Set.
@@ -474,8 +470,8 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
   inline int FirstLocationInSet(const TCollection_AsciiString& theSet,
-                                             const int         theFromIndex,
-                                             const int         theToIndex) const;
+                                const int                      theFromIndex,
+                                const int                      theToIndex) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns the index of the first character of this string that is present in string_view.
@@ -484,8 +480,8 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
   inline int FirstLocationInSet(const std::string_view& theSet,
-                                             const int  theFromIndex,
-                                             const int  theToIndex) const;
+                                const int               theFromIndex,
+                                const int               theToIndex) const;
 #endif
 
   //! Template method for FirstLocationInSet with string literals.
@@ -495,8 +491,8 @@ public:
   //! @return the index of first character found in set, or 0 if not found
   template <std::size_t N>
   inline int FirstLocationInSet(const char (&theLiteral)[N],
-                                             const int theFromIndex,
-                                             const int theToIndex) const;
+                                const int theFromIndex,
+                                const int theToIndex) const;
 
   //! Core implementation: Returns the index of the first character of this string
   //! that is not present in the given character set (pointer and length).
@@ -509,9 +505,9 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
   Standard_EXPORT int FirstLocationNotInSet(const char* theSet,
-                                                         const int theSetLength,
-                                                         const int theFromIndex,
-                                                         const int theToIndex) const;
+                                            const int   theSetLength,
+                                            const int   theFromIndex,
+                                            const int   theToIndex) const;
 
   //! Returns the index of the first character of this string
   //! that is not present in the set Set.
@@ -532,8 +528,8 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
   inline int FirstLocationNotInSet(const TCollection_AsciiString& theSet,
-                                                const int         theFromIndex,
-                                                const int         theToIndex) const;
+                                   const int                      theFromIndex,
+                                   const int                      theToIndex) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns the index of the first character of this string that is not present in string_view.
@@ -542,8 +538,8 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
   inline int FirstLocationNotInSet(const std::string_view& theSet,
-                                                const int  theFromIndex,
-                                                const int  theToIndex) const;
+                                   const int               theFromIndex,
+                                   const int               theToIndex) const;
 #endif
 
   //! Template method for FirstLocationNotInSet with string literals.
@@ -553,8 +549,8 @@ public:
   //! @return the index of first character not in set, or 0 if not found
   template <std::size_t N>
   inline int FirstLocationNotInSet(const char (&theLiteral)[N],
-                                                const int theFromIndex,
-                                                const int theToIndex) const;
+                                   const int theFromIndex,
+                                   const int theToIndex) const;
 
   //! Inserts a Character at position where.
   //!
@@ -577,9 +573,7 @@ public:
   //! @param[in] theWhere position to insert at
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void Insert(const int theWhere,
-                              const char* theString,
-                              const int theLength);
+  Standard_EXPORT void Insert(const int theWhere, const char* theString, const int theLength);
 
   //! Inserts a AsciiString at position where.
   //! @param[in] theWhere the position to insert at
@@ -618,9 +612,7 @@ public:
   //! @param[in] theIndex the index to insert after
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void InsertAfter(const int theIndex,
-                                   const char* theString,
-                                   const int theLength);
+  Standard_EXPORT void InsertAfter(const int theIndex, const char* theString, const int theLength);
 
   //! Inserts an ASCII string after a specific index in this string.
   //! Raises an exception if index is out of bounds.
@@ -654,16 +646,13 @@ public:
   //! @param[in] theIndex the index to insert before
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void InsertBefore(const int theIndex,
-                                    const char* theString,
-                                    const int theLength);
+  Standard_EXPORT void InsertBefore(const int theIndex, const char* theString, const int theLength);
 
   //! Inserts an ASCII string before a specific index in this string.
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theOther the string to insert
-  inline void InsertBefore(const int         theIndex,
-                           const TCollection_AsciiString& theOther);
+  inline void InsertBefore(const int theIndex, const TCollection_AsciiString& theOther);
 
   //! Inserts a C string before a specific index in this string.
   //! Raises an exception if index is out of bounds.
@@ -703,8 +692,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_EXPORT bool IsEqual(const char* theString,
-                                           const int theLength) const;
+  Standard_EXPORT bool IsEqual(const char* theString, const int theLength) const;
 
   //! Returns true if the characters in this ASCII string are identical to the C string.
   //! @param[in] theCString the C string to compare with
@@ -755,8 +743,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are different, false otherwise
-  inline bool IsDifferent(const char* theString,
-                                      const int theLength) const;
+  inline bool IsDifferent(const char* theString, const int theLength) const;
 
   //! Returns true if there are differences between this ASCII string and C string.
   //! @param[in] theCString the C string to compare with
@@ -790,8 +777,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is lexicographically less than the given string
-  Standard_EXPORT bool IsLess(const char* theString,
-                                          const int theLength) const;
+  Standard_EXPORT bool IsLess(const char* theString, const int theLength) const;
 
   //! Returns TRUE if this string is 'ASCII' less than other.
   //! @param[in] theOther the ASCII string to compare with
@@ -831,8 +817,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is lexicographically greater than the given string
-  Standard_EXPORT bool IsGreater(const char* theString,
-                                             const int theLength) const;
+  Standard_EXPORT bool IsGreater(const char* theString, const int theLength) const;
 
   //! Returns TRUE if this string is 'ASCII' greater than other.
   //! @param[in] theOther the ASCII string to compare with
@@ -871,8 +856,7 @@ public:
   //! @param[in] theStartString pointer to the string to check for at the beginning
   //! @param[in] theStartLength length of the string to check for
   //! @return true if this string starts with theStartString
-  Standard_EXPORT bool StartsWith(const char* theStartString,
-                                              const int theStartLength) const;
+  Standard_EXPORT bool StartsWith(const char* theStartString, const int theStartLength) const;
 
   //! Determines whether the beginning of this string instance matches the specified string.
   //! @param[in] theStartString the string to check for at the beginning
@@ -896,8 +880,7 @@ public:
   //! @param[in] theEndString pointer to the string to check for at the end
   //! @param[in] theEndLength length of the string to check for
   //! @return true if this string ends with theEndString
-  Standard_EXPORT bool EndsWith(const char* theEndString,
-                                            const int theEndLength) const;
+  Standard_EXPORT bool EndsWith(const char* theEndString, const int theEndLength) const;
 
   //! Determines whether the end of this string instance matches the specified string.
   //! @param[in] theEndString the string to check for at the end
@@ -945,8 +928,7 @@ public:
   //!                            otherwise checks if string starts with a real value
   //! Note: an integer value is considered to be a real value as well.
   //! @return true if string represents a real value
-  Standard_EXPORT bool
-    IsRealValue(bool theToCheckFull = false) const;
+  Standard_EXPORT bool IsRealValue(bool theToCheckFull = false) const;
 
   //! Returns True if the AsciiString contains only ASCII characters
   //! between ' ' and '~'.
@@ -971,8 +953,7 @@ public:
   //! ```
   //! @param[in] theWidth the desired width
   //! @param[in] theFiller the character to fill with
-  Standard_EXPORT void LeftJustify(const int   theWidth,
-                                   const char theFiller);
+  Standard_EXPORT void LeftJustify(const int theWidth, const char theFiller);
 
   //! Returns number of characters in this string.
   //! This is the same functionality as 'strlen' in C.
@@ -1010,8 +991,8 @@ public:
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first occurrence, or 0 if not found
   Standard_EXPORT int Location(const TCollection_AsciiString& theOther,
-                                            const int         theFromIndex,
-                                            const int         theToIndex) const;
+                               const int                      theFromIndex,
+                               const int                      theToIndex) const;
 
   //! Returns the index of the nth occurrence of the character C
   //! in this string from the starting index FromIndex to the
@@ -1030,10 +1011,10 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of the nth occurrence, or 0 if not found
-  Standard_EXPORT int Location(const int   theN,
-                                            const char theC,
-                                            const int   theFromIndex,
-                                            const int   theToIndex) const;
+  Standard_EXPORT int Location(const int  theN,
+                               const char theC,
+                               const int  theFromIndex,
+                               const int  theToIndex) const;
 
   //! Converts this string to its lower-case equivalent.
   //!
@@ -1096,8 +1077,7 @@ public:
   //! ```
   //! @param[in] theC the character to remove
   //! @param[in] theCaseSensitive flag indicating case sensitivity
-  Standard_EXPORT void RemoveAll(const char theC,
-                                 const bool   theCaseSensitive);
+  Standard_EXPORT void RemoveAll(const char theC, const bool theCaseSensitive);
 
   //! Removes every what characters from this string.
   //! @param[in] theWhat the character to remove
@@ -1114,8 +1094,7 @@ public:
   //! ```
   //! @param[in] theWhere the position to start erasing from
   //! @param[in] theHowMany the number of characters to erase
-  Standard_EXPORT void Remove(const int theWhere,
-                              const int theHowMany = 1);
+  Standard_EXPORT void Remove(const int theWhere, const int theHowMany = 1);
 
   //! Removes all space characters at the end of the string.
   Standard_EXPORT void RightAdjust();
@@ -1134,8 +1113,7 @@ public:
   //! ```
   //! @param[in] theWidth the desired width
   //! @param[in] theFiller the character to fill with
-  Standard_EXPORT void RightJustify(const int   theWidth,
-                                    const char theFiller);
+  Standard_EXPORT void RightJustify(const int theWidth, const char theFiller);
 
   //! Core implementation: Searches a string (pointer and length) in this string from the beginning
   //! and returns position of first item matching.
@@ -1143,8 +1121,7 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theWhatLength length of the string to search for
   //! @return the position of first match, or -1 if not found
-  Standard_EXPORT int Search(const char* theWhat,
-                                          const int theWhatLength) const;
+  Standard_EXPORT int Search(const char* theWhat, const int theWhatLength) const;
 
   //! Searches an AsciiString in this string from the beginning
   //! and returns position of first item what matching.
@@ -1179,8 +1156,7 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theWhatLength length of the string to search for
   //! @return the position of first match from end, or -1 if not found
-  Standard_EXPORT int SearchFromEnd(const char* theWhat,
-                                                 const int theWhatLength) const;
+  Standard_EXPORT int SearchFromEnd(const char* theWhat, const int theWhatLength) const;
 
   //! Searches a AsciiString in another AsciiString from the end
   //! and returns position of first item what matching.
@@ -1228,9 +1204,7 @@ public:
   //! @param[in] theWhere position to start replacement
   //! @param[in] theString pointer to the string to replace with
   //! @param[in] theLength length of the string to replace with
-  Standard_EXPORT void SetValue(const int theWhere,
-                                const char* theString,
-                                const int theLength);
+  Standard_EXPORT void SetValue(const int theWhere, const char* theString, const int theLength);
 
   //! Replaces a part of this string by another AsciiString.
   //! @param[in] theWhere the position to start replacement
@@ -1322,7 +1296,7 @@ public:
   //! @param[in] theSeparators the separator characters
   //! @param[in] theWhichOne the token number to extract
   Standard_EXPORT TCollection_AsciiString Token(const char* theSeparators = " \t",
-                                                const int theWhichOne   = 1) const;
+                                                const int   theWhichOne   = 1) const;
 
   //! Truncates this string to ahowmany characters.
   //!
@@ -1381,15 +1355,14 @@ public:
   //! @param[in] string2 second string to compare
   //! @return true if strings are equal
   inline static bool IsEqual(const TCollection_AsciiString& string1,
-                                         const TCollection_AsciiString& string2);
+                             const TCollection_AsciiString& string2);
 
   //! Returns True when the two strings are the same.
   //! (Just for HashCode for AsciiString)
   //! @param[in] string1 first string to compare
   //! @param[in] string2 second C string to compare
   //! @return true if strings are equal
-  static bool IsEqual(const TCollection_AsciiString& string1,
-                                  const char*         string2);
+  static bool IsEqual(const TCollection_AsciiString& string1, const char* string2);
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns True when the ASCII string and string_view are the same.
@@ -1398,7 +1371,7 @@ public:
   //! @param[in] theStringView second string view to compare
   //! @return true if strings are equal
   inline static bool IsEqual(const TCollection_AsciiString& theString1,
-                                         const std::string_view&        theStringView);
+                             const std::string_view&        theStringView);
 
   //! Returns True when the string_view and ASCII string are the same.
   //! (Just for HashCode for AsciiString)
@@ -1406,7 +1379,7 @@ public:
   //! @param[in] theString2 second string to compare
   //! @return true if strings are equal
   inline static bool IsEqual(const std::string_view&        theStringView,
-                                         const TCollection_AsciiString& theString2);
+                             const TCollection_AsciiString& theString2);
 #endif
 
   //! Core implementation: Returns True if the two strings (pointer and length) contain same
@@ -1419,10 +1392,10 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   Standard_EXPORT static bool IsSameString(const char* theString1,
-                                                       const int theLength1,
-                                                       const char* theString2,
-                                                       const int theLength2,
-                                                       const bool theIsCaseSensitive);
+                                           const int   theLength1,
+                                           const char* theString2,
+                                           const int   theLength2,
+                                           const bool  theIsCaseSensitive);
 
   //! Returns True if the strings contain same characters.
   //! @param[in] theString1 first string to compare
@@ -1430,8 +1403,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const TCollection_AsciiString& theString1,
-                                              const TCollection_AsciiString& theString2,
-                                              const bool         theIsCaseSensitive);
+                                  const TCollection_AsciiString& theString2,
+                                  const bool                     theIsCaseSensitive);
 
   //! Returns True if the string and C string contain same characters.
   //! @param[in] theString1 first string to compare
@@ -1439,17 +1412,17 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const TCollection_AsciiString& theString1,
-                                              const char*         theCString,
-                                              const bool         theIsCaseSensitive);
+                                  const char*                    theCString,
+                                  const bool                     theIsCaseSensitive);
 
   //! Returns True if the C string and string contain same characters.
   //! @param[in] theCString first C string to compare
   //! @param[in] theString2 second string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  inline static bool IsSameString(const char*         theCString,
-                                              const TCollection_AsciiString& theString2,
-                                              const bool         theIsCaseSensitive);
+  inline static bool IsSameString(const char*                    theCString,
+                                  const TCollection_AsciiString& theString2,
+                                  const bool                     theIsCaseSensitive);
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns True if the string and string_view contain same characters.
@@ -1458,8 +1431,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const TCollection_AsciiString& theString1,
-                                              const std::string_view&        theStringView,
-                                              const bool         theIsCaseSensitive);
+                                  const std::string_view&        theStringView,
+                                  const bool                     theIsCaseSensitive);
 
   //! Returns True if the string_view and string contain same characters.
   //! @param[in] theStringView first string view to compare
@@ -1467,8 +1440,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const std::string_view&        theStringView,
-                                              const TCollection_AsciiString& theString2,
-                                              const bool         theIsCaseSensitive);
+                                  const TCollection_AsciiString& theString2,
+                                  const bool                     theIsCaseSensitive);
 #endif
 
   //! Returns True if the two C strings contain same characters.
@@ -1477,8 +1450,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const char* theCString1,
-                                              const char* theCString2,
-                                              const bool theIsCaseSensitive);
+                                  const char* theCString2,
+                                  const bool  theIsCaseSensitive);
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns True if the two string_views contain same characters.
@@ -1487,8 +1460,8 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const std::string_view& theStringView1,
-                                              const std::string_view& theStringView2,
-                                              const bool  theIsCaseSensitive);
+                                  const std::string_view& theStringView2,
+                                  const bool              theIsCaseSensitive);
 #endif
 
 private:
@@ -1503,7 +1476,7 @@ private:
 
 private:
   Standard_PCharacter myString{}; //!< NULL-terminated string
-  int    myLength{}; //!< length in bytes (excluding terminating NULL symbol)
+  int                 myLength{}; //!< length in bytes (excluding terminating NULL symbol)
 };
 
 #include <TCollection_AsciiString.lxx>

@@ -47,7 +47,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                                          const GccEnt_QualifiedLin&  Qualified2,
                                          const gp_Lin2d&             OnLine,
-                                         const double         Tolerance)
+                                         const double                Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -76,21 +76,21 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
   }
   double    Tol    = std::abs(Tolerance);
   double    Radius = 0;
-  bool ok     = false;
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
-  gp_Circ2d        C1 = Qualified1.Qualified();
-  gp_Lin2d         L2 = Qualified2.Qualified();
+  bool      ok     = false;
+  gp_Dir2d  dirx(gp_Dir2d::D::X);
+  gp_Circ2d C1 = Qualified1.Qualified();
+  gp_Lin2d  L2 = Qualified2.Qualified();
   double    R1 = C1.Radius();
-  gp_Pnt2d         center1(C1.Location());
-  gp_Pnt2d         origin2(L2.Location());
-  gp_Dir2d         dirL2(L2.Direction());
-  gp_Dir2d         normL2(-dirL2.Y(), dirL2.X());
+  gp_Pnt2d  center1(C1.Location());
+  gp_Pnt2d  origin2(L2.Location());
+  gp_Dir2d  dirL2(L2.Direction());
+  gp_Dir2d  normL2(-dirL2.Y(), dirL2.X());
 
   //=========================================================================
   //   Processing of limit cases.                                          +
   //=========================================================================
 
-  double distcl = OnLine.Distance(center1);
+  double   distcl = OnLine.Distance(center1);
   gp_Pnt2d pinterm(center1.XY() + distcl * gp_XY(-OnLine.Direction().Y(), OnLine.Direction().X()));
   if (OnLine.Distance(pinterm) > Tolerance)
   {
@@ -154,9 +154,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
     NbrSol++;
     cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(pinterm, dirx), dist2);
     //   =======================================================
-    gp_Dir2d      dc1(center1.XY() - pinterm.XY());
-    gp_Dir2d      dc2(origin2.XY() - pinterm.XY());
-    double distcc1 = pinterm.Distance(center1);
+    gp_Dir2d dc1(center1.XY() - pinterm.XY());
+    gp_Dir2d dc2(origin2.XY() - pinterm.XY());
+    double   distcc1 = pinterm.Distance(center1);
     if (!Qualified1.IsUnqualified())
     {
       qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -186,16 +186,16 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
       qualifier2(NbrSol) = GccEnt_enclosed;
     }
 
-    double sign = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
-    dc2                = gp_Dir2d(sign * gp_XY(-dirL2.Y(), dirL2.X()));
-    pnttg1sol(NbrSol)  = gp_Pnt2d(pinterm.XY() + dist2 * dc1.XY());
-    pnttg2sol(NbrSol)  = gp_Pnt2d(pinterm.XY() + dist2 * dc2.XY());
-    par1sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
-    pararg1(NbrSol)    = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
-    par2sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
-    pararg2(NbrSol)    = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
-    pntcen(NbrSol)     = cirsol(NbrSol).Location();
-    parcen3(NbrSol)    = ElCLib::Parameter(OnLine, pntcen(NbrSol));
+    double sign       = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
+    dc2               = gp_Dir2d(sign * gp_XY(-dirL2.Y(), dirL2.X()));
+    pnttg1sol(NbrSol) = gp_Pnt2d(pinterm.XY() + dist2 * dc1.XY());
+    pnttg2sol(NbrSol) = gp_Pnt2d(pinterm.XY() + dist2 * dc2.XY());
+    par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
+    pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
+    par2sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
+    pararg2(NbrSol)   = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
+    pntcen(NbrSol)    = cirsol(NbrSol).Location();
+    parcen3(NbrSol)   = ElCLib::Parameter(OnLine, pntcen(NbrSol));
     return;
   }
 
@@ -209,9 +209,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
     int nbsolution = Bis.NbSolutions();
     for (int i = 1; i <= nbsolution; i++)
     {
-      occ::handle<GccInt_Bisec>     Sol  = Bis.ThisSolution(i);
-      GccInt_IType             type = Sol->ArcType();
-      IntAna2d_AnaIntersection Intp;
+      occ::handle<GccInt_Bisec> Sol  = Bis.ThisSolution(i);
+      GccInt_IType              type = Sol->ArcType();
+      IntAna2d_AnaIntersection  Intp;
       if (type == GccInt_Lin)
       {
         Intp.Perform(OnLine, Sol->Line());
@@ -226,9 +226,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
         {
           for (int j = 1; j <= Intp.NbPoints(); j++)
           {
-            gp_Pnt2d      Center(Intp.Point(j).Value());
-            double dist1 = Center.Distance(center1);
-            dist2               = L2.Distance(Center);
+            gp_Pnt2d Center(Intp.Point(j).Value());
+            double   dist1 = Center.Distance(center1);
+            dist2          = L2.Distance(Center);
             //	     int nbsol = 1;
             ok = false;
             if (Qualified1.IsEnclosed())
@@ -285,9 +285,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
               NbrSol++;
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
               //             =======================================================
-              gp_Dir2d      dc1(center1.XY() - Center.XY());
-              gp_Dir2d      dc2(origin2.XY() - Center.XY());
-              double distcc1 = Center.Distance(center1);
+              gp_Dir2d dc1(center1.XY() - Center.XY());
+              gp_Dir2d dc2(origin2.XY() - Center.XY());
+              double   distcc1 = Center.Distance(center1);
               if (!Qualified1.IsUnqualified())
               {
                 qualifier1(NbrSol) = Qualified1.Qualifier();
@@ -328,14 +328,14 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedCirc& Qualified1,
                 par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
                 pararg1(NbrSol)   = ElCLib::Parameter(C1, pnttg1sol(NbrSol));
               }
-              TheSame2(NbrSol)   = 0;
-              double sign = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
-              dc2                = gp_Dir2d(sign * gp_XY(-dirL2.Y(), dirL2.X()));
-              pnttg2sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc2.XY());
-              par2sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
-              pararg2(NbrSol)    = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
-              pntcen(NbrSol)     = Center;
-              parcen3(NbrSol)    = ElCLib::Parameter(OnLine, pntcen(NbrSol));
+              TheSame2(NbrSol)  = 0;
+              double sign       = dc2.Dot(gp_Dir2d(-dirL2.Y(), dirL2.X()));
+              dc2               = gp_Dir2d(sign * gp_XY(-dirL2.Y(), dirL2.X()));
+              pnttg2sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius * dc2.XY());
+              par2sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
+              pararg2(NbrSol)   = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
+              pntcen(NbrSol)    = Center;
+              parcen3(NbrSol)   = ElCLib::Parameter(OnLine, pntcen(NbrSol));
             }
           }
         }

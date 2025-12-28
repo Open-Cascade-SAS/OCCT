@@ -44,17 +44,17 @@ public:
   Standard_EXPORT Hatch_Line(const gp_Lin2d& L, const Hatch_LineForm T);
 
   //! Insert a new intersection in the sorted list.
-  Standard_EXPORT void AddIntersection(const double    Par1,
-                                       const bool Start,
-                                       const int Index,
-                                       const double    Par2,
-                                       const double    theToler);
+  Standard_EXPORT void AddIntersection(const double Par1,
+                                       const bool   Start,
+                                       const int    Index,
+                                       const double Par2,
+                                       const double theToler);
 
   friend class Hatch_Hatcher;
 
 private:
-  gp_Lin2d                  myLin;
-  Hatch_LineForm            myForm;
+  gp_Lin2d                              myLin;
+  Hatch_LineForm                        myForm;
   NCollection_Sequence<Hatch_Parameter> myInters;
 };
 

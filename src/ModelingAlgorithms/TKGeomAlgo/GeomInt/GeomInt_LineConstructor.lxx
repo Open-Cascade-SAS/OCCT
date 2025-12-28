@@ -56,9 +56,7 @@ inline int GeomInt_LineConstructor::NbParts() const
 
 //=================================================================================================
 
-inline void GeomInt_LineConstructor::Part(const int I,
-                                          double&         WFirst,
-                                          double&         WLast) const
+inline void GeomInt_LineConstructor::Part(const int I, double& WFirst, double& WLast) const
 {
   if (!done)
   {

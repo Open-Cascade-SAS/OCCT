@@ -19,12 +19,12 @@
 // reference algorithm:
 //                   Brent method
 //                   numerical recipes in C (p. 269)
-math_BracketedRoot::math_BracketedRoot(math_Function&         F,
-                                       const double    Bound1,
-                                       const double    Bound2,
-                                       const double    Tolerance,
-                                       const int NbIterations,
-                                       const double    ZEPS)
+math_BracketedRoot::math_BracketedRoot(math_Function& F,
+                                       const double   Bound1,
+                                       const double   Bound2,
+                                       const double   Tolerance,
+                                       const int      NbIterations,
+                                       const double   ZEPS)
 {
 
   double Fa, Fc, a, c = 0, d = 0, e = 0;

@@ -28,13 +28,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT Approx_Curve2d(const occ::handle<Adaptor2d_Curve2d>& C2D,
-                                 const double              First,
-                                 const double              Last,
-                                 const double              TolU,
-                                 const double              TolV,
-                                 const GeomAbs_Shape              Continuity,
-                                 const int           MaxDegree,
-                                 const int           MaxSegments);
+                                 const double                          First,
+                                 const double                          Last,
+                                 const double                          TolU,
+                                 const double                          TolV,
+                                 const GeomAbs_Shape                   Continuity,
+                                 const int                             MaxDegree,
+                                 const int                             MaxSegments);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -48,10 +48,10 @@ public:
 
 private:
   occ::handle<Geom2d_BSplineCurve> myCurve;
-  bool            myIsDone;
-  bool            myHasResult;
-  double               myMaxError2dU;
-  double               myMaxError2dV;
+  bool                             myIsDone;
+  bool                             myHasResult;
+  double                           myMaxError2dU;
+  double                           myMaxError2dV;
 };
 
 #endif // _Approx_Curve2d_HeaderFile

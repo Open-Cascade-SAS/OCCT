@@ -40,7 +40,8 @@ Message_Messenger::Message_Messenger(const occ::handle<Message_Printer>& thePrin
 bool Message_Messenger::AddPrinter(const occ::handle<Message_Printer>& thePrinter)
 {
   // check whether printer is already in the list
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -59,7 +60,8 @@ bool Message_Messenger::AddPrinter(const occ::handle<Message_Printer>& thePrinte
 bool Message_Messenger::RemovePrinter(const occ::handle<Message_Printer>& thePrinter)
 {
   // find printer in the list
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -78,7 +80,8 @@ int Message_Messenger::RemovePrinters(const occ::handle<Standard_Type>& theType)
 {
   // remove printers from the list
   int nb = 0;
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();)
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();)
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
     if (!aPrinter.IsNull() && aPrinter->IsKind(theType))
@@ -96,10 +99,10 @@ int Message_Messenger::RemovePrinters(const occ::handle<Standard_Type>& theType)
 
 //=================================================================================================
 
-void Message_Messenger::Send(const char* theString,
-                             const Message_Gravity  theGravity) const
+void Message_Messenger::Send(const char* theString, const Message_Gravity theGravity) const
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -115,7 +118,8 @@ void Message_Messenger::Send(const char* theString,
 void Message_Messenger::Send(const Standard_SStream& theStream,
                              const Message_Gravity   theGravity) const
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -131,7 +135,8 @@ void Message_Messenger::Send(const Standard_SStream& theStream,
 void Message_Messenger::Send(const TCollection_AsciiString& theString,
                              const Message_Gravity          theGravity) const
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -147,7 +152,8 @@ void Message_Messenger::Send(const TCollection_AsciiString& theString,
 void Message_Messenger::Send(const TCollection_ExtendedString& theString,
                              const Message_Gravity             theGravity) const
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();
@@ -161,9 +167,10 @@ void Message_Messenger::Send(const TCollection_ExtendedString& theString,
 //=================================================================================================
 
 void Message_Messenger::Send(const occ::handle<Standard_Transient>& theObject,
-                             const Message_Gravity             theGravity) const
+                             const Message_Gravity                  theGravity) const
 {
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters); aPrinterIter.More();
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
+       aPrinterIter.More();
        aPrinterIter.Next())
   {
     const occ::handle<Message_Printer>& aPrinter = aPrinterIter.Value();

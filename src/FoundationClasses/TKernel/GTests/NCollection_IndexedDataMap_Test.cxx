@@ -19,8 +19,8 @@
 #include <vector>
 
 // Basic test types for the IndexedDataMap
-typedef int KeyType;
-typedef double    ItemType;
+typedef int    KeyType;
+typedef double ItemType;
 
 // Custom class for testing complex keys
 class TestKey
@@ -478,10 +478,10 @@ TEST(NCollection_IndexedDataMapTest, Iterator)
   aMap.Add(30, 3.0);
 
   // Use iterator to check all elements
-  bool found10 = false;
-  bool found20 = false;
-  bool found30 = false;
-  size_t    count   = 0;
+  bool   found10 = false;
+  bool   found20 = false;
+  bool   found30 = false;
+  size_t count   = 0;
 
   for (NCollection_IndexedDataMap<KeyType, ItemType>::Iterator it(aMap); it.More();
        it.Next(), ++count)
@@ -523,10 +523,10 @@ TEST(NCollection_IndexedDataMapTest, StlIterator)
   aMap.Add(30, 3.0);
 
   // Use STL-style iterator
-  bool found1 = false;
-  bool found2 = false;
-  bool found3 = false;
-  size_t    count  = 0;
+  bool   found1 = false;
+  bool   found2 = false;
+  bool   found3 = false;
+  size_t count  = 0;
 
   for (auto it = aMap.begin(); it != aMap.end(); ++it, ++count)
   {

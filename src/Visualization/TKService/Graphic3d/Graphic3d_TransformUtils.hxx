@@ -88,26 +88,26 @@ static void Ortho2D(typename MatrixType<T>::Mat4& theOut,
 //! Maps object coordinates to window coordinates.
 template <class T>
 static bool Project(const T                             theObjX,
-                                const T                             theObjY,
-                                const T                             theObjZ,
-                                const typename MatrixType<T>::Mat4& theModViewMat,
-                                const typename MatrixType<T>::Mat4& theProjectMat,
-                                const int              theViewport[4],
-                                T&                                  theWinX,
-                                T&                                  theWinY,
-                                T&                                  theWinZ);
+                    const T                             theObjY,
+                    const T                             theObjZ,
+                    const typename MatrixType<T>::Mat4& theModViewMat,
+                    const typename MatrixType<T>::Mat4& theProjectMat,
+                    const int                           theViewport[4],
+                    T&                                  theWinX,
+                    T&                                  theWinY,
+                    T&                                  theWinZ);
 
 //! Maps window coordinates to object coordinates.
 template <class T>
 static bool UnProject(const T                             theWinX,
-                                  const T                             theWinY,
-                                  const T                             theWinZ,
-                                  const typename MatrixType<T>::Mat4& theModViewMat,
-                                  const typename MatrixType<T>::Mat4& theProjectMat,
-                                  const int              theViewport[4],
-                                  T&                                  theObjX,
-                                  T&                                  theObjY,
-                                  T&                                  theObjZ);
+                      const T                             theWinY,
+                      const T                             theWinZ,
+                      const typename MatrixType<T>::Mat4& theModViewMat,
+                      const typename MatrixType<T>::Mat4& theProjectMat,
+                      const int                           theViewport[4],
+                      T&                                  theObjX,
+                      T&                                  theObjY,
+                      T&                                  theObjZ);
 
 //! Constructs a 4x4 rotation matrix.
 template <class T>
@@ -387,16 +387,15 @@ void Graphic3d_TransformUtils::Ortho2D(typename MatrixType<T>::Mat4& theOut,
 // purpose  : Maps object coordinates to window coordinates
 // =======================================================================
 template <class T>
-static bool Graphic3d_TransformUtils::Project(
-  const T                             theObjX,
-  const T                             theObjY,
-  const T                             theObjZ,
-  const typename MatrixType<T>::Mat4& theModViewMat,
-  const typename MatrixType<T>::Mat4& theProjectMat,
-  const int              theViewport[4],
-  T&                                  theWinX,
-  T&                                  theWinY,
-  T&                                  theWinZ)
+static bool Graphic3d_TransformUtils::Project(const T                             theObjX,
+                                              const T                             theObjY,
+                                              const T                             theObjZ,
+                                              const typename MatrixType<T>::Mat4& theModViewMat,
+                                              const typename MatrixType<T>::Mat4& theProjectMat,
+                                              const int                           theViewport[4],
+                                              T&                                  theWinX,
+                                              T&                                  theWinY,
+                                              T&                                  theWinZ)
 {
   typename VectorType<T>::Vec4 anIn(theObjX, theObjY, theObjZ, static_cast<T>(1.0));
 
@@ -434,16 +433,15 @@ static bool Graphic3d_TransformUtils::Project(
 // purpose  : Maps window coordinates to object coordinates
 // =======================================================================
 template <class T>
-static bool Graphic3d_TransformUtils::UnProject(
-  const T                             theWinX,
-  const T                             theWinY,
-  const T                             theWinZ,
-  const typename MatrixType<T>::Mat4& theModViewMat,
-  const typename MatrixType<T>::Mat4& theProjectMat,
-  const int              theViewport[4],
-  T&                                  theObjX,
-  T&                                  theObjY,
-  T&                                  theObjZ)
+static bool Graphic3d_TransformUtils::UnProject(const T                             theWinX,
+                                                const T                             theWinY,
+                                                const T                             theWinZ,
+                                                const typename MatrixType<T>::Mat4& theModViewMat,
+                                                const typename MatrixType<T>::Mat4& theProjectMat,
+                                                const int                           theViewport[4],
+                                                T&                                  theObjX,
+                                                T&                                  theObjY,
+                                                T&                                  theObjZ)
 {
   typename MatrixType<T>::Mat4 anUnviewMat;
 

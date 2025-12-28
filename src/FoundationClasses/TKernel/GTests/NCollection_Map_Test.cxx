@@ -202,8 +202,8 @@ TEST(NCollection_MapTest, ExhaustiveIterator)
   EXPECT_EQ(NUM_ELEMENTS, aMap.Size());
 
   // Count elements using iterator
-  int                                         count = 0;
-  int                                         sum   = 0;
+  int                            count = 0;
+  int                            sum   = 0;
   NCollection_Map<int>::Iterator it(aMap);
   for (; it.More(); it.Next())
   {

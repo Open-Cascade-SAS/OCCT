@@ -26,16 +26,14 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=================================================================================================
 
-void TopExp::MapShapes(const TopoDS_Shape&         S,
-                       const TopAbs_ShapeEnum      T,
+void TopExp::MapShapes(const TopoDS_Shape&                                            S,
+                       const TopAbs_ShapeEnum                                         T,
                        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
   TopExp_Explorer Ex(S, T);
@@ -48,10 +46,10 @@ void TopExp::MapShapes(const TopoDS_Shape&         S,
 
 //=================================================================================================
 
-void TopExp::MapShapes(const TopoDS_Shape&         S,
+void TopExp::MapShapes(const TopoDS_Shape&                                            S,
                        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M,
-                       const bool      cumOri,
-                       const bool      cumLoc)
+                       const bool                                                     cumOri,
+                       const bool                                                     cumLoc)
 {
   M.Add(S);
   TopoDS_Iterator It(S, cumOri, cumLoc);
@@ -64,10 +62,10 @@ void TopExp::MapShapes(const TopoDS_Shape&         S,
 
 //=================================================================================================
 
-void TopExp::MapShapes(const TopoDS_Shape&    S,
-                       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&   M,
-                       const bool cumOri,
-                       const bool cumLoc)
+void TopExp::MapShapes(const TopoDS_Shape&                                     S,
+                       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M,
+                       const bool                                              cumOri,
+                       const bool                                              cumLoc)
 {
   M.Add(S);
   TopoDS_Iterator It(S, cumOri, cumLoc);
@@ -77,10 +75,12 @@ void TopExp::MapShapes(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-void TopExp::MapShapesAndAncestors(const TopoDS_Shape&                        S,
-                                   const TopAbs_ShapeEnum                     TS,
-                                   const TopAbs_ShapeEnum                     TA,
-                                   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& M)
+void TopExp::MapShapesAndAncestors(
+  const TopoDS_Shape&    S,
+  const TopAbs_ShapeEnum TS,
+  const TopAbs_ShapeEnum TA,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    M)
 {
   NCollection_List<TopoDS_Shape> empty;
 
@@ -115,11 +115,13 @@ void TopExp::MapShapesAndAncestors(const TopoDS_Shape&                        S,
 
 //=================================================================================================
 
-void TopExp::MapShapesAndUniqueAncestors(const TopoDS_Shape&                        S,
-                                         const TopAbs_ShapeEnum                     TS,
-                                         const TopAbs_ShapeEnum                     TA,
-                                         NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& M,
-                                         const bool                     useOrientation)
+void TopExp::MapShapesAndUniqueAncestors(
+  const TopoDS_Shape&    S,
+  const TopAbs_ShapeEnum TS,
+  const TopAbs_ShapeEnum TA,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+             M,
+  const bool useOrientation)
 {
   NCollection_List<TopoDS_Shape> empty;
 
@@ -189,10 +191,10 @@ TopoDS_Vertex TopExp::LastVertex(const TopoDS_Edge& E, const bool CumOri)
 
 //=================================================================================================
 
-void TopExp::Vertices(const TopoDS_Edge&     E,
-                      TopoDS_Vertex&         Vfirst,
-                      TopoDS_Vertex&         Vlast,
-                      const bool CumOri)
+void TopExp::Vertices(const TopoDS_Edge& E,
+                      TopoDS_Vertex&     Vfirst,
+                      TopoDS_Vertex&     Vlast,
+                      const bool         CumOri)
 {
   // minor optimization for case when Vfirst and Vlast are non-null:
   // at least for VC++ 10, it is faster if we use boolean flags than
@@ -231,8 +233,8 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
   Vfirst = Vlast = TopoDS_Vertex(); // nullify
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vmap;
-  TopoDS_Iterator     it(W);
-  TopoDS_Vertex       V1, V2;
+  TopoDS_Iterator                                        it(W);
+  TopoDS_Vertex                                          V1, V2;
 
   while (it.More())
   {
@@ -278,9 +280,7 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
 
 //=================================================================================================
 
-bool TopExp::CommonVertex(const TopoDS_Edge& E1,
-                                      const TopoDS_Edge& E2,
-                                      TopoDS_Vertex&     V)
+bool TopExp::CommonVertex(const TopoDS_Edge& E1, const TopoDS_Edge& E2, TopoDS_Vertex& V)
 {
   TopoDS_Vertex firstVertex1, lastVertex1, firstVertex2, lastVertex2;
   TopExp::Vertices(E1, firstVertex1, lastVertex1);

@@ -33,7 +33,8 @@ class ChFi3d_SearchSing : public math_FunctionWithDerivative
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT ChFi3d_SearchSing(const occ::handle<Geom_Curve>& C1, const occ::handle<Geom_Curve>& C2);
+  Standard_EXPORT ChFi3d_SearchSing(const occ::handle<Geom_Curve>& C1,
+                                    const occ::handle<Geom_Curve>& C2);
 
   //! computes the value of the function <F> for the
   //! variable <X>.
@@ -51,9 +52,7 @@ public:
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X,
-                                          double&      F,
-                                          double&      D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D);
 
 private:
   occ::handle<Geom_Curve> myC1;

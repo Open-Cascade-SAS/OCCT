@@ -39,7 +39,7 @@ static std::atomic<int> THE_TEXTURE_COUNTER(0);
 
 TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 {
-  static bool        IsDefined = false;
+  static bool                    IsDefined = false;
   static TCollection_AsciiString VarName;
   if (!IsDefined)
   {
@@ -99,8 +99,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot(const TCollection_AsciiString& theF
 
 //=================================================================================================
 
-Graphic3d_TextureRoot::Graphic3d_TextureRoot(const occ::handle<Image_PixMap>&   thePixMap,
-                                             const Graphic3d_TypeOfTexture theType)
+Graphic3d_TextureRoot::Graphic3d_TextureRoot(const occ::handle<Image_PixMap>& thePixMap,
+                                             const Graphic3d_TypeOfTexture    theType)
     : myParams(new Graphic3d_TextureParams()),
       myPixMap(thePixMap),
       myRevision(0),
@@ -153,7 +153,8 @@ occ::handle<Image_CompressedPixMap> Graphic3d_TextureRoot::GetCompressedImage(
     return occ::handle<Image_CompressedPixMap>();
   }
 
-  if (occ::handle<Image_CompressedPixMap> anImage = Image_DDSParser::Load(theSupported, aFilePath, 0))
+  if (occ::handle<Image_CompressedPixMap> anImage =
+        Image_DDSParser::Load(theSupported, aFilePath, 0))
   {
     myIsTopDown = anImage->IsTopDown();
     return anImage;
@@ -200,8 +201,9 @@ occ::handle<Image_PixMap> Graphic3d_TextureRoot::GetImage(
 
 //=================================================================================================
 
-void Graphic3d_TextureRoot::convertToCompatible(const occ::handle<Image_SupportedFormats>& theSupported,
-                                                const occ::handle<Image_PixMap>&           theImage)
+void Graphic3d_TextureRoot::convertToCompatible(
+  const occ::handle<Image_SupportedFormats>& theSupported,
+  const occ::handle<Image_PixMap>&           theImage)
 {
   if (theImage.IsNull() || theSupported.IsNull() || theSupported->IsSupported(theImage->Format()))
   {

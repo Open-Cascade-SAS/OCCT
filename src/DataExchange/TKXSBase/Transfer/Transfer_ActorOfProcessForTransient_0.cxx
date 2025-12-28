@@ -24,7 +24,6 @@
 #include <Transfer_ProcessForTransient.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <Transfer_Binder.hxx>
 
 //=================================================================================================
 

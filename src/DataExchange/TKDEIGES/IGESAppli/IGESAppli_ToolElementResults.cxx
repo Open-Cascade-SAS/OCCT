@@ -19,7 +19,6 @@
 
 #include <IGESAppli_ElementResults.hxx>
 #include <IGESAppli_FiniteElement.hxx>
-#include <IGESAppli_FiniteElement.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESAppli_ToolElementResults.hxx>
@@ -38,10 +37,6 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -49,23 +44,23 @@ IGESAppli_ToolElementResults::IGESAppli_ToolElementResults() {}
 
 void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_ElementResults>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+                                                 IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                            num = 0;
-  occ::handle<IGESDimen_GeneralNote>               aNote;
-  int                            aSubcaseNumber    = 0;
-  double                               aTime             = 0;
-  int                            nv                = 0;
-  int                            aResultReportFlag = 0;
-  occ::handle<NCollection_HArray1<int>>            allElementIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>    allElements;
-  occ::handle<NCollection_HArray1<int>>            allElementTopologyType;
-  occ::handle<NCollection_HArray1<int>>            allNbLayers;
-  occ::handle<NCollection_HArray1<int>>            allDataLayerFlag;
-  occ::handle<NCollection_HArray1<int>>            allNbResultDataLocs;
-  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> allResultDataLoc;
-  occ::handle<IGESBasic_HArray1OfHArray1OfReal>    allResultData;
+  int                                                                    num = 0;
+  occ::handle<IGESDimen_GeneralNote>                                     aNote;
+  int                                                                    aSubcaseNumber    = 0;
+  double                                                                 aTime             = 0;
+  int                                                                    nv                = 0;
+  int                                                                    aResultReportFlag = 0;
+  occ::handle<NCollection_HArray1<int>>                                  allElementIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>> allElements;
+  occ::handle<NCollection_HArray1<int>>                                  allElementTopologyType;
+  occ::handle<NCollection_HArray1<int>>                                  allNbLayers;
+  occ::handle<NCollection_HArray1<int>>                                  allDataLayerFlag;
+  occ::handle<NCollection_HArray1<int>>                                  allNbResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                       allResultDataLoc;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal>                          allResultData;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadEntity(IR, PR.Current(), "General Note", STANDARD_TYPE(IGESDimen_GeneralNote), aNote);
@@ -94,9 +89,9 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_Ele
   {
     int ival, nl, nrl, numv;
     ival = nl = nrl = numv = 0;
-    occ::handle<IGESAppli_FiniteElement>  aFEM;
-    occ::handle<NCollection_HArray1<int>> rdrl;
-    occ::handle<NCollection_HArray1<double>>    vres;
+    occ::handle<IGESAppli_FiniteElement>     aFEM;
+    occ::handle<NCollection_HArray1<int>>    rdrl;
+    occ::handle<NCollection_HArray1<double>> vres;
     // szv#4:S4163:12Mar99 moved in if
     if (PR.ReadInteger(PR.Current(), "FEM Element Identifier", ival))
       allElementIdentifiers->SetValue(nume, ival);
@@ -140,7 +135,7 @@ void IGESAppli_ToolElementResults::ReadOwnParams(const occ::handle<IGESAppli_Ele
 }
 
 void IGESAppli_ToolElementResults::WriteOwnParams(const occ::handle<IGESAppli_ElementResults>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   int i, j;
   int num = ent->NbElements();
@@ -170,7 +165,7 @@ void IGESAppli_ToolElementResults::WriteOwnParams(const occ::handle<IGESAppli_El
 }
 
 void IGESAppli_ToolElementResults::OwnShared(const occ::handle<IGESAppli_ElementResults>& ent,
-                                             Interface_EntityIterator&               iter) const
+                                             Interface_EntityIterator& iter) const
 {
   int i;
   int num = ent->NbElements();
@@ -181,24 +176,24 @@ void IGESAppli_ToolElementResults::OwnShared(const occ::handle<IGESAppli_Element
 
 void IGESAppli_ToolElementResults::OwnCopy(const occ::handle<IGESAppli_ElementResults>& another,
                                            const occ::handle<IGESAppli_ElementResults>& ent,
-                                           Interface_CopyTool&                     TC) const
+                                           Interface_CopyTool&                          TC) const
 {
   int i, j;
   int num = another->NbElements();
   DeclareAndCast(IGESDimen_GeneralNote, aNote, TC.Transferred(another->Note()));
-  int aSubcaseNumber    = another->SubCaseNumber();
-  double    aTime             = another->Time();
-  int nv                = another->NbResultValues();
-  int aResultReportFlag = another->ResultReportFlag();
+  int    aSubcaseNumber    = another->SubCaseNumber();
+  double aTime             = another->Time();
+  int    nv                = another->NbResultValues();
+  int    aResultReportFlag = another->ResultReportFlag();
 
-  occ::handle<NCollection_HArray1<int>>            allElementIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>    allElements;
-  occ::handle<NCollection_HArray1<int>>            allElementTopologyType;
-  occ::handle<NCollection_HArray1<int>>            allNbLayers;
-  occ::handle<NCollection_HArray1<int>>            allDataLayerFlag;
-  occ::handle<NCollection_HArray1<int>>            allNbResultDataLocs;
-  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> allResultDataLoc;
-  occ::handle<IGESBasic_HArray1OfHArray1OfReal>    allResultData;
+  occ::handle<NCollection_HArray1<int>>                                  allElementIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>> allElements;
+  occ::handle<NCollection_HArray1<int>>                                  allElementTopologyType;
+  occ::handle<NCollection_HArray1<int>>                                  allNbLayers;
+  occ::handle<NCollection_HArray1<int>>                                  allDataLayerFlag;
+  occ::handle<NCollection_HArray1<int>>                                  allNbResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                       allResultDataLoc;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal>                          allResultData;
   if (num > 0)
   {
     allElementIdentifiers  = new NCollection_HArray1<int>(1, num);
@@ -226,7 +221,7 @@ void IGESAppli_ToolElementResults::OwnCopy(const occ::handle<IGESAppli_ElementRe
     allResultDataLoc->SetValue(i, rdrl);
     for (j = 1; j <= nrl; j++)
       rdrl->SetValue(j, another->ResultDataLoc(i, j));
-    numv                               = another->NbResults(i);
+    numv                                          = another->NbResults(i);
     occ::handle<NCollection_HArray1<double>> vres = new NCollection_HArray1<double>(1, numv);
     for (j = 1; j <= numv; j++)
       vres->SetValue(j, another->ResultData(i, j));
@@ -271,7 +266,7 @@ void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementR
   int rrf = ent->ResultReportFlag();
   if (rrf < 0 || rrf > 3)
     ach->AddFail("Result Report Flag not in [0-3]");
-  int nv = ent->NbResultValues();
+  int  nv = ent->NbResultValues();
   bool OK = true;
   switch (ent->FormNumber())
   {
@@ -424,10 +419,10 @@ void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementR
   int ne = ent->NbElements();
   for (int i = 1; i <= ne; i++)
   {
-    char             mess[100];
-    int dlf = ent->DataLayerFlag(i);
-    int nl  = ent->NbLayers(i);
-    int nrl = ent->NbResultDataLocs(i);
+    char mess[100];
+    int  dlf = ent->DataLayerFlag(i);
+    int  nl  = ent->NbLayers(i);
+    int  nrl = ent->NbResultDataLocs(i);
     if (dlf < 0 || dlf > 4)
       ach->AddFail("One of the Data Layer Flags not in [0-4]");
     if (dlf < 4 && ent->NbLayers(i) != 1)
@@ -450,8 +445,8 @@ void IGESAppli_ToolElementResults::OwnCheck(const occ::handle<IGESAppli_ElementR
 }
 
 void IGESAppli_ToolElementResults::OwnDump(const occ::handle<IGESAppli_ElementResults>& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
                                            const int level) const // UNFINISHED
 {
   int sublevel = (level > 4) ? 1 : 0;

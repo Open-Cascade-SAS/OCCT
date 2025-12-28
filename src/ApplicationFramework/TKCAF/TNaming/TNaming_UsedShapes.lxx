@@ -16,7 +16,8 @@
 
 //=================================================================================================
 
-inline NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& TNaming_UsedShapes::Map()
+inline NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>&
+  TNaming_UsedShapes::Map()
 {
   return myMap;
 }

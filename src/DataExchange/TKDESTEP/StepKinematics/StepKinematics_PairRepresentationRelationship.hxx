@@ -35,7 +35,7 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Name,
-    const bool                  hasRepresentationRelationship_Description,
+    const bool                                   hasRepresentationRelationship_Description,
     const occ::handle<TCollection_HAsciiString>& theRepresentationRelationship_Description,
     const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep1,
     const StepRepr_RepresentationOrRepresentationReference& theRepresentationRelationship_Rep2,
@@ -44,7 +44,7 @@ public:
 
   //! Returns data for supertype RepresentationRelationshipWithTransformation
   Standard_EXPORT occ::handle<StepRepr_RepresentationRelationshipWithTransformation>
-    RepresentationRelationshipWithTransformation() const;
+                  RepresentationRelationshipWithTransformation() const;
   //! Sets data for supertype RepresentationRelationshipWithTransformation
   Standard_EXPORT void SetRepresentationRelationshipWithTransformation(
     const occ::handle<StepRepr_RepresentationRelationshipWithTransformation>&

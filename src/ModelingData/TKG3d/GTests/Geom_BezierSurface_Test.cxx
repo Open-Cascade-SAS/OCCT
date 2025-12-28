@@ -14,8 +14,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_Array2.hxx>
-#include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 

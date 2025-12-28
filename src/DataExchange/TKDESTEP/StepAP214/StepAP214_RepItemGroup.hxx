@@ -34,7 +34,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aGroup_Name,
-                            const bool                  hasGroup_Description,
+                            const bool                                   hasGroup_Description,
                             const occ::handle<TCollection_HAsciiString>& aGroup_Description,
                             const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name);
 

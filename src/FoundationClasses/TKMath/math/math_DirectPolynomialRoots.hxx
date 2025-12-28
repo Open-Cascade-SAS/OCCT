@@ -197,9 +197,7 @@ protected:
   //! @param theA coefficient of x^2 term
   //! @param theB coefficient of x term
   //! @param theC constant term
-  Standard_EXPORT void Solve(const double theA,
-                             const double theB,
-                             const double theC);
+  Standard_EXPORT void Solve(const double theA, const double theB, const double theC);
 
   //! Solves linear equation Ax + B = 0 with proper handling of degenerate cases.
   //!
@@ -213,10 +211,10 @@ protected:
   Standard_EXPORT void Solve(const double theA, const double theB);
 
 private:
-  bool myDone;           //!< Computation status flag
-  bool myInfiniteStatus; //!< Infinite solutions flag (0*x + 0 = 0)
-  int myNbSol;          //!< Number of real roots found (0 to 4)
-  double    myRoots[4];       //!< Array storing computed real roots
+  bool   myDone;           //!< Computation status flag
+  bool   myInfiniteStatus; //!< Infinite solutions flag (0*x + 0 = 0)
+  int    myNbSol;          //!< Number of real roots found (0 to 4)
+  double myRoots[4];       //!< Array storing computed real roots
 };
 
 inline bool math_DirectPolynomialRoots::IsDone() const

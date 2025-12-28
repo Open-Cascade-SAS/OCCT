@@ -36,9 +36,7 @@
 #include <TopOpeBRepDS_FaceInterferenceTool.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
@@ -46,7 +44,7 @@
 Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
                                     const TopoDS_Face&              FS,
                                     const TopoDS_Edge&              EE,
-                                    const bool          EEofFF,
+                                    const bool                      EEofFF,
                                     TopAbs_State&                   stateb,
                                     TopAbs_State&                   statea,
                                     TopOpeBRepTool_PShapeClassifier pClassif);
@@ -54,15 +52,12 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
 #define MDShfei occ::handle<TopOpeBRepDS_FaceEdgeInterference>
 #define MAKEFEI(IJKLM) (occ::down_cast<TopOpeBRepDS_FaceEdgeInterference>(IJKLM))
 
-Standard_EXPORT bool FUN_Parameters(const gp_Pnt&       Pnt,
-                                                const TopoDS_Shape& F,
-                                                double&      u,
-                                                double&      v);
-Standard_EXPORT bool FUN_Parameters(const double& Param,
-                                                const TopoDS_Shape&  E,
-                                                const TopoDS_Shape&  F,
-                                                double&       u,
-                                                double&       v);
+Standard_EXPORT bool FUN_Parameters(const gp_Pnt& Pnt, const TopoDS_Shape& F, double& u, double& v);
+Standard_EXPORT bool FUN_Parameters(const double&       Param,
+                                    const TopoDS_Shape& E,
+                                    const TopoDS_Shape& F,
+                                    double&             u,
+                                    double&             v);
 
 //=======================================================================
 // 3D
@@ -72,9 +67,9 @@ Standard_EXPORT bool FUN_Parameters(const double& Param,
 //=======================================================================
 
 Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
-                                            const TopoDS_Face&       FS,
-                                            const TopoDS_Edge&       E,
-                                            TopOpeBRepDS_Transition& T)
+                                const TopoDS_Face&       FS,
+                                const TopoDS_Edge&       E,
+                                TopOpeBRepDS_Transition& T)
 {
   bool isdgE = BRep_Tool::Degenerated(E);
   if (isdgE)
@@ -86,8 +81,8 @@ Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
   FUN_tool_bounds(E, f, l);
   const double PAR_T = 0.456789;
   double       pmil  = (1. - PAR_T) * f + PAR_T * l;
-  gp_Vec              tgE;
-  bool    ok;
+  gp_Vec       tgE;
+  bool         ok;
 
   ok = TopOpeBRepTool_TOOL::TggeomE(pmil, E, tgE);
   // modified by NIZNHY-PKV Fri Aug  4 10:59:44 2000 f
@@ -107,9 +102,9 @@ Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
   if (!ok)
     return false;
 
-  gp_Dir           ngF = FUN_tool_nggeomF(uvF, F);
-  double    xx  = std::abs(ngF.Dot(tgE));
-  bool tgt = (std::abs(1 - xx) < tola);
+  gp_Dir ngF = FUN_tool_nggeomF(uvF, F);
+  double xx  = std::abs(ngF.Dot(tgE));
+  bool   tgt = (std::abs(1 - xx) < tola);
   if (tgt)
     return false;
 
@@ -117,9 +112,9 @@ Standard_EXPORT bool FUN_mkTonF(const TopoDS_Face&       F,
   ok = TopOpeBRepTool_TOOL::Nt(uvFS, FS, ntFS);
   if (!ok)
     return false;
-  gp_Dir           beafter = ngF ^ tgE;
-  double    yy      = beafter.Dot(ntFS);
-  bool unk     = (std::abs(yy) < tola);
+  gp_Dir beafter = ngF ^ tgE;
+  double yy      = beafter.Dot(ntFS);
+  bool   unk     = (std::abs(yy) < tola);
   if (unk)
     return false;
 
@@ -136,8 +131,8 @@ Standard_EXPORT bool FUN_edgeofface
   //------------------------------------------------------
   (const TopoDS_Shape& E, const TopoDS_Shape& F)
 {
-  bool isv = false;
-  TopExp_Explorer  ex;
+  bool            isv = false;
+  TopExp_Explorer ex;
   for (ex.Init(F, TopAbs_EDGE); ex.More(); ex.Next())
     //  for (TopExp_Explorer ex(F,TopAbs_EDGE); ex.More(); ex.Next())
     if (ex.Current().IsSame(E))
@@ -151,12 +146,12 @@ Standard_EXPORT bool FUN_edgeofface
 //------------------------------------------------------
 Standard_EXPORT bool FUN_keepFinterference
   //------------------------------------------------------
-  (const TopOpeBRepDS_DataStructure&        DS,
+  (const TopOpeBRepDS_DataStructure&             DS,
    const occ::handle<TopOpeBRepDS_Interference>& I,
-   const TopoDS_Shape&                      F)
+   const TopoDS_Shape&                           F)
 {
   TopOpeBRepDS_Kind GT1, ST1;
-  int  G1, S1;
+  int               G1, S1;
   FDS_data(I, GT1, G1, ST1, S1);
 
   bool res = true;
@@ -166,7 +161,7 @@ Standard_EXPORT bool FUN_keepFinterference
     const TopoDS_Shape& EG = DS.Shape(I->Geometry());
     // I rejetee si son edge-geometrie est une arete de la face qui accede I.
     bool k3 = !::FUN_edgeofface(EG, F);
-    res                 = res && k3;
+    res     = res && k3;
   }
 
   return res;
@@ -188,10 +183,10 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
   while (it1.More())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1 = it1.ChangeValue();
-    TopOpeBRepDS_Kind                  GT1, ST1;
-    int                   G1, S1;
-    const TopOpeBRepDS_Transition&     T1     = I1->Transition();
-    bool                   isunk1 = T1.IsUnknown();
+    TopOpeBRepDS_Kind                       GT1, ST1;
+    int                                     G1, S1;
+    const TopOpeBRepDS_Transition&          T1     = I1->Transition();
+    bool                                    isunk1 = T1.IsUnknown();
     if (isunk1)
     {
       it1.Next();
@@ -217,10 +212,10 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
     while (it2.More())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
-      TopOpeBRepDS_Kind                        GT2, ST2;
-      int                         G2, S2;
-      const TopOpeBRepDS_Transition&           T2     = I2->Transition();
-      bool                         isunk2 = T2.IsUnknown();
+      TopOpeBRepDS_Kind                             GT2, ST2;
+      int                                           G2, S2;
+      const TopOpeBRepDS_Transition&                T2     = I2->Transition();
+      bool                                          isunk2 = T2.IsUnknown();
       if (isunk2)
       {
         it2.Next();
@@ -237,7 +232,7 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
       }
 
       bool isB2 = SSI2->GBound();
-      cond2                 = (GT2 == GT1 && GT1 == TopOpeBRepDS_EDGE && G2 == G1 && ST2 == ST1
+      cond2     = (GT2 == GT1 && GT1 == TopOpeBRepDS_EDGE && G2 == G1 && ST2 == ST1
                && ST1 == TopOpeBRepDS_FACE && S2 != S1 && isB1 && isB2);
 
       if (cond2)
@@ -262,13 +257,15 @@ Standard_EXPORT void FUN_unkeepFdoubleGBoundinterferences
 //------------------------------------------------------
 Standard_EXPORT void FUN_resolveFUNKNOWN
   //------------------------------------------------------
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&                      LI,
-   TopOpeBRepDS_DataStructure&                           BDS,
-   const int                                SIX,
-   const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp,
-   TopOpeBRepTool_PShapeClassifier                       pClassif)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   TopOpeBRepDS_DataStructure&                               BDS,
+   const int                                                 SIX,
+   const NCollection_DataMap<TopoDS_Shape,
+                             TopOpeBRepDS_ListOfShapeOn1State,
+                             TopTools_ShapeMapHasher>&       MEsp,
+   TopOpeBRepTool_PShapeClassifier                           pClassif)
 {
-  const TopoDS_Shape&                           F = BDS.Shape(SIX);
+  const TopoDS_Shape&                                                F = BDS.Shape(SIX);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1;
 
   const TopoDS_Face& FF = TopoDS::Face(F);
@@ -279,25 +276,25 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
   for (it1.Initialize(LI); it1.More(); it1.Next())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1    = it1.ChangeValue();
-    const TopOpeBRepDS_Transition&     T1    = I1->Transition();
-    bool                   isunk = T1.IsUnknown();
+    const TopOpeBRepDS_Transition&          T1    = I1->Transition();
+    bool                                    isunk = T1.IsUnknown();
     if (!isunk)
       continue;
 
     TopOpeBRepDS_Kind GT1, ST1;
-    int  G1, S1;
+    int               G1, S1;
     TopAbs_ShapeEnum  tsb1, tsa1;
-    int  isb1, isa1;
+    int               isb1, isa1;
     FDS_Idata(I1, tsb1, isb1, tsa1, isa1, GT1, G1, ST1, S1);
     bool idt  = (tsb1 == TopAbs_FACE && tsa1 == TopAbs_FACE && GT1 == TopOpeBRepDS_EDGE
-                            && ST1 == TopOpeBRepDS_FACE);
+                && ST1 == TopOpeBRepDS_FACE);
     bool idi  = (isb1 == S1 && isa1 == S1);
     bool etgf = idt && idi; // face tangent a une face en 1 edge
     if (!etgf)
       continue;
 
     const TopoDS_Edge& EE = TopoDS::Edge(BDS.Shape(G1));
-    double      fE, lE;
+    double             fE, lE;
     BRep_Tool::Range(EE, fE, lE);
 
     occ::handle<TopOpeBRepDS_FaceEdgeInterference> fei = MAKEFEI(I1);
@@ -314,9 +311,9 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
     // EE est une arete de FF ou non.
     // EE est une arete de section.
     // EE est une arete de couture.
-    bool isEEGB = fei->GBound();
-    bool isEEsp = MEsp.IsBound(EE);
-    TopoDS_Edge      EEsp   = EE;
+    bool        isEEGB = fei->GBound();
+    bool        isEEsp = MEsp.IsBound(EE);
+    TopoDS_Edge EEsp   = EE;
     if (isEEsp)
     {
       const TopOpeBRepDS_ListOfShapeOn1State& los1 = MEsp.Find(EE);
@@ -324,7 +321,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
       if (isEEsp)
       {
         const NCollection_List<TopoDS_Shape>& los = los1.ListOnState();
-        int            n   = los.Extent();
+        int                                   n   = los.Extent();
         if (n)
         {
           EEsp = TopoDS::Edge(los.First());
@@ -338,11 +335,11 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
             for (; it.More(); it.Next())
             {
               const TopoDS_Edge& aE = TopoDS::Edge(it.Value());
-              double      f, l;
+              double             f, l;
               FUN_tool_bounds(aE, f, l);
               const double PAR_T = 0.456789;
               double       pmil  = (1. - PAR_T) * f + PAR_T * l;
-              gp_Pnt2d            uvF;
+              gp_Pnt2d     uvF;
               if (FUN_tool_parF(aE, pmil, FF, uvF) && FUN_tool_parF(aE, pmil, FS, uvF))
               {
                 EEsp = aE;
@@ -360,7 +357,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
 
     TopAbs_State            stateb, statea;
     TopOpeBRepDS_Transition T;
-    bool        ok = FUN_mkTonF(FF, FS, EEsp, T); // xpu230498
+    bool                    ok = FUN_mkTonF(FF, FS, EEsp, T); // xpu230498
     if (ok)
     {
       stateb = T.Before();
@@ -374,7 +371,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
         // MSV: find Solids of the same object rank as FS
         //      to determine transition relatively solid rather then face
         //      if possible (see pb. in CFE002 C2, when SIX==13)
-        int    rankFS = BDS.AncestorRank(S1);
+        int                 rankFS = BDS.AncestorRank(S1);
         const TopoDS_Shape& aSRef  = BDS.Shape(rankFS);
         TopExp_Explorer     ex(aSRef, TopAbs_SOLID);
         if (ex.More())

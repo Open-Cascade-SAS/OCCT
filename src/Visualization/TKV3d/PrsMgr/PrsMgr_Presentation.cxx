@@ -40,8 +40,8 @@ static BeforeHighlightState StructureState(const Graphic3d_Structure* theStructu
 //=================================================================================================
 
 PrsMgr_Presentation::PrsMgr_Presentation(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                         const occ::handle<PrsMgr_PresentableObject>&   thePrsObject,
-                                         const int                    theMode)
+                                         const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
+                                         const int                                    theMode)
     : Graphic3d_Structure(thePrsMgr->StructureManager()),
       myPresentationManager(thePrsMgr),
       myPresentableObject(thePrsObject.get()),
@@ -155,7 +155,8 @@ void PrsMgr_Presentation::Clear(const bool theWithDestruction)
 void PrsMgr_Presentation::Compute()
 {
   int aDispMode = 0;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentableObject->myPresentations);
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
+         myPresentableObject->myPresentations);
        aPrsIter.More();
        aPrsIter.Next())
   {

@@ -40,16 +40,16 @@
 
 //=================================================================================================
 
-bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
-                                      const occ::handle<ChFiDS_SurfData>& Data,
-                                      const gp_Pln&                  pl,
-                                      const gp_Pln&                  pl1,
-                                      const gp_Pln&                  pl2,
-                                      const TopAbs_Orientation       opl,
-                                      const TopAbs_Orientation       opl1,
-                                      const TopAbs_Orientation       opl2,
-                                      const double            r,
-                                      const TopAbs_Orientation       ofpl)
+bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&         DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data,
+                          const gp_Pln&                       pl,
+                          const gp_Pln&                       pl1,
+                          const gp_Pln&                       pl2,
+                          const TopAbs_Orientation            opl,
+                          const TopAbs_Orientation            opl1,
+                          const TopAbs_Orientation            opl2,
+                          const double                        r,
+                          const TopAbs_Orientation            ofpl)
 {
 
   // calcul du tore.
@@ -105,9 +105,9 @@ bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   gp_Pnt pp;
   gp_Vec du, dv;
   ElSLib::TorusD1(0., M_PI / 2, ppos, r, r, pp, du, dv);
-  gp_Dir           drot(du.Crossed(dv));
-  bool reversecur = (drot.Dot(dplnat) <= 0.);
-  bool reversefil = (drot.Dot(dfpl) <= 0.);
+  gp_Dir drot(du.Crossed(dv));
+  bool   reversecur = (drot.Dot(dplnat) <= 0.);
+  bool   reversefil = (drot.Dot(dfpl) <= 0.);
   if (reversefil)
   {
     Data->ChangeOrientation() = TopAbs_REVERSED;
@@ -125,7 +125,7 @@ bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
   gp_Ax2 circAx2 = ppos.Ax2();
   circAx2.SetLocation(pcirc);
   occ::handle<Geom_Circle> GC = new Geom_Circle(circAx2, r);
-  double       u, v;
+  double                   u, v;
   ElSLib::Parameters(pl, pcirc, u, v);
   gp_Pnt2d p2dcirc(u, v);
   gp_Dir2d dx2d(dpl1.Dot(pl.Position().XDirection()), dpl1.Dot(pl.Position().YDirection()));
@@ -133,9 +133,9 @@ bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
                 ppos.YDirection().Dot(pl.Position().YDirection()));
   gp_Ax22d circ2dax(p2dcirc, dx2d, dy2d);
   occ::handle<Geom2d_Circle> GC2d = new Geom2d_Circle(circ2dax, r);
-  gp_Pnt2d              p2dlin(0., M_PI / 2);
+  gp_Pnt2d                   p2dlin(0., M_PI / 2);
   occ::handle<Geom2d_Line>   GL2d  = new Geom2d_Line(p2dlin, gp::DX2d());
-  TopAbs_Orientation    trans = TopAbs_REVERSED;
+  TopAbs_Orientation         trans = TopAbs_REVERSED;
   if (reversecur)
     trans = TopAbs_FORWARD;
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(GC, DStr),

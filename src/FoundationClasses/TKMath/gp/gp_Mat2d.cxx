@@ -125,11 +125,11 @@ gp_XY gp_Mat2d::Row(const int theRow) const
 void gp_Mat2d::Invert()
 {
   double aNewMat[2][2];
-  aNewMat[0][0]      = myMat[1][1];
-  aNewMat[0][1]      = -myMat[0][1];
-  aNewMat[1][0]      = -myMat[1][0];
-  aNewMat[1][1]      = myMat[0][0];
-  double aDet = aNewMat[0][0] * aNewMat[1][1] - aNewMat[0][1] * aNewMat[1][0];
+  aNewMat[0][0] = myMat[1][1];
+  aNewMat[0][1] = -myMat[0][1];
+  aNewMat[1][0] = -myMat[1][0];
+  aNewMat[1][1] = myMat[0][0];
+  double aDet   = aNewMat[0][0] * aNewMat[1][1] - aNewMat[0][1] * aNewMat[1][0];
   Standard_ConstructionError_Raise_if(std::abs(aDet) <= gp::Resolution(),
                                       "gp_Mat2d::Invert() - matrix has zero determinant");
   aDet        = 1.0 / aDet;
@@ -158,8 +158,8 @@ void gp_Mat2d::Power(const int theN)
   {
     if (theN < 0)
       Invert();
-    int Npower = std::abs(theN) - 1;
-    gp_Mat2d         aTemp  = *this;
+    int      Npower = std::abs(theN) - 1;
+    gp_Mat2d aTemp  = *this;
     for (;;)
     {
       if (IsOdd(Npower))

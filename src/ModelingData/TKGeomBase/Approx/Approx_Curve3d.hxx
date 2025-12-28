@@ -29,10 +29,10 @@ public:
   //! Approximation of a curve with respect of the
   //! required tolerance Tol3D.
   Standard_EXPORT Approx_Curve3d(const occ::handle<Adaptor3d_Curve>& Curve,
-                                 const double            Tol3d,
-                                 const GeomAbs_Shape            Order,
-                                 const int         MaxSegments,
-                                 const int         MaxDegree);
+                                 const double                        Tol3d,
+                                 const GeomAbs_Shape                 Order,
+                                 const int                           MaxSegments,
+                                 const int                           MaxDegree);
 
   Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve() const;
 
@@ -53,10 +53,10 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool          myIsDone;
-  bool          myHasResult;
+  bool                           myIsDone;
+  bool                           myHasResult;
   occ::handle<Geom_BSplineCurve> myBSplCurve;
-  double             myMaxError;
+  double                         myMaxError;
 };
 
 #endif // _Approx_Curve3d_HeaderFile

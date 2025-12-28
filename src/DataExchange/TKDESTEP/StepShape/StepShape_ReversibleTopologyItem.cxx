@@ -22,8 +22,7 @@
 
 StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem() {}
 
-int StepShape_ReversibleTopologyItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepShape_ReversibleTopologyItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

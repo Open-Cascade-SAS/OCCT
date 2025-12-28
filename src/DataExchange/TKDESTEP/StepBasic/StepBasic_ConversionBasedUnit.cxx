@@ -20,9 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ConversionBasedUnit, StepBasic_NamedUnit)
 
 StepBasic_ConversionBasedUnit::StepBasic_ConversionBasedUnit() {}
 
-void StepBasic_ConversionBasedUnit::Init(const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
-                                         const occ::handle<TCollection_HAsciiString>&       aName,
-                                         const occ::handle<Standard_Transient>& aConversionFactor)
+void StepBasic_ConversionBasedUnit::Init(
+  const occ::handle<StepBasic_DimensionalExponents>& aDimensions,
+  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<Standard_Transient>&             aConversionFactor)
 {
   // --- classe own fields ---
   name             = aName;

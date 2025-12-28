@@ -64,65 +64,65 @@ public:
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the naturally restricted surface
   //! and the point VLocation.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     const gp_Pnt&          theLocation,
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face& theSurface,
+                                     const gp_Pnt&   theLocation,
                                      const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+                                     const bool      theCGFlag    = false,
+                                     const bool      theIFlag     = false);
 
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the naturally restricted surface
   //! and the point VLocation. The inertia is computed with
   //! respect to thePoint.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     const gp_Pnt&          thePoint,
-                                     const gp_Pnt&          theLocation,
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face& theSurface,
+                                     const gp_Pnt&   thePoint,
+                                     const gp_Pnt&   theLocation,
                                      const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+                                     const bool      theCGFlag    = false,
+                                     const bool      theIFlag     = false);
 
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the surface bounded by the domain
   //! and the point VLocation.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     BRepGProp_Domain&      theDomain,
-                                     const gp_Pnt&          theLocation,
-                                     const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&   theSurface,
+                                     BRepGProp_Domain& theDomain,
+                                     const gp_Pnt&     theLocation,
+                                     const double      theTolerance = 0.001,
+                                     const bool        theCGFlag    = false,
+                                     const bool        theIFlag     = false);
 
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the surface bounded by the domain
   //! and the point VLocation. The inertia is computed with
   //! respect to thePoint.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     BRepGProp_Domain&      theDomain,
-                                     const gp_Pnt&          thePoint,
-                                     const gp_Pnt&          theLocation,
-                                     const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&   theSurface,
+                                     BRepGProp_Domain& theDomain,
+                                     const gp_Pnt&     thePoint,
+                                     const gp_Pnt&     theLocation,
+                                     const double      theTolerance = 0.001,
+                                     const bool        theCGFlag    = false,
+                                     const bool        theIFlag     = false);
 
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the naturally restricted surface
   //! and the plane.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     const gp_Pln&          thePlane,
-                                     const gp_Pnt&          theLocation,
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face& theSurface,
+                                     const gp_Pln&   thePlane,
+                                     const gp_Pnt&   theLocation,
                                      const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+                                     const bool      theCGFlag    = false,
+                                     const bool      theIFlag     = false);
 
   //! Constructor. Computes the global properties of a region of
   //! 3D space delimited with the surface bounded by the domain
   //! and the plane.
-  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&        theSurface,
-                                     BRepGProp_Domain&      theDomain,
-                                     const gp_Pln&          thePlane,
-                                     const gp_Pnt&          theLocation,
-                                     const double    theTolerance = 0.001,
-                                     const bool theCGFlag    = false,
-                                     const bool theIFlag     = false);
+  Standard_EXPORT BRepGProp_VinertGK(BRepGProp_Face&   theSurface,
+                                     BRepGProp_Domain& theDomain,
+                                     const gp_Pln&     thePlane,
+                                     const gp_Pnt&     theLocation,
+                                     const double      theTolerance = 0.001,
+                                     const bool        theCGFlag    = false,
+                                     const bool        theIFlag     = false);
 
   //! Sets the vertex that delimit 3D closed region of space.
   void SetLocation(const gp_Pnt& theLocation) { loc = theLocation; }
@@ -130,59 +130,59 @@ public:
   //! Computes the global properties of a region of 3D space
   //! delimited with the naturally restricted surface and the
   //! point VLocation.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face& theSurface,
+                                 const double    theTolerance = 0.001,
+                                 const bool      theCGFlag    = false,
+                                 const bool      theIFlag     = false);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the naturally restricted surface and the
   //! point VLocation. The inertia is computed with respect to
   //! thePoint.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        const gp_Pnt&          thePoint,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face& theSurface,
+                                 const gp_Pnt&   thePoint,
+                                 const double    theTolerance = 0.001,
+                                 const bool      theCGFlag    = false,
+                                 const bool      theIFlag     = false);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the surface bounded by the domain and the
   //! point VLocation.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        BRepGProp_Domain&      theDomain,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face&   theSurface,
+                                 BRepGProp_Domain& theDomain,
+                                 const double      theTolerance = 0.001,
+                                 const bool        theCGFlag    = false,
+                                 const bool        theIFlag     = false);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the surface bounded by the domain and the
   //! point VLocation. The inertia is computed with respect to
   //! thePoint.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        BRepGProp_Domain&      theDomain,
-                                        const gp_Pnt&          thePoint,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face&   theSurface,
+                                 BRepGProp_Domain& theDomain,
+                                 const gp_Pnt&     thePoint,
+                                 const double      theTolerance = 0.001,
+                                 const bool        theCGFlag    = false,
+                                 const bool        theIFlag     = false);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the naturally restricted surface and the
   //! plane.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        const gp_Pln&          thePlane,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face& theSurface,
+                                 const gp_Pln&   thePlane,
+                                 const double    theTolerance = 0.001,
+                                 const bool      theCGFlag    = false,
+                                 const bool      theIFlag     = false);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the surface bounded by the domain and the
   //! plane.
-  Standard_EXPORT double Perform(BRepGProp_Face&        theSurface,
-                                        BRepGProp_Domain&      theDomain,
-                                        const gp_Pln&          thePlane,
-                                        const double    theTolerance = 0.001,
-                                        const bool theCGFlag    = false,
-                                        const bool theIFlag     = false);
+  Standard_EXPORT double Perform(BRepGProp_Face&   theSurface,
+                                 BRepGProp_Domain& theDomain,
+                                 const gp_Pln&     thePlane,
+                                 const double      theTolerance = 0.001,
+                                 const bool        theCGFlag    = false,
+                                 const bool        theIFlag     = false);
 
   //! Returns the relative reached computation error.
   double GetErrorReached() const { return myErrorReached; }
@@ -193,13 +193,13 @@ public:
 private:
   //! Main method for computation of the global properties that
   //! is invoked by each Perform method.
-  Standard_EXPORT double PrivatePerform(BRepGProp_Face&        theSurface,
-                                               void* const thePtrDomain,
-                                               const bool IsByPoint,
-                                               const double*   theCoeffs,
-                                               const double    theTolerance,
-                                               const bool theCGFlag,
-                                               const bool theIFlag);
+  Standard_EXPORT double PrivatePerform(BRepGProp_Face& theSurface,
+                                        void* const     thePtrDomain,
+                                        const bool      IsByPoint,
+                                        const double*   theCoeffs,
+                                        const double    theTolerance,
+                                        const bool      theCGFlag,
+                                        const bool      theIFlag);
 
   double myErrorReached;
   double myAbsolutError;

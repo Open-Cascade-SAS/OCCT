@@ -70,9 +70,9 @@ static const Graphic3d_TextureUnit OpenGl_RT_RaytraceDepthTexture = Graphic3d_Te
 // function : updateRaytraceGeometry
 // purpose  : Updates 3D scene geometry for ray-tracing
 // =======================================================================
-bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode      theMode,
-                                                     const int        theViewId,
-                                                     const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theMode,
+                                         const int                          theViewId,
+                                         const occ::handle<OpenGl_Context>& theGlContext)
 {
   // In 'check' mode (OpenGl_GUM_CHECK) the scene geometry is analyzed for
   // modifications. This is light-weight procedure performed on each frame
@@ -308,7 +308,8 @@ bool OpenGl_View::toUpdateStructure(const OpenGl_Structure* theStructure)
 // function : buildTextureTransform
 // purpose  : Constructs texture transformation matrix
 // =======================================================================
-void buildTextureTransform(const occ::handle<Graphic3d_TextureParams>& theParams, BVH_Mat4f& theMatrix)
+void buildTextureTransform(const occ::handle<Graphic3d_TextureParams>& theParams,
+                           BVH_Mat4f&                                  theMatrix)
 {
   theMatrix.InitIdentity();
   if (theParams.IsNull())
@@ -342,10 +343,8 @@ void buildTextureTransform(const occ::handle<Graphic3d_TextureParams>& theParams
     theMatrix.GetValue(2, 0) * aTrans.x() + theMatrix.GetValue(2, 1) * aTrans.y();
 
   // Apply rotation
-  const float aSin =
-    std::sin(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
-  const float aCos =
-    std::cos(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
+  const float aSin = std::sin(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
+  const float aCos = std::cos(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
 
   BVH_Mat4f aRotationMat;
   aRotationMat.SetValue(0, 0, aCos);
@@ -360,13 +359,14 @@ void buildTextureTransform(const occ::handle<Graphic3d_TextureParams>& theParams
 // function : convertMaterial
 // purpose  : Creates ray-tracing material properties
 // =======================================================================
-OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(const OpenGl_Aspects*         theAspect,
-                                                     const occ::handle<OpenGl_Context>& theGlContext)
+OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(
+  const OpenGl_Aspects*              theAspect,
+  const occ::handle<OpenGl_Context>& theGlContext)
 {
   OpenGl_RaytraceMaterial aResMat;
 
   const Graphic3d_MaterialAspect& aSrcMat = theAspect->Aspect()->FrontMaterial();
-  const NCollection_Vec3<float>&              aMatCol = theAspect->Aspect()->InteriorColor();
+  const NCollection_Vec3<float>&  aMatCol = theAspect->Aspect()->InteriorColor();
   const float                     aShine  = 128.0f * float(aSrcMat.Shininess());
 
   const NCollection_Vec3<float>& aSrcAmb = aSrcMat.AmbientColor();
@@ -392,10 +392,9 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(const OpenGl_Aspects*      
   {
     // interior color is always ignored for Specular
     aResMat.Specular.SetValues(aSrcSpe, aShine);
-    const float aMaxRefl =
-      std::max(aResMat.Diffuse.x() + aResMat.Specular.x(),
-               std::max(aResMat.Diffuse.y() + aResMat.Specular.y(),
-                        aResMat.Diffuse.z() + aResMat.Specular.z()));
+    const float aMaxRefl         = std::max(aResMat.Diffuse.x() + aResMat.Specular.x(),
+                                    std::max(aResMat.Diffuse.y() + aResMat.Specular.y(),
+                                             aResMat.Diffuse.z() + aResMat.Specular.z()));
     const float aReflectionScale = 0.75f / aMaxRefl;
     aResMat.Reflection.SetValues(aSrcSpe * aReflectionScale, 0.0f);
   }
@@ -453,20 +452,17 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(const OpenGl_Aspects*      
       else if (aTexIter.Unit() == Graphic3d_TextureUnit_MetallicRoughness)
       {
         buildTextureTransform(aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
-        aResMat.BSDF.Kt.w() =
-          static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
+        aResMat.BSDF.Kt.w() = static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
       }
       else if (aTexIter.Unit() == Graphic3d_TextureUnit_Emissive)
       {
         buildTextureTransform(aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
-        aResMat.BSDF.Le.w() =
-          static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
+        aResMat.BSDF.Le.w() = static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
       }
       else if (aTexIter.Unit() == Graphic3d_TextureUnit_Normal)
       {
         buildTextureTransform(aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
-        aResMat.BSDF.FresnelBase.w() =
-          static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
+        aResMat.BSDF.FresnelBase.w() = static_cast<float>(myRaytraceGeometry.AddTexture(aTexture));
       }
     }
   }
@@ -490,8 +486,8 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(const OpenGl_Aspects*      
 // function : addRaytraceStructure
 // purpose  : Adds OpenGL structure to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*       theStructure,
-                                                   const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*            theStructure,
+                                       const occ::handle<OpenGl_Context>& theGlContext)
 {
   if (!theStructure->IsVisible())
   {
@@ -502,7 +498,7 @@ bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*       theStructur
 
   // Get structure material
   OpenGl_RaytraceMaterial aDefaultMaterial;
-  bool        aResult =
+  bool                    aResult =
     addRaytraceGroups(theStructure, aDefaultMaterial, theStructure->Transformation(), theGlContext);
 
   // Process all connected OpenGL structures
@@ -525,10 +521,10 @@ bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*       theStructur
 // function : addRaytraceGroups
 // purpose  : Adds OpenGL groups to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*        theStructure,
-                                                const OpenGl_RaytraceMaterial& theStructMat,
-                                                const occ::handle<TopLoc_Datum3D>&  theTrsf,
-                                                const occ::handle<OpenGl_Context>&  theGlContext)
+bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStructure,
+                                    const OpenGl_RaytraceMaterial&     theStructMat,
+                                    const occ::handle<TopLoc_Datum3D>& theTrsf,
+                                    const occ::handle<OpenGl_Context>& theGlContext)
 {
   NCollection_Mat4<float> aMat4;
   for (OpenGl_Structure::GroupIterator aGroupIter(theStructure->Groups()); aGroupIter.More();
@@ -572,9 +568,8 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*        theStructure,
 
           if (aSetIter != myArrayToTrianglesMap.end())
           {
-            OpenGl_TriangleSet*                                       aSet = aSetIter->second;
-            opencascade::handle<BVH_Transform<float, 4>> aTransform =
-              new BVH_Transform<float, 4>();
+            OpenGl_TriangleSet*                          aSet       = aSetIter->second;
+            opencascade::handle<BVH_Transform<float, 4>> aTransform = new BVH_Transform<float, 4>();
             if (!theTrsf.IsNull())
             {
               theTrsf->Trsf().GetMat4(aMat4);
@@ -590,7 +585,8 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*        theStructure,
           }
           else
           {
-            if (occ::handle<OpenGl_TriangleSet> aSet = addRaytracePrimitiveArray(aPrimArray, aMatID, 0))
+            if (occ::handle<OpenGl_TriangleSet> aSet =
+                  addRaytracePrimitiveArray(aPrimArray, aMatID, 0))
             {
               opencascade::handle<BVH_Transform<float, 4>> aTransform =
                 new BVH_Transform<float, 4>();
@@ -617,9 +613,9 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*        theStructure,
 // purpose  : Adds OpenGL primitive array to ray-traced scene geometry
 // =======================================================================
 occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
-  const OpenGl_PrimitiveArray* theArray,
-  const int       theMaterial,
-  const NCollection_Mat4<float>*           theTransform)
+  const OpenGl_PrimitiveArray*   theArray,
+  const int                      theMaterial,
+  const NCollection_Mat4<float>* theTransform)
 {
   const occ::handle<Graphic3d_BoundBuffer>& aBounds   = theArray->Bounds();
   const occ::handle<Graphic3d_IndexBuffer>& anIndices = theArray->Indices();
@@ -650,8 +646,8 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
 
     const size_t aVertFrom = aSet->Vertices.size();
 
-    int anAttribIndex  = 0;
-    size_t    anAttribStride = 0;
+    int    anAttribIndex  = 0;
+    size_t anAttribStride = 0;
     if (const uint8_t* aPosData =
           anAttribs->AttributeData(Graphic3d_TOA_POS, anAttribIndex, anAttribStride))
     {
@@ -678,8 +674,8 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       {
         for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          aSet->Normals.push_back(
-            *reinterpret_cast<const NCollection_Vec3<float>*>(aNormData + anAttribStride * aVertIter));
+          aSet->Normals.push_back(*reinterpret_cast<const NCollection_Vec3<float>*>(
+            aNormData + anAttribStride * aVertIter));
         }
       }
     }
@@ -691,8 +687,8 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       {
         for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          aSet->TexCrds.push_back(
-            *reinterpret_cast<const NCollection_Vec2<float>*>(aTexData + anAttribStride * aVertIter));
+          aSet->TexCrds.push_back(*reinterpret_cast<const NCollection_Vec2<float>*>(
+            aTexData + anAttribStride * aVertIter));
         }
       }
     }
@@ -752,8 +748,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
     }
     else
     {
-      const int aVertNum =
-        !anIndices.IsNull() ? anIndices->NbElements : anAttribs->NbElements;
+      const int aVertNum = !anIndices.IsNull() ? anIndices->NbElements : anAttribs->NbElements;
 
       if (!addRaytraceVertexIndices(*aSet, theMaterial, aVertNum, 0, *theArray))
       {
@@ -776,10 +771,10 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
 // purpose  : Adds vertex indices to ray-traced scene geometry
 // =======================================================================
 bool OpenGl_View::addRaytraceVertexIndices(OpenGl_TriangleSet&          theSet,
-                                                       const int       theMatID,
-                                                       const int       theCount,
-                                                       const int       theOffset,
-                                                       const OpenGl_PrimitiveArray& theArray)
+                                           const int                    theMatID,
+                                           const int                    theCount,
+                                           const int                    theOffset,
+                                           const OpenGl_PrimitiveArray& theArray)
 {
   switch (theArray.DrawMode())
   {
@@ -812,12 +807,11 @@ bool OpenGl_View::addRaytraceVertexIndices(OpenGl_TriangleSet&          theSet,
 // function : addRaytraceTriangleArray
 // purpose  : Adds OpenGL triangle array to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytraceTriangleArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
-  const occ::handle<Graphic3d_IndexBuffer>& theIndices)
+bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                       theSet,
+                                           const int                                 theMatID,
+                                           const int                                 theCount,
+                                           const int                                 theOffset,
+                                           const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 3)
   {
@@ -851,12 +845,11 @@ bool OpenGl_View::addRaytraceTriangleArray(
 // function : addRaytraceTriangleFanArray
 // purpose  : Adds OpenGL triangle fan array to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytraceTriangleFanArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
-  const occ::handle<Graphic3d_IndexBuffer>& theIndices)
+bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&                       theSet,
+                                              const int                                 theMatID,
+                                              const int                                 theCount,
+                                              const int                                 theOffset,
+                                              const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 3)
   {
@@ -891,10 +884,10 @@ bool OpenGl_View::addRaytraceTriangleFanArray(
 // purpose  : Adds OpenGL triangle strip array to ray-traced scene geometry
 // =======================================================================
 bool OpenGl_View::addRaytraceTriangleStripArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
+  OpenGl_TriangleSet&                       theSet,
+  const int                                 theMatID,
+  const int                                 theCount,
+  const int                                 theOffset,
   const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 3)
@@ -907,7 +900,7 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
   if (!theIndices.IsNull())
   {
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
-         ++aVert, aCW                            = (aCW + 1) % 2)
+         ++aVert, aCW               = (aCW + 1) % 2)
     {
       theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + (aCW ? 1 : 0)),
                                           theIndices->Index(aVert + (aCW ? 0 : 1)),
@@ -918,7 +911,7 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
   else
   {
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
-         ++aVert, aCW                            = (aCW + 1) % 2)
+         ++aVert, aCW               = (aCW + 1) % 2)
     {
       theSet.Elements.push_back(
         BVH_Vec4i(aVert + (aCW ? 1 : 0), aVert + (aCW ? 0 : 1), aVert + 2, theMatID));
@@ -932,12 +925,11 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
 // function : addRaytraceQuadrangleArray
 // purpose  : Adds OpenGL quad array to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytraceQuadrangleArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
-  const occ::handle<Graphic3d_IndexBuffer>& theIndices)
+bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                       theSet,
+                                             const int                                 theMatID,
+                                             const int                                 theCount,
+                                             const int                                 theOffset,
+                                             const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 4)
   {
@@ -977,10 +969,10 @@ bool OpenGl_View::addRaytraceQuadrangleArray(
 // purpose  : Adds OpenGL quad strip array to ray-traced scene geometry
 // =======================================================================
 bool OpenGl_View::addRaytraceQuadrangleStripArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
+  OpenGl_TriangleSet&                       theSet,
+  const int                                 theMatID,
+  const int                                 theCount,
+  const int                                 theOffset,
   const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 4)
@@ -1022,12 +1014,11 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
 // function : addRaytracePolygonArray
 // purpose  : Adds OpenGL polygon array to ray-traced scene geometry
 // =======================================================================
-bool OpenGl_View::addRaytracePolygonArray(
-  OpenGl_TriangleSet&                  theSet,
-  const int               theMatID,
-  const int               theCount,
-  const int               theOffset,
-  const occ::handle<Graphic3d_IndexBuffer>& theIndices)
+bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                       theSet,
+                                          const int                                 theMatID,
+                                          const int                                 theCount,
+                                          const int                                 theOffset,
+                                          const occ::handle<Graphic3d_IndexBuffer>& theIndices)
 {
   if (theCount < 3)
   {
@@ -1091,9 +1082,8 @@ TCollection_AsciiString OpenGl_View::ShaderSource::Source(const occ::handle<Open
 // function : LoadFromFiles
 // purpose  : Loads shader source from specified files
 // =======================================================================
-bool OpenGl_View::ShaderSource::LoadFromFiles(
-  const TCollection_AsciiString* theFileNames,
-  const TCollection_AsciiString& thePrefix)
+bool OpenGl_View::ShaderSource::LoadFromFiles(const TCollection_AsciiString* theFileNames,
+                                              const TCollection_AsciiString& thePrefix)
 {
   myError.Clear();
   mySource.Clear();
@@ -1142,9 +1132,8 @@ bool OpenGl_View::ShaderSource::LoadFromFiles(
 
 //=================================================================================================
 
-bool OpenGl_View::ShaderSource::LoadFromStrings(
-  const TCollection_AsciiString* theStrings,
-  const TCollection_AsciiString& thePrefix)
+bool OpenGl_View::ShaderSource::LoadFromStrings(const TCollection_AsciiString* theStrings,
+                                                const TCollection_AsciiString& thePrefix)
 {
   myError.Clear();
   mySource.Clear();
@@ -1250,8 +1239,8 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix(
 // function : safeFailBack
 // purpose  : Performs safe exit when shaders initialization fails
 // =======================================================================
-bool OpenGl_View::safeFailBack(const TCollection_ExtendedString& theMessage,
-                                           const occ::handle<OpenGl_Context>&     theGlContext)
+bool OpenGl_View::safeFailBack(const TCollection_ExtendedString&  theMessage,
+                               const occ::handle<OpenGl_Context>& theGlContext)
 {
   theGlContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                             GL_DEBUG_TYPE_ERROR,
@@ -1270,9 +1259,10 @@ bool OpenGl_View::safeFailBack(const TCollection_ExtendedString& theMessage,
 // function : initShader
 // purpose  : Creates new shader object with specified source
 // =======================================================================
-occ::handle<OpenGl_ShaderObject> OpenGl_View::initShader(const GLenum                  theType,
-                                                    const ShaderSource&           theSource,
-                                                    const occ::handle<OpenGl_Context>& theGlContext)
+occ::handle<OpenGl_ShaderObject> OpenGl_View::initShader(
+  const GLenum                       theType,
+  const ShaderSource&                theSource,
+  const occ::handle<OpenGl_Context>& theGlContext)
 {
   occ::handle<OpenGl_ShaderObject> aShader = new OpenGl_ShaderObject(theType);
   if (!aShader->Create(theGlContext))
@@ -1304,10 +1294,10 @@ occ::handle<OpenGl_ShaderProgram> OpenGl_View::initProgram(
   const occ::handle<OpenGl_Context>&      theGlContext,
   const occ::handle<OpenGl_ShaderObject>& theVertShader,
   const occ::handle<OpenGl_ShaderObject>& theFragShader,
-  const TCollection_AsciiString&     theName)
+  const TCollection_AsciiString&          theName)
 {
-  const TCollection_AsciiString anId = TCollection_AsciiString("occt_rt_") + theName;
-  occ::handle<OpenGl_ShaderProgram>  aProgram =
+  const TCollection_AsciiString     anId = TCollection_AsciiString("occt_rt_") + theName;
+  occ::handle<OpenGl_ShaderProgram> aProgram =
     new OpenGl_ShaderProgram(occ::handle<Graphic3d_ShaderProgram>(), anId);
 
   if (!aProgram->Create(theGlContext))
@@ -1380,9 +1370,9 @@ occ::handle<OpenGl_ShaderProgram> OpenGl_View::initProgram(
 // function : initRaytraceResources
 // purpose  : Initializes OpenGL/GLSL shader programs
 // =======================================================================
-bool OpenGl_View::initRaytraceResources(const int        theSizeX,
-                                                    const int        theSizeY,
-                                                    const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::initRaytraceResources(const int                          theSizeX,
+                                        const int                          theSizeY,
+                                        const occ::handle<OpenGl_Context>& theGlContext)
 {
   if (myRaytraceInitStatus == OpenGl_RT_FAIL)
   {
@@ -1911,7 +1901,8 @@ bool OpenGl_View::initRaytraceResources(const int        theSizeX,
 // purpose  : Releases OpenGL resource
 // =======================================================================
 template <class T>
-inline void nullifyResource(const occ::handle<OpenGl_Context>& theGlContext, occ::handle<T>& theResource)
+inline void nullifyResource(const occ::handle<OpenGl_Context>& theGlContext,
+                            occ::handle<T>&                    theResource)
 {
   if (!theResource.IsNull())
   {
@@ -1925,7 +1916,7 @@ inline void nullifyResource(const occ::handle<OpenGl_Context>& theGlContext, occ
 // purpose  : Releases OpenGL/GLSL shader programs
 // =======================================================================
 void OpenGl_View::releaseRaytraceResources(const occ::handle<OpenGl_Context>& theGlContext,
-                                           const bool        theToRebuild)
+                                           const bool                         theToRebuild)
 {
   // release shader resources
   nullifyResource(theGlContext, myRaytraceShader);
@@ -1978,9 +1969,9 @@ void OpenGl_View::releaseRaytraceResources(const occ::handle<OpenGl_Context>& th
 // function : updateRaytraceBuffers
 // purpose  : Updates auxiliary OpenGL frame buffers.
 // =======================================================================
-bool OpenGl_View::updateRaytraceBuffers(const int        theSizeX,
-                                                    const int        theSizeY,
-                                                    const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::updateRaytraceBuffers(const int                          theSizeX,
+                                        const int                          theSizeY,
+                                        const occ::handle<OpenGl_Context>& theGlContext)
 {
   // Auxiliary buffers are not used
   if (!myRaytraceParameters.GlobalIllumination && !myRenderParams.IsAntialiasingEnabled)
@@ -2141,12 +2132,12 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
       aDirect = aDirect - aOrigin;
 
       theOrigins[aOriginIndex++] = NCollection_Vec3<float>(static_cast<GLfloat>(aOrigin.x()),
-                                               static_cast<GLfloat>(aOrigin.y()),
-                                               static_cast<GLfloat>(aOrigin.z()));
+                                                           static_cast<GLfloat>(aOrigin.y()),
+                                                           static_cast<GLfloat>(aOrigin.z()));
 
       theDirects[aDirectIndex++] = NCollection_Vec3<float>(static_cast<GLfloat>(aDirect.x()),
-                                               static_cast<GLfloat>(aDirect.y()),
-                                               static_cast<GLfloat>(aDirect.z()));
+                                                           static_cast<GLfloat>(aDirect.y()),
+                                                           static_cast<GLfloat>(aDirect.z()));
     }
   }
 }
@@ -2155,13 +2146,13 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
 // function : updatePerspCameraPT
 // purpose  : Generates viewing rays (path tracing, perspective camera)
 // =======================================================================
-void OpenGl_View::updatePerspCameraPT(const NCollection_Mat4<float>&           theOrientation,
-                                      const NCollection_Mat4<float>&           theViewMapping,
-                                      Graphic3d_Camera::Projection theProjection,
-                                      NCollection_Mat4<float>&                 theViewPr,
-                                      NCollection_Mat4<float>&                 theUnview,
-                                      const int                    theWinSizeX,
-                                      const int                    theWinSizeY)
+void OpenGl_View::updatePerspCameraPT(const NCollection_Mat4<float>& theOrientation,
+                                      const NCollection_Mat4<float>& theViewMapping,
+                                      Graphic3d_Camera::Projection   theProjection,
+                                      NCollection_Mat4<float>&       theViewPr,
+                                      NCollection_Mat4<float>&       theUnview,
+                                      const int                      theWinSizeX,
+                                      const int                      theWinSizeY)
 {
   // compute view-projection matrix
   theViewPr = theViewMapping * theOrientation;
@@ -2182,20 +2173,20 @@ void OpenGl_View::updatePerspCameraPT(const NCollection_Mat4<float>&           t
   const gp_Pnt anOrig = myCamera->Eye();
 
   myEyeOrig = NCollection_Vec3<float>(static_cast<float>(anOrig.X()),
-                          static_cast<float>(anOrig.Y()),
-                          static_cast<float>(anOrig.Z()));
+                                      static_cast<float>(anOrig.Y()),
+                                      static_cast<float>(anOrig.Z()));
 
   const gp_Dir aView = myCamera->Direction();
 
   NCollection_Vec3<float> anEyeViewMono = NCollection_Vec3<float>(static_cast<float>(aView.X()),
-                                          static_cast<float>(aView.Y()),
-                                          static_cast<float>(aView.Z()));
+                                                                  static_cast<float>(aView.Y()),
+                                                                  static_cast<float>(aView.Z()));
 
   const gp_Dir anUp = myCamera->Up();
 
   myEyeVert = NCollection_Vec3<float>(static_cast<float>(anUp.X()),
-                          static_cast<float>(anUp.Y()),
-                          static_cast<float>(anUp.Z()));
+                                      static_cast<float>(anUp.Y()),
+                                      static_cast<float>(anUp.Z()));
 
   myEyeSide = NCollection_Vec3<float>::Cross(anEyeViewMono, myEyeVert);
 
@@ -2561,29 +2552,25 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     OpenGl_TriangleSet* aTriangleSet =
       dynamic_cast<OpenGl_TriangleSet*>(myRaytraceGeometry.Objects()(anElemIdx).get());
 
-    aMemTrgUsed +=
-      static_cast<float>(aTriangleSet->Vertices.size() * sizeof(BVH_Vec3f));
-    aMemTrgUsed +=
-      static_cast<float>(aTriangleSet->Normals.size() * sizeof(BVH_Vec3f));
-    aMemTrgUsed +=
-      static_cast<float>(aTriangleSet->TexCrds.size() * sizeof(BVH_Vec2f));
-    aMemTrgUsed +=
-      static_cast<float>(aTriangleSet->Elements.size() * sizeof(BVH_Vec4i));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Vertices.size() * sizeof(BVH_Vec3f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Normals.size() * sizeof(BVH_Vec3f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->TexCrds.size() * sizeof(BVH_Vec2f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Elements.size() * sizeof(BVH_Vec4i));
 
-    aMemBvhUsed += static_cast<float>(aTriangleSet->QuadBVH()->NodeInfoBuffer().size()
-                                                   * sizeof(BVH_Vec4i));
-    aMemBvhUsed += static_cast<float>(aTriangleSet->QuadBVH()->MinPointBuffer().size()
-                                                   * sizeof(BVH_Vec3f));
-    aMemBvhUsed += static_cast<float>(aTriangleSet->QuadBVH()->MaxPointBuffer().size()
-                                                   * sizeof(BVH_Vec3f));
+    aMemBvhUsed +=
+      static_cast<float>(aTriangleSet->QuadBVH()->NodeInfoBuffer().size() * sizeof(BVH_Vec4i));
+    aMemBvhUsed +=
+      static_cast<float>(aTriangleSet->QuadBVH()->MinPointBuffer().size() * sizeof(BVH_Vec3f));
+    aMemBvhUsed +=
+      static_cast<float>(aTriangleSet->QuadBVH()->MaxPointBuffer().size() * sizeof(BVH_Vec3f));
   }
 
-  aMemBvhUsed += static_cast<float>(
-    myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size() * sizeof(BVH_Vec4i));
-  aMemBvhUsed += static_cast<float>(
-    myRaytraceGeometry.QuadBVH()->MinPointBuffer().size() * sizeof(BVH_Vec3f));
-  aMemBvhUsed += static_cast<float>(
-    myRaytraceGeometry.QuadBVH()->MaxPointBuffer().size() * sizeof(BVH_Vec3f));
+  aMemBvhUsed +=
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size() * sizeof(BVH_Vec4i));
+  aMemBvhUsed +=
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->MinPointBuffer().size() * sizeof(BVH_Vec3f));
+  aMemBvhUsed +=
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->MaxPointBuffer().size() * sizeof(BVH_Vec3f));
 
   std::cout << "GPU Memory Used (Mb):\n"
             << "\tFor mesh: " << aMemTrgUsed / 1048576 << "\n"
@@ -2598,11 +2585,11 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
 // function : updateRaytraceLightSources
 // purpose  : Updates 3D scene light sources for ray-tracing
 // =======================================================================
-bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>& theInvModelView,
-                                                         const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     theInvModelView,
+                                             const occ::handle<OpenGl_Context>& theGlContext)
 {
   std::vector<occ::handle<Graphic3d_CLight>> aLightSources;
-  NCollection_Vec4<float>                        aNewAmbient(0.0f);
+  NCollection_Vec4<float>                    aNewAmbient(0.0f);
   if (myRenderParams.ShadingModel != Graphic3d_TypeOfShadingModel_Unlit && !myLights.IsNull())
   {
     aNewAmbient.SetValues(myLights->AmbientColor().rgb(), 0.0f);
@@ -2642,8 +2629,8 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>& theI
   }
 
   // get number of 'real' (not ambient) light sources
-  const size_t     aNbLights  = aLightSources.size();
-  bool wasUpdated = myRaytraceGeometry.Sources.size() != aNbLights;
+  const size_t aNbLights  = aLightSources.size();
+  bool         wasUpdated = myRaytraceGeometry.Sources.size() != aNbLights;
   if (wasUpdated)
   {
     myRaytraceGeometry.Sources.resize(aNbLights);
@@ -2651,9 +2638,9 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>& theI
 
   for (size_t aLightIdx = 0, aRealIdx = 0; aLightIdx < aLightSources.size(); ++aLightIdx)
   {
-    const Graphic3d_CLight& aLight      = *aLightSources[aLightIdx];
-    const NCollection_Vec4<float>&   aLightColor = aLight.PackedColor();
-    BVH_Vec4f               aEmission(aLightColor.r() * aLight.Intensity(),
+    const Graphic3d_CLight&        aLight      = *aLightSources[aLightIdx];
+    const NCollection_Vec4<float>& aLightColor = aLight.PackedColor();
+    BVH_Vec4f                      aEmission(aLightColor.r() * aLight.Intensity(),
                         aLightColor.g() * aLight.Intensity(),
                         aLightColor.b() * aLight.Intensity(),
                         1.0f);
@@ -2676,8 +2663,8 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>& theI
     else
     {
       // store cosine of smoothing angle in W-component
-      aEmission.w() = cosf(
-        std::min(std::max(aLight.Smoothness(), 0.f), static_cast<float>(M_PI / 2.0)));
+      aEmission.w() =
+        cosf(std::min(std::max(aLight.Smoothness(), 0.f), static_cast<float>(M_PI / 2.0)));
     }
 
     if (aLight.IsHeadlight())
@@ -2726,11 +2713,11 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>& theI
 // function : setUniformState
 // purpose  : Sets uniform state for the given ray-tracing shader program
 // =======================================================================
-bool OpenGl_View::setUniformState(const int        theProgramId,
-                                              const int        theWinSizeX,
-                                              const int        theWinSizeY,
-                                              Graphic3d_Camera::Projection  theProjection,
-                                              const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::setUniformState(const int                          theProgramId,
+                                  const int                          theWinSizeX,
+                                  const int                          theWinSizeY,
+                                  Graphic3d_Camera::Projection       theProjection,
+                                  const occ::handle<OpenGl_Context>& theGlContext)
 {
   // Get projection state
   OpenGl_MatrixState<float>& aCntxProjectionState = theGlContext->ProjectionState;
@@ -2839,8 +2826,7 @@ bool OpenGl_View::setUniformState(const int        theProgramId,
                          myRaytraceSceneEpsilon);
 
   // Set light source parameters
-  const int aLightSourceBufferSize =
-    static_cast<int>(myRaytraceGeometry.Sources.size());
+  const int aLightSourceBufferSize = static_cast<int>(myRaytraceGeometry.Sources.size());
 
   theProgram->SetUniform(theGlContext,
                          myUniformLocations[theProgramId][OpenGl_RT_uLightCount],
@@ -2851,10 +2837,11 @@ bool OpenGl_View::setUniformState(const int        theProgramId,
   {
     const std::vector<GLuint64>& aTextures = myRaytraceGeometry.TextureHandles();
 
-    theProgram->SetUniform(theGlContext,
-                           myUniformLocations[theProgramId][OpenGl_RT_uTexSamplersArray],
-                           static_cast<GLsizei>(aTextures.size()),
-                           reinterpret_cast<const NCollection_Vec2<unsigned int>*>(&aTextures.front()));
+    theProgram->SetUniform(
+      theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uTexSamplersArray],
+      static_cast<GLsizei>(aTextures.size()),
+      reinterpret_cast<const NCollection_Vec2<unsigned int>*>(&aTextures.front()));
   }
 
   // Set background colors (only vertical gradient background supported)
@@ -2867,12 +2854,12 @@ bool OpenGl_View::setUniformState(const int        theProgramId,
 
     if (myCamera->Tile().IsValid())
     {
-      int aTileOffset = myCamera->Tile().OffsetLowerLeft().y();
-      int aTileSize   = myCamera->Tile().TileSize.y();
-      int aViewSize   = myCamera->Tile().TotalSize.y();
-      NCollection_Vec4<float>      aColorRange = aBackColorTop - aBackColorBot;
-      aBackColorBot                = aBackColorBot + aColorRange * ((float)aTileOffset / aViewSize);
-      aBackColorTop                = aBackColorBot + aColorRange * ((float)aTileSize / aViewSize);
+      int                     aTileOffset = myCamera->Tile().OffsetLowerLeft().y();
+      int                     aTileSize   = myCamera->Tile().TileSize.y();
+      int                     aViewSize   = myCamera->Tile().TotalSize.y();
+      NCollection_Vec4<float> aColorRange = aBackColorTop - aBackColorBot;
+      aBackColorBot = aBackColorBot + aColorRange * ((float)aTileOffset / aViewSize);
+      aBackColorTop = aBackColorBot + aColorRange * ((float)aTileSize / aViewSize);
     }
   }
   aBackColorTop = theGlContext->Vec4FromQuantityColor(aBackColorTop);
@@ -2951,7 +2938,7 @@ bool OpenGl_View::setUniformState(const int        theProgramId,
 // purpose  : Binds ray-trace textures to corresponding texture units
 // =======================================================================
 void OpenGl_View::bindRaytraceTextures(const occ::handle<OpenGl_Context>& theGlContext,
-                                       int                           theStereoView)
+                                       int                                theStereoView)
 {
   if (myRaytraceParameters.AdaptiveScreenSampling && myRaytraceParameters.GlobalIllumination)
   {
@@ -3038,11 +3025,11 @@ void OpenGl_View::unbindRaytraceTextures(const occ::handle<OpenGl_Context>& theG
 // function : runRaytraceShaders
 // purpose  : Runs ray-tracing shader programs
 // =======================================================================
-bool OpenGl_View::runRaytraceShaders(const int        theSizeX,
-                                                 const int        theSizeY,
-                                                 Graphic3d_Camera::Projection  theProjection,
-                                                 OpenGl_FrameBuffer*           theReadDrawFbo,
-                                                 const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::runRaytraceShaders(const int                          theSizeX,
+                                     const int                          theSizeY,
+                                     Graphic3d_Camera::Projection       theProjection,
+                                     OpenGl_FrameBuffer*                theReadDrawFbo,
+                                     const occ::handle<OpenGl_Context>& theGlContext)
 {
   bool aResult = theGlContext->BindProgram(myRaytraceProgram);
 
@@ -3065,17 +3052,16 @@ bool OpenGl_View::runRaytraceShaders(const int        theSizeX,
 // function : runRaytrace
 // purpose  : Runs Whitted-style ray-tracing
 // =======================================================================
-bool OpenGl_View::runRaytrace(const int        theSizeX,
-                                          const int        theSizeY,
-                                          Graphic3d_Camera::Projection  theProjection,
-                                          OpenGl_FrameBuffer*           theReadDrawFbo,
-                                          const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::runRaytrace(const int                          theSizeX,
+                              const int                          theSizeY,
+                              Graphic3d_Camera::Projection       theProjection,
+                              OpenGl_FrameBuffer*                theReadDrawFbo,
+                              const occ::handle<OpenGl_Context>& theGlContext)
 {
   bool aResult = true;
 
   // Choose proper set of frame buffers for stereo rendering
-  const int aFBOIdx =
-    (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
+  const int aFBOIdx = (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
   bindRaytraceTextures(theGlContext, aFBOIdx);
 
   if (myRenderParams.IsAntialiasingEnabled) // if second FSAA pass is used
@@ -3181,10 +3167,10 @@ bool OpenGl_View::runRaytrace(const int        theSizeX,
 // function : runPathtrace
 // purpose  : Runs path tracing shader
 // =======================================================================
-bool OpenGl_View::runPathtrace(const int             theSizeX,
-                                           const int             theSizeY,
-                                           const Graphic3d_Camera::Projection theProjection,
-                                           const occ::handle<OpenGl_Context>&      theGlContext)
+bool OpenGl_View::runPathtrace(const int                          theSizeX,
+                               const int                          theSizeY,
+                               const Graphic3d_Camera::Projection theProjection,
+                               const occ::handle<OpenGl_Context>& theGlContext)
 {
   if (myToUpdateEnvironmentMap) // check whether the map was changed
   {
@@ -3200,8 +3186,7 @@ bool OpenGl_View::runPathtrace(const int             theSizeX,
   }
 
   // Choose proper set of frame buffers for stereo rendering
-  const int aFBOIdx =
-    (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
+  const int aFBOIdx = (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
 
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
@@ -3329,15 +3314,14 @@ bool OpenGl_View::runPathtrace(const int             theSizeX,
 //=================================================================================================
 
 bool OpenGl_View::runPathtraceOut(const Graphic3d_Camera::Projection theProjection,
-                                              OpenGl_FrameBuffer*                theReadDrawFbo,
-                                              const occ::handle<OpenGl_Context>&      theGlContext)
+                                  OpenGl_FrameBuffer*                theReadDrawFbo,
+                                  const occ::handle<OpenGl_Context>& theGlContext)
 {
   // Output accumulated path traced image
   theGlContext->BindProgram(myOutImageProgram);
 
   // Choose proper set of frame buffers for stereo rendering
-  const int aFBOIdx =
-    (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
+  const int aFBOIdx = (theProjection == Graphic3d_Camera::Projection_MonoRightEye) ? 1 : 0;
 
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
@@ -3410,11 +3394,11 @@ bool OpenGl_View::runPathtraceOut(const Graphic3d_Camera::Projection theProjecti
 // function : raytrace
 // purpose  : Redraws the window using OpenGL/GLSL ray-tracing
 // =======================================================================
-bool OpenGl_View::raytrace(const int        theSizeX,
-                                       const int        theSizeY,
-                                       Graphic3d_Camera::Projection  theProjection,
-                                       OpenGl_FrameBuffer*           theReadDrawFbo,
-                                       const occ::handle<OpenGl_Context>& theGlContext)
+bool OpenGl_View::raytrace(const int                          theSizeX,
+                           const int                          theSizeY,
+                           Graphic3d_Camera::Projection       theProjection,
+                           OpenGl_FrameBuffer*                theReadDrawFbo,
+                           const occ::handle<OpenGl_Context>& theGlContext)
 {
   if (!initRaytraceResources(theSizeX, theSizeY, theGlContext))
   {

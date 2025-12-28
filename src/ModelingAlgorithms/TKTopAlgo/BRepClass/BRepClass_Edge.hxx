@@ -52,7 +52,10 @@ public:
   const TopoDS_Edge& NextEdge() const { return myNextEdge; }
 
   //! Finds and sets the next Edge for the current
-  Standard_EXPORT void SetNextEdge(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapVE);
+  Standard_EXPORT void SetNextEdge(
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>& theMapVE);
 
   //! Returns the maximum tolerance
   double MaxTolerance() const { return myMaxTolerance; }
@@ -70,11 +73,11 @@ public:
   void SetUseBndBox(const bool theValue) { myUseBndBox = theValue; }
 
 private:
-  TopoDS_Edge      myEdge;
-  TopoDS_Face      myFace;
-  TopoDS_Edge      myNextEdge;
-  double    myMaxTolerance;
-  bool myUseBndBox;
+  TopoDS_Edge myEdge;
+  TopoDS_Face myFace;
+  TopoDS_Edge myNextEdge;
+  double      myMaxTolerance;
+  bool        myUseBndBox;
 };
 
 #include <BRepClass_Edge.lxx>

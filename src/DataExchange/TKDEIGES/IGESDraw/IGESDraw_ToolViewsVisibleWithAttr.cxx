@@ -25,14 +25,10 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_LineFontEntity.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_ToolViewsVisibleWithAttr.hxx>
 #include <IGESDraw_ViewsVisibleWithAttr.hxx>
 #include <IGESGraph_Color.hxx>
-#include <IGESGraph_Color.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -40,8 +36,6 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -50,17 +44,17 @@ IGESDraw_ToolViewsVisibleWithAttr::IGESDraw_ToolViewsVisibleWithAttr() {}
 void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
   const occ::handle<IGESData_IGESReaderData>&       IR,
-  IGESData_ParamReader&                        PR) const
+  IGESData_ParamReader&                             PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int                          tempNbBlocks, tempNbEntity;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  tempViewEntities;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          tempColorDefinitions;
-  occ::handle<NCollection_HArray1<int>>          tempLineFonts;
-  occ::handle<NCollection_HArray1<int>>          tempColorValues;
-  occ::handle<NCollection_HArray1<int>>          tempLineWeights;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempDisplayEntities;
+  int                                                                    tempNbBlocks, tempNbEntity;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> tempViewEntities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>         tempColorDefinitions;
+  occ::handle<NCollection_HArray1<int>>                                  tempLineFonts;
+  occ::handle<NCollection_HArray1<int>>                                  tempColorValues;
+  occ::handle<NCollection_HArray1<int>>                                  tempLineWeights;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     tempDisplayEntities;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> tempLineDefinitions;
 
   // st = PR.ReadInteger(PR.Current(), "Number Of Blocks", tempNbBlocks); //szv#4:S4163:12Mar99
@@ -72,9 +66,11 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
       PR.AddFail("Number Of Blocks : Not Positive");
     else
     {
-      tempViewEntities     = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, tempNbBlocks);
-      tempLineFonts        = new NCollection_HArray1<int>(1, tempNbBlocks);
-      tempLineDefinitions  = new NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>(1, tempNbBlocks);
+      tempViewEntities =
+        new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, tempNbBlocks);
+      tempLineFonts = new NCollection_HArray1<int>(1, tempNbBlocks);
+      tempLineDefinitions =
+        new NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>(1, tempNbBlocks);
       tempColorValues      = new NCollection_HArray1<int>(1, tempNbBlocks);
       tempColorDefinitions = new NCollection_HArray1<occ::handle<IGESGraph_Color>>(1, tempNbBlocks);
       tempLineWeights      = new NCollection_HArray1<int>(1, tempNbBlocks);
@@ -103,11 +99,11 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
     for (I = 1; I <= tempNbBlocks; I++)
     {
       occ::handle<IGESData_ViewKindEntity> tempView;
-      int                tempLineFont;
+      int                                  tempLineFont;
       occ::handle<IGESData_LineFontEntity> tempEntity1;
-      int                tempColorValue;
+      int                                  tempColorValue;
       occ::handle<IGESGraph_Color>         tempColorDef;
-      int                tempLineWeightValue;
+      int                                  tempLineWeightValue;
 
       // st = PR.ReadEntity(IR, PR.Current(), "View Entity",
       // STANDARD_TYPE(IGESData_ViewKindEntity), tempView); //szv#4:S4163:12Mar99 moved in if
@@ -173,12 +169,10 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
                 "Displayed Entities",
                 tempDisplayEntities); // szv#4:S4163:12Mar99 `st=` not needed
     /*
-        tempDisplayEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>> (1, tempNbEntity);
-        int I;
-        for (I = 1; I <= tempNbEntity; I++) {
-          occ::handle<IGESData_IGESEntity> tempEntity3;
-          st = PR.ReadEntity(IR, PR.Current(), "Entity", tempEntity3);
-          if (st) tempDisplayEntities->SetValue(I, tempEntity3);
+        tempDisplayEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>> (1,
+       tempNbEntity); int I; for (I = 1; I <= tempNbEntity; I++) { occ::handle<IGESData_IGESEntity>
+       tempEntity3; st = PR.ReadEntity(IR, PR.Current(), "Entity", tempEntity3); if (st)
+       tempDisplayEntities->SetValue(I, tempEntity3);
         }
     */
   }
@@ -195,7 +189,7 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams(
 
 void IGESDraw_ToolViewsVisibleWithAttr::WriteOwnParams(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-  IGESData_IGESWriter&                         IW) const
+  IGESData_IGESWriter&                              IW) const
 {
   int up = ent->NbViews();
   IW.Send(up);
@@ -218,8 +212,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::WriteOwnParams(
     IW.Send(ent->DisplayedEntity(I));
 }
 
-void IGESDraw_ToolViewsVisibleWithAttr::OwnShared(const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-                                                  Interface_EntityIterator& iter) const
+void IGESDraw_ToolViewsVisibleWithAttr::OwnShared(
+  const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
+  Interface_EntityIterator&                         iter) const
 {
   int up = ent->NbViews();
 
@@ -234,8 +229,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnShared(const occ::handle<IGESDraw_Vie
   //  Displayed -> Implied
 }
 
-void IGESDraw_ToolViewsVisibleWithAttr::OwnImplied(const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-                                                   Interface_EntityIterator& iter) const
+void IGESDraw_ToolViewsVisibleWithAttr::OwnImplied(
+  const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
+  Interface_EntityIterator&                         iter) const
 {
   int I, up;
   up = ent->NbDisplayedEntities();
@@ -246,18 +242,19 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnImplied(const occ::handle<IGESDraw_Vi
 void IGESDraw_ToolViewsVisibleWithAttr::OwnCopy(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& another,
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-  Interface_CopyTool&                          TC) const
+  Interface_CopyTool&                               TC) const
 {
-  int                         I;
-  int                         up = another->NbViews();
+  int                                                                    I;
+  int                                                                    up = another->NbViews();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> tempViewEntities =
     new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, up);
-  occ::handle<NCollection_HArray1<int>>          tempLineFonts = new NCollection_HArray1<int>(1, up);
+  occ::handle<NCollection_HArray1<int>> tempLineFonts = new NCollection_HArray1<int>(1, up);
   occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> tempLineDefinitions =
     new NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>(1, up);
-  occ::handle<NCollection_HArray1<int>> tempColorValues      = new NCollection_HArray1<int>(1, up);
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>> tempColorDefinitions = new NCollection_HArray1<occ::handle<IGESGraph_Color>>(1, up);
-  occ::handle<NCollection_HArray1<int>> tempLineWeights      = new NCollection_HArray1<int>(1, up);
+  occ::handle<NCollection_HArray1<int>> tempColorValues = new NCollection_HArray1<int>(1, up);
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>> tempColorDefinitions =
+    new NCollection_HArray1<occ::handle<IGESGraph_Color>>(1, up);
+  occ::handle<NCollection_HArray1<int>> tempLineWeights = new NCollection_HArray1<int>(1, up);
 
   for (I = 1; I <= up; I++)
   {
@@ -299,15 +296,15 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnCopy(
 void IGESDraw_ToolViewsVisibleWithAttr::OwnRenew(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& another,
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-  const Interface_CopyTool&                    TC) const
+  const Interface_CopyTool&                         TC) const
 {
   Interface_EntityIterator newdisp;
-  int         I, up;
+  int                      I, up;
   up = another->NbDisplayedEntities();
   if (up == 0)
     return;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempDisplayEntities;
-  occ::handle<Standard_Transient>           anew;
+  occ::handle<Standard_Transient>                                    anew;
   for (I = 1; I <= up; I++)
   {
     if (TC.Search(another->DisplayedEntity(I), anew))
@@ -343,9 +340,10 @@ IGESData_DirChecker IGESDraw_ToolViewsVisibleWithAttr::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-                                                 const Interface_ShareTool&,
-                                                 occ::handle<Interface_Check>& ach) const
+void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(
+  const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   int nb = ent->NbViews();
   int i; // svv Jan 10 2000 : porting on DEC
@@ -355,8 +353,8 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnCheck(const occ::handle<IGESDraw_View
       ach->AddFail("At least one Line Font Definition Mismatch (both Value and Entity");
   }
   const occ::handle<IGESData_ViewKindEntity>& entcomp = ent;
-  int                       res     = 0;
-  nb                                             = ent->NbDisplayedEntities();
+  int                                         res     = 0;
+  nb                                                  = ent->NbDisplayedEntities();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> displayed = ent->DisplayedEntity(i);
@@ -377,10 +375,11 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnWhenDelete(
   ent->InitImplied(tempDisplayEntities);
 }
 
-void IGESDraw_ToolViewsVisibleWithAttr::OwnDump(const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
-                                                const IGESData_IGESDumper&                   dumper,
-                                                Standard_OStream&                            S,
-                                                const int level) const
+void IGESDraw_ToolViewsVisibleWithAttr::OwnDump(
+  const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 
@@ -432,8 +431,8 @@ bool IGESDraw_ToolViewsVisibleWithAttr::OwnCorrect(
   const occ::handle<IGESDraw_ViewsVisibleWithAttr>& ent) const
 {
   //  The displayed entities must reference <ent>. They have priority.
-  bool                       res     = false;
-  int                       nb      = ent->NbDisplayedEntities();
+  bool                                        res     = false;
+  int                                         nb      = ent->NbDisplayedEntities();
   const occ::handle<IGESData_ViewKindEntity>& entcomp = ent;
   for (int i = 1; i <= nb; i++)
   {

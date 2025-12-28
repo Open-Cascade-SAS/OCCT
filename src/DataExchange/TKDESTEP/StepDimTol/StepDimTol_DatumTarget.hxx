@@ -33,11 +33,12 @@ public:
   Standard_EXPORT StepDimTol_DatumTarget();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theShapeAspect_Name,
-                            const occ::handle<TCollection_HAsciiString>& theShapeAspect_Description,
-                            const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
-                            const StepData_Logical theShapeAspect_ProductDefinitional,
-                            const occ::handle<TCollection_HAsciiString>& theTargetId);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Name,
+    const occ::handle<TCollection_HAsciiString>&        theShapeAspect_Description,
+    const occ::handle<StepRepr_ProductDefinitionShape>& theShapeAspect_OfShape,
+    const StepData_Logical                              theShapeAspect_ProductDefinitional,
+    const occ::handle<TCollection_HAsciiString>&        theTargetId);
 
   //! Returns field TargetId
   Standard_EXPORT occ::handle<TCollection_HAsciiString> TargetId() const;

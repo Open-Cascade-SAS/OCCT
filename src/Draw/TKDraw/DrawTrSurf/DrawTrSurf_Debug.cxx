@@ -35,8 +35,9 @@ Standard_EXPORT const char* DrawTrSurf_Set(const char* theNameStr, void* theHand
   }
   try
   {
-    const occ::handle<Standard_Transient>& aHandle = *(occ::handle<Standard_Transient>*)theHandlePtr;
-    occ::handle<Geom_Geometry>             aGeom3d = occ::down_cast<Geom_Geometry>(aHandle);
+    const occ::handle<Standard_Transient>& aHandle =
+      *(occ::handle<Standard_Transient>*)theHandlePtr;
+    occ::handle<Geom_Geometry> aGeom3d = occ::down_cast<Geom_Geometry>(aHandle);
     if (!aGeom3d.IsNull())
     {
       DrawTrSurf::Set(theNameStr, aGeom3d);
@@ -110,7 +111,8 @@ Standard_EXPORT const char* DrawTrSurf_SetPnt2d(const char* theNameStr, void* th
 // work with them (DBX could, on SUN Solaris).
 #ifndef _MSC_VER
 
-Standard_EXPORT const char* DrawTrSurf_Set(const char* name, const occ::handle<Standard_Transient>& G)
+Standard_EXPORT const char* DrawTrSurf_Set(const char*                            name,
+                                           const occ::handle<Standard_Transient>& G)
 {
   return DrawTrSurf_Set(name, (void*)&G);
 }

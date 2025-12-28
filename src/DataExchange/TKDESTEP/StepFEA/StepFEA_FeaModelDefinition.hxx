@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepFEA_FeaModelDefinition();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaModelDefinition, StepRepr_ShapeAspect)
-
 };
 
 #endif // _StepFEA_FeaModelDefinition_HeaderFile

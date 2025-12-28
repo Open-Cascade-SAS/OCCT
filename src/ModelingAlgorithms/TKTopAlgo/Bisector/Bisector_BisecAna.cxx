@@ -65,16 +65,16 @@ Bisector_BisecAna::Bisector_BisecAna() {}
 //    asense        : out : the direction of the bissectrice.                        +
 //    astatus       : out : shows if the bissectrice is preserved.               +
 //=============================================================================
-double Bisector_BisecAna::Distance(const gp_Pnt2d&             apoint,
-                                          const occ::handle<GccInt_Bisec>& abisector,
-                                          const gp_Vec2d&             afirstvector,
-                                          const gp_Vec2d&             asecondvector,
-                                          const gp_Vec2d&             VecRef,
-                                          const double         adirection,
-                                          double&              aparameter,
-                                          bool&           asense,
-                                          bool&           astatus,
-                                          bool            IsBisecOfTwoLines)
+double Bisector_BisecAna::Distance(const gp_Pnt2d&                  apoint,
+                                   const occ::handle<GccInt_Bisec>& abisector,
+                                   const gp_Vec2d&                  afirstvector,
+                                   const gp_Vec2d&                  asecondvector,
+                                   const gp_Vec2d&                  VecRef,
+                                   const double                     adirection,
+                                   double&                          aparameter,
+                                   bool&                            asense,
+                                   bool&                            astatus,
+                                   bool                             IsBisecOfTwoLines)
 {
   astatus = true;
 
@@ -84,9 +84,9 @@ double Bisector_BisecAna::Distance(const gp_Pnt2d&             apoint,
   gp_Circ2d  gpcircle;
   gp_Lin2d   gpline;
 
-  double distance = 0.;
-  gp_Vec2d      tangent;
-  gp_Pnt2d      point;
+  double   distance = 0.;
+  gp_Vec2d tangent;
+  gp_Pnt2d point;
 
   GccInt_IType type = abisector->ArcType();
 
@@ -222,20 +222,20 @@ double Bisector_BisecAna::Distance(const gp_Pnt2d&             apoint,
 //===========================================================================
 void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                 const occ::handle<Geom2d_Curve>& asecondcurve,
-                                const gp_Pnt2d&             apoint,
-                                const gp_Vec2d&             afirstvector,
-                                const gp_Vec2d&             asecondvector,
-                                const double         adirection,
-                                const GeomAbs_JoinType      ajointype,
-                                const double         tolerance,
-                                const bool      oncurve)
+                                const gp_Pnt2d&                  apoint,
+                                const gp_Vec2d&                  afirstvector,
+                                const gp_Vec2d&                  asecondvector,
+                                const double                     adirection,
+                                const GeomAbs_JoinType           ajointype,
+                                const double                     tolerance,
+                                const bool                       oncurve)
 {
 
-  bool        ok;
+  bool             ok;
   double           distanceptsol, parameter, firstparameter = 0.;
-  bool        thesense = false, sense;
+  bool             thesense = false, sense;
   double           distancemini;
-  int        nbsolution;
+  int              nbsolution;
   constexpr double PreConf = Precision::Confusion();
 
   occ::handle<Standard_Type> type1 = afirstcurve->DynamicType();
@@ -269,11 +269,11 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   else
     CurveE = asecondcurve;
 
-  type1                = CurveF->DynamicType();
-  type2                = CurveE->DynamicType();
-  int cas = 0;
-  gp_Circ2d        circle1, circle2;
-  gp_Lin2d         line1, line2;
+  type1         = CurveF->DynamicType();
+  type2         = CurveE->DynamicType();
+  int       cas = 0;
+  gp_Circ2d circle1, circle2;
+  gp_Lin2d  line1, line2;
 
   //=============================================================================
   //                Determination of the nature of arguments.                   +
@@ -283,19 +283,19 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   {
     if (type2 == STANDARD_TYPE(Geom2d_Circle))
     {
-      cas                      = 1;
+      cas                           = 1;
       occ::handle<Geom2d_Circle> C1 = occ::down_cast<Geom2d_Circle>(CurveF);
-      circle1                  = C1->Circ2d();
+      circle1                       = C1->Circ2d();
       occ::handle<Geom2d_Circle> C2 = occ::down_cast<Geom2d_Circle>(CurveE);
-      circle2                  = C2->Circ2d();
+      circle2                       = C2->Circ2d();
     }
     else if (type2 == STANDARD_TYPE(Geom2d_Line))
     {
-      cas                      = 2;
+      cas                           = 2;
       occ::handle<Geom2d_Circle> C1 = occ::down_cast<Geom2d_Circle>(CurveF);
-      circle1                  = C1->Circ2d();
+      circle1                       = C1->Circ2d();
       occ::handle<Geom2d_Line> L2   = occ::down_cast<Geom2d_Line>(CurveE);
-      line2                    = L2->Lin2d();
+      line2                         = L2->Lin2d();
     }
     else
     {
@@ -306,19 +306,19 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   {
     if (type2 == STANDARD_TYPE(Geom2d_Circle))
     {
-      cas                      = 2;
+      cas                           = 2;
       occ::handle<Geom2d_Circle> C1 = occ::down_cast<Geom2d_Circle>(CurveE);
-      circle1                  = C1->Circ2d();
+      circle1                       = C1->Circ2d();
       occ::handle<Geom2d_Line> L2   = occ::down_cast<Geom2d_Line>(CurveF);
-      line2                    = L2->Lin2d();
+      line2                         = L2->Lin2d();
     }
     else if (type2 == STANDARD_TYPE(Geom2d_Line))
     {
-      cas                    = 3;
+      cas                         = 3;
       occ::handle<Geom2d_Line> L1 = occ::down_cast<Geom2d_Line>(CurveF);
-      line1                  = L1->Lin2d();
+      line1                       = L1->Lin2d();
       occ::handle<Geom2d_Line> L2 = occ::down_cast<Geom2d_Line>(CurveE);
-      line2                  = L2->Lin2d();
+      line2                       = L2->Lin2d();
     }
     else
     {
@@ -377,7 +377,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         }
         //  Modified by skv - Fri Jul  1 16:23:32 2005 IDEM(Airbus) End
         occ::handle<GccInt_Bisec> solution = new GccInt_BLine(line);
-        sense                         = false;
+        sense                              = false;
         //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration Begin
         //       distanceptsol = Distance(apoint,solution,
         // 			       afirstvector,asecondvector,
@@ -416,15 +416,15 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         circle2          = circle;
 
         double radius = radius1;
-        radius1              = radius2;
-        radius2              = radius;
+        radius1       = radius2;
+        radius2       = radius;
       }
 
       // small reframing of circles. in the case when the circles
       // are OnCurve , if they are almost tangent they become tangent.
-      double    EntreAxe       = circle1.Location().Distance(circle2.Location());
-      double    D1             = 0.5 * (radius1 - EntreAxe - radius2);
-      bool CirclesTangent = false;
+      double EntreAxe       = circle1.Location().Distance(circle2.Location());
+      double D1             = 0.5 * (radius1 - EntreAxe - radius2);
+      bool   CirclesTangent = false;
 
       //  Modified by Sergey KHROMOV - Thu Oct 31 12:42:21 2002 End
       //     if ( oncurve && std::abs(D1) <  PreConf) {
@@ -513,7 +513,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         if (!TheSol.IsNull())
         {
           occ::handle<Geom2d_Curve> bisectorcurve;
-          GccInt_IType         type = TheSol->ArcType();
+          GccInt_IType              type = TheSol->ArcType();
           if (type == GccInt_Lin)
           {
             gp_Lin2d gpline = TheSol->Line();
@@ -541,12 +541,12 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                 //  and the reference point is too big.
                 if (distancemini > tolerance)
                 {
-                  gp_Pnt2d      aPloc = gpline.Location();
-                  gp_Dir2d      aNewDir(apoint.XY() - aPloc.XY());
-                  gp_Lin2d      aNewLin(aPloc, aNewDir);
-                  gp_Pnt2d      aCC2     = circle2.Location();
-                  double aNewDMin = aNewLin.Distance(apoint);
-                  double aTolConf = 1.e-3;
+                  gp_Pnt2d aPloc = gpline.Location();
+                  gp_Dir2d aNewDir(apoint.XY() - aPloc.XY());
+                  gp_Lin2d aNewLin(aPloc, aNewDir);
+                  gp_Pnt2d aCC2     = circle2.Location();
+                  double   aNewDMin = aNewLin.Distance(apoint);
+                  double   aTolConf = 1.e-3;
                   // Hope, aNewDMin is equal to 0...
 
                   if (aNewLin.Distance(aCC2) <= aTolConf)
@@ -701,7 +701,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         }
         if (!TheSol.IsNull())
         {
-          GccInt_IType         type = TheSol->ArcType();
+          GccInt_IType              type = TheSol->ArcType();
           occ::handle<Geom2d_Curve> bisectorcurve;
           if (type == GccInt_Lin)
           {
@@ -712,9 +712,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
             //       => the bisectrice is limited by the point and the center of the circle.
             // Note : In the latter case the bisectrice is a degenerated parabole.
             // -----------------------------------------------------------------
-            gp_Pnt2d      circlecenter;
-            gp_Lin2d      gpline;
-            double secondparameter;
+            gp_Pnt2d circlecenter;
+            gp_Lin2d gpline;
+            double   secondparameter;
 
             circlecenter    = circle1.Location();
             gpline          = TheSol->Line();
@@ -748,9 +748,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
           }
           else if (type == GccInt_Par)
           {
-            bisectorcurve                       = new Geom2d_Parabola(TheSol->Parabola());
-            gp_Pnt2d            apex            = bisectorcurve->Value(0.);
-            gp_Pnt2d            firstpnt        = bisectorcurve->Value(firstparameter);
+            bisectorcurve                = new Geom2d_Parabola(TheSol->Parabola());
+            gp_Pnt2d     apex            = bisectorcurve->Value(0.);
+            gp_Pnt2d     firstpnt        = bisectorcurve->Value(firstparameter);
             double       ChordLen        = apex.Distance(firstpnt);
             const double TolPar          = 1.e-5;
             double       secondparameter = Precision::Infinite();
@@ -841,9 +841,9 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       }
       else
       {
-        gp_Lin2d             l(apoint, gp_Dir2d(Direc2.XY() - Direc1.XY()));
+        gp_Lin2d                  l(apoint, gp_Dir2d(Direc2.XY() - Direc1.XY()));
         occ::handle<GccInt_Bisec> solution = new GccInt_BLine(l);
-        bool     isOk;
+        bool                      isOk;
         sense = false;
         //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration Begin
         //       distanceptsol = Distance(apoint,solution,
@@ -900,17 +900,17 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
 
 void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
                                 const occ::handle<Geom2d_Point>& asecondpoint,
-                                const gp_Pnt2d&             apoint,
-                                const gp_Vec2d&             afirstvector,
-                                const gp_Vec2d&             asecondvector,
-                                const double         adirection,
-                                const double         tolerance,
-                                const bool      oncurve)
+                                const gp_Pnt2d&                  apoint,
+                                const gp_Vec2d&                  afirstvector,
+                                const gp_Vec2d&                  asecondvector,
+                                const double                     adirection,
+                                const double                     tolerance,
+                                const bool                       oncurve)
 {
-  bool     ok;
-  bool     thesense = false, sense;
-  double        distanceptsol, parameter, firstparameter = 0., secondparameter;
-  gp_Vec2d             VecRef(0., 0.);
+  bool                      ok;
+  bool                      thesense = false, sense;
+  double                    distanceptsol, parameter, firstparameter = 0., secondparameter;
+  gp_Vec2d                  VecRef(0., 0.);
   occ::handle<Geom2d_Curve> curve;
   occ::handle<GccInt_Bisec> TheSol;
 
@@ -936,15 +936,15 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
   (void)aPoint;
   if (aFirstCurveType == STANDARD_TYPE(Geom2d_Circle))
   {
-    cas                      = 1;
+    cas                           = 1;
     occ::handle<Geom2d_Circle> C1 = occ::down_cast<Geom2d_Circle>(curve);
-    circle                   = C1->Circ2d();
+    circle                        = C1->Circ2d();
   }
   else if (aFirstCurveType == STANDARD_TYPE(Geom2d_Line))
   {
-    cas                    = 2;
+    cas                         = 2;
     occ::handle<Geom2d_Line> L1 = occ::down_cast<Geom2d_Line>(curve);
-    line                   = L1->Lin2d();
+    line                        = L1->Lin2d();
   }
   else
   {
@@ -959,7 +959,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       //=============================================================================
     case 1: {
       GccAna_CircPnt2dBisec Bisector(circle, asecondpoint->Pnt2d(), tolerance);
-      double         distancemini = Precision::Infinite();
+      double                distancemini = Precision::Infinite();
       if (Bisector.IsDone())
       {
         int nbsolution = Bisector.NbSolutions();
@@ -988,7 +988,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
         }
         if (!TheSol.IsNull())
         {
-          GccInt_IType         aSolType = TheSol->ArcType();
+          GccInt_IType              aSolType = TheSol->ArcType();
           occ::handle<Geom2d_Curve> bisectorcurve;
           if (aSolType == GccInt_Lin)
           {
@@ -1087,7 +1087,7 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
 #endif
       occ::handle<GccInt_Bisec> solution = Bisector.ThisSolution();
       Degenerate(solution, tolerance);
-      GccInt_IType         type = solution->ArcType();
+      GccInt_IType              type = solution->ArcType();
       occ::handle<Geom2d_Curve> bisectorcurve;
 
       if (type == GccInt_Lin)
@@ -1144,10 +1144,10 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
 
 void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
                                 const occ::handle<Geom2d_Curve>& asecondcurve,
-                                const gp_Pnt2d&             apoint,
-                                const gp_Vec2d&             afirstvector,
-                                const gp_Vec2d&             asecondvector,
-                                const double         adirection,
+                                const gp_Pnt2d&                  apoint,
+                                const gp_Vec2d&                  afirstvector,
+                                const gp_Vec2d&                  asecondvector,
+                                const double                     adirection,
                                 //				const double         tolerance    ,
                                 const double,
                                 const bool oncurve)
@@ -1179,20 +1179,20 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
 
 void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Point>& afirstpoint,
                                 const occ::handle<Geom2d_Point>& asecondpoint,
-                                const gp_Pnt2d&             apoint,
-                                const gp_Vec2d&             afirstvector,
-                                const gp_Vec2d&             asecondvector,
-                                const double         adirection,
+                                const gp_Pnt2d&                  apoint,
+                                const gp_Vec2d&                  afirstvector,
+                                const gp_Vec2d&                  asecondvector,
+                                const double                     adirection,
                                 //				const double         tolerance    ,
                                 const double,
                                 const bool oncurve)
 {
-  bool sense, ok;
-  double    parameter;
-  gp_Vec2d         VecRef(0., 0.);
+  bool     sense, ok;
+  double   parameter;
+  gp_Vec2d VecRef(0., 0.);
 
-  GccAna_Pnt2dBisec    bisector(afirstpoint->Pnt2d(), asecondpoint->Pnt2d());
-  gp_Lin2d             line     = bisector.ThisSolution();
+  GccAna_Pnt2dBisec         bisector(afirstpoint->Pnt2d(), asecondpoint->Pnt2d());
+  gp_Lin2d                  line     = bisector.ThisSolution();
   occ::handle<GccInt_Bisec> solution = new GccInt_BLine(line);
 
   sense = false;
@@ -1523,10 +1523,10 @@ void Bisector_BisecAna::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& 
 //=================================================================================================
 
 void Bisector_BisecAna::D3(const double U,
-                           gp_Pnt2d&           P,
-                           gp_Vec2d&           V1,
-                           gp_Vec2d&           V2,
-                           gp_Vec2d&           V3) const
+                           gp_Pnt2d&    P,
+                           gp_Vec2d&    V1,
+                           gp_Vec2d&    V2,
+                           gp_Vec2d&    V3) const
 {
   thebisector->BasisCurve()->D3(U, P, V1, V2, V3);
 }

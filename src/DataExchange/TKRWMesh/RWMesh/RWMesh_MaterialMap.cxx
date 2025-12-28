@@ -155,9 +155,9 @@ bool RWMesh_MaterialMap::copyFileTo(const TCollection_AsciiString& theFileSrc,
 
 //=================================================================================================
 
-bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&       theResTexture,
-                                     const occ::handle<Image_Texture>&   theTexture,
-                                     const TCollection_AsciiString& theKey)
+bool RWMesh_MaterialMap::CopyTexture(TCollection_AsciiString&          theResTexture,
+                                     const occ::handle<Image_Texture>& theTexture,
+                                     const TCollection_AsciiString&    theKey)
 {
   CreateTextureFolder();
 

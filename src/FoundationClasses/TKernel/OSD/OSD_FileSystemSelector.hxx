@@ -31,15 +31,15 @@ public:
   //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end
   //! otherwise
   Standard_EXPORT void AddProtocol(const occ::handle<OSD_FileSystem>& theFileSystem,
-                                   bool                          theIsPreferred = false);
+                                   bool                               theIsPreferred = false);
 
   //! Unregisters file system within this selector.
   Standard_EXPORT void RemoveProtocol(const occ::handle<OSD_FileSystem>& theFileSystem);
 
 public:
   //! Returns TRUE if URL defines a supported protocol.
-  Standard_EXPORT virtual bool IsSupportedPath(const TCollection_AsciiString& theUrl) const
-    override;
+  Standard_EXPORT virtual bool IsSupportedPath(
+    const TCollection_AsciiString& theUrl) const override;
 
   //! Returns TRUE if current input stream is opened for reading operations.
   Standard_EXPORT virtual bool IsOpenIStream(
@@ -54,8 +54,7 @@ public:
     const TCollection_AsciiString&       theUrl,
     const std::ios_base::openmode        theMode,
     const int64_t                        theOffset    = 0,
-    const std::shared_ptr<std::istream>& theOldStream = std::shared_ptr<std::istream>())
-    override;
+    const std::shared_ptr<std::istream>& theOldStream = std::shared_ptr<std::istream>()) override;
 
   //! Opens output stream using one of registered protocols.
   Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream(

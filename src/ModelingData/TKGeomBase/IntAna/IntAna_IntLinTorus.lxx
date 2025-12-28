@@ -57,9 +57,7 @@ inline double IntAna_IntLinTorus::ParamOnLine(const int Index) const
   return theParam[Index - 1];
 }
 
-inline void IntAna_IntLinTorus::ParamOnTorus(const int Index,
-                                             double&         FI,
-                                             double&         THETA) const
+inline void IntAna_IntLinTorus::ParamOnTorus(const int Index, double& FI, double& THETA) const
 {
 
   if (!done)

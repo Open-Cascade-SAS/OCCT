@@ -65,8 +65,7 @@ IGESControl_Writer::IGESControl_Writer()
 
 //=============================================================================
 
-IGESControl_Writer::IGESControl_Writer(const char* theUnit,
-                                       const int theModecr)
+IGESControl_Writer::IGESControl_Writer(const char* theUnit, const int theModecr)
     : myTP(new Transfer_FinderProcess(10000)),
       myWriteMode(theModecr),
       myIsComputed(false)
@@ -81,7 +80,7 @@ IGESControl_Writer::IGESControl_Writer(const char* theUnit,
 //=============================================================================
 
 IGESControl_Writer::IGESControl_Writer(const occ::handle<IGESData_IGESModel>& theModel,
-                                       const int            theModecr)
+                                       const int                              theModecr)
     : myTP(new Transfer_FinderProcess(10000)),
       myModel(theModel),
       myEditor(theModel, IGESSelect_WorkLibrary::DefineProtocol()),
@@ -93,7 +92,7 @@ IGESControl_Writer::IGESControl_Writer(const occ::handle<IGESData_IGESModel>& th
 //=============================================================================
 
 bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
-                                              const Message_ProgressRange& theProgress)
+                                  const Message_ProgressRange& theProgress)
 {
   if (theShape.IsNull())
     return false;
@@ -127,9 +126,9 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
 
   // 22.10.98 gka BUC60080
 
-  int oldnb = myModel->NbEntities();
+  int  oldnb = myModel->NbEntities();
   bool aent  = AddEntity(ent);
-  int newnb = myModel->NbEntities();
+  int  newnb = myModel->NbEntities();
 
   double oldtol = myModel->GlobalSection().Resolution(), newtol;
 
@@ -139,13 +138,13 @@ bool IGESControl_Writer::AddShape(const TopoDS_Shape&          theShape,
   else
   {
     ShapeAnalysis_ShapeTolerance stu;
-    double                Tolv = stu.Tolerance(Shape, tolmod, TopAbs_VERTEX);
-    double                Tole = stu.Tolerance(Shape, tolmod, TopAbs_EDGE);
+    double                       Tolv = stu.Tolerance(Shape, tolmod, TopAbs_VERTEX);
+    double                       Tole = stu.Tolerance(Shape, tolmod, TopAbs_EDGE);
 
     if (tolmod == 0)
     { // Average
       double Tol1 = (Tolv + Tole) / 2;
-      newtol             = (oldtol * oldnb + Tol1 * (newnb - oldnb)) / newnb;
+      newtol      = (oldtol * oldnb + Tol1 * (newnb - oldnb)) / newnb;
     }
     else if (tolmod < 0)
     { // Least
@@ -270,7 +269,7 @@ bool IGESControl_Writer::Write(Standard_OStream& S, const bool fnes)
 bool IGESControl_Writer::Write(const char* file, const bool fnes)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream =
+  std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(file, std::ios::out | std::ios::binary);
   if (aStream.get() == NULL)
   {

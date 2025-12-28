@@ -35,7 +35,7 @@
 //=============================================================================
 GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurface(
   const occ::handle<Geom_RectangularTrimmedSurface>& RTSurf,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                            theLocalFactors)
 {
 
   occ::handle<StepGeom_RectangularTrimmedSurface> StepRTS = new StepGeom_RectangularTrimmedSurface;
@@ -57,10 +57,10 @@ GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurfa
   // Modification of the Trimming Parameters ?
   // -----------------------------------------
 
-  double        AngleFact  = 180. / M_PI;
-  double        uFact      = 1.;
-  double        vFact      = 1.;
-  double        LengthFact = theLocalFactors.LengthFactor();
+  double                    AngleFact  = 180. / M_PI;
+  double                    uFact      = 1.;
+  double                    vFact      = 1.;
+  double                    LengthFact = theLocalFactors.LengthFactor();
   occ::handle<Geom_Surface> theSurf    = RTSurf->BasisSurface();
   if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
   {
@@ -80,9 +80,9 @@ GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurfa
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theSurf);
-    double               semAng = conicS->SemiAngle();
-    uFact                              = AngleFact;
-    vFact                              = std::cos(semAng) / LengthFact;
+    double                           semAng = conicS->SemiAngle();
+    uFact                                   = AngleFact;
+    vFact                                   = std::cos(semAng) / LengthFact;
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
@@ -103,8 +103,8 @@ GeomToStep_MakeRectangularTrimmedSurface::GeomToStep_MakeRectangularTrimmedSurfa
 // renvoi des valeurs
 //=============================================================================
 
-const occ::handle<StepGeom_RectangularTrimmedSurface>& GeomToStep_MakeRectangularTrimmedSurface::Value()
-  const
+const occ::handle<StepGeom_RectangularTrimmedSurface>& GeomToStep_MakeRectangularTrimmedSurface::
+  Value() const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeRectangularTrimmedSurface::Value() - no result");
   return theRectangularTrimmedSurface;

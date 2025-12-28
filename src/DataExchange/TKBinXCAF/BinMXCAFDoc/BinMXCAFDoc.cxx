@@ -47,7 +47,8 @@ void BinMXCAFDoc::AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTa
   occ::handle<BinMNaming_NamedShapeDriver> aNamedShapeDriver =
     occ::down_cast<BinMNaming_NamedShapeDriver>(aNSDriver);
 
-  occ::handle<BinMXCAFDoc_LocationDriver> aLocationDriver = new BinMXCAFDoc_LocationDriver(theMsgDrv);
+  occ::handle<BinMXCAFDoc_LocationDriver> aLocationDriver =
+    new BinMXCAFDoc_LocationDriver(theMsgDrv);
   if (!aNamedShapeDriver.IsNull())
   {
     aLocationDriver->SetNSDriver(aNamedShapeDriver);

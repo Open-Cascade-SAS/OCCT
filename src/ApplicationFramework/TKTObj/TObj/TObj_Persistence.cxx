@@ -49,8 +49,8 @@ TObj_Persistence::~TObj_Persistence()
 
 //=================================================================================================
 
-occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char* theType,
-                                                      const TDF_Label&       theLabel)
+occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char*      theType,
+                                                           const TDF_Label& theLabel)
 {
   if (getMapOfTypes().IsBound(theType))
   {

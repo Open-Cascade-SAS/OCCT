@@ -69,9 +69,7 @@ static int DPrsStd_AISDisplay(Draw_Interpretor&, int nb, const char** arg)
 // purpose  : AISRemove (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISRemove(Draw_Interpretor& di,
-                                          int  nb,
-                                          const char**      arg)
+static int DPrsStd_AISRemove(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -97,9 +95,7 @@ static int DPrsStd_AISRemove(Draw_Interpretor& di,
 // purpose  : AISErase (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISErase(Draw_Interpretor& di,
-                                         int  nb,
-                                         const char**      arg)
+static int DPrsStd_AISErase(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -125,9 +121,7 @@ static int DPrsStd_AISErase(Draw_Interpretor& di,
 // purpose  : AISUpdate (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISUpdate(Draw_Interpretor& di,
-                                          int  nb,
-                                          const char**      arg)
+static int DPrsStd_AISUpdate(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -191,7 +185,7 @@ static int DPrsStd_AISSet(Draw_Interpretor& di, int nb, const char** arg)
     prs->GetDriverGUID().ShallowDump(std::cout);
     std::cout << "\n";
 #endif
-    char  resS[37];
+    char                resS[37];
     Standard_PCharacter presS;
     presS = resS;
     guid.ToCString(presS);
@@ -207,9 +201,7 @@ static int DPrsStd_AISSet(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : AISDriver (DOC,entry, [ID])
 //=======================================================================
 
-static int DPrsStd_AISDriver(Draw_Interpretor& di,
-                                          int  nb,
-                                          const char**      arg)
+static int DPrsStd_AISDriver(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -220,14 +212,14 @@ static int DPrsStd_AISDriver(Draw_Interpretor& di,
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
       return 1;
 
-    Standard_GUID                   guid;
+    Standard_GUID                        guid;
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
     {
       if (nb == 3)
       {
         guid = prs->GetDriverGUID();
-        char  str[37];
+        char                str[37];
         Standard_PCharacter pstr;
         pstr = str;
         guid.ToCString(pstr);
@@ -258,7 +250,7 @@ static int DPrsStd_AISDriver(Draw_Interpretor& di,
         //	  guid = TSketchStd_Edge::GetID();           //"b3aac90a-5b78-11d1-8940-080009dc3333"
 
         prs->SetDriverGUID(guid);
-        char  resS[37];
+        char                resS[37];
         Standard_PCharacter presS;
         // modified by NIZNHY-PKV Tue Apr 22 16:15:02 2008f
         presS = resS;
@@ -278,9 +270,7 @@ static int DPrsStd_AISDriver(Draw_Interpretor& di,
 // purpose  : AISUnset (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISUnset(Draw_Interpretor& di,
-                                         int  nb,
-                                         const char**      arg)
+static int DPrsStd_AISUnset(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -303,9 +293,7 @@ static int DPrsStd_AISUnset(Draw_Interpretor& di,
 // purpose  : AISTransparency  (DOC,entry,[real])
 //=======================================================================
 
-static int DPrsStd_AISTransparency(Draw_Interpretor& di,
-                                                int  nb,
-                                                const char**      arg)
+static int DPrsStd_AISTransparency(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -353,9 +341,7 @@ static int DPrsStd_AISTransparency(Draw_Interpretor& di,
 // purpose  : AISDefaultTransparency (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISDefaultTransparency(Draw_Interpretor& di,
-                                                       int  nb,
-                                                       const char**      arg)
+static int DPrsStd_AISDefaultTransparency(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -383,9 +369,7 @@ static int DPrsStd_AISDefaultTransparency(Draw_Interpretor& di,
 // purpose  : AISColor (DOC,entry,[color])
 //=======================================================================
 
-static int DPrsStd_AISColor(Draw_Interpretor& di,
-                                         int  nb,
-                                         const char**      arg)
+static int DPrsStd_AISColor(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb != 3 && nb != 4)
   {
@@ -445,9 +429,7 @@ static int DPrsStd_AISColor(Draw_Interpretor& di,
 // purpose  : AISDefaultColor (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISDefaultColor(Draw_Interpretor& di,
-                                                int  nb,
-                                                const char**      arg)
+static int DPrsStd_AISDefaultColor(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -479,9 +461,7 @@ static int DPrsStd_AISDefaultColor(Draw_Interpretor& di,
 // purpose  : AISMaterial (DOC,entry,[material])
 //=======================================================================
 
-static int DPrsStd_AISMaterial(Draw_Interpretor& di,
-                                            int  nb,
-                                            const char**      arg)
+static int DPrsStd_AISMaterial(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -529,9 +509,7 @@ static int DPrsStd_AISMaterial(Draw_Interpretor& di,
 // purpose  : AISDefaultMaterial (DOC,entry)
 //=======================================================================
 
-static int DPrsStd_AISDefaultMaterial(Draw_Interpretor& di,
-                                                   int  nb,
-                                                   const char**      arg)
+static int DPrsStd_AISDefaultMaterial(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 3)
   {
@@ -564,9 +542,7 @@ static int DPrsStd_AISDefaultMaterial(Draw_Interpretor& di,
 // return   : Boolean
 //=======================================================================
 
-static int DPrsStd_AISHasOwnColor(Draw_Interpretor& di,
-                                               int  nb,
-                                               const char**      arg)
+static int DPrsStd_AISHasOwnColor(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -601,9 +577,7 @@ static int DPrsStd_AISHasOwnColor(Draw_Interpretor& di,
 // return   : Boolean
 //=======================================================================
 
-static int DPrsStd_AISHasOwnMaterial(Draw_Interpretor& di,
-                                                  int  nb,
-                                                  const char**      arg)
+static int DPrsStd_AISHasOwnMaterial(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -638,9 +612,7 @@ static int DPrsStd_AISHasOwnMaterial(Draw_Interpretor& di,
 // return   : Boolean
 //=======================================================================
 
-static int DPrsStd_AISHasOwnTransparency(Draw_Interpretor& di,
-                                                      int  nb,
-                                                      const char**      arg)
+static int DPrsStd_AISHasOwnTransparency(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb >= 3)
   {
@@ -675,7 +647,7 @@ static int DPrsStd_AISHasOwnTransparency(Draw_Interpretor& di,
 //=======================================================================
 static int DPrsStd_AISMode(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TDF_Label                       L;
+  TDF_Label                            L;
   occ::handle<TDocStd_Document>        D;
   occ::handle<TPrsStd_AISPresentation> prs;
   if (nb >= 3 && nb <= 4)
@@ -707,11 +679,9 @@ static int DPrsStd_AISMode(Draw_Interpretor& di, int nb, const char** arg)
 // function : DPrsStd_AISSelMode
 // purpose  : AISSelMode (DOC,entry,[SelMode1 SelMode2 ...])
 //=======================================================================
-static int DPrsStd_AISSelMode(Draw_Interpretor& di,
-                                           int  nb,
-                                           const char**      arg)
+static int DPrsStd_AISSelMode(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TDF_Label                       L;
+  TDF_Label                            L;
   occ::handle<TDocStd_Document>        D;
   occ::handle<TPrsStd_AISPresentation> prs;
   if (nb >= 3)

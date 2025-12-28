@@ -22,8 +22,8 @@
 //=================================================================================================
 
 Bisector_FunctionH::Bisector_FunctionH(const occ::handle<Geom2d_Curve>& C2,
-                                       const gp_Pnt2d&             P1,
-                                       const gp_Vec2d&             T1)
+                                       const gp_Pnt2d&                  P1,
+                                       const gp_Vec2d&                  T1)
     : p1(P1),
       t1(T1)
 {
@@ -61,9 +61,7 @@ bool Bisector_FunctionH::Derivative(const double X, double& D)
 
 //=================================================================================================
 
-bool Bisector_FunctionH::Values(const double X,
-                                            double&      F,
-                                            double&      D)
+bool Bisector_FunctionH::Values(const double X, double& F, double& D)
 {
   gp_Pnt2d P2;  // point sur C2.
   gp_Vec2d T2;  // tangente a C2 en V.

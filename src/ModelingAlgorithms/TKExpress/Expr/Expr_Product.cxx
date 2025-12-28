@@ -51,8 +51,8 @@ Expr_Product::Expr_Product(const occ::handle<Expr_GeneralExpression>& exp1,
 
 occ::handle<Expr_GeneralExpression> Expr_Product::Copy() const
 {
-  int                 i;
-  int                 max = NbOperands();
+  int                                                       i;
+  int                                                       max = NbOperands();
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> simps;
   for (i = 1; i <= max; i++)
   {
@@ -69,15 +69,15 @@ bool Expr_Product::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
   }
   occ::handle<Expr_Product> me     = this;
   occ::handle<Expr_Product> POther = occ::down_cast<Expr_Product>(Other);
-  int     max    = NbOperands();
+  int                       max    = NbOperands();
   if (POther->NbOperands() != max)
   {
     return false;
   }
   occ::handle<Expr_GeneralExpression> myop;
   occ::handle<Expr_GeneralExpression> hisop;
-  int               i = 1;
-  NCollection_Array1<int>        tab(1, max);
+  int                                 i = 1;
+  NCollection_Array1<int>             tab(1, max);
   for (int k = 1; k <= max; k++)
   {
     tab(k) = 0;
@@ -85,9 +85,9 @@ bool Expr_Product::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
   bool ident = true;
   while ((i <= max) && (ident))
   {
-    int j     = 1;
+    int  j     = 1;
     bool found = false;
-    myop                   = Operand(i);
+    myop       = Operand(i);
     while ((j <= max) && (!found))
     {
       hisop = POther->Operand(j);
@@ -107,10 +107,10 @@ bool Expr_Product::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other)
 
 bool Expr_Product::IsLinear() const
 {
-  int               i;
-  int               max = NbOperands();
-  bool               lin = true;
-  bool               res = true;
+  int                                 i;
+  int                                 max = NbOperands();
+  bool                                lin = true;
+  bool                                res = true;
   occ::handle<Expr_GeneralExpression> asimp;
   for (i = 1; (i <= max) && res; i++)
   {
@@ -134,7 +134,8 @@ bool Expr_Product::IsLinear() const
   return res;
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Product::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Product::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -142,7 +143,7 @@ occ::handle<Expr_GeneralExpression> Expr_Product::Derivative(const occ::handle<E
   }
   occ::handle<Expr_GeneralExpression> firstop = Expr::CopyShare(Operand(1)); // U
   occ::handle<Expr_GeneralExpression> tailop;                                // V
-  int               nbop = NbOperands();
+  int                                 nbop = NbOperands();
   if (nbop == 2)
   {
     tailop = Expr::CopyShare(Operand(2));
@@ -171,13 +172,13 @@ occ::handle<Expr_GeneralExpression> Expr_Product::Derivative(const occ::handle<E
 
 occ::handle<Expr_GeneralExpression> Expr_Product::ShallowSimplified() const
 {
-  int                 i;
-  int                 max = NbOperands();
-  occ::handle<Expr_GeneralExpression>   op;
+  int                                                       i;
+  int                                                       max = NbOperands();
+  occ::handle<Expr_GeneralExpression>                       op;
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> newops;
-  double                    vals    = 0.;
-  int                 nbvals  = 0;
-  bool                 subprod = false;
+  double                                                    vals    = 0.;
+  int                                                       nbvals  = 0;
+  bool                                                      subprod = false;
   for (i = 1; (i <= max) && !subprod; i++)
   {
     op      = Operand(i);
@@ -187,7 +188,7 @@ occ::handle<Expr_GeneralExpression> Expr_Product::ShallowSimplified() const
   {
     occ::handle<Expr_GeneralExpression> other;
     occ::handle<Expr_Product>           prodop;
-    int               nbsprodop;
+    int                                 nbsprodop;
     for (i = 1; i <= max; i++)
     {
       op = Operand(i);
@@ -285,10 +286,10 @@ occ::handle<Expr_GeneralExpression> Expr_Product::ShallowSimplified() const
 }
 
 double Expr_Product::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                     const NCollection_Array1<double>&      vals) const
+                              const NCollection_Array1<double>&                         vals) const
 {
-  int max = NbOperands();
-  double    res = 1.0;
+  int    max = NbOperands();
+  double res = 1.0;
   for (int i = 1; i <= max; i++)
   {
     res = res * Operand(i)->Evaluate(vars, vals);
@@ -299,8 +300,8 @@ double Expr_Product::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnk
 TCollection_AsciiString Expr_Product::String() const
 {
   occ::handle<Expr_GeneralExpression> op;
-  int               nbop = NbOperands();
-  op                                  = Operand(1);
+  int                                 nbop = NbOperands();
+  op                                       = Operand(1);
   TCollection_AsciiString str;
   if (op->NbSubExpressions() > 1)
   {

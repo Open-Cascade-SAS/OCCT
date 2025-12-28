@@ -25,8 +25,7 @@ DrawFairCurve_MinimalVariation::DrawFairCurve_MinimalVariation(void* const TheMV
   SetColor(Draw_jaune);
 }
 
-void DrawFairCurve_MinimalVariation::SetCurvature(const int Side,
-                                                  const double    Rho)
+void DrawFairCurve_MinimalVariation::SetCurvature(const int Side, const double Rho)
 {
   if (Side == 1)
   {

@@ -42,7 +42,7 @@ STEPControl_Writer::STEPControl_Writer()
 //=================================================================================================
 
 STEPControl_Writer::STEPControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
-                                       const bool               scratch)
+                                       const bool                                scratch)
 {
   STEPControl_Controller::Init();
   SetWS(WS, scratch);
@@ -50,8 +50,7 @@ STEPControl_Writer::STEPControl_Writer(const occ::handle<XSControl_WorkSession>&
 
 //=================================================================================================
 
-void STEPControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS,
-                               const bool               scratch)
+void STEPControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
 {
   thesession = WS;
   thesession->SelectNorm("STEP");
@@ -96,10 +95,11 @@ void STEPControl_Writer::UnsetTolerance()
 
 IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
                                                    const STEPControl_StepModelType mode,
-                                                   const bool          compgraph,
+                                                   const bool                      compgraph,
                                                    const Message_ProgressRange&    theProgress)
 {
-  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(thesession->Model());
+  occ::handle<StepData_StepModel> aStepModel =
+    occ::down_cast<StepData_StepModel>(thesession->Model());
   if (!aStepModel.IsNull())
   {
     aStepModel->InternalParameters.InitFromStatic();
@@ -110,7 +110,7 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
 IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&             sh,
                                                    const STEPControl_StepModelType mode,
                                                    const DESTEP_Parameters&        theParams,
-                                                   const bool          compgraph,
+                                                   const bool                      compgraph,
                                                    const Message_ProgressRange&    theProgress)
 {
   int mws = -1;
@@ -192,8 +192,7 @@ IFSelect_ReturnStatus STEPControl_Writer::WriteStream(std::ostream& theOStream)
 
 //=================================================================================================
 
-void STEPControl_Writer::PrintStatsTransfer(const int what,
-                                            const int mode) const
+void STEPControl_Writer::PrintStatsTransfer(const int what, const int mode) const
 {
   thesession->TransferWriter()->PrintStats(what, mode);
 }
@@ -244,7 +243,7 @@ void STEPControl_Writer::SetShapeFixParameters(
 const XSAlgo_ShapeProcessor::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
 {
   static const XSAlgo_ShapeProcessor::ParameterMap anEmptyMap;
-  const occ::handle<Transfer_ActorOfFinderProcess>      anActor = GetActor();
+  const occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor();
   return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
@@ -263,7 +262,7 @@ void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 const XSAlgo_ShapeProcessor::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
 {
   static const XSAlgo_ShapeProcessor::ProcessingFlags anEmptyFlags;
-  const occ::handle<Transfer_ActorOfFinderProcess>         anActor = GetActor();
+  const occ::handle<Transfer_ActorOfFinderProcess>    anActor = GetActor();
   return anActor.IsNull() ? anEmptyFlags : anActor->GetShapeProcessFlags();
 }
 

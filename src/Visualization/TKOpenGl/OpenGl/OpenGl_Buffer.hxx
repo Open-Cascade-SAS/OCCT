@@ -80,9 +80,9 @@ public:
   //! @param[in] theElemsNb       elements count;
   //! @param[in] theData          pointer to float data (vertices/normals etc.).
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int            theComponentsNb,
-                            const int        theElemsNb,
-                            const float*                  theData);
+                            const unsigned int                 theComponentsNb,
+                            const int                          theElemsNb,
+                            const float*                       theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! @param[in] theComponentsNb  specifies the number of components per generic vertex attribute;
@@ -90,9 +90,9 @@ public:
   //! @param[in] theElemsNb       elements count;
   //! @param[in] theData          pointer to unsigned int data (indices etc.).
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int            theComponentsNb,
-                            const int        theElemsNb,
-                            const unsigned int*           theData);
+                            const unsigned int                 theComponentsNb,
+                            const int                          theElemsNb,
+                            const unsigned int*                theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! @param[in] theComponentsNb  specifies the number of components per generic vertex attribute;
@@ -100,9 +100,9 @@ public:
   //! @param[in] theElemsNb       elements count;
   //! @param[in] theData          pointer to unsigned short data (indices etc.).
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int            theComponentsNb,
-                            const int        theElemsNb,
-                            const unsigned short*         theData);
+                            const unsigned int                 theComponentsNb,
+                            const int                          theElemsNb,
+                            const unsigned short*              theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! @param[in] theComponentsNb  specifies the number of components per generic vertex attribute;
@@ -110,9 +110,9 @@ public:
   //! @param[in] theElemsNb       elements count;
   //! @param[in] theData          pointer to uint8_t data (indices/colors etc.).
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int            theComponentsNb,
-                            const int        theElemsNb,
-                            const uint8_t*          theData);
+                            const unsigned int                 theComponentsNb,
+                            const int                          theElemsNb,
+                            const uint8_t*                     theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! Function replaces portion of data within this buffer object using glBufferSubData().
@@ -121,9 +121,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[in] theData      pointer to float data.
   Standard_EXPORT bool SubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                               const int        theElemFrom,
-                               const int        theElemsNb,
-                               const float*                  theData);
+                               const int                          theElemFrom,
+                               const int                          theElemsNb,
+                               const float*                       theData);
 
   //! Read back buffer sub-range.
   //! Notice that buffer object will be unbound after this call.
@@ -132,9 +132,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[out] theData     destination pointer to float data.
   Standard_EXPORT bool GetSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                  const int        theElemFrom,
-                                  const int        theElemsNb,
-                                  float*                        theData);
+                                  const int                          theElemFrom,
+                                  const int                          theElemsNb,
+                                  float*                             theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! Function replaces portion of data within this buffer object using glBufferSubData().
@@ -143,9 +143,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[in] theData      pointer to unsigned int data.
   Standard_EXPORT bool SubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                               const int        theElemFrom,
-                               const int        theElemsNb,
-                               const unsigned int*           theData);
+                               const int                          theElemFrom,
+                               const int                          theElemsNb,
+                               const unsigned int*                theData);
 
   //! Read back buffer sub-range.
   //! Notice that buffer object will be unbound after this call.
@@ -154,9 +154,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[out] theData     destination pointer to unsigned int data.
   Standard_EXPORT bool GetSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                  const int        theElemFrom,
-                                  const int        theElemsNb,
-                                  unsigned int*                 theData);
+                                  const int                          theElemFrom,
+                                  const int                          theElemsNb,
+                                  unsigned int*                      theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! Function replaces portion of data within this buffer object using glBufferSubData().
@@ -165,9 +165,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[in] theData      pointer to unsigned short data.
   Standard_EXPORT bool SubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                               const int        theElemFrom,
-                               const int        theElemsNb,
-                               const unsigned short*         theData);
+                               const int                          theElemFrom,
+                               const int                          theElemsNb,
+                               const unsigned short*              theData);
 
   //! Read back buffer sub-range.
   //! Notice that buffer object will be unbound after this call.
@@ -176,9 +176,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[out] theData     destination pointer to unsigned short data.
   Standard_EXPORT bool GetSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                  const int        theElemFrom,
-                                  const int        theElemsNb,
-                                  unsigned short*               theData);
+                                  const int                          theElemFrom,
+                                  const int                          theElemsNb,
+                                  unsigned short*                    theData);
 
   //! Notice that buffer object will be unbound after this call.
   //! Function replaces portion of data within this buffer object using glBufferSubData().
@@ -187,9 +187,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[in] theData      pointer to uint8_t data.
   Standard_EXPORT bool SubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                               const int        theElemFrom,
-                               const int        theElemsNb,
-                               const uint8_t*          theData);
+                               const int                          theElemFrom,
+                               const int                          theElemsNb,
+                               const uint8_t*                     theData);
 
   //! Read back buffer sub-range.
   //! Notice that buffer object will be unbound after this call.
@@ -198,9 +198,9 @@ public:
   //! @param[in] theElemsNb   elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param[out] theData     destination pointer to uint8_t data.
   Standard_EXPORT bool GetSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                  const int        theElemFrom,
-                                  const int        theElemsNb,
-                                  uint8_t*                theData);
+                                  const int                          theElemFrom,
+                                  const int                          theElemsNb,
+                                  uint8_t*                           theData);
 
 public: //! @name advanced methods
   //! Returns estimated GPU memory usage for holding data without considering overheads and
@@ -215,18 +215,18 @@ public: //! @name advanced methods
 
   //! Initialize buffer with new data.
   Standard_EXPORT virtual bool init(const occ::handle<OpenGl_Context>& theGlCtx,
-                                    const unsigned int            theComponentsNb,
-                                    const int        theElemsNb,
-                                    const void*                   theData,
-                                    const unsigned int            theDataType,
-                                    const int        theStride);
+                                    const unsigned int                 theComponentsNb,
+                                    const int                          theElemsNb,
+                                    const void*                        theData,
+                                    const unsigned int                 theDataType,
+                                    const int                          theStride);
 
   //! Initialize buffer with new data.
   bool init(const occ::handle<OpenGl_Context>& theGlCtx,
-            const unsigned int            theComponentsNb,
-            const int        theElemsNb,
-            const void*                   theData,
-            const unsigned int            theDataType)
+            const unsigned int                 theComponentsNb,
+            const int                          theElemsNb,
+            const void*                        theData,
+            const unsigned int                 theDataType)
   {
     return init(theGlCtx,
                 theComponentsNb,
@@ -238,22 +238,22 @@ public: //! @name advanced methods
 
   //! Update part of the buffer with new data.
   Standard_EXPORT virtual bool subData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                       const int        theElemFrom,
-                                       const int        theElemsNb,
-                                       const void*                   theData,
-                                       const unsigned int            theDataType);
+                                       const int                          theElemFrom,
+                                       const int                          theElemsNb,
+                                       const void*                        theData,
+                                       const unsigned int                 theDataType);
 
   //! Read back buffer sub-range.
   Standard_EXPORT virtual bool getSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                          const int        theElemFrom,
-                                          const int        theElemsNb,
-                                          void*                         theData,
-                                          const unsigned int            theDataType);
+                                          const int                          theElemFrom,
+                                          const int                          theElemsNb,
+                                          void*                              theData,
+                                          const unsigned int                 theDataType);
 
 public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Binds a buffer object to an indexed buffer target.
@@ -261,14 +261,14 @@ protected:
   //! @param[in] theGlCtx  active OpenGL context
   //! @param[in] theIndex  index to bind
   Standard_EXPORT void BindBufferBase(const occ::handle<OpenGl_Context>& theGlCtx,
-                                      unsigned int                  theIndex);
+                                      unsigned int                       theIndex);
 
   //! Unbinds a buffer object from an indexed buffer target.
   //! Wrapper for glBindBufferBase().
   //! @param[in] theGlCtx  active OpenGL context
   //! @param[in] theIndex  index to bind
   Standard_EXPORT void UnbindBufferBase(const occ::handle<OpenGl_Context>& theGlCtx,
-                                        unsigned int                  theIndex);
+                                        unsigned int                       theIndex);
 
   //! Binds a buffer object to an indexed buffer target with specified offset and size.
   //! Wrapper for glBindBufferRange().
@@ -279,13 +279,13 @@ protected:
   //! of uniform buffer)
   //! @param[in] theSize    sub-section length starting from offset
   Standard_EXPORT void BindBufferRange(const occ::handle<OpenGl_Context>& theGlCtx,
-                                       unsigned int                  theIndex,
-                                       const intptr_t                theOffset,
-                                       const size_t                  theSize);
+                                       unsigned int                       theIndex,
+                                       const intptr_t                     theOffset,
+                                       const size_t                       theSize);
 
 protected:
-  uint8_t* myOffset;   //!< offset to data
-  unsigned int   myBufferId; //!< VBO name (index)
+  uint8_t*     myOffset;   //!< offset to data
+  unsigned int myBufferId; //!< VBO name (index)
   // clang-format off
   unsigned int     myComponentsNb; //!< Number of components per generic vertex attribute, must be 1, 2, 3, or 4
   int myElemsNb;      //!< Number of vertex attributes / number of vertices

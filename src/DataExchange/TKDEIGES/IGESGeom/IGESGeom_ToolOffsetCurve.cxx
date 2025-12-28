@@ -46,7 +46,7 @@ IGESGeom_ToolOffsetCurve::IGESGeom_ToolOffsetCurve() {}
 
 void IGESGeom_ToolOffsetCurve::ReadOwnParams(const occ::handle<IGESGeom_OffsetCurve>&    ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                  PR) const
+                                             IGESData_ParamReader&                       PR) const
 {
   // MGE 30/07/98
   // Building of messages
@@ -54,13 +54,13 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const occ::handle<IGESGeom_OffsetCu
   Message_Msg Msg121("XSTEP_121");
   //========================================
 
-  int            anOffsetType, aFunctionCoord, aTaperedOffsetType;
-  double               offDistance1, offDistance2;
-  double               arcLength1, arcLength2, anOffsetParam, anotherOffsetParam;
-  gp_XYZ                      aNormalVec;
+  int                              anOffsetType, aFunctionCoord, aTaperedOffsetType;
+  double                           offDistance1, offDistance2;
+  double                           arcLength1, arcLength2, anOffsetParam, anotherOffsetParam;
+  gp_XYZ                           aNormalVec;
   occ::handle<IGESData_IGESEntity> aBaseCurve;
   occ::handle<IGESData_IGESEntity> aFunction;
-  IGESData_Status             aStatus;
+  IGESData_Status                  aStatus;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // Reading the curve entity to be offset
@@ -212,7 +212,7 @@ void IGESGeom_ToolOffsetCurve::ReadOwnParams(const occ::handle<IGESGeom_OffsetCu
 //=================================================================================================
 
 void IGESGeom_ToolOffsetCurve::WriteOwnParams(const occ::handle<IGESGeom_OffsetCurve>& ent,
-                                              IGESData_IGESWriter&                IW) const
+                                              IGESData_IGESWriter&                     IW) const
 {
   IW.Send(ent->BaseCurve());
   IW.Send(ent->OffsetType());
@@ -235,7 +235,7 @@ void IGESGeom_ToolOffsetCurve::WriteOwnParams(const occ::handle<IGESGeom_OffsetC
 //=================================================================================================
 
 void IGESGeom_ToolOffsetCurve::OwnShared(const occ::handle<IGESGeom_OffsetCurve>& ent,
-                                         Interface_EntityIterator&           iter) const
+                                         Interface_EntityIterator&                iter) const
 {
   iter.GetOneItem(ent->BaseCurve());
   iter.GetOneItem(ent->Function());
@@ -245,11 +245,11 @@ void IGESGeom_ToolOffsetCurve::OwnShared(const occ::handle<IGESGeom_OffsetCurve>
 
 void IGESGeom_ToolOffsetCurve::OwnCopy(const occ::handle<IGESGeom_OffsetCurve>& another,
                                        const occ::handle<IGESGeom_OffsetCurve>& ent,
-                                       Interface_CopyTool&                 TC) const
+                                       Interface_CopyTool&                      TC) const
 {
-  int anOffsetType, aFunctionCoord, aTaperedOffsetType;
-  double    offDistance1, offDistance2;
-  double    arcLength1, arcLength2, anOffsetParam1, anOffsetParam2;
+  int    anOffsetType, aFunctionCoord, aTaperedOffsetType;
+  double offDistance1, offDistance2;
+  double arcLength1, arcLength2, anOffsetParam1, anOffsetParam2;
 
   DeclareAndCast(IGESData_IGESEntity, aBaseCurve, TC.Transferred(another->BaseCurve()));
   anOffsetType = another->OffsetType();
@@ -353,9 +353,9 @@ void IGESGeom_ToolOffsetCurve::OwnCheck(const occ::handle<IGESGeom_OffsetCurve>&
 //=================================================================================================
 
 void IGESGeom_ToolOffsetCurve::OwnDump(const occ::handle<IGESGeom_OffsetCurve>& ent,
-                                       const IGESData_IGESDumper&          dumper,
-                                       Standard_OStream&                   S,
-                                       const int              level) const
+                                       const IGESData_IGESDumper&               dumper,
+                                       Standard_OStream&                        S,
+                                       const int                                level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

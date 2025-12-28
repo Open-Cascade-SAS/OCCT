@@ -129,9 +129,9 @@ public: //! @name Point-Box projection
 private: //! @name Internal helpers for point-triangle projection
   //! Helper to set projection state for vertex
   static void SetVertexState(BVH_PrjStateInTriangle* thePrjState,
-                             int*       theFirstNode,
-                             int*       theLastNode,
-                             int        theVertexIndex)
+                             int*                    theFirstNode,
+                             int*                    theLastNode,
+                             int                     theVertexIndex)
   {
     if (thePrjState != nullptr)
     {
@@ -143,10 +143,10 @@ private: //! @name Internal helpers for point-triangle projection
 
   //! Helper to set projection state for edge
   static void SetEdgeState(BVH_PrjStateInTriangle* thePrjState,
-                           int*       theFirstNode,
-                           int*       theLastNode,
-                           int        theStartVertex,
-                           int        theEndVertex)
+                           int*                    theFirstNode,
+                           int*                    theLastNode,
+                           int                     theStartVertex,
+                           int                     theEndVertex)
   {
     if (thePrjState != nullptr)
     {
@@ -174,8 +174,8 @@ public: //! @name Point-Triangle Square distance
                                            const BVH_VecNt&        theNode1,
                                            const BVH_VecNt&        theNode2,
                                            BVH_PrjStateInTriangle* thePrjState          = nullptr,
-                                           int*       theNumberOfFirstNode = nullptr,
-                                           int*       theNumberOfLastNode  = nullptr)
+                                           int*                    theNumberOfFirstNode = nullptr,
+                                           int*                    theNumberOfLastNode  = nullptr)
   {
     // Compute edge vectors
     const BVH_VecNt aAB = theNode1 - theNode0;
@@ -282,9 +282,9 @@ public: //! @name Ray-Box Intersection
   //! Computes hit time of ray-box intersection.
   //! Uses precomputed reciprocal direction from BVH_Ray for optimal performance.
   static bool RayBoxIntersection(const BVH_Ray<T, N>& theRay,
-                                             const BVH_Box<T, N>& theBox,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+                                 const BVH_Box<T, N>& theBox,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
@@ -302,10 +302,10 @@ public: //! @name Ray-Box Intersection
   //! Handles parallel rays (infinite inverse direction) explicitly to avoid NaN from 0*inf
   //! when ray origin is exactly on a slab boundary.
   static bool RayBoxIntersection(const BVH_Ray<T, N>& theRay,
-                                             const BVH_VecNt&     theBoxCMin,
-                                             const BVH_VecNt&     theBoxCMax,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+                                 const BVH_VecNt&     theBoxCMin,
+                                 const BVH_VecNt&     theBoxCMax,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     T aTimeEnter = (std::numeric_limits<T>::lowest)();
     T aTimeLeave = (std::numeric_limits<T>::max)();
@@ -344,10 +344,10 @@ public: //! @name Ray-Box Intersection
 
   //! Computes hit time of ray-box intersection
   static bool RayBoxIntersection(const BVH_VecNt&     theRayOrigin,
-                                             const BVH_VecNt&     theRayDirection,
-                                             const BVH_Box<T, N>& theBox,
-                                             T&                   theTimeEnter,
-                                             T&                   theTimeLeave)
+                                 const BVH_VecNt&     theRayDirection,
+                                 const BVH_Box<T, N>& theBox,
+                                 T&                   theTimeEnter,
+                                 T&                   theTimeLeave)
   {
     if (!theBox.IsValid())
     {
@@ -371,11 +371,11 @@ public: //! @name Ray-Box Intersection
   //! @param theTimeLeave time of ray leaving the box
   //! @return true if ray intersects the box
   static bool RayBoxIntersection(const BVH_VecNt& theRayOrigin,
-                                             const BVH_VecNt& theRayDirection,
-                                             const BVH_VecNt& theBoxCMin,
-                                             const BVH_VecNt& theBoxCMax,
-                                             T&               theTimeEnter,
-                                             T&               theTimeLeave)
+                                 const BVH_VecNt& theRayDirection,
+                                 const BVH_VecNt& theBoxCMin,
+                                 const BVH_VecNt& theBoxCMax,
+                                 T&               theTimeEnter,
+                                 T&               theTimeLeave)
   {
     T aTimeEnter = (std::numeric_limits<T>::lowest)();
     T aTimeLeave = (std::numeric_limits<T>::max)();

@@ -27,22 +27,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Geom2d_Curve.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_CurveType.hxx>
 
 class gp_Pnt2d;
@@ -57,8 +43,8 @@ public:
   //! try to find all solutions
   Standard_EXPORT ProjLib_CompProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
                                              const occ::handle<Adaptor3d_Curve>&   C,
-                                             const double              TolU,
-                                             const double              TolV);
+                                             const double                          TolU,
+                                             const double                          TolV);
 
   //! this constructor tries to optimize the search using the
   //! assumption that maximum distance between surface and curve less or
@@ -66,19 +52,19 @@ public:
   //! if MaxDist < 0 then algorithm works as above.
   Standard_EXPORT ProjLib_CompProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
                                              const occ::handle<Adaptor3d_Curve>&   C,
-                                             const double              TolU,
-                                             const double              TolV,
-                                             const double              MaxDist);
+                                             const double                          TolU,
+                                             const double                          TolV,
+                                             const double                          MaxDist);
 
   //! this constructor tries to optimize the search using the
   //! assumption that maximum distance between surface and curve less or
   //! equal then MaxDist.
   //! if MaxDist < 0 then algorithm try to find all solutions
   //! Tolerances of parameters are calculated automatically.
-  Standard_EXPORT ProjLib_CompProjectedCurve(const double              Tol3d,
+  Standard_EXPORT ProjLib_CompProjectedCurve(const double                          Tol3d,
                                              const occ::handle<Adaptor3d_Surface>& S,
                                              const occ::handle<Adaptor3d_Curve>&   C,
-                                             const double              MaxDist = -1.0);
+                                             const double                          MaxDist = -1.0);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
@@ -134,9 +120,7 @@ public:
   Standard_EXPORT int NbCurves() const;
 
   //! returns the bounds of the continuous part corresponding to Index
-  Standard_EXPORT void Bounds(const int Index,
-                              double&         Udeb,
-                              double&         Ufin) const;
+  Standard_EXPORT void Bounds(const int Index, double& Udeb, double& Ufin) const;
 
   //! returns True if part of projection with number Index is a single point and writes
   //! its coordinates in P
@@ -166,17 +150,13 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
   //! Raised if N > 2.
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! Returns the first parameter of the curve C
   //! which has a projection on S.
@@ -198,8 +178,8 @@ public:
   //! test for 2d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double FirstParam,
-                                                 const double LastParam,
-                                                 const double Tol) const override;
+                                                      const double LastParam,
+                                                      const double Tol) const override;
 
   //! Returns the parameters corresponding to
   //! S discontinuities.
@@ -207,13 +187,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! returns the maximum distance between
   //! curve to project and surface
   Standard_EXPORT double MaxDistance(const int Index) const;
 
-  Standard_EXPORT const occ::handle<NCollection_HSequence<occ::handle<NCollection_HSequence<gp_Pnt>>>>& GetSequence() const;
+  Standard_EXPORT const occ::handle<
+    NCollection_HSequence<occ::handle<NCollection_HSequence<gp_Pnt>>>>&
+    GetSequence() const;
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,
@@ -266,31 +248,31 @@ private:
   Standard_EXPORT void BuildIntervals(const GeomAbs_Shape S) const;
 
 private:
-  occ::handle<Adaptor3d_Surface>                 mySurface;
-  occ::handle<Adaptor3d_Curve>                   myCurve;
-  int                          myNbCurves;
+  occ::handle<Adaptor3d_Surface>                                                 mySurface;
+  occ::handle<Adaptor3d_Curve>                                                   myCurve;
+  int                                                                            myNbCurves;
   occ::handle<NCollection_HSequence<occ::handle<NCollection_HSequence<gp_Pnt>>>> mySequence;
-  occ::handle<NCollection_HArray1<bool>>          myUIso;
-  occ::handle<NCollection_HArray1<bool>>          myVIso;
-  occ::handle<NCollection_HArray1<bool>>          mySnglPnts;
-  occ::handle<NCollection_HArray1<double>>             myMaxDistance;
-  occ::handle<NCollection_HArray1<double>>             myTabInt;
-  double                             myTol3d;
-  GeomAbs_Shape                             myContinuity;
-  int                          myMaxDegree;
-  int                          myMaxSeg;
-  bool                          myProj2d;
-  bool                          myProj3d;
-  double                             myMaxDist;
-  double                             myTolU;
-  double                             myTolV;
+  occ::handle<NCollection_HArray1<bool>>                                         myUIso;
+  occ::handle<NCollection_HArray1<bool>>                                         myVIso;
+  occ::handle<NCollection_HArray1<bool>>                                         mySnglPnts;
+  occ::handle<NCollection_HArray1<double>>                                       myMaxDistance;
+  occ::handle<NCollection_HArray1<double>>                                       myTabInt;
+  double                                                                         myTol3d;
+  GeomAbs_Shape                                                                  myContinuity;
+  int                                                                            myMaxDegree;
+  int                                                                            myMaxSeg;
+  bool                                                                           myProj2d;
+  bool                                                                           myProj3d;
+  double                                                                         myMaxDist;
+  double                                                                         myTolU;
+  double                                                                         myTolV;
 
-  occ::handle<NCollection_HArray1<bool>>  myResultIsPoint;
-  occ::handle<NCollection_HArray1<double>>     myResult2dUApproxError;
-  occ::handle<NCollection_HArray1<double>>     myResult2dVApproxError;
-  occ::handle<NCollection_HArray1<double>>     myResult3dApproxError;
-  occ::handle<NCollection_HArray1<gp_Pnt>>       myResult3dPoint;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>>     myResult2dPoint;
+  occ::handle<NCollection_HArray1<bool>>                      myResultIsPoint;
+  occ::handle<NCollection_HArray1<double>>                    myResult2dUApproxError;
+  occ::handle<NCollection_HArray1<double>>                    myResult2dVApproxError;
+  occ::handle<NCollection_HArray1<double>>                    myResult3dApproxError;
+  occ::handle<NCollection_HArray1<gp_Pnt>>                    myResult3dPoint;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>                  myResult2dPoint;
   occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>   myResult3dCurve;
   occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> myResult2dCurve;
 };

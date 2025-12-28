@@ -60,11 +60,11 @@ occ::handle<TDocStd_XLink> TDocStd_XLink::Set(const TDF_Label& atLabel)
 
 occ::handle<TDF_Reference> TDocStd_XLink::Update()
 {
-  TDF_Label                reflabel;
+  TDF_Label                     reflabel;
   occ::handle<TDocStd_Document> refdoc;
-  int         IEntry = myDocEntry.IntegerValue();
+  int                           IEntry = myDocEntry.IntegerValue();
   occ::handle<TDocStd_Document> mydoc  = TDocStd_Document::Get(Label()); // mon document
-  refdoc                          = occ::down_cast<TDocStd_Document>(mydoc->Document(IEntry));
+  refdoc                               = occ::down_cast<TDocStd_Document>(mydoc->Document(IEntry));
   TDF_Tool::Label(refdoc->GetData(), myLabelEntry, reflabel);
   // return TXLink::Import(reflabel,Label());
   return TDF_Reference::Set(Label(), reflabel);
@@ -148,7 +148,7 @@ void TDocStd_XLink::BeforeRemoval()
 //=======================================================================
 
 bool TDocStd_XLink::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                           const bool /*forceIt*/)
+                               const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
   {
@@ -163,7 +163,7 @@ bool TDocStd_XLink::BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta
 //=======================================================================
 
 bool TDocStd_XLink::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool /*forceIt*/)
+                              const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
   {

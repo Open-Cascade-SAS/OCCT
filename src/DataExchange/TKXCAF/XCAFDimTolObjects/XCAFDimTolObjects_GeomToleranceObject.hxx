@@ -26,7 +26,6 @@
 #include <NCollection_Sequence.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 #include <Standard_Transient.hxx>
-#include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 #include <XCAFDimTolObjects_ToleranceZoneAffectedPlane.hxx>
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
@@ -148,7 +147,7 @@ public:
   bool HasPointText() const { return myHasPntText; }
 
   //! Set graphical presentation for object.
-  void SetPresentation(const TopoDS_Shape&                     thePresentation,
+  void SetPresentation(const TopoDS_Shape&                          thePresentation,
                        const occ::handle<TCollection_HAsciiString>& thePresentationName)
   {
     myPresentation     = thePresentation;
@@ -199,27 +198,27 @@ public:
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
 
 private:
-  XCAFDimTolObjects_GeomToleranceType              myType;
-  XCAFDimTolObjects_GeomToleranceTypeValue         myTypeOfValue;
-  double                                    myValue;
-  XCAFDimTolObjects_GeomToleranceMatReqModif       myMatReqModif;
-  XCAFDimTolObjects_GeomToleranceZoneModif         myZoneModif;
-  double                                    myValueOfZoneModif;
+  XCAFDimTolObjects_GeomToleranceType                        myType;
+  XCAFDimTolObjects_GeomToleranceTypeValue                   myTypeOfValue;
+  double                                                     myValue;
+  XCAFDimTolObjects_GeomToleranceMatReqModif                 myMatReqModif;
+  XCAFDimTolObjects_GeomToleranceZoneModif                   myZoneModif;
+  double                                                     myValueOfZoneModif;
   NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> myModifiers;
-  double                                    myMaxValueModif;
-  gp_Ax2                                           myAxis;
-  bool                                 myHasAxis;
-  gp_Ax2                                           myPlane;
-  gp_Pnt                                           myPnt;
-  gp_Pnt                                           myPntText;
-  bool                                 myHasPlane;
-  bool                                 myHasPnt;
-  bool                                 myHasPntText;
-  TopoDS_Shape                                     myPresentation;
-  occ::handle<TCollection_HAsciiString>                 mySemanticName;
-  occ::handle<TCollection_HAsciiString>                 myPresentationName;
-  XCAFDimTolObjects_ToleranceZoneAffectedPlane     myAffectedPlaneType;
-  gp_Pln                                           myAffectedPlane;
+  double                                                     myMaxValueModif;
+  gp_Ax2                                                     myAxis;
+  bool                                                       myHasAxis;
+  gp_Ax2                                                     myPlane;
+  gp_Pnt                                                     myPnt;
+  gp_Pnt                                                     myPntText;
+  bool                                                       myHasPlane;
+  bool                                                       myHasPnt;
+  bool                                                       myHasPntText;
+  TopoDS_Shape                                               myPresentation;
+  occ::handle<TCollection_HAsciiString>                      mySemanticName;
+  occ::handle<TCollection_HAsciiString>                      myPresentationName;
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType;
+  gp_Pln                                                     myAffectedPlane;
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceObject_HeaderFile

@@ -46,44 +46,44 @@ public:
                                                          const BRepAdaptor_Surface& Surf2);
 
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
-  Standard_EXPORT bool Compute(double& u1,
-                                           double& v1,
-                                           double& u2,
-                                           double& v2,
-                                           gp_Pnt&        Pt,
-                                           gp_Vec&        Tg,
-                                           gp_Vec2d&      Tguv1,
-                                           gp_Vec2d&      Tguv2);
+  Standard_EXPORT bool Compute(double&   u1,
+                               double&   v1,
+                               double&   u2,
+                               double&   v2,
+                               gp_Pnt&   Pt,
+                               gp_Vec&   Tg,
+                               gp_Vec2d& Tguv1,
+                               gp_Vec2d& Tguv2);
 
   Standard_EXPORT void Pnt(const double u1,
                            const double v1,
                            const double u2,
                            const double v2,
-                           gp_Pnt&             P);
+                           gp_Pnt&      P);
 
-  Standard_EXPORT bool SeekPoint(const double u1,
-                                             const double v1,
-                                             const double u2,
-                                             const double v2,
-                                             IntSurf_PntOn2S&    Point);
+  Standard_EXPORT bool SeekPoint(const double     u1,
+                                 const double     v1,
+                                 const double     u2,
+                                 const double     v2,
+                                 IntSurf_PntOn2S& Point);
 
   Standard_EXPORT bool Tangency(const double u1,
-                                            const double v1,
-                                            const double u2,
-                                            const double v2,
-                                            gp_Vec&             Tg);
+                                const double v1,
+                                const double u2,
+                                const double v2,
+                                gp_Vec&      Tg);
 
   Standard_EXPORT bool TangencyOnSurf1(const double u1,
-                                                   const double v1,
-                                                   const double u2,
-                                                   const double v2,
-                                                   gp_Vec2d&           Tg);
+                                       const double v1,
+                                       const double u2,
+                                       const double v2,
+                                       gp_Vec2d&    Tg);
 
   Standard_EXPORT bool TangencyOnSurf2(const double u1,
-                                                   const double v1,
-                                                   const double u2,
-                                                   const double v2,
-                                                   gp_Vec2d&           Tg);
+                                       const double v1,
+                                       const double u2,
+                                       const double v2,
+                                       gp_Vec2d&    Tg);
 
 private:
   gp_Pnt2d                                         MyParOnS1;
@@ -92,16 +92,16 @@ private:
   gp_Vec2d                                         MyTguv1;
   gp_Vec2d                                         MyTguv2;
   gp_Vec                                           MyTg;
-  bool                                 MyIsTangent;
-  bool                                 MyHasBeenComputed;
+  bool                                             MyIsTangent;
+  bool                                             MyHasBeenComputed;
   gp_Pnt2d                                         MyParOnS1bis;
   gp_Pnt2d                                         MyParOnS2bis;
   gp_Pnt                                           MyPntbis;
   gp_Vec2d                                         MyTguv1bis;
   gp_Vec2d                                         MyTguv2bis;
   gp_Vec                                           MyTgbis;
-  bool                                 MyIsTangentbis;
-  bool                                 MyHasBeenComputedbis;
+  bool                                             MyIsTangentbis;
+  bool                                             MyHasBeenComputedbis;
   BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox MyIntersectionOn2S;
 };
 

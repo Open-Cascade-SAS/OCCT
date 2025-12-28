@@ -20,7 +20,7 @@
 RWStepVisual_RWPlanarBox::RWStepVisual_RWPlanarBox() {}
 
 void RWStepVisual_RWPlanarBox::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepVisual_PlanarBox>&    ent) const
 {
@@ -59,7 +59,7 @@ void RWStepVisual_RWPlanarBox::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aName, aSizeInX, aSizeInY, aPlacement);
 }
 
-void RWStepVisual_RWPlanarBox::WriteStep(StepData_StepWriter&                SW,
+void RWStepVisual_RWPlanarBox::WriteStep(StepData_StepWriter&                     SW,
                                          const occ::handle<StepVisual_PlanarBox>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepVisual_RWPlanarBox::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepVisual_RWPlanarBox::Share(const occ::handle<StepVisual_PlanarBox>& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->Placement().Value());

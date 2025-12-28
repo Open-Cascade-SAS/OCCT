@@ -16,18 +16,18 @@
 #include <gp_Vec.hxx>
 
 inline double IntSurf_QuadricTool::Value(const IntSurf_Quadric& Quad,
-                                                const double    X,
-                                                const double    Y,
-                                                const double    Z)
+                                         const double           X,
+                                         const double           Y,
+                                         const double           Z)
 {
 
   return Quad.Distance(gp_Pnt(X, Y, Z));
 }
 
 inline void IntSurf_QuadricTool::Gradient(const IntSurf_Quadric& Quad,
-                                          const double    X,
-                                          const double    Y,
-                                          const double    Z,
+                                          const double           X,
+                                          const double           Y,
+                                          const double           Z,
                                           gp_Vec&                V)
 {
 
@@ -35,10 +35,10 @@ inline void IntSurf_QuadricTool::Gradient(const IntSurf_Quadric& Quad,
 }
 
 inline void IntSurf_QuadricTool::ValueAndGradient(const IntSurf_Quadric& Quad,
-                                                  const double    X,
-                                                  const double    Y,
-                                                  const double    Z,
-                                                  double&         Val,
+                                                  const double           X,
+                                                  const double           Y,
+                                                  const double           Z,
+                                                  double&                Val,
                                                   gp_Vec&                V)
 {
 

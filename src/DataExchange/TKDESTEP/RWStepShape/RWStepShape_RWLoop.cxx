@@ -19,7 +19,7 @@
 RWStepShape_RWLoop::RWStepShape_RWLoop() {}
 
 void RWStepShape_RWLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepShape_Loop>&          ent) const
 {
@@ -40,7 +40,8 @@ void RWStepShape_RWLoop::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName);
 }
 
-void RWStepShape_RWLoop::WriteStep(StepData_StepWriter& SW, const occ::handle<StepShape_Loop>& ent) const
+void RWStepShape_RWLoop::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Loop>& ent) const
 {
 
   // --- inherited field name ---

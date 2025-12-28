@@ -43,9 +43,9 @@ occ::handle<TDF_Attribute> BinMDataStd_ByteArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
-                                                    const occ::handle<TDF_Attribute>& theTarget,
-                                                    BinObjMgt_RRelocationTable& theRelocTable) const
+bool BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -56,8 +56,9 @@ bool BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
   NCollection_Array1<uint8_t> aTargetArray(aFirstInd, aLastInd);
   theSource.GetByteArray(&aTargetArray(aFirstInd), aTargetArray.Length());
 
-  const occ::handle<TDataStd_ByteArray> anAtt = occ::down_cast<TDataStd_ByteArray>(theTarget);
-  occ::handle<NCollection_HArray1<uint8_t>>    bytes = new NCollection_HArray1<uint8_t>(aFirstInd, aLastInd);
+  const occ::handle<TDataStd_ByteArray>     anAtt = occ::down_cast<TDataStd_ByteArray>(theTarget);
+  occ::handle<NCollection_HArray1<uint8_t>> bytes =
+    new NCollection_HArray1<uint8_t>(aFirstInd, aLastInd);
   for (int i = aFirstInd; i <= aLastInd; i++)
   {
     bytes->SetValue(i, aTargetArray.Value(i));
@@ -86,20 +87,21 @@ bool BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&  theSource,
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        BinObjMgt_Persistent&        theTarget,
-                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_ByteArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_ByteArray> anAtt     = occ::down_cast<TDataStd_ByteArray>(theSource);
-  const int     aFirstInd = anAtt->Lower();
-  const int     aLastInd  = anAtt->Upper();
+  const int                       aFirstInd = anAtt->Lower();
+  const int                       aLastInd  = anAtt->Upper();
   if (aLastInd < aFirstInd)
     return;
   theTarget << aFirstInd << aLastInd;
 
   const occ::handle<NCollection_HArray1<uint8_t>>& bytes = anAtt->InternalArray();
-  int                     lower = bytes->Lower(), i = lower, upper = bytes->Upper();
-  NCollection_Array1<uint8_t>                 aSourceArray(lower, upper);
+  int                         lower = bytes->Lower(), i = lower, upper = bytes->Upper();
+  NCollection_Array1<uint8_t> aSourceArray(lower, upper);
   for (; i <= upper; i++)
   {
     aSourceArray.SetValue(i, bytes->Value(i));

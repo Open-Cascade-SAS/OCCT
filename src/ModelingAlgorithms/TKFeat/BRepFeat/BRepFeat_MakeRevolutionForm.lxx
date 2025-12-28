@@ -29,14 +29,14 @@ inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm()
 
 //=================================================================================================
 
-inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm(const TopoDS_Shape&       Sbase,
-                                                                const TopoDS_Wire&        W,
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm(const TopoDS_Shape& Sbase,
+                                                                const TopoDS_Wire&  W,
                                                                 const occ::handle<Geom_Plane>& P,
-                                                                const gp_Ax1&             Axis,
-                                                                const double       H1,
-                                                                const double       H2,
-                                                                const int    Fuse,
-                                                                bool&         Sliding)
+                                                                const gp_Ax1&                  Axis,
+                                                                const double                   H1,
+                                                                const double                   H2,
+                                                                const int                      Fuse,
+                                                                bool& Sliding)
 
 {
   Init(Sbase, W, P, Axis, H1, H2, Fuse, Sliding);

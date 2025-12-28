@@ -47,7 +47,7 @@ public:
   };
 
   Standard_EXPORT StdObjMgt_ReadData(const occ::handle<Storage_BaseDriver>& theDriver,
-                                     const int            theNumberOfObjects);
+                                     const int                              theNumberOfObjects);
 
   template <class Instantiator>
   void CreatePersistentObject(const int theRef, Instantiator theInstantiator)

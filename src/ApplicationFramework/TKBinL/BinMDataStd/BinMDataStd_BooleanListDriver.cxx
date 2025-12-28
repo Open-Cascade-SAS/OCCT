@@ -44,10 +44,9 @@ occ::handle<TDF_Attribute> BinMDataStd_BooleanListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_BooleanListDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_BooleanListDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aIndex, aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -79,20 +78,21 @@ bool BinMDataStd_BooleanListDriver::Paste(
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_BooleanListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          BinObjMgt_Persistent&        theTarget,
-                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_BooleanListDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  const occ::handle<TDataStd_BooleanList> anAtt     = occ::down_cast<TDataStd_BooleanList>(theSource);
-  const int             aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
-  const int             aLastInd(anAtt->Extent());
-  const int             aLength = aLastInd - aFirstInd + 1;
+  const occ::handle<TDataStd_BooleanList> anAtt = occ::down_cast<TDataStd_BooleanList>(theSource);
+  const int                               aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
+  const int                               aLastInd(anAtt->Extent());
+  const int                               aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return;
   theTarget << aFirstInd << aLastInd;
   if (aLastInd == 0)
     return;
-  NCollection_Array1<uint8_t>              aSourceArray(aFirstInd, aLastInd);
+  NCollection_Array1<uint8_t>         aSourceArray(aFirstInd, aLastInd);
   NCollection_List<uint8_t>::Iterator itr(anAtt->List());
   for (int i = 1; itr.More(); itr.Next(), i++)
   {

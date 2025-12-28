@@ -41,9 +41,7 @@ public:
   }
 
   //! Fill pixel at specified position.
-  virtual void Fill(const int theCol,
-                    const int theRow,
-                    const int thePicked) = 0;
+  virtual void Fill(const int theCol, const int theRow, const int thePicked) = 0;
 
   //! Flush results into final image.
   virtual void Flush() {}

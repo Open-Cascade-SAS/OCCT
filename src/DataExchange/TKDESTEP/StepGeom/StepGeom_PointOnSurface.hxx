@@ -34,8 +34,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Surface>&         aBasisSurface,
-                            const double                     aPointParameterU,
-                            const double                     aPointParameterV);
+                            const double                                 aPointParameterU,
+                            const double                                 aPointParameterV);
 
   Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
@@ -53,8 +53,8 @@ public:
 
 private:
   occ::handle<StepGeom_Surface> basisSurface;
-  double            pointParameterU;
-  double            pointParameterV;
+  double                        pointParameterU;
+  double                        pointParameterV;
 };
 
 #endif // _StepGeom_PointOnSurface_HeaderFile

@@ -28,7 +28,7 @@ RWStepVisual_RWDraughtingCallout::RWStepVisual_RWDraughtingCallout() {}
 
 void RWStepVisual_RWDraughtingCallout::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepVisual_DraughtingCallout>& ent) const
 {
@@ -41,12 +41,12 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
 
   // Own field: contents
   occ::handle<NCollection_HArray1<StepVisual_DraughtingCalloutElement>> aContents;
-  StepVisual_DraughtingCalloutElement                  anEnt;
-  int                                     nbSub;
+  StepVisual_DraughtingCalloutElement                                   anEnt;
+  int                                                                   nbSub;
   if (data->ReadSubList(num, 2, "contents", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    aContents                   = new NCollection_HArray1<StepVisual_DraughtingCalloutElement>(1, nbElements);
+    aContents      = new NCollection_HArray1<StepVisual_DraughtingCalloutElement>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "content", ach, anEnt))
@@ -61,7 +61,7 @@ void RWStepVisual_RWDraughtingCallout::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingCallout::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepVisual_DraughtingCallout>& ent) const
 {
   // Inherited field: name
@@ -79,7 +79,7 @@ void RWStepVisual_RWDraughtingCallout::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingCallout::Share(const occ::handle<StepVisual_DraughtingCallout>& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator& iter) const
 {
   // Own field: contents
   int i, nb = ent->NbContents();

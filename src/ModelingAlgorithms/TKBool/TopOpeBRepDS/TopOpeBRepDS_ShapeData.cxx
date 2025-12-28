@@ -32,14 +32,16 @@ TopOpeBRepDS_ShapeData::TopOpeBRepDS_ShapeData()
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_ShapeData::Interferences() const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_ShapeData::
+  Interferences() const
 {
   return myInterferences;
 }
 
 //=================================================================================================
 
-NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_ShapeData::ChangeInterferences()
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_ShapeData::
+  ChangeInterferences()
 {
   return myInterferences;
 }

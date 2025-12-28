@@ -35,11 +35,13 @@ public:
   //! Returns a AppliedDateAndTimeAssignment
   Standard_EXPORT StepAP214_AppliedDateAndTimeAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_DateAndTime>&              aAssignedDateAndTime,
-                            const occ::handle<StepBasic_DateTimeRole>&             aRole,
-                            const occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_DateAndTime>&                          aAssignedDateAndTime,
+    const occ::handle<StepBasic_DateTimeRole>&                         aRole,
+    const occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_DateAndTimeItem>> Items() const;
 

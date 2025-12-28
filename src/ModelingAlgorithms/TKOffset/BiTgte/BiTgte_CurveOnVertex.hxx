@@ -66,15 +66,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                               const double Last,
-                                               const double Tol) const override;
+                                                    const double Last,
+                                                    const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -98,28 +98,24 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -155,7 +151,7 @@ public:
 private:
   double myFirst;
   double myLast;
-  gp_Pnt        myPnt;
+  gp_Pnt myPnt;
 };
 
 #endif // _BiTgte_CurveOnVertex_HeaderFile

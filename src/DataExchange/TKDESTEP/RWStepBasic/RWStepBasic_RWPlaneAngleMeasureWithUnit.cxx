@@ -27,7 +27,7 @@ RWStepBasic_RWPlaneAngleMeasureWithUnit::RWStepBasic_RWPlaneAngleMeasureWithUnit
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,
-  const int                             num,
+  const int                                               num,
   occ::handle<Interface_Check>&                           ach,
   const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent) const
 {
@@ -51,7 +51,7 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
@@ -65,7 +65,7 @@ void RWStepBasic_RWPlaneAngleMeasureWithUnit::WriteStep(
 
 void RWStepBasic_RWPlaneAngleMeasureWithUnit::Share(
   const occ::handle<StepBasic_PlaneAngleMeasureWithUnit>& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                               iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());
 }

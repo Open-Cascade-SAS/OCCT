@@ -39,9 +39,7 @@ TopTrans_CurveTransition::TopTrans_CurveTransition()
 //           of the intersecting curve.
 //=======================================================================
 
-void TopTrans_CurveTransition::Reset(const gp_Dir&       Tgt,
-                                     const gp_Dir&       Norm,
-                                     const double Curv)
+void TopTrans_CurveTransition::Reset(const gp_Dir& Tgt, const gp_Dir& Norm, const double Curv)
 {
   myTgt  = Tgt;
   myNorm = Norm;
@@ -68,10 +66,10 @@ void TopTrans_CurveTransition::Reset(const gp_Dir& Tgt)
 //           curve with the interference stored in the complex Transition.
 //=======================================================================
 
-void TopTrans_CurveTransition::Compare(const double      Tole,
+void TopTrans_CurveTransition::Compare(const double             Tole,
                                        const gp_Dir&            T,
                                        const gp_Dir&            N,
-                                       const double      C,
+                                       const double             C,
                                        const TopAbs_Orientation St,
                                        const TopAbs_Orientation Or)
 {
@@ -125,8 +123,8 @@ void TopTrans_CurveTransition::Compare(const double      Tole,
   // Compare with the existent first and last transition :
   else
   {
-    bool FirstSet    = false;
-    double    cosAngWithT = myTgt * T;
+    bool   FirstSet    = false;
+    double cosAngWithT = myTgt * T;
     switch (O)
     {
       case TopAbs_REVERSED:
@@ -302,16 +300,16 @@ TopAbs_State TopTrans_CurveTransition::StateAfter() const
 //           if T1 is before T2
 //=======================================================================
 
-bool TopTrans_CurveTransition::IsBefore(const double Tole,
-                                                    const double CosAngl,
-                                                    const gp_Dir&       N1,
-                                                    const double C1,
-                                                    const gp_Dir&       N2,
-                                                    const double C2) const
+bool TopTrans_CurveTransition::IsBefore(const double  Tole,
+                                        const double  CosAngl,
+                                        const gp_Dir& N1,
+                                        const double  C1,
+                                        const gp_Dir& N2,
+                                        const double  C2) const
 {
-  double    TN1       = myTgt * N1;
-  double    TN2       = myTgt * N2;
-  bool OneBefore = false;
+  double TN1       = myTgt * N1;
+  double TN2       = myTgt * N2;
+  bool   OneBefore = false;
 
   if (std::abs(TN1) <= Tole || std::abs(TN2) <= Tole)
   {
@@ -395,9 +393,7 @@ bool TopTrans_CurveTransition::IsBefore(const double Tole,
 
 //=================================================================================================
 
-int TopTrans_CurveTransition::Compare(const double Ang1,
-                                                   const double Ang2,
-                                                   const double Tole) const
+int TopTrans_CurveTransition::Compare(const double Ang1, const double Ang2, const double Tole) const
 {
   int res = SAME;
   if (Ang1 - Ang2 > Tole)

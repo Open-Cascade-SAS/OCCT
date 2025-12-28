@@ -25,15 +25,10 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
 #include <Interface_CheckStatus.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 class Interface_InterfaceModel;
 class Interface_IntVal;
 class Interface_Check;
@@ -95,7 +90,8 @@ public:
   //! If no Check was recorded for this Entity, returns an empty
   //! Check.
   //! Remark : Works apart from the iteration methods (no interference)
-  Standard_EXPORT const occ::handle<Interface_Check>& Check(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT const occ::handle<Interface_Check>& Check(
+    const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns the Check bound to an Entity Number (0 : Global)
   //! in order to be consulted or completed on the spot
@@ -135,8 +131,8 @@ public:
   //! resp. Warning or Check messages. for CheckAny, considers all
   //! other values are ignored (answer will be false)
   //! Each Check which complies is entirely taken
-  Standard_EXPORT Interface_CheckIterator Extract(const char*      mess,
-                                                  const int      incl,
+  Standard_EXPORT Interface_CheckIterator Extract(const char*                 mess,
+                                                  const int                   incl,
                                                   const Interface_CheckStatus status) const;
 
   //! Removes the messages of all Checks, under these conditions :
@@ -147,9 +143,7 @@ public:
   //! resp. Warning or Check messages. for CheckAny, considers all
   //! other values are ignored (nothing is done)
   //! Returns True if at least one message has been removed, False else
-  Standard_EXPORT bool Remove(const char*      mess,
-                                          const int      incl,
-                                          const Interface_CheckStatus status);
+  Standard_EXPORT bool Remove(const char* mess, const int incl, const Interface_CheckStatus status);
 
   //! Returns the list of entities concerned by a Check
   //! Only fails if <failsonly> is True, else all non-empty checks
@@ -188,17 +182,15 @@ public:
   //! If <final> > 0, prints only final messages
   //! It uses the recorded Model if it is defined
   //! Remark : Works apart from the iteration methods (no interference)
-  Standard_EXPORT void Print(Standard_OStream&      S,
-                             const bool failsonly,
-                             const int final = 0) const;
+  Standard_EXPORT void Print(Standard_OStream& S, const bool failsonly, const int final = 0) const;
 
   //! Works as Print without a model, but for entities which have
   //! no attached number (Number not positive), tries to compute
   //! this Number from <model> and displays "original" or "computed"
-  Standard_EXPORT void Print(Standard_OStream&                       S,
+  Standard_EXPORT void Print(Standard_OStream&                            S,
                              const occ::handle<Interface_InterfaceModel>& model,
-                             const bool                  failsonly,
-                             const int                  final = 0) const;
+                             const bool                                   failsonly,
+                             const int                                    final = 0) const;
 
   //! Clears data of iteration
   Standard_EXPORT void Destroy();
@@ -207,10 +199,10 @@ public:
 
 private:
   occ::handle<NCollection_HSequence<occ::handle<Interface_Check>>> thelist;
-  occ::handle<NCollection_HSequence<int>> thenums;
-  occ::handle<Interface_InterfaceModel>   themod;
-  TCollection_AsciiString            thename;
-  occ::handle<Interface_IntVal>           thecurr;
+  occ::handle<NCollection_HSequence<int>>                          thenums;
+  occ::handle<Interface_InterfaceModel>                            themod;
+  TCollection_AsciiString                                          thename;
+  occ::handle<Interface_IntVal>                                    thecurr;
 };
 
 #endif // _Interface_CheckIterator_HeaderFile

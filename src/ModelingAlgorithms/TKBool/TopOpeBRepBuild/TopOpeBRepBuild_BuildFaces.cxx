@@ -37,12 +37,12 @@ extern bool TopOpeBRepBuild_GettraceSHEX();
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::BuildFaces(const int                     iS,
+void TopOpeBRepBuild_Builder::BuildFaces(const int                                       iS,
                                          const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
-  double aTBSTol, aTBCTol;
-  BRep_Builder  aBB;
-  TopoDS_Shape  aFace;
+  double       aTBSTol, aTBCTol;
+  BRep_Builder aBB;
+  TopoDS_Shape aFace;
   //
   // modified by NIZNHY-PKV Mon Dec 13 10:00:23 2010f
   const TopOpeBRepDS_Surface& aTBS = HDS->Surface(iS);
@@ -62,13 +62,13 @@ void TopOpeBRepBuild_Builder::BuildFaces(const int                     iS,
   TopOpeBRepDS_CurveIterator SCurves(HDS->SurfaceCurves(iS));
   for (; SCurves.More(); SCurves.Next())
   {
-    int          iC  = SCurves.Current();
+    int                       iC  = SCurves.Current();
     const TopOpeBRepDS_Curve& CDS = HDS->Curve(iC);
 #ifdef OCCT_DEBUG
     if (tSE)
       std::cout << std::endl << "BuildFaces : C " << iC << " on S " << iS << std::endl;
 #endif
-    TopoDS_Shape                       anEdge;
+    TopoDS_Shape                             anEdge;
     NCollection_List<TopoDS_Shape>::Iterator Iti(NewEdges(iC));
     for (; Iti.More(); Iti.Next())
     {
@@ -89,8 +89,8 @@ void TopOpeBRepBuild_Builder::BuildFaces(const int                     iS,
     }
   }
   //
-  TopOpeBRepBuild_FaceBuilder FABU(WES, aFace);
-  NCollection_List<TopoDS_Shape>&       FaceList = ChangeNewFaces(iS);
+  TopOpeBRepBuild_FaceBuilder     FABU(WES, aFace);
+  NCollection_List<TopoDS_Shape>& FaceList = ChangeNewFaces(iS);
   MakeFaces(aFace, FABU, FaceList);
 }
 

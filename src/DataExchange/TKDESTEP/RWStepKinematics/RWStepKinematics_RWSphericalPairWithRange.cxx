@@ -34,7 +34,7 @@ RWStepKinematics_RWSphericalPairWithRange::RWStepKinematics_RWSphericalPairWithR
 
 void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                               theNum,
+  const int                                                 theNum,
   occ::handle<Interface_Check>&                             theArch,
   const occ::handle<StepKinematics_SphericalPairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
 
   // Own fields of SphericalPairWithRange
 
-  double    aLowerLimitYaw;
-  bool hasLowerLimitYaw = true;
+  double aLowerLimitYaw;
+  bool   hasLowerLimitYaw = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum, 13, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -156,8 +156,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
     aLowerLimitYaw   = 0;
   }
 
-  double    aUpperLimitYaw;
-  bool hasUpperLimitYaw = true;
+  double aUpperLimitYaw;
+  bool   hasUpperLimitYaw = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum, 14, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -168,8 +168,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
     aUpperLimitYaw   = 0;
   }
 
-  double    aLowerLimitPitch;
-  bool hasLowerLimitPitch = true;
+  double aLowerLimitPitch;
+  bool   hasLowerLimitPitch = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum, 15, "lower_limit_pitch", theArch, aLowerLimitPitch);
@@ -180,8 +180,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
     aLowerLimitPitch   = 0;
   }
 
-  double    aUpperLimitPitch;
-  bool hasUpperLimitPitch = true;
+  double aUpperLimitPitch;
+  bool   hasUpperLimitPitch = true;
   if (theData->IsParamDefined(theNum, 16))
   {
     theData->ReadReal(theNum, 16, "upper_limit_pitch", theArch, aUpperLimitPitch);
@@ -192,8 +192,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
     aUpperLimitPitch   = 0;
   }
 
-  double    aLowerLimitRoll;
-  bool hasLowerLimitRoll = true;
+  double aLowerLimitRoll;
+  bool   hasLowerLimitRoll = true;
   if (theData->IsParamDefined(theNum, 17))
   {
     theData->ReadReal(theNum, 17, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -204,8 +204,8 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
     aLowerLimitRoll   = 0;
   }
 
-  double    aUpperLimitRoll;
-  bool hasUpperLimitRoll = true;
+  double aUpperLimitRoll;
+  bool   hasUpperLimitRoll = true;
   if (theData->IsParamDefined(theNum, 18))
   {
     theData->ReadReal(theNum, 18, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -247,7 +247,7 @@ void RWStepKinematics_RWSphericalPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairWithRange::WriteStep(
-  StepData_StepWriter&                                 theSW,
+  StepData_StepWriter&                                      theSW,
   const occ::handle<StepKinematics_SphericalPairWithRange>& theEnt) const
 {
 
@@ -337,7 +337,7 @@ void RWStepKinematics_RWSphericalPairWithRange::WriteStep(
 
 void RWStepKinematics_RWSphericalPairWithRange::Share(
   const occ::handle<StepKinematics_SphericalPairWithRange>& theEnt,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of RepresentationItem

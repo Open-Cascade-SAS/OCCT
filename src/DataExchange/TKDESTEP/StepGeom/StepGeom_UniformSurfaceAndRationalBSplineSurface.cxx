@@ -25,16 +25,16 @@ StepGeom_UniformSurfaceAndRationalBSplineSurface::StepGeom_UniformSurfaceAndRati
 }
 
 void StepGeom_UniformSurfaceAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
-  const occ::handle<StepGeom_UniformSurface>&          aUniformSurface,
-  const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface)
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<StepGeom_UniformSurface>&                                   aUniformSurface,
+  const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface)
 {
   // --- classe own fields ---
   uniformSurface         = aUniformSurface;
@@ -51,15 +51,15 @@ void StepGeom_UniformSurfaceAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_UniformSurfaceAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
-  const occ::handle<NCollection_HArray2<double>>&            aWeightsData)
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray2<double>>&                               aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -104,8 +104,8 @@ void StepGeom_UniformSurfaceAndRationalBSplineSurface::SetUniformSurface(
   uniformSurface = aUniformSurface;
 }
 
-occ::handle<StepGeom_UniformSurface> StepGeom_UniformSurfaceAndRationalBSplineSurface::UniformSurface()
-  const
+occ::handle<StepGeom_UniformSurface> StepGeom_UniformSurfaceAndRationalBSplineSurface::
+  UniformSurface() const
 {
   return uniformSurface;
 }
@@ -130,14 +130,14 @@ void StepGeom_UniformSurfaceAndRationalBSplineSurface::SetWeightsData(
   rationalBSplineSurface->SetWeightsData(aWeightsData);
 }
 
-occ::handle<NCollection_HArray2<double>> StepGeom_UniformSurfaceAndRationalBSplineSurface::WeightsData() const
+occ::handle<NCollection_HArray2<double>> StepGeom_UniformSurfaceAndRationalBSplineSurface::
+  WeightsData() const
 {
   return rationalBSplineSurface->WeightsData();
 }
 
-double StepGeom_UniformSurfaceAndRationalBSplineSurface::WeightsDataValue(
-  const int num1,
-  const int num2) const
+double StepGeom_UniformSurfaceAndRationalBSplineSurface::WeightsDataValue(const int num1,
+                                                                          const int num2) const
 {
   return rationalBSplineSurface->WeightsDataValue(num1, num2);
 }

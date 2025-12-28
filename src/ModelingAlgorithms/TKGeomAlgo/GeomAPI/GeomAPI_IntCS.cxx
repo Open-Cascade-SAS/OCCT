@@ -72,10 +72,7 @@ const gp_Pnt& GeomAPI_IntCS::Point(const int Index) const
 
 //=================================================================================================
 
-void GeomAPI_IntCS::Parameters(const int Index,
-                               double&         U,
-                               double&         V,
-                               double&         W) const
+void GeomAPI_IntCS::Parameters(const int Index, double& U, double& V, double& W) const
 {
   const IntCurveSurface_IntersectionPoint& ThePoint = myIntCS.Point(Index);
 
@@ -108,10 +105,10 @@ occ::handle<Geom_Curve> GeomAPI_IntCS::Segment(const int Index) const
 //=================================================================================================
 
 void GeomAPI_IntCS::Parameters(const int Index,
-                               double&         U1,
-                               double&         V1,
-                               double&         U2,
-                               double&         V2) const
+                               double&   U1,
+                               double&   V1,
+                               double&   U2,
+                               double&   V2) const
 {
   const IntCurveSurface_IntersectionPoint& FirstPoint = myIntCS.Segment(Index).FirstPoint();
 

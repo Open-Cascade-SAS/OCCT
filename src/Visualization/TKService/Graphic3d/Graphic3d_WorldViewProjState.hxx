@@ -32,8 +32,8 @@ public:
   //! @param[in] theWorldViewState  the world view state.
   //! @param[in] theCamera  the pointer to the class supplying projection and
   //!                       world view matrices (camera).
-  Graphic3d_WorldViewProjState(const size_t       theProjectionState,
-                               const size_t       theWorldViewState,
+  Graphic3d_WorldViewProjState(const size_t              theProjectionState,
+                               const size_t              theWorldViewState,
                                const Standard_Transient* theCamera = NULL)
   {
     Initialize(theProjectionState, theWorldViewState, theCamera);
@@ -54,8 +54,8 @@ public:
   }
 
   //! Initialize world view projection state.
-  void Initialize(const size_t       theProjectionState,
-                  const size_t       theWorldViewState,
+  void Initialize(const size_t              theProjectionState,
+                  const size_t              theWorldViewState,
                   const Standard_Transient* theCamera = NULL)
   {
     myIsValid         = true;
@@ -99,10 +99,7 @@ public:
 
   //! Compare with other world view projection state.
   //! @return true when the projection of the given camera state differs from this one.
-  bool IsChanged(const Graphic3d_WorldViewProjState& theState)
-  {
-    return *this != theState;
-  }
+  bool IsChanged(const Graphic3d_WorldViewProjState& theState) { return *this != theState; }
 
 public:
   //! Compare with other world view projection state.
@@ -131,10 +128,10 @@ public:
   }
 
 private:
-  bool    myIsValid;
+  bool                myIsValid;
   Standard_Transient* myCamera;
-  size_t       myProjectionState;
-  size_t       myWorldViewState;
+  size_t              myProjectionState;
+  size_t              myWorldViewState;
 };
 
 #endif

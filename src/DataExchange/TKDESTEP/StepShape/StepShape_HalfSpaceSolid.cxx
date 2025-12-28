@@ -21,7 +21,7 @@ StepShape_HalfSpaceSolid::StepShape_HalfSpaceSolid() {}
 
 void StepShape_HalfSpaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                     const occ::handle<StepGeom_Surface>&         aBaseSurface,
-                                    const bool                  aAgreementFlag)
+                                    const bool                                   aAgreementFlag)
 {
   // --- classe own fields ---
   baseSurface   = aBaseSurface;

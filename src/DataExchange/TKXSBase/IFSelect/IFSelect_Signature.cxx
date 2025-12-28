@@ -31,9 +31,9 @@ IFSelect_Signature::IFSelect_Signature(const char* name)
 }
 
 void IFSelect_Signature::SetIntCase(const bool hasmin,
-                                    const int valmin,
+                                    const int  valmin,
                                     const bool hasmax,
-                                    const int valmax)
+                                    const int  valmax)
 {
   thecasi[0] = 1;
   if (hasmin)
@@ -48,10 +48,7 @@ void IFSelect_Signature::SetIntCase(const bool hasmin,
   }
 }
 
-bool IFSelect_Signature::IsIntCase(bool& hasmin,
-                                               int& valmin,
-                                               bool& hasmax,
-                                               int& valmax) const
+bool IFSelect_Signature::IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int& valmax) const
 {
   hasmin = hasmax = false;
   valmin = valmax = 0;
@@ -96,23 +93,23 @@ TCollection_AsciiString IFSelect_Signature::Label() const
 }
 
 bool IFSelect_Signature::Matches(const occ::handle<Standard_Transient>&       ent,
-                                             const occ::handle<Interface_InterfaceModel>& model,
-                                             const TCollection_AsciiString&          text,
-                                             const bool                  exact) const
+                                 const occ::handle<Interface_InterfaceModel>& model,
+                                 const TCollection_AsciiString&               text,
+                                 const bool                                   exact) const
 
 {
   return IFSelect_Signature::MatchValue(Value(ent, model), text, exact);
 }
 
-bool IFSelect_Signature::MatchValue(const char*         val,
-                                                const TCollection_AsciiString& text,
-                                                const bool         exact)
+bool IFSelect_Signature::MatchValue(const char*                    val,
+                                    const TCollection_AsciiString& text,
+                                    const bool                     exact)
 {
   if (exact)
     return text.IsEqual(val);
   // NB: no regexp
-  char             cardeb = text.Value(1);
-  int ln, lnt, i, j;
+  char cardeb = text.Value(1);
+  int  ln, lnt, i, j;
   ln  = text.Length();
   lnt = (int)(strlen(val) - ln);
   for (i = 0; i <= lnt; i++)

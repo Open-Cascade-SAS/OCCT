@@ -40,8 +40,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_ConcentricRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(const TopoDS_Shape&       aFShape,
-                                                     const TopoDS_Shape&       aSShape,
+PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(const TopoDS_Shape&            aFShape,
+                                                     const TopoDS_Shape&            aSShape,
                                                      const occ::handle<Geom_Plane>& aPlane)
 {
   myFShape = aFShape;
@@ -98,11 +98,11 @@ void PrsDim_ConcentricRelation::ComputeEdgeVertexConcentric(
     E = TopoDS::Edge(mySShape);
     V = TopoDS::Vertex(myFShape);
   }
-  gp_Pnt             p1, p2;
+  gp_Pnt                  p1, p2;
   occ::handle<Geom_Curve> C;
   occ::handle<Geom_Curve> extCurv;
-  bool   isInfinite;
-  bool   isOnPlanEdge, isOnPlanVertex;
+  bool                    isInfinite;
+  bool                    isOnPlanEdge, isOnPlanVertex;
   if (!PrsDim::ComputeGeometry(E, C, p1, p2, extCurv, isInfinite, isOnPlanEdge, myPlane))
     return;
   gp_Pnt P;
@@ -129,8 +129,8 @@ void PrsDim_ConcentricRelation::ComputeTwoVerticesConcentric(
   TopoDS_Vertex V1, V2;
   V1 = TopoDS::Vertex(myFShape);
   V2 = TopoDS::Vertex(myFShape);
-  bool isOnPlanVertex1(true), isOnPlanVertex2(true);
-  gp_Pnt           P1, P2;
+  bool   isOnPlanVertex1(true), isOnPlanVertex2(true);
+  gp_Pnt P1, P2;
   PrsDim::ComputeGeometry(V1, P1, myPlane, isOnPlanVertex1);
   PrsDim::ComputeGeometry(V2, P2, myPlane, isOnPlanVertex2);
   myCenter = P1;
@@ -153,9 +153,9 @@ void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
   BRepAdaptor_Curve curv1(TopoDS::Edge(myFShape));
   BRepAdaptor_Curve curv2(TopoDS::Edge(mySShape));
 
-  gp_Pnt             ptat11, ptat12, ptat21, ptat22;
+  gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
   occ::handle<Geom_Curve> geom1, geom2;
-  bool   isInfinite1, isInfinite2;
+  bool                    isInfinite1, isInfinite2;
   occ::handle<Geom_Curve> extCurv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
                                TopoDS::Edge(mySShape),
@@ -183,7 +183,7 @@ void PrsDim_ConcentricRelation::ComputeTwoEdgesConcentric(
   // 2 circles. Limit is imposed ( 0.02 by chance)
   double aRad1 = gcirc1->Radius();
   double aRad2 = gcirc2->Radius();
-  myRad               = (aRad1 > aRad2) ? aRad2 : aRad1;
+  myRad        = (aRad1 > aRad2) ? aRad2 : aRad1;
   myRad /= 5;
   if (myRad > 15.)
     myRad = 15.;
@@ -228,8 +228,8 @@ void PrsDim_ConcentricRelation::ComputeSelection(const occ::handle<SelectMgr_Sel
   // Creation of 2 sensitive circles
 
   // the greater
-  gp_Ax2                           anAx(myCenter, myDir);
-  gp_Circ                          aCirc(anAx, myRad);
+  gp_Ax2                                anAx(myCenter, myDir);
+  gp_Circ                               aCirc(anAx, myRad);
   occ::handle<Select3D_SensitiveCircle> sensit = new Select3D_SensitiveCircle(anOwner, aCirc);
   aSelection->Add(sensit);
 
@@ -240,7 +240,7 @@ void PrsDim_ConcentricRelation::ComputeSelection(const occ::handle<SelectMgr_Sel
 
   // Creation of 2 segments sensitive for the cross
   occ::handle<Select3D_SensitiveSegment> seg;
-  gp_Pnt                            otherPnt = myPnt.Mirrored(myCenter);
+  gp_Pnt                                 otherPnt = myPnt.Mirrored(myCenter);
   seg = new Select3D_SensitiveSegment(anOwner, otherPnt, myPnt);
   aSelection->Add(seg);
 

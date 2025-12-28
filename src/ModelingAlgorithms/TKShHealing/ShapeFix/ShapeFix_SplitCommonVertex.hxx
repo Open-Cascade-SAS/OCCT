@@ -41,9 +41,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex, ShapeFix_Root)
 
 private:
-  TopoDS_Shape     myShape;
-  TopoDS_Shape     myResult;
-  int myStatus;
+  TopoDS_Shape myShape;
+  TopoDS_Shape myResult;
+  int          myStatus;
 };
 
 #endif // _ShapeFix_SplitCommonVertex_HeaderFile

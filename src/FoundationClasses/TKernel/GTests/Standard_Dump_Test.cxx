@@ -115,7 +115,7 @@ TEST(Standard_DumpTest, gp_Pnt_DumpAndInit)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   gp_Pnt            aDeserializedPnt;
-  int  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedPnt.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
@@ -155,7 +155,7 @@ TEST(Standard_DumpTest, gp_Ax3_DumpAndInit_MultipleSeparators)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   gp_Ax3            aDeserializedAxis;
-  int  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedAxis.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
@@ -189,7 +189,7 @@ TEST(Standard_DumpTest, Bnd_Box_ComplexDump)
   // Deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  int  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed. JSON: " << aJsonStr;
@@ -293,7 +293,7 @@ TEST(Standard_DumpTest, VoidBoxSerialization)
   // Try to deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  int  aStreamPos = 1;
+  int               aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Should be able to deserialize void box. JSON: " << aJsonStr;

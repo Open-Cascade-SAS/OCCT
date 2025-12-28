@@ -45,10 +45,10 @@ public:
   //! - aDistance     : Distance between the neighbouring Template
   //! figures
   //! - aScale        : Scale factor applied to the Template figure
-  Standard_EXPORT void Init(const int                anOrientation,
+  Standard_EXPORT void Init(const int                                  anOrientation,
                             const occ::handle<IGESBasic_SubfigureDef>& aTemplate,
-                            const double                   aDistance,
-                            const double                   aScale);
+                            const double                               aDistance,
+                            const double                               aScale);
 
   //! if return value = 0, Each Template display is oriented by aligning
   //! the axis of the SubfigureDef with the axis of
@@ -75,10 +75,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_LineFontDefTemplate, IGESData_LineFontEntity)
 
 private:
-  int               theOrientation;
+  int                                 theOrientation;
   occ::handle<IGESBasic_SubfigureDef> theTemplateEntity;
-  double                  theDistance;
-  double                  theScale;
+  double                              theDistance;
+  double                              theScale;
 };
 
 #endif // _IGESGraph_LineFontDefTemplate_HeaderFile

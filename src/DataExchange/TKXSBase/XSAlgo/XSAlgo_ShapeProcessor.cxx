@@ -106,7 +106,7 @@ void XSAlgo_ShapeProcessor::initializeContext(const TopoDS_Shape& theShape)
 //=============================================================================
 
 void XSAlgo_ShapeProcessor::addMessages(const occ::handle<ShapeExtend_MsgRegistrator>& theMessages,
-                                        const TopoDS_Shape&                       theShape,
+                                        const TopoDS_Shape&                            theShape,
                                         occ::handle<Transfer_Binder>&                  theBinder)
 {
   if (theMessages.IsNull())
@@ -120,7 +120,8 @@ void XSAlgo_ShapeProcessor::addMessages(const occ::handle<ShapeExtend_MsgRegistr
     return;
   }
 
-  for (NCollection_List<Message_Msg>::Iterator aMsgIter(*aShapeMessages); aMsgIter.More(); aMsgIter.Next())
+  for (NCollection_List<Message_Msg>::Iterator aMsgIter(*aShapeMessages); aMsgIter.More();
+       aMsgIter.Next())
   {
     const Message_Msg& aMessage = aMsgIter.Value();
     theBinder->AddWarning(TCollection_AsciiString(aMessage.Value()).ToCString(),
@@ -132,17 +133,17 @@ void XSAlgo_ShapeProcessor::addMessages(const occ::handle<ShapeExtend_MsgRegistr
 
 void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
   const occ::handle<Transfer_TransientProcess>& theTransientProcess,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      theModifiedShapesMap,
-  const int                   theFirstTPItemIndex,
-  occ::handle<ShapeExtend_MsgRegistrator>       theMessages)
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                                          theModifiedShapesMap,
+  const int                               theFirstTPItemIndex,
+  occ::handle<ShapeExtend_MsgRegistrator> theMessages)
 {
   if (theModifiedShapesMap.IsEmpty())
   {
     return;
   }
   const bool aToPrint = !theMessages.IsNull() && !theMessages->MapShape().IsEmpty();
-  for (int i = std::max(theFirstTPItemIndex, 1); i <= theTransientProcess->NbMapped();
-       ++i)
+  for (int i = std::max(theFirstTPItemIndex, 1); i <= theTransientProcess->NbMapped(); ++i)
   {
     occ::handle<TransferBRep_ShapeBinder> aShapeBinder =
       occ::down_cast<TransferBRep_ShapeBinder>(theTransientProcess->MapItem(i));
@@ -170,7 +171,7 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
     {
       // Some of edges may be modified.
       BRepTools_ReShape aReShaper;
-      bool  aHasModifiedEdges = false;
+      bool              aHasModifiedEdges = false;
       // Remember modifications.
       for (TopExp_Explorer anExpSE(anOriginalShape, TopAbs_EDGE); anExpSE.More(); anExpSE.Next())
       {
@@ -201,7 +202,7 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
 
 void XSAlgo_ShapeProcessor::MergeTransferInfo(
   const occ::handle<Transfer_TransientProcess>& theTransientProcess,
-  const int                   theFirstTPItemIndex) const
+  const int                                     theFirstTPItemIndex) const
 {
   if (myContext.IsNull())
   {
@@ -217,8 +218,9 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(
 
 void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
   const occ::handle<Transfer_FinderProcess>& theFinderProcess,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&   theModifiedShapesMap,
-  occ::handle<ShapeExtend_MsgRegistrator>    theMessages)
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                                          theModifiedShapesMap,
+  occ::handle<ShapeExtend_MsgRegistrator> theMessages)
 {
   if (theModifiedShapesMap.IsEmpty())
   {
@@ -226,7 +228,8 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
   }
   const bool aToPrint = !theMessages.IsNull() && !theMessages->MapShape().IsEmpty();
 
-  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ShapeShapeIterator(theModifiedShapesMap);
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
+         ShapeShapeIterator(theModifiedShapesMap);
        ShapeShapeIterator.More();
        ShapeShapeIterator.Next())
   {
@@ -244,13 +247,13 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
       //  into Transfer_TransientListBinder.
       if (anOriginalShape.ShapeType() > aResultShape.ShapeType())
       {
-        TopoDS_Shape                         aSubShape;
+        TopoDS_Shape                              aSubShape;
         occ::handle<Transfer_TransientListBinder> aTransientListBinder =
           new Transfer_TransientListBinder;
         for (TopoDS_Iterator aSubShapeIter(aResultShape); aSubShapeIter.More();
              aSubShapeIter.Next())
         {
-          const TopoDS_Shape      aCurrentSubShape = aSubShapeIter.Value();
+          const TopoDS_Shape           aCurrentSubShape = aSubShapeIter.Value();
           occ::handle<Transfer_Finder> aSubShapeMapper =
             TransferBRep::ShapeMapper(theFinderProcess, aCurrentSubShape);
           if (aSubShapeMapper.IsNull())
@@ -317,11 +320,10 @@ TopoDS_Edge XSAlgo_ShapeProcessor::MakeEdgeOnCurve(const TopoDS_Edge& aSourceEdg
   TopoDS_Edge aResult;
 
   occ::handle<Geom_Curve> aSourceGeomCurve;
-  double      aStartParam;
-  double      anEndParam;
-  ShapeAnalysis_Edge anEdgeAnalyzer;
-  if (!anEdgeAnalyzer
-         .Curve3d(aSourceEdge, aSourceGeomCurve, aStartParam, anEndParam, false))
+  double                  aStartParam;
+  double                  anEndParam;
+  ShapeAnalysis_Edge      anEdgeAnalyzer;
+  if (!anEdgeAnalyzer.Curve3d(aSourceEdge, aSourceGeomCurve, aStartParam, anEndParam, false))
   {
     return aResult;
   }
@@ -340,26 +342,25 @@ TopoDS_Edge XSAlgo_ShapeProcessor::MakeEdgeOnCurve(const TopoDS_Edge& aSourceEdg
 
 //=============================================================================
 
-bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEdge,
-                                                    const TopoDS_Face&     theFace,
-                                                    const double    thePrecision,
-                                                    const bool theIsSeam)
+bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge& theEdge,
+                                        const TopoDS_Face& theFace,
+                                        const double       thePrecision,
+                                        const bool         theIsSeam)
 {
   ShapeAnalysis_Edge anEdgeAnalyzer;
 
   // Retrieve pcurve and its parameters.
-  double        aCurve2DParam1;
-  double        aCurve2DParam2;
+  double                    aCurve2DParam1;
+  double                    aCurve2DParam2;
   occ::handle<Geom2d_Curve> aCurve2D;
-  if (!anEdgeAnalyzer
-         .PCurve(theEdge, theFace, aCurve2D, aCurve2DParam1, aCurve2DParam2, false))
+  if (!anEdgeAnalyzer.PCurve(theEdge, theFace, aCurve2D, aCurve2DParam1, aCurve2DParam2, false))
   {
     return false;
   }
 
   // Check for pcurve longer than surface.
   occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(theFace);
-  double        aFaceSurfaceU1, aFaceSurfaceU2, aFaceSurfaceV1, aFaceSurfaceV2;
+  double                    aFaceSurfaceU1, aFaceSurfaceU2, aFaceSurfaceV1, aFaceSurfaceV2;
   aSurface->Bounds(aFaceSurfaceU1, aFaceSurfaceU2, aFaceSurfaceV1, aFaceSurfaceV2);
   const gp_Pnt2d aCurve2DPoint1 = aCurve2D->Value(aCurve2DParam1);
   const gp_Pnt2d aCurve2DPoint2 = aCurve2D->Value(aCurve2DParam2);
@@ -379,8 +380,8 @@ bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEdge,
   // We also check that it does not wrap around too much...
   // Example: UVV in DEGREES on a surface in RADIANS, adjusted = 57 turns!
   occ::handle<Geom_Curve> aCurve3D;
-  double      aCurve3DParam1;
-  double      aCurve3DParam2;
+  double                  aCurve3DParam1;
+  double                  aCurve3DParam2;
   anEdgeAnalyzer.Curve3d(theEdge, aCurve3D, aCurve3DParam1, aCurve3DParam2, false);
 
   const gp_Pnt        aCurve3DPoint1 = aSurface->Value(aCurve2DPoint1.X(), aCurve2DPoint1.Y());
@@ -412,19 +413,15 @@ bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEdge,
   TopoDS_Edge aTmpEdge = MakeEdgeOnCurve(theEdge);
 
   // fill it with pcurve(s)
-  BRep_Builder         aBuilder;
+  BRep_Builder              aBuilder;
   occ::handle<Geom2d_Curve> aSeamPCurve;
   if (theIsSeam)
   {
-    double aSeamPCurveParam1;
-    double aSeamPCurveParam2;
-    TopoDS_Edge   aReversedEdge = TopoDS::Edge(theEdge.Reversed());
-    if (!anEdgeAnalyzer.PCurve(aReversedEdge,
-                               theFace,
-                               aSeamPCurve,
-                               aSeamPCurveParam1,
-                               aSeamPCurveParam2,
-                               false)
+    double      aSeamPCurveParam1;
+    double      aSeamPCurveParam2;
+    TopoDS_Edge aReversedEdge = TopoDS::Edge(theEdge.Reversed());
+    if (!anEdgeAnalyzer
+           .PCurve(aReversedEdge, theFace, aSeamPCurve, aSeamPCurveParam1, aSeamPCurveParam2, false)
         || aSeamPCurve == aCurve2D)
     {
       aSeamPCurve = occ::down_cast<Geom2d_Curve>(aCurve2D->Copy());
@@ -445,9 +442,9 @@ bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEdge,
   // call FixSP to see what it will do
   occ::handle<ShapeFix_Edge> anEdgeFixer = new ShapeFix_Edge;
   anEdgeFixer->FixSameParameter(aTmpEdge);
-  double    aTolerance         = BRep_Tool::Tolerance(aTmpEdge);
-  bool aSameRangeFlag     = BRep_Tool::SameRange(aTmpEdge);
-  bool aSameParameterFlag = BRep_Tool::SameParameter(aTmpEdge);
+  double aTolerance         = BRep_Tool::Tolerance(aTmpEdge);
+  bool   aSameRangeFlag     = BRep_Tool::SameRange(aTmpEdge);
+  bool   aSameParameterFlag = BRep_Tool::SameParameter(aTmpEdge);
 
   // if result is not nice, try to call projection and take the best
   if (aTolerance > std::min(1., 2. * thePrecision) || !aSameRangeFlag)
@@ -468,13 +465,12 @@ bool XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEdge,
   }
 
   // get corrected pcurve from the temporary edge, and put to original
-  anEdgeAnalyzer
-    .PCurve(aTmpEdge, theFace, aCurve2D, aCurve2DParam1, aCurve2DParam2, false);
+  anEdgeAnalyzer.PCurve(aTmpEdge, theFace, aCurve2D, aCurve2DParam1, aCurve2DParam2, false);
   if (theIsSeam)
   {
-    double aReversedTmpEdgeParam1;
-    double aReversedTmpEdgeParam2;
-    TopoDS_Edge   aReversedTmpEdge = TopoDS::Edge(aTmpEdge.Reversed());
+    double      aReversedTmpEdgeParam1;
+    double      aReversedTmpEdgeParam2;
+    TopoDS_Edge aReversedTmpEdge = TopoDS::Edge(aTmpEdge.Reversed());
     anEdgeAnalyzer.PCurve(aReversedTmpEdge,
                           theFace,
                           aSeamPCurve,
@@ -527,11 +523,13 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
   const TCollection_AsciiString aScope = Interface_Static::CVal(theScopeResourceName.ToCString());
 
   // Copy parameters to the result.
-  XSAlgo_ShapeProcessor::ParameterMap             aResultParameters;
-  ShapeProcess::OperationsFlags                   aResultFlags;
-  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aMap = aContext->ResourceManager()->GetMap();
+  XSAlgo_ShapeProcessor::ParameterMap                                          aResultParameters;
+  ShapeProcess::OperationsFlags                                                aResultFlags;
+  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aMap =
+    aContext->ResourceManager()->GetMap();
 
-  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter(aMap); anIter.More();
+  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter(aMap);
+       anIter.More();
        anIter.Next())
   {
     TCollection_AsciiString aKey = anIter.Key();
@@ -548,7 +546,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
     if (aKey.IsEqual("exec.op"))
     {
       // Parse operation flags using Token method
-      int              aTokenCount = 1;
+      int                           aTokenCount = 1;
       TCollection_AsciiString       aToken;
       const TCollection_AsciiString aSeparators(" \t,;");
 

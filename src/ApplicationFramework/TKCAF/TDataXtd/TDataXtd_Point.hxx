@@ -53,7 +53,6 @@ public:
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Point, TDataStd_GenericEmpty)
-
 };
 
 #endif // _TDataXtd_Point_HeaderFile

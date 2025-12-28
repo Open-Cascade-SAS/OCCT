@@ -42,9 +42,9 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_CentroidDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                   const occ::handle<TDF_Attribute>& theTarget,
-                                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<XCAFDoc_Centroid> aTPos = occ::down_cast<XCAFDoc_Centroid>(theTarget);
 
@@ -56,8 +56,8 @@ bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  theSource,
     return false;
   }
 
-  gp_Pnt           aPos;
-  double    aValue;
+  gp_Pnt      aPos;
+  double      aValue;
   const char* aValueStr = static_cast<const char*>(aPosStr.GetString());
 
   // X
@@ -106,7 +106,7 @@ bool XmlMXCAFDoc_CentroidDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMXCAFDoc_CentroidDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&        theTarget,
+                                       XmlObjMgt_Persistent&             theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<XCAFDoc_Centroid> aTPos = occ::down_cast<XCAFDoc_Centroid>(theSource);

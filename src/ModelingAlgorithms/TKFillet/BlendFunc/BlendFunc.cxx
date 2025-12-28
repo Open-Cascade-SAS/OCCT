@@ -33,25 +33,24 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
 void BlendFunc::GetShape(const BlendFunc_SectionShape  SShape,
-                         const double           MaxAng,
-                         int&             NbPoles,
-                         int&             NbKnots,
-                         int&             Degree,
+                         const double                  MaxAng,
+                         int&                          NbPoles,
+                         int&                          NbKnots,
+                         int&                          Degree,
                          Convert_ParameterisationType& TConv)
 {
   switch (SShape)
   {
     case BlendFunc_Rational: {
       int NbSpan = (int)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
-      NbPoles                 = 2 * NbSpan + 1;
-      NbKnots                 = NbSpan + 1;
-      Degree                  = 2;
+      NbPoles    = 2 * NbSpan + 1;
+      NbKnots    = NbSpan + 1;
+      Degree     = 2;
       if (NbSpan == 1)
       {
         TConv = Convert_TgtThetaOver2_1;
@@ -96,9 +95,9 @@ void BlendFunc::GetShape(const BlendFunc_SectionShape  SShape,
 
 void BlendFunc::GetMinimalWeights(const BlendFunc_SectionShape       SShape,
                                   const Convert_ParameterisationType TConv,
-                                  const double                MinAng,
-                                  const double                MaxAng,
-                                  NCollection_Array1<double>&              Weights)
+                                  const double                       MinAng,
+                                  const double                       MaxAng,
+                                  NCollection_Array1<double>&        Weights)
 
 {
   switch (SShape)
@@ -110,17 +109,18 @@ void BlendFunc::GetMinimalWeights(const BlendFunc_SectionShape       SShape,
     break;
     case BlendFunc_Rational:
     case BlendFunc_QuasiAngular: {
-      gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
-      gp_Circ                   C(popAx2, 1);
-      occ::handle<Geom_TrimmedCurve> Sect1   = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
+      gp_Ax2                         popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+      gp_Circ                        C(popAx2, 1);
+      occ::handle<Geom_TrimmedCurve> Sect1 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
       occ::handle<Geom_BSplineCurve> CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);
       CtoBspl->Weights(Weights);
 
       NCollection_Array1<double> poids(Weights.Lower(), Weights.Upper());
-      double        angle_min = std::max(Precision::PConfusion(), MinAng);
+      double                     angle_min = std::max(Precision::PConfusion(), MinAng);
 
-      occ::handle<Geom_TrimmedCurve> Sect2 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
-      CtoBspl                         = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
+      occ::handle<Geom_TrimmedCurve> Sect2 =
+        new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
+      CtoBspl = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
       CtoBspl->Weights(poids);
 
       for (int ii = Weights.Lower(); ii <= Weights.Upper(); ii++)
@@ -156,12 +156,12 @@ GeomAbs_Shape BlendFunc::NextShape(const GeomAbs_Shape S)
 //=================================================================================================
 
 bool BlendFunc::ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
-                                          const gp_Pnt2d&                  p2d,
-                                          gp_Vec&                          Normal)
+                              const gp_Pnt2d&                       p2d,
+                              gp_Vec&                               Normal)
 {
-  const int MaxOrder = 3;
-  const double    U        = p2d.X();
-  const double    V        = p2d.Y();
+  const int    MaxOrder = 3;
+  const double U        = p2d.X();
+  const double V        = p2d.Y();
 
   int i, j;
 
@@ -177,13 +177,13 @@ bool BlendFunc::ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
     for (j = 0; j <= MaxOrder; j++)
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
 
-  gp_Dir              thenormal;
-  CSLib_NormalStatus  stat;
-  int    OrderU, OrderV;
-  const double Umin = Surf->FirstUParameter();
-  const double Umax = Surf->LastUParameter();
-  const double Vmin = Surf->FirstVParameter();
-  const double Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
+  gp_Dir             thenormal;
+  CSLib_NormalStatus stat;
+  int                OrderU, OrderV;
+  const double       Umin = Surf->FirstUParameter();
+  const double       Umax = Surf->LastUParameter();
+  const double       Vmin = Surf->FirstVParameter();
+  const double       Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
   CSLib::Normal(MaxOrder,
                 DerNUV,
                 double(1.e-9),
@@ -208,14 +208,14 @@ bool BlendFunc::ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
 //=================================================================================================
 
 bool BlendFunc::ComputeDNormal(const occ::handle<Adaptor3d_Surface>& Surf,
-                                           const gp_Pnt2d&                  p2d,
-                                           gp_Vec&                          Normal,
-                                           gp_Vec&                          DNu,
-                                           gp_Vec&                          DNv)
+                               const gp_Pnt2d&                       p2d,
+                               gp_Vec&                               Normal,
+                               gp_Vec&                               DNu,
+                               gp_Vec&                               DNv)
 {
-  const int MaxOrder = 3;
-  const double    U        = p2d.X();
-  const double    V        = p2d.Y();
+  const int    MaxOrder = 3;
+  const double U        = p2d.X();
+  const double V        = p2d.Y();
 
   int i, j;
 
@@ -231,13 +231,13 @@ bool BlendFunc::ComputeDNormal(const occ::handle<Adaptor3d_Surface>& Surf,
     for (j = 0; j <= MaxOrder; j++)
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
 
-  gp_Dir              thenormal;
-  CSLib_NormalStatus  stat;
-  int    OrderU, OrderV;
-  const double Umin = Surf->FirstUParameter();
-  const double Umax = Surf->LastUParameter();
-  const double Vmin = Surf->FirstVParameter();
-  const double Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
+  gp_Dir             thenormal;
+  CSLib_NormalStatus stat;
+  int                OrderU, OrderV;
+  const double       Umin = Surf->FirstUParameter();
+  const double       Umax = Surf->LastUParameter();
+  const double       Vmin = Surf->FirstVParameter();
+  const double       Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
   CSLib::Normal(MaxOrder,
                 DerNUV,
                 double(1.e-9),

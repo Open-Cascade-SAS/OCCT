@@ -66,8 +66,8 @@ public:
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferVertex(const TopoDS_Vertex& myvertex,
-                                                             const TopoDS_Edge&   myedge,
-                                                             double&       parameter);
+                                                                  const TopoDS_Edge&   myedge,
+                                                                  double&              parameter);
 
   //! Transfer a Vertex entity of an edge on a Face
   //! from TopoDS to IGES
@@ -76,9 +76,9 @@ public:
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferVertex(const TopoDS_Vertex& myvertex,
-                                                             const TopoDS_Edge&   myedge,
-                                                             const TopoDS_Face&   myface,
-                                                             double&       parameter);
+                                                                  const TopoDS_Edge&   myedge,
+                                                                  const TopoDS_Face&   myface,
+                                                                  double&              parameter);
 
   //! Transfer a Vertex entity of an edge on a Surface
   //! from TopoDS to IGES
@@ -86,19 +86,20 @@ public:
   //! of myedge on mysurface
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferVertex(const TopoDS_Vertex&        myvertex,
-                                                             const TopoDS_Edge&          myedge,
-                                                             const occ::handle<Geom_Surface>& mysurface,
-                                                             const TopLoc_Location&      myloc,
-                                                             double&              parameter);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferVertex(
+    const TopoDS_Vertex&             myvertex,
+    const TopoDS_Edge&               myedge,
+    const occ::handle<Geom_Surface>& mysurface,
+    const TopLoc_Location&           myloc,
+    double&                          parameter);
 
   //! Transfer a Vertex entity on a Face from TopoDS to IGES
   //! Returns the parameters of myvertex on myface
   //! If this Entity could not be converted,
   //! this member returns a NullEntity.
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferVertex(const TopoDS_Vertex& myvertex,
-                                                             const TopoDS_Face&   myface,
-                                                             gp_Pnt2d&            mypoint);
+                                                                  const TopoDS_Face&   myface,
+                                                                  gp_Pnt2d&            mypoint);
 
   //! Transfer an Edge 3d entity from TopoDS to IGES
   //! If edge is REVERSED and isBRepMode is False 3D edge curve is reversed
@@ -108,9 +109,9 @@ public:
   //! @param[in] theIsBRepMode indicates if write mode is BRep
   //! @return Iges entity or null if could not be converted
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(
-    const TopoDS_Edge&                  theEdge,
+    const TopoDS_Edge&                                                              theEdge,
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theOriginMap,
-    const bool              theIsBRepMode);
+    const bool                                                                      theIsBRepMode);
 
   //! Transfer an Edge 2d entity on a Face from TopoDS to IGES
   //! @param[in] theEdge input edge to transfer
@@ -121,11 +122,11 @@ public:
   //! @param[in] theIsBRepMode indicates if write mode is BRep
   //! @return Iges entity or null if could not be converted
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(
-    const TopoDS_Edge&                  theEdge,
-    const TopoDS_Face&                  theFace,
+    const TopoDS_Edge&                                                              theEdge,
+    const TopoDS_Face&                                                              theFace,
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theOriginMap,
-    const double                 theLength,
-    const bool              theIsBRepMode);
+    const double                                                                    theLength,
+    const bool                                                                      theIsBRepMode);
 
   //! Transfer a Wire entity from TopoDS to IGES
   //! If this Entity could not be converted,
@@ -142,12 +143,11 @@ public:
   //! @return Iges entity (the curve associated to mywire in the parametric space of myface)
   //! or null if could not be converted
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferWire(
-    const TopoDS_Wire&                  theWire,
-    const TopoDS_Face&                  theFace,
+    const TopoDS_Wire&                                                              theWire,
+    const TopoDS_Face&                                                              theFace,
     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theOriginMap,
-    occ::handle<IGESData_IGESEntity>&        theCurve2d,
-    const double                 theLength);
-
+    occ::handle<IGESData_IGESEntity>&                                               theCurve2d,
+    const double                                                                    theLength);
 };
 
 #endif // _BRepToIGES_BRWire_HeaderFile

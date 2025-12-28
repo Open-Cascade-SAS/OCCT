@@ -45,12 +45,12 @@ public:
   Standard_EXPORT void Load();
 
   //! Sets helix parameters
-  Standard_EXPORT void Load(const double    aT1,
-                            const double    aT2,
-                            const double    aPitch,
-                            const double    aRStart,
-                            const double    aTaperAngle,
-                            const bool aIsCW);
+  Standard_EXPORT void Load(const double aT1,
+                            const double aT2,
+                            const double aPitch,
+                            const double aRStart,
+                            const double aTaperAngle,
+                            const bool   aIsCW);
 
   //! Gets first parameter
   Standard_EXPORT virtual double FirstParameter() const override;
@@ -62,12 +62,11 @@ public:
   Standard_EXPORT virtual GeomAbs_Shape Continuity() const override;
 
   //! Gets number of intervals
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
-    override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
 
   //! Gets parametric intervals
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape   S) const override;
+                                         const GeomAbs_Shape         S) const override;
 
   //! Gets parametric resolution
   Standard_EXPORT virtual double Resolution(const double R3d) const override;
@@ -88,31 +87,24 @@ public:
   Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const override;
 
   //! Gets curve point and first derivatives for parameter U
-  Standard_EXPORT virtual void D1(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1) const override;
+  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Gets curve point, first and second derivatives for parameter U
-  Standard_EXPORT virtual void D2(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2) const override;
+  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Gets curve derivative of demanded order for parameter U
-  Standard_EXPORT virtual gp_Vec DN(const double    U,
-                                    const int N) const override;
+  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const override;
 
 protected:
-  double    myFirst;
-  double    myLast;
-  double    myPitch;
-  double    myRStart;
-  double    myTaperAngle;
-  bool myIsClockWise;
-  double    myC1;
-  double    myTgBeta;
-  double    myTolAngle;
-
+  double myFirst;
+  double myLast;
+  double myPitch;
+  double myRStart;
+  double myTaperAngle;
+  bool   myIsClockWise;
+  double myC1;
+  double myTgBeta;
+  double myTolAngle;
 };
 
 #endif // _HelixGeom_HelixCurve_HeaderFile

@@ -20,8 +20,7 @@
 #include <stdio.h>
 
 template <typename TheItemType>
-math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
-                                              const int theUpper)
+math_VectorBase<TheItemType>::math_VectorBase(const int theLower, const int theUpper)
     : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
               ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
               : NCollection_Array1<TheItemType>(theLower, theUpper))
@@ -29,9 +28,9 @@ math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
 }
 
 template <typename TheItemType>
-math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
-                                              const int theUpper,
-                                              const TheItemType      theInitialValue)
+math_VectorBase<TheItemType>::math_VectorBase(const int         theLower,
+                                              const int         theUpper,
+                                              const TheItemType theInitialValue)
     : Array(theUpper - theLower + 1 <= math_VectorBase::THE_BUFFER_SIZE
               ? NCollection_Array1<TheItemType>(*myBuffer.data(), theLower, theUpper)
               : NCollection_Array1<TheItemType>(theLower, theUpper))
@@ -40,9 +39,9 @@ math_VectorBase<TheItemType>::math_VectorBase(const int theLower,
 }
 
 template <typename TheItemType>
-math_VectorBase<TheItemType>::math_VectorBase(const TheItemType*     theTab,
-                                              const int theLower,
-                                              const int theUpper)
+math_VectorBase<TheItemType>::math_VectorBase(const TheItemType* theTab,
+                                              const int          theLower,
+                                              const int          theUpper)
     : Array(*theTab, theLower, theUpper)
 {
 }
@@ -125,8 +124,8 @@ double math_VectorBase<TheItemType>::Norm2() const
 template <typename TheItemType>
 int math_VectorBase<TheItemType>::Max() const
 {
-  int I = 0;
-  double    X = RealFirst();
+  int    I = 0;
+  double X = RealFirst();
 
   for (int Index = Lower(); Index <= Upper(); Index++)
   {
@@ -142,8 +141,8 @@ int math_VectorBase<TheItemType>::Max() const
 template <typename TheItemType>
 int math_VectorBase<TheItemType>::Min() const
 {
-  int I = 0;
-  double    X = RealLast();
+  int    I = 0;
+  double X = RealLast();
 
   for (int Index = Lower(); Index <= Upper(); Index++)
   {
@@ -157,8 +156,8 @@ int math_VectorBase<TheItemType>::Min() const
 }
 
 template <typename TheItemType>
-void math_VectorBase<TheItemType>::Set(const int              theI1,
-                                       const int              theI2,
+void math_VectorBase<TheItemType>::Set(const int                           theI1,
+                                       const int                           theI2,
                                        const math_VectorBase<TheItemType>& theV)
 {
   Standard_RangeError_Raise_if((theI1 < Lower()) || (theI2 > Upper()) || (theI1 > theI2)
@@ -197,10 +196,10 @@ void math_VectorBase<TheItemType>::Invert()
 {
   for (int Index = Lower(); Index <= (Lower() + Length()) >> 1; Index++)
   {
-    int J     = Upper() + Lower() - Index;
-    TheItemType      aTemp = Array(Index);
-    Array(Index)           = Array(J);
-    Array(J)               = aTemp;
+    int         J     = Upper() + Lower() - Index;
+    TheItemType aTemp = Array(Index);
+    Array(Index)      = Array(J);
+    Array(J)          = aTemp;
   }
 }
 
@@ -407,8 +406,8 @@ void math_VectorBase<TheItemType>::Multiply(const math_Matrix&                  
   int Index = Lower();
   for (int I = theLeft.LowerRow(); I <= theLeft.UpperRow(); I++)
   {
-    Array(Index)       = 0.0;
-    int K = theRight.Lower();
+    Array(Index) = 0.0;
+    int K        = theRight.Lower();
     for (int J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
     {
       Array(Index) = Array(Index) + theLeft(I, J) * theRight.Array(K);
@@ -429,8 +428,8 @@ void math_VectorBase<TheItemType>::Multiply(const math_VectorBase<TheItemType>& 
   int Index = Lower();
   for (int J = theRight.LowerCol(); J <= theRight.UpperCol(); J++)
   {
-    Array(Index)       = 0.0;
-    int K = theLeft.Lower();
+    Array(Index) = 0.0;
+    int K        = theLeft.Lower();
     for (int I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theRight(I, J);
@@ -451,8 +450,8 @@ void math_VectorBase<TheItemType>::TMultiply(const math_Matrix&                 
   int Index = Lower();
   for (int I = theTLeft.LowerCol(); I <= theTLeft.UpperCol(); I++)
   {
-    Array(Index)       = 0.0;
-    int K = theRight.Lower();
+    Array(Index) = 0.0;
+    int K        = theRight.Lower();
     for (int J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
     {
       Array(Index) = Array(Index) + theTLeft(J, I) * theRight.Array(K);
@@ -473,8 +472,8 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
   int Index = Lower();
   for (int J = theTRight.LowerRow(); J <= theTRight.UpperRow(); J++)
   {
-    Array(Index)       = 0.0;
-    int K = theLeft.Lower();
+    Array(Index) = 0.0;
+    int K        = theLeft.Lower();
     for (int I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
     {
       Array(Index) = Array(Index) + theLeft.Array(K) * theTRight(J, I);
@@ -525,8 +524,8 @@ math_VectorBase<TheItemType> math_VectorBase<TheItemType>::Multiplied(
   math_VectorBase Result(theRight.LowerCol(), theRight.UpperCol());
   for (int J2 = theRight.LowerCol(); J2 <= theRight.UpperCol(); J2++)
   {
-    Result.Array(J2)       = 0.0;
-    int theI2 = theRight.LowerRow();
+    Result.Array(J2) = 0.0;
+    int theI2        = theRight.LowerRow();
     for (int I = Lower(); I <= Upper(); I++)
     {
       Result.Array(J2) = Result.Array(J2) + Array(I) * theRight(theI2, J2);
@@ -594,8 +593,8 @@ void math_VectorBase<TheItemType>::Dump(Standard_OStream& theO) const
 template <typename TheItemType>
 void math_VectorBase<TheItemType>::Resize(const int theSize)
 {
-  const int theLower      = Array.Lower();
-  const int theUpper      = theLower + theSize - 1;
+  const int  theLower      = Array.Lower();
+  const int  theUpper      = theLower + theSize - 1;
   const bool aNewFitsStack = theSize <= THE_BUFFER_SIZE;
   const bool aWasOnStack   = !Array.IsDeletable();
 

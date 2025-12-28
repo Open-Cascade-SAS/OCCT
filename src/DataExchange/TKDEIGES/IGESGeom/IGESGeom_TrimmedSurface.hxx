@@ -53,10 +53,11 @@ public:
   //! - anOuter   : Closed curve which constitutes outer boundary
   //! - allInners : Array of closed curves which constitute the
   //! inner boundary
-  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&              aSurface,
-                            const int                          aFlag,
-                            const occ::handle<IGESGeom_CurveOnSurface>&          anOuter,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& allInners);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESData_IGESEntity>&                                       aSurface,
+    const int                                                                     aFlag,
+    const occ::handle<IGESGeom_CurveOnSurface>&                                   anOuter,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& allInners);
 
   //! returns the surface to be trimmed
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
@@ -82,9 +83,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESData_IGESEntity>              theSurface;
-  int                         theFlag;
-  occ::handle<IGESGeom_CurveOnSurface>          theOuterCurve;
+  occ::handle<IGESData_IGESEntity>                                       theSurface;
+  int                                                                    theFlag;
+  occ::handle<IGESGeom_CurveOnSurface>                                   theOuterCurve;
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> theInnerCurves;
 };
 

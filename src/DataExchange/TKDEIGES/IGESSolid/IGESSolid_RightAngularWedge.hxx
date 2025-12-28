@@ -44,11 +44,11 @@ public:
   //! default (1,0,0)
   //! - anZAxis  : the unit vector defining local Z-axis
   //! default (0,0,1)
-  Standard_EXPORT void Init(const gp_XYZ&       aSize,
-                            const double lowX,
-                            const gp_XYZ&       aCorner,
-                            const gp_XYZ&       anXAxis,
-                            const gp_XYZ&       anZAxis);
+  Standard_EXPORT void Init(const gp_XYZ& aSize,
+                            const double  lowX,
+                            const gp_XYZ& aCorner,
+                            const gp_XYZ& anXAxis,
+                            const gp_XYZ& anZAxis);
 
   //! returns the size
   Standard_EXPORT gp_XYZ Size() const;
@@ -97,11 +97,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSolid_RightAngularWedge, IGESData_IGESEntity)
 
 private:
-  gp_XYZ        theSize;
+  gp_XYZ theSize;
   double theXSmallLength;
-  gp_XYZ        theCorner;
-  gp_XYZ        theXAxis;
-  gp_XYZ        theZAxis;
+  gp_XYZ theCorner;
+  gp_XYZ theXAxis;
+  gp_XYZ theZAxis;
 };
 
 #endif // _IGESSolid_RightAngularWedge_HeaderFile

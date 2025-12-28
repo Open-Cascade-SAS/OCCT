@@ -91,7 +91,7 @@ public:
     const TheKeyType& Key(void) const noexcept { return myKey; }
 
     //! Static deleter to be passed to BaseMap
-    static void delNode(NCollection_ListNode*              theNode,
+    static void delNode(NCollection_ListNode*                   theNode,
                         occ::handle<NCollection_BaseAllocator>& theAl) noexcept
     {
       ((DataMapNode*)theNode)->~DataMapNode();
@@ -176,7 +176,7 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_DataMap(const int                   theNbBuckets,
+  explicit NCollection_DataMap(const int                                     theNbBuckets,
                                const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
@@ -240,7 +240,7 @@ public:
   {
     NCollection_ListNode** newdata = NULL;
     NCollection_ListNode** dummy   = NULL;
-    int       newBuck;
+    int                    newBuck;
     if (BeginResize(N, newBuck, newdata, dummy))
     {
       if (myData1)
@@ -536,10 +536,7 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false)
-  {
-    Destroy(DataMapNode::delNode, doReleaseMemory);
-  }
+  void Clear(const bool doReleaseMemory = false) { Destroy(DataMapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)

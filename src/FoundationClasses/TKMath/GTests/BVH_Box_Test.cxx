@@ -208,7 +208,7 @@ TEST(BVH_BoxTest, NegativeCoordinates)
 TEST(BVH_BoxTest, LargeValues)
 {
   BVH_Box<double, 3> aBox(BVH_Vec3d(1e10, 1e10, 1e10),
-                                 BVH_Vec3d(1e10 + 1.0, 1e10 + 2.0, 1e10 + 3.0));
+                          BVH_Vec3d(1e10 + 1.0, 1e10 + 2.0, 1e10 + 3.0));
 
   EXPECT_TRUE(aBox.IsValid());
 
@@ -531,7 +531,7 @@ TEST(BVH_BoxTest, AddDuplicatePoint)
 
 TEST(BVH_BoxTest, SinglePointConstructor)
 {
-  BVH_Vec3d                 aPoint(5.0, 10.0, 15.0);
+  BVH_Vec3d          aPoint(5.0, 10.0, 15.0);
   BVH_Box<double, 3> aBox(aPoint);
 
   EXPECT_TRUE(aBox.IsValid());
@@ -551,7 +551,7 @@ TEST(BVH_BoxTest, SinglePointConstructor)
 
 TEST(BVH_BoxTest, SinglePointConstructor2D)
 {
-  BVH_Vec2d                 aPoint(3.0, 7.0);
+  BVH_Vec2d          aPoint(3.0, 7.0);
   BVH_Box<double, 2> aBox(aPoint);
 
   EXPECT_TRUE(aBox.IsValid());
@@ -563,7 +563,7 @@ TEST(BVH_BoxTest, SinglePointConstructor2D)
 
 TEST(BVH_BoxTest, SinglePointConstructorOrigin)
 {
-  BVH_Vec3d                 aOrigin(0.0, 0.0, 0.0);
+  BVH_Vec3d          aOrigin(0.0, 0.0, 0.0);
   BVH_Box<double, 3> aBox(aOrigin);
 
   EXPECT_TRUE(aBox.IsValid());
@@ -793,9 +793,8 @@ TEST(BVH_BoxTest, ContainsByCorners_FullyContained)
 {
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(10.0, 10.0, 10.0));
 
-  bool hasOverlap = false;
-  bool isContained =
-    aBox.Contains(BVH_Vec3d(2.0, 2.0, 2.0), BVH_Vec3d(8.0, 8.0, 8.0), hasOverlap);
+  bool hasOverlap  = false;
+  bool isContained = aBox.Contains(BVH_Vec3d(2.0, 2.0, 2.0), BVH_Vec3d(8.0, 8.0, 8.0), hasOverlap);
 
   EXPECT_TRUE(isContained);
   EXPECT_TRUE(hasOverlap);
@@ -1022,8 +1021,8 @@ TEST(BVH_BoxTest, IsOut_TwoCorners_Contained)
 TEST(BVH_BoxTest, Constexpr_Construction)
 {
   // Test that constexpr constructors work at compile time
-  constexpr BVH_Vec3d                 aMin(0.0, 0.0, 0.0);
-  constexpr BVH_Vec3d                 aMax(1.0, 1.0, 1.0);
+  constexpr BVH_Vec3d          aMin(0.0, 0.0, 0.0);
+  constexpr BVH_Vec3d          aMax(1.0, 1.0, 1.0);
   constexpr BVH_Box<double, 3> aBox(aMin, aMax);
 
   static_assert(aBox.IsValid(), "Constexpr box should be valid");
@@ -1031,7 +1030,7 @@ TEST(BVH_BoxTest, Constexpr_Construction)
 
 TEST(BVH_BoxTest, Constexpr_SinglePoint)
 {
-  constexpr BVH_Vec3d                 aPoint(5.0, 5.0, 5.0);
+  constexpr BVH_Vec3d          aPoint(5.0, 5.0, 5.0);
   constexpr BVH_Box<double, 3> aBox(aPoint);
 
   static_assert(aBox.IsValid(), "Constexpr single-point box should be valid");

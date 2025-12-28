@@ -40,10 +40,11 @@ class StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem
 public:
   Standard_EXPORT StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&          aName,
-                            const occ::handle<StepBasic_MeasureValueMember>&      aValueComponent,
-                            const StepBasic_Unit&                            aUnitComponent,
-                            const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                      aName,
+    const occ::handle<StepBasic_MeasureValueMember>&                  aValueComponent,
+    const StepBasic_Unit&                                             aUnitComponent,
+    const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
 
   Standard_EXPORT void SetMeasure(const occ::handle<StepBasic_MeasureWithUnit>& Measure);
 
@@ -53,18 +54,19 @@ public:
 
   Standard_EXPORT int NbQualifiers() const;
 
-  Standard_EXPORT void SetQualifiers(const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
+  Standard_EXPORT void SetQualifiers(
+    const occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>& qualifiers);
 
   Standard_EXPORT StepShape_ValueQualifier QualifiersValue(const int num) const;
 
-  Standard_EXPORT void SetQualifiersValue(const int          num,
+  Standard_EXPORT void SetQualifiersValue(const int                       num,
                                           const StepShape_ValueQualifier& aqualifier);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem,
                           StepRepr_RepresentationItem)
 
 private:
-  occ::handle<StepBasic_MeasureWithUnit>         myMeasure;
+  occ::handle<StepBasic_MeasureWithUnit>                     myMeasure;
   occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> theQualifiers;
 };
 

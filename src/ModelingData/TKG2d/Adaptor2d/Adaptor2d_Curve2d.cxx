@@ -83,8 +83,8 @@ void Adaptor2d_Curve2d::Intervals(NCollection_Array1<double>&, const GeomAbs_Sha
 //					       const double Last ,
 //					       const double Tol) const
 occ::handle<Adaptor2d_Curve2d> Adaptor2d_Curve2d::Trim(const double,
-                                                  const double,
-                                                  const double) const
+                                                       const double,
+                                                       const double) const
 {
   throw Standard_NotImplemented("Adaptor2d_Curve2d::Trim");
 }

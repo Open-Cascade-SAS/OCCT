@@ -140,17 +140,17 @@ private:
 
 //=================================================================================================
 
-WNT_Window::WNT_Window(const char*     theTitle,
-                       const occ::handle<WNT_WClass>&  theClass,
-                       const WNT_Dword&           theStyle,
-                       const int     thePxLeft,
-                       const int     thePxTop,
-                       const int     thePxWidth,
-                       const int     thePxHeight,
-                       const Quantity_NameOfColor theBackColor,
-                       const Aspect_Handle        theParent,
-                       const Aspect_Handle        theMenu,
-                       void* const     theClientStruct)
+WNT_Window::WNT_Window(const char*                    theTitle,
+                       const occ::handle<WNT_WClass>& theClass,
+                       const WNT_Dword&               theStyle,
+                       const int                      thePxLeft,
+                       const int                      thePxTop,
+                       const int                      thePxWidth,
+                       const int                      thePxHeight,
+                       const Quantity_NameOfColor     theBackColor,
+                       const Aspect_Handle            theParent,
+                       const Aspect_Handle            theMenu,
+                       void* const                    theClientStruct)
     : Aspect_Window(),
       myWClass(theClass),
       myHWindow(NULL),
@@ -377,10 +377,7 @@ double WNT_Window::Ratio() const
 
 //=================================================================================================
 
-void WNT_Window::Position(int& theX1,
-                          int& theY1,
-                          int& theX2,
-                          int& theY2) const
+void WNT_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
 {
   if (IsVirtual())
   {
@@ -432,10 +429,7 @@ void WNT_Window::Size(int& theWidth, int& theHeight) const
 
 //=================================================================================================
 
-void WNT_Window::SetPos(const int theX,
-                        const int theY,
-                        const int theX1,
-                        const int theY1)
+void WNT_Window::SetPos(const int theX, const int theY, const int theX1, const int theY1)
 {
   myXLeft   = theX;
   myYTop    = theY;
@@ -849,9 +843,9 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
         }
       }
 
-      const NCollection_Vec2<int>  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
-      Aspect_VKeyMouse       aButton = Aspect_VKeyMouse_NONE;
+      const NCollection_Vec2<int> aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      const Aspect_VKeyFlags      aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      Aspect_VKeyMouse            aButton = Aspect_VKeyMouse_NONE;
       switch (theMsg.message)
       {
         case WM_LBUTTONUP:
@@ -884,10 +878,11 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
     }
     case WM_MOUSEWHEEL: {
       const int              aDelta  = GET_WHEEL_DELTA_WPARAM(theMsg.wParam);
-      const double    aDeltaF = double(aDelta) / double(WHEEL_DELTA);
+      const double           aDeltaF = double(aDelta) / double(WHEEL_DELTA);
       const Aspect_VKeyFlags aFlags  = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
-      NCollection_Vec2<int> aPos(int(short(LOWORD(theMsg.lParam))), int(short(HIWORD(theMsg.lParam))));
-      POINT           aCursorPnt = {aPos.x(), aPos.y()};
+      NCollection_Vec2<int>  aPos(int(short(LOWORD(theMsg.lParam))),
+                                  int(short(HIWORD(theMsg.lParam))));
+      POINT                  aCursorPnt = {aPos.x(), aPos.y()};
       if (ScreenToClient(theMsg.hwnd, &aCursorPnt))
       {
         aPos.SetValues(aCursorPnt.x, aCursorPnt.y);
@@ -903,9 +898,9 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
       return true;
     }
     case WM_MOUSEMOVE: {
-      NCollection_Vec2<int>  aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
-      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent(theMsg.wParam);
-      Aspect_VKeyFlags aFlags   = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
+      NCollection_Vec2<int> aPos(LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
+      Aspect_VKeyMouse      aButtons = WNT_Window::MouseButtonsFromEvent(theMsg.wParam);
+      Aspect_VKeyFlags      aFlags   = WNT_Window::MouseKeyFlagsFromEvent(theMsg.wParam);
 
       // don't make a slide-show from input events - fetch the actual mouse cursor position
       CURSORINFO aCursor;
@@ -994,15 +989,16 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
       bool hasUpdates = false;
       for (size_t aTouchIter = 0; aTouchIter < aSrcTouches.Size(); ++aTouchIter)
       {
-        const TOUCHINPUT&   aTouchSrc = aSrcTouches[aTouchIter];
-        const size_t aTouchId  = (size_t)aTouchSrc.dwID;
+        const TOUCHINPUT& aTouchSrc = aSrcTouches[aTouchIter];
+        const size_t      aTouchId  = (size_t)aTouchSrc.dwID;
         // const size_t aDeviceId = (size_t )aTouchSrc.hSource;
 
-        const NCollection_Vec2<int> aSize = aWinBotRight - aWinTopLeft;
+        const NCollection_Vec2<int>    aSize = aWinBotRight - aWinTopLeft;
         const NCollection_Vec2<double> aNewPos2d =
           NCollection_Vec2<double>(double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
           - NCollection_Vec2<double>(aWinTopLeft);
-        const NCollection_Vec2<int> aNewPos2i = NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
+        const NCollection_Vec2<int> aNewPos2i =
+          NCollection_Vec2<int>(aNewPos2d + NCollection_Vec2<double>(0.5));
         if ((aTouchSrc.dwFlags & TOUCHEVENTF_DOWN) == TOUCHEVENTF_DOWN)
         {
           if (aNewPos2i.x() >= 0 && aNewPos2i.x() < aSize.x() && aNewPos2i.y() >= 0

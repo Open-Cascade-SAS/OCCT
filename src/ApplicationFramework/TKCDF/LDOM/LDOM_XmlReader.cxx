@@ -64,8 +64,8 @@ static bool isName(const char* aString, const char* aStringEnd, const char*& aNa
 //=======================================================================
 
 LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
-                               TCollection_AsciiString&       theErrorString,
-                               const bool         theTagPerStep)
+                               TCollection_AsciiString&            theErrorString,
+                               const bool                          theTagPerStep)
     : myEOF(false),
       myError(theErrorString),
       myDocument(theDocument),
@@ -85,15 +85,15 @@ LDOM_XmlReader::LDOM_XmlReader(const occ::handle<LDOM_MemManager>& theDocument,
 
 LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStream,
                                                       LDOM_OSStream&    theData,
-                                                      bool& theDocStart)
+                                                      bool&             theDocStart)
 {
   theData.Clear();
   myError.Clear();
-  ParserState      aState     = STATE_WAITING;
-  const char *     aStartData = NULL, *aNameEnd = NULL, *aPtr;
-  LDOMBasicString  anAttrName, anAttrValue;
-  char             anAttDelimiter = '\0';
-  bool aHasRead       = false;
+  ParserState     aState     = STATE_WAITING;
+  const char *    aStartData = NULL, *aNameEnd = NULL, *aPtr;
+  LDOMBasicString anAttrName, anAttrValue;
+  char            anAttDelimiter = '\0';
+  bool            aHasRead       = false;
 
   for (;;)
   {
@@ -166,7 +166,8 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
       switch (aFirstChar)
       {
         case 0xEF:
-          if (static_cast<unsigned char>(myPtr[1]) == 0xBB && static_cast<unsigned char>(myPtr[2]) == 0xBF)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xBB
+              && static_cast<unsigned char>(myPtr[2]) == 0xBF)
           {
             myBOM = LDOM_OSStream::BOM_UTF8;
             myPtr += 3;
@@ -228,7 +229,8 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
           break;
         case 0x0E:
-          if (static_cast<unsigned char>(myPtr[1]) == 0xFE && static_cast<unsigned char>(myPtr[2]) == 0xFF)
+          if (static_cast<unsigned char>(myPtr[1]) == 0xFE
+              && static_cast<unsigned char>(myPtr[2]) == 0xFF)
           {
             myBOM = LDOM_OSStream::BOM_SCSU;
             myPtr += 3;
@@ -312,9 +314,8 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   myPtr      = aNameEnd;
                   if (myPtr < myEndPtr)
                   {
-                    myElement   = &LDOM_BasicElement::Create(aStartData,
-                                                           (int)(myPtr - aStartData),
-                                                           myDocument);
+                    myElement =
+                      &LDOM_BasicElement::Create(aStartData, (int)(myPtr - aStartData), myDocument);
                     myLastChild = NULL;
                     aState      = STATE_ATTRIBUTE_NAME;
                     aStartData  = NULL;
@@ -550,8 +551,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             else
             {
               if (theData.Length() == 0)
-                anAttrName =
-                  LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
+                anAttrName = LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
               else
               {
                 theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
@@ -689,7 +689,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 static bool isName(const char* aString, const char* aStringEnd, const char*& aNameEnd)
 {
   bool aResult;
-  char             aCh = aString[0];
+  char aCh = aString[0];
   if (IsAlphabetic(aCh) || aCh == '_' || aCh == ':')
   {
     const char* aPtr = &aString[1];
@@ -745,9 +745,7 @@ void LDOM_XmlReader::CreateElement(const char* theName, const int theLen)
 // purpose  : Try to initialize theValue as Integer; return False on success
 //=======================================================================
 
-bool LDOM_XmlReader::getInteger(LDOMBasicString& theValue,
-                                            const char*      theStart,
-                                            const char*      theEnd)
+bool LDOM_XmlReader::getInteger(LDOMBasicString& theValue, const char* theStart, const char* theEnd)
 {
   char* ptr;
   errno = 0;

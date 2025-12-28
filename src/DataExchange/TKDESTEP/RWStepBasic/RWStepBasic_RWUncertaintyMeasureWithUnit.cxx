@@ -30,7 +30,7 @@ RWStepBasic_RWUncertaintyMeasureWithUnit::RWStepBasic_RWUncertaintyMeasureWithUn
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                              num,
+  const int                                                num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent) const
 {
@@ -118,7 +118,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent) const
 {
 
@@ -158,7 +158,7 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::WriteStep(
 
 void RWStepBasic_RWUncertaintyMeasureWithUnit::Share(
   const occ::handle<StepBasic_UncertaintyMeasureWithUnit>& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   iter.GetOneItem(ent->UnitComponent().Value());

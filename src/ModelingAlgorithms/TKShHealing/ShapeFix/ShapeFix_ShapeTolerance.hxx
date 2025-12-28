@@ -45,9 +45,9 @@ public:
   //! Returns True if at least one tolerance of the sub-shape has
   //! been modified
   Standard_EXPORT bool LimitTolerance(const TopoDS_Shape&    shape,
-                                                  const double    tmin,
-                                                  const double    tmax = 0.0,
-                                                  const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
+                                      const double           tmin,
+                                      const double           tmax = 0.0,
+                                      const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
 
   //! Sets (enforces) tolerances in a shape to the given value
   //! styp = VERTEX : only vertices are set
@@ -56,9 +56,8 @@ public:
   //! styp = WIRE   : to have edges and their vertices set
   //! styp = other value : all (vertices,edges,faces) are set
   Standard_EXPORT void SetTolerance(const TopoDS_Shape&    shape,
-                                    const double    preci,
+                                    const double           preci,
                                     const TopAbs_ShapeEnum styp = TopAbs_SHAPE) const;
-
 };
 
 #endif // _ShapeFix_ShapeTolerance_HeaderFile

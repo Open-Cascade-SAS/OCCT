@@ -121,9 +121,9 @@ void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& Fi
                                                    const IntPatch_Polyhedron& SeconPol)
 {
   bool gridOnFirst          = true;
-  int NbTrianglesFirstPol  = IntPatch_PolyhedronTool::NbTriangles(FirstPol);
-  int NbTrianglesSecondPol = IntPatch_PolyhedronTool::NbTriangles(SeconPol);
-  int iFirst, iSecon;
+  int  NbTrianglesFirstPol  = IntPatch_PolyhedronTool::NbTriangles(FirstPol);
+  int  NbTrianglesSecondPol = IntPatch_PolyhedronTool::NbTriangles(SeconPol);
+  int  iFirst, iSecon;
 
   //------------------------------------------------------------------------------------------
   //-- the same number of triangles it is necessary to test better on
@@ -208,9 +208,9 @@ void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& Fi
 // purpose  : Intersection of two triangles issue from two Polyhedron.
 //=======================================================================
 
-void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
+void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                                                 const IntPatch_Polyhedron& FirstPol,
-                                                const int     Tri2,
+                                                const int                  Tri2,
                                                 const IntPatch_Polyhedron& SeconPol)
 {
   IntPatch_PolyhedronTool::Triangle(FirstPol, Tri1, OI[0], OI[1], OI[2]);
@@ -241,7 +241,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
   double floatGap = 1e-13; //-- Epsilon(1000.);
 
   // Equation of the triangle plane of the objet
-  gp_XYZ        ONor; // Normal vector.
+  gp_XYZ ONor; // Normal vector.
   double Odp;  // Polar Distance.
   Intf::PlaneEquation(IntPatch_PolyhedronTool::Point(FirstPol, OI[0]),
                       IntPatch_PolyhedronTool::Point(FirstPol, OI[1]),
@@ -250,7 +250,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
                       Odp);
 
   // Equation of the triangle plane of the tool
-  gp_XYZ        TNor; // Normal vector.
+  gp_XYZ TNor; // Normal vector.
   double Tdp;  // Polar distance.
   Intf::PlaneEquation(IntPatch_PolyhedronTool::Point(SeconPol, TI[0]),
                       IntPatch_PolyhedronTool::Point(SeconPol, TI[1]),
@@ -303,12 +303,12 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
     int iObj, iToo;
 
     // Zone de stockage des resultats :
-    int       nbpiOT = 0;
-    int       nbpiO  = 0;
-    int       nbpiT  = 0;
+    int                                     nbpiOT = 0;
+    int                                     nbpiO  = 0;
+    int                                     nbpiT  = 0;
     NCollection_Sequence<Intf_SectionPoint> piOT;
-    double          parO[3];
-    double          parT[3];
+    double                                  parO[3];
+    double                                  parT[3];
 
     // Indicateurs d arete touchee
     int edOT[3];
@@ -496,8 +496,8 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
     }
 
     // Singularite EDGE EDGE
-    gp_Pnt        piO;
-    gp_XYZ        piT;
+    gp_Pnt piO;
+    gp_XYZ piT;
     double lg;
     for (iObj = 0; iObj < 3; iObj++)
     {
@@ -664,9 +664,9 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
       // Sort the <nbpiOT> sections points along the intersection between the
       // two triangles :
 
-      gp_XYZ                                dir = ONor ^ TNor;
+      gp_XYZ                         dir = ONor ^ TNor;
       NCollection_LocalArray<double> d(nbpiOT);
-      int                      iPi, iPs;
+      int                            iPi, iPs;
       for (iPi = 0; iPi < nbpiOT; iPi++)
       {
         d[iPi] = dir * piOT(iPi + 1).Pnt().XYZ();
@@ -863,19 +863,18 @@ void IntPatch_InterferencePolyhedron::Intersect(const int     Tri1,
 
 //=================================================================================================
 
-bool IntPatch_InterferencePolyhedron::TangentZoneValue(
-  Intf_TangentZone&          TheTZ,
-  const IntPatch_Polyhedron& FirstPol,
-  const int     Tri1,
-  const IntPatch_Polyhedron& SeconPol,
-  const int     Tri2) const
+bool IntPatch_InterferencePolyhedron::TangentZoneValue(Intf_TangentZone&          TheTZ,
+                                                       const IntPatch_Polyhedron& FirstPol,
+                                                       const int                  Tri1,
+                                                       const IntPatch_Polyhedron& SeconPol,
+                                                       const int                  Tri2) const
 {
   // Potential tangent Zone !
   // ------------------------
 
-  bool finished = false;
-  int nob, nou, nob2, nou2;
-  double    par;
+  bool   finished = false;
+  int    nob, nou, nob2, nou2;
+  double par;
 
   Intf_PIType tOP[3];
   Intf_PIType tTP[3];
@@ -885,7 +884,7 @@ bool IntPatch_InterferencePolyhedron::TangentZoneValue(
     tTP[nou] = Intf_EXTERNAL;
   }
 
-  int       nbpInt = 0;
+  int                                     nbpInt = 0;
   NCollection_Sequence<Intf_SectionPoint> Tpi;
 
   // Compute the positions of the points of <Tri1> in the triangle <Tri2>.
@@ -1034,9 +1033,9 @@ bool IntPatch_InterferencePolyhedron::TangentZoneValue(
 
     // Last indexes are not used.
     // Arrays are increased to eliminate gcc warning.
-    double    parO[10], parT[10];
-    int nbNoInserted = 0;
-    int piToInsert[17]; // for GCC 4.9
+    double parO[10], parT[10];
+    int    nbNoInserted = 0;
+    int    piToInsert[17]; // for GCC 4.9
 
     for (nob = 0; nob < 3; nob++)
     {
@@ -1126,8 +1125,8 @@ bool IntPatch_InterferencePolyhedron::TangentZoneValue(
 void IntPatch_InterferencePolyhedron::CoupleCharacteristics(const IntPatch_Polyhedron& FirstPol,
                                                             const IntPatch_Polyhedron& SeconPol)
 {
-  int n1, n2;
-  double    lg;
+  int    n1, n2;
+  double lg;
 
   for (n1 = 0; n1 < 3; n1++)
   {

@@ -82,8 +82,8 @@ void ShapeFix_Shape::Init(const TopoDS_Shape& shape)
 
 bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
 {
-  int      savFixSmallAreaWireMode = 0;
-  int      savFixVertexTolMode     = myFixVertexTolMode;
+  int                        savFixSmallAreaWireMode = 0;
+  int                        savFixVertexTolMode     = myFixVertexTolMode;
   occ::handle<ShapeFix_Face> fft                     = FixFaceTool();
   if (!fft.IsNull())
   {
@@ -95,14 +95,14 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   }
 
   myStatus                = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  bool status = false;
+  bool             status = false;
   TopAbs_ShapeEnum st;
 
   // gka fix for sharing assembly
   TopLoc_Location nullLoc, L;
-  L                                    = myShape.Location();
-  TopoDS_Shape           aShapeNullLoc = myShape;
-  const bool aIsRecorded   = Context()->IsNewShape(myShape);
+  L                          = myShape.Location();
+  TopoDS_Shape aShapeNullLoc = myShape;
+  const bool   aIsRecorded   = Context()->IsNewShape(myShape);
   aShapeNullLoc.Location(nullLoc);
   if (aIsRecorded || myMapFixingShape.Contains(aShapeNullLoc))
   {
@@ -129,11 +129,11 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   {
     case TopAbs_COMPOUND:
     case TopAbs_COMPSOLID: {
-      TopoDS_Shape     shape                   = myShape;
-      int savFixSameParameterMode = myFixSameParameterMode;
-      myFixSameParameterMode                   = false;
-      myFixVertexTolMode                       = false;
-      int aShapesNb               = S.NbChildren();
+      TopoDS_Shape shape                   = myShape;
+      int          savFixSameParameterMode = myFixSameParameterMode;
+      myFixSameParameterMode               = false;
+      myFixVertexTolMode                   = false;
+      int aShapesNb                        = S.NbChildren();
 
       // Open progress indication scope for sub-shape fixing
       Message_ProgressScope aPSSubShape(aPS.Next(), "Fixing sub-shape", aShapesNb);
@@ -179,8 +179,8 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
     case TopAbs_FACE: {
       if (!NeedFix(myFixFaceMode))
         break;
-      occ::handle<ShapeFix_Face> sff                = FixFaceTool();
-      bool      savTopoMode        = sff->FixWireTool()->ModifyTopologyMode();
+      occ::handle<ShapeFix_Face> sff           = FixFaceTool();
+      bool                       savTopoMode   = sff->FixWireTool()->ModifyTopologyMode();
       sff->FixWireTool()->ModifyTopologyMode() = true;
       sff->Init(TopoDS::Face(S));
       sff->SetContext(Context());
@@ -197,9 +197,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
       if (!NeedFix(myFixWireMode))
         break;
       occ::handle<ShapeFix_Wire> sfw           = FixWireTool();
-      bool      savTopoMode   = sfw->ModifyTopologyMode();
-      bool      savClosedMode = sfw->ClosedWireMode();
-      sfw->ModifyTopologyMode()           = true;
+      bool                       savTopoMode   = sfw->ModifyTopologyMode();
+      bool                       savClosedMode = sfw->ClosedWireMode();
+      sfw->ModifyTopologyMode()                = true;
       if (!S.Closed())
         sfw->ClosedWireMode() = false;
       sfw->SetFace(TopoDS_Face());
@@ -240,8 +240,8 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   }
   if (NeedFix(myFixVertexTolMode))
   {
-    int nbF = 0;
-    TopExp_Explorer  anExpF(myResult, TopAbs_FACE);
+    int             nbF = 0;
+    TopExp_Explorer anExpF(myResult, TopAbs_FACE);
     for (; anExpF.More() && nbF <= 1; anExpF.Next())
       nbF++;
     if (nbF > 1)
@@ -273,7 +273,7 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
 //=================================================================================================
 
 void ShapeFix_Shape::SameParameter(const TopoDS_Shape&          sh,
-                                   const bool       enforce,
+                                   const bool                   enforce,
                                    const Message_ProgressRange& theProgress)
 {
   ShapeFix::SameParameter(sh, enforce, 0.0, theProgress);

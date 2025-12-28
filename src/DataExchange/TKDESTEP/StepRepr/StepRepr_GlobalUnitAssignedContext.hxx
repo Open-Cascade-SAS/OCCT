@@ -35,11 +35,13 @@ public:
   //! Returns a GlobalUnitAssignedContext
   Standard_EXPORT StepRepr_GlobalUnitAssignedContext();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
-                            const occ::handle<TCollection_HAsciiString>&     aContextType,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                              aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                              aContextType,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
-  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
+  Standard_EXPORT void SetUnits(
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 

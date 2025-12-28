@@ -21,7 +21,7 @@ RWStepRepr_RWMaterialDesignation::RWStepRepr_RWMaterialDesignation() {}
 
 void RWStepRepr_RWMaterialDesignation::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepRepr_MaterialDesignation>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepRepr_RWMaterialDesignation::ReadStep(
 }
 
 void RWStepRepr_RWMaterialDesignation::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepRepr_MaterialDesignation>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepRepr_RWMaterialDesignation::WriteStep(
 }
 
 void RWStepRepr_RWMaterialDesignation::Share(const occ::handle<StepRepr_MaterialDesignation>& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator& iter) const
 {
   iter.AddItem(ent->OfDefinition().Value());
 }

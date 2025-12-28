@@ -63,9 +63,9 @@ public:
   //! Warnings : It is possible to have FocalLength = 0. In this case,
   //! the parabola looks like a line, which is parallel to the symmetry-axis.
   //! Raises ConstructionError if FocalLength < 0.0
-  constexpr gp_Parab2d(const gp_Ax2d&         theMirrorAxis,
-                       const double    theFocalLength,
-                       const bool theSense = true)
+  constexpr gp_Parab2d(const gp_Ax2d& theMirrorAxis,
+                       const double   theFocalLength,
+                       const bool     theSense = true)
       : pos(theMirrorAxis, theSense),
         focalLength(theFocalLength)
   {
@@ -97,9 +97,9 @@ public:
   //! by theSense parameter. If theSense == TRUE (by default) then right-handed
   //! coordinate system is used, otherwise - left-handed. Result parabola will look
   //! like a line, which is perpendicular to the directrix.
-  Standard_EXPORT gp_Parab2d(const gp_Ax2d&         theDirectrix,
-                             const gp_Pnt2d&        theFocus,
-                             const bool theSense = true);
+  Standard_EXPORT gp_Parab2d(const gp_Ax2d&  theDirectrix,
+                             const gp_Pnt2d& theFocus,
+                             const bool      theSense = true);
 
   //! Changes the focal distance of the parabola
   //! Warnings : It is possible to have theFocal = 0.
@@ -249,7 +249,7 @@ public:
 
   //! Translates a parabola from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Parab2d Translated(const gp_Pnt2d& theP1,
-                                                     const gp_Pnt2d& theP2) const noexcept
+                                                const gp_Pnt2d& theP2) const noexcept
   {
     gp_Parab2d aPrb = *this;
     aPrb.pos.Translate(theP1, theP2);
@@ -257,8 +257,8 @@ public:
   }
 
 private:
-  gp_Ax22d      pos;
-  double focalLength;
+  gp_Ax22d pos;
+  double   focalLength;
 };
 
 //=================================================================================================

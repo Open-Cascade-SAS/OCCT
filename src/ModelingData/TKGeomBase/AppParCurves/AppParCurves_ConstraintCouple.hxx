@@ -35,7 +35,7 @@ public:
 
   //! Create a couple the object <Index> will have the
   //! constraint <Cons>.
-  Standard_EXPORT AppParCurves_ConstraintCouple(const int        TheIndex,
+  Standard_EXPORT AppParCurves_ConstraintCouple(const int                     TheIndex,
                                                 const AppParCurves_Constraint Cons);
 
   //! returns the index of the constraint object.
@@ -51,7 +51,7 @@ public:
   Standard_EXPORT void SetConstraint(const AppParCurves_Constraint Cons);
 
 private:
-  int        myIndex;
+  int                     myIndex;
   AppParCurves_Constraint myConstraint;
 };
 

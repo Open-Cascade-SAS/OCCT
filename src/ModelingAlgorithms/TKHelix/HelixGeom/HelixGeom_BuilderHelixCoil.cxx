@@ -40,8 +40,8 @@ void HelixGeom_BuilderHelixCoil::Perform()
   myErrorStatus   = 0;
   myWarningStatus = 0;
   // Initialize variables for curve approximation
-  int             iErr;
-  HelixGeom_HelixCurve         aAdaptor;
+  int                               iErr;
+  HelixGeom_HelixCurve              aAdaptor;
   occ::handle<HelixGeom_HelixCurve> aHAdaptor;
   occ::handle<Geom_BSplineCurve>    aBC;
   // Clear previous results and setup helix adaptor

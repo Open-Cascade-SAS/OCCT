@@ -25,7 +25,7 @@ RWStepVisual_RWSurfaceStyleUsage::RWStepVisual_RWSurfaceStyleUsage() {}
 
 void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepVisual_SurfaceStyleUsage>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepVisual_RWSurfaceStyleUsage::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepVisual_SurfaceStyleUsage>& ent) const
 {
 
@@ -75,7 +75,7 @@ void RWStepVisual_RWSurfaceStyleUsage::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceStyleUsage::Share(const occ::handle<StepVisual_SurfaceStyleUsage>& ent,
-                                             Interface_EntityIterator&                   iter) const
+                                             Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Style());

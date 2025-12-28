@@ -66,10 +66,10 @@ public:
 public:
   //! Creates a NSWindow and NSView defined by his position and size in pixels
   Standard_EXPORT Cocoa_Window(const char* theTitle,
-                               const int thePxLeft,
-                               const int thePxTop,
-                               const int thePxWidth,
-                               const int thePxHeight);
+                               const int   thePxLeft,
+                               const int   thePxTop,
+                               const int   thePxWidth,
+                               const int   thePxHeight);
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! Creates a wrapper over existing UIView handle
@@ -101,14 +101,10 @@ public:
   Standard_EXPORT virtual double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(int& X1,
-                                        int& Y1,
-                                        int& X2,
-                                        int& Y2) const override;
+  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(int& theWidth,
-                                    int& theHeight) const override;
+  Standard_EXPORT virtual void Size(int& theWidth, int& theHeight) const override;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! @return associated UIView
@@ -125,10 +121,7 @@ public:
 #endif
 
   //! @return native Window handle
-  virtual Aspect_Drawable NativeHandle() const override
-  {
-    return (Aspect_Drawable)HView();
-  }
+  virtual Aspect_Drawable NativeHandle() const override { return (Aspect_Drawable)HView(); }
 
   //! @return parent of native Window handle
   virtual Aspect_Drawable NativeParentHandle() const override { return 0; }

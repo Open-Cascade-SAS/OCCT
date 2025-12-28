@@ -45,7 +45,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -81,7 +80,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
 
   // gp_Pnt spot;
   // double spotol;
-  bool done = false;
+  bool             done = false;
   TopAbs_ShapeEnum st   = myShape.ShapeType();
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID || st == TopAbs_SOLID || st == TopAbs_SHELL
       || st == TopAbs_FACE)
@@ -101,7 +100,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
         done     = true;
       }
     }
-    myShape                   = Context()->Apply(myShape);
+    myShape                        = Context()->Apply(myShape);
     occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
     if (done)
     {
@@ -129,16 +128,14 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSpotFace()
   return myShape;
 }
 
-bool ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
-  TopoDS_Face& F,
-  const double /*tol*/) const
+bool ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(TopoDS_Face& F, const double /*tol*/) const
 {
 
   NCollection_Sequence<gp_XYZ> thePositions;
-  gp_XYZ               thePosition;
-  BRep_Builder         theBuilder;
-  double        theMaxDev;
-  double        theMaxTol = 0.0;
+  gp_XYZ                       thePosition;
+  BRep_Builder                 theBuilder;
+  double                       theMaxDev;
+  double                       theMaxTol = 0.0;
   thePositions.Clear();
   gp_Pnt thePoint;
   // smh#8
@@ -170,7 +167,7 @@ bool ShapeFix_FixSmallFace::ReplaceVerticesInCaseOfSpot(
     thePositions.Append(thePoint.XYZ());
   }
   // Calculate common vertex position
-  thePosition               = gp_XYZ(0., 0., 0.);
+  thePosition  = gp_XYZ(0., 0., 0.);
   int theNbPos = thePositions.Length();
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= theNbPos; i++)
@@ -286,10 +283,10 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixStripFace(const bool wasdone)
   return myShape;
 }
 
-bool ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face&        F,
-                                                             TopoDS_Edge&        E1,
-                                                             TopoDS_Edge&        E2,
-                                                             const double tol) const
+bool ShapeFix_FixSmallFace::ReplaceInCaseOfStrip(TopoDS_Face& F,
+                                                 TopoDS_Edge& E1,
+                                                 TopoDS_Edge& E2,
+                                                 const double tol) const
 {
   if (E1.IsNull() || E2.IsNull())
     return false;
@@ -368,10 +365,10 @@ bool ShapeFix_FixSmallFace::RemoveFacesInCaseOfStrip(const TopoDS_Face& F) const
 }
 
 TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Face& /*F*/,
-                                                                 const TopoDS_Edge&  E1,
-                                                                 const TopoDS_Edge&  E2,
-                                                                 const TopoDS_Face&  F1,
-                                                                 const double tol) const
+                                                                 const TopoDS_Edge& E1,
+                                                                 const TopoDS_Edge& E2,
+                                                                 const TopoDS_Face& F1,
+                                                                 const double       tol) const
 {
 
   BRep_Builder theBuilder;
@@ -380,7 +377,7 @@ TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Fa
   TopoDS_Vertex V1, V2, V3, V4;
   TopExp::Vertices(E1, V1, V2);
   TopExp::Vertices(E2, V3, V4);
-  gp_Pnt        p1, p2;
+  gp_Pnt p1, p2;
   double dev;
   p1  = BRep_Tool::Pnt(V1);
   p2  = BRep_Tool::Pnt(V3);
@@ -521,8 +518,8 @@ TopoDS_Edge ShapeFix_FixSmallFace::ComputeSharedEdgeForStripFace(const TopoDS_Fa
     return theNewEdge;
   // Create new edge
   theBuilder.MakeEdge(theNewEdge);
-  double      f, l, fp1, lp1 /*, fp2, lp2*/;
-  TopLoc_Location    loc;
+  double                  f, l, fp1, lp1 /*, fp2, lp2*/;
+  TopLoc_Location         loc;
   occ::handle<Geom_Curve> the3dcurve;
   the3dcurve = BRep_Tool::Curve(E1, f, l);
   occ::handle<Geom2d_Curve> the2dcurve1, the2dcurve2, thenew1, thenew2;
@@ -580,7 +577,7 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSplitFace(const TopoDS_Shape& /*S*/)
   if (myShape.IsNull())
     return myShape;
   TopAbs_ShapeEnum st   = myShape.ShapeType();
-  bool done = false;
+  bool             done = false;
   TopoDS_Compound  theSplittedFaces;
   BRep_Builder     theBuilder;
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID || st == TopAbs_SOLID || st == TopAbs_SHELL
@@ -605,13 +602,13 @@ TopoDS_Shape ShapeFix_FixSmallFace::FixSplitFace(const TopoDS_Shape& /*S*/)
   return myShape;
 }
 
-bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
-                                                     TopoDS_Compound& theSplittedFaces)
+bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face& F, TopoDS_Compound& theSplittedFaces)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>     MapEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                                       MapEdges;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<double>, TopTools_ShapeMapHasher> MapParam;
-  TopoDS_Compound                        theAllVert;
-  BRep_Builder                           theBuilder;
+  TopoDS_Compound                                                                      theAllVert;
+  BRep_Builder                                                                         theBuilder;
   theBuilder.MakeCompound(theAllVert);
   // smh#8
   TopoDS_Shape tmpShape = Context()->Apply(F);
@@ -642,7 +639,7 @@ bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
         E = TopoDS::Edge(ite.Current());
         TopoDS_Vertex V1, V2;
         TopExp::Vertices(E, V1, V2);
-        double      cf, cl;
+        double                  cf, cl;
         occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(E, cf, cl);
         if (C3D.IsNull())
           continue;
@@ -659,7 +656,7 @@ bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
           theBuilder.UpdateVertex(theNewVertex, proj, Precision::Confusion());
           theBuilder.MakeEdge(theFirstEdge);
           theBuilder.MakeEdge(theSecondEdge);
-          double      f, l;
+          double                  f, l;
           occ::handle<Geom_Curve> the3dcurve = BRep_Tool::Curve(E, f, l);
           theBuilder.UpdateEdge(theFirstEdge, the3dcurve, Precision::Confusion());
           theBuilder.UpdateEdge(theSecondEdge, the3dcurve, Precision::Confusion());
@@ -699,10 +696,10 @@ bool ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face&     F,
       if (theNewVertex.IsNull())
         return false;
       // Create split edge
-      TopoDS_Edge        theSplitEdge;
-      gp_Lin             lin(vp, gp_Dir(gp_Vec(vp, proj)));
-      double      firstparam = ElCLib::Parameter(lin, vp);
-      double      lastparam  = ElCLib::Parameter(lin, proj);
+      TopoDS_Edge             theSplitEdge;
+      gp_Lin                  lin(vp, gp_Dir(gp_Vec(vp, proj)));
+      double                  firstparam = ElCLib::Parameter(lin, vp);
+      double                  lastparam  = ElCLib::Parameter(lin, proj);
       occ::handle<Geom_Line>  L          = new Geom_Line(vp, gp_Vec(vp, proj));
       occ::handle<Geom_Curve> the3dc     = L;
       theBuilder.MakeEdge(theSplitEdge, the3dc, Precision::Confusion());

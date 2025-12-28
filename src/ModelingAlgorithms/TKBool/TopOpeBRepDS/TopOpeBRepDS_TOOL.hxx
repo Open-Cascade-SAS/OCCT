@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -38,32 +37,34 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static int EShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                                  const TopoDS_Edge&                         E,
-                                                  NCollection_List<TopoDS_Shape>&                      lEsd);
+                                     const TopoDS_Edge&                              E,
+                                     NCollection_List<TopoDS_Shape>&                 lEsd);
 
   Standard_EXPORT static bool ShareG(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                                 const int                     is1,
-                                                 const int                     is2);
+                                     const int                                       is1,
+                                     const int                                       is2);
 
   Standard_EXPORT static bool GetEsd(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                                 const TopoDS_Shape&                        S,
-                                                 const int                     ie,
-                                                 int&                          iesd);
+                                     const TopoDS_Shape&                             S,
+                                     const int                                       ie,
+                                     int&                                            iesd);
 
   Standard_EXPORT static bool ShareSplitON(
-    const occ::handle<TopOpeBRepDS_HDataStructure>&            HDS,
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MspON,
-    const int                                i1,
-    const int                                i2,
-    TopoDS_Shape&                                         spON);
+    const occ::handle<TopOpeBRepDS_HDataStructure>&     HDS,
+    const NCollection_DataMap<TopoDS_Shape,
+                              TopOpeBRepDS_ListOfShapeOn1State,
+                              TopTools_ShapeMapHasher>& MspON,
+    const int                                           i1,
+    const int                                           i2,
+    TopoDS_Shape&                                       spON);
 
-  Standard_EXPORT static bool GetConfig(
-    const occ::handle<TopOpeBRepDS_HDataStructure>&            HDS,
-    const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEspON,
-    const int                                ie,
-    const int                                iesd,
-    int&                                     conf);
-
+  Standard_EXPORT static bool GetConfig(const occ::handle<TopOpeBRepDS_HDataStructure>&     HDS,
+                                        const NCollection_DataMap<TopoDS_Shape,
+                                                                  TopOpeBRepDS_ListOfShapeOn1State,
+                                                                  TopTools_ShapeMapHasher>& MEspON,
+                                        const int                                           ie,
+                                        const int                                           iesd,
+                                        int&                                                conf);
 };
 
 #endif // _TopOpeBRepDS_TOOL_HeaderFile

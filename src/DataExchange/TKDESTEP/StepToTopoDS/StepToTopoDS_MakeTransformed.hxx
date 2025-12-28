@@ -42,15 +42,14 @@ public:
   //! Computes a transformation to pass from an Origin placement to
   //! a Target placement. Returns True when done
   //! If not done, the transformation will by Identity
-  Standard_EXPORT bool
-    Compute(const occ::handle<StepGeom_Axis2Placement3d>& Origin,
-            const occ::handle<StepGeom_Axis2Placement3d>& Target,
-            const StepData_Factors&                  theLocalFactors = StepData_Factors());
+  Standard_EXPORT bool Compute(const occ::handle<StepGeom_Axis2Placement3d>& Origin,
+                               const occ::handle<StepGeom_Axis2Placement3d>& Target,
+                               const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Computes a transformation defined by an operator 3D
-  Standard_EXPORT bool
-    Compute(const occ::handle<StepGeom_CartesianTransformationOperator3d>& Operator,
-            const StepData_Factors& theLocalFactors = StepData_Factors());
+  Standard_EXPORT bool Compute(
+    const occ::handle<StepGeom_CartesianTransformationOperator3d>& Operator,
+    const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Returns the computed transformation (Identity if not yet or
   //! if failed)

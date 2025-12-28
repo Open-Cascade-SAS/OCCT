@@ -20,9 +20,7 @@
 #include <DBRep_Edge.hxx>
 #include <NCollection_List.hxx>
 #include <DBRep_Face.hxx>
-#include <NCollection_List.hxx>
 #include <DBRep_HideData.hxx>
-#include <NCollection_List.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
@@ -42,14 +40,14 @@ class DBRep_DrawableShape : public Draw_Drawable3D
   DEFINE_STANDARD_RTTIEXT(DBRep_DrawableShape, Draw_Drawable3D)
   Draw_Drawable3D_FACTORY
 public:
-  Standard_EXPORT DBRep_DrawableShape(const TopoDS_Shape&    C,
-                                      const Draw_Color&      FreeCol,
-                                      const Draw_Color&      ConnCol,
-                                      const Draw_Color&      EdgeCol,
-                                      const Draw_Color&      IsosCol,
-                                      const double    size,
-                                      const int nbisos,
-                                      const int discret);
+  Standard_EXPORT DBRep_DrawableShape(const TopoDS_Shape& C,
+                                      const Draw_Color&   FreeCol,
+                                      const Draw_Color&   ConnCol,
+                                      const Draw_Color&   EdgeCol,
+                                      const Draw_Color&   IsosCol,
+                                      const double        size,
+                                      const int           nbisos,
+                                      const int           discret);
 
   //! Changes the number of isoparametric curves in a shape.
   Standard_EXPORT void ChangeNbIsos(const int NbIsos);
@@ -79,21 +77,21 @@ public:
   Standard_EXPORT void DisplayPolygons(const bool D);
 
   //! Performs Hidden lines.
-  Standard_EXPORT void DisplayHLR(const bool withHLR,
-                                  const bool withRg1,
-                                  const bool withRgN,
-                                  const bool withHid,
-                                  const double    ang);
+  Standard_EXPORT void DisplayHLR(const bool   withHLR,
+                                  const bool   withRg1,
+                                  const bool   withRgN,
+                                  const bool   withHid,
+                                  const double ang);
 
   Standard_EXPORT bool DisplayTriangulation() const;
 
   Standard_EXPORT bool DisplayPolygons() const;
 
-  Standard_EXPORT void GetDisplayHLR(bool& withHLR,
-                                     bool& withRg1,
-                                     bool& withRgN,
-                                     bool& withHid,
-                                     double&    ang) const;
+  Standard_EXPORT void GetDisplayHLR(bool&   withHLR,
+                                     bool&   withRg1,
+                                     bool&   withRgN,
+                                     bool&   withHid,
+                                     double& ang) const;
 
   Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
@@ -124,7 +122,7 @@ public:
   Standard_EXPORT static bool addMeshNormals(
     NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>& theNormals,
     const TopoDS_Face&                             theFace,
-    const double                            theLength);
+    const double                                   theLength);
 
   //! Auxiliary method computing nodal normals for presentation purposes.
   //! @param[out] theNormals  map of computed normals (grouped per Face)
@@ -133,7 +131,7 @@ public:
   Standard_EXPORT static void addMeshNormals(
     NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>& theNormals,
     const TopoDS_Shape&                                                              theShape,
-    const double                                                              theLength);
+    const double                                                                     theLength);
 
   //! Auxiliary method computing surface normals distributed within the Face for presentation
   //! purposes.
@@ -146,9 +144,9 @@ public:
   Standard_EXPORT static bool addSurfaceNormals(
     NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>& theNormals,
     const TopoDS_Face&                             theFace,
-    const double                            theLength,
-    const int                         theNbAlongU,
-    const int                         theNbAlongV);
+    const double                                   theLength,
+    const int                                      theNbAlongU,
+    const int                                      theNbAlongV);
 
   //! Auxiliary method computing surface normals distributed within the Face for presentation
   //! purposes.
@@ -161,12 +159,14 @@ public:
   Standard_EXPORT static void addSurfaceNormals(
     NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>& theNormals,
     const TopoDS_Shape&                                                              theShape,
-    const double                                                              theLength,
-    const int                                                           theNbAlongU,
-    const int                                                           theNbAlongV);
+    const double                                                                     theLength,
+    const int                                                                        theNbAlongU,
+    const int                                                                        theNbAlongV);
 
 private:
-  void display(const occ::handle<Poly_Triangulation>& T, const gp_Trsf& tr, Draw_Display& dis) const;
+  void display(const occ::handle<Poly_Triangulation>& T,
+               const gp_Trsf&                         tr,
+               Draw_Display&                          dis) const;
 
   //! Updates internal data necessary for display
   void updateDisplayData() const;
@@ -176,23 +176,23 @@ private:
 
   mutable NCollection_List<occ::handle<DBRep_Edge>> myEdges;
   mutable NCollection_List<occ::handle<DBRep_Face>> myFaces;
-  NCollection_List<DBRep_HideData>     myHidData;
+  NCollection_List<DBRep_HideData>                  myHidData;
 
-  double    mySize;
-  int myDiscret;
-  Draw_Color       myFreeCol;
-  Draw_Color       myConnCol;
-  Draw_Color       myEdgeCol;
-  Draw_Color       myIsosCol;
-  int myNbIsos;
-  bool myDispOr;
-  bool mytriangulations;
-  bool mypolygons;
-  bool myHLR;
-  bool myRg1;
-  bool myRgN;
-  bool myHid;
-  double    myAng;
+  double     mySize;
+  int        myDiscret;
+  Draw_Color myFreeCol;
+  Draw_Color myConnCol;
+  Draw_Color myEdgeCol;
+  Draw_Color myIsosCol;
+  int        myNbIsos;
+  bool       myDispOr;
+  bool       mytriangulations;
+  bool       mypolygons;
+  bool       myHLR;
+  bool       myRg1;
+  bool       myRgN;
+  bool       myHid;
+  double     myAng;
 };
 
 #endif // _DBRep_DrawableShape_HeaderFile

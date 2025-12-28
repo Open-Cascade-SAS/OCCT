@@ -34,11 +34,11 @@ static const double COSMIN = 1.e-2;
 
 // G1 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T,
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T,
                                                    const double    IncrementalLoad,
-                                                   const int orientation)
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;
@@ -94,13 +94,13 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
 
 // G1 + G2 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T0,
-                                                   const Plate_D2&        D2S,
-                                                   const Plate_D2&        D2T0,
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T0,
+                                                   const Plate_D2& D2S,
+                                                   const Plate_D2& D2T0,
                                                    const double    IncrementalLoad,
-                                                   const int orientation)
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;
@@ -234,15 +234,15 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2
 
 // G1 + G2 + G3 Constraints
 
-Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&           point2d,
-                                                   const Plate_D1&        D1S,
-                                                   const Plate_D1&        D1T0,
-                                                   const Plate_D2&        D2S,
-                                                   const Plate_D2&        D2T0,
-                                                   const Plate_D3&        D3S,
-                                                   const Plate_D3&        D3T0,
+Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY&    point2d,
+                                                   const Plate_D1& D1S,
+                                                   const Plate_D1& D1T0,
+                                                   const Plate_D2& D2S,
+                                                   const Plate_D2& D2T0,
+                                                   const Plate_D3& D3S,
+                                                   const Plate_D3& D3T0,
                                                    const double    IncrementalLoad,
-                                                   const int orientation)
+                                                   const int       orientation)
 {
   pnt2d            = point2d;
   nb_PPConstraints = 0;

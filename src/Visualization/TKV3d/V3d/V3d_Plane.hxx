@@ -53,16 +53,13 @@ public:
 
   //! Display the plane representation in the chosen view.
   Standard_EXPORT virtual void Display(const occ::handle<V3d_View>& theView,
-                                       const Quantity_Color&   theColor = Quantity_NOC_GRAY);
+                                       const Quantity_Color&        theColor = Quantity_NOC_GRAY);
 
   //! Erase the plane representation.
   Standard_EXPORT void Erase();
 
   //! Returns the parameters of the plane.
-  Standard_EXPORT void Plane(double& theA,
-                             double& theB,
-                             double& theC,
-                             double& theD) const;
+  Standard_EXPORT void Plane(double& theA, double& theB, double& theC, double& theD) const;
 
   //! Returns TRUE when the plane representation is displayed.
   Standard_EXPORT bool IsDisplayed() const;

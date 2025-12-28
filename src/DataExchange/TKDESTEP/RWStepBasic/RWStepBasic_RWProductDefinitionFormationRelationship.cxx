@@ -33,7 +33,7 @@ RWStepBasic_RWProductDefinitionFormationRelationship::
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,
-  const int                                          num,
+  const int                                                            num,
   occ::handle<Interface_Check>&                                        ach,
   const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent) const
 {
@@ -79,7 +79,7 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::WriteStep(
-  StepData_StepWriter&                                            SW,
+  StepData_StepWriter&                                                 SW,
   const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent) const
 {
 
@@ -100,7 +100,7 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::WriteStep(
 
 void RWStepBasic_RWProductDefinitionFormationRelationship::Share(
   const occ::handle<StepBasic_ProductDefinitionFormationRelationship>& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                            iter) const
 {
 
   // Own fields of ProductDefinitionFormationRelationship

@@ -51,10 +51,10 @@ public:
   Standard_EXPORT void Update();
 
 private:
-  occ::handle<AIS_InteractiveContext>     myContext;
-  occ::handle<V3d_View>                   myView;
-  ViewerTest_AutoUpdater::RedrawMode myToUpdate;
-  bool                   myWasAutoUpdate;
+  occ::handle<AIS_InteractiveContext> myContext;
+  occ::handle<V3d_View>               myView;
+  ViewerTest_AutoUpdater::RedrawMode  myToUpdate;
+  bool                                myWasAutoUpdate;
 };
 
 #endif // _ViewerTest_AutoUpdater_HeaderFile

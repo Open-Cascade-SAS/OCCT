@@ -28,7 +28,7 @@ StepAP203_CcDesignCertification::StepAP203_CcDesignCertification() {}
 //=================================================================================================
 
 void StepAP203_CcDesignCertification::Init(
-  const occ::handle<StepBasic_Certification>&          aCertificationAssignment_AssignedCertification,
+  const occ::handle<StepBasic_Certification>& aCertificationAssignment_AssignedCertification,
   const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& aItems)
 {
   StepBasic_CertificationAssignment::Init(aCertificationAssignment_AssignedCertification);
@@ -38,7 +38,8 @@ void StepAP203_CcDesignCertification::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> StepAP203_CcDesignCertification::Items() const
+occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> StepAP203_CcDesignCertification::Items()
+  const
 {
   return theItems;
 }

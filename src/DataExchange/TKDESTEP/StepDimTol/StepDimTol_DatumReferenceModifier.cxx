@@ -24,8 +24,7 @@ StepDimTol_DatumReferenceModifier::StepDimTol_DatumReferenceModifier() {}
 
 //=================================================================================================
 
-int StepDimTol_DatumReferenceModifier::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepDimTol_DatumReferenceModifier::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

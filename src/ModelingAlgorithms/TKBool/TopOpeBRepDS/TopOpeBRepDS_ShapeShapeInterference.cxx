@@ -25,10 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Int
 TopOpeBRepDS_ShapeShapeInterference::TopOpeBRepDS_ShapeShapeInterference(
   const TopOpeBRepDS_Transition& T,
   const TopOpeBRepDS_Kind        ST,
-  const int         S,
+  const int                      S,
   const TopOpeBRepDS_Kind        GT,
-  const int         G,
-  const bool         GBound,
+  const int                      G,
+  const bool                     GBound,
   const TopOpeBRepDS_Config      C)
     : TopOpeBRepDS_Interference(T, ST, S, GT, G),
       myGBound(GBound),

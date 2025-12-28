@@ -45,10 +45,10 @@ public:
 
   Standard_EXPORT Vrml_Texture2();
 
-  Standard_EXPORT Vrml_Texture2(const TCollection_AsciiString& aFilename,
-                                const occ::handle<Vrml_SFImage>&    aImage,
-                                const Vrml_Texture2Wrap        aWrapS,
-                                const Vrml_Texture2Wrap        aWrapT);
+  Standard_EXPORT Vrml_Texture2(const TCollection_AsciiString&   aFilename,
+                                const occ::handle<Vrml_SFImage>& aImage,
+                                const Vrml_Texture2Wrap          aWrapS,
+                                const Vrml_Texture2Wrap          aWrapT);
 
   Standard_EXPORT void SetFilename(const TCollection_AsciiString& aFilename);
 
@@ -69,10 +69,10 @@ public:
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 private:
-  TCollection_AsciiString myFilename;
-  occ::handle<Vrml_SFImage>    myImage;
-  Vrml_Texture2Wrap       myWrapS;
-  Vrml_Texture2Wrap       myWrapT;
+  TCollection_AsciiString   myFilename;
+  occ::handle<Vrml_SFImage> myImage;
+  Vrml_Texture2Wrap         myWrapS;
+  Vrml_Texture2Wrap         myWrapT;
 };
 
 #endif // _Vrml_Texture2_HeaderFile

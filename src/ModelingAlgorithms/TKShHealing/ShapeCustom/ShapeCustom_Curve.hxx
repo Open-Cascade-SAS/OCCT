@@ -39,8 +39,8 @@ public:
   //! Works only if the Curve is BSpline and is closed with
   //! Precision::Confusion()
   //! Else, or in case of failure, returns a Null Handle
-  Standard_EXPORT occ::handle<Geom_Curve> ConvertToPeriodic(const bool substitute,
-                                                       const double    preci = -1);
+  Standard_EXPORT occ::handle<Geom_Curve> ConvertToPeriodic(const bool   substitute,
+                                                            const double preci = -1);
 
 private:
   occ::handle<Geom_Curve> myCurve;

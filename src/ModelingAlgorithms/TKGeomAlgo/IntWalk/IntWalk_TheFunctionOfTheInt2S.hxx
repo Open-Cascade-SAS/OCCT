@@ -48,21 +48,21 @@ public:
 
   Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
 
-  Standard_EXPORT void ComputeParameters(const IntImp_ConstIsoparametric ChoixIso,
-                                         const NCollection_Array1<double>&     Param,
-                                         math_Vector&                    UVap,
-                                         math_Vector&                    BornInf,
-                                         math_Vector&                    BornSup,
-                                         math_Vector&                    Tolerance);
+  Standard_EXPORT void ComputeParameters(const IntImp_ConstIsoparametric   ChoixIso,
+                                         const NCollection_Array1<double>& Param,
+                                         math_Vector&                      UVap,
+                                         math_Vector&                      BornInf,
+                                         math_Vector&                      BornSup,
+                                         math_Vector&                      Tolerance);
 
   //! returns somme des fi*fi
   double Root() const;
 
   gp_Pnt Point() const;
 
-  Standard_EXPORT bool IsTangent(const math_Vector&         UVap,
-                                             NCollection_Array1<double>&      Param,
-                                             IntImp_ConstIsoparametric& BestChoix);
+  Standard_EXPORT bool IsTangent(const math_Vector&          UVap,
+                                 NCollection_Array1<double>& Param,
+                                 IntImp_ConstIsoparametric&  BestChoix);
 
   gp_Dir Direction() const;
 
@@ -75,29 +75,29 @@ public:
   const occ::handle<Adaptor3d_Surface>& AuxillarSurface2() const;
 
 private:
-  void*          surf1;
-  void*          surf2;
+  void*                     surf1;
+  void*                     surf2;
   gp_Pnt                    pntsol1;
   gp_Pnt                    pntsol2;
-  double             f[3];
-  bool          compute;
-  bool          tangent;
-  double             tgduv[4];
+  double                    f[3];
+  bool                      compute;
+  bool                      tangent;
+  double                    tgduv[4];
   gp_Vec                    dpuv[4];
   IntImp_ConstIsoparametric chxIso;
-  double             paramConst;
-  double             ua0;
-  double             va0;
-  double             ua1;
-  double             va1;
-  double             ub0;
-  double             vb0;
-  double             ub1;
-  double             vb1;
-  double             ures1;
-  double             ures2;
-  double             vres1;
-  double             vres2;
+  double                    paramConst;
+  double                    ua0;
+  double                    va0;
+  double                    ua1;
+  double                    va1;
+  double                    ub0;
+  double                    vb0;
+  double                    ub1;
+  double                    vb1;
+  double                    ures1;
+  double                    ures2;
+  double                    vres1;
+  double                    vres2;
 };
 
 #define ThePSurface occ::handle<Adaptor3d_Surface>

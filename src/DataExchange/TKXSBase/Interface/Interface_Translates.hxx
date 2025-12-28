@@ -37,7 +37,8 @@
 //    do the same thing as SeqToArray if <lowind> equates 1
 //    else fixes lower index of <arr> as <lowind>
 
-//  SeqToArrayCast(seq,arr,NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,TCollection_HAsciiString)  will :
+//  SeqToArrayCast(seq,arr,NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,TCollection_HAsciiString)
+//  will :
 //    do as SeqToArray, but array values are Handles to be casted
 //      (if <seq> does not work with the same type, e.g. Standard_Transient)
 //    fill array value by the result of DownCast of the type <typent>
@@ -50,7 +51,7 @@
 #define SeqToArrayFrom(seq, arr, typarr, lowind)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    int numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(lowind, lenseq + 1 - lowind);                                               \
@@ -62,7 +63,7 @@
 #define SeqToArray(seq, arr, typarr)                                                               \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    int numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -74,7 +75,7 @@
 #define SeqToArrayCast(seq, arr, typarr, typent)                                                   \
   if (!seq.IsNull())                                                                               \
   {                                                                                                \
-    int numseq, lenseq = seq->Length();                                               \
+    int numseq, lenseq = seq->Length();                                                            \
     if (lenseq > 0)                                                                                \
     {                                                                                              \
       arr = new typarr(1, lenseq);                                                                 \
@@ -86,7 +87,7 @@
 #define ArrayToSeq                                                                                 \
   (arr, seq)                                                                                       \
   {                                                                                                \
-    int nument, numlow = arr->Lower(), numup = arr->Upper();                          \
+    int nument, numlow = arr->Lower(), numup = arr->Upper();                                       \
     for (nument = numlow; nument <= numup; nument++)                                               \
       seq->Append(arr->Value(nument));                                                             \
   }

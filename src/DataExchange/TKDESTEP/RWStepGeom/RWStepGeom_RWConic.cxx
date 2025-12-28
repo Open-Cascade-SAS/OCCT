@@ -20,7 +20,7 @@
 RWStepGeom_RWConic::RWStepGeom_RWConic() {}
 
 void RWStepGeom_RWConic::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepGeom_Conic>&          ent) const
 {
@@ -47,7 +47,8 @@ void RWStepGeom_RWConic::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName, aPosition);
 }
 
-void RWStepGeom_RWConic::WriteStep(StepData_StepWriter& SW, const occ::handle<StepGeom_Conic>& ent) const
+void RWStepGeom_RWConic::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepGeom_Conic>& ent) const
 {
 
   // --- inherited field name ---
@@ -60,7 +61,7 @@ void RWStepGeom_RWConic::WriteStep(StepData_StepWriter& SW, const occ::handle<St
 }
 
 void RWStepGeom_RWConic::Share(const occ::handle<StepGeom_Conic>& ent,
-                               Interface_EntityIterator&     iter) const
+                               Interface_EntityIterator&          iter) const
 {
 
   iter.GetOneItem(ent->Position().Value());

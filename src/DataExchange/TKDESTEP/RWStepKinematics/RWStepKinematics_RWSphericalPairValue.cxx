@@ -32,7 +32,7 @@ RWStepKinematics_RWSphericalPairValue::RWStepKinematics_RWSphericalPairValue() {
 
 void RWStepKinematics_RWSphericalPairValue::ReadStep(
   const occ::handle<StepData_StepReaderData>&           theData,
-  const int                           theNum,
+  const int                                             theNum,
   occ::handle<Interface_Check>&                         theArch,
   const occ::handle<StepKinematics_SphericalPairValue>& theEnt) const
 {
@@ -60,11 +60,11 @@ void RWStepKinematics_RWSphericalPairValue::ReadStep(
   if (theData->SubListNumber(theNum, 3, true))
   {
     occ::handle<NCollection_HArray1<double>> aItems;
-    int              nsub = 0;
+    int                                      nsub = 0;
     if (theData->ReadSubList(theNum, 3, "items", theArch, nsub))
     {
       int nb   = theData->NbParams(nsub);
-      aItems                = new NCollection_HArray1<double>(1, nb);
+      aItems   = new NCollection_HArray1<double>(1, nb);
       int num2 = nsub;
       for (int i0 = 1; i0 <= nb; i0++)
       {
@@ -85,7 +85,7 @@ void RWStepKinematics_RWSphericalPairValue::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWSphericalPairValue::WriteStep(
-  StepData_StepWriter&                             theSW,
+  StepData_StepWriter&                                  theSW,
   const occ::handle<StepKinematics_SphericalPairValue>& theEnt) const
 {
 
@@ -117,7 +117,7 @@ void RWStepKinematics_RWSphericalPairValue::WriteStep(
 
 void RWStepKinematics_RWSphericalPairValue::Share(
   const occ::handle<StepKinematics_SphericalPairValue>& theEnt,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of RepresentationItem

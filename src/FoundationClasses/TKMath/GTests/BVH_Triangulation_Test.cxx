@@ -51,8 +51,7 @@ TEST(BVH_TriangulationTest, AddMultipleTriangles)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   EXPECT_EQ(aTriangulation.Size(), 5);
@@ -223,8 +222,7 @@ TEST(BVH_TriangulationTest, SwapPreservesVertices)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   int aVertexCount = BVH::Array<double, 3>::Size(aTriangulation.Vertices);

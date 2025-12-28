@@ -30,7 +30,7 @@ StepBasic_IdentificationRole::StepBasic_IdentificationRole()
 //=================================================================================================
 
 void StepBasic_IdentificationRole::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                        const bool                  hasDescription,
+                                        const bool                                   hasDescription,
                                         const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 

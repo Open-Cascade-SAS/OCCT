@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductRelatedProductCategory, StepBasic_Pr
 StepBasic_ProductRelatedProductCategory::StepBasic_ProductRelatedProductCategory() {}
 
 void StepBasic_ProductRelatedProductCategory::Init(
-  const occ::handle<TCollection_HAsciiString>&   aName,
-  const bool                    hasAdescription,
-  const occ::handle<TCollection_HAsciiString>&   aDescription,
+  const occ::handle<TCollection_HAsciiString>&                            aName,
+  const bool                                                              hasAdescription,
+  const occ::handle<TCollection_HAsciiString>&                            aDescription,
   const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts)
 {
   // --- classe own fields ---
@@ -36,7 +36,8 @@ void StepBasic_ProductRelatedProductCategory::SetProducts(
   products = aProducts;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> StepBasic_ProductRelatedProductCategory::Products() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>
+  StepBasic_ProductRelatedProductCategory::Products() const
 {
   return products;
 }

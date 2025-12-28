@@ -27,10 +27,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -54,15 +51,15 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   myML = ML;
 
   // evaluate the approximative length of the 3dCurve
-  int i;
-  double    Length   = 0.;
-  double    U1       = myML.FirstParameter();
-  double    U2       = myML.LastParameter();
-  int NbPoints = 50;
-  double    Dist, dU = (U2 - U1) / (2 * NbPoints - 1);
+  int    i;
+  double Length   = 0.;
+  double U1       = myML.FirstParameter();
+  double U2       = myML.LastParameter();
+  int    NbPoints = 50;
+  double Dist, dU = (U2 - U1) / (2 * NbPoints - 1);
 
   NCollection_Array1<gp_Pnt2d> LP(1, 2 * NbPoints); // tableau Longueur <-> Param
-  gp_Pnt               aPnt1, aPnt2;
+  gp_Pnt                       aPnt1, aPnt2;
   aPnt1 = myML.Value(U1);
 
   for (i = 0; i < 2 * NbPoints; i++)
@@ -96,10 +93,10 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
             << std::endl;
 #endif
 
-  double    DCorde = Length / (NbPoints - 1);
-  double    Corde  = DCorde;
-  int Index  = 1;
-  double    U, Alpha;
+  double DCorde = Length / (NbPoints - 1);
+  double Corde  = DCorde;
+  int    Index  = 1;
+  double U, Alpha;
   for (i = 2; i < NbPoints; i++)
   {
     while (LP(Index).X() < Corde)
@@ -145,17 +142,17 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
     std::cout << " TrimSurfaceTool : Approx echoue, on met les polygones" << std::endl;
 #endif
 
-    NCollection_Array1<double>    Knots(1, NbPoints);
-    NCollection_Array1<int> Mults(1, NbPoints);
+    NCollection_Array1<double> Knots(1, NbPoints);
+    NCollection_Array1<int>    Mults(1, NbPoints);
     Mults.Init(1);
     Mults(1) = Mults(NbPoints) = 2;
     NCollection_Array1<gp_Pnt>   P(1, NbPoints);
     NCollection_Array1<gp_Pnt2d> P1(1, NbPoints);
     NCollection_Array1<gp_Pnt2d> P2(1, NbPoints);
 
-    double               Uf   = ML.FirstParameter();
-    double               Ul   = ML.LastParameter();
-    double               dUlf = (Ul - Uf) / (NbPoints - 1);
+    double                      Uf   = ML.FirstParameter();
+    double                      Ul   = ML.LastParameter();
+    double                      dUlf = (Ul - Uf) / (NbPoints - 1);
     AppDef_MultiPointConstraint MPC;
     for (i = 1; i <= NbPoints - 1; i++)
     {
@@ -185,18 +182,18 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   // Les approx sont a priori OK.
 
   const AppParCurves_MultiBSpCurve& MBSp    = Fit.SplineValue();
-  int                  NbPoles = MBSp.NbPoles();
-  NCollection_Array1<gp_Pnt>                Poles(1, NbPoles);
-  NCollection_Array1<gp_Pnt2d>              Poles2d1(1, NbPoles);
-  NCollection_Array1<gp_Pnt2d>              Poles2d2(1, NbPoles);
+  int                               NbPoles = MBSp.NbPoles();
+  NCollection_Array1<gp_Pnt>        Poles(1, NbPoles);
+  NCollection_Array1<gp_Pnt2d>      Poles2d1(1, NbPoles);
+  NCollection_Array1<gp_Pnt2d>      Poles2d2(1, NbPoles);
 
   MBSp.Curve(1, Poles);
   MBSp.Curve(2, Poles2d1);
   MBSp.Curve(3, Poles2d2);
 
-  const NCollection_Array1<double>&    Knots  = MBSp.Knots();
-  const NCollection_Array1<int>& Mults  = MBSp.Multiplicities();
-  int               Degree = MBSp.Degree();
+  const NCollection_Array1<double>& Knots  = MBSp.Knots();
+  const NCollection_Array1<int>&    Mults  = MBSp.Multiplicities();
+  int                               Degree = MBSp.Degree();
 
   myCurve   = new Geom_BSplineCurve(Poles, Knots, Mults, Degree);
   myPCurve1 = new Geom2d_BSplineCurve(Poles2d1, Knots, Mults, Degree);

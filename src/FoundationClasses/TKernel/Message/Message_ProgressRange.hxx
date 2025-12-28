@@ -87,9 +87,7 @@ public:
 
 private:
   //! Constructor is private
-  Message_ProgressRange(const Message_ProgressScope& theParent,
-                        double                theStart,
-                        double                theDelta)
+  Message_ProgressRange(const Message_ProgressScope& theParent, double theStart, double theDelta)
       : myParentScope(&theParent),
         myStart(theStart),
         myDelta(theDelta),
@@ -99,11 +97,11 @@ private:
 
 private:
   const Message_ProgressScope* myParentScope; //!< Pointer to parent scope
-  double                myStart;       //!< Start point on the global scale
-  double                myDelta;       //!< Step of incrementation on the global scale
+  double                       myStart;       //!< Start point on the global scale
+  double                       myDelta;       //!< Step of incrementation on the global scale
 
   mutable bool myWasUsed; //!< Flag indicating that this range
-                                      //!  was used to create a new scope
+                          //!  was used to create a new scope
 
   friend class Message_ProgressScope;
 };

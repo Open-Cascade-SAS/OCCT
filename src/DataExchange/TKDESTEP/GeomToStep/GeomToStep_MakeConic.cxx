@@ -41,31 +41,31 @@
 // Creation d' une Conic de prostep a partir d' une Conic de Geom
 //=============================================================================
 GeomToStep_MakeConic::GeomToStep_MakeConic(const occ::handle<Geom_Conic>& C,
-                                           const StepData_Factors&   theLocalFactors)
+                                           const StepData_Factors&        theLocalFactors)
 {
   done = true;
   if (C->IsKind(STANDARD_TYPE(Geom_Circle)))
   {
-    occ::handle<Geom_Circle>   Cer = occ::down_cast<Geom_Circle>(C);
-    GeomToStep_MakeCircle MkCircle(Cer, theLocalFactors);
+    occ::handle<Geom_Circle> Cer = occ::down_cast<Geom_Circle>(C);
+    GeomToStep_MakeCircle    MkCircle(Cer, theLocalFactors);
     theConic = MkCircle.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_Ellipse)))
   {
-    occ::handle<Geom_Ellipse>   Ell = occ::down_cast<Geom_Ellipse>(C);
-    GeomToStep_MakeEllipse MkEllipse(Ell, theLocalFactors);
+    occ::handle<Geom_Ellipse> Ell = occ::down_cast<Geom_Ellipse>(C);
+    GeomToStep_MakeEllipse    MkEllipse(Ell, theLocalFactors);
     theConic = MkEllipse.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_Hyperbola)))
   {
-    occ::handle<Geom_Hyperbola>   Hyp = occ::down_cast<Geom_Hyperbola>(C);
-    GeomToStep_MakeHyperbola MkHyperbola(Hyp, theLocalFactors);
+    occ::handle<Geom_Hyperbola> Hyp = occ::down_cast<Geom_Hyperbola>(C);
+    GeomToStep_MakeHyperbola    MkHyperbola(Hyp, theLocalFactors);
     theConic = MkHyperbola.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_Parabola)))
   {
-    occ::handle<Geom_Parabola>   Par = occ::down_cast<Geom_Parabola>(C);
-    GeomToStep_MakeParabola MkParabola(Par, theLocalFactors);
+    occ::handle<Geom_Parabola> Par = occ::down_cast<Geom_Parabola>(C);
+    GeomToStep_MakeParabola    MkParabola(Par, theLocalFactors);
     theConic = MkParabola.Value();
   }
   else
@@ -82,31 +82,31 @@ GeomToStep_MakeConic::GeomToStep_MakeConic(const occ::handle<Geom_Conic>& C,
 //=============================================================================
 
 GeomToStep_MakeConic::GeomToStep_MakeConic(const occ::handle<Geom2d_Conic>& C,
-                                           const StepData_Factors&     theLocalFactors)
+                                           const StepData_Factors&          theLocalFactors)
 {
   done = true;
   if (C->IsKind(STANDARD_TYPE(Geom2d_Circle)))
   {
     occ::handle<Geom2d_Circle> Cer = occ::down_cast<Geom2d_Circle>(C);
-    GeomToStep_MakeCircle MkCircle(Cer, theLocalFactors);
+    GeomToStep_MakeCircle      MkCircle(Cer, theLocalFactors);
     theConic = MkCircle.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
   {
     occ::handle<Geom2d_Ellipse> Ell = occ::down_cast<Geom2d_Ellipse>(C);
-    GeomToStep_MakeEllipse MkEllipse(Ell, theLocalFactors);
+    GeomToStep_MakeEllipse      MkEllipse(Ell, theLocalFactors);
     theConic = MkEllipse.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_Hyperbola)))
   {
     occ::handle<Geom2d_Hyperbola> Hyp = occ::down_cast<Geom2d_Hyperbola>(C);
-    GeomToStep_MakeHyperbola MkHyperbola(Hyp, theLocalFactors);
+    GeomToStep_MakeHyperbola      MkHyperbola(Hyp, theLocalFactors);
     theConic = MkHyperbola.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_Parabola)))
   {
     occ::handle<Geom2d_Parabola> Par = occ::down_cast<Geom2d_Parabola>(C);
-    GeomToStep_MakeParabola MkParabola(Par, theLocalFactors);
+    GeomToStep_MakeParabola      MkParabola(Par, theLocalFactors);
     theConic = MkParabola.Value();
   }
   else

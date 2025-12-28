@@ -35,12 +35,12 @@ IGESSolid_ToolConicalSurface::IGESSolid_ToolConicalSurface() {}
 
 void IGESSolid_ToolConicalSurface::ReadOwnParams(const occ::handle<IGESSolid_ConicalSurface>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+                                                 IGESData_ParamReader& PR) const
 {
   occ::handle<IGESGeom_Point>     tempLocation;
   occ::handle<IGESGeom_Direction> tempAxis;
   occ::handle<IGESGeom_Direction> tempRefdir; // default Unparametrised
-  double              tempRadius, tempAngle;
+  double                          tempRadius, tempAngle;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
@@ -71,7 +71,7 @@ void IGESSolid_ToolConicalSurface::ReadOwnParams(const occ::handle<IGESSolid_Con
 }
 
 void IGESSolid_ToolConicalSurface::WriteOwnParams(const occ::handle<IGESSolid_ConicalSurface>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->LocationPoint());
   IW.Send(ent->Axis());
@@ -82,7 +82,7 @@ void IGESSolid_ToolConicalSurface::WriteOwnParams(const occ::handle<IGESSolid_Co
 }
 
 void IGESSolid_ToolConicalSurface::OwnShared(const occ::handle<IGESSolid_ConicalSurface>& ent,
-                                             Interface_EntityIterator&               iter) const
+                                             Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->LocationPoint());
   iter.GetOneItem(ent->Axis());
@@ -91,7 +91,7 @@ void IGESSolid_ToolConicalSurface::OwnShared(const occ::handle<IGESSolid_Conical
 
 void IGESSolid_ToolConicalSurface::OwnCopy(const occ::handle<IGESSolid_ConicalSurface>& another,
                                            const occ::handle<IGESSolid_ConicalSurface>& ent,
-                                           Interface_CopyTool&                     TC) const
+                                           Interface_CopyTool&                          TC) const
 {
   double tempRadius, tempAngle;
   // bool IsItParametrised = false; //szv#4:S4163:12Mar99 unused
@@ -143,9 +143,9 @@ void IGESSolid_ToolConicalSurface::OwnCheck(const occ::handle<IGESSolid_ConicalS
 }
 
 void IGESSolid_ToolConicalSurface::OwnDump(const occ::handle<IGESSolid_ConicalSurface>& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const int                  level) const
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int                                    level) const
 {
   S << "IGESSolid_ConicalSurface\n";
 

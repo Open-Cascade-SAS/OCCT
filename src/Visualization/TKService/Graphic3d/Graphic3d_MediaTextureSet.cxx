@@ -130,8 +130,7 @@ void Graphic3d_MediaTextureSet::Notify()
 
 //=================================================================================================
 
-void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath,
-                                          bool               theToWait)
+void Graphic3d_MediaTextureSet::OpenInput(const TCollection_AsciiString& thePath, bool theToWait)
 {
   if (myPlayerCtx.IsNull())
   {
@@ -208,10 +207,10 @@ bool Graphic3d_MediaTextureSet::SwapFrames()
     return false;
   }
 
-  myToPresentFrame                  = false;
-  myFront                           = myFront == 0 ? 1 : 0;
+  myToPresentFrame                       = false;
+  myFront                                = myFront == 0 ? 1 : 0;
   const occ::handle<Media_Frame>& aFront = myFramePair[myFront];
-  myFrameSize                       = aFront->Size();
+  myFrameSize                            = aFront->Size();
 #ifdef HAVE_FFMPEG
   myIsPlanarYUV = aFront->Format() == AV_PIX_FMT_YUV420P || aFront->Format() == AV_PIX_FMT_YUVJ420P;
 #endif

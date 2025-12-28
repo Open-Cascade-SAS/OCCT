@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment, Standard_Transient)
 
 StepGeom_CompositeCurveSegment::StepGeom_CompositeCurveSegment() {}
 
-void StepGeom_CompositeCurveSegment::Init(const StepGeom_TransitionCode aTransition,
-                                          const bool        aSameSense,
+void StepGeom_CompositeCurveSegment::Init(const StepGeom_TransitionCode      aTransition,
+                                          const bool                         aSameSense,
                                           const occ::handle<StepGeom_Curve>& aParentCurve)
 {
   // --- classe own fields ---

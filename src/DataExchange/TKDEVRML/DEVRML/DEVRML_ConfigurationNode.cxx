@@ -37,7 +37,8 @@ DEVRML_ConfigurationNode::DEVRML_ConfigurationNode()
 
 //=================================================================================================
 
-DEVRML_ConfigurationNode::DEVRML_ConfigurationNode(const occ::handle<DEVRML_ConfigurationNode>& theNode)
+DEVRML_ConfigurationNode::DEVRML_ConfigurationNode(
+  const occ::handle<DEVRML_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

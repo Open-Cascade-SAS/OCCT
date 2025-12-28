@@ -45,9 +45,7 @@ Draw_Grid::Draw_Grid()
 // Purpose  : Sets the steps along the X, Y & Z axis.
 //=======================================================================
 
-void Draw_Grid::Steps(const double StepX,
-                      const double StepY,
-                      const double StepZ)
+void Draw_Grid::Steps(const double StepX, const double StepY, const double StepZ)
 {
   myStepX    = std::abs(StepX);
   myStepY    = std::abs(StepY);
@@ -62,17 +60,17 @@ void Draw_Grid::DrawOn(Draw_Display& Out) const
   if (!myIsActive)
     return;
 
-  int xmin, xmax, ymin, ymax;
-  int IndexX, IndexY;
-  double    StepX, StepY;
-  int MinIndexX, MaxIndexX, MinIndexY, MaxIndexY;
-  double    Offset;
-  double    zoom, Xmin, Xmax, Ymin, Ymax;
-  gp_Trsf          T;
-  gp_Pnt           Pnt1, Pnt2;
+  int     xmin, xmax, ymin, ymax;
+  int     IndexX, IndexY;
+  double  StepX, StepY;
+  int     MinIndexX, MaxIndexX, MinIndexY, MaxIndexY;
+  double  Offset;
+  double  zoom, Xmin, Xmax, Ymin, Ymax;
+  gp_Trsf T;
+  gp_Pnt  Pnt1, Pnt2;
 
-  int IdtView;
-  char*            Type;
+  int   IdtView;
+  char* Type;
 
   IdtView = Out.ViewId();
   if (!dout.HasView(IdtView))

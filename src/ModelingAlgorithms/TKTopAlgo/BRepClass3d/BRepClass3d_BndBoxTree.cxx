@@ -32,9 +32,9 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
   if (sht == TopAbs_EDGE)
   {
     const TopoDS_Edge& E       = TopoDS::Edge(shp);
-    double      EdgeTSq = BRep_Tool::Tolerance(E);
+    double             EdgeTSq = BRep_Tool::Tolerance(E);
     EdgeTSq *= EdgeTSq;
-    double     f, l;
+    double            f, l;
     BRepAdaptor_Curve C(E);
     BRep_Tool::Range(E, f, l);
 
@@ -54,7 +54,7 @@ bool BRepClass3d_BndBoxTreeSelectorPoint::Accept(const int& theObj)
   {
     const TopoDS_Vertex& V       = TopoDS::Vertex(shp);
     gp_Pnt               VPnt    = BRep_Tool::Pnt(V);
-    double        VertTSq = BRep_Tool::Tolerance(V);
+    double               VertTSq = BRep_Tool::Tolerance(V);
     VertTSq *= VertTSq;
     // Vertex-Point interference.
     if (VPnt.SquareDistance(myP) < VertTSq)
@@ -78,9 +78,9 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
   if (sht == TopAbs_EDGE)
   {
     const TopoDS_Edge& E       = TopoDS::Edge(shp);
-    double      EdgeTSq = BRep_Tool::Tolerance(E);
+    double             EdgeTSq = BRep_Tool::Tolerance(E);
     EdgeTSq *= EdgeTSq;
-    double     f, l;
+    double            f, l;
     BRepAdaptor_Curve C(E);
     BRep_Tool::Range(E, f, l);
 
@@ -120,7 +120,7 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
   else if (sht == TopAbs_VERTEX)
   {
     const TopoDS_Vertex& V       = TopoDS::Vertex(shp);
-    double        VertTSq = BRep_Tool::Tolerance(V);
+    double               VertTSq = BRep_Tool::Tolerance(V);
     VertTSq *= VertTSq;
     // Vertex-Line interference.
     Extrema_ExtPElC ExtPL(BRep_Tool::Pnt(V),
@@ -132,7 +132,7 @@ bool BRepClass3d_BndBoxTreeSelectorLine::Accept(const int& theObj)
       if (ExtPL.SquareDistance(1) < VertTSq)
       {
         Extrema_POnCurv PP;
-        double   paramL;
+        double          paramL;
         PP     = ExtPL.Point(1);
         paramL = PP.Parameter();
         VertParam VP;

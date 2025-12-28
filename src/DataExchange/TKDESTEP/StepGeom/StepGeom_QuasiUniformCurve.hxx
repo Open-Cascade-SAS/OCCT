@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepGeom_QuasiUniformCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_QuasiUniformCurve, StepGeom_BSplineCurve)
-
 };
 
 #endif // _StepGeom_QuasiUniformCurve_HeaderFile

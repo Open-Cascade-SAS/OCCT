@@ -87,21 +87,20 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1,
   }
 }
 
-GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder&  Cyl,
-                                                     const double Dist)
+GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const double Dist)
 {
-  TheError        = gce_Done;
-  double R = std::abs(Cyl.Radius() - Dist);
-  TheCylinder     = new Geom_CylindricalSurface(Cyl);
+  TheError    = gce_Done;
+  double R    = std::abs(Cyl.Radius() - Dist);
+  TheCylinder = new Geom_CylindricalSurface(Cyl);
   TheCylinder->SetRadius(R);
 }
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const gp_Pnt& Point)
 {
   TheError = gce_Done;
-  gp_Cylinder   C(Cyl);
-  gp_Lin        L(C.Axis());
-  double R = L.Distance(Point);
+  gp_Cylinder C(Cyl);
+  gp_Lin      L(C.Axis());
+  double      R = L.Distance(Point);
   C.SetRadius(R);
   TheCylinder = new Geom_CylindricalSurface(C);
 }

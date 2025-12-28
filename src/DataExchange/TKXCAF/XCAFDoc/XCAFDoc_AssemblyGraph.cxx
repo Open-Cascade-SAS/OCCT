@@ -59,8 +59,7 @@ XCAFDoc_AssemblyGraph::XCAFDoc_AssemblyGraph(const TDF_Label& theLabel)
 // purpose  : Checks if one node is the direct child of other one
 // =======================================================================
 
-bool XCAFDoc_AssemblyGraph::IsDirectLink(const int theNode1,
-                                                     const int theNode2) const
+bool XCAFDoc_AssemblyGraph::IsDirectLink(const int theNode1, const int theNode2) const
 {
   if (!HasChildren(theNode1))
     return false;
@@ -70,8 +69,7 @@ bool XCAFDoc_AssemblyGraph::IsDirectLink(const int theNode1,
 
 //=================================================================================================
 
-XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(
-  const int theNode) const
+XCAFDoc_AssemblyGraph::NodeType XCAFDoc_AssemblyGraph::GetNodeType(const int theNode) const
 {
   const NodeType* typePtr = myNodeTypes.Seek(theNode);
   if (typePtr == NULL)
@@ -124,8 +122,8 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
   {
     TDF_Label aLabel = it.Value();
 
-    TDF_Label        anOriginal;
-    int aRootId, anIdToProceed;
+    TDF_Label anOriginal;
+    int       aRootId, anIdToProceed;
     if (!myShapeTool->GetReferredShape(aLabel, anOriginal))
     {
       anOriginal    = aLabel;
@@ -156,8 +154,7 @@ void XCAFDoc_AssemblyGraph::buildGraph(const TDF_Label& theLabel)
 // purpose  : Adds components for the given parent to the graph structure
 // =======================================================================
 
-void XCAFDoc_AssemblyGraph::addComponents(const TDF_Label&       theParent,
-                                          const int theParentId)
+void XCAFDoc_AssemblyGraph::addComponents(const TDF_Label& theParent, const int theParentId)
 {
   if (!myShapeTool->IsShape(theParent))
   {
@@ -205,8 +202,7 @@ void XCAFDoc_AssemblyGraph::addComponents(const TDF_Label&       theParent,
 // purpose  : Adds node into the graph
 // =======================================================================
 
-int XCAFDoc_AssemblyGraph::addNode(const TDF_Label&       theLabel,
-                                                const int theParentId)
+int XCAFDoc_AssemblyGraph::addNode(const TDF_Label& theLabel, const int theParentId)
 {
   NodeType aNodeType = NodeType_UNDEFINED;
   if (myShapeTool->IsAssembly(theLabel))
@@ -265,7 +261,7 @@ int XCAFDoc_AssemblyGraph::addNode(const TDF_Label&       theLabel,
 // =======================================================================
 
 XCAFDoc_AssemblyGraph::Iterator::Iterator(const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
-                                          const int               theNode)
+                                          const int                                 theNode)
 {
   Standard_NullObject_Raise_if(theGraph.IsNull(), "Null assembly graph!");
   Standard_NullObject_Raise_if(theNode < 1, "Node ID must be positive one-based integer!");

@@ -26,9 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 class Geom_Curve;
 
 //! Evaluation of the common BSplineProfile of a group
@@ -80,16 +77,15 @@ public:
   //! Raises if not yet perform
   //! Raises if the lengths of <Knots> and <Mults> are
   //! not equal to NbKnots().
-  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>&    Knots,
-                                     NCollection_Array1<int>& Mults) const;
+  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>& Knots,
+                                     NCollection_Array1<int>&    Mults) const;
 
   const occ::handle<Geom_Curve>& Curve(const int Index) const;
 
 protected:
   NCollection_Sequence<occ::handle<Geom_Curve>> mySequence;
-  bool         myIsDone;
-  bool         myIsPeriodic;
-
+  bool                                          myIsDone;
+  bool                                          myIsPeriodic;
 };
 
 #include <GeomFill_Profiler.lxx>

@@ -34,9 +34,9 @@ class TopOpeBRepBuild_CompositeClassifier : public TopOpeBRepBuild_LoopClassifie
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT virtual TopAbs_State Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
-                                               const occ::handle<TopOpeBRepBuild_Loop>& L2)
-    override;
+  Standard_EXPORT virtual TopAbs_State Compare(
+    const occ::handle<TopOpeBRepBuild_Loop>& L1,
+    const occ::handle<TopOpeBRepBuild_Loop>& L2) override;
 
   //! classify shape <B1> with shape <B2>
   Standard_EXPORT virtual TopAbs_State CompareShapes(const TopoDS_Shape& B1,
@@ -66,7 +66,6 @@ protected:
   Standard_EXPORT TopOpeBRepBuild_CompositeClassifier(const TopOpeBRepBuild_BlockBuilder& BB);
 
   void* myBlockBuilder;
-
 };
 
 #endif // _TopOpeBRepBuild_CompositeClassifier_HeaderFile

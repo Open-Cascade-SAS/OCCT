@@ -138,11 +138,11 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  WellDone               = false;
-  int nbsol = 0;
-  int signe = 0;
-  NbrSol                 = 0;
-  gp_Circ2d C1           = Qualified1.Qualified();
+  WellDone     = false;
+  int nbsol    = 0;
+  int signe    = 0;
+  NbrSol       = 0;
+  gp_Circ2d C1 = Qualified1.Qualified();
 
   if (Qualified1.IsEnclosed())
   {
@@ -217,10 +217,10 @@ GccAna_Lin2dTanPer::GccAna_Lin2dTanPer(const GccEnt_QualifiedCirc& Qualified1,
       pararg2(1, 2)
 {
 
-  WellDone               = false;
-  NbrSol                 = 0;
-  int signe = 0;
-  gp_Circ2d        C1    = Qualified1.Qualified();
+  WellDone        = false;
+  NbrSol          = 0;
+  int       signe = 0;
+  gp_Circ2d C1    = Qualified1.Qualified();
 
   if (Qualified1.IsEnclosed())
   {
@@ -307,8 +307,7 @@ gp_Lin2d GccAna_Lin2dTanPer::ThisSolution(const int Index) const
   return linsol(Index);
 }
 
-void GccAna_Lin2dTanPer::WhichQualifier(const int Index,
-                                        GccEnt_Position&       Qualif1) const
+void GccAna_Lin2dTanPer::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -325,9 +324,9 @@ void GccAna_Lin2dTanPer::WhichQualifier(const int Index,
 }
 
 void GccAna_Lin2dTanPer::Tangency1(const int Index,
-                                   double&         ParSol,
-                                   double&         ParArg,
-                                   gp_Pnt2d&              Pnt) const
+                                   double&   ParSol,
+                                   double&   ParArg,
+                                   gp_Pnt2d& Pnt) const
 {
   if (!WellDone)
   {
@@ -346,9 +345,9 @@ void GccAna_Lin2dTanPer::Tangency1(const int Index,
 }
 
 void GccAna_Lin2dTanPer::Intersection2(const int Index,
-                                       double&         ParSol,
-                                       double&         ParArg,
-                                       gp_Pnt2d&              PntSol) const
+                                       double&   ParSol,
+                                       double&   ParArg,
+                                       gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

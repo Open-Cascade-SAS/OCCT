@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BvhCStructureSet, BVH_PrimitiveSet3d)
 
 Graphic3d_BvhCStructureSet::Graphic3d_BvhCStructureSet()
 {
-  myBuilder = new BVH_BinnedBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle,
-                                                      BVH_Constants_MaxTreeDepth);
+  myBuilder =
+    new BVH_BinnedBuilder<double, 3>(BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
 }
 
 //=================================================================================================
@@ -44,8 +44,7 @@ Graphic3d_BndBox3d Graphic3d_BvhCStructureSet::Box(const int theIdx) const
 
 //=================================================================================================
 
-double Graphic3d_BvhCStructureSet::Center(const int theIdx,
-                                                 const int theAxis) const
+double Graphic3d_BvhCStructureSet::Center(const int theIdx, const int theAxis) const
 {
   Graphic3d_BndBox3d aBndBox = myStructs.FindKey(theIdx + 1)->BoundingBox();
 
@@ -57,8 +56,7 @@ double Graphic3d_BvhCStructureSet::Center(const int theIdx,
 
 //=================================================================================================
 
-void Graphic3d_BvhCStructureSet::Swap(const int theIdx1,
-                                      const int theIdx2)
+void Graphic3d_BvhCStructureSet::Swap(const int theIdx1, const int theIdx2)
 {
   myStructs.Swap(theIdx1 + 1, theIdx2 + 1);
 }

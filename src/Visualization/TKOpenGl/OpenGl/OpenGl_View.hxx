@@ -51,7 +51,7 @@ public:
   Standard_EXPORT OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
                               const occ::handle<OpenGl_GraphicDriver>&       theDriver,
                               const occ::handle<OpenGl_Caps>&                theCaps,
-                              OpenGl_StateCounter*                      theCounter);
+                              OpenGl_StateCounter*                           theCounter);
 
   //! Default destructor.
   Standard_EXPORT virtual ~OpenGl_View();
@@ -74,14 +74,12 @@ public:
   //! and/or V-Sync is turned on. But it works in any case and is especially useful for view dump
   //! because the dump image is read from the back buffer.
   //! @return previous mode.
-  Standard_EXPORT bool
-    SetImmediateModeDrawToFront(const bool theDrawToFrontBuffer) override;
+  Standard_EXPORT bool SetImmediateModeDrawToFront(const bool theDrawToFrontBuffer) override;
 
   //! Creates and maps rendering window to the view.
   Standard_EXPORT virtual void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
                                          const occ::handle<Aspect_Window>&   theWindow,
-                                         const Aspect_RenderingContext  theContext)
-    override;
+                                         const Aspect_RenderingContext       theContext) override;
 
   //! Returns window associated with the view.
   Standard_EXPORT virtual occ::handle<Aspect_Window> Window() const override;
@@ -108,20 +106,17 @@ public:
   //! In Ray-Tracing allow to get a raw HDR buffer using Graphic3d_BT_RGB_RayTraceHdrLeft buffer
   //! type, only Left view will be dumped ignoring stereoscopic parameter.
   Standard_EXPORT virtual bool BufferDump(Image_PixMap&               theImage,
-                                                      const Graphic3d_BufferType& theBufferType)
-    override;
+                                          const Graphic3d_BufferType& theBufferType) override;
 
   //! Dumps the graphical contents of a shadowmap framebuffer into an image.
   //! @param theImage the image to store the shadow map.
   //! @param[in] theLightName  name of the light used to generate the shadow map.
-  Standard_EXPORT virtual bool ShadowMapDump(
-    Image_PixMap&                  theImage,
-    const TCollection_AsciiString& theLightName) override;
+  Standard_EXPORT virtual bool ShadowMapDump(Image_PixMap&                  theImage,
+                                             const TCollection_AsciiString& theLightName) override;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId
   //! as outdated.
-  Standard_EXPORT virtual void InvalidateBVHData(const Graphic3d_ZLayerId theLayerId)
-    override;
+  Standard_EXPORT virtual void InvalidateBVHData(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Add a layer to the view.
   //! @param[in] theNewLayerId  id of new layer, should be > 0 (negative values are reserved for
@@ -130,8 +125,7 @@ public:
   //! @param[in] theLayerAfter  id of layer to append new layer before
   Standard_EXPORT virtual void InsertLayerBefore(const Graphic3d_ZLayerId        theLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
-                                                 const Graphic3d_ZLayerId        theLayerAfter)
-    override;
+                                                 const Graphic3d_ZLayerId theLayerAfter) override;
 
   //! Add a layer to the view.
   //! @param[in] theNewLayerId   id of new layer, should be > 0 (negative values are reserved for
@@ -140,28 +134,27 @@ public:
   //! @param[in] theLayerBefore  id of layer to append new layer after
   Standard_EXPORT virtual void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings,
-                                                const Graphic3d_ZLayerId        theLayerBefore)
-    override;
+                                                const Graphic3d_ZLayerId theLayerBefore) override;
 
   //! Remove a z layer with the given ID.
   Standard_EXPORT virtual void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Sets the settings for a single Z layer of specified view.
-  Standard_EXPORT virtual void SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
-                                                 const Graphic3d_ZLayerSettings& theSettings)
-    override;
+  Standard_EXPORT virtual void SetZLayerSettings(
+    const Graphic3d_ZLayerId        theLayerId,
+    const Graphic3d_ZLayerSettings& theSettings) override;
 
   //! Returns the maximum Z layer ID.
   //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
   Standard_EXPORT virtual int ZLayerMax() const override;
 
   //! Returns the list of layers.
-  Standard_EXPORT virtual const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const
-    override;
+  Standard_EXPORT virtual const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers()
+    const override;
 
   //! Returns layer with given ID or NULL if undefined.
-  Standard_EXPORT virtual occ::handle<Graphic3d_Layer> Layer(const Graphic3d_ZLayerId theLayerId) const
-    override;
+  Standard_EXPORT virtual occ::handle<Graphic3d_Layer> Layer(
+    const Graphic3d_ZLayerId theLayerId) const override;
 
   //! Returns the bounding box of all structures displayed in the view.
   //! If theToIncludeAuxiliary is TRUE, then the boundary box also includes minimum and maximum
@@ -169,8 +162,7 @@ public:
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
   //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const
-    override;
+  Standard_EXPORT virtual Bnd_Box MinMaxValues(const bool theToIncludeAuxiliary) const override;
 
   //! Returns pointer to an assigned framebuffer object.
   Standard_EXPORT virtual occ::handle<Standard_Transient> FBO() const override;
@@ -181,24 +173,22 @@ public:
   //! Generate offscreen FBO in the graphic library.
   //! If not supported on hardware returns NULL.
   Standard_EXPORT virtual occ::handle<Standard_Transient> FBOCreate(const int theWidth,
-                                                               const int theHeight)
-    override;
+                                                                    const int theHeight) override;
 
   //! Remove offscreen FBO from the graphic library
   Standard_EXPORT virtual void FBORelease(occ::handle<Standard_Transient>& theFbo) override;
 
   //! Read offscreen FBO configuration.
   Standard_EXPORT virtual void FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
-                                                int&                 theWidth,
-                                                int&                 theHeight,
-                                                int&                 theWidthMax,
+                                                int&                                   theWidth,
+                                                int&                                   theHeight,
+                                                int&                                   theWidthMax,
                                                 int& theHeightMax) override;
 
   //! Change offscreen FBO viewport.
   Standard_EXPORT virtual void FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
-                                                 const int            theWidth,
-                                                 const int            theHeight)
-    override;
+                                                 const int                              theWidth,
+                                                 const int theHeight) override;
 
   //! Returns additional buffers for depth peeling OIT.
   const occ::handle<OpenGl_DepthPeeling>& DepthPeelingFbos() const { return myDepthPeelingFbos; }
@@ -208,8 +198,8 @@ public:
   Standard_EXPORT virtual Aspect_GradientBackground GradientBackground() const override;
 
   //! Sets gradient background fill colors.
-  Standard_EXPORT virtual void SetGradientBackground(const Aspect_GradientBackground& theBackground)
-    override;
+  Standard_EXPORT virtual void SetGradientBackground(
+    const Aspect_GradientBackground& theBackground) override;
 
   //! Sets image texture or environment cubemap as background.
   //! @param[in] theTextureMap  source to set a background;
@@ -218,25 +208,24 @@ public:
   //!                               (see GeneratePBREnvironment())
   Standard_EXPORT virtual void SetBackgroundImage(
     const occ::handle<Graphic3d_TextureMap>& theTextureMap,
-    bool                    theToUpdatePBREnv = true) override;
+    bool                                     theToUpdatePBREnv = true) override;
 
   //! Sets environment texture for the view.
-  Standard_EXPORT virtual void SetTextureEnv(const occ::handle<Graphic3d_TextureEnv>& theTextureEnv)
-    override;
+  Standard_EXPORT virtual void SetTextureEnv(
+    const occ::handle<Graphic3d_TextureEnv>& theTextureEnv) override;
 
   //! Returns background image fill style.
   Standard_EXPORT virtual Aspect_FillMethod BackgroundImageStyle() const override;
 
   //! Sets background image fill style.
-  Standard_EXPORT virtual void SetBackgroundImageStyle(const Aspect_FillMethod theFillStyle)
-    override;
+  Standard_EXPORT virtual void SetBackgroundImageStyle(
+    const Aspect_FillMethod theFillStyle) override;
 
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
   //! @param[in] theToUpdate redraw the view
-  Standard_EXPORT virtual void SetImageBasedLighting(bool theToEnableIBL)
-    override;
+  Standard_EXPORT virtual void SetImageBasedLighting(bool theToEnableIBL) override;
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
@@ -265,8 +254,7 @@ public:
   }
 
   //! Sets list of clip planes for the view.
-  virtual void SetClipPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes)
-    override
+  virtual void SetClipPlanes(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes) override
   {
     myClipPlanes = thePlanes;
   }
@@ -278,16 +266,17 @@ public:
   //! The format of returned information (e.g. key-value layout)
   //! is NOT part of this API and can be changed at any time.
   //! Thus application should not parse returned information to weed out specific parameters.
-  Standard_EXPORT virtual void DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                                                     Graphic3d_DiagnosticInfo theFlags) const
-    override;
+  Standard_EXPORT virtual void DiagnosticInformation(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+    Graphic3d_DiagnosticInfo theFlags) const override;
 
   //! Returns string with statistic performance info.
   Standard_EXPORT virtual TCollection_AsciiString StatisticInformation() const override;
 
   //! Fills in the dictionary with statistic performance info.
   Standard_EXPORT virtual void StatisticInformation(
-    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict) const override;
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict)
+    const override;
 
 public:
   //! Returns background color.
@@ -335,18 +324,15 @@ public: //! @name obsolete Graduated Trihedron functionality
   //! graphic view object.
   //! @param[in] theMin  the minimum point of scene.
   //! @param[in] theMax  the maximum point of scene.
-  Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues(const NCollection_Vec3<float> theMin,
-                                                              const NCollection_Vec3<float> theMax)
-    override;
+  Standard_EXPORT virtual void GraduatedTrihedronMinMaxValues(
+    const NCollection_Vec3<float> theMin,
+    const NCollection_Vec3<float> theMax) override;
 
   //! Returns necessity to flip OY in projection matrix
   virtual bool ToFlipOutput() const override { return myToFlipOutput; }
 
   //! Sets state of flip OY necessity in projection matrix
-  virtual void SetToFlipOutput(const bool theFlip) override
-  {
-    myToFlipOutput = theFlip;
-  }
+  virtual void SetToFlipOutput(const bool theFlip) override { myToFlipOutput = theFlip; }
 
 protected: //! @name Internal methods for managing GL resources
   //! Initializes OpenGl resource for environment texture.
@@ -373,21 +359,20 @@ protected: //! @name low-level redrawing sub-routines
   //!
   //! @return false if immediate structures has been rendered directly into FrontBuffer
   //! and Buffer Swap should not be called.
-  Standard_EXPORT virtual bool redrawImmediate(
-    const Graphic3d_Camera::Projection theProjection,
-    OpenGl_FrameBuffer*                theReadFbo,
-    OpenGl_FrameBuffer*                theDrawFbo,
-    OpenGl_FrameBuffer*                theOitAccumFbo,
-    const bool             theIsPartialUpdate = false);
+  Standard_EXPORT virtual bool redrawImmediate(const Graphic3d_Camera::Projection theProjection,
+                                               OpenGl_FrameBuffer*                theReadFbo,
+                                               OpenGl_FrameBuffer*                theDrawFbo,
+                                               OpenGl_FrameBuffer*                theOitAccumFbo,
+                                               const bool theIsPartialUpdate = false);
 
   //! Blit subviews into this view.
   Standard_EXPORT bool blitSubviews(const Graphic3d_Camera::Projection theProjection,
                                     OpenGl_FrameBuffer*                theDrawFbo);
 
   //! Blit image from/to specified buffers.
-  Standard_EXPORT bool blitBuffers(OpenGl_FrameBuffer*    theReadFbo,
-                                   OpenGl_FrameBuffer*    theDrawFbo,
-                                   const bool theToFlip = false);
+  Standard_EXPORT bool blitBuffers(OpenGl_FrameBuffer* theReadFbo,
+                                   OpenGl_FrameBuffer* theDrawFbo,
+                                   const bool          theToFlip = false);
 
   //! Setup default FBO.
   Standard_EXPORT void bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo = NULL);
@@ -407,7 +392,7 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   Standard_EXPORT virtual void render(Graphic3d_Camera::Projection theProjection,
                                       OpenGl_FrameBuffer*          theReadDrawFbo,
                                       OpenGl_FrameBuffer*          theOitAccumFbo,
-                                      const bool       theToDrawImmediate);
+                                      const bool                   theToDrawImmediate);
 
   //! Renders the graphical scene.
   //! @param[in] theProjection  the projection that is used for rendering.
@@ -419,11 +404,11 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   Standard_EXPORT virtual void renderScene(Graphic3d_Camera::Projection theProjection,
                                            OpenGl_FrameBuffer*          theReadDrawFbo,
                                            OpenGl_FrameBuffer*          theOitAccumFbo,
-                                           const bool       theToDrawImmediate);
+                                           const bool                   theToDrawImmediate);
 
   //! Draw background (gradient / image / cubemap)
   Standard_EXPORT virtual void drawBackground(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                              Graphic3d_Camera::Projection    theProjection);
+                                              Graphic3d_Camera::Projection         theProjection);
 
   //! Render set of structures presented in the view.
   //! @param[in] theProjection  the projection that is used for rendering.
@@ -435,7 +420,7 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   Standard_EXPORT virtual void renderStructs(Graphic3d_Camera::Projection theProjection,
                                              OpenGl_FrameBuffer*          theReadDrawFbo,
                                              OpenGl_FrameBuffer*          theOitAccumFbo,
-                                             const bool       theToDrawImmediate);
+                                             const bool                   theToDrawImmediate);
 
   //! Renders trihedron.
   void renderTrihedron(const occ::handle<OpenGl_Workspace>& theWorkspace);
@@ -445,23 +430,22 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
 
 private:
   //! Adds the structure to display lists of the view.
-  Standard_EXPORT virtual void displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
-                                                const Graphic3d_DisplayPriority     thePriority)
-    override;
+  Standard_EXPORT virtual void displayStructure(
+    const occ::handle<Graphic3d_CStructure>& theStructure,
+    const Graphic3d_DisplayPriority          thePriority) override;
 
   //! Erases the structure from display lists of the view.
-  Standard_EXPORT virtual void eraseStructure(const occ::handle<Graphic3d_CStructure>& theStructure)
-    override;
+  Standard_EXPORT virtual void eraseStructure(
+    const occ::handle<Graphic3d_CStructure>& theStructure) override;
 
   //! Change Z layer of a structure already presented in view.
   Standard_EXPORT virtual void changeZLayer(const occ::handle<Graphic3d_CStructure>& theCStructure,
-                                            const Graphic3d_ZLayerId            theNewLayerId)
-    override;
+                                            const Graphic3d_ZLayerId theNewLayerId) override;
 
   //! Changes the priority of a structure within its Z layer in the specified view.
-  Standard_EXPORT virtual void changePriority(const occ::handle<Graphic3d_CStructure>& theCStructure,
-                                              const Graphic3d_DisplayPriority     theNewPriority)
-    override;
+  Standard_EXPORT virtual void changePriority(
+    const occ::handle<Graphic3d_CStructure>& theCStructure,
+    const Graphic3d_DisplayPriority          theNewPriority) override;
 
 private:
   //! Release sRGB resources (frame-buffers, textures, etc.).
@@ -477,21 +461,20 @@ private:
   void drawStereoPair(OpenGl_FrameBuffer* theDrawFbo);
 
   //! Check and update OIT compatibility with current OpenGL context's state.
-  bool checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext,
-                             const bool        theMSAA);
+  bool checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext, const bool theMSAA);
 
 protected:
-  OpenGl_GraphicDriver*    myDriver;
+  OpenGl_GraphicDriver*         myDriver;
   occ::handle<OpenGl_Window>    myWindow;
   occ::handle<OpenGl_Workspace> myWorkspace;
   occ::handle<OpenGl_Caps>      myCaps;
-  bool         myWasRedrawnGL;
+  bool                          myWasRedrawnGL;
 
   occ::handle<Graphic3d_SequenceOfHClipPlane> myClipPlanes;
-  gp_XYZ                                 myLocalOrigin;
+  gp_XYZ                                      myLocalOrigin;
   occ::handle<OpenGl_FrameBuffer>             myFBO;
-  bool                       myToShowGradTrihedron;
-  Graphic3d_GraduatedTrihedron           myGTrihedronData;
+  bool                                        myToShowGradTrihedron;
+  Graphic3d_GraduatedTrihedron                myGTrihedronData;
 
   occ::handle<Graphic3d_LightSet> myNoShadingLight;
   occ::handle<Graphic3d_LightSet> myLights;
@@ -501,8 +484,8 @@ protected:
 
   Graphic3d_WorldViewProjState myWorldViewProjState; //!< camera modification state
   OpenGl_StateCounter*         myStateCounter;
-  size_t                myCurrLightSourceState;
-  size_t                myLightsRevision;
+  size_t                       myCurrLightSourceState;
+  size_t                       myLightsRevision;
 
   typedef std::pair<size_t, size_t> StateInfo;
 
@@ -523,8 +506,8 @@ protected:
 protected: //! @name Rendering properties
   //! Two framebuffers (left and right views) store cached main presentation
   //! of the view (without presentation of immediate layers).
-  int mySRgbState;                   //!< track sRGB state
-  GLint            myFboColorFormat;              //!< sized format for color attachments
+  int   mySRgbState;                              //!< track sRGB state
+  GLint myFboColorFormat;                         //!< sized format for color attachments
                                                   // clang-format off
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
   NCollection_Vector<int>        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
@@ -579,8 +562,8 @@ protected: //! @name fields and types related to PBR
   };
 
   occ::handle<OpenGl_PBREnvironment> myPBREnvironment; //!< manager of IBL maps used in PBR pipeline
-  PBREnvironmentState           myPBREnvState;    //!< state of PBR environment
-  bool              myPBREnvRequest;  //!< update PBR environment
+  PBREnvironmentState                myPBREnvState;    //!< state of PBR environment
+  bool                               myPBREnvRequest;  //!< update PBR environment
 
 protected: //! @name data types related to ray-tracing
   //! Result of OpenGL shaders initialization.
@@ -690,7 +673,7 @@ protected: //! @name data types related to ray-tracing
 
     //! Returns shader source combined with prefix.
     TCollection_AsciiString Source(const occ::handle<OpenGl_Context>& theCtx,
-                                   const GLenum                  theType) const;
+                                   const GLenum                       theType) const;
 
     //! Loads shader source from specified files.
     bool LoadFromFiles(
@@ -790,8 +773,7 @@ protected: //! @name data types related to ray-tracing
     size_t InstancedState;
 
     //! Creates new structure state.
-    StructState(const size_t theStructureState = 0,
-                const size_t theInstancedState = 0)
+    StructState(const size_t theStructureState = 0, const size_t theInstancedState = 0)
         : StructureState(theStructureState),
           InstancedState(theInstancedState)
     {
@@ -811,119 +793,122 @@ protected: //! @name data types related to ray-tracing
 
 protected: //! @name methods related to ray-tracing
   //! Updates 3D scene geometry for ray-tracing.
-  bool updateRaytraceGeometry(const RaytraceUpdateMode      theMode,
-                                          const int        theViewId,
-                                          const occ::handle<OpenGl_Context>& theGlContext);
+  bool updateRaytraceGeometry(const RaytraceUpdateMode           theMode,
+                              const int                          theViewId,
+                              const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Updates 3D scene light sources for ray-tracing.
-  bool updateRaytraceLightSources(const NCollection_Mat4<float>&            theInvModelView,
-                                              const occ::handle<OpenGl_Context>& theGlContext);
+  bool updateRaytraceLightSources(const NCollection_Mat4<float>&     theInvModelView,
+                                  const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Checks to see if the OpenGL structure is modified.
   bool toUpdateStructure(const OpenGl_Structure* theStructure);
 
   //! Adds OpenGL structure to ray-traced scene geometry.
-  bool addRaytraceStructure(const OpenGl_Structure*       theStructure,
-                                        const occ::handle<OpenGl_Context>& theGlContext);
+  bool addRaytraceStructure(const OpenGl_Structure*            theStructure,
+                            const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Adds OpenGL groups to ray-traced scene geometry.
-  bool addRaytraceGroups(const OpenGl_Structure*        theStructure,
-                                     const OpenGl_RaytraceMaterial& theStructMat,
-                                     const occ::handle<TopLoc_Datum3D>&  theTrsf,
-                                     const occ::handle<OpenGl_Context>&  theGlContext);
+  bool addRaytraceGroups(const OpenGl_Structure*            theStructure,
+                         const OpenGl_RaytraceMaterial&     theStructMat,
+                         const occ::handle<TopLoc_Datum3D>& theTrsf,
+                         const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Creates ray-tracing material properties.
-  OpenGl_RaytraceMaterial convertMaterial(const OpenGl_Aspects*         theAspect,
+  OpenGl_RaytraceMaterial convertMaterial(const OpenGl_Aspects*              theAspect,
                                           const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
-  occ::handle<OpenGl_TriangleSet> addRaytracePrimitiveArray(const OpenGl_PrimitiveArray* theArray,
-                                                       const int       theMatID,
-                                                       const NCollection_Mat4<float>*           theTrans);
+  occ::handle<OpenGl_TriangleSet> addRaytracePrimitiveArray(
+    const OpenGl_PrimitiveArray*   theArray,
+    const int                      theMatID,
+    const NCollection_Mat4<float>* theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
   bool addRaytraceVertexIndices(OpenGl_TriangleSet&          theSet,
-                                            const int       theMatID,
-                                            const int       theCount,
-                                            const int       theOffset,
-                                            const OpenGl_PrimitiveArray& theArray);
+                                const int                    theMatID,
+                                const int                    theCount,
+                                const int                    theOffset,
+                                const OpenGl_PrimitiveArray& theArray);
 
   //! Adds OpenGL triangle array to ray-traced scene geometry.
-  bool addRaytraceTriangleArray(OpenGl_TriangleSet&                  theSet,
-                                            const int               theMatID,
-                                            const int               theCount,
-                                            const int               theOffset,
-                                            const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytraceTriangleArray(OpenGl_TriangleSet&                       theSet,
+                                const int                                 theMatID,
+                                const int                                 theCount,
+                                const int                                 theOffset,
+                                const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Adds OpenGL triangle fan array to ray-traced scene geometry.
-  bool addRaytraceTriangleFanArray(OpenGl_TriangleSet&                  theSet,
-                                               const int               theMatID,
-                                               const int               theCount,
-                                               const int               theOffset,
-                                               const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytraceTriangleFanArray(OpenGl_TriangleSet&                       theSet,
+                                   const int                                 theMatID,
+                                   const int                                 theCount,
+                                   const int                                 theOffset,
+                                   const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Adds OpenGL triangle strip array to ray-traced scene geometry.
-  bool addRaytraceTriangleStripArray(OpenGl_TriangleSet&                  theSet,
-                                                 const int               theMatID,
-                                                 const int               theCount,
-                                                 const int               theOffset,
-                                                 const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytraceTriangleStripArray(OpenGl_TriangleSet&                       theSet,
+                                     const int                                 theMatID,
+                                     const int                                 theCount,
+                                     const int                                 theOffset,
+                                     const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Adds OpenGL quadrangle array to ray-traced scene geometry.
-  bool addRaytraceQuadrangleArray(OpenGl_TriangleSet&                  theSet,
-                                              const int               theMatID,
-                                              const int               theCount,
-                                              const int               theOffset,
-                                              const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytraceQuadrangleArray(OpenGl_TriangleSet&                       theSet,
+                                  const int                                 theMatID,
+                                  const int                                 theCount,
+                                  const int                                 theOffset,
+                                  const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Adds OpenGL quadrangle strip array to ray-traced scene geometry.
-  bool addRaytraceQuadrangleStripArray(OpenGl_TriangleSet&                  theSet,
-                                                   const int               theMatID,
-                                                   const int               theCount,
-                                                   const int               theOffset,
-                                                   const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytraceQuadrangleStripArray(OpenGl_TriangleSet&                       theSet,
+                                       const int                                 theMatID,
+                                       const int                                 theCount,
+                                       const int                                 theOffset,
+                                       const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Adds OpenGL polygon array to ray-traced scene geometry.
-  bool addRaytracePolygonArray(OpenGl_TriangleSet&                  theSet,
-                                           const int               theMatID,
-                                           const int               theCount,
-                                           const int               theOffset,
-                                           const occ::handle<Graphic3d_IndexBuffer>& theIndices);
+  bool addRaytracePolygonArray(OpenGl_TriangleSet&                       theSet,
+                               const int                                 theMatID,
+                               const int                                 theCount,
+                               const int                                 theOffset,
+                               const occ::handle<Graphic3d_IndexBuffer>& theIndices);
 
   //! Uploads ray-trace data to the GPU.
   bool uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Generates shader prefix based on current ray-tracing options.
-  TCollection_AsciiString generateShaderPrefix(const occ::handle<OpenGl_Context>& theGlContext) const;
+  TCollection_AsciiString generateShaderPrefix(
+    const occ::handle<OpenGl_Context>& theGlContext) const;
 
   //! Performs safe exit when shaders initialization fails.
-  bool safeFailBack(const TCollection_ExtendedString& theMessage,
-                                const occ::handle<OpenGl_Context>&     theGlContext);
+  bool safeFailBack(const TCollection_ExtendedString&  theMessage,
+                    const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Loads and compiles shader object from specified source.
-  occ::handle<OpenGl_ShaderObject> initShader(const GLenum                  theType,
-                                         const ShaderSource&           theSource,
-                                         const occ::handle<OpenGl_Context>& theGlContext);
+  occ::handle<OpenGl_ShaderObject> initShader(const GLenum                       theType,
+                                              const ShaderSource&                theSource,
+                                              const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Creates shader program from the given vertex and fragment shaders.
-  occ::handle<OpenGl_ShaderProgram> initProgram(const occ::handle<OpenGl_Context>&      theGlContext,
-                                           const occ::handle<OpenGl_ShaderObject>& theVertShader,
-                                           const occ::handle<OpenGl_ShaderObject>& theFragShader,
-                                           const TCollection_AsciiString&     theName);
+  occ::handle<OpenGl_ShaderProgram> initProgram(
+    const occ::handle<OpenGl_Context>&      theGlContext,
+    const occ::handle<OpenGl_ShaderObject>& theVertShader,
+    const occ::handle<OpenGl_ShaderObject>& theFragShader,
+    const TCollection_AsciiString&          theName);
 
   //! Initializes OpenGL/GLSL shader programs.
-  bool initRaytraceResources(const int        theSizeX,
-                                         const int        theSizeY,
-                                         const occ::handle<OpenGl_Context>& theGlContext);
+  bool initRaytraceResources(const int                          theSizeX,
+                             const int                          theSizeY,
+                             const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Releases OpenGL/GLSL shader programs.
   void releaseRaytraceResources(const occ::handle<OpenGl_Context>& theGlContext,
-                                const bool        theToRebuild = false);
+                                const bool                         theToRebuild = false);
 
   //! Updates auxiliary OpenGL frame buffers.
-  bool updateRaytraceBuffers(const int        theSizeX,
-                                         const int        theSizeY,
-                                         const occ::handle<OpenGl_Context>& theGlContext);
+  bool updateRaytraceBuffers(const int                          theSizeX,
+                             const int                          theSizeY,
+                             const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Generates viewing rays for corners of screen quad.
   //! (ray tracing; path tracing for orthographic camera)
@@ -935,13 +920,13 @@ protected: //! @name methods related to ray-tracing
                     NCollection_Mat4<float>&       theUnView);
 
   //! Generate viewing rays (path tracing, perspective camera).
-  void updatePerspCameraPT(const NCollection_Mat4<float>&           theOrientation,
-                           const NCollection_Mat4<float>&           theViewMapping,
-                           Graphic3d_Camera::Projection theProjection,
-                           NCollection_Mat4<float>&                 theViewPr,
-                           NCollection_Mat4<float>&                 theUnview,
-                           const int                    theWinSizeX,
-                           const int                    theWinSizeY);
+  void updatePerspCameraPT(const NCollection_Mat4<float>& theOrientation,
+                           const NCollection_Mat4<float>& theViewMapping,
+                           Graphic3d_Camera::Projection   theProjection,
+                           NCollection_Mat4<float>&       theViewPr,
+                           NCollection_Mat4<float>&       theUnview,
+                           const int                      theWinSizeX,
+                           const int                      theWinSizeY);
 
   //! Binds ray-trace textures to corresponding texture units.
   void bindRaytraceTextures(const occ::handle<OpenGl_Context>& theGlContext, int theStereoView);
@@ -950,43 +935,43 @@ protected: //! @name methods related to ray-tracing
   void unbindRaytraceTextures(const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Sets uniform state for the given ray-tracing shader program.
-  bool setUniformState(const int        theProgramId,
-                                   const int        theSizeX,
-                                   const int        theSizeY,
-                                   Graphic3d_Camera::Projection  theProjection,
-                                   const occ::handle<OpenGl_Context>& theGlContext);
+  bool setUniformState(const int                          theProgramId,
+                       const int                          theSizeX,
+                       const int                          theSizeY,
+                       Graphic3d_Camera::Projection       theProjection,
+                       const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Runs ray-tracing shader programs.
-  bool runRaytraceShaders(const int        theSizeX,
-                                      const int        theSizeY,
-                                      Graphic3d_Camera::Projection  theProjection,
-                                      OpenGl_FrameBuffer*           theReadDrawFbo,
-                                      const occ::handle<OpenGl_Context>& theGlContext);
+  bool runRaytraceShaders(const int                          theSizeX,
+                          const int                          theSizeY,
+                          Graphic3d_Camera::Projection       theProjection,
+                          OpenGl_FrameBuffer*                theReadDrawFbo,
+                          const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Runs classical (Whitted-style) ray-tracing kernel.
-  bool runRaytrace(const int        theSizeX,
-                               const int        theSizeY,
-                               Graphic3d_Camera::Projection  theProjection,
-                               OpenGl_FrameBuffer*           theReadDrawFbo,
-                               const occ::handle<OpenGl_Context>& theGlContext);
+  bool runRaytrace(const int                          theSizeX,
+                   const int                          theSizeY,
+                   Graphic3d_Camera::Projection       theProjection,
+                   OpenGl_FrameBuffer*                theReadDrawFbo,
+                   const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Runs path tracing (global illumination) kernel.
-  bool runPathtrace(const int        theSizeX,
-                                const int        theSizeY,
-                                Graphic3d_Camera::Projection  theProjection,
-                                const occ::handle<OpenGl_Context>& theGlContext);
+  bool runPathtrace(const int                          theSizeX,
+                    const int                          theSizeY,
+                    Graphic3d_Camera::Projection       theProjection,
+                    const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Runs path tracing (global illumination) kernel.
-  bool runPathtraceOut(Graphic3d_Camera::Projection  theProjection,
-                                   OpenGl_FrameBuffer*           theReadDrawFbo,
-                                   const occ::handle<OpenGl_Context>& theGlContext);
+  bool runPathtraceOut(Graphic3d_Camera::Projection       theProjection,
+                       OpenGl_FrameBuffer*                theReadDrawFbo,
+                       const occ::handle<OpenGl_Context>& theGlContext);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing or path tracing.
-  bool raytrace(const int        theSizeX,
-                            const int        theSizeY,
-                            Graphic3d_Camera::Projection  theProjection,
-                            OpenGl_FrameBuffer*           theReadDrawFbo,
-                            const occ::handle<OpenGl_Context>& theGlContext);
+  bool raytrace(const int                          theSizeX,
+                const int                          theSizeY,
+                Graphic3d_Camera::Projection       theProjection,
+                OpenGl_FrameBuffer*                theReadDrawFbo,
+                const occ::handle<OpenGl_Context>& theGlContext);
 
 protected: //! @name fields related to ray-tracing
   //! Result of RT/PT shaders initialization.

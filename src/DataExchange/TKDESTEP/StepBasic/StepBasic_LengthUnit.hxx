@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepBasic_LengthUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_LengthUnit, StepBasic_NamedUnit)
-
 };
 
 #endif // _StepBasic_LengthUnit_HeaderFile

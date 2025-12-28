@@ -145,16 +145,16 @@ public: //! @name Result simplification
   //! @param theUnifyFaces Controls the faces unification. TRUE by default.
   //! @param theAngularTol Angular criteria for tangency of edges and faces.
   //!                      Precision::Angular() by default.
-  Standard_EXPORT void SimplifyResult(const bool theUnifyEdges = true,
-                                      const bool theUnifyFaces = true,
-                                      const double    theAngularTol = Precision::Angular());
+  Standard_EXPORT void SimplifyResult(const bool   theUnifyEdges = true,
+                                      const bool   theUnifyFaces = true,
+                                      const double theAngularTol = Precision::Angular());
 
 public: //! @name History support
   //! Returns the shapes modified from the shape <theS>.
   //! If any, the list will contain only those splits of the
   //! given shape, contained in the result.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& theS) override;
 
   //! Returns the list of shapes generated from the shape <theS>.
   //! In frames of Boolean Operations algorithms only Edges and Faces
@@ -162,8 +162,8 @@ public: //! @name History support
   //! during intersection:
   //! - Edges can generate new vertices;
   //! - Faces can generate new edges and vertices.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& theS)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& theS) override;
 
   //! Checks if the shape <theS> has been completely removed from the result,
   //! i.e. the result does not contain the shape itself and any of its splits.
@@ -210,8 +210,8 @@ protected: //! @name Setting options to the Intersection tool
 
 protected: //! @name Protected methods for shapes intersection and building result
   //! Intersects the given shapes with the intersection tool
-  Standard_EXPORT void IntersectShapes(const NCollection_List<TopoDS_Shape>&  theArgs,
-                                       const Message_ProgressRange& theRange);
+  Standard_EXPORT void IntersectShapes(const NCollection_List<TopoDS_Shape>& theArgs,
+                                       const Message_ProgressRange&          theRange);
 
   //! Builds the resulting shape
   Standard_EXPORT void BuildResult(const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -225,21 +225,21 @@ protected: //! @name Fields
   NCollection_List<TopoDS_Shape> myArguments; //!< Arguments of the operation
 
   // Options
-  bool myNonDestructive; //!< Non-destructive mode management
+  bool             myNonDestructive; //!< Non-destructive mode management
   BOPAlgo_GlueEnum myGlue;           //!< Gluing mode management
-  bool myCheckInverted;  //!< Check for inverted solids management
-  bool myFillHistory;    //!< Controls the history collection
+  bool             myCheckInverted;  //!< Check for inverted solids management
+  bool             myFillHistory;    //!< Controls the history collection
 
   // Tools
-  bool myIsIntersectionNeeded; //!< Flag to control whether the intersection
-                                           //! of arguments should be performed or not
-  BOPAlgo_PPaveFiller myDSFiller;          //!< Intersection tool performs intersection of the
-                                           //! argument shapes.
-  BOPAlgo_PBuilder myBuilder;              //!< Building tool performs construction of the result
-                                           //! basing on the results of intersection
-  occ::handle<BRepTools_History> myHistory;     //!< General History tool, containing all History of
-                                           //! shapes modifications during the operation
-                                           //! (including result simplification)
+  bool myIsIntersectionNeeded;              //!< Flag to control whether the intersection
+                                            //! of arguments should be performed or not
+  BOPAlgo_PPaveFiller myDSFiller;           //!< Intersection tool performs intersection of the
+                                            //! argument shapes.
+  BOPAlgo_PBuilder myBuilder;               //!< Building tool performs construction of the result
+                                            //! basing on the results of intersection
+  occ::handle<BRepTools_History> myHistory; //!< General History tool, containing all History of
+                                            //! shapes modifications during the operation
+                                            //! (including result simplification)
   occ::handle<BRepTools_History> mySimplifierHistory; //!< History of result shape simplification
 };
 

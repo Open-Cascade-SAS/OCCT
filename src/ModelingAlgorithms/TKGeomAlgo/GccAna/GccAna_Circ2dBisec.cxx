@@ -49,7 +49,7 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
   //            - WellDone (Boolean showing success or failure of the algo) +
   //=========================================================================
 
-  WellDone                    = false;
+  WellDone             = false;
   constexpr double Tol = Precision::Confusion();
 
   double R1 = Circ1.Radius();
@@ -149,7 +149,7 @@ GccAna_Circ2dBisec::GccAna_Circ2dBisec(const gp_Circ2d& Circ1, const gp_Circ2d& 
 occ::handle<GccInt_Bisec> GccAna_Circ2dBisec::ThisSolution(const int Index) const
 {
 
-  double        Tol = 1.e-14;
+  double                    Tol = 1.e-14;
   occ::handle<GccInt_Bisec> bissol;
 
   if (!WellDone)

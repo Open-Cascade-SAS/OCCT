@@ -35,29 +35,29 @@ public:
   //! P and the curve..
   //! If the method returns false, Param proj and Dist
   //! are not significant.
-  Standard_EXPORT static bool Project(const gp_Pnt2d&                  P,
-                                                  const occ::handle<Adaptor3d_Surface>& S,
-                                                  const occ::handle<Adaptor2d_Curve2d>& C,
-                                                  double&                   Paramproj,
-                                                  double&                   Dist);
+  Standard_EXPORT static bool Project(const gp_Pnt2d&                       P,
+                                      const occ::handle<Adaptor3d_Surface>& S,
+                                      const occ::handle<Adaptor2d_Curve2d>& C,
+                                      double&                               Paramproj,
+                                      double&                               Dist);
 
-  Standard_EXPORT static bool Inters(const gp_Pnt2d&                  P1,
-                                                 const gp_Pnt2d&                  P2,
-                                                 const occ::handle<Adaptor3d_Surface>& S,
-                                                 const occ::handle<Adaptor2d_Curve2d>& C,
-                                                 double&                   Param,
-                                                 double&                   Dist);
+  Standard_EXPORT static bool Inters(const gp_Pnt2d&                       P1,
+                                     const gp_Pnt2d&                       P2,
+                                     const occ::handle<Adaptor3d_Surface>& S,
+                                     const occ::handle<Adaptor2d_Curve2d>& C,
+                                     double&                               Param,
+                                     double&                               Dist);
 
   //! Returns the parameter of the vertex V on the edge A.
   static double Parameter(const occ::handle<Adaptor3d_HVertex>& V,
-                                 const occ::handle<Adaptor2d_Curve2d>& A);
+                          const occ::handle<Adaptor2d_Curve2d>& A);
 
   //! Returns the parametric tolerance on the arc A
   //! used to consider that the vertex and another point meet,
   //! i-e if std::abs(Parameter(Vertex)-Parameter(OtherPnt))<=
   //! Tolerance, the points are "merged".
   static double Tolerance(const occ::handle<Adaptor3d_HVertex>& V,
-                                 const occ::handle<Adaptor2d_Curve2d>& A);
+                          const occ::handle<Adaptor2d_Curve2d>& A);
 
   static bool SingularOnUMin(const occ::handle<Adaptor3d_Surface>& S);
 
@@ -68,24 +68,23 @@ public:
   static bool SingularOnVMax(const occ::handle<Adaptor3d_Surface>& S);
 
   Standard_EXPORT static int NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
-                                                     const double              u1,
-                                                     const double              u2);
+                                        const double                          u1,
+                                        const double                          u2);
 
   Standard_EXPORT static int NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
-                                                     const double              v1,
-                                                     const double              v2);
+                                        const double                          v1,
+                                        const double                          v2);
 
   //! Returns the parametric limits on the arc C.
   //! These limits must be finite : they are either
   //! the real limits of the arc, for a finite arc,
   //! or a bounding box for an infinite arc.
   Standard_EXPORT static void Bounds(const occ::handle<Adaptor2d_Curve2d>& C,
-                                     double&                   Ufirst,
-                                     double&                   Ulast);
+                                     double&                               Ufirst,
+                                     double&                               Ulast);
 
   static occ::handle<Adaptor2d_Curve2d> CurveOnSurf(const occ::handle<Adaptor2d_Curve2d>& C,
-                                               const occ::handle<Adaptor3d_Surface>& S);
-
+                                                    const occ::handle<Adaptor3d_Surface>& S);
 };
 
 #include <BRepBlend_BlendTool.lxx>

@@ -56,11 +56,11 @@ inline double IntCurve_Polygon2dGen::SupParameter() const
 
 //======================================================================
 inline int IntCurve_Polygon2dGen::CalculRegion(const double x,
-                                                            const double y,
-                                                            const double x1,
-                                                            const double x2,
-                                                            const double y1,
-                                                            const double y2) const
+                                               const double y,
+                                               const double x1,
+                                               const double x2,
+                                               const double y1,
+                                               const double y2) const
 {
   int r;
   if (x < x1)

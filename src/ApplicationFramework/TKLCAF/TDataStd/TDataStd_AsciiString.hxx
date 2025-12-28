@@ -40,14 +40,16 @@ public:
   //! the AsciiString attribute is returned.
   //! AsciiString methods
   //! ===================
-  Standard_EXPORT static occ::handle<TDataStd_AsciiString> Set(const TDF_Label&               label,
-                                                          const TCollection_AsciiString& string);
+  Standard_EXPORT static occ::handle<TDataStd_AsciiString> Set(
+    const TDF_Label&               label,
+    const TCollection_AsciiString& string);
 
   //! Finds, or creates, an AsciiString attribute with explicit user defined <guid> and sets
   //! <string>. The Name attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_AsciiString> Set(const TDF_Label&               label,
-                                                          const Standard_GUID&           guid,
-                                                          const TCollection_AsciiString& string);
+  Standard_EXPORT static occ::handle<TDataStd_AsciiString> Set(
+    const TDF_Label&               label,
+    const Standard_GUID&           guid,
+    const TCollection_AsciiString& string);
 
   Standard_EXPORT TDataStd_AsciiString();
 
@@ -76,7 +78,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_AsciiString, TDF_Attribute)
 

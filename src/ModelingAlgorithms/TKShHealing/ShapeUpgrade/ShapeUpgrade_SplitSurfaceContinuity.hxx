@@ -47,9 +47,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity, ShapeUpgrade_SplitSurface)
 
 private:
-  GeomAbs_Shape    myCriterion;
-  double    myTolerance;
-  int myCont;
+  GeomAbs_Shape myCriterion;
+  double        myTolerance;
+  int           myCont;
 };
 
 #endif // _ShapeUpgrade_SplitSurfaceContinuity_HeaderFile

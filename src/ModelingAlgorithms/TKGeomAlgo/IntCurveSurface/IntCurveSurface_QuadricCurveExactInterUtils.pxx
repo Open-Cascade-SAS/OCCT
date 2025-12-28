@@ -47,12 +47,12 @@ template <typename SurfaceType,
           typename CurveType,
           typename CurveTool,
           typename QuadCurvFuncType>
-void PerformIntersection(const SurfaceType&      theSurface,
-                         const CurveType&        theCurve,
+void PerformIntersection(const SurfaceType&            theSurface,
+                         const CurveType&              theCurve,
                          NCollection_Sequence<double>& thePnts,
                          NCollection_Sequence<double>& theIntv,
-                         int&                    theNbPnts,
-                         int&                    theNbIntv)
+                         int&                          theNbPnts,
+                         int&                          theNbIntv)
 {
   theNbPnts = -1;
   theNbIntv = -1;
@@ -83,9 +83,9 @@ void PerformIntersection(const SurfaceType&      theSurface,
     }
   }
 
-  int                  aNbIntervals = CurveTool::NbIntervals(theCurve, GeomAbs_C1);
+  int                        aNbIntervals = CurveTool::NbIntervals(theCurve, GeomAbs_C1);
   NCollection_Array1<double> anIntervals(1, aNbIntervals + 1);
-  int                  ii;
+  int                        ii;
 
   CurveTool::Intervals(theCurve, anIntervals, GeomAbs_C1);
 

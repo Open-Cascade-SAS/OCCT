@@ -21,7 +21,7 @@
 RWStepGeom_RWPointOnCurve::RWStepGeom_RWPointOnCurve() {}
 
 void RWStepGeom_RWPointOnCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                 num,
+                                         const int                                   num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_PointOnCurve>&   ent) const
 {
@@ -54,7 +54,7 @@ void RWStepGeom_RWPointOnCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aBasisCurve, aPointParameter);
 }
 
-void RWStepGeom_RWPointOnCurve::WriteStep(StepData_StepWriter&                 SW,
+void RWStepGeom_RWPointOnCurve::WriteStep(StepData_StepWriter&                      SW,
                                           const occ::handle<StepGeom_PointOnCurve>& ent) const
 {
 
@@ -72,7 +72,7 @@ void RWStepGeom_RWPointOnCurve::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepGeom_RWPointOnCurve::Share(const occ::handle<StepGeom_PointOnCurve>& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->BasisCurve());

@@ -23,7 +23,6 @@
 #include <GeomFill_Filling.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 class GeomFill_Coons : public GeomFill_Filling
 {
@@ -37,10 +36,10 @@ public:
                                  const NCollection_Array1<gp_Pnt>& P3,
                                  const NCollection_Array1<gp_Pnt>& P4);
 
-  Standard_EXPORT GeomFill_Coons(const NCollection_Array1<gp_Pnt>&   P1,
-                                 const NCollection_Array1<gp_Pnt>&   P2,
-                                 const NCollection_Array1<gp_Pnt>&   P3,
-                                 const NCollection_Array1<gp_Pnt>&   P4,
+  Standard_EXPORT GeomFill_Coons(const NCollection_Array1<gp_Pnt>& P1,
+                                 const NCollection_Array1<gp_Pnt>& P2,
+                                 const NCollection_Array1<gp_Pnt>& P3,
+                                 const NCollection_Array1<gp_Pnt>& P4,
                                  const NCollection_Array1<double>& W1,
                                  const NCollection_Array1<double>& W2,
                                  const NCollection_Array1<double>& W3,
@@ -51,15 +50,14 @@ public:
                             const NCollection_Array1<gp_Pnt>& P3,
                             const NCollection_Array1<gp_Pnt>& P4);
 
-  Standard_EXPORT void Init(const NCollection_Array1<gp_Pnt>&   P1,
-                            const NCollection_Array1<gp_Pnt>&   P2,
-                            const NCollection_Array1<gp_Pnt>&   P3,
-                            const NCollection_Array1<gp_Pnt>&   P4,
+  Standard_EXPORT void Init(const NCollection_Array1<gp_Pnt>& P1,
+                            const NCollection_Array1<gp_Pnt>& P2,
+                            const NCollection_Array1<gp_Pnt>& P3,
+                            const NCollection_Array1<gp_Pnt>& P4,
                             const NCollection_Array1<double>& W1,
                             const NCollection_Array1<double>& W2,
                             const NCollection_Array1<double>& W3,
                             const NCollection_Array1<double>& W4);
-
 };
 
 #endif // _GeomFill_Coons_HeaderFile

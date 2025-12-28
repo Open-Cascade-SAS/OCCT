@@ -21,10 +21,11 @@
 
 RWStepBasic_RWApprovalDateTime::RWStepBasic_RWApprovalDateTime() {}
 
-void RWStepBasic_RWApprovalDateTime::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
-                                              const int                    num,
-                                              occ::handle<Interface_Check>&                  ach,
-                                              const occ::handle<StepBasic_ApprovalDateTime>& ent) const
+void RWStepBasic_RWApprovalDateTime::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepBasic_ApprovalDateTime>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -47,8 +48,9 @@ void RWStepBasic_RWApprovalDateTime::ReadStep(const occ::handle<StepData_StepRea
   ent->Init(dts, ap);
 }
 
-void RWStepBasic_RWApprovalDateTime::WriteStep(StepData_StepWriter&                      SW,
-                                               const occ::handle<StepBasic_ApprovalDateTime>& ent) const
+void RWStepBasic_RWApprovalDateTime::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepBasic_ApprovalDateTime>& ent) const
 {
 
   // --- own field : dimensions ---
@@ -58,7 +60,7 @@ void RWStepBasic_RWApprovalDateTime::WriteStep(StepData_StepWriter&             
 }
 
 void RWStepBasic_RWApprovalDateTime::Share(const occ::handle<StepBasic_ApprovalDateTime>& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->DateTime().Value());

@@ -23,7 +23,7 @@
 //=================================================================================================
 
 static bool printerType(const TCollection_AsciiString& theTypeName,
-                                    occ::handle<Standard_Type>&         theType)
+                        occ::handle<Standard_Type>&    theType)
 {
   if (theTypeName == "ostream")
   {
@@ -52,7 +52,7 @@ static bool printerType(const TCollection_AsciiString& theTypeName,
 //=================================================================================================
 
 static occ::handle<Message_Printer> createPrinter(const occ::handle<Standard_Type>& theType,
-                                             Draw_Interpretor&            theDI)
+                                                  Draw_Interpretor&                 theDI)
 {
   const TCollection_AsciiString aTypeName(theType->Name());
   if (aTypeName == STANDARD_TYPE(Message_PrinterOStream)->Name())
@@ -79,9 +79,7 @@ static occ::handle<Message_Printer> createPrinter(const occ::handle<Standard_Typ
 
 //=================================================================================================
 
-static int SendMessage(Draw_Interpretor& theDI,
-                                    int  theArgNb,
-                                    const char**      theArgVec)
+static int SendMessage(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 2)
   {
@@ -116,9 +114,7 @@ static int PrintMessenger(Draw_Interpretor& theDI, int, const char**)
 
 //=================================================================================================
 
-static int SetMessagePrinter(Draw_Interpretor& theDI,
-                                          int  theArgNb,
-                                          const char**      theArgVec)
+static int SetMessagePrinter(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 2)
   {
@@ -126,9 +122,9 @@ static int SetMessagePrinter(Draw_Interpretor& theDI,
     return 1;
   }
 
-  bool                          toAddPrinter = true;
+  bool                                      toAddPrinter = true;
   NCollection_List<TCollection_AsciiString> aPrinterTypes;
-  const occ::handle<Message_Messenger>&          aMessenger = Message::DefaultMessenger();
+  const occ::handle<Message_Messenger>&     aMessenger = Message::DefaultMessenger();
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -182,9 +178,7 @@ static int SetMessagePrinter(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int ClearReport(Draw_Interpretor& theDI,
-                                    int  theArgNb,
-                                    const char**)
+static int ClearReport(Draw_Interpretor& theDI, int theArgNb, const char**)
 {
   if (theArgNb < 1)
   {
@@ -205,9 +199,7 @@ static int ClearReport(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int SetReportMetric(Draw_Interpretor& theDI,
-                                        int  theArgNb,
-                                        const char**      theArgVec)
+static int SetReportMetric(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 1)
   {
@@ -238,9 +230,7 @@ static int SetReportMetric(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int CollectMetricMessages(Draw_Interpretor& theDI,
-                                              int  theArgNb,
-                                              const char**      theArgVec)
+static int CollectMetricMessages(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   static Handle(NCollection_Shared<Message_Level>) MyLevel;
 
@@ -287,9 +277,7 @@ static int CollectMetricMessages(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int PrintReport(Draw_Interpretor& theDI,
-                                    int  theArgNb,
-                                    const char**      theArgVec)
+static int PrintReport(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 1)
   {

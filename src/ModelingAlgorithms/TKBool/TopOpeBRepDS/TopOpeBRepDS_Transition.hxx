@@ -119,8 +119,8 @@ private:
   TopAbs_State     myStateAfter;
   TopAbs_ShapeEnum myShapeBefore;
   TopAbs_ShapeEnum myShapeAfter;
-  int myIndexBefore;
-  int myIndexAfter;
+  int              myIndexBefore;
+  int              myIndexAfter;
 };
 
 #endif // _TopOpeBRepDS_Transition_HeaderFile

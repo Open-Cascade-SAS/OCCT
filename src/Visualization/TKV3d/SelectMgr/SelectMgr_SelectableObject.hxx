@@ -21,7 +21,6 @@
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <NCollection_Sequence.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 
 class SelectMgr_EntityOwner;
@@ -57,7 +56,7 @@ public:
   //! @param theSelection selection to fill
   //! @param theMode selection mode to create sensitive primitives
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int             theMode) = 0;
+                                const int                               theMode) = 0;
 
   //! Informs the graphic context that the interactive Object may be decomposed into sub-shapes for
   //! dynamic selection. The most used Interactive Object is AIS_Shape.
@@ -79,7 +78,7 @@ public:
   //! Adds the selection aSelection with the selection mode
   //! index aMode to this framework.
   Standard_EXPORT void AddSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                    const int             aMode);
+                                    const int                               aMode);
 
   //! Empties all the selections in the SelectableObject
   //! <update> parameter defines whether all object's
@@ -90,18 +89,17 @@ public:
   Standard_EXPORT void ClearSelections(const bool update = false);
 
   //! Returns the selection having specified selection mode or NULL.
-  Standard_EXPORT const occ::handle<SelectMgr_Selection>& Selection(
-    const int theMode) const;
+  Standard_EXPORT const occ::handle<SelectMgr_Selection>& Selection(const int theMode) const;
 
   //! Returns true if a selection corresponding to the selection mode theMode was computed for this
   //! object.
-  bool HasSelection(const int theMode) const
-  {
-    return !Selection(theMode).IsNull();
-  }
+  bool HasSelection(const int theMode) const { return !Selection(theMode).IsNull(); }
 
   //! Return the sequence of selections.
-  const NCollection_Sequence<occ::handle<SelectMgr_Selection>>& Selections() const { return myselections; }
+  const NCollection_Sequence<occ::handle<SelectMgr_Selection>>& Selections() const
+  {
+    return myselections;
+  }
 
   Standard_EXPORT void ResetTransformation() override;
 
@@ -110,11 +108,13 @@ public:
 
   //! Updates locations in all sensitive entities from <aSelection>
   //! and in corresponding entity owners.
-  Standard_EXPORT virtual void UpdateTransformations(const occ::handle<SelectMgr_Selection>& aSelection);
+  Standard_EXPORT virtual void UpdateTransformations(
+    const occ::handle<SelectMgr_Selection>& aSelection);
 
   //! Method which draws selected owners ( for fast presentation draw )
-  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theSeq);
+  Standard_EXPORT virtual void HilightSelected(
+    const occ::handle<PrsMgr_PresentationManager>&                  thePrsMgr,
+    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theSeq);
 
   //! Method which clear all selected owners belonging
   //! to this selectable object ( for fast presentation draw )
@@ -141,10 +141,7 @@ public:
   virtual bool IsAutoHilight() const { return myAutoHilight; }
 
   //! Set AutoHilight property to true or false.
-  virtual void SetAutoHilight(const bool theAutoHilight)
-  {
-    myAutoHilight = theAutoHilight;
-  }
+  virtual void SetAutoHilight(const bool theAutoHilight) { myAutoHilight = theAutoHilight; }
 
   //! Creates or returns existing presentation for highlighting detected object.
   //! @param thePrsMgr presentation manager to create new presentation
@@ -172,11 +169,13 @@ public:
 
   //! Sets common entity owner for assembly sensitive object entities
   Standard_EXPORT void SetAssemblyOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                        const int               theMode = -1);
+                                        const int                                 theMode = -1);
 
   //! Returns a bounding box of sensitive entities with the owners given if they are a part of
   //! activated selection
-  Standard_EXPORT Bnd_Box BndBoxOfSelected(const occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>& theOwners);
+  Standard_EXPORT Bnd_Box BndBoxOfSelected(
+    const occ::handle<
+      NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>& theOwners);
 
   //! Returns the mode for selection of object as a whole; 0 by default.
   int GlobalSelectionMode() const { return myGlobalSelMode; }
@@ -189,7 +188,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Protected empty constructor.
@@ -197,10 +196,7 @@ protected:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Override global selection mode.
-  void setGlobalSelMode(const int theMode)
-  {
-    myGlobalSelMode = theMode > 0 ? theMode : 0;
-  }
+  void setGlobalSelMode(const int theMode) { myGlobalSelMode = theMode > 0 ? theMode : 0; }
 
   //! Update clipping planes state.
   Standard_EXPORT virtual void UpdateClipping() override;
@@ -212,12 +208,12 @@ protected:
 
 protected:
   NCollection_Sequence<occ::handle<SelectMgr_Selection>> myselections; //!< list of selections
-                                              // clang-format off
+                                                                       // clang-format off
   occ::handle<Prs3d_Presentation>    mySelectionPrs;  //!< optional presentation for highlighting selected object
   occ::handle<Prs3d_Presentation>    myHilightPrs;    //!< optional presentation for highlighting detected object
-                                              // clang-format on
-  int myGlobalSelMode;           //!< global selection mode
-  bool myAutoHilight;             //!< auto-highlighting flag defining
+                                                                       // clang-format on
+  int  myGlobalSelMode;                                                //!< global selection mode
+  bool myAutoHilight; //!< auto-highlighting flag defining
 };
 
 #endif // _SelectMgr_SelectableObject_HeaderFile

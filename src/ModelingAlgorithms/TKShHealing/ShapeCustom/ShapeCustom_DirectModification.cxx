@@ -59,10 +59,10 @@ static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)
   if (!ES.IsNull())
   {
     // is the surface indirect ?
-    gp_Trsf          t   = L.Transformation();
-    bool neg = t.IsNegative();
-    bool det = (t.VectorialPart().Determinant() < 0.0);
-    bool dir = ES->Position().Direct();
+    gp_Trsf t   = L.Transformation();
+    bool    neg = t.IsNegative();
+    bool    det = (t.VectorialPart().Determinant() < 0.0);
+    bool    dir = ES->Position().Direct();
     if ((neg != det) == dir)
       result = 1;
     occ::handle<Geom_ConicalSurface> CS = occ::down_cast<Geom_ConicalSurface>(ES);
@@ -81,12 +81,12 @@ static int IsIndirectSurface(occ::handle<Geom_Surface>& S, TopLoc_Location& L)
 
 //=================================================================================================
 
-bool ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&    F,
-                                                            occ::handle<Geom_Surface>& S,
-                                                            TopLoc_Location&      L,
-                                                            double&        Tol,
-                                                            bool&     RevWires,
-                                                            bool&     RevFace)
+bool ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&         F,
+                                                occ::handle<Geom_Surface>& S,
+                                                TopLoc_Location&           L,
+                                                double&                    Tol,
+                                                bool&                      RevWires,
+                                                bool&                      RevFace)
 {
   S = BRep_Tool::Surface(F, L);
 
@@ -127,10 +127,10 @@ bool ShapeCustom_DirectModification::NewSurface(const TopoDS_Face&    F,
 
 //=================================================================================================
 
-bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&  E,
-                                                          occ::handle<Geom_Curve>& C,
-                                                          TopLoc_Location&    L,
-                                                          double&      Tol)
+bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&       E,
+                                              occ::handle<Geom_Curve>& C,
+                                              TopLoc_Location&         L,
+                                              double&                  Tol)
 {
   //: p5 abv 26 Feb 99: force copying of edge if any its pcurve will be replaced
   occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
@@ -143,7 +143,7 @@ bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&  E,
     if (GC.IsNull() || !GC->IsCurveOnSurface())
       continue;
     occ::handle<Geom_Surface> S   = GC->Surface();
-    TopLoc_Location      Loc = GC->Location();
+    TopLoc_Location           Loc = GC->Location();
     if (!IsIndirectSurface(S, Loc))
       continue;
     double f, l;
@@ -159,8 +159,8 @@ bool ShapeCustom_DirectModification::NewCurve(const TopoDS_Edge&  E,
 //=================================================================================================
 
 bool ShapeCustom_DirectModification::NewPoint(const TopoDS_Vertex& /*V*/,
-                                                          gp_Pnt& /*P*/,
-                                                          double& /*Tol*/)
+                                              gp_Pnt& /*P*/,
+                                              double& /*Tol*/)
 {
   // 3d points are never modified
   return false;
@@ -168,14 +168,14 @@ bool ShapeCustom_DirectModification::NewPoint(const TopoDS_Vertex& /*V*/,
 
 //=================================================================================================
 
-bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&    E,
-                                                            const TopoDS_Face&    F,
-                                                            const TopoDS_Edge&    NewE,
-                                                            const TopoDS_Face&    NewF,
-                                                            occ::handle<Geom2d_Curve>& C,
-                                                            double&        Tol)
+bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&         E,
+                                                const TopoDS_Face&         F,
+                                                const TopoDS_Edge&         NewE,
+                                                const TopoDS_Face&         NewF,
+                                                occ::handle<Geom2d_Curve>& C,
+                                                double&                    Tol)
 {
-  TopLoc_Location      L;
+  TopLoc_Location           L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(F, L);
 
   int result = IsIndirectSurface(S, L);
@@ -219,7 +219,7 @@ bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&    E,
     if (BRepTools::IsReallyClosed(E, F))
     {
       // szv#4:S4163:12Mar99 SGI warning
-      TopoDS_Shape         sh  = NewE.Reversed();
+      TopoDS_Shape              sh  = NewE.Reversed();
       occ::handle<Geom2d_Curve> tmp = BRep_Tool::CurveOnSurface(TopoDS::Edge(sh), NewF, f, l);
       if (tmp.IsNull())
       {
@@ -244,9 +244,9 @@ bool ShapeCustom_DirectModification::NewCurve2d(const TopoDS_Edge&    E,
 //=================================================================================================
 
 bool ShapeCustom_DirectModification::NewParameter(const TopoDS_Vertex& /*V*/,
-                                                              const TopoDS_Edge& /*E*/,
-                                                              double& /*P*/,
-                                                              double& /*Tol*/)
+                                                  const TopoDS_Edge& /*E*/,
+                                                  double& /*P*/,
+                                                  double& /*Tol*/)
 {
   return false;
 }

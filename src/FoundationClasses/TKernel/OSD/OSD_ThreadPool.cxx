@@ -253,9 +253,9 @@ void OSD_ThreadPool::Launcher::wait()
 
 //=================================================================================================
 
-void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>&     theFailure,
-                                OSD_ThreadPool::JobInterface* theJob,
-                                int                           theThreadIndex)
+void OSD_ThreadPool::performJob(occ::handle<Standard_Failure>& theFailure,
+                                OSD_ThreadPool::JobInterface*  theJob,
+                                int                            theThreadIndex)
 {
   try
   {

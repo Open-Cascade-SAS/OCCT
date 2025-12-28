@@ -29,7 +29,7 @@ RWStepVisual_RWTessellatedStructuredItem::RWStepVisual_RWTessellatedStructuredIt
 
 void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&              theData,
-  const int                              theNum,
+  const int                                                theNum,
   occ::handle<Interface_Check>&                            theCheck,
   const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const
 {
@@ -51,7 +51,7 @@ void RWStepVisual_RWTessellatedStructuredItem::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedStructuredItem::WriteStep(
-  StepData_StepWriter&                                theSW,
+  StepData_StepWriter&                                     theSW,
   const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const
 {
 

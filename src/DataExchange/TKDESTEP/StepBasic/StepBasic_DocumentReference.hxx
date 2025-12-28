@@ -33,7 +33,8 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_Document> AssignedDocument() const;
 
-  Standard_EXPORT void SetAssignedDocument(const occ::handle<StepBasic_Document>& aAssignedDocument);
+  Standard_EXPORT void SetAssignedDocument(
+    const occ::handle<StepBasic_Document>& aAssignedDocument);
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Source() const;
 

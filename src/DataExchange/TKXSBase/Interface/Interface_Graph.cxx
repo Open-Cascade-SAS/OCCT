@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
@@ -75,7 +74,7 @@ Interface_Graph::Interface_Graph(const occ::handle<Interface_InterfaceModel>& am
 }
 
 Interface_Graph::Interface_Graph(const occ::handle<Interface_InterfaceModel>& amodel,
-                                 bool                        theModeStat)
+                                 bool                                         theModeStat)
     : themodel(amodel),
       thepresents("")
 {
@@ -90,8 +89,8 @@ Interface_Graph::Interface_Graph(const Interface_Graph& agraph, const bool /*cop
     : themodel(agraph.Model()),
       thepresents("")
 {
-  thesharings         = agraph.SharingTable();
-  int nb = agraph.NbStatuses();
+  thesharings = agraph.SharingTable();
+  int nb      = agraph.NbStatuses();
   if (!nb)
     return;
   if (thestats.IsNull())
@@ -167,14 +166,15 @@ void Interface_Graph::Evaluate()
   // Allocator is used to reuse memory for the lists of shared entities.
   occ::handle<NCollection_IncAllocator> anAlloc2 =
     new NCollection_IncAllocator(NCollection_IncAllocator::THE_MINIMUM_BLOCK_SIZE);
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aListOfEntities = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aListOfEntities =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
   for (int i = 1; i <= anEntityNumber; i++)
   {
     aListOfEntities->Clear(anAlloc2);
     anAlloc2->Reset();
     const occ::handle<Standard_Transient>& anEntity = themodel->Value(i);
-    Interface_EntityIterator          anIter(aListOfEntities);
-    const int            aNumber = EntityNumber(anEntity);
+    Interface_EntityIterator               anIter(aListOfEntities);
+    const int                              aNumber = EntityNumber(anEntity);
     if (aNumber == 0)
     {
       continue;
@@ -185,7 +185,7 @@ void Interface_Graph::Evaluate()
       aCurEnt = themodel->ReportEntity(aNumber)->Content();
 
     occ::handle<Interface_GeneralModule> aModule;
-    int                aCN;
+    int                                  aCN;
     if (themodel->GTool()->Select(aCurEnt, aModule, aCN))
     {
       aModule->FillShared(themodel, aCN, aCurEnt, anIter);
@@ -337,8 +337,8 @@ void Interface_Graph::GetFromModel()
 }
 
 void Interface_Graph::GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                    const bool            shared,
-                                    const int            newstat)
+                                    const bool                             shared,
+                                    const int                              newstat)
 {
   if (thestats.IsNull())
     return;
@@ -358,10 +358,10 @@ void Interface_Graph::GetFromEntity(const occ::handle<Standard_Transient>& ent,
 }
 
 void Interface_Graph::GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                    const bool            shared,
-                                    const int            newstat,
-                                    const int            overlapstat,
-                                    const bool            cumul)
+                                    const bool                             shared,
+                                    const int                              newstat,
+                                    const int                              overlapstat,
+                                    const bool                             cumul)
 {
   if (thestats.IsNull())
     return;
@@ -369,7 +369,7 @@ void Interface_Graph::GetFromEntity(const occ::handle<Standard_Transient>& ent,
   if (!num)
     return;
   bool pasla = !theflags.CTrue(num, Graph_Present);
-  int stat  = thestats->Value(num);
+  int  stat  = thestats->Value(num);
 
   if (pasla)
   {
@@ -398,15 +398,14 @@ void Interface_Graph::GetFromEntity(const occ::handle<Standard_Transient>& ent,
     GetFromEntity(aIter.Value(), true, newstat);
 }
 
-void Interface_Graph::GetFromIter(const Interface_EntityIterator& iter,
-                                  const int          newstat)
+void Interface_Graph::GetFromIter(const Interface_EntityIterator& iter, const int newstat)
 {
   if (thestats.IsNull())
     return;
   for (iter.Start(); iter.More(); iter.Next())
   {
     const occ::handle<Standard_Transient>& ent = iter.Value();
-    int                  num = EntityNumber(ent);
+    int                                    num = EntityNumber(ent);
     if (!num)
       continue;
     if (theflags.CTrue(num, Graph_Present))
@@ -416,16 +415,16 @@ void Interface_Graph::GetFromIter(const Interface_EntityIterator& iter,
 }
 
 void Interface_Graph::GetFromIter(const Interface_EntityIterator& iter,
-                                  const int          newstat,
-                                  const int          overlapstat,
-                                  const bool          cumul)
+                                  const int                       newstat,
+                                  const int                       overlapstat,
+                                  const bool                      cumul)
 {
   if (thestats.IsNull())
     return;
   for (iter.Start(); iter.More(); iter.Next())
   {
     const occ::handle<Standard_Transient>& ent = iter.Value();
-    int                  num = EntityNumber(ent);
+    int                                    num = EntityNumber(ent);
     if (!num)
       continue;
     /*bool pasla = !*/ theflags.Value(num, Graph_Present);
@@ -475,7 +474,7 @@ bool Interface_Graph::HasShareErrors(const occ::handle<Standard_Transient>& ent)
 Interface_EntityIterator Interface_Graph::Shareds(const occ::handle<Standard_Transient>& ent) const
 {
   Interface_EntityIterator iter;
-  int         num = EntityNumber(ent);
+  int                      num = EntityNumber(ent);
   if (!num)
     return iter;
 
@@ -485,7 +484,7 @@ Interface_EntityIterator Interface_Graph::Shareds(const occ::handle<Standard_Tra
 
   // if (num == 0)  throw Standard_DomainError("Interface : Shareds");
   occ::handle<Interface_GeneralModule> module;
-  int                CN;
+  int                                  CN;
   if (themodel->GTool()->Select(aCurEnt, module, CN))
     module->FillShared(themodel, CN, aCurEnt, iter);
   return iter;
@@ -503,10 +502,12 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Interface_Gr
   int num = EntityNumber(ent);
   if (!num)
     return 0;
-  // return occ::down_cast<NCollection_HSequence<occ::handle<Standard_Transient>>>(thesharings->Value(num));
-  const NCollection_List<int>&         alist     = thesharings->Value(num);
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings = new NCollection_HSequence<occ::handle<Standard_Transient>>;
-  NCollection_List<int>::Iterator  aIt(alist);
+  // return
+  // occ::down_cast<NCollection_HSequence<occ::handle<Standard_Transient>>>(thesharings->Value(num));
+  const NCollection_List<int>& alist = thesharings->Value(num);
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> aSharings =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>;
+  NCollection_List<int>::Iterator aIt(alist);
   for (; aIt.More(); aIt.Next())
     aSharings->Append(Entity(aIt.Value()));
   return aSharings;
@@ -519,9 +520,9 @@ Interface_EntityIterator Interface_Graph::Sharings(const occ::handle<Standard_Tr
 
 static void AddTypedSharings(const occ::handle<Standard_Transient>& ent,
                              const occ::handle<Standard_Type>&      type,
-                             Interface_EntityIterator&         iter,
-                             const int            n,
-                             const Interface_Graph&            G)
+                             Interface_EntityIterator&              iter,
+                             const int                              n,
+                             const Interface_Graph&                 G)
 {
   if (ent.IsNull())
     return;
@@ -542,11 +543,12 @@ static void AddTypedSharings(const occ::handle<Standard_Transient>& ent,
     AddTypedSharings(list->Value(i), type, iter, nb, G);
 }
 
-Interface_EntityIterator Interface_Graph::TypedSharings(const occ::handle<Standard_Transient>& ent,
-                                                        const occ::handle<Standard_Type>& type) const
+Interface_EntityIterator Interface_Graph::TypedSharings(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Standard_Type>&      type) const
 {
   Interface_EntityIterator iter;
-  int         n = Size();
+  int                      n = Size();
   AddTypedSharings(ent, type, iter, n, *this);
   return iter;
 }
@@ -554,7 +556,7 @@ Interface_EntityIterator Interface_Graph::TypedSharings(const occ::handle<Standa
 Interface_EntityIterator Interface_Graph::RootEntities() const
 {
   Interface_EntityIterator iter;
-  int         nb = thesharings->Length();
+  int                      nb = thesharings->Length();
   for (int i = 1; i <= nb; i++)
   {
     if (!thesharings->Value(i).IsEmpty())
@@ -564,7 +566,8 @@ Interface_EntityIterator Interface_Graph::RootEntities() const
   return iter;
 }
 
-occ::handle<TCollection_HAsciiString> Interface_Graph::Name(const occ::handle<Standard_Transient>& ent) const
+occ::handle<TCollection_HAsciiString> Interface_Graph::Name(
+  const occ::handle<Standard_Transient>& ent) const
 {
   occ::handle<TCollection_HAsciiString> str;
   if (themodel.IsNull())
@@ -577,7 +580,7 @@ occ::handle<TCollection_HAsciiString> Interface_Graph::Name(const occ::handle<St
     return str;
 
   occ::handle<Interface_GeneralModule> module;
-  int                CN;
+  int                                  CN;
   if (!gtool->Select(ent, module, CN))
     return str;
 

@@ -24,19 +24,10 @@
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MAT2d_BiInt.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <GeomAbs_JoinType.hxx>
 #include <Standard_Transient.hxx>
 #include <Geom2d_Geometry.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
-#include <MAT2d_Connexion.hxx>
-#include <NCollection_Sequence.hxx>
 class Geom2d_Geometry;
 class MAT2d_Connexion;
 class MAT2d_BiInt;
@@ -50,12 +41,13 @@ class MAT2d_Circuit : public Standard_Transient
 
 public:
   Standard_EXPORT MAT2d_Circuit(const GeomAbs_JoinType aJoinType    = GeomAbs_Arc,
-                                const bool IsOpenResult = false);
+                                const bool             IsOpenResult = false);
 
-  Standard_EXPORT void Perform(NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& aFigure,
-                               const NCollection_Sequence<bool>&    IsClosed,
-                               const int              IndRefLine,
-                               const bool              Trigo);
+  Standard_EXPORT void Perform(
+    NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& aFigure,
+    const NCollection_Sequence<bool>&                                         IsClosed,
+    const int                                                                 IndRefLine,
+    const bool                                                                Trigo);
 
   //! Returns the Number of Items .
   Standard_EXPORT int NumberOfItems() const;
@@ -83,14 +75,14 @@ public:
 
 private:
   Standard_EXPORT bool IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
-                                                 const occ::handle<Geom2d_Geometry>& Geom2,
-                                                 const double            Direction) const;
+                                     const occ::handle<Geom2d_Geometry>& Geom2,
+                                     const double                        Direction) const;
 
   Standard_EXPORT bool PassByLast(const occ::handle<MAT2d_Connexion>& C1,
-                                              const occ::handle<MAT2d_Connexion>& C2) const;
+                                  const occ::handle<MAT2d_Connexion>& C2) const;
 
-  Standard_EXPORT double Side(const occ::handle<MAT2d_Connexion>&       C,
-                                     const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const;
+  Standard_EXPORT double Side(const occ::handle<MAT2d_Connexion>&                       C,
+                              const NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const;
 
   Standard_EXPORT void UpDateLink(const int IFirst,
                                   const int ILine,
@@ -104,21 +96,22 @@ private:
   Standard_EXPORT void InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line) const;
 
   Standard_EXPORT void DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>>& Line,
-                                  NCollection_Sequence<occ::handle<MAT2d_Connexion>>&     Connexions,
-                                  const occ::handle<MAT2d_Connexion>& Father,
-                                  const double            Side) const;
+                                  NCollection_Sequence<occ::handle<MAT2d_Connexion>>& Connexions,
+                                  const occ::handle<MAT2d_Connexion>&                 Father,
+                                  const double                                        Side) const;
 
-  Standard_EXPORT void ConstructCircuit(const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& aFigure,
-                                        const int                    IndRefLine,
-                                        const MAT2d_MiniPath&                     aPath);
+  Standard_EXPORT void ConstructCircuit(
+    const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& aFigure,
+    const int                                                                       IndRefLine,
+    const MAT2d_MiniPath&                                                           aPath);
 
-  double                         direction;
-  NCollection_Sequence<occ::handle<Geom2d_Geometry>>         geomElements;
-  NCollection_DataMap<int, occ::handle<MAT2d_Connexion>>       connexionMap;
+  double                                                      direction;
+  NCollection_Sequence<occ::handle<Geom2d_Geometry>>          geomElements;
+  NCollection_DataMap<int, occ::handle<MAT2d_Connexion>>      connexionMap;
   NCollection_DataMap<MAT2d_BiInt, NCollection_Sequence<int>> linkRefEqui;
-  NCollection_Sequence<int>             linesLength;
-  GeomAbs_JoinType                      myJoinType;
-  bool                      myIsOpenResult;
+  NCollection_Sequence<int>                                   linesLength;
+  GeomAbs_JoinType                                            myJoinType;
+  bool                                                        myIsOpenResult;
 };
 
 #endif // _MAT2d_Circuit_HeaderFile

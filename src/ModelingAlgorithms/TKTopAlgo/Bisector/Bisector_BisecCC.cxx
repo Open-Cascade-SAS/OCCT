@@ -42,23 +42,21 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecCC, Bisector_Curve)
 
-static bool ProjOnCurve(const gp_Pnt2d&             P,
-                                    const occ::handle<Geom2d_Curve>& C,
-                                    double&              theParam);
+static bool ProjOnCurve(const gp_Pnt2d& P, const occ::handle<Geom2d_Curve>& C, double& theParam);
 
 static double Curvature(const occ::handle<Geom2d_Curve>& C, double U, double Tol);
 
 static bool TestExtension(const occ::handle<Geom2d_Curve>& C1,
-                                      const occ::handle<Geom2d_Curve>& C2,
-                                      const int      Start_End);
+                          const occ::handle<Geom2d_Curve>& C2,
+                          const int                        Start_End);
 
-static bool DiscretPar(const double    DU,
-                                   const double    EpsMin,
-                                   const double    EpsMax,
-                                   const int NbMin,
-                                   const int NbMax,
-                                   double&         Eps,
-                                   int&      Nb);
+static bool DiscretPar(const double DU,
+                       const double EpsMin,
+                       const double EpsMax,
+                       const int    NbMin,
+                       const int    NbMax,
+                       double&      Eps,
+                       int&         Nb);
 
 //=================================================================================================
 
@@ -80,10 +78,10 @@ Bisector_BisecCC::Bisector_BisecCC()
 
 Bisector_BisecCC::Bisector_BisecCC(const occ::handle<Geom2d_Curve>& Cu1,
                                    const occ::handle<Geom2d_Curve>& Cu2,
-                                   const double         Side1,
-                                   const double         Side2,
-                                   const gp_Pnt2d&             Origin,
-                                   const double         DistMax)
+                                   const double                     Side1,
+                                   const double                     Side2,
+                                   const gp_Pnt2d&                  Origin,
+                                   const double                     DistMax)
 {
   Perform(Cu1, Cu2, Side1, Side2, Origin, DistMax);
 }
@@ -92,10 +90,10 @@ Bisector_BisecCC::Bisector_BisecCC(const occ::handle<Geom2d_Curve>& Cu1,
 
 void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
                                const occ::handle<Geom2d_Curve>& Cu2,
-                               const double         Side1,
-                               const double         Side2,
-                               const gp_Pnt2d&             Origin,
-                               const double         DistMax)
+                               const double                     Side1,
+                               const double                     Side2,
+                               const gp_Pnt2d&                  Origin,
+                               const double                     DistMax)
 {
   isEmpty = false;
   distMax = DistMax;
@@ -110,11 +108,11 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
   isConvex2 = Bisector::IsConvex(curve2, sign2);
 
   double           U, UC1, UC2, Dist, dU, USol;
-  gp_Pnt2d                P;
-  int        NbPnts    = 21;
+  gp_Pnt2d         P;
+  int              NbPnts    = 21;
   constexpr double EpsMin    = 10 * Precision::Confusion();
-  bool        YaPoly    = true;
-  bool        OriInPoly = false;
+  bool             YaPoly    = true;
+  bool             OriInPoly = false;
   //---------------------------------------------
   // Calculate first point of the polygon.
   //---------------------------------------------
@@ -129,10 +127,10 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
   P = ValueByInt(U, UC1, UC2, Dist);
   if (Dist < Precision::Confusion())
   {
-    gp_Pnt2d      aP1   = curve1->Value(UC1);
-    gp_Pnt2d      aP2   = curve2->Value(UC2);
-    double dp    = (aP1.Distance(P) + aP2.Distance(P));
-    double dorig = (aP1.Distance(Origin) + aP2.Distance(Origin));
+    gp_Pnt2d aP1   = curve1->Value(UC1);
+    gp_Pnt2d aP2   = curve2->Value(UC2);
+    double   dp    = (aP1.Distance(P) + aP2.Distance(P));
+    double   dorig = (aP1.Distance(Origin) + aP2.Distance(Origin));
     if (dp < dorig)
     {
       isEmpty = true;
@@ -185,7 +183,7 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
     //----------------------------------------------
     // Construction of the polygon of the bissectrice.
     //---------------------------------------------
-    U                = FirstParameter();
+    U         = FirstParameter();
     double DU = LastParameter() - U;
 
     if (DU < EpsMin)
@@ -284,15 +282,15 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
     {
       if (extensionStart)
       {
-        gp_Pnt2d      P1     = myPolygon.First().Point();
-        double UFirst = startIntervals.First() - pointStart.Distance(P1);
+        gp_Pnt2d P1     = myPolygon.First().Point();
+        double   UFirst = startIntervals.First() - pointStart.Distance(P1);
         startIntervals.InsertBefore(1, UFirst);
         endIntervals.InsertBefore(1, startIntervals.Value(2));
       }
       if (extensionEnd)
       {
-        gp_Pnt2d      P1;
-        double UFirst, ULast;
+        gp_Pnt2d P1;
+        double   UFirst, ULast;
         P1     = myPolygon.Last().Point();
         UFirst = endIntervals.Last();
         ULast  = UFirst + pointEnd.Distance(P1);
@@ -558,9 +556,9 @@ bool Bisector_BisecCC::IsPeriodic() const
 
 static double Curvature(const occ::handle<Geom2d_Curve>& C, double U, double Tol)
 {
-  double K1;
-  gp_Vec2d      D1, D2;
-  gp_Pnt2d      P;
+  double   K1;
+  gp_Vec2d D1, D2;
+  gp_Pnt2d P;
   C->D2(U, P, D1, D2);
   double Norm2 = D1.SquareMagnitude();
   if (Norm2 < Tol)
@@ -594,10 +592,7 @@ static double Curvature(const occ::handle<Geom2d_Curve>& C, double U, double Tol
 //           H(u,v) = (Tu.P1(u)P2(v))**2||Tv||**2 - (Tv.P1(u)P2(v))**2||Tu||**2
 //
 //=============================================================================
-gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
-                                        double&      U1,
-                                        double&      U2,
-                                        double&      Dist) const
+gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U, double& U1, double& U2, double& Dist) const
 {
   gp_Vec2d T;
 
@@ -624,12 +619,12 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
   //-------------------------------------------------------
   // Find start parameter by using <myPolygon>.
   //-------------------------------------------------------
-  int IntervalIndex = myPolygon.Interval(U);
-  double    UMin          = myPolygon.Value(IntervalIndex).ParamOnBis();
-  double    UMax          = myPolygon.Value(IntervalIndex + 1).ParamOnBis();
-  double    VMin          = myPolygon.Value(IntervalIndex).ParamOnC2();
-  double    VMax          = myPolygon.Value(IntervalIndex + 1).ParamOnC2();
-  double    Alpha, VInit;
+  int    IntervalIndex = myPolygon.Interval(U);
+  double UMin          = myPolygon.Value(IntervalIndex).ParamOnBis();
+  double UMax          = myPolygon.Value(IntervalIndex + 1).ParamOnBis();
+  double VMin          = myPolygon.Value(IntervalIndex).ParamOnC2();
+  double VMax          = myPolygon.Value(IntervalIndex + 1).ParamOnC2();
+  double Alpha, VInit;
 
   if (std::abs(UMax - UMin) < gp::Resolution())
   {
@@ -641,18 +636,18 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
     VInit = VMin + Alpha * (VMax - VMin);
   }
 
-  U1                     = LinkBisCurve(U);
-  double VTemp    = std::min(VMin, VMax);
-  VMax                   = std::max(VMin, VMax);
-  VMin                   = VTemp;
-  bool Valid = true;
+  U1           = LinkBisCurve(U);
+  double VTemp = std::min(VMin, VMax);
+  VMax         = std::max(VMin, VMax);
+  VMin         = VTemp;
+  bool Valid   = true;
   //---------------------------------------------------------------
   // Calculate parameter U2 on curve C2 solution of H(u,v)=0
   //---------------------------------------------------------------
-  gp_Pnt2d      P1;
-  gp_Vec2d      T1;
-  double EpsH    = 1.E-9;
-  double EpsH100 = 1.E-7;
+  gp_Pnt2d P1;
+  gp_Vec2d T1;
+  double   EpsH    = 1.E-9;
+  double   EpsH100 = 1.E-7;
   curve1->D1(U1, P1, T1);
   gp_Vec2d N1(T1.Y(), -T1.X());
 
@@ -663,7 +658,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
   else
   {
     Bisector_FunctionH H(curve2, P1, sign1 * sign2 * T1);
-    double      FInit;
+    double             FInit;
     H.Value(VInit, FInit);
     if (std::abs(FInit) < EpsH)
     {
@@ -696,8 +691,8 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
   //----------------
   if (Valid)
   {
-    gp_Pnt2d            P2 = curve2->Value(U2);
-    gp_Vec2d            P2P1(P1.X() - P2.X(), P1.Y() - P2.Y());
+    gp_Pnt2d     P2 = curve2->Value(U2);
+    gp_Vec2d     P2P1(P1.X() - P2.X(), P1.Y() - P2.Y());
     double       SquareP2P1 = P2P1.SquareMagnitude();
     double       N1P2P1     = N1.Dot(P2P1);
     const double anEps      = Epsilon(1);
@@ -728,8 +723,8 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
     // Construction of the bisectrice point curve and of the straight line passing
     // by P1 and carried by the normal. curve2 is limited by VMin and VMax.
     //--------------------------------------------------------------------
-    double            DMin = Precision::Infinite();
-    gp_Pnt2d                 P;
+    double                        DMin = Precision::Infinite();
+    gp_Pnt2d                      P;
     occ::handle<Bisector_BisecPC> BisPC = new Bisector_BisecPC(curve2, P1, sign2, VMin, VMax);
     occ::handle<Geom2d_Line>      NorLi = new Geom2d_Line(P1, N1);
 
@@ -773,10 +768,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U,
 //           P1 is the current point of parameter U on curve1 and N1 the
 //           normal at this point.
 //=============================================================================
-gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U,
-                                      double&      U1,
-                                      double&      U2,
-                                      double&      Dist) const
+gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, double& Dist) const
 {
   //------------------------------------------------------------------
   // Return point, tangent, normal on C1 at parameter U.
@@ -822,16 +814,16 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U,
     }
   }
 
-  bool YaSol = false;
-  double    DMin  = Precision::Infinite();
-  double    USol;
-  double    EpsMax = 1.E-6;
-  double    EpsX;
-  double    EpsH = 1.E-8;
-  double    DistPP1;
-  int NbSamples  = 20;
-  double    UFirstOnC2 = curve2->FirstParameter();
-  double    ULastOnC2  = curve2->LastParameter();
+  bool   YaSol = false;
+  double DMin  = Precision::Infinite();
+  double USol;
+  double EpsMax = 1.E-6;
+  double EpsX;
+  double EpsH = 1.E-8;
+  double DistPP1;
+  int    NbSamples  = 20;
+  double UFirstOnC2 = curve2->FirstParameter();
+  double ULastOnC2  = curve2->LastParameter();
 
   if (!myPolygon.IsEmpty())
   {
@@ -859,11 +851,11 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U,
   {
     for (int j = 1; j <= SolRoot.NbSolutions(); j++)
     {
-      USol                   = SolRoot.Value(j);
-      gp_Pnt2d      P2Curve2 = curve2->Value(USol);
-      gp_Vec2d      P2P1(P1.X() - P2Curve2.X(), P1.Y() - P2Curve2.Y());
-      double SquareP2P1 = P2P1.SquareMagnitude();
-      double N1P2P1     = N1.Dot(P2P1);
+      USol              = SolRoot.Value(j);
+      gp_Pnt2d P2Curve2 = curve2->Value(USol);
+      gp_Vec2d P2P1(P1.X() - P2Curve2.X(), P1.Y() - P2Curve2.Y());
+      double   SquareP2P1 = P2P1.SquareMagnitude();
+      double   N1P2P1     = N1.Dot(P2P1);
 
       // Test if the solution is at the proper side of the curves.
       if (N1P2P1 * sign1 > 0)
@@ -1005,10 +997,10 @@ void Bisector_BisecCC::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V
 //=================================================================================================
 
 void Bisector_BisecCC::D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const
 {
   V1.SetCoord(0., 0.);
   V2.SetCoord(0., 0.);
@@ -1059,12 +1051,12 @@ gp_Vec2d Bisector_BisecCC::DN(const double U, const int N) const
 //                      tangents  T1(u) and T2(v0)
 //
 //=============================================================================
-void Bisector_BisecCC::Values(const double    U,
-                              const int N,
-                              gp_Pnt2d&              P,
-                              gp_Vec2d&              V1,
-                              gp_Vec2d&              V2,
-                              gp_Vec2d&              V3) const
+void Bisector_BisecCC::Values(const double U,
+                              const int    N,
+                              gp_Pnt2d&    P,
+                              gp_Vec2d&    V1,
+                              gp_Vec2d&    V2,
+                              gp_Vec2d&    V3) const
 {
   V1 = gp_Vec2d(0., 0.);
   V2 = gp_Vec2d(0., 0.);
@@ -1192,13 +1184,13 @@ gp_Pnt2d Bisector_BisecCC::Extension(const double U,
                                      double&      U1,
                                      double&      U2,
                                      double&      Dist,
-                                     gp_Vec2d&           T) const
+                                     gp_Vec2d&    T) const
 {
   Bisector_PointOnBis PRef;
   gp_Pnt2d            P, P1, P2, PBis;
   gp_Vec2d            T1, Tang;
-  double       dU               = 0.;
-  bool    ExtensionTangent = false;
+  double              dU               = 0.;
+  bool                ExtensionTangent = false;
 
   if (myPolygon.Length() == 0)
   {
@@ -1301,20 +1293,20 @@ gp_Pnt2d Bisector_BisecCC::Extension(const double U,
 //=================================================================================================
 
 static bool PointByInt(const occ::handle<Geom2d_Curve>& CA,
-                                   const occ::handle<Geom2d_Curve>& CB,
-                                   const double         SignA,
-                                   const double         SignB,
-                                   const double         UOnA,
-                                   double&              UOnB,
-                                   double&              Dist)
+                       const occ::handle<Geom2d_Curve>& CB,
+                       const double                     SignA,
+                       const double                     SignB,
+                       const double                     UOnA,
+                       double&                          UOnB,
+                       double&                          Dist)
 {
   //------------------------------------------------------------------
   // Return point,tangent, normal on CA with parameter UOnA.
   //-------------------------------------------------------------------
-  gp_Pnt2d         P1, P2, P, PSol;
-  gp_Vec2d         Tan1, Tan2;
-  bool IsConvexA = Bisector::IsConvex(CA, SignA);
-  bool IsConvexB = Bisector::IsConvex(CB, SignB);
+  gp_Pnt2d P1, P2, P, PSol;
+  gp_Vec2d Tan1, Tan2;
+  bool     IsConvexA = Bisector::IsConvex(CA, SignA);
+  bool     IsConvexB = Bisector::IsConvex(CB, SignB);
 
   CA->D1(UOnA, P1, Tan1);
   gp_Vec2d N1(Tan1.Y(), -Tan1.X());
@@ -1353,9 +1345,9 @@ static bool PointByInt(const occ::handle<Geom2d_Curve>& CA,
     }
   }
 
-  double    DMin = Precision::Infinite();
-  double    UPC;
-  bool YaSol = false;
+  double DMin = Precision::Infinite();
+  double UPC;
+  bool   YaSol = false;
   //--------------------------------------------------------------------
   // Construction of the bisectrice point curve and of the straight line passing
   // through P1 and carried by the normal.
@@ -1689,13 +1681,13 @@ double Bisector_BisecCC::SearchBound(const double U1, const double U2) const
 {
   double           UMid, Dist1, Dist2, DistMid, U11, U22;
   double           UC1, UC2;
-  gp_Pnt2d                PBis, PBisPrec;
+  gp_Pnt2d         PBis, PBisPrec;
   constexpr double TolPnt = Precision::Confusion();
   constexpr double TolPar = Precision::PConfusion();
-  U11                            = U1;
-  U22                            = U2;
-  PBisPrec                       = ValueByInt(U11, UC1, UC2, Dist1);
-  PBis                           = ValueByInt(U22, UC1, UC2, Dist2);
+  U11                     = U1;
+  U22                     = U2;
+  PBisPrec                = ValueByInt(U11, UC1, UC2, Dist1);
+  PBis                    = ValueByInt(U22, UC1, UC2, Dist2);
 
   while ((U22 - U11) > TolPar
          || ((Dist1 < Precision::Infinite() && Dist2 < Precision::Infinite()
@@ -1729,9 +1721,7 @@ double Bisector_BisecCC::SearchBound(const double U1, const double U2) const
 
 //=================================================================================================
 
-static bool ProjOnCurve(const gp_Pnt2d&             P,
-                                    const occ::handle<Geom2d_Curve>& C,
-                                    double&              theParam)
+static bool ProjOnCurve(const gp_Pnt2d& P, const occ::handle<Geom2d_Curve>& C, double& theParam)
 {
   // double UOnCurve =0.;
   theParam = 0.0;
@@ -1784,12 +1774,12 @@ static bool ProjOnCurve(const gp_Pnt2d&             P,
 //=================================================================================================
 
 static bool TestExtension(const occ::handle<Geom2d_Curve>& C1,
-                                      const occ::handle<Geom2d_Curve>& C2,
-                                      const int      Start_End)
+                          const occ::handle<Geom2d_Curve>& C2,
+                          const int                        Start_End)
 {
-  gp_Pnt2d         P1, P2;
-  gp_Vec2d         T1, T2;
-  bool Test = false;
+  gp_Pnt2d P1, P2;
+  gp_Vec2d T1, T2;
+  bool     Test = false;
   if (Start_End == 1)
   {
     C1->D1(C1->FirstParameter(), P1, T1);
@@ -1877,13 +1867,13 @@ void Bisector_BisecCC::ComputePointEnd()
 
 //=================================================================================================
 
-static bool DiscretPar(const double    DU,
-                                   const double    EpsMin,
-                                   const double    EpsMax,
-                                   const int NbMin,
-                                   const int NbMax,
-                                   double&         Eps,
-                                   int&      Nb)
+static bool DiscretPar(const double DU,
+                       const double EpsMin,
+                       const double EpsMax,
+                       const int    NbMin,
+                       const int    NbMax,
+                       double&      Eps,
+                       int&         Nb)
 {
   if (DU <= NbMin * EpsMin)
   {

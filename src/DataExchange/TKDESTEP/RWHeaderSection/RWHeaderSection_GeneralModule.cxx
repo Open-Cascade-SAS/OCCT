@@ -29,7 +29,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_UndefinedEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule, StepData_GeneralModule)
 
@@ -38,9 +37,9 @@ RWHeaderSection_GeneralModule::RWHeaderSection_GeneralModule()
   Interface_GeneralLib::SetGlobal(this, HeaderSection::Protocol());
 }
 
-void RWHeaderSection_GeneralModule::FillSharedCase(const int            CN,
+void RWHeaderSection_GeneralModule::FillSharedCase(const int                              CN,
                                                    const occ::handle<Standard_Transient>& ent,
-                                                   Interface_EntityIterator&         iter) const
+                                                   Interface_EntityIterator& iter) const
 {
   if (CN != 4)
     return;
@@ -56,10 +55,10 @@ void RWHeaderSection_GeneralModule::CheckCase(const int,
 {
 }
 
-void RWHeaderSection_GeneralModule::CopyCase(const int            CN,
+void RWHeaderSection_GeneralModule::CopyCase(const int                              CN,
                                              const occ::handle<Standard_Transient>& entfrom,
                                              const occ::handle<Standard_Transient>& entto,
-                                             Interface_CopyTool&               TC) const
+                                             Interface_CopyTool&                    TC) const
 {
   //   ajout manuel
   switch (CN)
@@ -71,19 +70,22 @@ void RWHeaderSection_GeneralModule::CopyCase(const int            CN,
       DeclareAndCast(HeaderSection_FileName, ento, entto);
       occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString(enfr->Name());
       occ::handle<TCollection_HAsciiString> time = new TCollection_HAsciiString(enfr->TimeStamp());
-      int                 nba  = enfr->NbAuthor();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> auth = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nba);
+      int                                   nba  = enfr->NbAuthor();
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> auth =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nba);
       for (i = 1; i <= nba; i++)
         auth->SetValue(i, new TCollection_HAsciiString(enfr->AuthorValue(i)));
-      int                        nbo  = enfr->NbOrganization();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> orga = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbo);
+      int nbo = enfr->NbOrganization();
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> orga =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbo);
       for (i = 1; i <= nbo; i++)
         orga->SetValue(i, new TCollection_HAsciiString(enfr->OrganizationValue(i)));
       occ::handle<TCollection_HAsciiString> prep =
         new TCollection_HAsciiString(enfr->PreprocessorVersion());
       occ::handle<TCollection_HAsciiString> orig =
         new TCollection_HAsciiString(enfr->OriginatingSystem());
-      occ::handle<TCollection_HAsciiString> autr = new TCollection_HAsciiString(enfr->Authorisation());
+      occ::handle<TCollection_HAsciiString> autr =
+        new TCollection_HAsciiString(enfr->Authorisation());
       ento->Init(name, time, auth, orga, prep, orig, autr);
     }
     break;
@@ -92,8 +94,9 @@ void RWHeaderSection_GeneralModule::CopyCase(const int            CN,
       int i;
       DeclareAndCast(HeaderSection_FileDescription, enfr, entfrom);
       DeclareAndCast(HeaderSection_FileDescription, ento, entto);
-      int                        nbd  = enfr->NbDescription();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> desc = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbd);
+      int nbd = enfr->NbDescription();
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> desc =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbd);
       for (i = 1; i <= nbd; i++)
         desc->SetValue(i, new TCollection_HAsciiString(enfr->DescriptionValue(i)));
       occ::handle<TCollection_HAsciiString> impl =
@@ -106,8 +109,9 @@ void RWHeaderSection_GeneralModule::CopyCase(const int            CN,
       int i;
       DeclareAndCast(HeaderSection_FileSchema, enfr, entfrom);
       DeclareAndCast(HeaderSection_FileSchema, ento, entto);
-      int                        nbs  = enfr->NbSchemaIdentifiers();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> sche = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbs);
+      int nbs = enfr->NbSchemaIdentifiers();
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> sche =
+        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbs);
       for (i = 1; i <= nbs; i++)
         sche->SetValue(i, new TCollection_HAsciiString(enfr->SchemaIdentifiersValue(i)));
       ento->Init(sche);
@@ -128,8 +132,8 @@ void RWHeaderSection_GeneralModule::CopyCase(const int            CN,
 
 // --- Construction of empty class ---
 
-bool RWHeaderSection_GeneralModule::NewVoid(const int      CN,
-                                                        occ::handle<Standard_Transient>& ent) const
+bool RWHeaderSection_GeneralModule::NewVoid(const int                        CN,
+                                            occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
     return false;

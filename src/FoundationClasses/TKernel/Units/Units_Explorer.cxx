@@ -48,7 +48,7 @@ Units_Explorer::Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsd
 //=================================================================================================
 
 Units_Explorer::Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                               const char*           aquantity)
+                               const char*                           aquantity)
 {
   Init(aunitssystem, aquantity);
 }
@@ -56,7 +56,7 @@ Units_Explorer::Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssyste
 //=================================================================================================
 
 Units_Explorer::Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                               const char*               aquantity)
+                               const char*                               aquantity)
 {
   Init(aunitsdictionary, aquantity);
 }
@@ -93,8 +93,7 @@ void Units_Explorer::Init(const occ::handle<Units_UnitsDictionary>& aunitsdictio
 
 //=================================================================================================
 
-void Units_Explorer::Init(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                          const char*           aquantity)
+void Units_Explorer::Init(const occ::handle<Units_UnitsSystem>& aunitssystem, const char* aquantity)
 {
   int index;
   thecurrentquantity     = 0;
@@ -119,10 +118,10 @@ void Units_Explorer::Init(const occ::handle<Units_UnitsSystem>& aunitssystem,
 //=================================================================================================
 
 void Units_Explorer::Init(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                          const char*               aquantity)
+                          const char*                               aquantity)
 {
   occ::handle<Units_Quantity> quantity;
-  int       index;
+  int                         index;
   thecurrentquantity     = 0;
   thequantitiessequence  = aunitsdictionary->Sequence();
   theactiveunitssequence = new NCollection_HSequence<int>();
@@ -197,6 +196,5 @@ TCollection_AsciiString Units_Explorer::Unit() const
 
 bool Units_Explorer::IsActive() const
 {
-  return theactiveunitssequence->Value(thecurrentquantity) == thecurrentunit ? true
-                                                                             : false;
+  return theactiveunitssequence->Value(thecurrentquantity) == thecurrentunit ? true : false;
 }

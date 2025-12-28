@@ -87,8 +87,7 @@ public:
   //! If answer is False, no limited maximum is expected for account
   //! If answer is True, expected maximum is given in argument <max>
   //! Default answer given here is False (can be redefined)
-  Standard_EXPORT virtual bool LimitedMax(const int nbent,
-                                                      int&      max) const;
+  Standard_EXPORT virtual bool LimitedMax(const int nbent, int& max) const;
 
   //! Returns a text which defines the way a Dispatch produces
   //! packets (which will become files) from its Input

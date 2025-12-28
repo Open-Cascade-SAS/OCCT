@@ -65,9 +65,9 @@ public:
 
 private:
   occ::handle<Vrml_Material> myFrontMaterial;
-  Vrml_ShapeHints       myShapeHints;
-  bool      myHasNormals;
-  bool      myHasMaterial;
+  Vrml_ShapeHints            myShapeHints;
+  bool                       myHasNormals;
+  bool                       myHasMaterial;
 };
 
 #endif // _VrmlConverter_ShadingAspect_HeaderFile

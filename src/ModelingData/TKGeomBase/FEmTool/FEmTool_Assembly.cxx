@@ -22,16 +22,15 @@
 #include <math_Matrix.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-static int MinIndex(const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
+static int MinIndex(
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
 {
   int dim, el, nvar, Imin;
   int diml = Table->LowerRow(), dimu = Table->UpperRow(), ell = Table->LowerCol(),
-                   elu = Table->UpperCol(), nvarl, nvaru;
+      elu = Table->UpperCol(), nvarl, nvaru;
 
   occ::handle<NCollection_HArray1<int>> T = Table->Value(diml, ell);
 
@@ -55,11 +54,12 @@ static int MinIndex(const occ::handle<NCollection_HArray2<occ::handle<NCollectio
 
 //=================================================================================================
 
-static int MaxIndex(const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
+static int MaxIndex(
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
 {
   int dim, el, nvar, Imax;
   int diml = Table->LowerRow(), dimu = Table->UpperRow(), ell = Table->LowerCol(),
-                   elu = Table->UpperCol(), nvarl, nvaru;
+      elu = Table->UpperCol(), nvarl, nvaru;
 
   occ::handle<NCollection_HArray1<int>> T = Table->Value(diml, ell);
 
@@ -83,8 +83,9 @@ static int MaxIndex(const occ::handle<NCollection_HArray2<occ::handle<NCollectio
 
 //=================================================================================================
 
-FEmTool_Assembly::FEmTool_Assembly(const NCollection_Array2<int>&        Dependence,
-                                   const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
+FEmTool_Assembly::FEmTool_Assembly(
+  const NCollection_Array2<int>&                                                 Dependence,
+  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& Table)
     : myDepTable(1, Dependence.ColLength(), 1, Dependence.RowLength()),
       B(MinIndex(Table), MaxIndex(Table))
 
@@ -99,7 +100,7 @@ FEmTool_Assembly::FEmTool_Assembly(const NCollection_Array2<int>&        Depende
   int dim, el, nvar, Imin, I0 = 1 - B.Lower(), i;
 
   int diml = Table->LowerRow(), dimu = Table->UpperRow(), ell = Table->LowerCol(),
-                   elu = Table->UpperCol(), nvarl, nvaru;
+      elu = Table->UpperCol(), nvarl, nvaru;
 
   occ::handle<NCollection_HArray1<int>> T;
   for (dim = diml; dim <= dimu; dim++)
@@ -135,10 +136,10 @@ void FEmTool_Assembly::NullifyMatrix()
 
 //=================================================================================================
 
-void FEmTool_Assembly::AddMatrix(const int Element,
-                                 const int Dimension1,
-                                 const int Dimension2,
-                                 const math_Matrix&     Mat)
+void FEmTool_Assembly::AddMatrix(const int          Element,
+                                 const int          Dimension1,
+                                 const int          Dimension2,
+                                 const math_Matrix& Mat)
 {
 
   if (myDepTable(Dimension1, Dimension2) == 0)
@@ -151,7 +152,7 @@ void FEmTool_Assembly::AddMatrix(const int Element,
 
   int I, J, I0 = 1 - B.Lower(), i, ii, j,
 
-                         i0 = Mat.LowerRow() - nvarl, j0 = Mat.LowerCol() - nvarl;
+            i0 = Mat.LowerRow() - nvarl, j0 = Mat.LowerCol() - nvarl;
 
   for (i = nvarl; i <= nvaru; i++)
   {
@@ -176,13 +177,11 @@ void FEmTool_Assembly::NullifyVector()
 
 //=================================================================================================
 
-void FEmTool_Assembly::AddVector(const int Element,
-                                 const int Dimension,
-                                 const math_Vector&     Vec)
+void FEmTool_Assembly::AddVector(const int Element, const int Dimension, const math_Vector& Vec)
 {
   const NCollection_Array1<int>& T = myRefTable->Value(Dimension, Element)->Array1();
   int nvarl = T.Lower(), nvaru = std::min(T.Upper(), nvarl + Vec.Length() - 1),
-                   i0 = Vec.Lower() - nvarl;
+      i0 = Vec.Lower() - nvarl;
 
   //  int I, i;
   int i;
@@ -228,7 +227,7 @@ bool FEmTool_Assembly::Solve()
       //-----------------------------------------------------------------
       NCollection_Array2<int> H1(1, NbGlobVar(), 1, NbGlobVar());
       H1.Init(1);
-      int i, j, k, l, BlockBeg = 1, BlockEnd;
+      int  i, j, k, l, BlockBeg = 1, BlockEnd;
       bool Block, Zero;
       for (i = 2; i <= NbGlobVar(); i++)
       {
@@ -270,7 +269,7 @@ bool FEmTool_Assembly::Solve()
         for (j = 1; j <= i; j++)
         {
           const NCollection_List<occ::handle<NCollection_HArray1<double>>>& Gj = G.Value(j);
-          Zero                            = true;
+          Zero                                                                 = true;
           for (Iter1.Initialize(Gi); Iter1.More(); Iter1.Next())
           {
             const occ::handle<NCollection_HArray1<double>>& a = Iter1.Value();
@@ -311,7 +310,7 @@ bool FEmTool_Assembly::Solve()
     }
 
     GHGt->Init(0.);
-    int                    i, j, k;
+    int                                                                  i, j, k;
     NCollection_List<occ::handle<NCollection_HArray1<double>>>::Iterator Iter;
 
     for (i = 1; i <= G.Length(); i++)
@@ -386,15 +385,15 @@ void FEmTool_Assembly::Solution(math_Vector& Solution) const
     math_Vector v1(B.Lower(), B.Upper());
     H->Solve(B, v1);
 
-    math_Vector                         l(1, G.Length()), v2(1, G.Length());
-    int                    i, j;
+    math_Vector l(1, G.Length()), v2(1, G.Length());
+    int         i, j;
     NCollection_List<occ::handle<NCollection_HArray1<double>>>::Iterator Iter;
 
     for (i = 1; i <= G.Length(); i++)
     {
 
       const NCollection_List<occ::handle<NCollection_HArray1<double>>>& L = G.Value(i);
-      double                m = 0.;
+      double                                                            m = 0.;
 
       for (Iter.Initialize(L); Iter.More(); Iter.Next())
       {
@@ -438,7 +437,8 @@ int FEmTool_Assembly::NbGlobVar() const
   return B.Length();
 }
 
-void FEmTool_Assembly::GetAssemblyTable(occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable) const
+void FEmTool_Assembly::GetAssemblyTable(
+  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable) const
 {
   AssTable = myRefTable;
 }
@@ -452,7 +452,7 @@ void FEmTool_Assembly::ResetConstraint()
 void FEmTool_Assembly::NullifyConstraint()
 {
   NCollection_List<occ::handle<NCollection_HArray1<double>>>::Iterator Iter;
-  int                    i;
+  int                                                                  i;
 
   for (i = 1; i <= G.Length(); i++)
   {
@@ -466,11 +466,11 @@ void FEmTool_Assembly::NullifyConstraint()
 
 //=================================================================================================
 
-void FEmTool_Assembly::AddConstraint(const int IndexofConstraint,
-                                     const int Element,
-                                     const int Dimension,
-                                     const math_Vector&     LinearForm,
-                                     const double    Value)
+void FEmTool_Assembly::AddConstraint(const int          IndexofConstraint,
+                                     const int          Element,
+                                     const int          Dimension,
+                                     const math_Vector& LinearForm,
+                                     const double       Value)
 {
   while (G.Length() < IndexofConstraint)
   {
@@ -483,7 +483,7 @@ void FEmTool_Assembly::AddConstraint(const int IndexofConstraint,
   NCollection_List<occ::handle<NCollection_HArray1<double>>>& L = G.ChangeValue(IndexofConstraint);
 
   occ::handle<NCollection_HArray1<int>> Indexes = myRefTable->Value(Dimension, Element);
-  int                 i, Imax = 0, Imin = NbGlobVar();
+  int                                   i, Imax = 0, Imin = NbGlobVar();
 
   for (i = Indexes->Lower(); i <= Indexes->Upper(); i++)
   {
@@ -502,8 +502,8 @@ void FEmTool_Assembly::AddConstraint(const int IndexofConstraint,
   else
   {
     NCollection_List<occ::handle<NCollection_HArray1<double>>>::Iterator Iter(L);
-    double                       s1 = 0, s2 = 0;
-    occ::handle<NCollection_HArray1<double>>       Aux1, Aux2;
+    double                                                               s1 = 0, s2 = 0;
+    occ::handle<NCollection_HArray1<double>>                             Aux1, Aux2;
     for (i = 1; Iter.More(); Iter.Next(), i++)
     {
       if (Imin >= Iter.Value()->Lower())

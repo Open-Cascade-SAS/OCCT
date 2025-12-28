@@ -16,7 +16,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
 #include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
@@ -76,11 +75,12 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into OBJ header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                                       const NCollection_Sequence<TDF_Label>&                    theRootLabels,
-                                       const NCollection_Map<TCollection_AsciiString>*             theLabelFilter,
-                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&            theDocument,
+    const NCollection_Sequence<TDF_Label>&          theRootLabels,
+    const NCollection_Map<TCollection_AsciiString>* theLabelFilter,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
   //! Write OBJ file and associated MTL material file.
   //! Triangulation data should be precomputed within shapes!
@@ -88,9 +88,10 @@ public:
   //! @param[in] theFileInfo     map with file metadata to put into glTF header section
   //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
-  Standard_EXPORT virtual bool Perform(const occ::handle<TDocStd_Document>&             theDocument,
-                                       const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
-                                       const Message_ProgressRange&                theProgress);
+  Standard_EXPORT virtual bool Perform(
+    const occ::handle<TDocStd_Document>&                                                theDocument,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo,
+    const Message_ProgressRange& theProgress);
 
 protected:
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
@@ -103,10 +104,10 @@ protected:
   //! @param[in][out] theNbProgressSteps   overall number of progress steps (should be appended)
   //! @param[in][out] theToCreateMatFile   flag to create material file or not (should be appended)
   Standard_EXPORT virtual void addFaceInfo(const RWMesh_FaceIterator& theFace,
-                                           int&          theNbNodes,
-                                           int&          theNbElems,
-                                           double&             theNbProgressSteps,
-                                           bool&          theToCreateMatFile);
+                                           int&                       theNbNodes,
+                                           int&                       theNbElems,
+                                           double&                    theNbProgressSteps,
+                                           bool&                      theToCreateMatFile);
 
   //! Write the shape.
   //! @param[in] theWriter   OBJ writer context

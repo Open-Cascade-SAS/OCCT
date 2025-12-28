@@ -58,9 +58,9 @@ void TopOpeBRepBuild_BlockBuilder::MakeBlock(TopOpeBRepBuild_ShapeSet& SS)
   myBlocksIsRegular.Clear();
 
   bool IsRegular;
-  int CurNei;
-  int Mextent;
-  int Eindex;
+  int  CurNei;
+  int  Mextent;
+  int  Eindex;
 
   for (SS.InitStartElements(); SS.MoreStartElements(); SS.NextStartElement())
   {
@@ -86,7 +86,7 @@ void TopOpeBRepBuild_BlockBuilder::MakeBlock(TopOpeBRepBuild_ShapeSet& SS)
       //    - compute neighbours of E : N(E)
       //    - add each element N of N(E) to M
 
-      Mextent                           = myOrientedShapeMap.Extent();
+      Mextent               = myOrientedShapeMap.Extent();
       bool searchneighbours = (Eindex <= Mextent);
       while (searchneighbours)
       {
@@ -94,9 +94,9 @@ void TopOpeBRepBuild_BlockBuilder::MakeBlock(TopOpeBRepBuild_ShapeSet& SS)
         // E = element of M on which neighbours must be searched
         // first step : Eindex = index of starting element of SS
         // next steps : Eindex = index of neighbours of starting element of SS
-        const TopoDS_Shape& E1    = myOrientedShapeMap(Eindex);
-        CurNei                    = SS.MaxNumberSubShape(E1);
-        bool condregu = true;
+        const TopoDS_Shape& E1 = myOrientedShapeMap(Eindex);
+        CurNei                 = SS.MaxNumberSubShape(E1);
+        bool condregu          = true;
         if (CurNei > 2)
           condregu = false;
         IsRegular = IsRegular && condregu;
@@ -164,7 +164,7 @@ void TopOpeBRepBuild_BlockBuilder::InitBlock()
 bool TopOpeBRepBuild_BlockBuilder::MoreBlock() const
 {
   // the length of myBlocks is 1 + number of connexity blocks
-  int l = myBlocks.Length();
+  int  l = myBlocks.Length();
   bool b = (myBlockIndex < l);
   return b;
 }
@@ -194,7 +194,7 @@ const TopoDS_Shape& TopOpeBRepBuild_BlockBuilder::Element(
   if (!isbound)
     throw Standard_Failure("OutOfRange");
 
-  int    index = BI.Value();
+  int                 index = BI.Value();
   const TopoDS_Shape& E     = myOrientedShapeMap(index);
   return E;
 }
@@ -221,15 +221,14 @@ int TopOpeBRepBuild_BlockBuilder::Element(const TopoDS_Shape& E) const
 
 //=================================================================================================
 
-bool TopOpeBRepBuild_BlockBuilder::ElementIsValid(
-  const TopOpeBRepBuild_BlockIterator& BI) const
+bool TopOpeBRepBuild_BlockBuilder::ElementIsValid(const TopOpeBRepBuild_BlockIterator& BI) const
 {
   bool isbound = BI.More();
   if (!isbound)
     return false;
 
-  int Sindex  = BI.Value();
-  int isb     = myOrientedShapeMapIsValid.Find(Sindex);
+  int  Sindex  = BI.Value();
+  int  isb     = myOrientedShapeMapIsValid.Find(Sindex);
   bool isvalid = (isb == 1) ? true : false;
 
   return isvalid;
@@ -241,7 +240,7 @@ bool TopOpeBRepBuild_BlockBuilder::ElementIsValid(const int Sindex) const
   if (!isbound)
     return false;
 
-  int isb     = myOrientedShapeMapIsValid.Find(Sindex);
+  int  isb     = myOrientedShapeMapIsValid.Find(Sindex);
   bool isvalid = (isb == 1) ? true : false;
 
   return isvalid;
@@ -260,7 +259,7 @@ int TopOpeBRepBuild_BlockBuilder::AddElement(const TopoDS_Shape& S)
 //=================================================================================================
 
 void TopOpeBRepBuild_BlockBuilder::SetValid(const TopOpeBRepBuild_BlockIterator& BI,
-                                            const bool               isvalid)
+                                            const bool                           isvalid)
 {
   bool isbound = BI.More();
   if (!isbound)
@@ -271,8 +270,7 @@ void TopOpeBRepBuild_BlockBuilder::SetValid(const TopOpeBRepBuild_BlockIterator&
   myOrientedShapeMapIsValid.Bind(Sindex, i);
 }
 
-void TopOpeBRepBuild_BlockBuilder::SetValid(const int Sindex,
-                                            const bool isvalid)
+void TopOpeBRepBuild_BlockBuilder::SetValid(const int Sindex, const bool isvalid)
 {
   bool isbound = myOrientedShapeMapIsValid.IsBound(Sindex);
   if (!isbound)
@@ -287,7 +285,7 @@ void TopOpeBRepBuild_BlockBuilder::SetValid(const int Sindex,
 bool TopOpeBRepBuild_BlockBuilder::CurrentBlockIsRegular()
 {
   bool b = false;
-  int i = myBlocksIsRegular.Value(myBlockIndex);
+  int  i = myBlocksIsRegular.Value(myBlockIndex);
   if (i == 1)
     b = true;
   return b;

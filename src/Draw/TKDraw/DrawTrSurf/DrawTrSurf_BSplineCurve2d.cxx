@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve2d, DrawTrSurf_Curve2d)
 
@@ -40,14 +39,14 @@ DrawTrSurf_BSplineCurve2d::DrawTrSurf_BSplineCurve2d(const occ::handle<Geom2d_BS
 }
 
 DrawTrSurf_BSplineCurve2d::DrawTrSurf_BSplineCurve2d(const occ::handle<Geom2d_BSplineCurve>& C,
-                                                     const Draw_Color&                  CurvColor,
-                                                     const Draw_Color&                  PolesColor,
-                                                     const Draw_Color&                  KnotsColor,
-                                                     const Draw_MarkerShape             KnotsShape,
-                                                     const int             KnotsSize,
+                                                     const Draw_Color&      CurvColor,
+                                                     const Draw_Color&      PolesColor,
+                                                     const Draw_Color&      KnotsColor,
+                                                     const Draw_MarkerShape KnotsShape,
+                                                     const int              KnotsSize,
                                                      const bool             ShowPoles,
                                                      const bool             ShowKnots,
-                                                     const int             Discret)
+                                                     const int              Discret)
     : DrawTrSurf_Curve2d(C, CurvColor, Discret)
 {
   drawKnots = ShowKnots;
@@ -81,7 +80,7 @@ void DrawTrSurf_BSplineCurve2d::DrawOn(Draw_Display& dis) const
 
   if (drawKnots)
   {
-    int     NbKnots = C->NbKnots();
+    int                        NbKnots = C->NbKnots();
     NCollection_Array1<double> CKnots(1, NbKnots);
     C->Knots(CKnots);
     dis.SetColor(knotsLook);
@@ -93,19 +92,19 @@ void DrawTrSurf_BSplineCurve2d::DrawOn(Draw_Display& dis) const
   }
 }
 
-void DrawTrSurf_BSplineCurve2d::FindPole(const double X,
-                                         const double Y,
+void DrawTrSurf_BSplineCurve2d::FindPole(const double        X,
+                                         const double        Y,
                                          const Draw_Display& D,
-                                         const double XPrec,
-                                         int&   Index) const
+                                         const double        XPrec,
+                                         int&                Index) const
 {
   occ::handle<Geom2d_BSplineCurve> bc   = occ::down_cast<Geom2d_BSplineCurve>(curv);
-  double               Prec = XPrec / D.Zoom();
-  gp_Pnt2d                    p1(X / D.Zoom(), Y / D.Zoom());
+  double                           Prec = XPrec / D.Zoom();
+  gp_Pnt2d                         p1(X / D.Zoom(), Y / D.Zoom());
   Index++;
-  int NbPoles = bc->NbPoles();
-  gp_Pnt           P;
-  gp_Pnt2d         P2d;
+  int      NbPoles = bc->NbPoles();
+  gp_Pnt   P;
+  gp_Pnt2d P2d;
   while (Index <= NbPoles)
   {
     P2d = bc->Pole(Index);
@@ -119,16 +118,16 @@ void DrawTrSurf_BSplineCurve2d::FindPole(const double X,
   Index = 0;
 }
 
-void DrawTrSurf_BSplineCurve2d::FindKnot(const double X,
-                                         const double Y,
+void DrawTrSurf_BSplineCurve2d::FindKnot(const double        X,
+                                         const double        Y,
                                          const Draw_Display& D,
-                                         const double Prec,
-                                         int&   Index) const
+                                         const double        Prec,
+                                         int&                Index) const
 {
   occ::handle<Geom2d_BSplineCurve> bc = occ::down_cast<Geom2d_BSplineCurve>(curv);
-  gp_Pnt2d                    P2d;
-  gp_Pnt                      P;
-  gp_Pnt2d                    p1(X, Y);
+  gp_Pnt2d                         P2d;
+  gp_Pnt                           P;
+  gp_Pnt2d                         p1(X, Y);
   Index++;
   int NbKnots = bc->NbKnots();
   while (Index <= NbKnots)
@@ -166,17 +165,18 @@ occ::handle<Draw_Drawable3D> DrawTrSurf_BSplineCurve2d::Copy() const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_BSplineCurve2d::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params&    aParams = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&         aParams = DrawTrSurf::Parameters();
   occ::handle<Geom2d_BSplineCurve> aGeomCurve =
     occ::down_cast<Geom2d_BSplineCurve>(GeomTools_Curve2dSet::ReadCurve2d(theStream));
-  occ::handle<DrawTrSurf_BSplineCurve2d> aDrawCurve = new DrawTrSurf_BSplineCurve2d(aGeomCurve,
-                                                                               aParams.CurvColor,
-                                                                               aParams.PolesColor,
-                                                                               aParams.KnotsColor,
-                                                                               aParams.KnotsMarker,
-                                                                               aParams.KnotsSize,
-                                                                               aParams.IsShowPoles,
-                                                                               aParams.IsShowKnots,
-                                                                               aParams.Discret);
+  occ::handle<DrawTrSurf_BSplineCurve2d> aDrawCurve =
+    new DrawTrSurf_BSplineCurve2d(aGeomCurve,
+                                  aParams.CurvColor,
+                                  aParams.PolesColor,
+                                  aParams.KnotsColor,
+                                  aParams.KnotsMarker,
+                                  aParams.KnotsSize,
+                                  aParams.IsShowPoles,
+                                  aParams.IsShowKnots,
+                                  aParams.Discret);
   return aDrawCurve;
 }

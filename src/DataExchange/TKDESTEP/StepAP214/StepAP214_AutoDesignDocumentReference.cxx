@@ -21,16 +21,16 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDocumentReference, StepBasic_Docu
 StepAP214_AutoDesignDocumentReference::StepAP214_AutoDesignDocumentReference() {}
 
 void StepAP214_AutoDesignDocumentReference::Init(
-  const occ::handle<StepBasic_Document>&                           aAssignedDocument,
-  const occ::handle<TCollection_HAsciiString>&                     aSource,
+  const occ::handle<StepBasic_Document>&                                       aAssignedDocument,
+  const occ::handle<TCollection_HAsciiString>&                                 aSource,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>& aItems)
 {
   Init0(aAssignedDocument, aSource);
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>> StepAP214_AutoDesignDocumentReference::Items()
-  const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>>
+  StepAP214_AutoDesignDocumentReference::Items() const
 {
   return items;
 }

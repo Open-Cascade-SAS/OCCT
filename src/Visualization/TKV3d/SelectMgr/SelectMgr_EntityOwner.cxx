@@ -31,8 +31,9 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(const int thePriority)
 
 //=================================================================================================
 
-SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObj,
-                                             const int                    thePriority)
+SelectMgr_EntityOwner::SelectMgr_EntityOwner(
+  const occ::handle<SelectMgr_SelectableObject>& theSelObj,
+  const int                                      thePriority)
     : mySelectable(theSelObj.get()),
       mypriority(thePriority),
       myIsSelected(false),
@@ -44,7 +45,7 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_Selecta
 //=================================================================================================
 
 SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                             const int               thePriority)
+                                             const int                                 thePriority)
     : mySelectable(theOwner->mySelectable),
       mypriority(thePriority),
       myIsSelected(false),
@@ -56,8 +57,8 @@ SelectMgr_EntityOwner::SelectMgr_EntityOwner(const occ::handle<SelectMgr_EntityO
 //=================================================================================================
 
 void SelectMgr_EntityOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                             const occ::handle<Prs3d_Drawer>&               theStyle,
-                                             const int                    theMode)
+                                             const occ::handle<Prs3d_Drawer>& theStyle,
+                                             const int                        theMode)
 {
   if (mySelectable == NULL)
   {
@@ -80,7 +81,7 @@ void SelectMgr_EntityOwner::HilightWithColor(const occ::handle<PrsMgr_Presentati
 //=================================================================================================
 
 bool SelectMgr_EntityOwner::Select(const AIS_SelectionScheme theSelScheme,
-                                               const bool    theIsDetected) const
+                                   const bool                theIsDetected) const
 {
   switch (theSelScheme)
   {

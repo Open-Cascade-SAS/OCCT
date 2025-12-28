@@ -42,10 +42,10 @@ public:
 
   //! returns Value as a DatumReferenceModifierWithValue (Null if another type)
   Standard_EXPORT occ::handle<StepDimTol_DatumReferenceModifierWithValue>
-    DatumReferenceModifierWithValue() const;
+                  DatumReferenceModifierWithValue() const;
 
   //! returns Value as a SimpleDatumReferenceModifierMember (Null if another type)
   Standard_EXPORT occ::handle<StepDimTol_SimpleDatumReferenceModifierMember>
-    SimpleDatumReferenceModifierMember() const;
+                  SimpleDatumReferenceModifierMember() const;
 };
 #endif // _StepDimTol_DatumReferenceModifier_HeaderFile

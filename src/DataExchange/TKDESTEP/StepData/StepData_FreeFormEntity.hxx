@@ -57,7 +57,7 @@ public:
   //! Else, it is inserted just as next of <me>
   //! If <next> is Null, Next is cleared
   Standard_EXPORT void SetNext(const occ::handle<StepData_FreeFormEntity>& next,
-                               const bool                 last = true);
+                               const bool                                  last = true);
 
   //! Returns the next member of a Complex entity
   //! (remark : the last member has none)
@@ -95,9 +95,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepData_FreeFormEntity, Standard_Transient)
 
 private:
-  TCollection_AsciiString         thetype;
+  TCollection_AsciiString                          thetype;
   occ::handle<NCollection_HArray1<StepData_Field>> thefields;
-  occ::handle<StepData_FreeFormEntity> thenext;
+  occ::handle<StepData_FreeFormEntity>             thenext;
 };
 
 #endif // _StepData_FreeFormEntity_HeaderFile

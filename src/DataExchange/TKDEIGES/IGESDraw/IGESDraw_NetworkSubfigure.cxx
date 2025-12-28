@@ -29,13 +29,14 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
 IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure() {}
 
-void IGESDraw_NetworkSubfigure::Init(const occ::handle<IGESDraw_NetworkSubfigureDef>&   aDefinition,
-                                     const gp_XYZ&                                 aTranslation,
-                                     const gp_XYZ&                                 aScaleFactor,
-                                     const int                        aTypeFlag,
-                                     const occ::handle<TCollection_HAsciiString>&       aDesignator,
-                                     const occ::handle<IGESGraph_TextDisplayTemplate>&  aTemplate,
-                                     const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints)
+void IGESDraw_NetworkSubfigure::Init(
+  const occ::handle<IGESDraw_NetworkSubfigureDef>&                            aDefinition,
+  const gp_XYZ&                                                               aTranslation,
+  const gp_XYZ&                                                               aScaleFactor,
+  const int                                                                   aTypeFlag,
+  const occ::handle<TCollection_HAsciiString>&                                aDesignator,
+  const occ::handle<IGESGraph_TextDisplayTemplate>&                           aTemplate,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints)
 {
   if (!allConnectPoints.IsNull())
     if (allConnectPoints->Lower() != 1)
@@ -98,8 +99,7 @@ int IGESDraw_NetworkSubfigure::NbConnectPoints() const
   return (theConnectPoints.IsNull() ? 0 : theConnectPoints->Length());
 }
 
-occ::handle<IGESDraw_ConnectPoint> IGESDraw_NetworkSubfigure::ConnectPoint(
-  const int Index) const
+occ::handle<IGESDraw_ConnectPoint> IGESDraw_NetworkSubfigure::ConnectPoint(const int Index) const
 {
   return (theConnectPoints->Value(Index));
 }

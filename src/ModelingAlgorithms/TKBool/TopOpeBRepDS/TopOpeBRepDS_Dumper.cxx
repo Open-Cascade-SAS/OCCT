@@ -39,10 +39,10 @@ TopOpeBRepDS_Dumper::TopOpeBRepDS_Dumper(const occ::handle<TopOpeBRepDS_HDataStr
 //=================================================================================================
 
 TCollection_AsciiString TopOpeBRepDS_Dumper::SDumpRefOri(const TopOpeBRepDS_Kind K,
-                                                         const int  I) const
+                                                         const int               I) const
 {
   TCollection_AsciiString           SS;
-  bool                  fk = false;
+  bool                              fk = false;
   const TopOpeBRepDS_DataStructure& DS = myHDS->DS();
   if (!TopOpeBRepDS::IsTopology(K))
     return SS;
@@ -50,7 +50,7 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SDumpRefOri(const TopOpeBRepDS_Kind
   if (DS.Shape(I, fk).ShapeType() != t)
     return SS;
   const TopoDS_Shape& S = myHDS->Shape(I, fk);
-  int    r = myHDS->SameDomainReference(S);
+  int                 r = myHDS->SameDomainReference(S);
   TopOpeBRepDS_Config o = myHDS->SameDomainOrientation(S);
   SS                    = SS + "(" + SPrintShape(r) + "," + TopOpeBRepDS::SPrint(o) + ")";
   return SS;
@@ -62,8 +62,8 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SDumpRefOri(const TopoDS_Shape& S) 
 {
   TCollection_AsciiString SS;
   TopOpeBRepDS_Kind       k  = TopOpeBRepDS::ShapeToKind(S.ShapeType());
-  bool        fk = false;
-  int        i  = myHDS->Shape(S, fk);
+  bool                    fk = false;
+  int                     i  = myHDS->Shape(S, fk);
   SS                         = SDumpRefOri(k, i);
   return SS;
 }
@@ -85,8 +85,8 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShape(const int IS) const
 TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShape(const TopoDS_Shape& S) const
 {
   const TopOpeBRepDS_DataStructure& BDS    = myHDS->DS();
-  const int            IS     = myHDS->DS().Shape(S);
-  int                  rankIS = BDS.AncestorRank(IS);
+  const int                         IS     = myHDS->DS().Shape(S);
+  int                               rankIS = BDS.AncestorRank(IS);
   // JR/Hp  TCollection_AsciiString s1,s2;
   const char* s1;
   const char* s2;
@@ -118,10 +118,10 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShapeRefOri(
 //=================================================================================================
 
 TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShapeRefOri(
-  const NCollection_List<TopoDS_Shape>&    L,
-  const TCollection_AsciiString& astr) const
+  const NCollection_List<TopoDS_Shape>& L,
+  const TCollection_AsciiString&        astr) const
 {
-  TCollection_AsciiString            SS;
+  TCollection_AsciiString                  SS;
   NCollection_List<TopoDS_Shape>::Iterator it(L);
   if (!it.More())
     return SS;

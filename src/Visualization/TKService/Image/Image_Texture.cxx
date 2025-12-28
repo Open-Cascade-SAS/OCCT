@@ -58,7 +58,7 @@ Image_Texture::Image_Texture(const TCollection_AsciiString& theFileName,
 //=================================================================================================
 
 Image_Texture::Image_Texture(const occ::handle<NCollection_Buffer>& theBuffer,
-                             const TCollection_AsciiString&    theId)
+                             const TCollection_AsciiString&         theId)
     : myBuffer(theBuffer),
       myOffset(-1),
       myLength(-1)
@@ -137,8 +137,9 @@ occ::handle<Image_PixMap> Image_Texture::loadImageFile(const TCollection_AsciiSt
 
 //=================================================================================================
 
-occ::handle<Image_PixMap> Image_Texture::loadImageBuffer(const occ::handle<NCollection_Buffer>& theBuffer,
-                                                    const TCollection_AsciiString&    theId) const
+occ::handle<Image_PixMap> Image_Texture::loadImageBuffer(
+  const occ::handle<NCollection_Buffer>& theBuffer,
+  const TCollection_AsciiString&         theId) const
 {
   if (theBuffer.IsNull())
   {
@@ -161,8 +162,8 @@ occ::handle<Image_PixMap> Image_Texture::loadImageBuffer(const occ::handle<NColl
 //=================================================================================================
 
 occ::handle<Image_PixMap> Image_Texture::loadImageOffset(const TCollection_AsciiString& thePath,
-                                                    int64_t                        theOffset,
-                                                    int64_t                        theLength) const
+                                                         int64_t                        theOffset,
+                                                         int64_t theLength) const
 {
   if (theLength > IntegerLast())
   {
@@ -172,7 +173,7 @@ occ::handle<Image_PixMap> Image_Texture::loadImageOffset(const TCollection_Ascii
   }
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aFile =
+  std::shared_ptr<std::istream>      aFile =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
   if (aFile.get() == NULL)
   {
@@ -225,7 +226,7 @@ TCollection_AsciiString Image_Texture::MimeType() const
 TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 {
   static const size_t THE_PROBE_SIZE = 20;
-  char                       aBuffer[THE_PROBE_SIZE];
+  char                aBuffer[THE_PROBE_SIZE];
   if (!myBuffer.IsNull())
   {
     memcpy(aBuffer,
@@ -235,7 +236,7 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
   else
   {
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream> aFileIn =
+    std::shared_ptr<std::istream>      aFileIn =
       aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
     if (aFileIn.get() == NULL)
     {
@@ -305,7 +306,7 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 bool Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aFileOut =
+  std::shared_ptr<std::ostream>      aFileOut =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary | std::ios::trunc);
   if (aFileOut.get() == NULL)
   {
@@ -330,8 +331,7 @@ bool Image_Texture::WriteImage(const TCollection_AsciiString& theFile)
 
 //=================================================================================================
 
-bool Image_Texture::WriteImage(std::ostream&                  theStream,
-                                           const TCollection_AsciiString& theFile)
+bool Image_Texture::WriteImage(std::ostream& theStream, const TCollection_AsciiString& theFile)
 {
   if (!myBuffer.IsNull())
   {
@@ -345,7 +345,7 @@ bool Image_Texture::WriteImage(std::ostream&                  theStream,
   }
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aFileIn =
+  std::shared_ptr<std::istream>      aFileIn =
     aFileSystem->OpenIStream(myImagePath, std::ios::in | std::ios::binary);
   if (aFileIn.get() == NULL)
   {
@@ -372,7 +372,7 @@ bool Image_Texture::WriteImage(std::ostream&                  theStream,
     aFileIn->seekg(0, std::ios_base::beg);
   }
 
-  int                  aChunkSize = 4096;
+  int                         aChunkSize = 4096;
   NCollection_Array1<uint8_t> aBuffer(0, aChunkSize - 1);
   for (int64_t aChunkIter = 0; aChunkIter < aLen; aChunkIter += aChunkSize)
   {

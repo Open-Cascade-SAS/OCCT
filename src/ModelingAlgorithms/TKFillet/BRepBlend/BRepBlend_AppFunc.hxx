@@ -34,19 +34,18 @@ class BRepBlend_AppFunc : public BRepBlend_AppFuncRoot
 
 public:
   Standard_EXPORT BRepBlend_AppFunc(occ::handle<BRepBlend_Line>& Line,
-                                    Blend_Function&         Func,
-                                    const double     Tol3d,
-                                    const double     Tol2d);
+                                    Blend_Function&              Func,
+                                    const double                 Tol3d,
+                                    const double                 Tol2d);
 
   Standard_EXPORT void Point(const Blend_AppFunction& Func,
-                             const double      Param,
+                             const double             Param,
                              const math_Vector&       Sol,
                              Blend_Point&             Pnt) const override;
 
   Standard_EXPORT void Vec(math_Vector& Sol, const Blend_Point& Pnt) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFunc, BRepBlend_AppFuncRoot)
-
 };
 
 #endif // _BRepBlend_AppFunc_HeaderFile

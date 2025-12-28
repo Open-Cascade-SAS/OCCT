@@ -47,80 +47,79 @@ public:
   //! returns the 3d points of the multipoint <MPointIndex>
   //! when only 3d points exist.
   static void Value(const GeomInt_TheMultiLineOfWLApprox& ML,
-                    const int                MPointIndex,
-                    NCollection_Array1<gp_Pnt>&                   tabPt);
+                    const int                             MPointIndex,
+                    NCollection_Array1<gp_Pnt>&           tabPt);
 
   //! returns the 2d points of the multipoint <MPointIndex>
   //! when only 2d points exist.
   static void Value(const GeomInt_TheMultiLineOfWLApprox& ML,
-                    const int                MPointIndex,
-                    NCollection_Array1<gp_Pnt2d>&                 tabPt2d);
+                    const int                             MPointIndex,
+                    NCollection_Array1<gp_Pnt2d>&         tabPt2d);
 
   //! returns the 3d and 2d points of the multipoint
   //! <MPointIndex>.
   static void Value(const GeomInt_TheMultiLineOfWLApprox& ML,
-                    const int                MPointIndex,
-                    NCollection_Array1<gp_Pnt>&                   tabPt,
-                    NCollection_Array1<gp_Pnt2d>&                 tabPt2d);
+                    const int                             MPointIndex,
+                    NCollection_Array1<gp_Pnt>&           tabPt,
+                    NCollection_Array1<gp_Pnt2d>&         tabPt2d);
 
   //! returns the 3d points of the multipoint <MPointIndex>
   //! when only 3d points exist.
   static bool Tangency(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                   const int                MPointIndex,
-                                   NCollection_Array1<gp_Vec>&                   tabV);
+                       const int                             MPointIndex,
+                       NCollection_Array1<gp_Vec>&           tabV);
 
   //! returns the 2d tangency points of the multipoint
   //! <MPointIndex> only when 2d points exist.
   static bool Tangency(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                   const int                MPointIndex,
-                                   NCollection_Array1<gp_Vec2d>&                 tabV2d);
+                       const int                             MPointIndex,
+                       NCollection_Array1<gp_Vec2d>&         tabV2d);
 
   //! returns the 3d and 2d points of the multipoint
   //! <MPointIndex>.
   static bool Tangency(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                   const int                MPointIndex,
-                                   NCollection_Array1<gp_Vec>&                   tabV,
-                                   NCollection_Array1<gp_Vec2d>&                 tabV2d);
+                       const int                             MPointIndex,
+                       NCollection_Array1<gp_Vec>&           tabV,
+                       NCollection_Array1<gp_Vec2d>&         tabV2d);
 
   //! returns the 3d curvature of the multipoint <MPointIndex>
   //! when only 3d points exist.
   static bool Curvature(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                    const int                MPointIndex,
-                                    NCollection_Array1<gp_Vec>&                   tabV);
+                        const int                             MPointIndex,
+                        NCollection_Array1<gp_Vec>&           tabV);
 
   //! returns the 2d curvature points of the multipoint
   //! <MPointIndex> only when 2d points exist.
   static bool Curvature(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                    const int                MPointIndex,
-                                    NCollection_Array1<gp_Vec2d>&                 tabV2d);
+                        const int                             MPointIndex,
+                        NCollection_Array1<gp_Vec2d>&         tabV2d);
 
   //! returns the 3d and 2d curvature of the multipoint
   //! <MPointIndex>.
   static bool Curvature(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                    const int                MPointIndex,
-                                    NCollection_Array1<gp_Vec>&                   tabV,
-                                    NCollection_Array1<gp_Vec2d>&                 tabV2d);
+                        const int                             MPointIndex,
+                        NCollection_Array1<gp_Vec>&           tabV,
+                        NCollection_Array1<gp_Vec2d>&         tabV2d);
 
   //! Is called if WhatStatus returned "PointsAdded".
   static GeomInt_TheMultiLineOfWLApprox MakeMLBetween(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                                      const int                I1,
-                                                      const int                I2,
-                                                      const int                NbPMin);
+                                                      const int                             I1,
+                                                      const int                             I2,
+                                                      const int                             NbPMin);
 
   //! Is called when the Bezier curve contains a loop
   static bool MakeMLOneMorePoint(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                             const int                I1,
-                                             const int                I2,
-                                             const int                indbad,
-                                             GeomInt_TheMultiLineOfWLApprox&       OtherLine);
+                                 const int                             I1,
+                                 const int                             I2,
+                                 const int                             indbad,
+                                 GeomInt_TheMultiLineOfWLApprox&       OtherLine);
 
   static Approx_Status WhatStatus(const GeomInt_TheMultiLineOfWLApprox& ML,
-                                  const int                I1,
-                                  const int                I2);
+                                  const int                             I1,
+                                  const int                             I2);
 
   //! Dump of the current multi-line.
   static void Dump(const GeomInt_TheMultiLineOfWLApprox& ML);
-
 };
 
 #define TheMultiLine GeomInt_TheMultiLineOfWLApprox

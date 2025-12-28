@@ -57,8 +57,8 @@ Standard_IMPORT Draw_Viewer dout;
 static int sweep(Draw_Interpretor& di, int n, const char** a)
 {
   GeomFill_Trihedron Option = GeomFill_IsCorrectedFrenet;
-  int   ipath = 2, isection = 4, NbSeg = 30, MaxDegree = 10;
-  double      Tol = 1.e-4;
+  int                ipath = 2, isection = 4, NbSeg = 30, MaxDegree = 10;
+  double             Tol = 1.e-4;
 
   if (n < 4)
     return 1;
@@ -112,7 +112,7 @@ static int sweep(Draw_Interpretor& di, int n, const char** a)
   }
   else if (Option == GeomFill_IsConstantNormal)
   {
-    gp_Dir             D(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
+    gp_Dir                  D(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
     occ::handle<Geom_Curve> path   = DrawTrSurf::GetCurve(a[6]);
     occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[7]);
     Pipe.Init(path, firstS, D);
@@ -164,7 +164,7 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
   Pipe.GenerateParticularCase(true);
 
   bool Option_NS   = false;
-  int indice_path = 2, narg = n;
+  int  indice_path = 2, narg = n;
   if (!strcmp(a[1], "-NS"))
   {
     Option_NS = true;
@@ -175,7 +175,7 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
   if (path.IsNull())
     return 1;
 
-  int   isect  = indice_path + 1;
+  int                     isect  = indice_path + 1;
   occ::handle<Geom_Curve> firstS = DrawTrSurf::GetCurve(a[isect]);
   if (firstS.IsNull())
   {
@@ -200,7 +200,7 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
       {
         // tuyau a section evolutive
         occ::handle<Geom_Curve> lastS = DrawTrSurf::GetCurve(a[isect + 1]);
-        Cont                     = GeomAbs_C2;
+        Cont                          = GeomAbs_C2;
         Pipe.Init(path, firstS, lastS);
       }
       else
@@ -208,8 +208,8 @@ static int tuyau(Draw_Interpretor& di, int n, const char** a)
         if (narg == 6 && !Option_NS && Draw::Atof(a[5]) != 0)
         {
           occ::handle<Geom_Curve> lastS = DrawTrSurf::GetCurve(a[isect + 1]);
-          Cont                     = GeomAbs_C2;
-          Pipe                     = GeomFill_Pipe(path, firstS, lastS, Draw::Atof(a[5]));
+          Cont                          = GeomAbs_C2;
+          Pipe                          = GeomFill_Pipe(path, firstS, lastS, Draw::Atof(a[5]));
           Pipe.Perform(true);
           occ::handle<Geom_Surface> aSurface;
           if (Pipe.IsDone())
@@ -285,8 +285,8 @@ static int appsurf(Draw_Interpretor& di, int n, const char** a)
     return 1;
 
   GeomFill_SectionGenerator Section;
-  int          i;
-  occ::handle<Geom_Curve>        C;
+  int                       i;
+  occ::handle<Geom_Curve>   C;
   for (i = 2; i < n; i++)
   {
     C = DrawTrSurf::GetCurve(a[i]);
@@ -298,8 +298,8 @@ static int appsurf(Draw_Interpretor& di, int n, const char** a)
   Section.Perform(Precision::PConfusion());
 
   occ::handle<GeomFill_Line> Line = new GeomFill_Line(n - 2);
-  int      NbIt = 0;
-  GeomFill_AppSurf      App(3, 8, Precision::Confusion(), Precision::PConfusion(), NbIt);
+  int                        NbIt = 0;
+  GeomFill_AppSurf           App(3, 8, Precision::Confusion(), Precision::PConfusion(), NbIt);
 
   App.Perform(Line, Section);
 
@@ -312,13 +312,13 @@ static int appsurf(Draw_Interpretor& di, int n, const char** a)
   App.SurfShape(UDegree, VDegree, NbUPoles, NbVPoles, NbUKnots, NbVKnots);
 
   occ::handle<Geom_BSplineSurface> GBS = new Geom_BSplineSurface(App.SurfPoles(),
-                                                            App.SurfWeights(),
-                                                            App.SurfUKnots(),
-                                                            App.SurfVKnots(),
-                                                            App.SurfUMults(),
-                                                            App.SurfVMults(),
-                                                            App.UDegree(),
-                                                            App.VDegree());
+                                                                 App.SurfWeights(),
+                                                                 App.SurfUKnots(),
+                                                                 App.SurfVKnots(),
+                                                                 App.SurfUMults(),
+                                                                 App.SurfVMults(),
+                                                                 App.UDegree(),
+                                                                 App.VDegree());
 
   DrawTrSurf::Set(a[1], GBS);
   return 0;
@@ -329,7 +329,7 @@ static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
   if (n < 6)
     return 1;
 
-  int          i;
+  int                            i;
   occ::handle<Geom_Curve>        aC;
   occ::handle<Geom_BSplineCurve> C[4];
   for (i = 2; i < 6; i++)
@@ -340,7 +340,7 @@ static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
     C[i - 2] = GeomConvert::CurveToBSplineCurve(aC, Convert_RationalC1);
   }
 
-  int      ist   = 2;
+  int                   ist   = 2;
   GeomFill_FillingStyle Style = GeomFill_CoonsStyle;
   if (n > 6)
     ist = Draw::Atoi(a[6]);
@@ -363,9 +363,7 @@ static int fillcurves(Draw_Interpretor& /*di*/, int n, const char** a)
 // function : GetSurfaceContinuity
 // purpose  : Returns the continuity of the given surface
 //=======================================================================
-static int GetSurfaceContinuity(Draw_Interpretor& theDI,
-                                             int  theNArg,
-                                             const char**      theArgv)
+static int GetSurfaceContinuity(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 {
   if (theNArg != 2)
   {

@@ -30,10 +30,7 @@ Law_Linear::Law_Linear()
 {
 }
 
-void Law_Linear::Set(const double Pdeb,
-                     const double Valdeb,
-                     const double Pfin,
-                     const double Valfin)
+void Law_Linear::Set(const double Pdeb, const double Valdeb, const double Pfin, const double Valfin)
 {
   pdeb   = Pdeb;
   pfin   = Pfin;
@@ -87,12 +84,12 @@ void Law_Linear::D2(const double X, double& F, double& D, double& D2)
 //=================================================================================================
 
 occ::handle<Law_Function> Law_Linear::Trim(const double PFirst,
-                                      const double PLast,
-                                      //				      const double Tol) const
-                                      const double) const
+                                           const double PLast,
+                                           //				      const double Tol) const
+                                           const double) const
 {
   occ::handle<Law_Linear> l = new (Law_Linear)();
-  double      Vdeb, Vfin;
+  double                  Vdeb, Vfin;
   Vdeb = ((PFirst - pdeb) * valfin + (pfin - PFirst) * valdeb) / (pfin - pdeb);
   Vfin = ((PLast - pdeb) * valfin + (pfin - PLast) * valdeb) / (pfin - pdeb);
   l->Set(PFirst, Vdeb, PLast, Vfin);

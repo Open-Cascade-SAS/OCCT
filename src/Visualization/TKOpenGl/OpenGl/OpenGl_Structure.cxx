@@ -38,10 +38,10 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
   const occ::handle<OpenGl_TextureSet> aPrevTexture =
     aCtx->BindTextures(occ::handle<OpenGl_TextureSet>(), occ::handle<OpenGl_ShaderProgram>());
   const Graphic3d_ZLayerSettings& aLayer = myGraphicDriver->ZLayerSettings(myZLayer);
-  const NCollection_Vec3<double>           aMoveVec =
+  const NCollection_Vec3<double>  aMoveVec =
     myTrsfPers.IsNull() && !aLayer.OriginTransformation().IsNull()
-                ? -NCollection_Vec3<double>(aLayer.Origin().X(), aLayer.Origin().Y(), aLayer.Origin().Z())
-                : NCollection_Vec3<double>(0.0, 0.0, 0.0);
+       ? -NCollection_Vec3<double>(aLayer.Origin().X(), aLayer.Origin().Y(), aLayer.Origin().Z())
+       : NCollection_Vec3<double>(0.0, 0.0, 0.0);
   if (aCtx->core20fwd != NULL && aCtx->ShaderManager()->BindBoundBoxProgram())
   {
     const NCollection_Vec3<double> aCenter = myBndBox.Center() + aMoveVec;
@@ -68,22 +68,23 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
     const NCollection_Vec3<double> aMaxd = myBndBox.CornerMax() + aMoveVec;
     const NCollection_Vec3<float>  aMin((float)aMind.x(), (float)aMind.y(), (float)aMind.z());
     const NCollection_Vec3<float>  aMax((float)aMaxd.x(), (float)aMaxd.y(), (float)aMaxd.z());
-    const NCollection_Vec3<float>     aVerts[16] = {NCollection_Vec3<float>(aMin.x(), aMin.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMin.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMax.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMax.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMin.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMin.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMin.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMax.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMax.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMin.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMax.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMax.y(), aMin.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMax.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMax.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMax.x(), aMin.y(), aMax.z()),
-                                        NCollection_Vec3<float>(aMin.x(), aMin.y(), aMax.z())};
+    const NCollection_Vec3<float>  aVerts[16] = {
+      NCollection_Vec3<float>(aMin.x(), aMin.y(), aMin.z()),
+      NCollection_Vec3<float>(aMin.x(), aMin.y(), aMax.z()),
+      NCollection_Vec3<float>(aMin.x(), aMax.y(), aMax.z()),
+      NCollection_Vec3<float>(aMin.x(), aMax.y(), aMin.z()),
+      NCollection_Vec3<float>(aMin.x(), aMin.y(), aMin.z()),
+      NCollection_Vec3<float>(aMax.x(), aMin.y(), aMin.z()),
+      NCollection_Vec3<float>(aMax.x(), aMin.y(), aMax.z()),
+      NCollection_Vec3<float>(aMax.x(), aMax.y(), aMax.z()),
+      NCollection_Vec3<float>(aMax.x(), aMax.y(), aMin.z()),
+      NCollection_Vec3<float>(aMax.x(), aMin.y(), aMin.z()),
+      NCollection_Vec3<float>(aMax.x(), aMax.y(), aMin.z()),
+      NCollection_Vec3<float>(aMin.x(), aMax.y(), aMin.z()),
+      NCollection_Vec3<float>(aMin.x(), aMax.y(), aMax.z()),
+      NCollection_Vec3<float>(aMax.x(), aMax.y(), aMax.z()),
+      NCollection_Vec3<float>(aMax.x(), aMin.y(), aMax.z()),
+      NCollection_Vec3<float>(aMin.x(), aMin.y(), aMax.z())};
 
     aCtx->ShaderManager()->BindLineProgram(occ::handle<OpenGl_TextureSet>(),
                                            Aspect_TOL_SOLID,
@@ -137,8 +138,8 @@ void OpenGl_Structure::SetTransformation(const occ::handle<TopLoc_Datum3D>& theT
   if (!myTrsf.IsNull())
   {
     // Determinant of transform matrix less then 0 means that mirror transform applied.
-    const gp_Trsf&      aTrsf = myTrsf->Transformation();
-    const double aDet =
+    const gp_Trsf& aTrsf = myTrsf->Transformation();
+    const double   aDet =
       aTrsf.Value(1, 1)
         * (aTrsf.Value(2, 2) * aTrsf.Value(3, 3) - aTrsf.Value(3, 2) * aTrsf.Value(2, 3))
       - aTrsf.Value(1, 2)
@@ -157,7 +158,8 @@ void OpenGl_Structure::SetTransformation(const occ::handle<TopLoc_Datum3D>& theT
 
 //=================================================================================================
 
-void OpenGl_Structure::SetTransformPersistence(const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
+void OpenGl_Structure::SetTransformPersistence(
+  const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   if ((myTrsfPers.IsNull() || theTrsfPers.IsNull()) && myTrsfPers != theTrsfPers)
   {
@@ -187,7 +189,8 @@ void OpenGl_Structure::updateLayerTransformation()
 
 //=================================================================================================
 
-void OpenGl_Structure::GraphicHighlight(const occ::handle<Graphic3d_PresentationAttributes>& theStyle)
+void OpenGl_Structure::GraphicHighlight(
+  const occ::handle<Graphic3d_PresentationAttributes>& theStyle)
 {
   myHighlightStyle = theStyle;
   highlight        = 1;
@@ -282,7 +285,8 @@ void OpenGl_Structure::Disconnect(Graphic3d_CStructure& theStructure)
 
 //=================================================================================================
 
-occ::handle<Graphic3d_Group> OpenGl_Structure::NewGroup(const occ::handle<Graphic3d_Structure>& theStruct)
+occ::handle<Graphic3d_Group> OpenGl_Structure::NewGroup(
+  const occ::handle<Graphic3d_Structure>& theStruct)
 {
   occ::handle<OpenGl_Group> aGroup = new OpenGl_Group(theStruct);
   myGroups.Append(aGroup);
@@ -298,14 +302,14 @@ void OpenGl_Structure::RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup)
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myGroups); aGroupIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myGroups);
+       aGroupIter.More();
        aGroupIter.Next())
   {
     // Check for the given group
     if (aGroupIter.Value() == theGroup)
     {
-      const bool wasRaytracable =
-        static_cast<const OpenGl_Group&>(*theGroup).IsRaytracable();
+      const bool wasRaytracable = static_cast<const OpenGl_Group&>(*theGroup).IsRaytracable();
 
       theGroup->Clear(false);
 
@@ -355,14 +359,14 @@ void OpenGl_Structure::Clear(const occ::handle<OpenGl_Context>& theGlCtx)
 //=================================================================================================
 
 void OpenGl_Structure::renderGeometry(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                      bool&                           theHasClosed) const
+                                      bool&                                theHasClosed) const
 {
   if (myInstancedStructure != NULL)
   {
     myInstancedStructure->renderGeometry(theWorkspace, theHasClosed);
   }
 
-  bool                          anOldCastShadows = false;
+  bool                               anOldCastShadows = false;
   const occ::handle<OpenGl_Context>& aCtx             = theWorkspace->GetGlContext();
   for (OpenGl_Structure::GroupIterator aGroupIter(myGroups); aGroupIter.More(); aGroupIter.Next())
   {
@@ -400,8 +404,8 @@ void OpenGl_Structure::renderGeometry(const occ::handle<OpenGl_Workspace>& theWo
 //=================================================================================================
 
 void OpenGl_Structure::applyTransformation(const occ::handle<OpenGl_Context>& theContext,
-                                           const gp_Trsf&                theTrsf,
-                                           const bool        toEnable) const
+                                           const gp_Trsf&                     theTrsf,
+                                           const bool                         toEnable) const
 {
   if (toEnable)
   {
@@ -409,7 +413,7 @@ void OpenGl_Structure::applyTransformation(const occ::handle<OpenGl_Context>& th
     theTrsf.GetMat4(aTrsf);
     theContext->ModelWorldState.Push();
     NCollection_Mat4<float>& aModelWorld = theContext->ModelWorldState.ChangeCurrent();
-    aModelWorld              = aModelWorld * aTrsf;
+    aModelWorld                          = aModelWorld * aTrsf;
     theContext->ApplyModelViewMatrix();
   }
   else
@@ -440,7 +444,7 @@ void OpenGl_Structure::Render(const occ::handle<OpenGl_Workspace>& theWorkspace)
   // Apply local transformation
   aCtx->ModelWorldState.Push();
   NCollection_Mat4<float>& aModelWorld = aCtx->ModelWorldState.ChangeCurrent();
-  aModelWorld              = myRenderTrsf;
+  aModelWorld                          = myRenderTrsf;
 
   const bool anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
@@ -658,7 +662,7 @@ occ::handle<Graphic3d_CStructure> OpenGl_Structure::ShadowLink(
 
 void OpenGl_Structure::applyPersistence(const occ::handle<OpenGl_Context>&          theCtx,
                                         const occ::handle<Graphic3d_TransformPers>& theTrsfPers,
-                                        const bool                 theIsLocal,
+                                        const bool                                  theIsLocal,
                                         bool& theOldCastShadows) const
 {
   // temporarily disable shadows on non-3d objects
@@ -671,13 +675,13 @@ void OpenGl_Structure::applyPersistence(const occ::handle<OpenGl_Context>&      
   {
     // move anchor point to presentation location
     theCtx->ModelWorldState.Push();
-    NCollection_Mat4<float>&   aModelWorld   = theCtx->ModelWorldState.ChangeCurrent();
-    gp_Pnt         aStartPnt     = theTrsfPers->AnchorPoint();
-    NCollection_Vec4<float> anAnchorPoint = aModelWorld
-                                   * NCollection_Vec4<float>((float)aStartPnt.X(),
-                                                    (float)aStartPnt.Y(),
-                                                    (float)aStartPnt.Z(),
-                                                    1.0f);
+    NCollection_Mat4<float>& aModelWorld   = theCtx->ModelWorldState.ChangeCurrent();
+    gp_Pnt                   aStartPnt     = theTrsfPers->AnchorPoint();
+    NCollection_Vec4<float>  anAnchorPoint = aModelWorld
+                                            * NCollection_Vec4<float>((float)aStartPnt.X(),
+                                                                      (float)aStartPnt.Y(),
+                                                                      (float)aStartPnt.Z(),
+                                                                      1.0f);
     // clang-format off
     aModelWorld.SetColumn (3, NCollection_Vec4<float> (NCollection_Vec3<float> (0.0), 1.0)); // reset translation part
     // clang-format on
@@ -713,7 +717,7 @@ void OpenGl_Structure::applyPersistence(const occ::handle<OpenGl_Context>&      
 
 void OpenGl_Structure::revertPersistence(const occ::handle<OpenGl_Context>&          theCtx,
                                          const occ::handle<Graphic3d_TransformPers>& theTrsfPers,
-                                         const bool                 theIsLocal,
+                                         const bool                                  theIsLocal,
                                          const bool theOldCastShadows) const
 {
   if (theIsLocal && theTrsfPers->IsZoomOrRotate())

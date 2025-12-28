@@ -26,7 +26,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
@@ -48,16 +47,16 @@ void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C)
 //=================================================================================================
 
 void ShapeUpgrade_SplitCurve3d::Init(const occ::handle<Geom_Curve>& C,
-                                     const double       First,
-                                     const double       Last)
+                                     const double                   First,
+                                     const double                   Last)
 {
   //  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve3d::Init"<<std::endl;
-  occ::handle<Geom_Curve> CopyOfC        = occ::down_cast<Geom_Curve>(C->Copy());
+  occ::handle<Geom_Curve> CopyOfC   = occ::down_cast<Geom_Curve>(C->Copy());
   myCurve                           = CopyOfC;
-  constexpr double precision = Precision::PConfusion();
-  double           firstPar  = First;
-  double           lastPar   = Last;
-  occ::handle<Geom_Curve>      aCurve    = myCurve;
+  constexpr double        precision = Precision::PConfusion();
+  double                  firstPar  = First;
+  double                  lastPar   = Last;
+  occ::handle<Geom_Curve> aCurve    = myCurve;
   if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     aCurve = occ::down_cast<Geom_TrimmedCurve>(aCurve)->BasisCurve();
   // 15.11.2002 PTV OCC966
@@ -109,7 +108,7 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
   {
     occ::handle<Geom_TrimmedCurve> tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
     occ::handle<Geom_Curve>        BasCurve = tmp->BasisCurve();
-    ShapeUpgrade_SplitCurve3d spc;
+    ShapeUpgrade_SplitCurve3d      spc;
     spc.Init(BasCurve, First, Last);
     spc.SetSplitValues(mySplitValues);
     spc.Build(Segment);
@@ -128,11 +127,11 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
   }
   else if (myCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
-    occ::handle<Geom_OffsetCurve>  tmp      = occ::down_cast<Geom_OffsetCurve>(myCurve);
-    occ::handle<Geom_Curve>        BasCurve = tmp->BasisCurve();
-    double             Offset   = tmp->Offset();
-    gp_Dir                    Direct   = tmp->Direction();
-    ShapeUpgrade_SplitCurve3d spc;
+    occ::handle<Geom_OffsetCurve> tmp      = occ::down_cast<Geom_OffsetCurve>(myCurve);
+    occ::handle<Geom_Curve>       BasCurve = tmp->BasisCurve();
+    double                        Offset   = tmp->Offset();
+    gp_Dir                        Direct   = tmp->Direction();
+    ShapeUpgrade_SplitCurve3d     spc;
     spc.Init(BasCurve, First, Last);
     spc.SetSplitValues(mySplitValues);
     spc.Build(Segment);
@@ -247,7 +246,7 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
   for (int i = 1; i <= myNbCurves; i++)
   {
     // skl : in the next block I change "First","Last" to "Firstt","Lastt"
-    double      Firstt = mySplitValues->Value(i), Lastt = mySplitValues->Value(i + 1);
+    double                  Firstt = mySplitValues->Value(i), Lastt = mySplitValues->Value(i + 1);
     occ::handle<Geom_Curve> theNewCurve;
     if (Segment)
     {
@@ -286,7 +285,8 @@ void ShapeUpgrade_SplitCurve3d::Build(const bool Segment)
 
 //=================================================================================================
 
-const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& ShapeUpgrade_SplitCurve3d::GetCurves() const
+const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& ShapeUpgrade_SplitCurve3d::
+  GetCurves() const
 {
   return myResultingCurves;
 }

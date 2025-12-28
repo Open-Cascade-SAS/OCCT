@@ -27,7 +27,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_IsoType.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 class TopoDS_Face;
 class gp_Pnt;
@@ -89,17 +88,11 @@ public:
   Standard_EXPORT int UIntegrationOrder() const;
 
   //! Returns the parametric bounds of the Face.
-  Standard_EXPORT void Bounds(double& U1,
-                              double& U2,
-                              double& V1,
-                              double& V2) const;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const;
 
   //! Computes the point of parameter U, V on the Face <S> and
   //! the normal to the face at this point.
-  Standard_EXPORT void Normal(const double U,
-                              const double V,
-                              gp_Pnt&             P,
-                              gp_Vec&             VNor) const;
+  Standard_EXPORT void Normal(const double U, const double V, gp_Pnt& P, gp_Vec& VNor) const;
 
   //! Loading the boundary arc.
   //! Returns FALSE if edge has no P-Curve.
@@ -138,8 +131,8 @@ public:
   //! then theUMin and lower then theUMax in increasing order.
   //! If the face is not a BSpline, the array initialized with
   //! theUMin and theUMax only.
-  Standard_EXPORT void GetUKnots(const double            theUMin,
-                                 const double            theUMax,
+  Standard_EXPORT void GetUKnots(const double                              theUMin,
+                                 const double                              theUMax,
                                  occ::handle<NCollection_HArray1<double>>& theUKnots) const;
 
   //! Returns an array of combination of T knots of the arc and
@@ -151,15 +144,15 @@ public:
   //! theTMin and lower then theTMax in increasing order.
   //! If the face is not a BSpline, the array initialized with
   //! theTMin and theTMax only.
-  Standard_EXPORT void GetTKnots(const double            theTMin,
-                                 const double            theTMax,
+  Standard_EXPORT void GetTKnots(const double                              theTMin,
+                                 const double                              theTMax,
                                  occ::handle<NCollection_HArray1<double>>& theTKnots) const;
 
 private:
   BRepAdaptor_Surface mySurface;
   Geom2dAdaptor_Curve myCurve;
-  bool    mySReverse;
-  bool    myIsUseSpan;
+  bool                mySReverse;
+  bool                myIsUseSpan;
 };
 
 #include <BRepGProp_Face.lxx>

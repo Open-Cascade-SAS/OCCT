@@ -22,14 +22,10 @@
 #include <StepData_StepWriter.hxx>
 #include <StepElement_Curve3dElementDescriptor.hxx>
 #include <StepElement_CurveElementPurposeMember.hxx>
-#include <StepElement_CurveElementPurposeMember.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepElement_CurveElementPurposeMember.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 
 //=================================================================================================
 
@@ -39,7 +35,7 @@ RWStepElement_RWCurve3dElementDescriptor::RWStepElement_RWCurve3dElementDescript
 
 void RWStepElement_RWCurve3dElementDescriptor::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                              num,
+  const int                                                num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepElement_Curve3dElementDescriptor>& ent) const
 {
@@ -70,18 +66,22 @@ void RWStepElement_RWCurve3dElementDescriptor::ReadStep(
 
   // Own fields of Curve3dElementDescriptor
 
-  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>> aPurpose;
-  int                                                  sub3 = 0;
+  occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
+      aPurpose;
+  int sub3 = 0;
   if (data->ReadSubList(num, 3, "purpose", ach, sub3))
   {
     int nb0 = data->NbParams(sub3);
     // int nbj0 = data->NbParams(data->ParamNumber(sub3,1));
-    aPurpose = new NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>(1, nb0);
+    aPurpose = new NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>(1,
+                                                                                              nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
-      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>> HSCEPM =
-        new NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>;
-      int subj3 = 0;
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>
+          HSCEPM = new NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>;
+      int subj3  = 0;
       if (data->ReadSubList(sub3, i0, "sub-part(purpose)", ach, subj3))
       {
         int num4 = subj3;
@@ -106,7 +106,7 @@ void RWStepElement_RWCurve3dElementDescriptor::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWCurve3dElementDescriptor::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepElement_Curve3dElementDescriptor>& ent) const
 {
 
@@ -134,7 +134,8 @@ void RWStepElement_RWCurve3dElementDescriptor::WriteStep(
   {
     SW.NewLine(false);
     SW.OpenSub();
-    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>> HSCEPM = ent->Purpose()->Value(i2);
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>> HSCEPM =
+      ent->Purpose()->Value(i2);
     for (int j2 = 1; j2 <= HSCEPM->Length(); j2++)
     {
       occ::handle<StepElement_CurveElementPurposeMember> Var0 = HSCEPM->Value(j2);
@@ -157,8 +158,8 @@ void RWStepElement_RWCurve3dElementDescriptor::Share(
   // Own fields of Curve3dElementDescriptor
   /* CKY  17JUN04. Content is made of strings and enums. No entity !
     for (int i1=1; i1 <= ent->Purpose()->Length(); i1++ ) {
-      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>> HSCEPM = ent->Purpose()->Value(i1);
-      for (int i2=1; i2 <= HSCEPM->Length(); i2++ ) {
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>> HSCEPM
+    = ent->Purpose()->Value(i1); for (int i2=1; i2 <= HSCEPM->Length(); i2++ ) {
         occ::handle<StepElement_CurveElementPurposeMember> Var1 = HSCEPM->Value(i2);
         iter.AddItem (Var1);
       }

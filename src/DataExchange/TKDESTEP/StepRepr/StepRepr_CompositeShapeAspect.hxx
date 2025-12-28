@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_CompositeShapeAspect();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_CompositeShapeAspect, StepRepr_ShapeAspect)
-
 };
 
 #endif // _StepRepr_CompositeShapeAspect_HeaderFile

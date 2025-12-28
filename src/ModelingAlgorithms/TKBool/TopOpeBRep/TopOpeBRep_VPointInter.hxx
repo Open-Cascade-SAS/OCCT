@@ -110,9 +110,7 @@ public:
 
   //! set the shape Eon of shape I (1,2) containing the point,
   //! and parameter <Par> of point on <Eon>.
-  Standard_EXPORT void EdgeON(const TopoDS_Shape&    Eon,
-                              const double    Par,
-                              const int I);
+  Standard_EXPORT void EdgeON(const TopoDS_Shape& Eon, const double Par, const int I);
 
   //! get the edge of shape I (1,2) containing the point.
   Standard_EXPORT const TopoDS_Shape& EdgeON(const int I) const;
@@ -168,9 +166,9 @@ public:
 
   int Index() const;
 
-  Standard_EXPORT Standard_OStream& Dump(const int I,
-                                         const TopoDS_Face&     F,
-                                         Standard_OStream&      OS) const;
+  Standard_EXPORT Standard_OStream& Dump(const int          I,
+                                         const TopoDS_Face& F,
+                                         Standard_OStream&  OS) const;
 
   Standard_EXPORT Standard_OStream& Dump(const TopoDS_Face& F1,
                                          const TopoDS_Face& F2,
@@ -180,18 +178,18 @@ public:
 
 private:
   TopOpeBRep_PThePointOfIntersection myPPOI;
-  int                   myShapeIndex;
+  int                                myShapeIndex;
   TopAbs_State                       myState1;
   TopAbs_State                       myState2;
-  bool                   myKeep;
+  bool                               myKeep;
   TopoDS_Shape                       myEdgeON1;
   TopoDS_Shape                       myEdgeON2;
-  double                      myEdgeONPar1;
-  double                      myEdgeONPar2;
-  int                   myIndex;
+  double                             myEdgeONPar1;
+  double                             myEdgeONPar2;
+  int                                myIndex;
   TopoDS_Shape                       myNullShape;
-  int                   myS1;
-  int                   myS2;
+  int                                myS1;
+  int                                myS2;
 };
 
 #include <TopOpeBRep_VPointInter.lxx>

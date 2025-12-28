@@ -106,7 +106,7 @@ protected:
   }
 
 protected:
-  bool                       myIsDirty; //!< Is geometry state outdated?
+  bool                                   myIsDirty; //!< Is geometry state outdated?
   opencascade::handle<BVH_Tree<T, N>>    myBVH;     //!< Constructed high-level BVH
   opencascade::handle<BVH_Builder<T, N>> myBuilder; //!< Builder for high-level BVH
 

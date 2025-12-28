@@ -121,7 +121,7 @@ bool        Draw_BlackBackGround = true;
 #if defined(_WIN32)
 // indicates SUBSYSTEM:CONSOLE linker option, to be set to True in main()
 Standard_EXPORT bool Draw_IsConsoleSubsystem    = false;
-HWND                             Draw_Window::hWndClientMDI = 0;
+HWND                 Draw_Window::hWndClientMDI = 0;
 #endif
 
 //! Return termination callbacks.
@@ -214,9 +214,9 @@ static bool tty;
   #if defined(HAVE_XLIB)
 static unsigned long thePixels[MAXCOLOR];
 
-Display*                                Draw_WindowDisplay = NULL;
-Colormap                                Draw_WindowColorMap;
-static int                 Draw_WindowScreen = 0;
+Display*                                     Draw_WindowDisplay = NULL;
+Colormap                                     Draw_WindowColorMap;
+static int                                   Draw_WindowScreen = 0;
 static occ::handle<Aspect_DisplayConnection> Draw_DisplayConnection;
 
 //! Return list of windows.
@@ -924,8 +924,8 @@ static bool SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
     return false;
   }
 
-  Image_AlienPixMap   anImage;
-  const size_t aSizeRowBytes =
+  Image_AlienPixMap anImage;
+  const size_t      aSizeRowBytes =
     ((size_t(aBitmap.bmWidth) * 24 + 31) / 32) * 4; // 4 bytes alignment for GetDIBits()
   if (!anImage.InitTrash(Image_Format_BGR,
                          size_t(aBitmap.bmWidth),
@@ -947,15 +947,15 @@ static bool SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
   aBitmapInfo.biCompression = BI_RGB;
 
   // Copy the pixels
-  HDC              aDC       = GetDC(NULL);
+  HDC  aDC       = GetDC(NULL);
   bool isSuccess = GetDIBits(aDC,
-                                         theHBitmap,
-                                         0,                          // first scan line to set
-                                         aBitmap.bmHeight,           // number of scan lines to copy
-                                         anImage.ChangeData(),       // array for bitmap bits
-                                         (LPBITMAPINFO)&aBitmapInfo, // bitmap data info
-                                         DIB_RGB_COLORS)
-                               != 0;
+                             theHBitmap,
+                             0,                          // first scan line to set
+                             aBitmap.bmHeight,           // number of scan lines to copy
+                             anImage.ChangeData(),       // array for bitmap bits
+                             (LPBITMAPINFO)&aBitmapInfo, // bitmap data info
+                             DIB_RGB_COLORS)
+                   != 0;
   ReleaseDC(NULL, aDC);
   return isSuccess && anImage.Save(theFileName);
 }
@@ -1034,9 +1034,9 @@ bool Draw_Window::Save(const char* theFileName) const
     return false;
   }
 
-  Image_AlienPixMap   anImage;
-  bool                isBigEndian   = Image_PixMap::IsBigEndianHost();
-  const size_t aSizeRowBytes = size_t(aWinAttr.width) * 4;
+  Image_AlienPixMap anImage;
+  bool              isBigEndian   = Image_PixMap::IsBigEndianHost();
+  const size_t      aSizeRowBytes = size_t(aWinAttr.width) * 4;
   if (!anImage.InitTrash(isBigEndian ? Image_Format_RGB32 : Image_Format_BGR32,
                          size_t(aWinAttr.width),
                          size_t(aWinAttr.height),
@@ -1359,7 +1359,7 @@ static void StdinProc(ClientData clientData, int theMask)
   Tcl_DStringInit(&aLineTmp);
   Tcl_UniChar* aUniCharString =
     Tcl_UtfToUniCharDString(Tcl_DStringValue(&Draw_TclLine), -1, &aLineTmp);
-  int        l = Tcl_UniCharLen(aUniCharString);
+  int                     l = Tcl_UniCharLen(aUniCharString);
   TCollection_AsciiString anAsciiString;
   for (int i = 0; i < l; ++i)
   {

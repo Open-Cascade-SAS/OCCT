@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_ValueRange();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ValueRange, StepRepr_CompoundRepresentationItem)
-
 };
 
 #endif // _StepRepr_ValueRange_HeaderFile

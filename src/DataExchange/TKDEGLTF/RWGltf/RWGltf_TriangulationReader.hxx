@@ -34,7 +34,7 @@ public:
   //! (it is primarily glTF data encoded in base64 saved to temporary buffer during glTF file
   //! reading).
   Standard_EXPORT bool LoadStreamData(const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
-                                      const occ::handle<Poly_Triangulation>&         theDestMesh) const;
+                                      const occ::handle<Poly_Triangulation>& theDestMesh) const;
 
   //! Fills triangulation, lines and points data.
   //! @param theSourceGltfMesh source glTF triangulation
@@ -45,9 +45,9 @@ public:
   //! @return FALSE on error
   Standard_EXPORT bool ReadStream(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceMesh,
                                   const occ::handle<Poly_Triangulation>&            theDestMesh,
-                                  std::istream&                                theStream,
-                                  const RWGltf_GltfAccessor&                   theAccessor,
-                                  RWGltf_GltfArrayType                         theType) const;
+                                  std::istream&                                     theStream,
+                                  const RWGltf_GltfAccessor&                        theAccessor,
+                                  RWGltf_GltfArrayType                              theType) const;
 
 protected:
   //! Reports error.
@@ -58,10 +58,10 @@ protected:
   //! @param theDestMesh      triangulation to be modified
   //! @param theFileSystem    shared file system to read from
   //! Note: this method skips "stream data" that should be loaded by LoadStreamData() call.
-  Standard_EXPORT virtual bool load(const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
-                                    const occ::handle<Poly_Triangulation>&         theDestMesh,
-                                    const occ::handle<OSD_FileSystem>&             theFileSystem) const
-    override;
+  Standard_EXPORT virtual bool load(
+    const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
+    const occ::handle<Poly_Triangulation>&         theDestMesh,
+    const occ::handle<OSD_FileSystem>&             theFileSystem) const override;
 
   //! Performs additional actions to finalize data loading.
   //! @param theSourceMesh source triangulation
@@ -86,7 +86,7 @@ protected:
   //! @param theDestMesh       triangulation to be modified
   Standard_EXPORT bool readStreamData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceGltfMesh,
-    const RWGltf_GltfPrimArrayData&              theGltfData,
+    const RWGltf_GltfPrimArrayData&                   theGltfData,
     const occ::handle<Poly_Triangulation>&            theDestMesh) const;
 
   //! Reads primitive array from file data.
@@ -94,10 +94,11 @@ protected:
   //! @param theGltfData       primitive array element (Uri of file stream should not be empty)
   //! @param theDestMesh       triangulation to be modified
   //! @param theFileSystem     shared file system to read from
-  Standard_EXPORT bool readFileData(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceGltfMesh,
-                                    const RWGltf_GltfPrimArrayData&              theGltfData,
-                                    const occ::handle<Poly_Triangulation>&            theDestMesh,
-                                    const occ::handle<OSD_FileSystem>& theFileSystem) const;
+  Standard_EXPORT bool readFileData(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceGltfMesh,
+    const RWGltf_GltfPrimArrayData&                   theGltfData,
+    const occ::handle<Poly_Triangulation>&            theDestMesh,
+    const occ::handle<OSD_FileSystem>&                theFileSystem) const;
 
   //! Fills triangulation data and ignore non-triangulation primitives.
   //! @param theSourceGltfMesh source glTF triangulation
@@ -109,9 +110,9 @@ protected:
   Standard_EXPORT virtual bool readBuffer(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceGltfMesh,
     const occ::handle<Poly_Triangulation>&            theDestMesh,
-    std::istream&                                theStream,
-    const RWGltf_GltfAccessor&                   theAccessor,
-    RWGltf_GltfArrayType                         theType) const;
+    std::istream&                                     theStream,
+    const RWGltf_GltfAccessor&                        theAccessor,
+    RWGltf_GltfArrayType                              theType) const;
 
   //! Reads primitive array from file data compressed in Draco format.
   //! @param theSourceGltfMesh source glTF triangulation
@@ -120,7 +121,7 @@ protected:
   //! @param theFileSystem     shared file system to read from
   Standard_EXPORT virtual bool readDracoBuffer(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceGltfMesh,
-    const RWGltf_GltfPrimArrayData&              theGltfData,
+    const RWGltf_GltfPrimArrayData&                   theGltfData,
     const occ::handle<Poly_Triangulation>&            theDestMesh,
     const occ::handle<OSD_FileSystem>&                theFileSystem) const;
 

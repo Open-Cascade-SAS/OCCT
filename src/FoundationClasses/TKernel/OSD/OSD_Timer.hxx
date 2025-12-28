@@ -77,10 +77,10 @@ public:
 
   //! returns both the elapsed time(seconds,minutes,hours)
   //! and CPU time.
-  Standard_EXPORT void Show(double&    theSeconds,
-                            int& theMinutes,
-                            int& theHours,
-                            double&    theCPUtime) const;
+  Standard_EXPORT void Show(double& theSeconds,
+                            int&    theMinutes,
+                            int&    theHours,
+                            double& theCPUtime) const;
 
   //! Stops the Timer.
   Standard_EXPORT virtual void Stop() override;

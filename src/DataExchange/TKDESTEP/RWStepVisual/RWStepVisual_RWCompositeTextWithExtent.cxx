@@ -21,13 +21,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_PlanarExtent.hxx>
-#include <StepVisual_TextOrCharacter.hxx>
 
 RWStepVisual_RWCompositeTextWithExtent::RWStepVisual_RWCompositeTextWithExtent() {}
 
 void RWStepVisual_RWCompositeTextWithExtent::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepVisual_CompositeTextWithExtent>& ent) const
 {
@@ -46,13 +45,13 @@ void RWStepVisual_RWCompositeTextWithExtent::ReadStep(
   // --- inherited field : collectedText ---
 
   occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> aCollectedText;
-  StepVisual_TextOrCharacter                  aCollectedTextItem;
-  int                            nsub2;
+  StepVisual_TextOrCharacter                                   aCollectedTextItem;
+  int                                                          nsub2;
   nsub2 = data->SubListNumber(num, 2, false);
   if (nsub2 != 0)
   {
-    int nb2 = data->NbParams(nsub2);
-    aCollectedText       = new NCollection_HArray1<StepVisual_TextOrCharacter>(1, nb2);
+    int nb2        = data->NbParams(nsub2);
+    aCollectedText = new NCollection_HArray1<StepVisual_TextOrCharacter>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -77,7 +76,7 @@ void RWStepVisual_RWCompositeTextWithExtent::ReadStep(
 }
 
 void RWStepVisual_RWCompositeTextWithExtent::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepVisual_CompositeTextWithExtent>& ent) const
 {
 
@@ -101,7 +100,7 @@ void RWStepVisual_RWCompositeTextWithExtent::WriteStep(
 
 void RWStepVisual_RWCompositeTextWithExtent::Share(
   const occ::handle<StepVisual_CompositeTextWithExtent>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   int nbElem1 = ent->NbCollectedText();

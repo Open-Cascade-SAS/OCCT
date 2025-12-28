@@ -28,35 +28,33 @@
 class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_Curve2d_Eval(const occ::handle<Adaptor2d_Curve2d>& theFunc,
-                      double                    First,
-                      double                    Last)
+  Approx_Curve2d_Eval(const occ::handle<Adaptor2d_Curve2d>& theFunc, double First, double Last)
       : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   occ::handle<Adaptor2d_Curve2d> fonct;
-  double             StartEndSav[2];
+  double                         StartEndSav[2];
 };
 
-void Approx_Curve2d_Eval::Evaluate(int* Dimension,
-                                   double     StartEnd[2],
-                                   double*    Param,  // Parameter at which evaluation
-                                   int* Order,  // Derivative Request
-                                   double*    Result, // [Dimension]
-                                   int* ErrorCode)
+void Approx_Curve2d_Eval::Evaluate(int*    Dimension,
+                                   double  StartEnd[2],
+                                   double* Param,  // Parameter at which evaluation
+                                   int*    Order,  // Derivative Request
+                                   double* Result, // [Dimension]
+                                   int*    ErrorCode)
 {
-  *ErrorCode        = 0;
+  *ErrorCode = 0;
   double par = *Param;
 
   // Dimension is incorrect
@@ -103,26 +101,26 @@ void Approx_Curve2d_Eval::Evaluate(int* Dimension,
 }
 
 Approx_Curve2d::Approx_Curve2d(const occ::handle<Adaptor2d_Curve2d>& C2D,
-                               const double              First,
-                               const double              Last,
-                               const double              TolU,
-                               const double              TolV,
-                               const GeomAbs_Shape              Continuity,
-                               const int           MaxDegree,
-                               const int           MaxSegments)
+                               const double                          First,
+                               const double                          Last,
+                               const double                          TolU,
+                               const double                          TolV,
+                               const GeomAbs_Shape                   Continuity,
+                               const int                             MaxDegree,
+                               const int                             MaxSegments)
 {
   C2D->Trim(First, Last, Precision::PConfusion());
 
-  int              Num1DSS = 2, Num2DSS = 0, Num3DSS = 0;
+  int                                      Num1DSS = 2, Num2DSS = 0, Num3DSS = 0;
   occ::handle<NCollection_HArray1<double>> TwoDTolNul, ThreeDTolNul;
   occ::handle<NCollection_HArray1<double>> OneDTol = new NCollection_HArray1<double>(1, Num1DSS);
-  OneDTol->ChangeValue(1)               = TolU;
-  OneDTol->ChangeValue(2)               = TolV;
+  OneDTol->ChangeValue(1)                          = TolU;
+  OneDTol->ChangeValue(2)                          = TolV;
 
-  int     NbInterv_C2 = C2D->NbIntervals(GeomAbs_C2);
+  int                        NbInterv_C2 = C2D->NbIntervals(GeomAbs_C2);
   NCollection_Array1<double> CutPnts_C2(1, NbInterv_C2 + 1);
   C2D->Intervals(CutPnts_C2, GeomAbs_C2);
-  int     NbInterv_C3 = C2D->NbIntervals(GeomAbs_C3);
+  int                        NbInterv_C3 = C2D->NbIntervals(GeomAbs_C3);
   NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   C2D->Intervals(CutPnts_C3, GeomAbs_C3);
 
@@ -152,16 +150,16 @@ Approx_Curve2d::Approx_Curve2d(const occ::handle<Adaptor2d_Curve2d>& C2D,
   if (myHasResult)
   {
     NCollection_Array1<gp_Pnt2d> Poles2d(1, aApprox.NbPoles());
-    NCollection_Array1<double> Poles1dU(1, aApprox.NbPoles());
+    NCollection_Array1<double>   Poles1dU(1, aApprox.NbPoles());
     aApprox.Poles1d(1, Poles1dU);
     NCollection_Array1<double> Poles1dV(1, aApprox.NbPoles());
     aApprox.Poles1d(2, Poles1dV);
     for (int i = 1; i <= aApprox.NbPoles(); i++)
       Poles2d.SetValue(i, gp_Pnt2d(Poles1dU.Value(i), Poles1dV.Value(i)));
 
-    occ::handle<NCollection_HArray1<double>>    Knots  = aApprox.Knots();
-    occ::handle<NCollection_HArray1<int>> Mults  = aApprox.Multiplicities();
-    int                 Degree = aApprox.Degree();
+    occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
+    occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
+    int                                      Degree = aApprox.Degree();
     myCurve       = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
     myMaxError2dU = aApprox.MaxError(1, 1);
     myMaxError2dV = aApprox.MaxError(1, 2);

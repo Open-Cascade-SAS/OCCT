@@ -31,8 +31,8 @@
 
 //=================================================================================================
 
-void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
-                                const TopoDS_Shape&                 aShape,
+void VrmlConverter_WFShape::Add(Standard_OStream&                        anOStream,
+                                const TopoDS_Shape&                      aShape,
                                 const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
@@ -42,7 +42,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   {
 
     BRepAdaptor_Surface S;
-    bool    isoU, isoV;
+    bool                isoU, isoV;
     for (Tool.InitFace(); Tool.MoreFace(); Tool.NextFace())
     {
       isoU = (aDrawer->UIsoAspect()->Number() != 0);
@@ -232,9 +232,9 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
   if (qnt != 0)
   {
     occ::handle<NCollection_HArray1<gp_Vec>> HAV = new NCollection_HArray1<gp_Vec>(1, qnt);
-    gp_Vec                      V;
-    gp_Pnt                      P;
-    int            i = 0;
+    gp_Vec                                   V;
+    gp_Pnt                                   P;
+    int                                      i = 0;
 
     for (Tool.InitVertex(); Tool.MoreVertex(); Tool.NextVertex())
     {
@@ -247,7 +247,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                   anOStream,
     }
 
     occ::handle<VrmlConverter_PointAspect> PA = new VrmlConverter_PointAspect;
-    PA                                   = aDrawer->PointAspect();
+    PA                                        = aDrawer->PointAspect();
 
     // Separator P {
     Vrml_Separator SEP;

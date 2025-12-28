@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_FillAreaStyle, Standard_Transient)
 
 StepVisual_FillAreaStyle::StepVisual_FillAreaStyle() {}
 
-void StepVisual_FillAreaStyle::Init(const occ::handle<TCollection_HAsciiString>&            aName,
-                                    const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles)
+void StepVisual_FillAreaStyle::Init(
+  const occ::handle<TCollection_HAsciiString>&                        aName,
+  const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles)
 {
   // --- classe own fields ---
   name       = aName;
@@ -43,13 +44,13 @@ void StepVisual_FillAreaStyle::SetFillStyles(
   fillStyles = aFillStyles;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>> StepVisual_FillAreaStyle::FillStyles() const
+occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>> StepVisual_FillAreaStyle::FillStyles()
+  const
 {
   return fillStyles;
 }
 
-StepVisual_FillStyleSelect StepVisual_FillAreaStyle::FillStylesValue(
-  const int num) const
+StepVisual_FillStyleSelect StepVisual_FillAreaStyle::FillStylesValue(const int num) const
 {
   return fillStyles->Value(num);
 }

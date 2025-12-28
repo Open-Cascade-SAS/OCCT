@@ -23,21 +23,13 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Vec2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <math_Vector.hxx>
 #include <BSplCLib.hxx>
 
 #include <StdFail_NotDone.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <AppDef_Variational.hxx>
 
@@ -73,12 +65,12 @@ AppBlend_AppSurf::AppBlend_AppSurf()
 
 //=================================================================================================
 
-AppBlend_AppSurf::AppBlend_AppSurf(const int Degmin,
-                                   const int Degmax,
-                                   const double    Tol3d,
-                                   const double    Tol2d,
-                                   const int NbIt,
-                                   const bool KnownParameters)
+AppBlend_AppSurf::AppBlend_AppSurf(const int    Degmin,
+                                   const int    Degmax,
+                                   const double Tol3d,
+                                   const double Tol2d,
+                                   const int    NbIt,
+                                   const bool   KnownParameters)
     : done(false),
       dmin(Degmin),
       dmax(Degmax),
@@ -100,12 +92,12 @@ AppBlend_AppSurf::AppBlend_AppSurf(const int Degmin,
 
 //=================================================================================================
 
-void AppBlend_AppSurf::Init(const int Degmin,
-                            const int Degmax,
-                            const double    Tol3d,
-                            const double    Tol2d,
-                            const int NbIt,
-                            const bool KnownParameters)
+void AppBlend_AppSurf::Init(const int    Degmin,
+                            const int    Degmax,
+                            const double Tol3d,
+                            const double Tol2d,
+                            const int    NbIt,
+                            const bool   KnownParameters)
 {
   done           = false;
   dmin           = Degmin;
@@ -127,9 +119,7 @@ void AppBlend_AppSurf::Init(const int Degmin,
 //           the  optimization.
 //=======================================================================
 //
-void AppBlend_AppSurf::CriteriumWeight(double& W1,
-                                       double& W2,
-                                       double& W3) const
+void AppBlend_AppSurf::CriteriumWeight(double& W1, double& W2, double& W3) const
 {
   W1 = critweights[0];
   W2 = critweights[1];
@@ -138,9 +128,7 @@ void AppBlend_AppSurf::CriteriumWeight(double& W1,
 
 //=================================================================================================
 
-void AppBlend_AppSurf::SetCriteriumWeight(const double W1,
-                                          const double W2,
-                                          const double W3)
+void AppBlend_AppSurf::SetCriteriumWeight(const double W1, const double W2, const double W3)
 {
   if (W1 < 0 || W2 < 0 || W3 < 0)
     throw Standard_DomainError();
@@ -180,8 +168,8 @@ Approx_ParametrizationType AppBlend_AppSurf::ParType() const
 //=================================================================================================
 
 void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
-                               TheSectionGenerator&   F,
-                               const bool SpApprox)
+                               TheSectionGenerator&        F,
+                               const bool                  SpApprox)
 
 {
   InternalPerform(Lin, F, SpApprox, false);
@@ -198,9 +186,9 @@ void AppBlend_AppSurf::PerformSmoothing(const occ::handle<TheLine>& Lin, TheSect
 //=================================================================================================
 
 void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
-                                       TheSectionGenerator&   F,
-                                       const bool SpApprox,
-                                       const bool UseSmoothing)
+                                       TheSectionGenerator&        F,
+                                       const bool                  SpApprox,
+                                       const bool                  UseSmoothing)
 
 {
   done = false;
@@ -208,13 +196,13 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
   {
     return;
   }
-  int        i, j, k, NbPoint;
-  int        NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
-  bool        withderiv;
+  int                     i, j, k, NbPoint;
+  int                     NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
+  bool                    withderiv;
   AppParCurves_Constraint Cfirst, Clast;
 
   double mytol3d, mytol2d;
-  gp_XYZ        newDv;
+  gp_XYZ newDv;
 
   seqPoles2d.Clear();
 
@@ -402,14 +390,13 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
       // On recale les parametres entre 0 et 1.
       theParams(1)       = 0.;
       theParams(NbPoint) = 1.;
-      double Uf   = F.Parameter(Lin->Point(1));
-      double Ul   = F.Parameter(Lin->Point(NbPoint)) - Uf;
+      double Uf          = F.Parameter(Lin->Point(1));
+      double Ul          = F.Parameter(Lin->Point(NbPoint)) - Uf;
       for (i = 2; i < NbPoint; i++)
       {
         theParams(i) = (F.Parameter(Lin->Point(i)) - Uf) / Ul;
       }
-      AppDef_Compute
-        theAppDef(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
+      AppDef_Compute theAppDef(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
       theapprox = theAppDef;
     }
     theapprox.SetConstraints(Cfirst, Clast);
@@ -437,8 +424,7 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
       bool UseSquares = false;
       if (nbit == 0)
         UseSquares = true;
-      AppDef_BSplineCompute
-        theapprox(dmin, dmax, tol3d, tol2d, nbit, true, paramtype, UseSquares);
+      AppDef_BSplineCompute theapprox(dmin, dmax, tol3d, tol2d, nbit, true, paramtype, UseSquares);
       if (continuity == GeomAbs_C0)
       {
         theapprox.SetContinuity(0);
@@ -464,15 +450,14 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
         // On recale les parametres entre 0 et 1.
         theParams(1)       = 0.;
         theParams(NbPoint) = 1.;
-        double Uf   = F.Parameter(Lin->Point(1));
-        double Ul   = F.Parameter(Lin->Point(NbPoint)) - Uf;
+        double Uf          = F.Parameter(Lin->Point(1));
+        double Ul          = F.Parameter(Lin->Point(NbPoint)) - Uf;
         for (i = 2; i < NbPoint; i++)
         {
           theParams(i) = (F.Parameter(Lin->Point(i)) - Uf) / Ul;
         }
 
-        theapprox
-          .Init(dmin, dmax, tol3d, tol2d, nbit, true, Approx_IsoParametric, true);
+        theapprox.Init(dmin, dmax, tol3d, tol2d, nbit, true, Approx_IsoParametric, true);
         theapprox.SetParameters(theParams);
       }
       theapprox.Perform(multL);
@@ -504,7 +489,7 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
       AppDef_Variational Variation(multL, 1, NbPoint, TABofCC);
 
       //===================================
-      int theMaxSegments = 1000;
+      int  theMaxSegments = 1000;
       bool theWithMinMax  = false;
       bool theWithCutting = true;
       //===================================
@@ -575,8 +560,9 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
     new NCollection_HArray1<int>(multC.Multiplicities().Lower(), multC.Multiplicities().Upper());
   tabVMults->ChangeArray1() = multC.Multiplicities();
 
-  NCollection_Array1<gp_Pnt>            newtabP(1, NbVPoles);
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d = new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+  NCollection_Array1<gp_Pnt>                 newtabP(1, NbVPoles);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d =
+    new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
   for (j = 1; j <= NbUPoles; j++)
   {
     multC.Curve(j, newtabP);
@@ -609,21 +595,21 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
 //=================================================================================================
 
 void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
-                               TheSectionGenerator&   F,
-                               const int NbMaxP)
+                               TheSectionGenerator&        F,
+                               const int                   NbMaxP)
 {
   done = false;
   if (Lin.IsNull())
   {
     return;
   }
-  int        i, j, k;
-  int        NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
-  bool        withderiv;
+  int                     i, j, k;
+  int                     NbUPoles, NbUKnots, NbPoles2d, NbVPoles;
+  bool                    withderiv;
   AppParCurves_Constraint Cfirst = AppParCurves_NoConstraint, Clast = AppParCurves_NoConstraint;
 
   double mytol3d = 0.0, mytol2d = 0.0;
-  gp_XYZ        newDv;
+  gp_XYZ newDv;
 
   seqPoles2d.Clear();
 
@@ -639,13 +625,13 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
 
   NCollection_Array1<gp_Pnt> tabAppP(1, NbUPoles);
   NCollection_Array1<gp_Vec> tabAppV(1, NbUPoles);
-  double      X, Y, Z, DX, DY, DZ;
+  double                     X, Y, Z, DX, DY, DZ;
   X = Y = Z = RealLast();
   DX = DY = DZ = RealFirst();
 
   NCollection_Array1<gp_Pnt2d> tabP2d(1, std::max(1, NbPoles2d));
   NCollection_Array1<gp_Vec2d> tabV2d(1, std::max(1, NbPoles2d));
-  NCollection_Array1<double> X2d(1, std::max(1, NbPoles2d));
+  NCollection_Array1<double>   X2d(1, std::max(1, NbPoles2d));
   X2d.Init(RealLast());
   NCollection_Array1<double> Y2d(1, std::max(1, NbPoles2d));
   Y2d.Init(RealLast());
@@ -833,8 +819,8 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
   int itronc;
   for (itronc = 1; itronc <= nbtronc; itronc++)
   {
-    troncstart(itronc)      = start;
-    int rabrab = std::min(rab, reste);
+    troncstart(itronc) = start;
+    int rabrab         = std::min(rab, reste);
     if (reste > 0)
     {
       reste -= rabrab;
@@ -845,15 +831,15 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
   troncsize(nbtronc) = troncsize(nbtronc) - 1;
   for (itronc = 1; itronc <= nbtronc; itronc++)
   {
-    int            NbPoint = troncsize(itronc);
-    int            StPoint = troncstart(itronc);
+    int                         NbPoint = troncsize(itronc);
+    int                         StPoint = troncstart(itronc);
     AppDef_MultiPointConstraint multP;
     AppDef_MultiLine            multL(NbPoint);
 
     for (i = 1; i <= NbPoint; i++)
     {
-      int iLin = StPoint + i - 1;
-      double    x, y, z;
+      int    iLin = StPoint + i - 1;
+      double x, y, z;
       withderiv = F.Section(Lin->Point(iLin), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
       if (AppBlend_GetContextApproxWithNoTgt())
         withderiv = false;
@@ -913,7 +899,7 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
     }
 
     //  modified by EAP Thu Jan  3 15:44:13 2002 ___BEGIN___
-    double  Ufloc = 0., Ulloc = 0.;
+    double         Ufloc = 0., Ulloc = 0.;
     AppDef_Compute theapprox(dmin, dmax, tol3d, tol2d, nbit);
     if (knownp)
     {
@@ -924,11 +910,10 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       //  modified by EAP Thu Jan  3 15:45:17 2002 ___END___
       for (i = 1; i <= NbPoint; i++)
       {
-        int iLin = StPoint + i - 1;
-        theParams(i)          = (F.Parameter(Lin->Point(iLin)) - Ufloc) / (Ulloc - Ufloc);
+        int iLin     = StPoint + i - 1;
+        theParams(i) = (F.Parameter(Lin->Point(iLin)) - Ufloc) / (Ulloc - Ufloc);
       }
-      AppDef_Compute
-        theAppDef1(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
+      AppDef_Compute theAppDef1(theParams, dmin, dmax, tol3d, tol2d, nbit, true, true);
       theapprox = theAppDef1;
     }
     theapprox.SetConstraints(Cfirst, Clast);
@@ -937,7 +922,7 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
     //  modified by EAP Thu Jan  3 16:00:43 2002 ___BEGIN___
     // To know internal parameters if multicurve is approximated by several Bezier's
     NCollection_Sequence<double> aPoleDistSeq;
-    double          aWholeDist = 0;
+    double                       aWholeDist = 0;
     //  modified by EAP Thu Jan  3 16:45:48 2002 ___END___
     double TheTol3d, TheTol2d;
     for (int Index = 1; Index <= theapprox.NbMultiCurves(); Index++)
@@ -974,8 +959,8 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
     }
     if (knownp)
     {
-      int iDist;
-      double    iU = Ufloc;
+      int    iDist;
+      double iU = Ufloc;
       for (iDist = 1; iDist < aPoleDistSeq.Length(); iDist++)
       {
         iU += aPoleDistSeq(iDist) / aWholeDist * (Ulloc - Ufloc);
@@ -1031,8 +1016,9 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
     new NCollection_HArray1<int>(multC.Multiplicities().Lower(), multC.Multiplicities().Upper());
   tabVMults->ChangeArray1() = multC.Multiplicities();
 
-  NCollection_Array1<gp_Pnt>            newtabP(1, NbVPoles);
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d = new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
+  NCollection_Array1<gp_Pnt>                 newtabP(1, NbVPoles);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> newtabP2d =
+    new NCollection_HArray1<gp_Pnt2d>(1, NbVPoles);
   for (j = 1; j <= NbUPoles; j++)
   {
     multC.Curve(j, newtabP);
@@ -1083,12 +1069,12 @@ void AppBlend_AppSurf::SurfShape(int& UDegree,
   NbVKnots = tabVKnots->Length();
 }
 
-void AppBlend_AppSurf::Surface(NCollection_Array2<gp_Pnt>&      TPoles,
-                               NCollection_Array2<double>&    TWeights,
-                               NCollection_Array1<double>&    TUKnots,
-                               NCollection_Array1<double>&    TVKnots,
-                               NCollection_Array1<int>& TUMults,
-                               NCollection_Array1<int>& TVMults) const
+void AppBlend_AppSurf::Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                               NCollection_Array2<double>& TWeights,
+                               NCollection_Array1<double>& TUKnots,
+                               NCollection_Array1<double>& TVKnots,
+                               NCollection_Array1<int>&    TUMults,
+                               NCollection_Array1<int>&    TVMults) const
 
 {
   if (!done)
@@ -1105,9 +1091,7 @@ void AppBlend_AppSurf::Surface(NCollection_Array2<gp_Pnt>&      TPoles,
 
 //=================================================================================================
 
-void AppBlend_AppSurf::Curves2dShape(int& Degree,
-                                     int& NbPoles,
-                                     int& NbKnots) const
+void AppBlend_AppSurf::Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const
 {
   if (!done)
   {
@@ -1124,10 +1108,10 @@ void AppBlend_AppSurf::Curves2dShape(int& Degree,
 
 //=================================================================================================
 
-void AppBlend_AppSurf::Curve2d(const int   Index,
-                               NCollection_Array1<gp_Pnt2d>&    TPoles,
-                               NCollection_Array1<double>&    TKnots,
-                               NCollection_Array1<int>& TMults) const
+void AppBlend_AppSurf::Curve2d(const int                     Index,
+                               NCollection_Array1<gp_Pnt2d>& TPoles,
+                               NCollection_Array1<double>&   TKnots,
+                               NCollection_Array1<int>&      TMults) const
 {
   if (!done)
   {

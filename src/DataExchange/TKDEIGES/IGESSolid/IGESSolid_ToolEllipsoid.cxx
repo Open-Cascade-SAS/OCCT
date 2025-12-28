@@ -146,7 +146,7 @@ void IGESSolid_ToolEllipsoid::ReadOwnParams(const occ::handle<IGESSolid_Ellipsoi
 }
 
 void IGESSolid_ToolEllipsoid::WriteOwnParams(const occ::handle<IGESSolid_Ellipsoid>& ent,
-                                             IGESData_IGESWriter&               IW) const
+                                             IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -205,8 +205,8 @@ void IGESSolid_ToolEllipsoid::OwnCheck(const occ::handle<IGESSolid_Ellipsoid>& e
 
 void IGESSolid_ToolEllipsoid::OwnDump(const occ::handle<IGESSolid_Ellipsoid>& ent,
                                       const IGESData_IGESDumper& /* dumper */,
-                                      Standard_OStream&      S,
-                                      const int level) const
+                                      Standard_OStream& S,
+                                      const int         level) const
 {
   S << "IGESSolid_Ellipsoid\n"
     << "Size   : ";

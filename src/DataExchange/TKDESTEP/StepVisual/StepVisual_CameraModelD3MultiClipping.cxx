@@ -30,7 +30,8 @@ void StepVisual_CameraModelD3MultiClipping::Init(
   const occ::handle<TCollection_HAsciiString>&  theName,
   const occ::handle<StepGeom_Axis2Placement3d>& theViewReferenceSystem,
   const occ::handle<StepVisual_ViewVolume>&     thePerspectiveOfVolume,
-  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>& theShapeClipping)
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>&
+    theShapeClipping)
 {
   // Own field
   myShapeClipping = theShapeClipping;

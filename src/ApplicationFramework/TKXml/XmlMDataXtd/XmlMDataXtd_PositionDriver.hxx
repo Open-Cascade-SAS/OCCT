@@ -30,21 +30,20 @@ class XmlMDataXtd_PositionDriver : public XmlMDF_ADriver
 {
 
 public:
-  Standard_EXPORT XmlMDataXtd_PositionDriver(const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT XmlMDataXtd_PositionDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT bool
-    Paste(const XmlObjMgt_Persistent&  Source,
-          const occ::handle<TDF_Attribute>& Target,
-          XmlObjMgt_RRelocationTable&  RelocTable) const override;
+  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             XmlObjMgt_RRelocationTable&       RelocTable) const override;
 
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
-                             XmlObjMgt_Persistent&        Target,
-                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
+                             XmlObjMgt_Persistent&             Target,
+                             XmlObjMgt_SRelocationTable&       RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMDataXtd_PositionDriver, XmlMDF_ADriver)
-
 };
 
 #endif

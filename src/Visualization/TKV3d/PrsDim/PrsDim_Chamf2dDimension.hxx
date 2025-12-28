@@ -35,8 +35,8 @@ public:
   //! This object is defined by the face aFShape, the
   //! dimension aVal, the plane aPlane and the text aText.
   Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                          const occ::handle<Geom_Plane>&         aPlane,
-                                          const double               aVal,
+                                          const occ::handle<Geom_Plane>&    aPlane,
+                                          const double                      aVal,
                                           const TCollection_ExtendedString& aText);
 
   //! Constructs the display object for 2D chamfers.
@@ -45,18 +45,15 @@ public:
   //! the type of arrow aSymbolPrs with the size
   //! anArrowSize, and the text aText.
   Standard_EXPORT PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                          const occ::handle<Geom_Plane>&         aPlane,
-                                          const double               aVal,
+                                          const occ::handle<Geom_Plane>&    aPlane,
+                                          const double                      aVal,
                                           const TCollection_ExtendedString& aText,
                                           const gp_Pnt&                     aPosition,
                                           const DsgPrs_ArrowSide            aSymbolPrs,
-                                          const double               anArrowSize = 0.0);
+                                          const double                      anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 2d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override
-  {
-    return PrsDim_KOD_LENGTH;
-  }
+  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_LENGTH; }
 
   //! Returns true if the 2d chamfer dimension is movable.
   virtual bool IsMovable() const override { return true; }

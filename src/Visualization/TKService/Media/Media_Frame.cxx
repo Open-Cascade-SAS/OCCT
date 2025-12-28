@@ -155,7 +155,8 @@ bool Media_Frame::IsFullRangeYUV() const
 
 //=================================================================================================
 
-void Media_Frame::Swap(const occ::handle<Media_Frame>& theFrame1, const occ::handle<Media_Frame>& theFrame2)
+void Media_Frame::Swap(const occ::handle<Media_Frame>& theFrame1,
+                       const occ::handle<Media_Frame>& theFrame2)
 {
   std::swap(theFrame1->myFrame, theFrame2->myFrame);
 }

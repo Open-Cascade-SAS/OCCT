@@ -178,11 +178,15 @@ public:
 
 public:
   //! Create a persistent object for a curve
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Curve>&         theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Curve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a curve
-  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_Surface>&       theSurf,
-                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(
+    const occ::handle<Geom_Surface>& theSurf,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 //=======================================================================
@@ -190,8 +194,7 @@ public:
 //=======================================================================
 
 template <>
-inline const char* ShapePersistent_Geom::subBase_empty<ShapePersistent_Geom::basic>::PName()
-  const
+inline const char* ShapePersistent_Geom::subBase_empty<ShapePersistent_Geom::basic>::PName() const
 {
   return "PGeom_Point";
 }
@@ -221,8 +224,8 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Point,
 //=======================================================================
 
 template <>
-inline const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic,
-                                                         gp_Vec>::PName() const
+inline const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic, gp_Vec>::PName()
+  const
 {
   return "PGeom_Vector";
 }
@@ -253,8 +256,8 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Direction,
 
 template <>
 inline const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::VectorWithMagnitude,
-                                                       Geom_VectorWithMagnitude,
-                                                       gp_Vec>::PName() const
+                                                  Geom_VectorWithMagnitude,
+                                                  gp_Vec>::PName() const
 {
   return "PGeom_VectorWithMagnitude";
 }
@@ -274,8 +277,8 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::VectorWithMagni
 //=======================================================================
 
 template <>
-inline const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic,
-                                                         gp_Ax1>::PName() const
+inline const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::basic, gp_Ax1>::PName()
+  const
 {
   return "PGeom_AxisPlacement";
 }
@@ -306,7 +309,7 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::Axis1Placement,
 
 template <>
 inline const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
-                                                       Geom_Axis2Placement>::PName() const
+                                                  Geom_Axis2Placement>::PName() const
 {
   return "PGeom_Axis2Placement";
 }
@@ -330,8 +333,8 @@ inline void ShapePersistent_Geom::instance<ShapePersistent_Geom::AxisPlacement,
                                                                          theWriteData) const
 {
   occ::handle<Geom_Axis2Placement> aMyGeom      = occ::down_cast<Geom_Axis2Placement>(myTransient);
-  const gp_Ax1&               anAxis       = aMyGeom->Axis();
-  const gp_Dir&               anXDirection = aMyGeom->Direction();
+  const gp_Ax1&                    anAxis       = aMyGeom->Axis();
+  const gp_Dir&                    anXDirection = aMyGeom->Direction();
   write(theWriteData, anAxis) << anXDirection;
 }
 

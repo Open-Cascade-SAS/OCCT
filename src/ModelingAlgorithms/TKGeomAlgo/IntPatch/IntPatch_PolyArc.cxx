@@ -19,10 +19,7 @@
 #include <IntPatch_PolyArc.hxx>
 #include <Standard_ConstructionError.hxx>
 
-inline void MinMax(const double a1,
-                   const double a2,
-                   double&      amin,
-                   double&      amax)
+inline void MinMax(const double a1, const double a2, double& amin, double& amax)
 {
   if (a1 < a2)
   {
@@ -37,18 +34,18 @@ inline void MinMax(const double a1,
 }
 
 IntPatch_PolyArc::IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& Line,
-                                   const int           NbSample,
-                                   const double              aPdeb,
-                                   const double              aPfin,
-                                   const Bnd_Box2d&                 BoxOtherPolygon)
+                                   const int                             NbSample,
+                                   const double                          aPdeb,
+                                   const double                          aPfin,
+                                   const Bnd_Box2d&                      BoxOtherPolygon)
     : brise(1, std::max(1, NbSample)),
       param(1, std::max(1, NbSample)),
       offsetx(0.0),
       offsety(0.0)
 {
-  double Pdeb = aPdeb;
-  double Pfin = aPfin;
-  gp_Pnt2d      p2d;
+  double   Pdeb = aPdeb;
+  double   Pfin = aPfin;
+  gp_Pnt2d p2d;
 
   if (Pdeb == RealFirst() || Pfin == RealLast() || NbSample <= 1)
   {
@@ -80,7 +77,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& Line,
   double X, Y, Xs, Ys, Xm, Ym, XXs, YYs;
 
   r *= 0.8;
-  r2                      = r * r * 49.;
+  r2         = r * r * 49.;
   int nbloop = 0;
 
   do

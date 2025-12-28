@@ -104,19 +104,19 @@ private:
 
   Standard_EXPORT void NextEEFFCouple();
 
-  TopoDS_Shape                    myShape1;
-  TopoDS_Shape                    myShape2;
+  TopoDS_Shape                         myShape1;
+  TopoDS_Shape                         myShape2;
   occ::handle<TopOpeBRepTool_HBoxTool> myHBoxTool;
-  TopOpeBRepTool_ShapeExplorer    myFaceExplorer;
-  TopOpeBRep_ShapeScanner         myFaceScanner;
-  TopOpeBRepTool_ShapeExplorer    myEdgeExplorer;
-  TopOpeBRep_ShapeScanner         myEdgeScanner;
-  TopOpeBRep_EdgesIntersector     myEEIntersector;
-  bool                myIntersectionDone;
-  bool                myFFDone;
-  bool                myEEFFDone;
-  bool                myFFInit;
-  bool                myEEFFInit;
+  TopOpeBRepTool_ShapeExplorer         myFaceExplorer;
+  TopOpeBRep_ShapeScanner              myFaceScanner;
+  TopOpeBRepTool_ShapeExplorer         myEdgeExplorer;
+  TopOpeBRep_ShapeScanner              myEdgeScanner;
+  TopOpeBRep_EdgesIntersector          myEEIntersector;
+  bool                                 myIntersectionDone;
+  bool                                 myFFDone;
+  bool                                 myEEFFDone;
+  bool                                 myFFInit;
+  bool                                 myEEFFInit;
 };
 
 #endif // _TopOpeBRep_ShapeIntersector2d_HeaderFile

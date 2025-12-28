@@ -27,7 +27,6 @@
 #include <Storage_TypeData.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <UTL.hxx>
@@ -43,8 +42,8 @@ static TCollection_ExtendedString TryXmlDriverType(Standard_IStream& theIStream)
 //=================================================================================================
 
 void PCDM_ReadWriter::Open(const occ::handle<Storage_BaseDriver>& aDriver,
-                           const TCollection_ExtendedString& aFileName,
-                           const Storage_OpenMode            aMode)
+                           const TCollection_ExtendedString&      aFileName,
+                           const Storage_OpenMode                 aMode)
 {
   Storage_Error error = UTL::OpenFile(aDriver, aFileName, aMode);
   if (error != Storage_VSOk)
@@ -116,14 +115,13 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(const TCollection_Extende
     Storage_HeaderData hd;
     hd.Read(theFileDriver);
     const NCollection_Sequence<TCollection_AsciiString>& refUserInfo = hd.UserInfo();
-    bool                     found       = false;
+    bool                                                 found       = false;
     for (int i = 1; !found && i <= refUserInfo.Length(); i++)
     {
       if (refUserInfo(i).Search(FILE_FORMAT) != -1)
       {
-        found = true;
-        theFormat =
-          TCollection_ExtendedString(refUserInfo(i).Token(" ", 2).ToCString(), true);
+        found     = true;
+        theFormat = TCollection_ExtendedString(refUserInfo(i).Token(" ", 2).ToCString(), true);
       }
     }
     if (!found)
@@ -147,7 +145,7 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat(const TCollection_Extende
 
 //=================================================================================================
 
-TCollection_ExtendedString PCDM_ReadWriter::FileFormat(Standard_IStream&     theIStream,
+TCollection_ExtendedString PCDM_ReadWriter::FileFormat(Standard_IStream&          theIStream,
                                                        occ::handle<Storage_Data>& theData)
 {
   TCollection_ExtendedString aFormat;

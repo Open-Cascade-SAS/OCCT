@@ -31,8 +31,8 @@ void StepAP214_AutoDesignPresentedItem::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>> StepAP214_AutoDesignPresentedItem::Items()
-  const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>>
+  StepAP214_AutoDesignPresentedItem::Items() const
 {
   return items;
 }

@@ -52,7 +52,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 };

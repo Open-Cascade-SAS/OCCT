@@ -52,7 +52,7 @@ private:
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> Segments() const;
 
   occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> mySegments;
-  occ::handle<NCollection_HSequence<double>>     mySplitParams;
+  occ::handle<NCollection_HSequence<double>>                    mySplitParams;
 };
 
 #endif // _ShapeUpgrade_ConvertCurve2dToBezier_HeaderFile

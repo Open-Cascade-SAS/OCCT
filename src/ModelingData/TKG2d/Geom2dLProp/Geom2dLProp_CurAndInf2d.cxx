@@ -70,8 +70,8 @@ void Geom2dLProp_CurAndInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>& C)
       else
       {
         // Decoupage en intervalles C3.
-        isDone                     = true;
-        int     NbInt = CC.NbIntervals(GeomAbs_C3);
+        isDone                           = true;
+        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
         NCollection_Array1<double> Param(1, NbInt + 1);
         CC.Intervals(Param, GeomAbs_C3);
         for (int i = 1; i <= NbInt; i++)
@@ -124,8 +124,8 @@ void Geom2dLProp_CurAndInf2d::PerformInf(const occ::handle<Geom2d_Curve>& C)
       else
       {
         // Decoupage en intervalles C3.
-        isDone                     = true;
-        int     NbInt = CC.NbIntervals(GeomAbs_C3);
+        isDone                           = true;
+        int                        NbInt = CC.NbIntervals(GeomAbs_C3);
         NCollection_Array1<double> Param(1, NbInt + 1);
         CC.Intervals(Param, GeomAbs_C3);
 

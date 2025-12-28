@@ -28,10 +28,11 @@ RWStepBasic_RWGroupAssignment::RWStepBasic_RWGroupAssignment() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupAssignment::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
-                                             const int                   num,
-                                             occ::handle<Interface_Check>&                 ach,
-                                             const occ::handle<StepBasic_GroupAssignment>& ent) const
+void RWStepBasic_RWGroupAssignment::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   data,
+  const int                                     num,
+  occ::handle<Interface_Check>&                 ach,
+  const occ::handle<StepBasic_GroupAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "group_assignment"))
@@ -48,8 +49,9 @@ void RWStepBasic_RWGroupAssignment::ReadStep(const occ::handle<StepData_StepRead
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupAssignment::WriteStep(StepData_StepWriter&                     SW,
-                                              const occ::handle<StepBasic_GroupAssignment>& ent) const
+void RWStepBasic_RWGroupAssignment::WriteStep(
+  StepData_StepWriter&                          SW,
+  const occ::handle<StepBasic_GroupAssignment>& ent) const
 {
 
   // Own fields of GroupAssignment
@@ -60,7 +62,7 @@ void RWStepBasic_RWGroupAssignment::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepBasic_RWGroupAssignment::Share(const occ::handle<StepBasic_GroupAssignment>& ent,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Own fields of GroupAssignment

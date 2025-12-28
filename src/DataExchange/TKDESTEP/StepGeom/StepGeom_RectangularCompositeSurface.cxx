@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularCompositeSurface, StepGeom_Bounde
 StepGeom_RectangularCompositeSurface::StepGeom_RectangularCompositeSurface() {}
 
 void StepGeom_RectangularCompositeSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&       aName,
+  const occ::handle<TCollection_HAsciiString>&                                aName,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments)
 {
   // --- classe own fields ---
@@ -35,7 +35,8 @@ void StepGeom_RectangularCompositeSurface::SetSegments(
   segments = aSegments;
 }
 
-occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> StepGeom_RectangularCompositeSurface::Segments() const
+occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>
+  StepGeom_RectangularCompositeSurface::Segments() const
 {
   return segments;
 }

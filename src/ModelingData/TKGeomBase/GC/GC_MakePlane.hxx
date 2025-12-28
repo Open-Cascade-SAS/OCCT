@@ -56,10 +56,7 @@ public:
   //! Ax + By + Cz + D = 0.0
   //! Status is "BadEquation" if std::sqrt(A*A + B*B + C*C)
   //! <= Resolution from gp
-  Standard_EXPORT GC_MakePlane(const double A,
-                               const double B,
-                               const double C,
-                               const double D);
+  Standard_EXPORT GC_MakePlane(const double A, const double B, const double C, const double D);
 
   //! Make a Plane from Geom <ThePlane> parallel to another
   //! Pln <Pln> and passing through a Pnt <Point>.

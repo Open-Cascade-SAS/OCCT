@@ -33,8 +33,7 @@ public:
 
   Standard_EXPORT TopOpeBRep_VPointInterIterator(const TopOpeBRep_LineInter& LI);
 
-  Standard_EXPORT void Init(const TopOpeBRep_LineInter& LI,
-                            const bool      checkkeep = false);
+  Standard_EXPORT void Init(const TopOpeBRep_LineInter& LI, const bool checkkeep = false);
 
   Standard_EXPORT void Init();
 
@@ -52,9 +51,9 @@ public:
 
 private:
   TopOpeBRep_PLineInter myLineInter;
-  int      myVPointIndex;
-  int      myVPointNb;
-  bool      mycheckkeep;
+  int                   myVPointIndex;
+  int                   myVPointNb;
+  bool                  mycheckkeep;
 };
 
 #endif // _TopOpeBRep_VPointInterIterator_HeaderFile

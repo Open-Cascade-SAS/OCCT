@@ -21,7 +21,6 @@
 #include <Extrema_CurveTool.hxx>
 #include <Extrema_GFuncExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
-#include <Extrema_POnCurv.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>

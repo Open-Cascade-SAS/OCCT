@@ -28,7 +28,7 @@ StepGeom_OrientedSurface::StepGeom_OrientedSurface() {}
 
 void StepGeom_OrientedSurface::Init(
   const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-  const bool                  aOrientation)
+  const bool                                   aOrientation)
 {
   StepGeom_Surface::Init(aRepresentationItem_Name);
 

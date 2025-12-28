@@ -43,7 +43,6 @@
 #include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PointConstraint.hxx>
 #include <GeomPlate_Aij.hxx>
-#include <NCollection_Sequence.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -60,17 +59,7 @@
 #include <Precision.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Vec.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Message_ProgressScope.hxx>
 
 #include <stdio.h>
@@ -105,14 +94,14 @@ static int Affich = 0;
 //    Constructor compatible with the old version
 //---------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(
-  const occ::handle<NCollection_HArray1<int>>&  NPoints,
+  const occ::handle<NCollection_HArray1<int>>&                          NPoints,
   const occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>>& TabCurve,
-  const occ::handle<NCollection_HArray1<int>>&  Tang,
-  const int                   Degree,
-  const int                   NbIter,
-  const double                      Tol2d,
-  const double                      Tol3d,
-  const double                      TolAng,
+  const occ::handle<NCollection_HArray1<int>>&                          Tang,
+  const int                                                             Degree,
+  const int                                                             NbIter,
+  const double                                                          Tol2d,
+  const double                                                          Tol3d,
+  const double                                                          TolAng,
   const double,
   const bool Anisotropie)
     : myAnisotropie(Anisotropie),
@@ -124,7 +113,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(
       myTolAng(TolAng),
       myNbBounds(0)
 {
-  int NTCurve = TabCurve->Length(); // Number of linear constraints
+  int NTCurve  = TabCurve->Length(); // Number of linear constraints
   myNbPtsOnCur = 0; // Different calculation of the number of points depending on the length
   myLinCont    = new NCollection_HSequence<occ::handle<GeomPlate_CurveConstraint>>;
   myPntCont    = new NCollection_HSequence<occ::handle<GeomPlate_PointConstraint>>;
@@ -163,12 +152,12 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(
 // Constructor with initial surface and degree
 //------------------------------------------------------------------
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const occ::handle<Geom_Surface>& Surf,
-                                                         const int      Degree,
-                                                         const int      NbPtsOnCur,
-                                                         const int      NbIter,
-                                                         const double         Tol2d,
-                                                         const double         Tol3d,
-                                                         const double         TolAng,
+                                                         const int                        Degree,
+                                                         const int    NbPtsOnCur,
+                                                         const int    NbIter,
+                                                         const double Tol2d,
+                                                         const double Tol3d,
+                                                         const double TolAng,
                                                          const double /*TolCurv*/,
                                                          const bool Anisotropie)
     : mySurfInit(Surf),
@@ -197,12 +186,12 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const occ::handle<Geom_
 //---------------------------------------------------------
 // Constructor with degree
 //---------------------------------------------------------
-GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const int Degree,
-                                                         const int NbPtsOnCur,
-                                                         const int NbIter,
-                                                         const double    Tol2d,
-                                                         const double    Tol3d,
-                                                         const double    TolAng,
+GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const int    Degree,
+                                                         const int    NbPtsOnCur,
+                                                         const int    NbIter,
+                                                         const double Tol2d,
+                                                         const double Tol3d,
+                                                         const double TolAng,
                                                          const double /*TolCurv*/,
                                                          const bool Anisotropie)
     : myAnisotropie(Anisotropie),
@@ -248,7 +237,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const int Degree,
 static void TrierTab(occ::handle<NCollection_HArray1<int>>& Tab)
 {
   // Parse the table of transformations to find the initial order
-  int        Nb = Tab->Length();
+  int                     Nb = Tab->Length();
   NCollection_Array1<int> TabTri(1, Nb);
   for (int i = 1; i <= Nb; i++)
     TabTri.SetValue(Tab->Value(i), i);
@@ -258,12 +247,13 @@ static void TrierTab(occ::handle<NCollection_HArray1<int>>& Tab)
 //---------------------------------------------------------
 // Function : ProjectCurve
 //---------------------------------------------------------
-occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(const occ::handle<Adaptor3d_Curve>& Curv)
+occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(
+  const occ::handle<Adaptor3d_Curve>& Curv)
 {
   // Project a curve on a plane
   occ::handle<Geom2d_Curve>        Curve2d;
   occ::handle<GeomAdaptor_Surface> hsur = new GeomAdaptor_Surface(mySurfInit);
-  gp_Pnt2d                    P2d;
+  gp_Pnt2d                         P2d;
 
   occ::handle<ProjLib_HCompProjectedCurve> HProjector =
     new ProjLib_HCompProjectedCurve(hsur, Curv, myTol3d / 10, myTol3d / 10);
@@ -293,9 +283,9 @@ occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(const occ::h
   }
   else
   {
-    GeomAbs_Shape    Continuity = GeomAbs_C1;
-    int MaxDegree  = 10, MaxSeg;
-    double    Udeb, Ufin;
+    GeomAbs_Shape Continuity = GeomAbs_C1;
+    int           MaxDegree  = 10, MaxSeg;
+    double        Udeb, Ufin;
     HProjector->Bounds(1, Udeb, Ufin);
 
     MaxSeg = 20 + HProjector->NbIntervals(GeomAbs_C3);
@@ -318,7 +308,8 @@ occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(const occ::h
 //---------------------------------------------------------
 // Function : ProjectedCurve
 //---------------------------------------------------------
-occ::handle<Adaptor2d_Curve2d> GeomPlate_BuildPlateSurface::ProjectedCurve(occ::handle<Adaptor3d_Curve>& Curv)
+occ::handle<Adaptor2d_Curve2d> GeomPlate_BuildPlateSurface::ProjectedCurve(
+  occ::handle<Adaptor3d_Curve>& Curv)
 {
   // Projection of a curve on the initial surface
 
@@ -464,7 +455,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
   //=====================================================================
   // Declaration of variables.
   //=====================================================================
-  int NTLinCont = myLinCont->Length(), NTPntCont = myPntCont->Length(), NbBoucle = 0;
+  int  NTLinCont = myLinCont->Length(), NTPntCont = myPntCont->Length(), NbBoucle = 0;
   bool Fini = true;
   if ((NTLinCont + NTPntCont) == 0)
   {
@@ -741,21 +732,22 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
 //---------------------------------------------------------
 // Function : EcartContraintesMIL
 //---------------------------------------------------------
-void GeomPlate_BuildPlateSurface::EcartContraintesMil(const int         c,
-                                                      occ::handle<NCollection_HArray1<double>>& d,
-                                                      occ::handle<NCollection_HArray1<double>>& an,
-                                                      occ::handle<NCollection_HArray1<double>>& courb)
+void GeomPlate_BuildPlateSurface::EcartContraintesMil(
+  const int                                 c,
+  occ::handle<NCollection_HArray1<double>>& d,
+  occ::handle<NCollection_HArray1<double>>& an,
+  occ::handle<NCollection_HArray1<double>>& courb)
 {
-  int NbPt = myParCont->Value(c).Length();
-  double    U;
+  int    NbPt = myParCont->Value(c).Length();
+  double U;
   if (NbPt < 3)
     NbPt = 4;
   else
     NbPt = myParCont->Value(c).Length();
-  gp_Vec                            v1i, v1f, v2i, v2f, v3i, v3f;
-  gp_Pnt                            Pi, Pf;
-  gp_Pnt2d                          P2d;
-  int                  i;
+  gp_Vec                                 v1i, v1f, v2i, v2f, v3i, v3f;
+  gp_Pnt                                 Pi, Pf;
+  gp_Pnt2d                               P2d;
+  int                                    i;
   occ::handle<GeomPlate_CurveConstraint> LinCont = myLinCont->Value(c);
   switch (LinCont->Order())
   {
@@ -794,10 +786,10 @@ void GeomPlate_BuildPlateSurface::EcartContraintesMil(const int         c,
             P2d = ProjectPoint(Pi);
         }
         myGeomPlateSurface->D1(P2d.Coord(1), P2d.Coord(2), Pf, v1f, v2f);
-        d->ChangeValue(i)   = Pf.Distance(Pi);
-        v3i                 = v1i ^ v2i;
-        v3f                 = v1f ^ v2f;
-        double angle = v3f.Angle(v3i);
+        d->ChangeValue(i) = Pf.Distance(Pi);
+        v3i               = v1i ^ v2i;
+        v3f               = v1f ^ v2f;
+        double angle      = v3f.Angle(v3i);
         if (angle > (M_PI / 2))
           an->ChangeValue(i) = M_PI - angle;
         else
@@ -806,7 +798,7 @@ void GeomPlate_BuildPlateSurface::EcartContraintesMil(const int         c,
       }
       break;
     case 2:
-      occ::handle<Geom_Surface>            Splate(myGeomPlateSurface);
+      occ::handle<Geom_Surface>       Splate(myGeomPlateSurface);
       LocalAnalysis_SurfaceContinuity CG2;
       for (i = 1; i < NbPt; i++)
       {
@@ -845,13 +837,13 @@ void GeomPlate_BuildPlateSurface::Disc2dContour(const int /*nbp*/,
   Seq2d.Clear();
 
   //  sampling in "cosine" + 3 points on each interval
-  int NTCurve   = myLinCont->Length();
-  int NTPntCont = myPntCont->Length();
-  gp_Pnt2d         P2d;
-  gp_XY            UV;
-  gp_Pnt           PP;
-  double    u1, v1, u2, v2;
-  int i;
+  int      NTCurve   = myLinCont->Length();
+  int      NTPntCont = myPntCont->Length();
+  gp_Pnt2d P2d;
+  gp_XY    UV;
+  gp_Pnt   PP;
+  double   u1, v1, u2, v2;
+  int      i;
 
   mySurfInit->Bounds(u1, v1, u2, v2);
   GeomAdaptor_Surface Surf(mySurfInit);
@@ -976,8 +968,8 @@ void GeomPlate_BuildPlateSurface::Disc2dContour(const int /*nbp*/,
 // Function : Disc3dContour
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Disc3dContour(const int /*nbp*/,
-                                                const int iordre,
-                                                NCollection_Sequence<gp_XYZ>&  Seq3d)
+                                                const int                     iordre,
+                                                NCollection_Sequence<gp_XYZ>& Seq3d)
 {
 #ifdef OCCT_DEBUG
   if (Seq3d.Length() != 4)
@@ -995,10 +987,10 @@ void GeomPlate_BuildPlateSurface::Disc3dContour(const int /*nbp*/,
   int NTCurve   = myLinCont->Length();
   int NTPntCont = myPntCont->Length();
   //  gp_Pnt2d P2d;
-  gp_Pnt           P3d;
-  gp_Vec           v1h, v2h, v3h;
-  gp_XYZ           Pos;
-  int i;
+  gp_Pnt P3d;
+  gp_Vec v1h, v2h, v3h;
+  gp_XYZ Pos;
+  int    i;
 
   for (i = 1; i <= NTPntCont; i++)
     if (myPntCont->Value(i)->Order() != -1)
@@ -1141,7 +1133,7 @@ occ::handle<Geom_Surface> GeomPlate_BuildPlateSurface::SurfInit() const
 //---------------------------------------------------------
 occ::handle<NCollection_HArray1<int>> GeomPlate_BuildPlateSurface::Sense() const
 {
-  int                 NTCurve = myLinCont->Length();
+  int                                   NTCurve = myLinCont->Length();
   occ::handle<NCollection_HArray1<int>> Sens    = new NCollection_HArray1<int>(1, NTCurve);
   for (int i = 1; i <= NTCurve; i++)
     Sens->SetValue(i, mySense->Value(myInitOrder->Value(i)));
@@ -1151,10 +1143,12 @@ occ::handle<NCollection_HArray1<int>> GeomPlate_BuildPlateSurface::Sense() const
 //---------------------------------------------------------
 // Function : Curve2d
 //---------------------------------------------------------
-occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> GeomPlate_BuildPlateSurface::Curves2d() const
+occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> GeomPlate_BuildPlateSurface::Curves2d()
+  const
 {
-  int                  NTCurve = myLinCont->Length();
-  occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> C2dfin  = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, NTCurve);
+  int                                                         NTCurve = myLinCont->Length();
+  occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> C2dfin =
+    new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, NTCurve);
 
   for (int i = 1; i <= NTCurve; i++)
     C2dfin->SetValue(i, myLinCont->Value(myInitOrder->Value(i))->Curve2dOnSurf());
@@ -1166,7 +1160,8 @@ occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> GeomPlate_BuildPlate
 //---------------------------------------------------------
 occ::handle<NCollection_HArray1<int>> GeomPlate_BuildPlateSurface::Order() const
 {
-  occ::handle<NCollection_HArray1<int>> result = new NCollection_HArray1<int>(1, myLinCont->Length());
+  occ::handle<NCollection_HArray1<int>> result =
+    new NCollection_HArray1<int>(1, myLinCont->Length());
   for (int i = 1; i <= myLinCont->Length(); i++)
     result->SetValue(myInitOrder->Value(i), i);
   return result;
@@ -1200,9 +1195,12 @@ double GeomPlate_BuildPlateSurface::G2Error() const
 
 double GeomPlate_BuildPlateSurface::G0Error(const int Index)
 {
-  occ::handle<NCollection_HArray1<double>> tdistance  = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tangle     = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tcurvature = new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tdistance =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tangle =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tcurvature =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
   EcartContraintesMil(Index, tdistance, tangle, tcurvature);
   double MaxDistance = 0.;
   for (int i = 1; i <= myNbPtsOnCur; i++)
@@ -1215,9 +1213,12 @@ double GeomPlate_BuildPlateSurface::G0Error(const int Index)
 
 double GeomPlate_BuildPlateSurface::G1Error(const int Index)
 {
-  occ::handle<NCollection_HArray1<double>> tdistance  = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tangle     = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tcurvature = new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tdistance =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tangle =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tcurvature =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
   EcartContraintesMil(Index, tdistance, tangle, tcurvature);
   double MaxAngle = 0.;
   for (int i = 1; i <= myNbPtsOnCur; i++)
@@ -1230,9 +1231,12 @@ double GeomPlate_BuildPlateSurface::G1Error(const int Index)
 
 double GeomPlate_BuildPlateSurface::G2Error(const int Index)
 {
-  occ::handle<NCollection_HArray1<double>> tdistance  = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tangle     = new NCollection_HArray1<double>(1, myNbPtsOnCur);
-  occ::handle<NCollection_HArray1<double>> tcurvature = new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tdistance =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tangle =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
+  occ::handle<NCollection_HArray1<double>> tcurvature =
+    new NCollection_HArray1<double>(1, myNbPtsOnCur);
   EcartContraintesMil(Index, tdistance, tangle, tcurvature);
   double MaxCurvature = 0.;
   for (int i = 1; i <= myNbPtsOnCur; i++)
@@ -1268,17 +1272,17 @@ occ::handle<GeomPlate_PointConstraint> GeomPlate_BuildPlateSurface::PointConstra
 
 bool GeomPlate_BuildPlateSurface::CourbeJointive(const double tolerance)
 {
-  int nbf = myLinCont->Length();
-  double    Ufinal1, Uinit1, Ufinal2, Uinit2;
-  mySense                 = new NCollection_HArray1<int>(1, nbf, 0);
-  bool result = true;
-  int j      = 1, i;
-  gp_Pnt           P1, P2;
+  int    nbf = myLinCont->Length();
+  double Ufinal1, Uinit1, Ufinal2, Uinit2;
+  mySense       = new NCollection_HArray1<int>(1, nbf, 0);
+  bool   result = true;
+  int    j      = 1, i;
+  gp_Pnt P1, P2;
 
   while (j <= (myNbBounds - 1))
   {
     int a = 0;
-    i                  = j + 1;
+    i     = j + 1;
     if (i > myNbBounds)
     {
       result = false;
@@ -1369,9 +1373,9 @@ bool GeomPlate_BuildPlateSurface::CourbeJointive(const double tolerance)
 
 void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& theProgress)
 {
-  int nopt = 2, popt = 2, Np = 1;
-  bool isHalfSpace = true;
-  double    LinTol = 0.001, AngTol = 0.001; // AngTol = 0.0001; //LinTol = 0.0001
+  int    nopt = 2, popt = 2, Np = 1;
+  bool   isHalfSpace = true;
+  double LinTol = 0.001, AngTol = 0.001; // AngTol = 0.0001; //LinTol = 0.0001
 
   // Option to calculate the initial plane
   int NTLinCont = myLinCont->Length(), NTPntCont = myPntCont->Length();
@@ -1388,14 +1392,14 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
   {
     nopt = 3;
     // Table contains the cloud of points for calculation of the plane
-    int            NbPoint = 20, Discr = NbPoint / 4, pnum = 0;
+    int                                      NbPoint = 20, Discr = NbPoint / 4, pnum = 0;
     occ::handle<NCollection_HArray1<gp_Pnt>> Pts =
       new NCollection_HArray1<gp_Pnt>(1, (NbPoint + 1) * NTLinCont + NTPntCont);
-    NCollection_Sequence<gp_Vec>    Vecs, NewVecs;
+    NCollection_Sequence<gp_Vec>        Vecs, NewVecs;
     NCollection_Sequence<GeomPlate_Aij> Aset;
-    double           Uinit, Ufinal, Uif;
-    gp_Vec                  LastVec;
-    int        i;
+    double                              Uinit, Ufinal, Uif;
+    gp_Vec                              LastVec;
+    int                                 i;
     for (i = 1; i <= NTLinCont; i++)
     {
       int Order = myLinCont->Value(i)->Order();
@@ -1411,8 +1415,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
         Uif   = -Uif;
       }
 
-      gp_Vec           Vec1, Vec2, Normal;
-      bool ToReverse = false;
+      gp_Vec Vec1, Vec2, Normal;
+      bool   ToReverse = false;
       if (i > 1 && Order >= GeomAbs_G1)
       {
         gp_Pnt P;
@@ -1436,7 +1440,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
           if (ToReverse)
             Normal.Reverse();
           bool isNew = true;
-          int k;
+          int  k;
           for (k = 1; k <= Vecs.Length(); k++)
             if (Vecs(k).IsEqual(Normal, LinTol, AngTol))
             {
@@ -1517,7 +1521,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
             }
         }
         GeomPlate_BuildAveragePlane BAP(Vecs, Pts);
-        double               u1, u2, v1, v2;
+        double                      u1, u2, v1, v2;
         BAP.MinMaxBox(u1, u2, v1, v2);
         // The space is greater for projections
         double du = u2 - u1;
@@ -1554,16 +1558,15 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       nopt = 1;
     }
 
-    double    LenT    = 0;
-    int Npt     = 0;
-    int NTPoint = 20 * NTLinCont;
-    int i;
+    double LenT    = 0;
+    int    Npt     = 0;
+    int    NTPoint = 20 * NTLinCont;
+    int    i;
     for (i = 1; i <= NTLinCont; i++)
       LenT += myLinCont->Value(i)->Length();
     for (i = 1; i <= NTLinCont; i++)
     {
-      int NbPoint =
-        (int)(NTPoint * (myLinCont->Value(i)->Length()) / LenT);
+      int NbPoint = (int)(NTPoint * (myLinCont->Value(i)->Length()) / LenT);
       if (NbPoint < 10)
         NbPoint = 10;
 
@@ -1571,9 +1574,10 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       Npt += NbPoint;
     }
     // Table containing a cloud of points for calculation of the plane
-    occ::handle<NCollection_HArray1<gp_Pnt>> Pts     = new NCollection_HArray1<gp_Pnt>(1, 20 * NTLinCont + NTPntCont);
-    int            NbPoint = 20;
-    double               Uinit, Ufinal, Uif;
+    occ::handle<NCollection_HArray1<gp_Pnt>> Pts =
+      new NCollection_HArray1<gp_Pnt>(1, 20 * NTLinCont + NTPntCont);
+    int    NbPoint = 20;
+    double Uinit, Ufinal, Uif;
     for (i = 1; i <= NTLinCont; i++)
     {
       Uinit  = myLinCont->Value(i)->FirstParameter();
@@ -1588,7 +1592,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       { // Number of points per curve = 20
         // Linear distribution
         double Inter = j * Uif / (NbPoint);
-        gp_Pnt        P;
+        gp_Pnt P;
         myLinCont->Value(i)->D0(Uinit + Inter, P);
         Pts->SetValue(Np++, P);
       }
@@ -1632,7 +1636,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       double Ratio = 0., R1 = 2., R2 = 0.6; //R1 = 3, R2 = 0.5;//R1 = 1.4, R2 = 0.8; //R1 = 5., R2 = 0.2;
     // clang-format on
     occ::handle<GeomAdaptor_Surface> hsur    = new GeomAdaptor_Surface(InitPlane);
-    int            NbPoint = 20;
+    int                              NbPoint = 20;
     //      gp_Pnt P;
     //      gp_Vec DerC, DerCproj, DU, DV;
     //      gp_Pnt2d P2d;
@@ -1797,10 +1801,11 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
 // If the intersection is compatible (in cases G1-G1)
 // remove the point on one of two curves
 //---------------------------------------------------------
-void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
-                                            occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1)
+void GeomPlate_BuildPlateSurface::Intersect(
+  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
+  occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1)
 {
-  int           NTLinCont = myLinCont->Length();
+  int                        NTLinCont = myLinCont->Length();
   Geom2dInt_GInter           Intersection;
   Geom2dAdaptor_Curve        Ci, Cj;
   IntRes2d_IntersectionPoint int2d;
@@ -1867,8 +1872,8 @@ void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCol
               gp_Vec v11, v12, v13, v14, v15, v16, v21, v22, v23, v24, v25, v26;
               myLinCont->Value(i)->D2(int2d.ParamOnFirst(), P1, v11, v12, v13, v14, v15);
               myLinCont->Value(j)->D2(int2d.ParamOnSecond(), P2, v21, v22, v23, v24, v25);
-              v16               = v11 ^ v12;
-              v26               = v21 ^ v22;
+              v16        = v11 ^ v12;
+              v26        = v21 ^ v22;
               double ant = v16.Angle(v26);
               if (ant > (M_PI / 2))
                 ant = M_PI - ant;
@@ -1877,11 +1882,11 @@ void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCol
               // Non-compatible ==> remove zone in constraint G1
               // corresponding to 3D tolerance of 0.01
               {
-                double coin;
-                double Tol = 100 * myTol3d;
-                double A1;
-                gp_Pnt2d      P1temp, P2temp;
-                gp_Vec2d      V1, V2;
+                double   coin;
+                double   Tol = 100 * myTol3d;
+                double   A1;
+                gp_Pnt2d P1temp, P2temp;
+                gp_Vec2d V1, V2;
                 myLinCont->Value(i)->Curve2dOnSurf()->D1(int2d.ParamOnFirst(), P1temp, V1);
                 myLinCont->Value(j)->Curve2dOnSurf()->D1(int2d.ParamOnSecond(), P2temp, V2);
                 A1 = V1.Angle(V2);
@@ -1895,9 +1900,8 @@ void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCol
                             << std::abs(std::abs(A1) - M_PI) << std::endl;
 #endif
 
-                coin               = Ci.Resolution(Tol);
-                double Par1 = int2d.ParamOnFirst() - coin,
-                              Par2 = int2d.ParamOnFirst() + coin;
+                coin        = Ci.Resolution(Tol);
+                double Par1 = int2d.ParamOnFirst() - coin, Par2 = int2d.ParamOnFirst() + coin;
                 // Storage of the interval for curve i
                 PntG1G1->ChangeValue(i).Append(Par1);
                 PntG1G1->ChangeValue(i).Append(Par2);
@@ -1926,18 +1930,18 @@ void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCol
                 theCurve->D1(int2d.ParamOnSecond(), P2, vec);
                 myLinCont->Value(i)->D1(int2d.ParamOnFirst(), P1, vecU, vecV);
               }
-              N                   = vecU ^ vecV;
+              N            = vecU ^ vecV;
               double Angle = vec.Angle(N);
-              Angle               = std::abs(M_PI / 2 - Angle);
+              Angle        = std::abs(M_PI / 2 - Angle);
               if (Angle > myTolAng / 10.) //????????? //if (std::abs( scal ) > myTol3d/100)
               {
                 // Non-compatible ==> one removes zone in constraint G0 and G1
                 // corresponding to 3D tolerance of 0.01
-                double coin;
-                double Tol = 100 * myTol3d;
-                double A1;
-                gp_Pnt2d      P1temp, P2temp;
-                gp_Vec2d      V1, V2;
+                double   coin;
+                double   Tol = 100 * myTol3d;
+                double   A1;
+                gp_Pnt2d P1temp, P2temp;
+                gp_Vec2d V1, V2;
                 myLinCont->Value(i)->Curve2dOnSurf()->D1(int2d.ParamOnFirst(), P1temp, V1);
                 myLinCont->Value(j)->Curve2dOnSurf()->D1(int2d.ParamOnSecond(), P2temp, V2);
                 A1 = V1.Angle(V2);
@@ -2008,7 +2012,7 @@ void GeomPlate_BuildPlateSurface::Intersect(occ::handle<NCollection_HArray1<NCol
             if (Affich > 1)
             {
               occ::handle<Draw_Marker3D> mark = new (Draw_Marker3D)(P1, Draw_X, Draw_vert);
-              char                  name[256];
+              char                       name[256];
               Sprintf(name, "mark_%d", ++NbMark);
               Draw::Set(name, mark);
             }
@@ -2035,21 +2039,21 @@ void GeomPlate_BuildPlateSurface::Discretise(
   const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntInter,
   const occ::handle<NCollection_HArray1<NCollection_Sequence<double>>>& PntG1G1)
 {
-  int     NTLinCont = myLinCont->Length();
-  bool     ACR;
+  int                       NTLinCont = myLinCont->Length();
+  bool                      ACR;
   occ::handle<Geom2d_Curve> C2d;
-  Geom2dAdaptor_Curve  AC2d;
+  Geom2dAdaptor_Curve       AC2d;
   //  occ::handle<Adaptor_HCurve2d> HC2d;
   occ::handle<Law_Interpol> acrlaw = new (Law_Interpol)();
-  myPlateCont                 = new NCollection_HArray1<NCollection_Sequence<double>>(1, NTLinCont);
-  myParCont                   = new NCollection_HArray1<NCollection_Sequence<double>>(1, NTLinCont);
+  myPlateCont = new NCollection_HArray1<NCollection_Sequence<double>>(1, NTLinCont);
+  myParCont   = new NCollection_HArray1<NCollection_Sequence<double>>(1, NTLinCont);
 
   //===========================================================================
   // Construction of the table containing parameters of constraint points
   //===========================================================================
-  double                     Uinit, Ufinal, Length2d = 0, Inter;
-  double                     CurLength;
-  int                  NbPnt_i, NbPtInter, NbPtG1G1;
+  double                                 Uinit, Ufinal, Length2d = 0, Inter;
+  double                                 CurLength;
+  int                                    NbPnt_i, NbPtInter, NbPtG1G1;
   occ::handle<GeomPlate_CurveConstraint> LinCont;
 
   for (int i = 1; i <= NTLinCont; i++)
@@ -2068,8 +2072,8 @@ void GeomPlate_BuildPlateSurface::Discretise(
       if (!C2d.IsNull())
         AC2d.Load(C2d);
       //      AC2d.Load(LinCont->Curve2dOnSurf());
-      int     ii, Nbint = 20;
-      double        U;
+      int                          ii, Nbint = 20;
+      double                       U;
       NCollection_Array1<gp_Pnt2d> tabP2d(1, Nbint + 1);
       tabP2d(1).SetY(Uinit);
       tabP2d(1).SetX(0.);
@@ -2235,10 +2239,10 @@ void GeomPlate_BuildPlateSurface::Discretise(
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::CalculNbPtsInit()
 {
-  double    LenT      = 0;
-  int NTLinCont = myLinCont->Length();
-  int NTPoint   = (int)(myNbPtsOnCur * NTLinCont);
-  int i;
+  double LenT      = 0;
+  int    NTLinCont = myLinCont->Length();
+  int    NTPoint   = (int)(myNbPtsOnCur * NTLinCont);
+  int    i;
 
   for (i = 1; i <= NTLinCont; i++)
     LenT += myLinCont->Value(i)->Length();
@@ -2270,13 +2274,12 @@ void GeomPlate_BuildPlateSurface::CalculNbPtsInit()
 //---------------------------------------------------------
 // Starting from table myParCont load all the points noted in plate
 //---------------------------------------------------------
-void GeomPlate_BuildPlateSurface::LoadCurve(const int NbBoucle,
-                                            const int OrderMax)
+void GeomPlate_BuildPlateSurface::LoadCurve(const int NbBoucle, const int OrderMax)
 {
-  gp_Pnt           P3d, Pdif, PP;
-  gp_Pnt2d         P2d;
-  int NTLinCont = myLinCont->Length(), i, j;
-  int Tang, Nt;
+  gp_Pnt   P3d, Pdif, PP;
+  gp_Pnt2d P2d;
+  int      NTLinCont = myLinCont->Length(), i, j;
+  int      Tang, Nt;
 
   for (i = 1; i <= NTLinCont; i++)
   {
@@ -2379,10 +2382,10 @@ void GeomPlate_BuildPlateSurface::LoadCurve(const int NbBoucle,
 // void GeomPlate_BuildPlateSurface::LoadPoint(const int NbBoucle,
 void GeomPlate_BuildPlateSurface::LoadPoint(const int, const int OrderMax)
 {
-  gp_Pnt           P3d, Pdif, PP;
-  gp_Pnt2d         P2d;
-  int NTPntCont = myPntCont->Length();
-  int Tang, i;
+  gp_Pnt   P3d, Pdif, PP;
+  gp_Pnt2d P2d;
+  int      NTPntCont = myPntCont->Length();
+  int      Tang, i;
   //  gp_Vec  V1,V2,V3,V4,V5,V6,V7,V8,V9,V10;
 
   // Loading of points of point constraints
@@ -2448,7 +2451,7 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
   //======================================================================
   //    Calculate errors
   //======================================================================
-  int NTLinCont = myLinCont->Length();
+  int  NTLinCont = myLinCont->Length();
   bool Result    = true;
 
   // variable for error calculation
@@ -2463,9 +2466,12 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
       int NbPts_i = myParCont->Value(i).Length();
       if (NbPts_i < 3)
         NbPts_i = 4;
-      occ::handle<NCollection_HArray1<double>> tdist  = new NCollection_HArray1<double>(1, NbPts_i - 1);
-      occ::handle<NCollection_HArray1<double>> tang   = new NCollection_HArray1<double>(1, NbPts_i - 1);
-      occ::handle<NCollection_HArray1<double>> tcourb = new NCollection_HArray1<double>(1, NbPts_i - 1);
+      occ::handle<NCollection_HArray1<double>> tdist =
+        new NCollection_HArray1<double>(1, NbPts_i - 1);
+      occ::handle<NCollection_HArray1<double>> tang =
+        new NCollection_HArray1<double>(1, NbPts_i - 1);
+      occ::handle<NCollection_HArray1<double>> tcourb =
+        new NCollection_HArray1<double>(1, NbPts_i - 1);
 
       EcartContraintesMil(i, tdist, tang, tcourb);
 
@@ -2507,7 +2513,7 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
             gp_Pnt2d P2d;
             LinCont->D0(U, P);
             occ::handle<Draw_Marker3D> mark = new (Draw_Marker3D)(P, Draw_X, Draw_orange);
-            char                  name[256];
+            char                       name[256];
             Sprintf(name, "mark_%d", ++NbMark);
             Draw::Set(name, mark);
             if (!LinCont->ProjectedCurve().IsNull())
@@ -2538,7 +2544,7 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
             gp_Pnt P;
             LinCont->D0(U, P);
             occ::handle<Draw_Marker3D> mark = new Draw_Marker3D(P, Draw_X, Draw_or);
-            char                  name[256];
+            char                       name[256];
             Sprintf(name, "mark_%d", ++NbMark);
             Draw::Set(name, mark);
           }
@@ -2592,14 +2598,12 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
 //---------------------------------------------------------
 // Function : VerifPoint
 //---------------------------------------------------------
-void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist,
-                                              double& Ang,
-                                              double& Curv) const
+void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist, double& Ang, double& Curv) const
 {
-  int NTPntCont = myPntCont->Length();
-  gp_Pnt           Pi, Pf;
-  gp_Pnt2d         P2d;
-  gp_Vec           v1i, v1f, v2i, v2f, v3i, v3f;
+  int      NTPntCont = myPntCont->Length();
+  gp_Pnt   Pi, Pf;
+  gp_Pnt2d P2d;
+  gp_Vec   v1i, v1f, v2i, v2f, v3i, v3f;
   Ang  = 0;
   Dist = 0, Curv = 0;
   occ::handle<GeomPlate_PointConstraint> PntCont;
@@ -2626,7 +2630,7 @@ void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist,
           Ang = M_PI - Ang;
         break;
       case 2:
-        occ::handle<Geom_Surface>            Splate(myGeomPlateSurface);
+        occ::handle<Geom_Surface>       Splate(myGeomPlateSurface);
         LocalAnalysis_SurfaceContinuity CG2;
         P2d = PntCont->Pnt2dOnSurf();
         GeomLProp_SLProps Prop(Splate, P2d.Coord(1), P2d.Coord(2), 2, 0.001);

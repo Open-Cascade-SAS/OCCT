@@ -63,10 +63,10 @@ public:
   //! If IsByPoint is equal to false, the number of the
   //! coefficients is 4 and they represent the combination of
   //! plane parameters and shift values.
-  Standard_EXPORT BRepGProp_UFunction(const BRepGProp_Face&  theSurface,
-                                      const gp_Pnt&          theVertex,
-                                      const bool IsByPoint,
-                                      const double*   theCoeffs);
+  Standard_EXPORT BRepGProp_UFunction(const BRepGProp_Face& theSurface,
+                                      const gp_Pnt&         theVertex,
+                                      const bool            IsByPoint,
+                                      const double*         theCoeffs);
 
   //! Setting the type of the value to be returned.
   void SetValueType(const GProp_ValueType theType);
@@ -76,8 +76,7 @@ public:
   void SetVParam(const double theVParam);
 
   //! Returns a value of the function.
-  Standard_EXPORT virtual bool Value(const double X,
-                                                 double&      F) override;
+  Standard_EXPORT virtual bool Value(const double X, double& F) override;
 
 private:
   //! Private method. Returns the value for volume computation.
@@ -86,10 +85,7 @@ private:
   //! -  theS and theD1 coefficients that are computed and used
   //! for computation of center of mass and inertia values
   //! by plane.
-  Standard_EXPORT double VolumeValue(const double X,
-                                            gp_XYZ&             thePMP0,
-                                            double&      theS,
-                                            double&      theD1);
+  Standard_EXPORT double VolumeValue(const double X, gp_XYZ& thePMP0, double& theS, double& theD1);
 
   //! Private method. Returns a value for the center of mass
   //! computation. If the value type other then GProp_CenterMassX,
@@ -106,12 +102,12 @@ private:
   //! true in case of successful computation of a value
   Standard_EXPORT bool InertiaValue(const double X, double& F);
 
-  BRepGProp_Face       mySurface;
-  gp_Pnt               myVertex;
-  const double* myCoeffs;
-  double        myVParam;
-  GProp_ValueType      myValueType;
-  bool     myIsByPoint;
+  BRepGProp_Face  mySurface;
+  gp_Pnt          myVertex;
+  const double*   myCoeffs;
+  double          myVParam;
+  GProp_ValueType myValueType;
+  bool            myIsByPoint;
 };
 
 #include <BRepGProp_UFunction.lxx>

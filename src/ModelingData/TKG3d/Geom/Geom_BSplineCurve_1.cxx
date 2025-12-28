@@ -65,9 +65,7 @@ bool Geom_BSplineCurve::IsCN(const int N) const
 
 //=================================================================================================
 
-bool Geom_BSplineCurve::IsG1(const double theTf,
-                                         const double theTl,
-                                         const double theAngTol) const
+bool Geom_BSplineCurve::IsG1(const double theTf, const double theTl, const double theAngTol) const
 {
   if (IsCN(1))
   {
@@ -168,8 +166,8 @@ int Geom_BSplineCurve::Degree() const
 
 void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -190,8 +188,8 @@ void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
 
 void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -213,8 +211,8 @@ void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
 
 void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -235,14 +233,10 @@ void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 
 //=================================================================================================
 
-void Geom_BSplineCurve::D3(const double U,
-                           gp_Pnt&             P,
-                           gp_Vec&             V1,
-                           gp_Vec&             V2,
-                           gp_Vec&             V3) const
+void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  int aSpanIndex = 0;
-  double    aNewU(U);
+  int    aSpanIndex = 0;
+  double aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
   if (aNewU < knots->Value(aSpanIndex))
@@ -371,9 +365,7 @@ double Geom_BSplineCurve::LastParameter() const
 
 //=================================================================================================
 
-gp_Pnt Geom_BSplineCurve::LocalValue(const double    U,
-                                     const int FromK1,
-                                     const int ToK2) const
+gp_Pnt Geom_BSplineCurve::LocalValue(const double U, const int FromK1, const int ToK2) const
 {
   gp_Pnt P;
   LocalD0(U, FromK1, ToK2, P);
@@ -382,15 +374,12 @@ gp_Pnt Geom_BSplineCurve::LocalValue(const double    U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD0(const double    U,
-                                const int FromK1,
-                                const int ToK2,
-                                gp_Pnt&                P) const
+void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2, gp_Pnt& P) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalValue");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   BSplCLib::D0(u,
@@ -406,16 +395,16 @@ void Geom_BSplineCurve::LocalD0(const double    U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD1(const double    U,
-                                const int FromK1,
-                                const int ToK2,
-                                gp_Pnt&                P,
-                                gp_Vec&                V1) const
+void Geom_BSplineCurve::LocalD1(const double U,
+                                const int    FromK1,
+                                const int    ToK2,
+                                gp_Pnt&      P,
+                                gp_Vec&      V1) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD1");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   BSplCLib::D1(u,
@@ -432,17 +421,17 @@ void Geom_BSplineCurve::LocalD1(const double    U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD2(const double    U,
-                                const int FromK1,
-                                const int ToK2,
-                                gp_Pnt&                P,
-                                gp_Vec&                V1,
-                                gp_Vec&                V2) const
+void Geom_BSplineCurve::LocalD2(const double U,
+                                const int    FromK1,
+                                const int    ToK2,
+                                gp_Pnt&      P,
+                                gp_Vec&      V1,
+                                gp_Vec&      V2) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD2");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   BSplCLib::D2(u,
@@ -460,18 +449,18 @@ void Geom_BSplineCurve::LocalD2(const double    U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::LocalD3(const double    U,
-                                const int FromK1,
-                                const int ToK2,
-                                gp_Pnt&                P,
-                                gp_Vec&                V1,
-                                gp_Vec&                V2,
-                                gp_Vec&                V3) const
+void Geom_BSplineCurve::LocalD3(const double U,
+                                const int    FromK1,
+                                const int    ToK2,
+                                gp_Pnt&      P,
+                                gp_Vec&      V1,
+                                gp_Vec&      V2,
+                                gp_Vec&      V3) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD3");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
   BSplCLib::D3(u,
@@ -490,15 +479,15 @@ void Geom_BSplineCurve::LocalD3(const double    U,
 
 //=================================================================================================
 
-gp_Vec Geom_BSplineCurve::LocalDN(const double    U,
-                                  const int FromK1,
-                                  const int ToK2,
-                                  const int N) const
+gp_Vec Geom_BSplineCurve::LocalDN(const double U,
+                                  const int    FromK1,
+                                  const int    ToK2,
+                                  const int    N) const
 {
   Standard_DomainError_Raise_if(FromK1 == ToK2, "Geom_BSplineCurve::LocalD3");
 
-  double    u     = U;
-  int index = 0;
+  double u     = U;
+  int    index = 0;
   BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
 
@@ -642,13 +631,13 @@ void Geom_BSplineCurve::Transform(const gp_Trsf& T)
 // (PRO6988)
 //=======================================================================
 
-void Geom_BSplineCurve::LocateU(const double    U,
-                                const double    ParametricTolerance,
-                                int&      I1,
-                                int&      I2,
-                                const bool WithKnotRepetition) const
+void Geom_BSplineCurve::LocateU(const double U,
+                                const double ParametricTolerance,
+                                int&         I1,
+                                int&         I2,
+                                const bool   WithKnotRepetition) const
 {
-  double                 NewU = U;
+  double                                   NewU = U;
   occ::handle<NCollection_HArray1<double>> TheKnots;
   if (WithKnotRepetition)
     TheKnots = flatknots;
@@ -709,7 +698,7 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
     {
       int NbKnots, NbPoles;
       BSplCLib::PrepareUnperiodize(deg, mults->Array1(), NbKnots, NbPoles);
-      NCollection_Array1<gp_Pnt>   new_poles(1, NbPoles);
+      NCollection_Array1<gp_Pnt> new_poles(1, NbPoles);
       NCollection_Array1<double> new_weights(1, NbPoles);
       for (int ii = 1; ii <= NbPoles; ii++)
       {
@@ -748,7 +737,7 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
 //=================================================================================================
 
 bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
-                                            const double              thePreci) const
+                                const double                          thePreci) const
 {
   if (knots.IsNull() || poles.IsNull() || mults.IsNull())
     return false;

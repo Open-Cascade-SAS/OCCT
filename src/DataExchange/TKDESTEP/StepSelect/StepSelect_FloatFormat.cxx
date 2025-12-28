@@ -64,9 +64,7 @@ void StepSelect_FloatFormat::SetFormat(const char* format)
   themainform.AssignCat(format);
 }
 
-void StepSelect_FloatFormat::SetFormatForRange(const char* form,
-                                               const double    R1,
-                                               const double    R2)
+void StepSelect_FloatFormat::SetFormatForRange(const char* form, const double R1, const double R2)
 {
   theformrange.Clear();
   theformrange.AssignCat(form);
@@ -74,12 +72,12 @@ void StepSelect_FloatFormat::SetFormatForRange(const char* form,
   therangemax = R2;
 }
 
-void StepSelect_FloatFormat::Format(bool&        zerosup,
+void StepSelect_FloatFormat::Format(bool&                    zerosup,
                                     TCollection_AsciiString& mainform,
-                                    bool&        hasrange,
+                                    bool&                    hasrange,
                                     TCollection_AsciiString& formrange,
-                                    double&           rangemin,
-                                    double&           rangemax) const
+                                    double&                  rangemin,
+                                    double&                  rangemax) const
 {
   zerosup   = thezerosup;
   mainform  = themainform;

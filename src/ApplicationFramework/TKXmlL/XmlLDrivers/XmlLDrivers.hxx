@@ -28,7 +28,8 @@ class TDocStd_Application;
 class XmlLDrivers
 {
 public:
-  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(const Standard_GUID& theGUID);
+  Standard_EXPORT static const occ::handle<Standard_Transient>& Factory(
+    const Standard_GUID& theGUID);
 
   Standard_EXPORT static TCollection_AsciiString CreationDate();
 

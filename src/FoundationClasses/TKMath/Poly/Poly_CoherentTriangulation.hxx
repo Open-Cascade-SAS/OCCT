@@ -28,6 +28,7 @@ class NCollection_List;
 
 //! Definition of HANDLE object using Standard_DefineHandle.hxx
 #include <Standard_Type.hxx>
+
 /**
  * Triangulation structure that allows to:
  * <ul>
@@ -188,9 +189,8 @@ public:
    *   where the first number is the index of removed node and the second -
    *   the index of remaining node to which the mesh was reconnected.
    */
-  Standard_EXPORT bool
-    RemoveDegenerated(const double            theTol,
-                      NCollection_List<TwoIntegers>* pLstRemovedNode = 0L);
+  Standard_EXPORT bool RemoveDegenerated(const double                   theTol,
+                                         NCollection_List<TwoIntegers>* pLstRemovedNode = 0L);
 
   /**
    * Create a list of free nodes. These nodes may appear as a result of any
@@ -253,10 +253,7 @@ public:
   /**
    * Get the triangle at the given index 'i'.
    */
-  inline const Poly_CoherentTriangle& Triangle(const int i) const
-  {
-    return myTriangles.Value(i);
-  }
+  inline const Poly_CoherentTriangle& Triangle(const int i) const { return myTriangles.Value(i); }
 
   /**
    * Query the total number of active triangles (i.e. triangles that refer
@@ -294,9 +291,9 @@ public:
    *   True if operation succeeded.
    */
   Standard_EXPORT bool ReplaceNodes(Poly_CoherentTriangle& theTriangle,
-                                                const int iNode0,
-                                                const int iNode1,
-                                                const int iNode2);
+                                    const int              iNode0,
+                                    const int              iNode1,
+                                    const int              iNode2);
 
   /**
    * Add a single link to triangulation, based on a triangle and its side index.
@@ -307,7 +304,7 @@ public:
    *   Index of the side (i.e., 0, 1 0r 2) defining the added link.
    */
   Standard_EXPORT Poly_CoherentLink* AddLink(const Poly_CoherentTriangle& theTri,
-                                             const int       theConn);
+                                             const int                    theConn);
 
   /**
    * Find one or two triangles that share the given couple of nodes.
@@ -322,7 +319,7 @@ public:
    *   True if at least one triangle is found and output as pTri.
    */
   Standard_EXPORT bool FindTriangle(const Poly_CoherentLink&     theLink,
-                                                const Poly_CoherentTriangle* pTri[2]) const;
+                                    const Poly_CoherentTriangle* pTri[2]) const;
 
   /**
    * (Re)Calculate all links in this Triangulation.
@@ -357,8 +354,8 @@ protected:
   NCollection_Vector<Poly_CoherentTriangle> myTriangles;
   NCollection_Vector<Poly_CoherentNode>     myNodes;
   NCollection_Vector<Poly_CoherentLink>     myLinks;
-  occ::handle<NCollection_BaseAllocator>         myAlloc;
-  double                             myDeflection;
+  occ::handle<NCollection_BaseAllocator>    myAlloc;
+  double                                    myDeflection;
 
 public:
   // Declaration of CASCADE RTTI

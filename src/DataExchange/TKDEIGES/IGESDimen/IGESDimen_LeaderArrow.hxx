@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <gp_XY.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -47,10 +46,10 @@ public:
   //! - depth       : Z Depth
   //! - position    : ArrowHead coordinates
   //! - segments    : Segment tail coordinate pairs
-  Standard_EXPORT void Init(const double               height,
-                            const double               width,
-                            const double               depth,
-                            const gp_XY&                      position,
+  Standard_EXPORT void Init(const double                                   height,
+                            const double                                   width,
+                            const double                                   depth,
+                            const gp_XY&                                   position,
                             const occ::handle<NCollection_HArray1<gp_XY>>& segments);
 
   //! Changes FormNumber (indicates the Shape of the Arrow)
@@ -86,10 +85,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
 private:
-  double              theArrowHeadHeight;
-  double              theArrowHeadWidth;
-  double              theZDepth;
-  gp_XY                      theArrowHead;
+  double                                  theArrowHeadHeight;
+  double                                  theArrowHeadWidth;
+  double                                  theZDepth;
+  gp_XY                                   theArrowHead;
   occ::handle<NCollection_HArray1<gp_XY>> theSegmentTails;
 };
 

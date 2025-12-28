@@ -67,9 +67,9 @@ static bool StaticPath(const occ::handle<TCollection_HAsciiString>& val)
 }
 */
 
-MoniTool_TypedValue::MoniTool_TypedValue(const char*   name,
+MoniTool_TypedValue::MoniTool_TypedValue(const char*              name,
                                          const MoniTool_ValueType type,
-                                         const char*   init)
+                                         const char*              init)
     : thename(name),
       thetype(type),
       thelims(0),
@@ -109,7 +109,7 @@ MoniTool_TypedValue::MoniTool_TypedValue(const occ::handle<MoniTool_TypedValue>&
       theoval(other->ObjectValue())
 {
   NCollection_DataMap<TCollection_AsciiString, int> eadds;
-  const char*                                               satisname;
+  const char*                                       satisname;
   other->Internals(theinterp, thesatisf, satisname, eadds);
   thesatisn.AssignCat(satisname);
 
@@ -122,7 +122,7 @@ MoniTool_TypedValue::MoniTool_TypedValue(const occ::handle<MoniTool_TypedValue>&
   if (other->RealLimit(true, therealup))
     thelims |= 2;
 
-  int startcase, endcase;
+  int  startcase, endcase;
   bool match;
   if (other->EnumDef(startcase, endcase, match))
   {
@@ -150,11 +150,10 @@ MoniTool_TypedValue::MoniTool_TypedValue(const occ::handle<MoniTool_TypedValue>&
     thehval = new TCollection_HAsciiString(other->CStringValue());
 }
 
-void MoniTool_TypedValue::Internals(
-  MoniTool_ValueInterpret&                                        interp,
-  MoniTool_ValueSatisfies&                                        satisf,
-  const char*&                                               satisname,
-  NCollection_DataMap<TCollection_AsciiString, int>& enums) const
+void MoniTool_TypedValue::Internals(MoniTool_ValueInterpret&                           interp,
+                                    MoniTool_ValueSatisfies&                           satisf,
+                                    const char*&                                       satisname,
+                                    NCollection_DataMap<TCollection_AsciiString, int>& enums) const
 {
   interp    = theinterp;
   satisf    = thesatisf;
@@ -217,7 +216,7 @@ TCollection_AsciiString MoniTool_TypedValue::Definition() const
     break;
     case MoniTool_ValueEnum: {
       def.AssignCat("Enum");
-      int startcase = 0, endcase = 0;
+      int  startcase = 0, endcase = 0;
       bool match = 0;
       EnumDef(startcase, endcase, match);
       Sprintf(mess, " [%s%d-%d]", (match ? "in " : ""), startcase, endcase);
@@ -237,7 +236,7 @@ TCollection_AsciiString MoniTool_TypedValue::Definition() const
         for (; listadd.More(); listadd.Next())
         {
           const TCollection_AsciiString& aName = listadd.Key();
-          const char*               enva  = aName.ToCString();
+          const char*                    enva  = aName.ToCString();
           if (enva[0] == '?')
             continue;
           Sprintf(mess, ":%d ", listadd.Value());
@@ -396,8 +395,7 @@ void MoniTool_TypedValue::SetIntegerLimit(const bool max, const int val)
   }
 }
 
-bool MoniTool_TypedValue::IntegerLimit(const bool max,
-                                                   int&      val) const
+bool MoniTool_TypedValue::IntegerLimit(const bool max, int& val) const
 {
   bool res = false;
   if (max)
@@ -430,8 +428,7 @@ void MoniTool_TypedValue::SetRealLimit(const bool max, const double val)
   }
 }
 
-bool MoniTool_TypedValue::RealLimit(const bool max,
-                                                double&         val) const
+bool MoniTool_TypedValue::RealLimit(const bool max, double& val) const
 {
   bool res = false;
   if (max)
@@ -589,9 +586,7 @@ void MoniTool_TypedValue::AddEnumValue(const char* val, const int num)
   //  }
 }
 
-bool MoniTool_TypedValue::EnumDef(int& startcase,
-                                              int& endcase,
-                                              bool& match) const
+bool MoniTool_TypedValue::EnumDef(int& startcase, int& endcase, bool& match) const
 {
   if (thetype != MoniTool_ValueEnum)
     return false;
@@ -664,8 +659,7 @@ bool MoniTool_TypedValue::HasInterpret() const
   return false;
 }
 
-void MoniTool_TypedValue::SetSatisfies(const MoniTool_ValueSatisfies func,
-                                       const char*        name)
+void MoniTool_TypedValue::SetSatisfies(const MoniTool_ValueSatisfies func, const char* name)
 {
   thesatisn.Clear();
   thesatisf = func;
@@ -705,7 +699,7 @@ occ::handle<TCollection_HAsciiString> MoniTool_TypedValue::HStringValue() const
 
 occ::handle<TCollection_HAsciiString> MoniTool_TypedValue::Interpret(
   const occ::handle<TCollection_HAsciiString>& hval,
-  const bool                  native) const
+  const bool                                   native) const
 {
   occ::handle<TCollection_HAsciiString> inter = hval;
   if (hval.IsNull())
@@ -715,7 +709,7 @@ occ::handle<TCollection_HAsciiString> MoniTool_TypedValue::Interpret(
   if (thetype == MoniTool_ValueEnum)
   {
     //  We accept both forms : Enum preferably, otherwise Integer
-    int startcase, endcase;
+    int  startcase, endcase;
     bool match;
     EnumDef(startcase, endcase, match);
     int encas = EnumCase(hval->ToCString());
@@ -768,7 +762,7 @@ bool MoniTool_TypedValue::Satisfies(const occ::handle<TCollection_HAsciiString>&
     }
     case MoniTool_ValueEnum: {
       //  We accept both forms : Enum preferably, otherwise Integer
-      int startcase, endcase; // unused ival;
+      int  startcase, endcase; // unused ival;
       bool match;
       EnumDef(startcase, endcase, match);
       if (!match)
@@ -816,7 +810,7 @@ bool MoniTool_TypedValue::SetCStringValue(const char* val)
   }
   else if (thetype == MoniTool_ValueEnum)
   {
-    int ival = EnumCase(val);
+    int         ival = EnumCase(val);
     const char* cval = EnumVal(ival);
     if (!cval || cval[0] == '\0')
       return false;
@@ -928,8 +922,7 @@ const char* MoniTool_TypedValue::ObjectTypeName() const
 
 //    ########        LIBRARY        ########
 
-bool MoniTool_TypedValue::AddLib(const occ::handle<MoniTool_TypedValue>& tv,
-                                             const char*             defin)
+bool MoniTool_TypedValue::AddLib(const occ::handle<MoniTool_TypedValue>& tv, const char* defin)
 {
   if (tv.IsNull())
     return false;
@@ -961,10 +954,12 @@ occ::handle<MoniTool_TypedValue> MoniTool_TypedValue::FromLib(const char* defin)
 
 occ::handle<NCollection_HSequence<TCollection_AsciiString>> MoniTool_TypedValue::LibList()
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list = new NCollection_HSequence<TCollection_AsciiString>();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> list =
+    new NCollection_HSequence<TCollection_AsciiString>();
   if (libtv().IsEmpty())
     return list;
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator it(libtv());
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator it(
+    libtv());
   for (; it.More(); it.Next())
   {
     list->Append(it.Key());

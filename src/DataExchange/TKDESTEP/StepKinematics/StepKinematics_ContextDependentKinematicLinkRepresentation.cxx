@@ -29,7 +29,8 @@ StepKinematics_ContextDependentKinematicLinkRepresentation::
 //=================================================================================================
 
 void StepKinematics_ContextDependentKinematicLinkRepresentation::Init(
-  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation,
+  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>&
+    theRepresentationRelation,
   const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>&
     theRepresentedProductRelation)
 {
@@ -50,7 +51,8 @@ occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>
 //=================================================================================================
 
 void StepKinematics_ContextDependentKinematicLinkRepresentation::SetRepresentationRelation(
-  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation)
+  const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>&
+    theRepresentationRelation)
 {
   myRepresentationRelation = theRepresentationRelation;
 }

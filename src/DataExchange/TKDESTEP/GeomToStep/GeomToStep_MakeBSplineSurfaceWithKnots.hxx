@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnots(
     const occ::handle<Geom_BSplineSurface>& Bsplin,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_BSplineSurfaceWithKnots>& Value() const;
 

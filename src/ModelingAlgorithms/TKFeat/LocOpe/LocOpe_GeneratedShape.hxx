@@ -49,7 +49,6 @@ public:
 protected:
   NCollection_List<TopoDS_Shape> myGEdges;
   NCollection_List<TopoDS_Shape> myList;
-
 };
 
 #endif // _LocOpe_GeneratedShape_HeaderFile

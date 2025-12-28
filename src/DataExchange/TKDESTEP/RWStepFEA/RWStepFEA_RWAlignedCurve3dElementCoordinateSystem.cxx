@@ -33,7 +33,7 @@ RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::
 
 void RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                       data,
-  const int                                       num,
+  const int                                                         num,
   occ::handle<Interface_Check>&                                     ach,
   const occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>& ent) const
 {
@@ -63,7 +63,7 @@ void RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                              SW,
   const occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::WriteStep(
 
 void RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::Share(
   const occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                         iter) const
 {
 
   // Inherited fields of RepresentationItem

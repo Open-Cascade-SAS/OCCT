@@ -39,7 +39,7 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(
   const occ::handle<StepRepr_ShapeAspect>&                            theTolerancedShapeAspect,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
-  const StepDimTol_GeometricToleranceType                        theType)
+  const StepDimTol_GeometricToleranceType                             theType)
 {
   SetName(theName);
   SetDescription(theDescription);
@@ -56,10 +56,10 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(
   const occ::handle<TCollection_HAsciiString>&                        theName,
   const occ::handle<TCollection_HAsciiString>&                        theDescription,
   const occ::handle<Standard_Transient>&                              theMagnitude,
-  const StepDimTol_GeometricToleranceTarget&                     theTolerancedShapeAspect,
+  const StepDimTol_GeometricToleranceTarget&                          theTolerancedShapeAspect,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
-  const StepDimTol_GeometricToleranceType                        theType)
+  const StepDimTol_GeometricToleranceType                             theType)
 {
   SetName(theName);
   SetDescription(theDescription);

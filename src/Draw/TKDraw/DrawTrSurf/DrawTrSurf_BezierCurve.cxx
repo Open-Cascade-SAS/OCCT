@@ -23,7 +23,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve, DrawTrSurf_Curve)
 
@@ -35,12 +34,12 @@ DrawTrSurf_BezierCurve::DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurv
 }
 
 DrawTrSurf_BezierCurve::DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurve>& C,
-                                               const Draw_Color&               CurvColor,
-                                               const Draw_Color&               PolesColor,
-                                               const bool          ShowPoles,
-                                               const int          Discret,
-                                               const double             Deflection,
-                                               const int          DrawMode)
+                                               const Draw_Color&                    CurvColor,
+                                               const Draw_Color&                    PolesColor,
+                                               const bool                           ShowPoles,
+                                               const int                            Discret,
+                                               const double                         Deflection,
+                                               const int                            DrawMode)
     : DrawTrSurf_Curve(C, CurvColor, Discret, Deflection, DrawMode)
 {
   drawPoles = ShowPoles;
@@ -66,15 +65,15 @@ void DrawTrSurf_BezierCurve::DrawOn(Draw_Display& dis) const
   DrawTrSurf_Curve::DrawOn(dis);
 }
 
-void DrawTrSurf_BezierCurve::FindPole(const double X,
-                                      const double Y,
+void DrawTrSurf_BezierCurve::FindPole(const double        X,
+                                      const double        Y,
                                       const Draw_Display& D,
-                                      const double XPrec,
-                                      int&   Index) const
+                                      const double        XPrec,
+                                      int&                Index) const
 {
   occ::handle<Geom_BezierCurve> bz = occ::down_cast<Geom_BezierCurve>(curv);
-  gp_Pnt2d                 p1(X / D.Zoom(), Y / D.Zoom());
-  double            Prec = XPrec / D.Zoom();
+  gp_Pnt2d                      p1(X / D.Zoom(), Y / D.Zoom());
+  double                        Prec = XPrec / D.Zoom();
   Index++;
   int NbPoles = bz->NbPoles();
   while (Index <= NbPoles)
@@ -107,15 +106,15 @@ occ::handle<Draw_Drawable3D> DrawTrSurf_BezierCurve::Copy() const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_BezierCurve::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&      aParams = DrawTrSurf::Parameters();
   occ::handle<Geom_BezierCurve> aGeomCurve =
     occ::down_cast<Geom_BezierCurve>(GeomTools_CurveSet::ReadCurve(theStream));
   occ::handle<DrawTrSurf_BezierCurve> aDrawCurve = new DrawTrSurf_BezierCurve(aGeomCurve,
-                                                                         aParams.CurvColor,
-                                                                         aParams.PolesColor,
-                                                                         aParams.IsShowPoles,
-                                                                         aParams.Discret,
-                                                                         aParams.Deflection,
-                                                                         aParams.DrawMode);
+                                                                              aParams.CurvColor,
+                                                                              aParams.PolesColor,
+                                                                              aParams.IsShowPoles,
+                                                                              aParams.Discret,
+                                                                              aParams.Deflection,
+                                                                              aParams.DrawMode);
   return aDrawCurve;
 }

@@ -78,7 +78,7 @@ occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* 
 }
 
 occ::handle<Standard_OutOfMemory> Standard_OutOfMemory::NewInstance(const char* theMessage,
-                                                               const char* theStackTrace)
+                                                                    const char* theStackTrace)
 {
   anOutOfMemInstance->SetMessageString(theMessage);
   anOutOfMemInstance->SetStackString(theStackTrace);

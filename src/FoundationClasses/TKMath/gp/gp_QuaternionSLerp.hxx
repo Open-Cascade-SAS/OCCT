@@ -28,7 +28,7 @@ public:
   //!             with 0 pointing to theStart and 1 to theEnd.
   static gp_Quaternion Interpolate(const gp_Quaternion& theQStart,
                                    const gp_Quaternion& theQEnd,
-                                   double        theT)
+                                   double               theT)
   {
     gp_Quaternion      aResult;
     gp_QuaternionSLerp aLerp(theQStart, theQEnd);
@@ -55,8 +55,8 @@ public:
   //! Initialize the tool with Start and End unit quaternions.
   void InitFromUnit(const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)
   {
-    myQStart               = theQStart;
-    myQEnd                 = theQEnd;
+    myQStart        = theQStart;
+    myQEnd          = theQEnd;
     double cosOmega = myQStart.Dot(myQEnd);
     if (cosOmega < 0.0)
     {
@@ -67,7 +67,7 @@ public:
     {
       cosOmega = 0.9999;
     }
-    myOmega                   = std::acos(cosOmega);
+    myOmega            = std::acos(cosOmega);
     double invSinOmega = (1.0 / std::sin(myOmega));
     myQStart.Scale(invSinOmega);
     myQEnd.Scale(invSinOmega);
@@ -82,7 +82,7 @@ public:
 private:
   gp_Quaternion myQStart;
   gp_Quaternion myQEnd;
-  double myOmega;
+  double        myOmega;
 };
 
 #endif //_gp_QuaternionSLerp_HeaderFile

@@ -47,7 +47,7 @@ public:
   //! true, it explores not only the first, but all the
   //! sub Step levels.
   Standard_EXPORT void Initialize(const occ::handle<TDataStd_TreeNode>& aTreeNode,
-                                  const bool           allLevels = false);
+                                  const bool                            allLevels = false);
 
   //! Returns True if there is a current Item in the
   //! iteration.
@@ -68,7 +68,7 @@ public:
 
 private:
   occ::handle<TDataStd_TreeNode> myNode;
-  int          myFirstLevel;
+  int                            myFirstLevel;
 };
 
 #endif // _TDataStd_ChildNodeIterator_HeaderFile

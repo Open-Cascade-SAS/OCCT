@@ -133,9 +133,7 @@ public:
   //! two of the three values Rxx, Ryy and Rzz are equal.
   //! - If the current system has a center of symmetry,
   //! Rxx, Ryy and Rzz are equal.
-  Standard_EXPORT void RadiusOfGyration(double& Rxx,
-                                        double& Ryy,
-                                        double& Rzz) const;
+  Standard_EXPORT void RadiusOfGyration(double& Rxx, double& Ryy, double& Rzz) const;
 
   friend
     //! Computes the principal properties of inertia of the current system.
@@ -155,16 +153,16 @@ public:
     GProp_GProps::PrincipalProperties() const;
 
 private:
-  Standard_EXPORT GProp_PrincipalProps(const double Ixx,
-                                       const double Iyy,
-                                       const double Izz,
-                                       const double Rxx,
-                                       const double Ryy,
-                                       const double Rzz,
-                                       const gp_Vec&       Vxx,
-                                       const gp_Vec&       Vyy,
-                                       const gp_Vec&       Vzz,
-                                       const gp_Pnt&       G);
+  Standard_EXPORT GProp_PrincipalProps(const double  Ixx,
+                                       const double  Iyy,
+                                       const double  Izz,
+                                       const double  Rxx,
+                                       const double  Ryy,
+                                       const double  Rzz,
+                                       const gp_Vec& Vxx,
+                                       const gp_Vec& Vyy,
+                                       const gp_Vec& Vzz,
+                                       const gp_Pnt& G);
 
   double i1;
   double i2;
@@ -172,10 +170,10 @@ private:
   double r1;
   double r2;
   double r3;
-  gp_Vec        v1;
-  gp_Vec        v2;
-  gp_Vec        v3;
-  gp_Pnt        g;
+  gp_Vec v1;
+  gp_Vec v2;
+  gp_Vec v3;
+  gp_Pnt g;
 };
 
 #endif // _GProp_PrincipalProps_HeaderFile

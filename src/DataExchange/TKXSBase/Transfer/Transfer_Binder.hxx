@@ -146,8 +146,8 @@ private:
   //! Called by AddResult, to keep unicity of each item in the list
   Standard_EXPORT void CutResult(const occ::handle<Transfer_Binder>& next);
 
-  Transfer_StatusResult   thestatus;
-  Transfer_StatusExec     theexecst;
+  Transfer_StatusResult        thestatus;
+  Transfer_StatusExec          theexecst;
   occ::handle<Interface_Check> thecheck;
   occ::handle<Transfer_Binder> thenextr;
   occ::handle<Transfer_Binder> theendr;

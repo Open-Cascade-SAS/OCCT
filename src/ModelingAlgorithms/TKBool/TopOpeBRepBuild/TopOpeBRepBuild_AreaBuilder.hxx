@@ -23,12 +23,8 @@
 
 #include <TopOpeBRepBuild_Loop.hxx>
 #include <NCollection_List.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
-#include <NCollection_List.hxx>
 #include <TopOpeBRepBuild_LoopEnum.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepBuild_LoopSet;
@@ -63,7 +59,7 @@ public:
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_AreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                               TopOpeBRepBuild_LoopClassifier& LC,
-                                              const bool ForceClass = false);
+                                              const bool                      ForceClass = false);
 
   Standard_EXPORT virtual ~TopOpeBRepBuild_AreaBuilder();
 
@@ -71,7 +67,7 @@ public:
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
-                                               const bool ForceClass = false);
+                                               const bool                      ForceClass = false);
 
   //! Initialize iteration on areas.
   Standard_EXPORT int InitArea();
@@ -90,34 +86,36 @@ public:
   //! Returns the current Loop in the current area.
   Standard_EXPORT const occ::handle<TopOpeBRepBuild_Loop>& Loop() const;
 
-  Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(const occ::handle<TopOpeBRepBuild_Loop>& L,
-                                                      NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&         LOL,
-                                                      void* const s = NULL) const;
+  Standard_EXPORT virtual void ADD_Loop_TO_LISTOFLoop(
+    const occ::handle<TopOpeBRepBuild_Loop>&             L,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+    void* const                                          s = NULL) const;
 
   Standard_EXPORT virtual void REM_Loop_FROM_LISTOFLoop(
     NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator& ITLOL,
-    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&               LOL,
-    void* const                    s = NULL) const;
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&           LOL,
+    void* const                                                    s = NULL) const;
 
-  Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL1,
-                                                            NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL2,
-                                                            void* const      s  = NULL,
-                                                            void* const      s1 = NULL,
-                                                            void* const s2 = NULL) const;
+  Standard_EXPORT virtual void ADD_LISTOFLoop_TO_LISTOFLoop(
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL1,
+    NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL2,
+    void* const                                          s  = NULL,
+    void* const                                          s1 = NULL,
+    void* const                                          s2 = NULL) const;
 
 protected:
-  Standard_EXPORT TopAbs_State CompareLoopWithListOfLoop(TopOpeBRepBuild_LoopClassifier&     LC,
-                                                         const occ::handle<TopOpeBRepBuild_Loop>& L,
-                                                         const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&   LOL,
-                                                         const TopOpeBRepBuild_LoopEnum le) const;
+  Standard_EXPORT TopAbs_State
+    CompareLoopWithListOfLoop(TopOpeBRepBuild_LoopClassifier&                            LC,
+                              const occ::handle<TopOpeBRepBuild_Loop>&                   L,
+                              const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LOL,
+                              const TopOpeBRepBuild_LoopEnum                             le) const;
 
   Standard_EXPORT void Atomize(TopAbs_State& state, const TopAbs_State newstate) const;
 
-  NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>               myArea;
+  NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>           myArea;
   NCollection_List<NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>>::Iterator myAreaIterator;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator       myLoopIterator;
-  bool                               myUNKNOWNRaise;
-
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator                   myLoopIterator;
+  bool                                                                            myUNKNOWNRaise;
 };
 
 #endif // _TopOpeBRepBuild_AreaBuilder_HeaderFile

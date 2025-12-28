@@ -22,8 +22,6 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //! The history keeps the following relations between the input shapes
@@ -102,8 +100,8 @@ public: //! @name Constructors for History creation
   BRepTools_History(const NCollection_List<TopoDS_Shape>& theArguments, TheAlgo& theAlgo)
   {
     // Map all argument shapes to save them in history
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         anArgsMap;
-    NCollection_List<TopoDS_Shape>::Iterator aIt(theArguments);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anArgsMap;
+    NCollection_List<TopoDS_Shape>::Iterator                      aIt(theArguments);
     for (; aIt.More(); aIt.Next())
     {
       if (!aIt.Value().IsNull())
@@ -180,10 +178,12 @@ public: //! Methods to set the history.
 
 public: //! Methods to read the history.
   //! Returns all shapes generated from the shape.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& theInitial) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& theInitial) const;
 
   //! Returns all shapes modified from the shape.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theInitial) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& theInitial) const;
 
   //! Returns 'true' if the shape is removed.
   Standard_EXPORT bool IsRemoved(const TopoDS_Shape& theInitial) const;
@@ -234,8 +234,7 @@ private:
   //! Prepares the shapes generated from the first shape to set the second one
   //! as generated one from the first one by the addition or the replacement.
   //! Returns 'true' on success.
-  bool prepareGenerated(const TopoDS_Shape& theInitial,
-                                    const TopoDS_Shape& theGenerated);
+  bool prepareGenerated(const TopoDS_Shape& theInitial, const TopoDS_Shape& theGenerated);
 
   //! Prepares the shapes modified from the first shape to set the second one
   //! as modified one from the first one by the addition or the replacement.
@@ -247,13 +246,15 @@ private: //! Data to keep the history.
   //! If an input shape is not bound to the map then
   //! there is no shapes modified from the shape.
   //! No any shape should be mapped to an empty list.
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myShapeToModified;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myShapeToModified;
 
   //! Maps each input shape to all shapes generated from it.
   //! If an input shape is not bound to the map then
   //! there is no shapes generated from the shape.
   //! No any shape should be mapped to an empty list.
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myShapeToGenerated;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myShapeToGenerated;
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved; //!< The removed shapes.
 

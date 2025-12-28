@@ -66,13 +66,13 @@ public:
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape&      theShape,
                             const GeomAdaptor_Curve& theCurve,
-                            const double      theTol);
+                            const double             theTol);
 
   //! Load the Shape, the curve and initialize the
   //! tolerance used for the classification.
   Standard_EXPORT void Init(const TopoDS_Shape& theShape,
                             const gp_Lin&       theLine,
-                            const double theTol);
+                            const double        theTol);
 
   //! Load the Shape, and initialize the
   //! tolerance used for the classification.
@@ -125,19 +125,19 @@ protected:
   Standard_EXPORT void Clear();
 
 private:
-  double                    myTolerance;
-  occ::handle<GeomAdaptor_Curve>        myCurve;
-  IntCurveSurface_HInter           myIntcs;
-  int                 myCurrentindex;
-  int                 myCurrentnbpoints;
-  occ::handle<BRepTopAdaptor_TopolTool> myFastClass;
-  TopAbs_State                     myCurrentstate;
-  double                    myCurrentU;
-  double                    myCurrentV;
-  Bnd_Box                          myCurveBox;
-  int                 myIndFace;
-  NCollection_Sequence<TopoDS_Shape>         myFaces;
-  occ::handle<NCollection_HArray1<Bnd_Box>>         myFaceBoxes;
+  double                                    myTolerance;
+  occ::handle<GeomAdaptor_Curve>            myCurve;
+  IntCurveSurface_HInter                    myIntcs;
+  int                                       myCurrentindex;
+  int                                       myCurrentnbpoints;
+  occ::handle<BRepTopAdaptor_TopolTool>     myFastClass;
+  TopAbs_State                              myCurrentstate;
+  double                                    myCurrentU;
+  double                                    myCurrentV;
+  Bnd_Box                                   myCurveBox;
+  int                                       myIndFace;
+  NCollection_Sequence<TopoDS_Shape>        myFaces;
+  occ::handle<NCollection_HArray1<Bnd_Box>> myFaceBoxes;
 };
 
 #endif // _BRepIntCurveSurface_Inter_HeaderFile

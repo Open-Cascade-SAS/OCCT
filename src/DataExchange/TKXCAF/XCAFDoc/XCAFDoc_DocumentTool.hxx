@@ -52,9 +52,8 @@ public:
   //! If the attribute is already set it won't be reset on
   //! <L> even if <IsAcces> is false.
   //! ColorTool and ShapeTool attributes are also set by this method.
-  Standard_EXPORT static occ::handle<XCAFDoc_DocumentTool> Set(
-    const TDF_Label&       L,
-    const bool IsAcces = true);
+  Standard_EXPORT static occ::handle<XCAFDoc_DocumentTool> Set(const TDF_Label& L,
+                                                               const bool       IsAcces = true);
 
   Standard_EXPORT static bool IsXCAFDocument(const occ::handle<TDocStd_Document>& Doc);
 
@@ -105,7 +104,8 @@ public:
 
   //! Creates (if it does not exist) XCAFDoc_VisMaterialTool attribute on VisMaterialLabel().
   //! Should not be confused with MaterialTool() defining physical/manufacturing materials.
-  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterialTool> VisMaterialTool(const TDF_Label& theLabel);
+  Standard_EXPORT static occ::handle<XCAFDoc_VisMaterialTool> VisMaterialTool(
+    const TDF_Label& theLabel);
 
   //! Checks for the VisMaterialTool attribute on the label's document
   //! Returns TRUE if Tool exists, ELSE if it has not been created
@@ -157,22 +157,22 @@ public:
   //! Returns value of current internal unit for the document
   //! converted to base unit type.
   Standard_EXPORT static bool GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                                        double&                  theResut,
-                                                        const UnitsMethods_LengthUnit theBaseUnit);
+                                            double&                              theResut,
+                                            const UnitsMethods_LengthUnit        theBaseUnit);
 
   //! Returns value of current internal unit for the document in meter
   Standard_EXPORT static bool GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                                        double&                  theResut);
+                                            double&                              theResut);
 
   //! Sets value of current internal unit to the document in meter
   Standard_EXPORT static void SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                            const double             theUnitValue);
+                                            const double                         theUnitValue);
 
   //! Sets value of current internal unit to the document
   //! @param theUnitValue must be represented in the base unit type
   Standard_EXPORT static void SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                            const double             theUnitValue,
-                                            const UnitsMethods_LengthUnit   theBaseUnit);
+                                            const double                         theUnitValue,
+                                            const UnitsMethods_LengthUnit        theBaseUnit);
 
 public:
   Standard_EXPORT XCAFDoc_DocumentTool();
@@ -183,8 +183,7 @@ public:
   Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! To init this derived attribute after the attribute restore using the base restore-methods
-  Standard_EXPORT bool AfterRetrieval(const bool forceIt = false)
-    override;
+  Standard_EXPORT bool AfterRetrieval(const bool forceIt = false) override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_DocumentTool, TDataStd_GenericEmpty)
 };

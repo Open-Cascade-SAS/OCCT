@@ -47,14 +47,14 @@ public:
   //! - aGridSpacing : Grid spacing
   //! - pointsX      : No. of points/lines in X Direction
   //! - pointsY      : No. of points/lines in Y Direction
-  Standard_EXPORT void Init(const int nbProps,
-                            const int finite,
-                            const int line,
-                            const int weighted,
-                            const gp_XY&           aGridPoint,
-                            const gp_XY&           aGridSpacing,
-                            const int pointsX,
-                            const int pointsY);
+  Standard_EXPORT void Init(const int    nbProps,
+                            const int    finite,
+                            const int    line,
+                            const int    weighted,
+                            const gp_XY& aGridPoint,
+                            const gp_XY& aGridSpacing,
+                            const int    pointsX,
+                            const int    pointsY);
 
   //! returns the number of property values in <me>.
   Standard_EXPORT int NbPropertyValues() const;
@@ -91,14 +91,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_UniformRectGrid, IGESData_IGESEntity)
 
 private:
-  int theNbPropertyValues;
-  int isItFinite;
-  int isItLine;
-  int isItWeighted;
-  gp_XY            theGridPoint;
-  gp_XY            theGridSpacing;
-  int theNbPointsX;
-  int theNbPointsY;
+  int   theNbPropertyValues;
+  int   isItFinite;
+  int   isItLine;
+  int   isItWeighted;
+  gp_XY theGridPoint;
+  gp_XY theGridSpacing;
+  int   theNbPointsX;
+  int   theNbPointsY;
 };
 
 #endif // _IGESGraph_UniformRectGrid_HeaderFile

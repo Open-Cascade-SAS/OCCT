@@ -81,8 +81,7 @@ int IGESDefs_AssociativityDef::NbItemsPerClass(const int ClassNum) const
   return theNbItemsPerClass->Value(ClassNum);
 }
 
-int IGESDefs_AssociativityDef::Item(const int ClassNum,
-                                                 const int ItemNum) const
+int IGESDefs_AssociativityDef::Item(const int ClassNum, const int ItemNum) const
 {
   return theItems->Value(ClassNum)->Value(ItemNum);
 }

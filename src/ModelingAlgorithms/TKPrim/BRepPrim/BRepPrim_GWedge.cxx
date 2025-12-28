@@ -36,11 +36,11 @@
 static const int num[6]    = {0, 1, 2, 3, 4, 5};
 static const int val[6]    = {0, 4, 0, 2, 0, 1};
 static const int tab[6][6] = {{-1, -1, 0, 1, 8, 9},
-                                           {-1, -1, 2, 3, 10, 11},
-                                           {0, 2, -1, -1, 4, 5},
-                                           {1, 3, -1, -1, 6, 7},
-                                           {8, 10, 4, 6, -1, -1},
-                                           {9, 11, 5, 7, -1, -1}};
+                              {-1, -1, 2, 3, 10, 11},
+                              {0, 2, -1, -1, 4, 5},
+                              {1, 3, -1, -1, 6, 7},
+                              {8, 10, 4, 6, -1, -1},
+                              {9, 11, 5, 7, -1, -1}};
 
 //=======================================================================
 // function : BRepPrim_Wedge_NumDir1
@@ -57,8 +57,7 @@ static int BRepPrim_Wedge_NumDir1(const BRepPrim_Direction d1)
 // purpose  : when giving two directions return the range of the edge
 //=======================================================================
 
-static int BRepPrim_Wedge_NumDir2(const BRepPrim_Direction d1,
-                                               const BRepPrim_Direction d2)
+static int BRepPrim_Wedge_NumDir2(const BRepPrim_Direction d1, const BRepPrim_Direction d2)
 {
   int i1 = BRepPrim_Wedge_NumDir1(d1);
   int i2 = BRepPrim_Wedge_NumDir1(d2);
@@ -73,8 +72,8 @@ static int BRepPrim_Wedge_NumDir2(const BRepPrim_Direction d1,
 //=======================================================================
 
 static int BRepPrim_Wedge_NumDir3(const BRepPrim_Direction d1,
-                                               const BRepPrim_Direction d2,
-                                               const BRepPrim_Direction d3)
+                                  const BRepPrim_Direction d2,
+                                  const BRepPrim_Direction d3)
 {
   int i1 = BRepPrim_Wedge_NumDir1(d1);
   int i2 = BRepPrim_Wedge_NumDir1(d2);
@@ -89,10 +88,7 @@ static int BRepPrim_Wedge_NumDir3(const BRepPrim_Direction d1,
 // purpose  : raise Standard_DomainError if something was built
 //=======================================================================
 
-static void BRepPrim_Wedge_Check(const bool V[],
-                                 const bool E[],
-                                 const bool W[],
-                                 const bool F[])
+static void BRepPrim_Wedge_Check(const bool V[], const bool E[], const bool W[], const bool F[])
 {
   int i;
   for (i = 0; i < NBVERTICES; i++)
@@ -114,11 +110,7 @@ static void BRepPrim_Wedge_Check(const bool V[],
 // purpose  : Set arrays to false
 //=======================================================================
 
-static void BRepPrim_Wedge_Init(bool& S,
-                                bool  V[],
-                                bool  E[],
-                                bool  W[],
-                                bool  F[])
+static void BRepPrim_Wedge_Init(bool& S, bool V[], bool E[], bool W[], bool F[])
 {
   int i;
   S = false;
@@ -156,9 +148,9 @@ BRepPrim_GWedge::BRepPrim_GWedge()
 
 BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
                                  const gp_Ax2&           Axes,
-                                 const double     dx,
-                                 const double     dy,
-                                 const double     dz)
+                                 const double            dx,
+                                 const double            dy,
+                                 const double            dz)
     : myBuilder(B),
       myAxes(Axes),
       XMin(0),
@@ -184,10 +176,10 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
 
 BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
                                  const gp_Ax2&           Axes,
-                                 const double     dx,
-                                 const double     dy,
-                                 const double     dz,
-                                 const double     ltx)
+                                 const double            dx,
+                                 const double            dy,
+                                 const double            dz,
+                                 const double            ltx)
     : myBuilder(B),
       myAxes(Axes),
       XMin(0),
@@ -216,16 +208,16 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
 
 BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
                                  const gp_Ax2&           Axes,
-                                 const double     xmin,
-                                 const double     ymin,
-                                 const double     zmin,
-                                 const double     z2min,
-                                 const double     x2min,
-                                 const double     xmax,
-                                 const double     ymax,
-                                 const double     zmax,
-                                 const double     z2max,
-                                 const double     x2max)
+                                 const double            xmin,
+                                 const double            ymin,
+                                 const double            zmin,
+                                 const double            z2min,
+                                 const double            x2min,
+                                 const double            xmax,
+                                 const double            ymax,
+                                 const double            zmax,
+                                 const double            z2max,
+                                 const double            x2max)
     : myBuilder(B),
       myAxes(Axes),
       XMin(xmin),
@@ -522,9 +514,9 @@ const TopoDS_Face& BRepPrim_GWedge::Face(const BRepPrim_Direction d1)
         break;
     };
 
-    gp_Lin        L;
-    gp_Dir        DX = P.XAxis().Direction();
-    gp_Dir        DY = P.YAxis().Direction();
+    gp_Lin L;
+    gp_Dir DX = P.XAxis().Direction();
+    gp_Dir DY = P.YAxis().Direction();
     double U, V, DU, DV;
     if (HasEdge(d1, dd4))
     {
@@ -684,12 +676,10 @@ const TopoDS_Wire& BRepPrim_GWedge::Wire(const BRepPrim_Direction d1)
 
 //=================================================================================================
 
-bool BRepPrim_GWedge::HasEdge(const BRepPrim_Direction d1,
-                                          const BRepPrim_Direction d2) const
+bool BRepPrim_GWedge::HasEdge(const BRepPrim_Direction d1, const BRepPrim_Direction d2) const
 {
-  bool state =
-    !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] || myInfinite[BRepPrim_Wedge_NumDir1(d2)]);
-  int i = BRepPrim_Wedge_NumDir2(d1, d2);
+  bool state = !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] || myInfinite[BRepPrim_Wedge_NumDir1(d2)]);
+  int  i     = BRepPrim_Wedge_NumDir2(d1, d2);
   if (i == 6 || i == 7)
     state = state && (X2Max != X2Min);
   else if (i == 1 || i == 3)
@@ -931,8 +921,8 @@ const TopoDS_Edge& BRepPrim_GWedge::Edge(const BRepPrim_Direction d1, const BRep
 //=================================================================================================
 
 bool BRepPrim_GWedge::HasVertex(const BRepPrim_Direction d1,
-                                            const BRepPrim_Direction d2,
-                                            const BRepPrim_Direction d3) const
+                                const BRepPrim_Direction d2,
+                                const BRepPrim_Direction d3) const
 {
   return !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] || myInfinite[BRepPrim_Wedge_NumDir1(d2)]
            || myInfinite[BRepPrim_Wedge_NumDir1(d3)]);

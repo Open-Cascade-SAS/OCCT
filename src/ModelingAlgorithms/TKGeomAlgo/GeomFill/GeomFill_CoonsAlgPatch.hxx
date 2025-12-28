@@ -47,7 +47,8 @@ public:
   Standard_EXPORT void Func(occ::handle<Law_Function>& f1, occ::handle<Law_Function>& f2) const;
 
   //! Set the blending functions.
-  Standard_EXPORT void SetFunc(const occ::handle<Law_Function>& f1, const occ::handle<Law_Function>& f2);
+  Standard_EXPORT void SetFunc(const occ::handle<Law_Function>& f1,
+                               const occ::handle<Law_Function>& f2);
 
   //! Computes the value on the algorithmic patch at
   //! parameters U and V.
@@ -76,7 +77,7 @@ public:
 
 private:
   occ::handle<GeomFill_Boundary> bound[4];
-  gp_Pnt                    c[4];
+  gp_Pnt                         c[4];
   occ::handle<Law_Function>      a[2];
 };
 

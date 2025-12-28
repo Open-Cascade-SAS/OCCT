@@ -25,15 +25,11 @@
 #include <Storage_Root.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Storage_Root.hxx>
 #include <Storage_Schema.hxx>
 #include <Storage_StreamWriteError.hxx>
 #include <Storage_TypeData.hxx>
 #include <Storage_TypedCallBack.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
@@ -155,8 +151,8 @@ void Storage_BucketOfPersistent::Append(const occ::handle<Standard_Persistent>& 
 
   if (myNumberOfBucket > myNumberOfBucketAllocated)
   {
-    size_t e = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
-    myBuckets       = (Storage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
+    size_t e  = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
+    myBuckets = (Storage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
     myNumberOfBucketAllocated *= 2;
   }
 
@@ -317,10 +313,10 @@ void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
 
   // add all the persistent to write...
   //
-  int            posfrom, posto;
-  occ::handle<Standard_Persistent> p;
-  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>>  plist;
-  TCollection_AsciiString     errorContext("AddPersistent");
+  int                                                           posfrom, posto;
+  occ::handle<Standard_Persistent>                              p;
+  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> plist;
+  TCollection_AsciiString                                       errorContext("AddPersistent");
   Storage_Schema::ISetCurrentData(aData);
 
   occ::handle<Storage_InternalData> iData = aData->InternalData();
@@ -390,12 +386,14 @@ void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
       theDriver->BeginWriteTypeSection();
       len = aData->NumberOfTypes();
 
-      occ::handle<NCollection_HArray1<occ::handle<Storage_CallBack>>> WFunc = new NCollection_HArray1<occ::handle<Storage_CallBack>>(1, len);
+      occ::handle<NCollection_HArray1<occ::handle<Storage_CallBack>>> WFunc =
+        new NCollection_HArray1<occ::handle<Storage_CallBack>>(1, len);
 
       theDriver->SetTypeSectionSize(len);
 
-      NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator cbit(iData->myTypeBinding);
-      occ::handle<Storage_TypedCallBack>          atcallBack;
+      NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator
+                                         cbit(iData->myTypeBinding);
+      occ::handle<Storage_TypedCallBack> atcallBack;
 
       for (; cbit.More(); cbit.Next())
       {
@@ -487,7 +485,7 @@ void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
 // purpose  : add two functions to the callback list
 //=======================================================================
 
-void Storage_Schema::AddReadUnknownTypeCallBack(const TCollection_AsciiString&  aTypeName,
+void Storage_Schema::AddReadUnknownTypeCallBack(const TCollection_AsciiString&       aTypeName,
                                                 const occ::handle<Storage_CallBack>& aCallBack)
 {
   if (!aCallBack.IsNull())
@@ -517,10 +515,13 @@ void Storage_Schema::RemoveReadUnknownTypeCallBack(const TCollection_AsciiString
 //           callback.
 //=======================================================================
 
-occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_Schema::InstalledCallBackList() const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> Storage_Schema::InstalledCallBackList()
+  const
 {
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator it(myCallBack);
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> result = new NCollection_HSequence<TCollection_AsciiString>;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>::Iterator it(
+    myCallBack);
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> result =
+    new NCollection_HSequence<TCollection_AsciiString>;
 
   for (; it.More(); it.Next())
   {
@@ -608,7 +609,7 @@ occ::handle<Storage_CallBack> Storage_Schema::DefaultCallBack() const
 
 //=================================================================================================
 
-void Storage_Schema::BindType(const TCollection_AsciiString&  aTypeName,
+void Storage_Schema::BindType(const TCollection_AsciiString&       aTypeName,
                               const occ::handle<Storage_CallBack>& aCallBack) const
 {
   if (!HasTypeBinding(aTypeName))
@@ -625,7 +626,8 @@ void Storage_Schema::BindType(const TCollection_AsciiString&  aTypeName,
 
 //=================================================================================================
 
-occ::handle<Storage_CallBack> Storage_Schema::TypeBinding(const TCollection_AsciiString& aTypeName) const
+occ::handle<Storage_CallBack> Storage_Schema::TypeBinding(
+  const TCollection_AsciiString& aTypeName) const
 {
   occ::handle<Storage_CallBack> result;
 
@@ -642,7 +644,7 @@ occ::handle<Storage_CallBack> Storage_Schema::TypeBinding(const TCollection_Asci
 //=================================================================================================
 
 bool Storage_Schema::AddPersistent(const occ::handle<Standard_Persistent>& sp,
-                                               const char*             tName) const
+                                   const char*                             tName) const
 {
   bool result = false;
 
@@ -652,9 +654,9 @@ bool Storage_Schema::AddPersistent(const occ::handle<Standard_Persistent>& sp,
 
     if (sp->_typenum == 0)
     {
-      int               aTypenum;
+      int                            aTypenum;
       static TCollection_AsciiString aTypeName;
-      aTypeName                      = tName;
+      aTypeName                           = tName;
       occ::handle<Storage_TypeData> tData = Storage_Schema::ICurrentData()->TypeData();
 
       aTypenum = iData->myTypeBinding.Find(aTypeName)->Index();
@@ -703,11 +705,11 @@ void Storage_Schema::Clear() const
 // containing migration types table: oldtype - newtype
 //=======================================================================
 bool Storage_Schema::CheckTypeMigration(const TCollection_AsciiString& oldName,
-                                                    TCollection_AsciiString&       newName)
+                                        TCollection_AsciiString&       newName)
 {
-  static bool        isChecked(false);
+  static bool                    isChecked(false);
   static DataMapOfAStringAString aDMap;
-  bool               aMigration(false);
+  bool                           aMigration(false);
 
   if (!isChecked)
   {
@@ -725,7 +727,7 @@ bool Storage_Schema::CheckTypeMigration(const TCollection_AsciiString& oldName,
       if (aFile.IsOpen() && aFile.IsReadable())
       {
         TCollection_AsciiString aLine;
-        int        aNbReaded(0);
+        int                     aNbReaded(0);
         for (;;)
         {
           aFile.ReadLine(aLine, 80, aNbReaded);

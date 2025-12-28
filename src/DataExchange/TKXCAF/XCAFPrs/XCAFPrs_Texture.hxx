@@ -27,7 +27,7 @@ class XCAFPrs_Texture : public Graphic3d_Texture2D
 public:
   //! Constructor.
   Standard_EXPORT XCAFPrs_Texture(const occ::handle<Image_Texture>& theImageSource,
-                                  const Graphic3d_TextureUnit  theUnit);
+                                  const Graphic3d_TextureUnit       theUnit);
 
   //! Image reader.
   Standard_EXPORT virtual occ::handle<Image_CompressedPixMap> GetCompressedImage(

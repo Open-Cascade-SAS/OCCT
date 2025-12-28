@@ -68,11 +68,11 @@ void InitEpsCurv(double& epsnl,
 
 static int surfaceCcontinuity(Draw_Interpretor& di, int n, const char** a)
 {
-  double    U1, U2, V1, V2, u1, u2, v1, v2;
-  GeomAbs_Shape    TypeCont;
-  int ord;
-  bool b1, b2, b3, b4;
-  double    epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
+  double        U1, U2, V1, V2, u1, u2, v1, v2;
+  GeomAbs_Shape TypeCont;
+  int           ord;
+  bool          b1, b2, b3, b4;
+  double        epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
   if (n < 8)
     return 1;
 
@@ -193,11 +193,11 @@ static int surfaceCcontinuity(Draw_Interpretor& di, int n, const char** a)
 
 static int surfaceGcontinuity(Draw_Interpretor& di, int n, const char** a)
 {
-  double    U1, U2, V1, V2, u1, u2, v1, v2;
-  GeomAbs_Shape    TypeCont;
-  int ord;
-  bool b1, b2, b3, b4;
-  double    epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
+  double        U1, U2, V1, V2, u1, u2, v1, v2;
+  GeomAbs_Shape TypeCont;
+  int           ord;
+  bool          b1, b2, b3, b4;
+  double        epsnl, epsC0, epsC1, epsC2, epsG1, maxlen, perce;
 
   if (n < 8)
     return 1;
@@ -301,11 +301,11 @@ static int surfaceGcontinuity(Draw_Interpretor& di, int n, const char** a)
 
 static int curveGcontinuity(Draw_Interpretor& di, int n, const char** a)
 {
-  double    U1, U2, u1, u2;
-  GeomAbs_Shape    TypeCont;
-  int ord;
-  bool b1, b2;
-  double    epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
+  double        U1, U2, u1, u2;
+  GeomAbs_Shape TypeCont;
+  int           ord;
+  bool          b1, b2;
+  double        epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
   if (n < 6)
     return 1;
 
@@ -408,11 +408,11 @@ static int curveGcontinuity(Draw_Interpretor& di, int n, const char** a)
 
 static int curveCcontinuity(Draw_Interpretor& di, int n, const char** a)
 {
-  double    U1, U2, u1, u2;
-  GeomAbs_Shape    TypeCont;
-  int ord;
-  bool b1, b2;
-  double    epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
+  double        U1, U2, u1, u2;
+  GeomAbs_Shape TypeCont;
+  int           ord;
+  bool          b1, b2;
+  double        epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, maxlen, percent;
   if (n < 6)
     return 1;
 

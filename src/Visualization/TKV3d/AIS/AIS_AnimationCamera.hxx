@@ -27,7 +27,7 @@ class AIS_AnimationCamera : public AIS_Animation
 public:
   //! Main constructor.
   Standard_EXPORT AIS_AnimationCamera(const TCollection_AsciiString& theAnimationName,
-                                      const occ::handle<V3d_View>&        theView);
+                                      const occ::handle<V3d_View>&   theView);
 
   //! Return the target view.
   const occ::handle<V3d_View>& View() const { return myView; }

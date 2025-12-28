@@ -31,7 +31,8 @@ class TDataStd_HDataMapOfStringReal : public Standard_Transient
 public:
   Standard_EXPORT TDataStd_HDataMapOfStringReal(const int NbBuckets = 1);
 
-  Standard_EXPORT TDataStd_HDataMapOfStringReal(const NCollection_DataMap<TCollection_ExtendedString, double>& theOther);
+  Standard_EXPORT TDataStd_HDataMapOfStringReal(
+    const NCollection_DataMap<TCollection_ExtendedString, double>& theOther);
 
   const NCollection_DataMap<TCollection_ExtendedString, double>& Map() const { return myMap; }
 

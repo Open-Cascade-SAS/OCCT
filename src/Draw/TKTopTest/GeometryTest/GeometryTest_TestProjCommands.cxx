@@ -37,12 +37,12 @@ static int xdistcc(Draw_Interpretor&, int n, const char** a)
     return 0;
   }
 
-  int      i, aNbP, iSize;
-  double         aD, aT, aT1, aT2, dT;
-  gp_Pnt                aP1, aP2;
+  int                        i, aNbP, iSize;
+  double                     aD, aT, aT1, aT2, dT;
+  gp_Pnt                     aP1, aP2;
   occ::handle<Geom_Curve>    aC1, aC2;
   occ::handle<Draw_Marker3D> aMr;
-  Draw_Color            aColor(Draw_rouge);
+  Draw_Color                 aColor(Draw_rouge);
 
   aC1 = DrawTrSurf::GetCurve(a[1]);
   if (aC1.IsNull())
@@ -112,14 +112,14 @@ static int xdistc2dc2dss(Draw_Interpretor&, int n, const char** a)
     return 0;
   }
 
-  int      i, aNbP, iSize;
-  double         aD, aT, aT1, aT2, dT;
-  gp_Pnt                aP1, aP2;
-  gp_Pnt2d              aP2d1, aP2d2;
+  int                        i, aNbP, iSize;
+  double                     aD, aT, aT1, aT2, dT;
+  gp_Pnt                     aP1, aP2;
+  gp_Pnt2d                   aP2d1, aP2d2;
   occ::handle<Geom2d_Curve>  aC2d1, aC2d2;
   occ::handle<Geom_Surface>  aS1, aS2;
   occ::handle<Draw_Marker3D> aMr;
-  Draw_Color            aColor(Draw_rouge);
+  Draw_Color                 aColor(Draw_rouge);
 
   aC2d1 = DrawTrSurf::GetCurve2d(a[1]);
   if (aC2d1.IsNull())
@@ -206,15 +206,15 @@ static int xdistcc2ds(Draw_Interpretor&, int n, const char** a)
     return 0;
   }
 
-  int      i, aNbP, iSize;
-  double         aD, aT, aT1, aT2, dT;
-  gp_Pnt                aP, aPOnS;
-  gp_Pnt2d              aP2d;
+  int                        i, aNbP, iSize;
+  double                     aD, aT, aT1, aT2, dT;
+  gp_Pnt                     aP, aPOnS;
+  gp_Pnt2d                   aP2d;
   occ::handle<Geom_Curve>    aC;
   occ::handle<Geom2d_Curve>  aC2d;
   occ::handle<Geom_Surface>  aS;
   occ::handle<Draw_Marker3D> aMr;
-  Draw_Color            aColor(Draw_rouge);
+  Draw_Color                 aColor(Draw_rouge);
 
   aC = DrawTrSurf::GetCurve(a[1]);
   if (aC.IsNull())
@@ -299,14 +299,14 @@ static int xdistcs(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  bool           bRet;
-  int           i, aNbP, iSize;
-  double              aTol, aD, aT, aT1, aT2, dT;
+  bool                       bRet;
+  int                        i, aNbP, iSize;
+  double                     aTol, aD, aT, aT1, aT2, dT;
   gp_Pnt                     aP;
-  occ::handle<Geom_Curve>         aC;
-  occ::handle<Geom_Surface>       aS;
+  occ::handle<Geom_Curve>    aC;
+  occ::handle<Geom_Surface>  aS;
   GeomAPI_ProjectPointOnSurf aPPS;
-  occ::handle<Draw_Marker3D>      aMr;
+  occ::handle<Draw_Marker3D> aMr;
   Draw_Color                 aColor(Draw_rouge);
   //
   aTol = 1.e-7;

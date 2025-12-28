@@ -52,10 +52,10 @@ public:
   //! to find the zeros.
   Standard_EXPORT Extrema_GenExtSS(const Adaptor3d_Surface& S1,
                                    const Adaptor3d_Surface& S2,
-                                   const int   NbU,
-                                   const int   NbV,
-                                   const double      Tol1,
-                                   const double      Tol2);
+                                   const int                NbU,
+                                   const int                NbV,
+                                   const double             Tol1,
+                                   const double             Tol2);
 
   //! It calculates all the distances.
   //! The function F(u,v)=distance(P,S(u,v)) has an
@@ -66,32 +66,32 @@ public:
   //! to find the zeros.
   Standard_EXPORT Extrema_GenExtSS(const Adaptor3d_Surface& S1,
                                    const Adaptor3d_Surface& S2,
-                                   const int   NbU,
-                                   const int   NbV,
-                                   const double      U1min,
-                                   const double      U1sup,
-                                   const double      V1min,
-                                   const double      V1sup,
-                                   const double      U2min,
-                                   const double      U2sup,
-                                   const double      V2min,
-                                   const double      V2sup,
-                                   const double      Tol1,
-                                   const double      Tol2);
+                                   const int                NbU,
+                                   const int                NbV,
+                                   const double             U1min,
+                                   const double             U1sup,
+                                   const double             V1min,
+                                   const double             V1sup,
+                                   const double             U2min,
+                                   const double             U2sup,
+                                   const double             V2min,
+                                   const double             V2sup,
+                                   const double             Tol1,
+                                   const double             Tol2);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S2,
-                                  const int   NbU,
-                                  const int   NbV,
-                                  const double      Tol2);
+                                  const int                NbU,
+                                  const int                NbV,
+                                  const double             Tol2);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S2,
-                                  const int   NbU,
-                                  const int   NbV,
-                                  const double      U2min,
-                                  const double      U2sup,
-                                  const double      V2min,
-                                  const double      V2sup,
-                                  const double      Tol2);
+                                  const int                NbU,
+                                  const int                NbV,
+                                  const double             U2min,
+                                  const double             U2sup,
+                                  const double             V2min,
+                                  const double             V2sup,
+                                  const double             Tol2);
 
   //! the algorithm is done with S1
   //! An exception is raised if the fields have not
@@ -102,11 +102,11 @@ public:
   //! An exception is raised if the fields have not
   //! been initialized.
   Standard_EXPORT void Perform(const Adaptor3d_Surface& S1,
-                               const double      U1min,
-                               const double      U1sup,
-                               const double      V1min,
-                               const double      V1sup,
-                               const double      Tol1);
+                               const double             U1min,
+                               const double             U1sup,
+                               const double             V1min,
+                               const double             V1sup,
+                               const double             Tol1);
 
   //! Returns True if the distances are found.
   Standard_EXPORT bool IsDone() const;
@@ -125,28 +125,28 @@ public:
 
 private:
   // disallow copies
-  Extrema_GenExtSS(const Extrema_GenExtSS&) = delete;
+  Extrema_GenExtSS(const Extrema_GenExtSS&)            = delete;
   Extrema_GenExtSS& operator=(const Extrema_GenExtSS&) = delete;
 
 private:
-  bool            myDone;
-  bool            myInit;
-  double               myu1min;
-  double               myu1sup;
-  double               myv1min;
-  double               myv1sup;
-  double               myu2min;
-  double               myu2sup;
-  double               myv2min;
-  double               myv2sup;
-  int            myusample;
-  int            myvsample;
+  bool                                     myDone;
+  bool                                     myInit;
+  double                                   myu1min;
+  double                                   myu1sup;
+  double                                   myv1min;
+  double                                   myv1sup;
+  double                                   myu2min;
+  double                                   myu2sup;
+  double                                   myv2min;
+  double                                   myv2sup;
+  int                                      myusample;
+  int                                      myvsample;
   occ::handle<NCollection_HArray2<gp_Pnt>> mypoints1;
   occ::handle<NCollection_HArray2<gp_Pnt>> mypoints2;
-  double               mytol1;
-  double               mytol2;
-  Extrema_FuncExtSS           myF;
-  const Adaptor3d_Surface*    myS2;
+  double                                   mytol1;
+  double                                   mytol2;
+  Extrema_FuncExtSS                        myF;
+  const Adaptor3d_Surface*                 myS2;
 };
 
 #endif // _Extrema_GenExtSS_HeaderFile

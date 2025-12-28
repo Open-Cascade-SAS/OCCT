@@ -46,8 +46,8 @@ void BOPAlgo_MakerVolume::CheckData()
 void BOPAlgo_MakerVolume::Perform(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Performing MakeVolume operation", 10);
-  double         anInterPart = myIntersect ? 9 : 0.5;
-  double         aBuildPart  = 10. - anInterPart;
+  double                anInterPart = myIntersect ? 9 : 0.5;
+  double                aBuildPart  = 10. - anInterPart;
 
   GetReport()->Clear();
   //
@@ -60,17 +60,18 @@ void BOPAlgo_MakerVolume::Perform(const Message_ProgressRange& theRange)
     }
   }
   //
-  occ::handle<NCollection_BaseAllocator> aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
-  BOPAlgo_PaveFiller*               pPF        = new BOPAlgo_PaveFiller(aAllocator);
+  occ::handle<NCollection_BaseAllocator> aAllocator =
+    NCollection_BaseAllocator::CommonBaseAllocator();
+  BOPAlgo_PaveFiller* pPF = new BOPAlgo_PaveFiller(aAllocator);
   //
   if (!myIntersect)
   {
     // if there is no need to intersect the arguments, then it is necessary
     // to create the compound of them and use it as one argument
-    TopoDS_Compound                    anArgs;
-    BRep_Builder                       aBB;
+    TopoDS_Compound                          anArgs;
+    BRep_Builder                             aBB;
     NCollection_List<TopoDS_Shape>::Iterator aIt;
-    NCollection_List<TopoDS_Shape>               aLS;
+    NCollection_List<TopoDS_Shape>           aLS;
     //
     aBB.MakeCompound(anArgs);
     aIt.Initialize(myArguments);
@@ -162,8 +163,8 @@ void BOPAlgo_MakerVolume::PerformInternal1(const BOPAlgo_PaveFiller&    theFille
     return;
   }
   //
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aBoxFaces;
-  NCollection_List<TopoDS_Shape> aLSR;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aBoxFaces;
+  NCollection_List<TopoDS_Shape>                         aLSR;
   //
   // 5. Create bounding box
   MakeBox(aBoxFaces);
@@ -215,9 +216,9 @@ void BOPAlgo_MakerVolume::fillPISteps(BOPAlgo_PISteps& theSteps) const
 void BOPAlgo_MakerVolume::CollectFaces()
 {
   //
-  int                   i, aNbShapes;
-  NCollection_List<TopoDS_Shape>::Iterator aIt;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMFence;
+  int                                                    i, aNbShapes;
+  NCollection_List<TopoDS_Shape>::Iterator               aIt;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
   //
   aNbShapes = myDS->NbSourceShapes();
   for (i = 0; i < aNbShapes; ++i)
@@ -254,7 +255,8 @@ void BOPAlgo_MakerVolume::CollectFaces()
 
 //=================================================================================================
 
-void BOPAlgo_MakerVolume::MakeBox(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces)
+void BOPAlgo_MakerVolume::MakeBox(
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces)
 {
   //
   double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, anExt;
@@ -278,8 +280,8 @@ void BOPAlgo_MakerVolume::MakeBox(NCollection_Map<TopoDS_Shape, TopTools_ShapeMa
 
 //=================================================================================================
 
-void BOPAlgo_MakerVolume::BuildSolids(NCollection_List<TopoDS_Shape>&        theLSR,
-                                      const Message_ProgressRange& theRange)
+void BOPAlgo_MakerVolume::BuildSolids(NCollection_List<TopoDS_Shape>& theLSR,
+                                      const Message_ProgressRange&    theRange)
 {
   BOPAlgo_BuilderSolid aBS;
   //
@@ -300,13 +302,14 @@ void BOPAlgo_MakerVolume::BuildSolids(NCollection_List<TopoDS_Shape>&        the
 
 //=================================================================================================
 
-void BOPAlgo_MakerVolume::RemoveBox(NCollection_List<TopoDS_Shape>&      theLSR,
-                                    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces)
+void BOPAlgo_MakerVolume::RemoveBox(
+  NCollection_List<TopoDS_Shape>&                               theLSR,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces)
 {
   //
   NCollection_List<TopoDS_Shape>::Iterator aIt;
-  TopExp_Explorer                    aExp;
-  bool                   bFound;
+  TopExp_Explorer                          aExp;
+  bool                                     bFound;
   //
   bFound = false;
   aIt.Initialize(theLSR);
@@ -342,7 +345,7 @@ void BOPAlgo_MakerVolume::BuildShape(const NCollection_List<TopoDS_Shape>& theLS
   }
   else
   {
-    BRep_Builder                       aBB;
+    BRep_Builder                             aBB;
     NCollection_List<TopoDS_Shape>::Iterator aIt;
     //
     aIt.Initialize(theLSR);

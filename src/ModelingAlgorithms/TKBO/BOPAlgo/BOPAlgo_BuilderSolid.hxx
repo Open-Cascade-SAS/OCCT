@@ -101,7 +101,10 @@ public: //! @name Performing the operation
 public: //! @name Getting the bounding boxes of the created solids
   //! For classification purposes the algorithm builds the bounding boxes
   //! for all created solids. This method returns the data map of solid - box pairs.
-  const NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>& GetBoxesMap() const { return myBoxes; }
+  const NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>& GetBoxesMap() const
+  {
+    return myBoxes;
+  }
 
 protected: //! @name Protected methods performing the operation
   //! Collect the faces:
@@ -109,30 +112,28 @@ protected: //! @name Protected methods performing the operation
   //! - that are alone but given twice with different orientation.
   //! These faces will be put into the map *myShapesToAvoid* and will be
   //! avoided in shells construction, but will be classified later on.
-  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange)
-    override;
+  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) override;
 
   //! Build all possible closed shells from the given faces.
   //! The method fills the following maps:
   //! - myLoops - Created closed shells;
   //! - myLoopsInternal - The shells created from unused faces.
-  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange)
-    override;
+  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange) override;
 
   //! Classifies the created shells on the Holes and Growths.
   //! Creates the solids from the Growths shells.
   //! Puts the Hole shells into the closest Growths solids.
-  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange)
-    override;
+  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange) override;
 
   //! Classifies the unused faces relatively the created solids.
   //! Puts the classified faces into the closest solids as internal shells.
   //! Warns the user about unclassified faces if any.
-  Standard_EXPORT virtual void PerformInternalShapes(const Message_ProgressRange& theRange)
-    override;
+  Standard_EXPORT virtual void PerformInternalShapes(
+    const Message_ProgressRange& theRange) override;
 
 private:
-  NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> myBoxes; // Boxes of the produced solids
+  NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>
+    myBoxes; // Boxes of the produced solids
 };
 
 #endif // _BOPAlgo_BuilderSolid_HeaderFile

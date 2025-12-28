@@ -32,7 +32,8 @@ occ::handle<StepShape_BooleanResult> StepShape_CsgSelect::BooleanResult() const
   return theBooleanResult;
 }
 
-void StepShape_CsgSelect::SetBooleanResult(const occ::handle<StepShape_BooleanResult>& aBooleanResult)
+void StepShape_CsgSelect::SetBooleanResult(
+  const occ::handle<StepShape_BooleanResult>& aBooleanResult)
 {
   theBooleanResult = aBooleanResult;
   theTypeOfContent = 1;

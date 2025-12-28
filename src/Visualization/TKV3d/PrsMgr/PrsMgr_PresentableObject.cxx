@@ -64,7 +64,9 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject(const PrsMgr_TypeOfPresentati
 
 PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     // should never happen - assertion can be used
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
@@ -72,7 +74,9 @@ PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
     aPrs3d->myPresentableObject = NULL;
   }
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(myChildren); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(myChildren);
+       anIter.More();
+       anIter.Next())
   {
     anIter.Value()->SetCombinedParentTransform(occ::handle<TopLoc_Datum3D>());
     anIter.Value()->myParent = NULL;
@@ -83,7 +87,7 @@ PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
 
 void PrsMgr_PresentableObject::Fill(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                     const occ::handle<PrsMgr_Presentation>&        thePrs,
-                                    const int                    theMode)
+                                    const int                                      theMode)
 {
   const occ::handle<Prs3d_Presentation>& aStruct3d = thePrs;
   Compute(thePrsMgr, aStruct3d, theMode);
@@ -105,7 +109,9 @@ void PrsMgr_PresentableObject::computeHLR(const occ::handle<Graphic3d_Camera>&,
 
 bool PrsMgr_PresentableObject::ToBeUpdated(bool theToIncludeHidden) const
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     if (aModedPrs->MustBeUpdated())
@@ -131,7 +137,9 @@ bool PrsMgr_PresentableObject::ToBeUpdated(bool theToIncludeHidden) const
 bool PrsMgr_PresentableObject::UpdatePresentations(bool theToIncludeHidden)
 {
   bool hasUpdates = false;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     if (aModedPrs->MustBeUpdated())
@@ -152,7 +160,8 @@ bool PrsMgr_PresentableObject::UpdatePresentations(bool theToIncludeHidden)
 
 void PrsMgr_PresentableObject::Update(int theMode, bool theToClearOther)
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More();)
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();)
   {
     if (aPrsIter.Value()->Mode() == theMode)
     {
@@ -180,7 +189,9 @@ void PrsMgr_PresentableObject::Update(int theMode, bool theToClearOther)
 
 void PrsMgr_PresentableObject::SetToUpdate(int theMode)
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     if (theMode == -1 || aPrsIter.Value()->Mode() == theMode)
     {
@@ -197,7 +208,9 @@ void PrsMgr_PresentableObject::ToBeUpdated(NCollection_List<int>& theOutList) co
 {
   theOutList.Clear();
   NCollection_Map<int> MI(myPresentations.Length());
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     if (aModedPrs->MustBeUpdated() && MI.Add(aModedPrs->Mode()))
@@ -212,7 +225,9 @@ void PrsMgr_PresentableObject::ToBeUpdated(NCollection_List<int>& theOutList) co
 void PrsMgr_PresentableObject::SetTypeOfPresentation(const PrsMgr_TypeOfPresentation3d theType)
 {
   myTypeOfPresentation3d = theType;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs = aPrsIter.Value();
     aPrs->SetVisual(myTypeOfPresentation3d == PrsMgr_TOP_ProjectorDependent ? Graphic3d_TOS_COMPUTED
@@ -238,7 +253,8 @@ void PrsMgr_PresentableObject::ResetTransformation()
 
 //=================================================================================================
 
-void PrsMgr_PresentableObject::SetCombinedParentTransform(const occ::handle<TopLoc_Datum3D>& theTrsf)
+void PrsMgr_PresentableObject::SetCombinedParentTransform(
+  const occ::handle<TopLoc_Datum3D>& theTrsf)
 {
   myCombinedParentTransform = theTrsf;
   UpdateTransformation();
@@ -270,12 +286,15 @@ void PrsMgr_PresentableObject::UpdateTransformation()
     myInvTransformation = myLocalTransformation->Trsf().Inverted();
   }
 
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     aPrsIter.ChangeValue()->SetTransformation(myTransformation);
   }
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aChildIter(myChildren); aChildIter.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aChildIter(myChildren);
+       aChildIter.More();
        aChildIter.Next())
   {
     aChildIter.Value()->SetCombinedParentTransform(myTransformation);
@@ -286,7 +305,9 @@ void PrsMgr_PresentableObject::UpdateTransformation()
 
 void PrsMgr_PresentableObject::recomputeComputed() const
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
     aPrs3d->ReCompute();
@@ -299,7 +320,9 @@ void PrsMgr_PresentableObject::SetTransformPersistence(
   const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   myTransformPersistence = theTrsfPers;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.Value();
     aPrs3d->SetTransformPersistence(myTransformPersistence);
@@ -369,7 +392,9 @@ void PrsMgr_PresentableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
   }
 
   myDrawer->SetZLayer(theLayerId);
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     aModedPrs->SetZLayer(theLayerId);
@@ -427,7 +452,9 @@ void PrsMgr_PresentableObject::SetClipPlanes(
 
 void PrsMgr_PresentableObject::UpdateClipping()
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     aModedPrs->SetClipPlanes(myClipPlanes);
@@ -444,7 +471,9 @@ void PrsMgr_PresentableObject::SetInfiniteState(const bool theFlag)
   }
 
   myInfiniteState = theFlag;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     aModedPrs->SetInfiniteState(theFlag);
@@ -461,7 +490,9 @@ void PrsMgr_PresentableObject::SetMutable(const bool theIsMutable)
   }
 
   myIsMutable = theIsMutable;
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aModedPrs = aPrsIter.Value();
     aModedPrs->SetMutable(theIsMutable);
@@ -513,10 +544,13 @@ void PrsMgr_PresentableObject::SetHilightMode(const int theMode)
 
 void PrsMgr_PresentableObject::SynchronizeAspects()
 {
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.ChangeValue();
-    for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aPrs3d->Groups()); aGroupIter.More();
+    for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aPrs3d->Groups());
+         aGroupIter.More();
          aGroupIter.Next())
     {
       if (!aGroupIter.Value().IsNull())
@@ -529,17 +563,21 @@ void PrsMgr_PresentableObject::SynchronizeAspects()
 
 //=================================================================================================
 
-void PrsMgr_PresentableObject::replaceAspects(const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap)
+void PrsMgr_PresentableObject::replaceAspects(
+  const NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>& theMap)
 {
   if (theMap.IsEmpty())
   {
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.ChangeValue();
-    for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aPrs3d->Groups()); aGroupIter.More();
+    for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(aPrs3d->Groups());
+         aGroupIter.More();
          aGroupIter.Next())
     {
       if (!aGroupIter.Value().IsNull())
@@ -559,7 +597,7 @@ void PrsMgr_PresentableObject::BoundingBox(Bnd_Box& theBndBox)
     if (!myPresentations.IsEmpty())
     {
       const occ::handle<PrsMgr_Presentation>& aPrs3d  = myPresentations.First();
-      const Graphic3d_BndBox3d&          aBndBox = aPrs3d->CStructure()->BoundingBox();
+      const Graphic3d_BndBox3d&               aBndBox = aPrs3d->CStructure()->BoundingBox();
       if (aBndBox.IsValid())
       {
         theBndBox.Update(aBndBox.CornerMin().x(),
@@ -576,7 +614,9 @@ void PrsMgr_PresentableObject::BoundingBox(Bnd_Box& theBndBox)
       return;
     }
 
-    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aPrsIter(myChildren); aPrsIter.More(); aPrsIter.Next())
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator aPrsIter(myChildren);
+         aPrsIter.More();
+         aPrsIter.Next())
     {
       if (const occ::handle<PrsMgr_PresentableObject>& aChild = aPrsIter.Value())
       {
@@ -588,7 +628,9 @@ void PrsMgr_PresentableObject::BoundingBox(Bnd_Box& theBndBox)
     return;
   }
 
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations); aPrsIter.More(); aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(myPresentations);
+       aPrsIter.More();
+       aPrsIter.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.ChangeValue();
     if (aPrs3d->Mode() == myDrawer->DisplayMode())
@@ -668,10 +710,8 @@ void PrsMgr_PresentableObject::UnsetMaterial()
 void PrsMgr_PresentableObject::SetTransparency(const double theValue)
 {
   myDrawer->SetupOwnShadingAspect();
-  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency(
-    float(theValue));
-  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial().SetTransparency(
-    float(theValue));
+  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency(float(theValue));
+  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial().SetTransparency(float(theValue));
   myDrawer->SetTransparency(float(theValue));
 }
 
@@ -713,9 +753,7 @@ bool PrsMgr_PresentableObject::HasPolygonOffsets() const
 
 //=================================================================================================
 
-void PrsMgr_PresentableObject::PolygonOffsets(int&   theMode,
-                                              float& theFactor,
-                                              float& theUnits) const
+void PrsMgr_PresentableObject::PolygonOffsets(int& theMode, float& theFactor, float& theUnits) const
 {
   if (HasPolygonOffsets())
   {
@@ -725,14 +763,14 @@ void PrsMgr_PresentableObject::PolygonOffsets(int&   theMode,
 
 //=================================================================================================
 
-void PrsMgr_PresentableObject::DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth) const
+void PrsMgr_PresentableObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myParent)
 
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator anIterator(myPresentations); anIterator.More();
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator anIterator(myPresentations);
+       anIterator.More();
        anIterator.Next())
   {
     const occ::handle<PrsMgr_Presentation>& aPresentation = anIterator.Value();
@@ -751,7 +789,8 @@ void PrsMgr_PresentableObject::DumpJson(Standard_OStream& theOStream,
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTransformation.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myCombinedParentTransform.get())
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIterator(myChildren); anIterator.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIterator(myChildren);
+       anIterator.More();
        anIterator.Next())
   {
     const occ::handle<PrsMgr_PresentableObject>& aChildObject = anIterator.Value();

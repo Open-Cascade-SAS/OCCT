@@ -30,7 +30,7 @@ RWStepVisual_RWSurfaceStyleRendering::RWStepVisual_RWSurfaceStyleRendering() {}
 
 void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                          num,
+  const int                                            num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepVisual_SurfaceStyleRendering>& ent) const
 {
@@ -68,7 +68,7 @@ void RWStepVisual_RWSurfaceStyleRendering::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleRendering::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepVisual_SurfaceStyleRendering>& ent) const
 {
 
@@ -97,7 +97,7 @@ void RWStepVisual_RWSurfaceStyleRendering::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleRendering::Share(
   const occ::handle<StepVisual_SurfaceStyleRendering>& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   // Own fields of SurfaceStyleRendering

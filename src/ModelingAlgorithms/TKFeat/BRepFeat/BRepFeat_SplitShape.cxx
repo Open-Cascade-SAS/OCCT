@@ -52,8 +52,8 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Right() const
 {
   if (myRight.IsEmpty())
   {
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapOfLeft;
-    NCollection_List<TopoDS_Shape>::Iterator anIterator;
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfLeft;
+    NCollection_List<TopoDS_Shape>::Iterator               anIterator;
     for (anIterator.Initialize(mySShape.Left()); anIterator.More(); anIterator.Next())
     {
       aMapOfLeft.Add(anIterator.Value());

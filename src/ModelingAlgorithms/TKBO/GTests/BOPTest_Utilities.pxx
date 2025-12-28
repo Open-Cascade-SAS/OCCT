@@ -57,7 +57,6 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Real.hxx>
 #include <NCollection_BaseAllocator.hxx>
@@ -100,7 +99,7 @@ public:
   //! Profile command structure
   struct ProfileOperation
   {
-    ProfileCmd                 cmd;
+    ProfileCmd          cmd;
     std::vector<double> params;
 
     ProfileOperation(ProfileCmd c)
@@ -126,13 +125,7 @@ public:
     {
     }
 
-    ProfileOperation(ProfileCmd    c,
-                     double p1,
-                     double p2,
-                     double p3,
-                     double p4,
-                     double p5,
-                     double p6)
+    ProfileOperation(ProfileCmd c, double p1, double p2, double p3, double p4, double p5, double p6)
         : cmd(c),
           params({p1, p2, p3, p4, p5, p6})
     {
@@ -175,8 +168,7 @@ public:
   }
 
   //! Check if shape is effectively empty (very small surface area)
-  static bool IsEmpty(const TopoDS_Shape& theShape,
-                                  const double theTolerance = DefaultTolerance())
+  static bool IsEmpty(const TopoDS_Shape& theShape, const double theTolerance = DefaultTolerance())
   {
     return GetSurfaceArea(theShape) <= theTolerance;
   }
@@ -189,10 +181,7 @@ public:
   }
 
   //! Create box at specific location
-  static TopoDS_Shape CreateBox(const gp_Pnt& theCorner,
-                                double theX,
-                                double theY,
-                                double theZ)
+  static TopoDS_Shape CreateBox(const gp_Pnt& theCorner, double theX, double theY, double theZ)
   {
     BRepPrimAPI_MakeBox aBoxMaker(theCorner, theX, theY, theZ);
     return aBoxMaker.Shape();
@@ -262,7 +251,7 @@ public:
   //! Rotate shape around axis
   static TopoDS_Shape RotateShape(const TopoDS_Shape& theShape,
                                   const gp_Ax1&       theAxis,
-                                  double       theAngle)
+                                  double              theAngle)
   {
     gp_Trsf aTrsf;
     aTrsf.SetRotation(theAxis, theAngle);
@@ -294,8 +283,7 @@ public:
   }
 
   //! Create wire from list of points (closed polygon)
-  static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints,
-                                       bool           theClose = true)
+  static TopoDS_Wire CreatePolygonWire(const std::vector<gp_Pnt>& thePoints, bool theClose = true)
   {
     BRepBuilderAPI_MakePolygon aPolygonMaker;
     for (const gp_Pnt& aPt : thePoints)
@@ -367,11 +355,11 @@ public:
   {
     BRepBuilderAPI_MakeWire aMakeWire;
 
-    gp_Pnt2d         aCurrentPt(0, 0);  // Current point in 2D
-    gp_Vec2d         aCurrentDir(1, 0); // Current direction in 2D
-    bool aFirstSet = false;
-    gp_Pnt2d         aFirstPt(0, 0);
-    gp_Pln           aWorkingPlane = thePlane; // Working plane that can be modified by P command
+    gp_Pnt2d aCurrentPt(0, 0);  // Current point in 2D
+    gp_Vec2d aCurrentDir(1, 0); // Current direction in 2D
+    bool     aFirstSet = false;
+    gp_Pnt2d aFirstPt(0, 0);
+    gp_Pln   aWorkingPlane = thePlane; // Working plane that can be modified by P command
 
     for (const auto& op : theOperations)
     {
@@ -509,8 +497,8 @@ public:
               // Calculate end point
               double aStartAngle =
                 atan2(aCurrentPt.Y() - aCenter.Y(), aCurrentPt.X() - aCenter.X());
-              double aEndAngle = aStartAngle + aAngleRad;
-              gp_Pnt2d      aEndPt(aCenter.X() + aRadius * cos(aEndAngle),
+              double   aEndAngle = aStartAngle + aAngleRad;
+              gp_Pnt2d aEndPt(aCenter.X() + aRadius * cos(aEndAngle),
                               aCenter.Y() + aRadius * sin(aEndAngle));
 
               // Create 3D arc
@@ -573,9 +561,7 @@ public:
   }
 
   //! Create rectangular profile from corner and dimensions
-  static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner,
-                                              double theX,
-                                              double theY)
+  static TopoDS_Wire CreateRectangularProfile(const gp_Pnt& theCorner, double theX, double theY)
   {
     std::vector<gp_Pnt> aPoints;
     aPoints.push_back(theCorner);
@@ -609,9 +595,9 @@ public:
 
   //! Create simple rectangular prism (like TCL profile operations)
   static TopoDS_Shape CreateRectangularPrism(const gp_Pnt& theCorner,
-                                             double theX,
-                                             double theY,
-                                             double theZ)
+                                             double        theX,
+                                             double        theY,
+                                             double        theZ)
   {
     TopoDS_Wire  aWire = CreateRectangularProfile(theCorner, theX, theY);
     TopoDS_Shape aFace = CreateFaceFromWire(aWire);
@@ -621,7 +607,7 @@ public:
   //! Create revolution of a profile around an axis
   static TopoDS_Shape CreateRevolution(const TopoDS_Shape& theProfile,
                                        const gp_Ax1&       theAxis,
-                                       double       theAngle)
+                                       double              theAngle)
   {
     BRepPrimAPI_MakeRevol aRevolMaker(theProfile, theAxis, theAngle);
     EXPECT_TRUE(aRevolMaker.IsDone()) << "Revolution operation failed";
@@ -631,8 +617,8 @@ public:
   //! Get a face from a shape by index (for nexplode simulation)
   static TopoDS_Face GetFaceByIndex(const TopoDS_Shape& theShape, int theIndex)
   {
-    TopExp_Explorer  anExp(theShape, TopAbs_FACE);
-    int aCurrentIndex = 1;
+    TopExp_Explorer anExp(theShape, TopAbs_FACE);
+    int             aCurrentIndex = 1;
 
     while (anExp.More())
     {
@@ -685,9 +671,9 @@ public:
 
   //! Apply translation (equivalent to "ttranslate shape dx dy dz")
   static TopoDS_Shape Translate(const TopoDS_Shape& theShape,
-                                double       theDx,
-                                double       theDy,
-                                double       theDz)
+                                double              theDx,
+                                double              theDy,
+                                double              theDz)
   {
     gp_Trsf aTranslation;
     aTranslation.SetTranslation(gp_Vec(theDx, theDy, theDz));
@@ -723,12 +709,12 @@ public:
                                        TopoDS_Shape& theRegularBox,
                                        const gp_Pnt& theNurbsCorner   = gp_Pnt(0, 0, 0),
                                        const gp_Pnt& theRegularCorner = gp_Pnt(0, 1, 0),
-                                       double theNurbsX        = 1.0,
-                                       double theNurbsY        = 1.0,
-                                       double theNurbsZ        = 1.0,
-                                       double theRegularX      = 1.0,
-                                       double theRegularY      = 0.5,
-                                       double theRegularZ      = 1.0)
+                                       double        theNurbsX        = 1.0,
+                                       double        theNurbsY        = 1.0,
+                                       double        theNurbsZ        = 1.0,
+                                       double        theRegularX      = 1.0,
+                                       double        theRegularY      = 0.5,
+                                       double        theRegularZ      = 1.0)
   {
     theNurbsBox = CreateBox(theNurbsCorner, theNurbsX, theNurbsY, theNurbsZ);
     theNurbsBox = ConvertToNurbs(theNurbsBox);
@@ -737,14 +723,12 @@ public:
   }
 
   //! Create a blend (fillet) on specified edge of a shape
-  static TopoDS_Shape CreateBlend(const TopoDS_Shape& theShape,
-                                  int    theEdgeIndex,
-                                  double       theRadius)
+  static TopoDS_Shape CreateBlend(const TopoDS_Shape& theShape, int theEdgeIndex, double theRadius)
   {
     // Get the edge by index (like explode command)
-    TopExp_Explorer  anExp(theShape, TopAbs_EDGE);
-    int aCurrentIndex = 1;
-    TopoDS_Edge      aTargetEdge;
+    TopExp_Explorer anExp(theShape, TopAbs_EDGE);
+    int             aCurrentIndex = 1;
+    TopoDS_Edge     aTargetEdge;
 
     while (anExp.More())
     {
@@ -786,8 +770,8 @@ public:
 
   //! Create a cylinder on a specified plane (like TCL pcylinder command)
   static TopoDS_Shape CreateCylinderOnPlane(const gp_Pln& thePlane,
-                                            double theRadius,
-                                            double theHeight)
+                                            double        theRadius,
+                                            double        theHeight)
   {
     // Use DRAW pcylinder approach exactly:
     // S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(), radius, height);
@@ -841,9 +825,9 @@ protected:
 
   //! Validate result properties against expected values
   void ValidateResult(const TopoDS_Shape& theResult,
-                      double       theExpectedSurfaceArea = -1.0,
-                      double       theExpectedVolume      = -1.0,
-                      bool    theExpectedEmpty       = false)
+                      double              theExpectedSurfaceArea = -1.0,
+                      double              theExpectedVolume      = -1.0,
+                      bool                theExpectedEmpty       = false)
   {
     if (theExpectedEmpty)
     {
@@ -891,7 +875,7 @@ protected:
                                 BOPAlgo_Operation   theOp)
   {
     occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
-    BOPAlgo_BOP                       aBOP(aAL);
+    BOPAlgo_BOP                            aBOP(aAL);
 
     aBOP.AddArgument(theShape1);
     aBOP.AddTool(theShape2);
@@ -926,7 +910,7 @@ protected:
     aLC.Append(theShape2);
 
     occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
-    myPaveFiller                          = std::make_unique<BOPAlgo_PaveFiller>(aAL);
+    myPaveFiller                               = std::make_unique<BOPAlgo_PaveFiller>(aAL);
 
     myPaveFiller->SetArguments(aLC);
     myPaveFiller->SetFuzzyValue(myFuzzyValue);
@@ -942,7 +926,7 @@ protected:
   {
     EXPECT_TRUE(myPaveFiller != nullptr) << "PaveFiller must be prepared first";
 
-    BOPAlgo_BOP                 aBOP;
+    BOPAlgo_BOP                           aBOP;
     const NCollection_List<TopoDS_Shape>& aArguments = myPaveFiller->Arguments();
     EXPECT_EQ(aArguments.Extent(), 2) << "Wrong number of arguments";
 
@@ -962,9 +946,9 @@ protected:
 
   //! Validate result properties against expected values
   void ValidateResult(const TopoDS_Shape& theResult,
-                      double       theExpectedSurfaceArea = -1.0,
-                      double       theExpectedVolume      = -1.0,
-                      bool    theExpectedEmpty       = false)
+                      double              theExpectedSurfaceArea = -1.0,
+                      double              theExpectedVolume      = -1.0,
+                      bool                theExpectedEmpty       = false)
   {
     if (theExpectedEmpty)
     {
@@ -988,8 +972,8 @@ protected:
   }
 
 protected:
-  double                       myTolerance;
-  double                       myFuzzyValue;
+  double                              myTolerance;
+  double                              myFuzzyValue;
   std::unique_ptr<BOPAlgo_PaveFiller> myPaveFiller;
 };
 

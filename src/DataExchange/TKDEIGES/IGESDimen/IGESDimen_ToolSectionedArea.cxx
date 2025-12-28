@@ -37,14 +37,14 @@ IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea() {}
 
 void IGESDimen_ToolSectionedArea::ReadOwnParams(const occ::handle<IGESDimen_SectionedArea>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
-  occ::handle<IGESData_IGESEntity>          extCurve;
-  int                     tempPattern, nbislands;
-  gp_XYZ                               passPnt;
-  double                        tempDistance, tempAngle;
+  occ::handle<IGESData_IGESEntity>                                   extCurve;
+  int                                                                tempPattern, nbislands;
+  gp_XYZ                                                             passPnt;
+  double                                                             tempDistance, tempAngle;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempIslands;
-  occ::handle<IGESData_IGESEntity>          anent;
+  occ::handle<IGESData_IGESEntity>                                   anent;
   // bool st; //szv#4:S4163:12Mar99 moved down
 
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -79,7 +79,7 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams(const occ::handle<IGESDimen_Sect
 }
 
 void IGESDimen_ToolSectionedArea::WriteOwnParams(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int i, length = ent->NbIslands();
   IW.Send(ent->ExteriorCurve());
@@ -95,7 +95,7 @@ void IGESDimen_ToolSectionedArea::WriteOwnParams(const occ::handle<IGESDimen_Sec
 }
 
 void IGESDimen_ToolSectionedArea::OwnShared(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   int i, length = ent->NbIslands();
   iter.GetOneItem(ent->ExteriorCurve());
@@ -105,15 +105,15 @@ void IGESDimen_ToolSectionedArea::OwnShared(const occ::handle<IGESDimen_Sectione
 
 void IGESDimen_ToolSectionedArea::OwnCopy(const occ::handle<IGESDimen_SectionedArea>& another,
                                           const occ::handle<IGESDimen_SectionedArea>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, extCurve, TC.Transferred(another->ExteriorCurve()));
-  int                     tempPattern  = another->Pattern();
-  gp_XYZ                               passPnt      = (another->PassingPoint()).XYZ();
-  double                        tempDistance = another->Distance();
-  double                        tempAngle    = another->Angle();
+  int    tempPattern  = another->Pattern();
+  gp_XYZ passPnt      = (another->PassingPoint()).XYZ();
+  double tempDistance = another->Distance();
+  double tempAngle    = another->Angle();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempIslands;
-  int                     nbislands = another->NbIslands();
+  int nbislands = another->NbIslands();
   if (nbislands > 0)
   {
     tempIslands = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbislands);
@@ -148,9 +148,9 @@ void IGESDimen_ToolSectionedArea::OwnCheck(const occ::handle<IGESDimen_Sectioned
 }
 
 void IGESDimen_ToolSectionedArea::OwnDump(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

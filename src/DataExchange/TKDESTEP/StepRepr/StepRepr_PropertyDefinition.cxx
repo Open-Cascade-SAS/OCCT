@@ -30,9 +30,9 @@ StepRepr_PropertyDefinition::StepRepr_PropertyDefinition()
 //=================================================================================================
 
 void StepRepr_PropertyDefinition::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                       const bool                  hasDescription,
+                                       const bool                                   hasDescription,
                                        const occ::handle<TCollection_HAsciiString>& aDescription,
-                                       const StepRepr_CharacterizedDefinition& aDefinition)
+                                       const StepRepr_CharacterizedDefinition&      aDefinition)
 {
 
   theName = aName;

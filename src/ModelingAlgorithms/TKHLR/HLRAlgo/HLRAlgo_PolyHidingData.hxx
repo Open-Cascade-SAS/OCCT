@@ -40,19 +40,19 @@ public:
     {
     }
 
-    gp_XYZ        Normal;
+    gp_XYZ Normal;
     double D;
   };
 
   HLRAlgo_PolyHidingData() {}
 
-  void Set(const int Index,
-           const int Minim,
-           const int Maxim,
-           const double    A,
-           const double    B,
-           const double    C,
-           const double    D)
+  void Set(const int    Index,
+           const int    Minim,
+           const int    Maxim,
+           const double A,
+           const double B,
+           const double C,
+           const double D)
   {
     myIndices.Index = Index;
     myIndices.Min   = Minim;

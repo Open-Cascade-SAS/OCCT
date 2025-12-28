@@ -224,8 +224,8 @@ public:             //! @name Preparation methods
   //! @param[in] isInfinite     infinite flag
   Message_ProgressScope(const Message_ProgressRange&   theRange,
                         const TCollection_AsciiString& theName,
-                        double                  theMax,
-                        bool               isInfinite = false);
+                        double                         theMax,
+                        bool                           isInfinite = false);
 
   //! Creates a new scope taking responsibility of the part of the progress
   //! scale described by theRange. The new scope has own range from 0 to
@@ -243,8 +243,8 @@ public:             //! @name Preparation methods
   template <size_t N>
   Message_ProgressScope(const Message_ProgressRange& theRange,
                         const char (&theName)[N],
-                        double    theMax,
-                        bool isInfinite = false);
+                        double theMax,
+                        bool   isInfinite = false);
 
   //! Creates a new scope taking responsibility of the part of the progress
   //! scale described by theRange. The new scope has own range from 0 to
@@ -260,8 +260,8 @@ public:             //! @name Preparation methods
   //! @param[in] isInfinite     infinite flag
   Message_ProgressScope(const Message_ProgressRange& theRange,
                         const NullString*            theName,
-                        double                theMax,
-                        bool             isInfinite = false);
+                        double                       theMax,
+                        bool                         isInfinite = false);
 
   //! Sets the name of the scope.
   void SetName(const TCollection_AsciiString& theName)
@@ -275,7 +275,7 @@ public:             //! @name Preparation methods
     if (!theName.IsEmpty())
     {
       myIsOwnName = true;
-      myName = (char*)Standard::AllocateOptimal(size_t(theName.Length()) + size_t(1));
+      myName      = (char*)Standard::AllocateOptimal(size_t(theName.Length()) + size_t(1));
       char* aName = (char*)myName;
       memcpy(aName, theName.ToCString(), theName.Length());
       aName[theName.Length()] = '\0';
@@ -383,12 +383,12 @@ private:
 private:
   Message_ProgressIndicator*   myProgress; //!< Pointer to progress indicator instance
   const Message_ProgressScope* myParent;   //!< Pointer to parent scope
-  const char*             myName; //!< Name of the operation being done in this scope, or null
+  const char*                  myName; //!< Name of the operation being done in this scope, or null
 
   double myStart;  //!< Start position on the global scale [0, 1]
-                          // clang-format off
+                   // clang-format off
   double      myPortion;     //!< The portion of the global scale covered by this scope [0, 1]
-                          // clang-format on
+                   // clang-format on
 
   double myMax;   //!< Maximal value of progress in this scope
   double myValue; //!< Current position advanced within this scope [0, Max]
@@ -424,8 +424,8 @@ inline Message_ProgressScope::Message_ProgressScope(Message_ProgressIndicator* t
 
 inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&   theRange,
                                                     const TCollection_AsciiString& theName,
-                                                    double                  theMax,
-                                                    bool               isInfinite)
+                                                    double                         theMax,
+                                                    bool                           isInfinite)
     : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
       myParent(theRange.myParentScope),
       myName(NULL),
@@ -448,8 +448,8 @@ inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange&
 template <size_t N>
 Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRange,
                                              const char (&theName)[N],
-                                             double    theMax,
-                                             bool isInfinite)
+                                             double theMax,
+                                             bool   isInfinite)
     : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
       myParent(theRange.myParentScope),
       myName(theName),
@@ -470,8 +470,8 @@ Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRan
 
 inline Message_ProgressScope::Message_ProgressScope(const Message_ProgressRange& theRange,
                                                     const NullString*,
-                                                    double    theMax,
-                                                    bool isInfinite)
+                                                    double theMax,
+                                                    bool   isInfinite)
     : myProgress(theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
       myParent(theRange.myParentScope),
       myName(NULL),
@@ -499,7 +499,7 @@ inline void Message_ProgressScope::Close()
 
   // Advance indicator to the end of the scope
   double aCurr  = localToGlobal(myValue);
-  myValue              = (myIsInfinite ? Precision::Infinite() : myMax);
+  myValue       = (myIsInfinite ? Precision::Infinite() : myMax);
   double aDelta = myPortion - aCurr;
   if (aDelta > 0.)
   {

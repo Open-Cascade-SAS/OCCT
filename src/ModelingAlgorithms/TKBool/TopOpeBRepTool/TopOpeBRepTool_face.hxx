@@ -43,9 +43,9 @@ public:
   Standard_EXPORT TopoDS_Face RealF() const;
 
 private:
-  TopoDS_Wire      myW;
-  bool myfinite;
-  TopoDS_Face      myFfinite;
+  TopoDS_Wire myW;
+  bool        myfinite;
+  TopoDS_Face myFfinite;
 };
 
 #endif // _TopOpeBRepTool_face_HeaderFile

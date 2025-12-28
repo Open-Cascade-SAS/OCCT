@@ -35,10 +35,10 @@ public:
   Standard_EXPORT Bnd_Sphere();
 
   //! Constructor of a definite sphere
-  Standard_EXPORT Bnd_Sphere(const gp_XYZ&          theCntr,
-                             const double    theRad,
-                             const int theU,
-                             const int theV);
+  Standard_EXPORT Bnd_Sphere(const gp_XYZ& theCntr,
+                             const double  theRad,
+                             const int     theU,
+                             const int     theV);
 
   //! Returns the U parameter on shape
   int U() const;
@@ -61,23 +61,19 @@ public:
   //! Calculate and return minimal and maximal distance to sphere.
   //! NOTE: This function is tightly optimized; any modifications
   //! may affect performance!
-  Standard_EXPORT void Distances(const gp_XYZ&  theXYZ,
-                                 double& theMin,
-                                 double& theMax) const;
+  Standard_EXPORT void Distances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const;
 
   //! Calculate and return minimal and maximal distance to sphere.
   //! NOTE: This function is tightly optimized; any modifications
   //! may affect performance!
-  Standard_EXPORT void SquareDistances(const gp_XYZ&  theXYZ,
-                                       double& theMin,
-                                       double& theMax) const;
+  Standard_EXPORT void SquareDistances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const;
 
   //! Projects a point on entity.
   //! Returns true if success
-  Standard_EXPORT bool Project(const gp_XYZ&     theNode,
-                                           gp_XYZ&           theProjNode,
-                                           double&    theDist,
-                                           bool& theInside) const;
+  Standard_EXPORT bool Project(const gp_XYZ& theNode,
+                               gp_XYZ&       theProjNode,
+                               double&       theDist,
+                               bool&         theInside) const;
 
   Standard_EXPORT double Distance(const gp_XYZ& theNode) const;
 
@@ -92,11 +88,11 @@ public:
   Standard_EXPORT double SquareExtent() const;
 
 private:
-  gp_XYZ           myCenter;
-  double    myRadius;
-  bool myIsValid;
-  int myU;
-  int myV;
+  gp_XYZ myCenter;
+  double myRadius;
+  bool   myIsValid;
+  int    myU;
+  int    myV;
 };
 
 #include <Bnd_Sphere.lxx>

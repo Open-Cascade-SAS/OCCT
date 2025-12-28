@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_CoaxialityTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
 };
 
 #endif // _StepDimTol_CoaxialityTolerance_HeaderFile

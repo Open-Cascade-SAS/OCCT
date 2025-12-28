@@ -75,10 +75,10 @@ public:
 
 private:
   gp_Ax22d          axe;
-  double     prm1;
-  double     prm2;
-  double     TheEpsX;
-  int  TheAccuracy;
+  double            prm1;
+  double            prm2;
+  double            TheEpsX;
+  int               TheAccuracy;
   GeomAbs_CurveType type;
 };
 

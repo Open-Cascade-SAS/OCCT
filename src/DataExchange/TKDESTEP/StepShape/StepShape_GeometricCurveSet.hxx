@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepShape_GeometricCurveSet();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricCurveSet, StepShape_GeometricSet)
-
 };
 
 #endif // _StepShape_GeometricCurveSet_HeaderFile

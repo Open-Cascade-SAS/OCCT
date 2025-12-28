@@ -39,8 +39,8 @@ public:
   //! the zero near the close point.
   Standard_EXPORT Extrema_LocateExtCC(const Adaptor3d_Curve& C1,
                                       const Adaptor3d_Curve& C2,
-                                      const double    U0,
-                                      const double    V0);
+                                      const double           U0,
+                                      const double           V0);
 
   //! Returns True if the distance is found.
   Standard_EXPORT bool IsDone() const;
@@ -53,10 +53,10 @@ public:
   Standard_EXPORT void Point(Extrema_POnCurv& P1, Extrema_POnCurv& P2) const;
 
 private:
-  bool myDone;
-  double    mySqDist;
-  Extrema_POnCurv  myPoint1;
-  Extrema_POnCurv  myPoint2;
+  bool            myDone;
+  double          mySqDist;
+  Extrema_POnCurv myPoint1;
+  Extrema_POnCurv myPoint2;
 };
 
 #endif // _Extrema_LocateExtCC_HeaderFile

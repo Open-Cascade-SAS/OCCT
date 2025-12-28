@@ -39,7 +39,6 @@ public:
   Standard_EXPORT virtual occ::handle<StepData_Described> NewEntity() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(StepData_EDescr, Standard_Transient)
-
 };
 
 #endif // _StepData_EDescr_HeaderFile

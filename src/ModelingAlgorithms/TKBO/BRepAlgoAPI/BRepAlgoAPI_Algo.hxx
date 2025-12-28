@@ -62,7 +62,6 @@ protected:
 
   //! Empty constructor
   Standard_EXPORT BRepAlgoAPI_Algo(const occ::handle<NCollection_BaseAllocator>& theAllocator);
-
 };
 
 #endif // _BRepAlgoAPI_Algo_HeaderFile

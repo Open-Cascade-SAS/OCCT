@@ -48,23 +48,23 @@ public:
   //! Displays the presentation of the object in the given Presentation manager with the given mode.
   //! The mode should be enumerated by the object which inherits PresentableObject.
   Standard_EXPORT void Display(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                               const int                  theMode = 0);
+                               const int                                    theMode = 0);
 
   //! erases the presentation of the object in the given
   //! Presentation manager with the given mode.
   //! If @theMode is -1, then erases all presentations of the object.
   Standard_EXPORT void Erase(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                             const int                  theMode = 0);
+                             const int                                    theMode = 0);
 
   //! Clears the presentation of the presentable object thePrsObject in this framework with the
   //! display mode theMode.
   Standard_EXPORT virtual void Clear(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                                     const int                  theMode = 0);
+                                     const int                                    theMode = 0);
 
   //! Sets the visibility of presentable object.
   Standard_EXPORT void SetVisibility(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                                     const int                  theMode,
-                                     const bool                  theValue);
+                                     const int                                    theMode,
+                                     const bool                                   theValue);
 
   //! Removes highlighting from the presentation of the presentable object.
   Standard_EXPORT void Unhighlight(const occ::handle<PrsMgr_PresentableObject>& thePrsObject);
@@ -72,18 +72,18 @@ public:
   //! Sets the display priority theNewPrior of the
   //! presentable object thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT void SetDisplayPriority(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                                          const int                  theMode,
+                                          const int                                    theMode,
                                           const Graphic3d_DisplayPriority theNewPrior) const;
 
   //! Returns the display priority of the presentable object
   //! thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT Graphic3d_DisplayPriority
     DisplayPriority(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                    const int                  theMode) const;
+                    const int                                    theMode) const;
 
   //! Set Z layer ID for all presentations of the object.
   Standard_EXPORT void SetZLayer(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                                 const Graphic3d_ZLayerId                theLayerId);
+                                 const Graphic3d_ZLayerId                     theLayerId);
 
   //! Get Z layer ID assigned to all presentations of the object.
   //! Method returns -1 value if object has no presentations and is
@@ -92,18 +92,17 @@ public:
     GetZLayer(const occ::handle<PrsMgr_PresentableObject>& thePrsObject) const;
 
   Standard_EXPORT bool IsDisplayed(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                                               const int theMode = 0) const;
+                                   const int                                    theMode = 0) const;
 
   //! Returns true if the presentation of the presentable
   //! object thePrsObject in this framework with the display mode theMode is highlighted.
-  Standard_EXPORT bool
-    IsHighlighted(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                  const int                  theMode = 0) const;
+  Standard_EXPORT bool IsHighlighted(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
+                                     const int theMode = 0) const;
 
   //! Updates the presentation of the presentable object
   //! thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT void Update(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                              const int                  theMode = 0) const;
+                              const int                                    theMode = 0) const;
 
   //! Resets the transient list of presentations previously displayed in immediate mode
   //! and begins accumulation of new list by following AddToImmediateList()/Color()/Highlight()
@@ -134,31 +133,33 @@ public:
   Standard_EXPORT void Color(
     const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
     const occ::handle<Prs3d_Drawer>&             theStyle,
-    const int                  theMode                   = 0,
-    const occ::handle<PrsMgr_PresentableObject>& theSelObj                 = NULL,
-    const Graphic3d_ZLayerId                theImmediateStructLayerId = Graphic3d_ZLayerId_Topmost);
+    const int                                    theMode   = 0,
+    const occ::handle<PrsMgr_PresentableObject>& theSelObj = NULL,
+    const Graphic3d_ZLayerId theImmediateStructLayerId     = Graphic3d_ZLayerId_Topmost);
 
   Standard_EXPORT void Connect(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
                                const occ::handle<PrsMgr_PresentableObject>& theOtherObject,
-                               const int                  theMode      = 0,
-                               const int                  theOtherMode = 0);
+                               const int                                    theMode      = 0,
+                               const int                                    theOtherMode = 0);
 
   //! Sets the transformation theTransformation for the presentable object thePrsObject.
   //! thePrsObject has the display mode theMode; this has the default value of 0, that is, the
   //! wireframe display mode.
   Standard_EXPORT void Transform(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
                                  const occ::handle<TopLoc_Datum3D>&           theTransformation,
-                                 const int                  theMode = 0);
+                                 const int                                    theMode = 0);
 
   //! Returns the structure manager.
-  const occ::handle<Graphic3d_StructureManager>& StructureManager() const { return myStructureManager; }
+  const occ::handle<Graphic3d_StructureManager>& StructureManager() const
+  {
+    return myStructureManager;
+  }
 
   //! Returns true if there is a presentation of the
   //! presentable object thePrsObject in this framework, thePrsObject having the display mode
   //! theMode.
-  Standard_EXPORT bool
-    HasPresentation(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                    const int                  theMode = 0) const;
+  Standard_EXPORT bool HasPresentation(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
+                                       const int theMode = 0) const;
 
   //! Returns the presentation Presentation of the presentable object thePrsObject in this
   //! framework. When theToCreate is true - automatically creates presentation for specified mode
@@ -166,8 +167,8 @@ public:
   //! view affinity.
   Standard_EXPORT occ::handle<PrsMgr_Presentation> Presentation(
     const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-    const int                  theMode     = 0,
-    const bool                  theToCreate = false,
+    const int                                    theMode     = 0,
+    const bool                                   theToCreate = false,
     const occ::handle<PrsMgr_PresentableObject>& theSelObj   = NULL) const;
 
   //! Allows to apply location transformation to shadow highlight presentation immediately.
@@ -179,15 +180,14 @@ public:
   Standard_EXPORT void UpdateHighlightTrsf(
     const occ::handle<V3d_Viewer>&               theViewer,
     const occ::handle<PrsMgr_PresentableObject>& theObj,
-    const int                  theMode   = 0,
+    const int                                    theMode   = 0,
     const occ::handle<PrsMgr_PresentableObject>& theSelObj = NULL);
 
 protected:
   //! Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject
   //! has the display mode theMode.
-  Standard_EXPORT bool
-    RemovePresentation(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
-                       const int                  theMode = 0);
+  Standard_EXPORT bool RemovePresentation(const occ::handle<PrsMgr_PresentableObject>& thePrsObject,
+                                          const int                                    theMode = 0);
 
 private:
   //! Handles the structures from <myImmediateList> and displays it separating view-dependent
@@ -195,10 +195,10 @@ private:
   void displayImmediate(const occ::handle<V3d_Viewer>& theViewer);
 
 protected:
-  occ::handle<Graphic3d_StructureManager> myStructureManager;
-  int                   myImmediateModeOn;
-  NCollection_List<occ::handle<Prs3d_Presentation>>         myImmediateList;
-  NCollection_List<occ::handle<Prs3d_Presentation>>         myViewDependentImmediateList;
+  occ::handle<Graphic3d_StructureManager>           myStructureManager;
+  int                                               myImmediateModeOn;
+  NCollection_List<occ::handle<Prs3d_Presentation>> myImmediateList;
+  NCollection_List<occ::handle<Prs3d_Presentation>> myViewDependentImmediateList;
 };
 
 #endif // _PrsMgr_PresentationManager_HeaderFile

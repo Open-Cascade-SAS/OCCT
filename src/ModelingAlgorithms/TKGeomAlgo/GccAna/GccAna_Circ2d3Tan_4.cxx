@@ -40,7 +40,7 @@ static int MaxSol = 20;
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                      const GccEnt_QualifiedCirc& Qualified2,
                                      const gp_Pnt2d&             Point3,
-                                     const double         Tolerance)
+                                     const double                Tolerance)
     :
 
       //=========================================================================
@@ -65,10 +65,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg3(1, MaxSol)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -82,29 +82,29 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Processing.                                                          +
   //=========================================================================
 
-  gp_Circ2d     C1(Qualified1.Qualified());
-  gp_Circ2d     C2(Qualified2.Qualified());
-  double R1 = C1.Radius();
-  double R2 = C2.Radius();
-  gp_Pnt2d      center1(C1.Location());
-  gp_Pnt2d      center2(C2.Location());
+  gp_Circ2d C1(Qualified1.Qualified());
+  gp_Circ2d C2(Qualified2.Qualified());
+  double    R1 = C1.Radius();
+  double    R2 = C2.Radius();
+  gp_Pnt2d  center1(C1.Location());
+  gp_Pnt2d  center2(C2.Location());
 
-  NCollection_Array1<double>  Radius(1, 2);
-  GccAna_Circ2dBisec    Bis1(C1, C2);
-  GccAna_CircPnt2dBisec Bis2(C1, Point3);
+  NCollection_Array1<double> Radius(1, 2);
+  GccAna_Circ2dBisec         Bis1(C1, C2);
+  GccAna_CircPnt2dBisec      Bis2(C1, Point3);
   if (Bis1.IsDone() && Bis2.IsDone())
   {
     int nbsolution1 = Bis1.NbSolutions();
     int nbsolution2 = Bis2.NbSolutions();
     for (int i = 1; i <= nbsolution1; i++)
     {
-      occ::handle<GccInt_Bisec>     Sol1 = Bis1.ThisSolution(i);
-      GccInt_IType             typ1 = Sol1->ArcType();
-      IntAna2d_AnaIntersection Intp;
+      occ::handle<GccInt_Bisec> Sol1 = Bis1.ThisSolution(i);
+      GccInt_IType              typ1 = Sol1->ArcType();
+      IntAna2d_AnaIntersection  Intp;
       for (int k = 1; k <= nbsolution2; k++)
       {
         occ::handle<GccInt_Bisec> Sol2 = Bis2.ThisSolution(k);
-        GccInt_IType         typ2 = Sol2->ArcType();
+        GccInt_IType              typ2 = Sol2->ArcType();
         if (typ1 == GccInt_Cir)
         {
           if (typ2 == GccInt_Cir)
@@ -187,15 +187,15 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
           {
             for (int j = 1; j <= Intp.NbPoints(); j++)
             {
-              double    Rradius = 0;
-              gp_Pnt2d         Center(Intp.Point(j).Value());
-              double    dist1  = Center.Distance(center1);
-              double    dist2  = Center.Distance(center2);
-              double    dist3  = Center.Distance(Point3);
-              int nbsol1 = 0;
-              int nbsol2 = 0;
-              int nbsol3 = 0;
-              bool ok     = false;
+              double   Rradius = 0;
+              gp_Pnt2d Center(Intp.Point(j).Value());
+              double   dist1  = Center.Distance(center1);
+              double   dist2  = Center.Distance(center2);
+              double   dist3  = Center.Distance(Point3);
+              int      nbsol1 = 0;
+              int      nbsol2 = 0;
+              int      nbsol3 = 0;
+              bool     ok     = false;
               if (Qualified1.IsEnclosed())
               {
                 if (dist1 - R1 < Tolerance)
@@ -411,8 +411,8 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   int kk;
   for (kk = 1; kk <= NbrSol; kk++)
   {
-    gp_Circ2d     CC = cirsol(kk);
-    double NR = CC.Location().Distance(Point3);
+    gp_Circ2d CC = cirsol(kk);
+    double    NR = CC.Location().Distance(Point3);
     if (std::abs(NR - CC.Radius()) > Tol)
     {
       cirsol(kk).SetRadius(NR);

@@ -40,26 +40,26 @@ OSD_Chronometer Chronrsnld;
 //            for processing. Therefore, we will return an empty intersection line
 //            in this case.
 //==================================================================================
-static bool IsTangentExtCheck(TheIWFunction&      theFunc,
-                                          const double theU,
-                                          const double theV,
-                                          const double theStepU,
-                                          const double theStepV,
-                                          const double theUinf,
-                                          const double theUsup,
-                                          const double theVinf,
-                                          const double theVsup)
+static bool IsTangentExtCheck(TheIWFunction& theFunc,
+                              const double   theU,
+                              const double   theV,
+                              const double   theStepU,
+                              const double   theStepV,
+                              const double   theUinf,
+                              const double   theUsup,
+                              const double   theVinf,
+                              const double   theVsup)
 {
-  const double    aTol            = theFunc.Tolerance();
-  const int aNbItems        = 4;
-  const double    aParU[aNbItems] = {std::min(theU + theStepU, theUsup),
-                                            std::max(theU - theStepU, theUinf),
-                                            theU,
-                                            theU};
-  const double    aParV[aNbItems] = {theV,
-                                            theV,
-                                            std::min(theV + theStepV, theVsup),
-                                            std::max(theV - theStepV, theVinf)};
+  const double aTol            = theFunc.Tolerance();
+  const int    aNbItems        = 4;
+  const double aParU[aNbItems] = {std::min(theU + theStepU, theUsup),
+                                  std::max(theU - theStepU, theUinf),
+                                  theU,
+                                  theU};
+  const double aParV[aNbItems] = {theV,
+                                  theV,
+                                  std::min(theV + theStepV, theVsup),
+                                  std::max(theV - theStepV, theVinf)};
 
   math_Vector aX(1, 2), aVal(1, 1);
 
@@ -78,10 +78,10 @@ static bool IsTangentExtCheck(TheIWFunction&      theFunc,
   return true;
 }
 
-IntWalk_IWalking::IntWalk_IWalking(const double    Epsilon,
-                                   const double    Deflection,
-                                   const double    Increment,
-                                   const bool theToFillHoles)
+IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
+                                   const double Deflection,
+                                   const double Increment,
+                                   const bool   theToFillHoles)
     : done(false),
       fleche(Deflection),
       pas(Increment),
@@ -141,18 +141,18 @@ void IntWalk_IWalking::Clear()
 //
 // Perform with interior points
 //
-void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
-                               const ThePOLIterator&  Pnts2,
-                               TheIWFunction&         Func,
-                               const ThePSurface&     Caro,
-                               const bool Reversed)
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+                               const ThePOLIterator& Pnts2,
+                               TheIWFunction&        Func,
+                               const ThePSurface&    Caro,
+                               const bool            Reversed)
 
 {
-  int I;
-  bool Rajout  = false;
-  int nbPnts1 = Pnts1.Length();
-  int nbPnts2 = Pnts2.Length();
-  double    U, V;
+  int    I;
+  bool   Rajout  = false;
+  int    nbPnts1 = Pnts1.Length();
+  int    nbPnts2 = Pnts2.Length();
+  double U, V;
 
   Clear();
   reversed = Reversed;
@@ -165,14 +165,14 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
   if (UM < Um)
   {
     double utemp = UM;
-    UM                  = Um;
-    Um                  = utemp;
+    UM           = Um;
+    Um           = utemp;
   }
   if (VM < Vm)
   {
     double vtemp = VM;
-    VM                  = Vm;
-    Vm                  = vtemp;
+    VM           = Vm;
+    Vm           = vtemp;
   }
 
   const double aStepU = pas * (UM - Um), aStepV = pas * (VM - Vm);
@@ -272,7 +272,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
     {
       nb_iter++;
       NCollection_Sequence<IntSurf_InteriorPoint> PntsInHoles;
-      NCollection_Sequence<int>       CopySeqAlone = seqAlone;
+      NCollection_Sequence<int>                   CopySeqAlone = seqAlone;
       FillPntsInHoles(Func, CopySeqAlone, PntsInHoles);
       wd2.clear();
       IntWalk_WalkingData aDummy;
@@ -305,16 +305,16 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
 // Perform without interior point
 //
 
-void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
-                               TheIWFunction&         Func,
-                               const ThePSurface&     Caro,
-                               const bool Reversed)
+void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
+                               TheIWFunction&        Func,
+                               const ThePSurface&    Caro,
+                               const bool            Reversed)
 
 {
-  int I;
-  bool Rajout  = false;
-  int nbPnts1 = Pnts1.Length();
-  double    U, V;
+  int    I;
+  bool   Rajout  = false;
+  int    nbPnts1 = Pnts1.Length();
+  double U, V;
 
   reversed = Reversed;
 
@@ -357,14 +357,14 @@ void IntWalk_IWalking::Perform(const ThePOPIterator&  Pnts1,
   if (UM < Um)
   {
     double utemp = UM;
-    UM                  = Um;
-    Um                  = utemp;
+    UM           = Um;
+    Um           = utemp;
   }
   if (VM < Vm)
   {
     double vtemp = VM;
-    VM                  = Vm;
-    Vm                  = vtemp;
+    VM           = Vm;
+    Vm           = vtemp;
   }
 
   Func.Set(Caro);
@@ -401,12 +401,12 @@ static void CutVectorByTolerances(gp_Vec2d& theVector, const math_Vector& theTol
 // Location of point (u, v) in the natural domain of a surface AND update
 // of couple (u, v) for the calculation of the next point.
 //
-bool IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
-                                           math_Vector&   BornSup,
-                                           math_Vector&   UVap,
-                                           double& Step,
-                                           //   double& StepV,
-                                           const int StepSign) const
+bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
+                               math_Vector& BornSup,
+                               math_Vector& UVap,
+                               double&      Step,
+                               //   double& StepV,
+                               const int StepSign) const
 
 // there are always :
 // BorInf(1) <= UVap(1) <= BornSup(1) et BorInf(2) <= UVap(2) <= BornSup(2)
@@ -582,10 +582,10 @@ bool IntWalk_IWalking::Cadrage(math_Vector&   BornInf,
 }
 
 bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umult,
-                                                    const NCollection_Sequence<double>& Vmult,
-                                                    TheIWFunction&                sp,
-                                                    math_Vector&                  UV,
-                                                    int&             Irang)
+                                        const NCollection_Sequence<double>& Vmult,
+                                        TheIWFunction&                      sp,
+                                        math_Vector&                        UV,
+                                        int&                                Irang)
 
 // Umult et Vmult : table of stop (or crossing) points on border,
 //         here only the crossing points are taken into account.
@@ -599,12 +599,12 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
 // if a stop is detected, the index of the stop point (Irang) is returned
 // in the iterator of start points and the associated parameters in UV space.
 {
-  double    Up, Vp, Du, Dv, Dup, Dvp, Utest, Vtest;
-  int j, N, ind;
-  double    tolu  = tolerance(1);
-  double    tolv  = tolerance(2);
-  double    tolu2 = 10. * tolerance(1);
-  double    tolv2 = 10. * tolerance(2);
+  double Up, Vp, Du, Dv, Dup, Dvp, Utest, Vtest;
+  int    j, N, ind;
+  double tolu  = tolerance(1);
+  double tolv  = tolerance(2);
+  double tolu2 = 10. * tolerance(1);
+  double tolv2 = 10. * tolerance(2);
 
   bool Arrive = false;
 
@@ -677,8 +677,8 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   // Dup*UV1mUtest + Dvp*UV2mVtest) < 0
   // We choose from them the path point with
   // minimum distance to (Up,Vp)
-  NCollection_Sequence<int> i_candidates;
-  NCollection_Sequence<double>    SqDist_candidates;
+  NCollection_Sequence<int>    i_candidates;
+  NCollection_Sequence<double> SqDist_candidates;
 
   for (l = 1; l <= 2 && !Arrive; l++)
   {
@@ -739,9 +739,9 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
           }
           if (Arrive)
           {
-            double abidF[1], abidD[1][2];
-            math_Vector   bidF(abidF, 1, 1);
-            math_Matrix   bidD(abidD, 1, 1, 1, 2);
+            double      abidF[1], abidD[1][2];
+            math_Vector bidF(abidF, 1, 1);
+            math_Matrix bidD(abidD, 1, 1, 1, 2);
             sp.Values(UV, bidF, bidD);
             break;
           }
@@ -766,10 +766,10 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
 }
 
 bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umult,
-                                                    const NCollection_Sequence<double>& Vmult,
-                                                    const math_Vector&            UV,
-                                                    const int        Index,
-                                                    int&             Irang)
+                                        const NCollection_Sequence<double>& Vmult,
+                                        const math_Vector&                  UV,
+                                        const int                           Index,
+                                        int&                                Irang)
 {
   // Umult, Vmult : table of stop (or crossing) points on border, here
   //          only crossing points are taken into account.
@@ -783,12 +783,12 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   // 1) test of crossing on all interior points.
   // 2) test of crossing on all crossing points.
 
-  double    Up, Vp, Scal;
-  bool Arrive = false;
-  int N, k, i;
-  double    Utest, Vtest;
-  double    tolu = tolerance(1);
-  double    tolv = tolerance(2);
+  double Up, Vp, Scal;
+  bool   Arrive = false;
+  int    N, k, i;
+  double Utest, Vtest;
+  double tolu = tolerance(1);
+  double tolv = tolerance(2);
 
   // tests of stop and of crossing on all interior points.
 
@@ -808,11 +808,11 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   // This is no good for computation. Therefore, it is limited.
   // Do not limit this factor in case of highly anisotropic parametrization
   //(parametric space is considerably larger in one direction than another).
-  const bool isHighlyAnisotropic = std::max(tolu, tolv) > 1000. * std::min(tolu, tolv);
-  const double    deltau =
+  const bool   isHighlyAnisotropic = std::max(tolu, tolv) > 1000. * std::min(tolu, tolv);
+  const double deltau =
     mySRangeU.IsVoid()
-         ? UM - Um
-         : (isHighlyAnisotropic ? mySRangeU.Delta() : std::max(mySRangeU.Delta(), 1.0));
+      ? UM - Um
+      : (isHighlyAnisotropic ? mySRangeU.Delta() : std::max(mySRangeU.Delta(), 1.0));
   const double deltav =
     mySRangeV.IsVoid()
       ? VM - Vm
@@ -953,10 +953,10 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   return Arrive;
 }
 
-bool IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
-                                                  math_Vector&      UV,
-                                                  int& Irang,
-                                                  IntSurf_PntOn2S&  Psol)
+bool IntWalk_IWalking::TestArretAjout(TheIWFunction&   sp,
+                                      math_Vector&     UV,
+                                      int&             Irang,
+                                      IntSurf_PntOn2S& Psol)
 
 // test of stop on added points
 // these are the points on the natural biorder that were not given at input
@@ -965,9 +965,9 @@ bool IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
 //          UV,    parameter of the added point.
 //
 {
-  bool Arrive = false;
-  double    U1, V1;
-  double    Up, Vp;
+  bool   Arrive = false;
+  double U1, V1;
+  double Up, Vp;
 
   if (!reversed)
   {
@@ -1010,9 +1010,9 @@ bool IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
         Arrive = true;
         UV(1)  = U1;
         UV(2)  = V1;
-        double abidF[1], abidD[1][2];
-        math_Vector   bidF(abidF, 1, 1);
-        math_Matrix   bidD(abidD, 1, 1, 1, 2);
+        double      abidF[1], abidD[1][2];
+        math_Vector bidF(abidF, 1, 1);
+        math_Matrix bidD(abidD, 1, 1, 1, 2);
         sp.Values(UV, bidF, bidD);
         break;
       }
@@ -1021,8 +1021,8 @@ bool IntWalk_IWalking::TestArretAjout(TheIWFunction&    sp,
   return Arrive;
 }
 
-void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
-                                       NCollection_Sequence<int>&       CopySeqAlone,
+void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                               sp,
+                                       NCollection_Sequence<int>&                   CopySeqAlone,
                                        NCollection_Sequence<IntSurf_InteriorPoint>& PntsInHoles)
 {
   math_Vector BornInf(1, 2), BornSup(1, 2);
@@ -1039,16 +1039,16 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
     int Irang1 = CopySeqAlone(i);
     if (Irang1 == 0)
       continue;
-    bool                 ToRemove = false;
-    IntSurf_PntOn2S                  PointAlone1, PointAlone2;
+    bool                                  ToRemove = false;
+    IntSurf_PntOn2S                       PointAlone1, PointAlone2;
     const occ::handle<IntWalk_TheIWLine>& Line1 = lines.Value(std::abs(Irang1));
     if (Irang1 > 0)
       PointAlone1 = Line1->Value(Line1->NbPoints());
     else
       PointAlone1 = Line1->Value(1);
-    gp_Pnt2d         P2d1      = PointAlone1.ValueOnSurface(reversed), P2d2;
-    double    MinSqDist = RealLast();
-    int MinRang = 0, MinIndex = 0;
+    gp_Pnt2d P2d1      = PointAlone1.ValueOnSurface(reversed), P2d2;
+    double   MinSqDist = RealLast();
+    int      MinRang = 0, MinIndex = 0;
     for (int j = i + 1; j <= CopySeqAlone.Length(); j++)
     {
       int Irang2 = CopySeqAlone(j);
@@ -1059,7 +1059,7 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
         PointAlone2 = Line2->Value(Line2->NbPoints());
       else
         PointAlone2 = Line2->Value(1);
-      P2d2                  = PointAlone2.ValueOnSurface(reversed);
+      P2d2           = PointAlone2.ValueOnSurface(reversed);
       double aSqDist = P2d1.SquareDistance(P2d2);
       if (aSqDist < MinSqDist)
       {
@@ -1091,9 +1091,9 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       PointAlone2 = Line2->Value(Line2->NbPoints());
     else
       PointAlone2 = Line2->Value(1);
-    gp_Pnt Pnt1               = PointAlone1.Value();
-    gp_Pnt Pnt2               = PointAlone2.Value();
-    P2d2                      = PointAlone2.ValueOnSurface(reversed);
+    gp_Pnt Pnt1        = PointAlone1.Value();
+    gp_Pnt Pnt2        = PointAlone2.Value();
+    P2d2               = PointAlone2.ValueOnSurface(reversed);
     double MinSqDist3d = Pnt1.SquareDistance(Pnt2);
     if (MinSqDist3d <= epsilon
         || (std::abs(P2d1.X() - P2d2.X()) <= tolerance(1)
@@ -1109,13 +1109,13 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       if (Rsnld.IsDone() && std::abs(sp.Root()) <= sp.Tolerance() && !sp.IsTangent())
       {
         Rsnld.Root(UV);
-        gp_Pnt2d         Pmid(UV(1), UV(2));
-        gp_Vec2d         P1P2(P2d1, P2d2);
-        gp_Vec2d         P1Pmid(P2d1, Pmid);
-        gp_Vec2d         P2Pmid(P2d2, Pmid);
-        double    ScalProd1   = P1P2 * P1Pmid;
-        double    ScalProd2   = P1P2 * P2Pmid;
-        bool IsPmidValid = (ScalProd1 > 0. && ScalProd2 < 0); // Pmid is in the middle
+        gp_Pnt2d Pmid(UV(1), UV(2));
+        gp_Vec2d P1P2(P2d1, P2d2);
+        gp_Vec2d P1Pmid(P2d1, Pmid);
+        gp_Vec2d P2Pmid(P2d2, Pmid);
+        double   ScalProd1   = P1P2 * P1Pmid;
+        double   ScalProd2   = P1P2 * P2Pmid;
+        bool     IsPmidValid = (ScalProd1 > 0. && ScalProd2 < 0); // Pmid is in the middle
         if (IsPmidValid)
         {
           for (int iline = 1; iline <= lines.Length(); iline++)
@@ -1171,12 +1171,12 @@ void IntWalk_IWalking::FillPntsInHoles(TheIWFunction&                   sp,
       }
 }
 
-void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umult,
-                                      const NCollection_Sequence<double>&    Vmult,
+void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umult,
+                                      const NCollection_Sequence<double>&   Vmult,
                                       const occ::handle<IntWalk_TheIWLine>& Line,
-                                      TheIWFunction&                   sp,
-                                      math_Vector&                     UV,
-                                      int&                Irang)
+                                      TheIWFunction&                        sp,
+                                      math_Vector&                          UV,
+                                      int&                                  Irang)
 
 // test of stop when located on border.
 // tried all tests of stop and arrived.
@@ -1186,9 +1186,9 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umu
 //  if Irang <0 , it is necessary to add this point on the line (no Line->Cut)
 // UV = parameter of the departure point
 {
-  double    Scal, Up, Vp, Uc, Vc;
-  int N;
-  bool Found = false;
+  double Scal, Up, Vp, Uc, Vc;
+  int    N;
+  bool   Found = false;
 
   Irang = 0;
   for (int i = 1; i < (int)wd1.size(); i++)
@@ -1284,9 +1284,9 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umu
         }
         if (Found)
         {
-          double abidF[1], abidD[1][2];
-          math_Vector   bidF(abidF, 1, 1);
-          math_Matrix   bidD(abidD, 1, 1, 1, 2);
+          double      abidF[1], abidD[1][2];
+          math_Vector bidF(abidF, 1, 1);
+          math_Matrix bidD(abidD, 1, 1, 1, 2);
           sp.Values(UV, bidF, bidD);
           int NBP = Line->NbPoints();
           int Indextg;
@@ -1295,8 +1295,8 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umu
           {
             if (j > 3 && j <= NBP + 1)
             {
-              gp_Vec        Dir3d  = sp.Direction3d();
-              gp_Vec        Dir3d1 = gp_Vec(Line->Value(j - 2).Value(), Line->Value(j - 1).Value());
+              gp_Vec Dir3d  = sp.Direction3d();
+              gp_Vec Dir3d1 = gp_Vec(Line->Value(j - 2).Value(), Line->Value(j - 1).Value());
               double dot    = Dir3d.Dot(Dir3d1);
               if (dot < 0.0)
               { // Normally this Function should not be used often !!!
@@ -1377,9 +1377,9 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umu
       if (Found)
       {
         Irang = -Irang; // jag 941017
-        double abidF[1], abidD[1][2];
-        math_Vector   bidF(abidF, 1, 1);
-        math_Matrix   bidD(abidD, 1, 1, 1, 2);
+        double      abidF[1], abidD[1][2];
+        math_Vector bidF(abidF, 1, 1);
+        math_Matrix bidD(abidD, 1, 1, 1, 2);
         sp.Values(UV, bidF, bidD);
         return;
       }
@@ -1390,24 +1390,23 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&    Umu
 //-- IntWalk_IWalking_3.gxx
 
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:26 2000.BEGIN
-static bool TestPassedSolutionWithNegativeState(
-  const IntWalk_VectorOfWalkingData& wd,
-  const NCollection_Sequence<double>&      Umult,
-  const NCollection_Sequence<double>&      Vmult,
-  const double&               prevUp,
-  const double&               prevVp,
-  const IntWalk_VectorOfInteger&     nbMultiplicities,
-  const math_Vector&                 tolerance,
-  TheIWFunction&                     sp,
-  math_Vector&                       UV,
-  int&                  Irang);
+static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData&  wd,
+                                                const NCollection_Sequence<double>& Umult,
+                                                const NCollection_Sequence<double>& Vmult,
+                                                const double&                       prevUp,
+                                                const double&                       prevVp,
+                                                const IntWalk_VectorOfInteger& nbMultiplicities,
+                                                const math_Vector&             tolerance,
+                                                TheIWFunction&                 sp,
+                                                math_Vector&                   UV,
+                                                int&                           Irang);
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:39 2000.END
 
 void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult,
                                        const NCollection_Sequence<double>& Vmult,
-                                       const ThePOPIterator&         Pnts1,
-                                       TheIWFunction&                Func,
-                                       bool&             Rajout)
+                                       const ThePOPIterator&               Pnts1,
+                                       TheIWFunction&                      Func,
+                                       bool&                               Rajout)
 
 // Processing of open line.
 //
@@ -1436,16 +1435,16 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
 //    end of conditions.
 
 {
-  int          I = 0, N = 0, SaveN = 0;
-  double             aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
-  math_Vector               BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2), UVap(aUVap, 1, 2);
-  double             PasC = 0.0, PasCu = 0.0, PasCv = 0.0;
-  bool          Arrive     = false; // shows if the line ends
-  bool          Cadre      = false; // shows if one is on border of the domain
-  bool          ArretAjout = false; // shows if one is on added point
-  IntSurf_PntOn2S           Psol;
+  int             I = 0, N = 0, SaveN = 0;
+  double          aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
+  math_Vector     BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2), UVap(aUVap, 1, 2);
+  double          PasC = 0.0, PasCu = 0.0, PasCv = 0.0;
+  bool            Arrive     = false; // shows if the line ends
+  bool            Cadre      = false; // shows if one is on border of the domain
+  bool            ArretAjout = false; // shows if one is on added point
+  IntSurf_PntOn2S Psol;
   occ::handle<IntWalk_TheIWLine> CurrentLine; // line under construction
-  bool          Tgtend = false;
+  bool                           Tgtend = false;
 
   IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent = IntWalk_OK;
 
@@ -1462,7 +1461,7 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
   BornSup(2) = VM;
 
   math_FunctionSetRoot Rsnld(Func, tolerance);
-  int     nbPath = Pnts1.Length();
+  int                  nbPath = Pnts1.Length();
 
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:34 2000.BEGIN
   NCollection_LocalArray<int> movementdirectioninfoarr(nbPath + 1);
@@ -1841,9 +1840,9 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
                   && (movementdirectioninfo[av] != 0)))
           {
             // modified by NIZHNY-MKK  Fri Oct 27 13:00:26 2000.END
-            double          Uav = wd1[av].ustart;
-            double          Vav = wd1[av].vstart;
-            double          Uavp, Vavp;
+            double                 Uav = wd1[av].ustart;
+            double                 Vav = wd1[av].vstart;
+            double                 Uavp, Vavp;
             const IntSurf_PntOn2S& avP = CurrentLine->Value(CurrentLine->NbPoints());
             if (!reversed)
             {
@@ -1915,23 +1914,22 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
 }
 
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:53 2000.BEGIN
-static bool TestPassedSolutionWithNegativeState(
-  const IntWalk_VectorOfWalkingData& wd,
-  const NCollection_Sequence<double>&      Umult,
-  const NCollection_Sequence<double>&      Vmult,
-  const double&               prevUp,
-  const double&               prevVp,
-  const IntWalk_VectorOfInteger&     nbMultiplicities,
-  const math_Vector&                 tolerance,
-  TheIWFunction&                     sp,
-  math_Vector&                       UV,
-  int&                  Irang)
+static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData&  wd,
+                                                const NCollection_Sequence<double>& Umult,
+                                                const NCollection_Sequence<double>& Vmult,
+                                                const double&                       prevUp,
+                                                const double&                       prevVp,
+                                                const IntWalk_VectorOfInteger& nbMultiplicities,
+                                                const math_Vector&             tolerance,
+                                                TheIWFunction&                 sp,
+                                                math_Vector&                   UV,
+                                                int&                           Irang)
 {
-  bool Arrive = false;
-  double    Dup, Dvp, Utest, Vtest;
-  double    tolu = tolerance(1);
-  double    tolv = tolerance(2);
-  int i, j, k, N;
+  bool   Arrive = false;
+  double Dup, Dvp, Utest, Vtest;
+  double tolu = tolerance(1);
+  double tolv = tolerance(2);
+  int    i, j, k, N;
   for (i = 1; i < (int)wd.size(); i++)
   {
     if (wd[i].etat < -11)
@@ -1977,9 +1975,9 @@ static bool TestPassedSolutionWithNegativeState(
         }
         if (Arrive)
         {
-          double abidF[1], abidD[1][2];
-          math_Vector   bidF(abidF, 1, 1);
-          math_Matrix   bidD(abidD, 1, 1, 1, 2);
+          double      abidF[1], abidD[1][2];
+          math_Vector bidF(abidF, 1, 1);
+          math_Matrix bidD(abidD, 1, 1, 1, 2);
           sp.Values(UV, bidF, bidD);
           break;
         }
@@ -1994,10 +1992,10 @@ static bool TestPassedSolutionWithNegativeState(
 
 void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umult,
                                         const NCollection_Sequence<double>& Vmult,
-                                        const ThePOPIterator&         Pnts1,
-                                        const ThePOLIterator&         Pnts2,
-                                        TheIWFunction&                Func,
-                                        bool&             Rajout)
+                                        const ThePOPIterator&               Pnts1,
+                                        const ThePOLIterator&               Pnts2,
+                                        TheIWFunction&                      Func,
+                                        bool&                               Rajout)
 // *********** Processing of closed line **********************
 //
 // for any interior non-processed point
@@ -2019,28 +2017,28 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 //
 // ********************************************************************
 {
-  int          I = 0, N = 0, SaveN = 0;
-  double             aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
-  math_Vector               BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2);
-  math_Vector               Uvap(aUVap, 1, 2);  // parameters of current approach
-  double             PasC       = 0.0;   // step of advancement on the tangent
-  double             PasCu      = 0.0;   // step of advancement current by U
-  double             PasCv      = 0.0;   // step of advancement current by V
-  double             PasSav     = 0.0;   // save first step of advancement
-  bool          Arrive     = false; // show if line ends
-  bool          Cadre      = false; // show if on border of the  domains
-  bool          ArretAjout = false; // show if on the added point
-  IntSurf_PntOn2S           Psol;
+  int                            I = 0, N = 0, SaveN = 0;
+  double                         aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
+  math_Vector                    BornInf(aBornInf, 1, 2), BornSup(aBornSup, 1, 2);
+  math_Vector                    Uvap(aUVap, 1, 2);  // parameters of current approach
+  double                         PasC       = 0.0;   // step of advancement on the tangent
+  double                         PasCu      = 0.0;   // step of advancement current by U
+  double                         PasCv      = 0.0;   // step of advancement current by V
+  double                         PasSav     = 0.0;   // save first step of advancement
+  bool                           Arrive     = false; // show if line ends
+  bool                           Cadre      = false; // show if on border of the  domains
+  bool                           ArretAjout = false; // show if on the added point
+  IntSurf_PntOn2S                Psol;
   occ::handle<IntWalk_TheIWLine> CurrentLine; // line under construction
-  ThePointOfPath            PathPnt;
-  ThePointOfLoop            LoopPnt;
+  ThePointOfPath                 PathPnt;
+  ThePointOfLoop                 LoopPnt;
 
   bool Tgtbeg = false, Tgtend = false;
 
   int StepSign = 0;
 
   IntWalk_StatusDeflection aStatus    = IntWalk_OK, StatusPrecedent;
-  int         NbDivision = 0; // number of divisions of step
+  int                      NbDivision = 0; // number of divisions of step
   // during calculation of  1 section
 
   int Ipass = 0;
@@ -2052,26 +2050,26 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
   BornSup(2) = VM;
 
   math_FunctionSetRoot Rsnld(Func, tolerance);
-  int     nbLoop = Pnts2.Length();
+  int                  nbLoop = Pnts2.Length();
 
   // Check borders for degeneracy:
-  math_Matrix            D(1, 1, 1, 2);
-  const int aNbSamplePnt                = 10;
-  bool       isLeftDegeneratedBorder[2]  = {true, true};
-  bool       isRightDegeneratedBorder[2] = {true, true};
-  math_Vector            aStep(1, 2);
+  math_Matrix D(1, 1, 1, 2);
+  const int   aNbSamplePnt                = 10;
+  bool        isLeftDegeneratedBorder[2]  = {true, true};
+  bool        isRightDegeneratedBorder[2] = {true, true};
+  math_Vector aStep(1, 2);
   aStep = (BornSup - BornInf) / (aNbSamplePnt - 1);
   for (int aBorderIdx = 1; aBorderIdx <= 2; aBorderIdx++)
   {
-    int aChangeIdx = aBorderIdx == 2 ? 1 : 2;
-    math_Vector      UV(1, 2);
+    int         aChangeIdx = aBorderIdx == 2 ? 1 : 2;
+    math_Vector UV(1, 2);
 
     // Left border.
     UV(aBorderIdx) = BornInf(aBorderIdx);
     for (int aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
     {
-      double aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
-      UV(aChangeIdx)       = aParam;
+      double aParam  = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
       Func.Derivatives(UV, D);
       if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
       {
@@ -2084,8 +2082,8 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
     UV(aBorderIdx) = BornSup(aBorderIdx);
     for (int aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
     {
-      double aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
-      UV(aChangeIdx)       = aParam;
+      double aParam  = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
       Func.Derivatives(UV, D);
       if (std::abs(D(1, aChangeIdx)) > Precision::Confusion())
       {
@@ -2145,11 +2143,11 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 
       PasSav = PasC;
 
-      Arrive                   = false;
-      ArretAjout               = false;
-      NbDivision               = 0;
-      StatusPrecedent          = IntWalk_OK;
-      int aNbIter = 10;
+      Arrive          = false;
+      ArretAjout      = false;
+      NbDivision      = 0;
+      StatusPrecedent = IntWalk_OK;
+      int aNbIter     = 10;
       while (!Arrive)
       {                                                          // as no test of stop is passed
         Cadre = Cadrage(BornInf, BornSup, Uvap, PasC, StepSign); // border?
@@ -2608,21 +2606,21 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 
 namespace
 {
-static const double CosRef3D = 0.98;       // rule by tests in U4
-                                                  // correspond to  11.478 d
-static const double    CosRef2D    = 0.88; // correspond to 25 d
-static const int MaxDivision = 60;   // max number of step division
-                                                  // because the angle is too great in 2d (U4)
+static const double CosRef3D = 0.98;    // rule by tests in U4
+                                        // correspond to  11.478 d
+static const double CosRef2D    = 0.88; // correspond to 25 d
+static const int    MaxDivision = 60;   // max number of step division
+                                        // because the angle is too great in 2d (U4)
 } // namespace
 
 IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   TheIWFunction&                 sp,
-  const bool         Finished,
+  const bool                     Finished,
   const math_Vector&             UV,
   const IntWalk_StatusDeflection StatusPrecedent,
-  int&              NbDivision,
-  double&                 Step,
-  const int         StepSign)
+  int&                           NbDivision,
+  double&                        Step,
+  const int                      StepSign)
 {
   // Check the step of advancement, AND recalculate this step :
   //
@@ -2695,9 +2693,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     }
     if (Cosi2 < CosRef3D)
     { // angle 3d too great
-      Step                = Step / 2.0;
-      double StepU = std::abs(Step * previousd2d.X()),
-                    StepV = std::abs(Step * previousd2d.Y());
+      Step         = Step / 2.0;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
       else
@@ -2707,9 +2704,9 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   }
 
   const double aMinTolU = 0.1 * std::abs(Step * previousd2d.X()),
-                      aMinTolV = 0.1 * std::abs(Step * previousd2d.Y());
+               aMinTolV = 0.1 * std::abs(Step * previousd2d.Y());
   const double aTolU    = (aMinTolU > 0.0) ? std::min(tolerance(1), aMinTolU) : tolerance(1),
-                      aTolV    = (aMinTolV > 0.0) ? std::min(tolerance(2), aMinTolV) : tolerance(2);
+               aTolV    = (aMinTolV > 0.0) ? std::min(tolerance(2), aMinTolV) : tolerance(2);
 
   // If aMinTolU==0.0 then (std::abs(Du) < aMinTolU) is equivalent of (std::abs(Du) < 0.0).
   // It is impossible. Therefore, this case should be processed separately.
@@ -2743,9 +2740,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     double Cosi2 = Cosi * Cosi / Duv;
     if (Cosi2 < CosRef2D || Cosi < 0)
     {
-      Step                = Step / 2.0;
-      double StepU = std::abs(Step * previousd2d.X()),
-                    StepV = std::abs(Step * previousd2d.Y());
+      Step         = Step / 2.0;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
 
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
@@ -2759,9 +2755,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     Cosi2 = Cosi * Cosi / sp.Direction3d().SquareMagnitude() / Norme;
     if (Cosi2 < CosRef3D)
     { // angle 3d too great
-      Step                = Step / 2.;
-      double StepU = std::abs(Step * previousd2d.X()),
-                    StepV = std::abs(Step * previousd2d.Y());
+      Step         = Step / 2.;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPoint;
       else
@@ -2773,9 +2768,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     if (Cosi2 < CosRef2D || sp.Direction2d() * previousd2d < 0)
     {
       // angle 2d too great or change the side
-      Step                = Step / 2.;
-      double StepU = std::abs(Step * previousd2d.X()),
-                    StepV = std::abs(Step * previousd2d.Y());
+      Step         = Step / 2.;
+      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
       if (StepU < tolerance(1) && StepV < tolerance(2))
         aStatus = IntWalk_ArretSurPointPrecedent;
       else
@@ -2789,7 +2783,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     if (aStatus == IntWalk_PointConfondu)
     {
       double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
-                    StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+             StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
       double d2dx = std::abs(previousd2d.X());
       double d2dy = std::abs(previousd2d.Y());
@@ -2837,7 +2831,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         double d2dy = std::abs(sp.Direction2d().Y());
 
         double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
-                      StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+               StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
         if (d2dx < tolerance(1))
         {
@@ -2857,9 +2851,8 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         // if (FlecheCourante > fleche) {  // step too great
         if (FlecheCourante > fleche * fleche)
         { // step too great
-          Step                = Step / 2.;
-          double StepU = std::abs(Step * previousd2d.X()),
-                        StepV = std::abs(Step * previousd2d.Y());
+          Step         = Step / 2.;
+          double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
 
           if (StepU < tolerance(1) && StepV < tolerance(2))
             aStatus = IntWalk_ArretSurPointPrecedent;
@@ -2872,7 +2865,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
           double d2dy = std::abs(sp.Direction2d().Y());
 
           double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
-                        StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
+                 StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
           if (d2dx < tolerance(1))
           {
@@ -2900,20 +2893,21 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
   #define No_Standard_OutOfRange
 #endif
 
-void IntWalk_IWalking::AddPointInCurrentLine(const int           N,
-                                             const ThePointOfPath&            PathPnt,
-                                             const occ::handle<IntWalk_TheIWLine>& CurrentLine) const
+void IntWalk_IWalking::AddPointInCurrentLine(
+  const int                             N,
+  const ThePointOfPath&                 PathPnt,
+  const occ::handle<IntWalk_TheIWLine>& CurrentLine) const
 {
   IntSurf_PntOn2S Psol;
   Psol.SetValue(ThePointOfPathTool::Value3d(PathPnt), reversed, wd1[N].ustart, wd1[N].vstart);
   CurrentLine->AddPoint(Psol);
 }
 
-void IntWalk_IWalking::MakeWalkingPoint(const int Case,
-                                        const double    U,
-                                        const double    V,
-                                        TheIWFunction&         sp,
-                                        IntSurf_PntOn2S&       Psol)
+void IntWalk_IWalking::MakeWalkingPoint(const int        Case,
+                                        const double     U,
+                                        const double     V,
+                                        TheIWFunction&   sp,
+                                        IntSurf_PntOn2S& Psol)
 
 {
   // Case == 1      : make a WalkinkPoint.
@@ -2929,10 +2923,10 @@ void IntWalk_IWalking::MakeWalkingPoint(const int Case,
   }
   else if (Case == 11 || Case == 12)
   {
-    double aUV[2] = {}, aFF[1] = {}, aDD[1][2] = {};
-    math_Vector   UV(aUV, 1, 2);
-    math_Vector   FF(aFF, 1, 1);
-    math_Matrix   DD(aDD, 1, 1, 1, 2);
+    double      aUV[2] = {}, aFF[1] = {}, aDD[1][2] = {};
+    math_Vector UV(aUV, 1, 2);
+    math_Vector FF(aFF, 1, 1);
+    math_Matrix DD(aDD, 1, 1, 1, 2);
     UV(1) = U;
     UV(2) = V;
     sp.Values(UV, FF, DD);
@@ -2944,20 +2938,20 @@ void IntWalk_IWalking::MakeWalkingPoint(const int Case,
   }
 }
 
-void IntWalk_IWalking::OpenLine(const int           N,
-                                const IntSurf_PntOn2S&           Psol,
-                                const ThePOPIterator&            Pnts1,
-                                TheIWFunction&                   sp,
+void IntWalk_IWalking::OpenLine(const int                             N,
+                                const IntSurf_PntOn2S&                Psol,
+                                const ThePOPIterator&                 Pnts1,
+                                TheIWFunction&                        sp,
                                 const occ::handle<IntWalk_TheIWLine>& Line)
 // **************** open the line and restart in the other direction********
 
 {
   ThePointOfPath PathPnt;
 
-  double aUV[2], aFF[1], aDD[1][2];
-  math_Vector   UV(aUV, 1, 2);
-  math_Vector   FF(aFF, 1, 1);
-  math_Matrix   DD(aDD, 1, 1, 1, 2);
+  double      aUV[2], aFF[1], aDD[1][2];
+  math_Vector UV(aUV, 1, 2);
+  math_Vector FF(aFF, 1, 1);
+  math_Matrix DD(aDD, 1, 1, 1, 2);
 
   previousPoint = Line->Value(1);
   if (!reversed)
@@ -2991,8 +2985,7 @@ void IntWalk_IWalking::OpenLine(const int           N,
   Line->SetTangentVector(previousd3d.Reversed(), Line->NbPoints());
 }
 
-bool IntWalk_IWalking::IsValidEndPoint(const int IndOfPoint,
-                                                   const int IndOfLine)
+bool IntWalk_IWalking::IsValidEndPoint(const int IndOfPoint, const int IndOfLine)
 {
   if (PointLineLine.IsEmpty())
     return true;
@@ -3021,8 +3014,7 @@ void IntWalk_IWalking::RemoveTwoEndPoints(const int IndOfPoint)
   }
 }
 
-bool IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d&        theP2d,
-                                                 const int Irang)
+bool IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d& theP2d, const int Irang)
 {
   const occ::handle<IntWalk_TheIWLine>& aLine = lines.Value(std::abs(Irang));
   for (int i = 1; i <= aLine->NbPoints(); i++)
@@ -3053,13 +3045,13 @@ bool IntWalk_IWalking::IsPointOnLine(const gp_Pnt2d&        theP2d,
 //           Every already computed line is checked.
 //==================================================================================
 bool IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
-                                                 const math_Vector&     theInfBounds,
-                                                 const math_Vector&     theSupBounds,
-                                                 math_FunctionSetRoot&  theSolver,
-                                                 TheIWFunction&         theFunc)
+                                     const math_Vector&     theInfBounds,
+                                     const math_Vector&     theSupBounds,
+                                     math_FunctionSetRoot&  theSolver,
+                                     TheIWFunction&         theFunc)
 {
-  const double eps  = Epsilon(1.);
-  const gp_Pnt&       aP3d = thePOn2S.Value();
+  const double  eps  = Epsilon(1.);
+  const gp_Pnt& aP3d = thePOn2S.Value();
 
   for (int aLIdx = 1; aLIdx <= lines.Length(); aLIdx++)
   {

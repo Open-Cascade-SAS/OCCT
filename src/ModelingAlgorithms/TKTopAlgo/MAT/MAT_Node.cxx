@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_Node, Standard_Transient)
 
 //=================================================================================================
 
-MAT_Node::MAT_Node(const int GeomIndex,
+MAT_Node::MAT_Node(const int                   GeomIndex,
                    const occ::handle<MAT_Arc>& LinkedArc,
-                   const double    Distance)
+                   const double                Distance)
     : nodeIndex(0),
       geomIndex(GeomIndex),
       distance(Distance)
@@ -82,8 +82,8 @@ void MAT_Node::NearElts(NCollection_Sequence<occ::handle<MAT_BasicElt>>& S) cons
   if (LA->HasNeighbour(Me, MAT_Left))
   {
 
-    occ::handle<MAT_Arc>  CA   = LA->Neighbour(Me, MAT_Left);
-    bool Pair = false;
+    occ::handle<MAT_Arc> CA   = LA->Neighbour(Me, MAT_Left);
+    bool                 Pair = false;
 
     //---------------------------------------------------------
     // Recuperation des deux elements separes pour un arc sur

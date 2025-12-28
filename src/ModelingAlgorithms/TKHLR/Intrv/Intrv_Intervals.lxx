@@ -16,7 +16,6 @@
 
 #include <Intrv_Interval.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Intrv_Interval.hxx>
 
 //=======================================================================
 // function : NbIntervals

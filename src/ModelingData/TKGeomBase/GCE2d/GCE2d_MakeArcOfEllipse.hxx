@@ -41,18 +41,18 @@ public:
 
   //! Make an arc of Ellipse (TrimmedCurve from Geom2d) from
   //! a Ellipse between two parameters Alpha1 and Alpha2.
-  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d&      Elips,
-                                         const double    Alpha1,
-                                         const double    Alpha2,
-                                         const bool Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+                                         const double      Alpha1,
+                                         const double      Alpha2,
+                                         const bool        Sense = true);
 
   //! Make an arc of Ellipse (TrimmedCurve from Geom2d) from
   //! a Ellipse between point <P> and the parameter
   //! Alpha.
-  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d&      Elips,
-                                         const gp_Pnt2d&        P,
-                                         const double    Alpha,
-                                         const bool Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+                                         const gp_Pnt2d&   P,
+                                         const double      Alpha,
+                                         const bool        Sense = true);
 
   //! Make an arc of Ellipse (TrimmedCurve from Geom2d) from
   //! a Ellipse between two points P1 and P2.
@@ -62,10 +62,10 @@ public:
   //! -   the opposite sense if Sense is false.
   //! -   Alpha1, Alpha2 and Alpha are angle values, given in radians.
   //! -   IsDone always returns true.
-  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d&      Elips,
-                                         const gp_Pnt2d&        P1,
-                                         const gp_Pnt2d&        P2,
-                                         const bool Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+                                         const gp_Pnt2d&   P1,
+                                         const gp_Pnt2d&   P2,
+                                         const bool        Sense = true);
 
   //! Returns the constructed arc of ellipse.
   Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;

@@ -16,12 +16,9 @@
 
 #include <GeomFill_Stretch.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
@@ -39,10 +36,10 @@ GeomFill_Stretch::GeomFill_Stretch(const NCollection_Array1<gp_Pnt>& P1,
 
 //=================================================================================================
 
-GeomFill_Stretch::GeomFill_Stretch(const NCollection_Array1<gp_Pnt>&   P1,
-                                   const NCollection_Array1<gp_Pnt>&   P2,
-                                   const NCollection_Array1<gp_Pnt>&   P3,
-                                   const NCollection_Array1<gp_Pnt>&   P4,
+GeomFill_Stretch::GeomFill_Stretch(const NCollection_Array1<gp_Pnt>& P1,
+                                   const NCollection_Array1<gp_Pnt>& P2,
+                                   const NCollection_Array1<gp_Pnt>& P3,
+                                   const NCollection_Array1<gp_Pnt>& P4,
                                    const NCollection_Array1<double>& W1,
                                    const NCollection_Array1<double>& W2,
                                    const NCollection_Array1<double>& W3,
@@ -67,7 +64,7 @@ void GeomFill_Stretch::Init(const NCollection_Array1<gp_Pnt>& P1,
 
   double NU = NPolU - 1;
   double NV = NPolV - 1;
-  myPoles          = new NCollection_HArray2<gp_Pnt>(1, NPolU, 1, NPolV);
+  myPoles   = new NCollection_HArray2<gp_Pnt>(1, NPolU, 1, NPolV);
 
   // The boundaries are not modified
   int i, j, k;
@@ -106,10 +103,10 @@ void GeomFill_Stretch::Init(const NCollection_Array1<gp_Pnt>& P1,
 
 //=================================================================================================
 
-void GeomFill_Stretch::Init(const NCollection_Array1<gp_Pnt>&   P1,
-                            const NCollection_Array1<gp_Pnt>&   P2,
-                            const NCollection_Array1<gp_Pnt>&   P3,
-                            const NCollection_Array1<gp_Pnt>&   P4,
+void GeomFill_Stretch::Init(const NCollection_Array1<gp_Pnt>& P1,
+                            const NCollection_Array1<gp_Pnt>& P2,
+                            const NCollection_Array1<gp_Pnt>& P3,
+                            const NCollection_Array1<gp_Pnt>& P4,
                             const NCollection_Array1<double>& W1,
                             const NCollection_Array1<double>& W2,
                             const NCollection_Array1<double>& W3,
@@ -128,7 +125,7 @@ void GeomFill_Stretch::Init(const NCollection_Array1<gp_Pnt>&   P1,
 
   double NU = NPolU - 1;
   double NV = NPolV - 1;
-  myWeights        = new NCollection_HArray2<double>(1, NPolU, 1, NPolV);
+  myWeights = new NCollection_HArray2<double>(1, NPolU, 1, NPolV);
 
   // The boundaries are not modified
   int i, j;

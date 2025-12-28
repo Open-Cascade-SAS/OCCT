@@ -44,14 +44,14 @@ public:
   //! Creates a Line as intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_GLine(const gp_Lin&           L,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates a Line as intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_GLine(const gp_Lin&           L,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -62,14 +62,14 @@ public:
   //! Creates a circle as intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_GLine(const gp_Circ&          C,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates a circle as intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_GLine(const gp_Circ&          C,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -80,14 +80,14 @@ public:
   //! Creates an ellipse as intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_GLine(const gp_Elips&         E,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates an ellispe as intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_GLine(const gp_Elips&         E,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -98,14 +98,14 @@ public:
   //! Creates a parabola as intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_GLine(const gp_Parab&         P,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates a parabola as intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_GLine(const gp_Parab&         P,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -116,14 +116,14 @@ public:
   //! Creates an hyperbola as intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_GLine(const gp_Hypr&          H,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates an hyperbola as intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_GLine(const gp_Hypr&          H,
-                                 const bool  Tang,
+                                 const bool              Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -192,13 +192,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IntPatch_GLine, IntPatch_Line)
 
 private:
-  gp_Ax2                   pos;
-  double            par1;
-  double            par2;
-  bool         fipt;
-  bool         lapt;
-  int         indf;
-  int         indl;
+  gp_Ax2                               pos;
+  double                               par1;
+  double                               par2;
+  bool                                 fipt;
+  bool                                 lapt;
+  int                                  indf;
+  int                                  indl;
   NCollection_Sequence<IntPatch_Point> svtx;
 };
 

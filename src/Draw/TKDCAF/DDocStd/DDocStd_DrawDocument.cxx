@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(DDocStd_DrawDocument, DDF_Data)
 
 //=================================================================================================
 
-occ::handle<DDocStd_DrawDocument> DDocStd_DrawDocument::Find(const occ::handle<TDocStd_Document>& /*Doc*/)
+occ::handle<DDocStd_DrawDocument> DDocStd_DrawDocument::Find(
+  const occ::handle<TDocStd_Document>& /*Doc*/)
 {
   occ::handle<DDocStd_DrawDocument> adoc;
   return adoc;

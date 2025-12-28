@@ -93,26 +93,24 @@ public:
   //! double Tol = ... ;
   //! AddSurface::Add ( S, Tol, B );
   Standard_EXPORT static void Add(const Adaptor3d_Surface& S,
-                                  const double      UMin,
-                                  const double      UMax,
-                                  const double      VMin,
-                                  const double      VMax,
-                                  const double      Tol,
+                                  const double             UMin,
+                                  const double             UMax,
+                                  const double             VMin,
+                                  const double             VMax,
+                                  const double             Tol,
                                   Bnd_Box&                 B);
 
   //! Adds the surface S to the bounding box B.
   //! This algorithm builds precise bounding box
 
-  Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S,
-                                         const double      Tol,
-                                         Bnd_Box&                 B);
+  Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S, const double Tol, Bnd_Box& B);
 
   Standard_EXPORT static void AddOptimal(const Adaptor3d_Surface& S,
-                                         const double      UMin,
-                                         const double      UMax,
-                                         const double      VMin,
-                                         const double      VMax,
-                                         const double      Tol,
+                                         const double             UMin,
+                                         const double             UMax,
+                                         const double             VMin,
+                                         const double             VMax,
+                                         const double             Tol,
                                          Bnd_Box&                 B);
 
   //! Adds to the bounding box B the surface S
@@ -120,13 +118,12 @@ public:
   //! This method is used in AddOptimal for not analytical surfaces and torus.
   //! if Tol < Precision::Confusion(), Precision::Confusion is used as computation tolerance
   Standard_EXPORT static void AddGenSurf(const Adaptor3d_Surface& S,
-                                         const double      UMin,
-                                         const double      UMax,
-                                         const double      VMin,
-                                         const double      VMax,
-                                         const double      Tol,
+                                         const double             UMin,
+                                         const double             UMax,
+                                         const double             VMin,
+                                         const double             VMax,
+                                         const double             Tol,
                                          Bnd_Box&                 B);
-
 };
 
 #endif // _BndLib_AddSurface_HeaderFile

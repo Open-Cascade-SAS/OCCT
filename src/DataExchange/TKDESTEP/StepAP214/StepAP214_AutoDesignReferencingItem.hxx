@@ -69,8 +69,8 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_DocumentRelationship> DocumentRelationship() const;
 
-  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation> ExternallyDefinedRepresentation()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_ExternallyDefinedRepresentation>
+                  ExternallyDefinedRepresentation() const;
 
   Standard_EXPORT occ::handle<StepRepr_MappedItem> MappedItem() const;
 
@@ -84,17 +84,17 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
 
-  Standard_EXPORT occ::handle<StepRepr_RepresentationRelationship> RepresentationRelationship() const;
+  Standard_EXPORT occ::handle<StepRepr_RepresentationRelationship> RepresentationRelationship()
+    const;
 
   Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
-
 };
 
 #endif // _StepAP214_AutoDesignReferencingItem_HeaderFile

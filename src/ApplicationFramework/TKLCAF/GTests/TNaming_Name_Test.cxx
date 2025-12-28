@@ -15,7 +15,6 @@
 
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 #include <TNaming_Name.hxx>
 #include <TNaming_NamedShape.hxx>

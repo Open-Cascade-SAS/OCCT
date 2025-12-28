@@ -39,11 +39,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 static TopAbs_Orientation GetOrientation(const TopoDS_Face&, const TopoDS_Face&);
@@ -237,14 +235,16 @@ void LocOpe_Gluer::Perform()
     AddEdges();
 
     // Mise a jour des descendants
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itd;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+      Iterator itd;
     for (itd.Initialize(myDescF); itd.More(); itd.Next())
     {
-      NCollection_List<TopoDS_Shape>               newDesc;
+      NCollection_List<TopoDS_Shape>           newDesc;
       NCollection_List<TopoDS_Shape>::Iterator itl;
       for (itl.Initialize(itd.Value()); itl.More(); itl.Next())
       {
-        NCollection_List<TopoDS_Shape>::Iterator itl2(theGen.DescendantFace(TopoDS::Face(itl.Value())));
+        NCollection_List<TopoDS_Shape>::Iterator itl2(
+          theGen.DescendantFace(TopoDS::Face(itl.Value())));
         for (; itl2.More(); itl2.Next())
         {
           const TopoDS_Face& descface = TopoDS::Face(itl2.Value());
@@ -259,13 +259,14 @@ void LocOpe_Gluer::Perform()
   }
 
   // recodage des regularites
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF1, theMapEF2;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    theMapEF1, theMapEF2;
   TopExp::MapShapesAndAncestors(mySn, TopAbs_EDGE, TopAbs_FACE, theMapEF1);
   TopExp::MapShapesAndAncestors(myRes, TopAbs_EDGE, TopAbs_FACE, theMapEF2);
 
   for (ind = 1; ind <= theMapEF1.Extent(); ind++)
   {
-    const TopoDS_Edge&          edg = TopoDS::Edge(theMapEF1.FindKey(ind));
+    const TopoDS_Edge&                    edg = TopoDS::Edge(theMapEF1.FindKey(ind));
     const NCollection_List<TopoDS_Shape>& LL  = theMapEF1(ind);
     if (LL.Extent() == 2)
     {
@@ -357,14 +358,14 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
 
   // Find a point on Sb
   TopExp_Explorer exp;
-  double   f, l;
+  double          f, l;
   gp_Pnt2d        ptvtx;
   gp_Pnt          pvt;
   gp_Vec          d1u, d1v, n1, n2;
 
   for (exp.Init(Fn, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    const TopoDS_Edge&   edg = TopoDS::Edge(exp.Current());
+    const TopoDS_Edge&        edg = TopoDS::Edge(exp.Current());
     occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(edg, Fn, f, l);
     if (Precision::IsNegativeInfinite(f) && Precision::IsPositiveInfinite(l))
     {
@@ -395,13 +396,13 @@ static TopAbs_Orientation GetOrientation(const TopoDS_Face& Fn, const TopoDS_Fac
 
         // Projection sur Sb
         GeomAdaptor_Surface GAS(Sb);
-        double       TolU = GAS.UResolution(Precision::Confusion());
-        double       TolV = GAS.VResolution(Precision::Confusion());
+        double              TolU = GAS.UResolution(Precision::Confusion());
+        double              TolV = GAS.VResolution(Precision::Confusion());
         Extrema_ExtPS       dist(pvt, GAS, TolU, TolV);
         if (dist.IsDone())
         {
-          double    dist2min = RealLast();
-          int jmin     = 0;
+          double dist2min = RealLast();
+          int    jmin     = 0;
           for (int j = 1; j <= dist.NbExt(); j++)
           {
             if (dist.SquareDistance(j) < dist2min)
@@ -462,8 +463,8 @@ void LocOpe_Gluer::AddEdges()
   TopLoc_Location Loc;
   //  double l, f;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapV, MapFPrism, MapE;
-  TopExp_Explorer            vexp;
-  int           flag, i;
+  TopExp_Explorer                                               vexp;
+  int                                                           flag, i;
 
   TopExp::MapShapes(mySn, TopAbs_FACE, MapFPrism);
 

@@ -68,8 +68,7 @@ public:
 
   //! Returns an empty hatcher. <Tol> is the tolerance
   //! for intersections.
-  Standard_EXPORT Hatch_Hatcher(const double    Tol,
-                                const bool Oriented = true);
+  Standard_EXPORT Hatch_Hatcher(const double Tol, const bool Oriented = true);
 
   void Tolerance(const double Tol);
 
@@ -106,16 +105,14 @@ public:
 
   //! Trims the lines at intersections with <L> in the
   //! parameter range <Start>, <End>
-  Standard_EXPORT void Trim(const gp_Lin2d&        L,
+  Standard_EXPORT void Trim(const gp_Lin2d& L,
                             const double    Start,
                             const double    End,
-                            const int Index = 0);
+                            const int       Index = 0);
 
   //! Trims the line at intersection with the oriented
   //! segment P1,P2.
-  Standard_EXPORT void Trim(const gp_Pnt2d&        P1,
-                            const gp_Pnt2d&        P2,
-                            const int Index = 0);
+  Standard_EXPORT void Trim(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const int Index = 0);
 
   //! Returns the total number of intervals on all the
   //! lines.
@@ -151,10 +148,7 @@ public:
 
   //! Returns the first Index and Par2 of interval <J> on
   //! line <I>.
-  Standard_EXPORT void StartIndex(const int I,
-                                  const int J,
-                                  int&      Index,
-                                  double&         Par2) const;
+  Standard_EXPORT void StartIndex(const int I, const int J, int& Index, double& Par2) const;
 
   //! Returns the last parameter of interval <J> on
   //! line <I>.
@@ -162,15 +156,12 @@ public:
 
   //! Returns the last Index and Par2 of interval <J> on
   //! line <I>.
-  Standard_EXPORT void EndIndex(const int I,
-                                const int J,
-                                int&      Index,
-                                double&         Par2) const;
+  Standard_EXPORT void EndIndex(const int I, const int J, int& Index, double& Par2) const;
 
 private:
-  double        myToler;
+  double                           myToler;
   NCollection_Sequence<Hatch_Line> myLines;
-  bool     myOrient;
+  bool                             myOrient;
 };
 
 #include <Hatch_Hatcher.lxx>

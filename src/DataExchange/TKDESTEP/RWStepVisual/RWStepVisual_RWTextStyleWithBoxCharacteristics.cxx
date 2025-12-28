@@ -24,7 +24,7 @@ RWStepVisual_RWTextStyleWithBoxCharacteristics::RWStepVisual_RWTextStyleWithBoxC
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                    num,
+  const int                                                      num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent) const
 {
@@ -56,7 +56,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 
   // --- own field : characteristics ---
 
-  int        numr, numpr;
+  int                     numr, numpr;
   TCollection_AsciiString TypeHeigth("BOX_HEIGHT");
   TCollection_AsciiString TypeWidth("BOX_WIDTH");
   TCollection_AsciiString TypeSlant("BOX_SLANT_ANGLE");
@@ -64,27 +64,20 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
   TCollection_AsciiString TrueType;
 
   occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> aCharacteristics;
-  double                                       aCharacteristicsItem;
-  StepVisual_BoxCharacteristicSelect                  aBoxCharacteristicSelect;
+  double                                                               aCharacteristicsItem;
+  StepVisual_BoxCharacteristicSelect                                   aBoxCharacteristicSelect;
 
   int nsub3;
   nsub3 = data->SubListNumber(num, 3, false);
   if (nsub3 != 0)
   {
-    int nb3 = data->NbParams(nsub3);
-    aCharacteristics     = new NCollection_HArray1<StepVisual_BoxCharacteristicSelect>(1, nb3);
+    int nb3          = data->NbParams(nsub3);
+    aCharacteristics = new NCollection_HArray1<StepVisual_BoxCharacteristicSelect>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // Looks for true type :
       // szv#4:S4163:12Mar99 `bool statType =` not needed
-      if (data->ReadTypedParam(nsub3,
-                               i3,
-                               true,
-                               "characteristics",
-                               ach,
-                               numr,
-                               numpr,
-                               TrueType))
+      if (data->ReadTypedParam(nsub3, i3, true, "characteristics", ach, numr, numpr, TrueType))
       {
         // szv#4:S4163:12Mar99 `bool stat3 =` not needed
         if (data->ReadReal(numr, numpr, "characteristics", ach, aCharacteristicsItem))
@@ -126,7 +119,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
 }
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent) const
 {
 
@@ -146,7 +139,7 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::WriteStep(
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::Share(
   const occ::handle<StepVisual_TextStyleWithBoxCharacteristics>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   iter.GetOneItem(ent->CharacterAppearance());

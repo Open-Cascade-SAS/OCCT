@@ -38,12 +38,12 @@ IGESSolid_ToolSolidOfLinearExtrusion::IGESSolid_ToolSolidOfLinearExtrusion() {}
 void IGESSolid_ToolSolidOfLinearExtrusion::ReadOwnParams(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,
   const occ::handle<IGESData_IGESReaderData>&          IR,
-  IGESData_ParamReader&                           PR) const
+  IGESData_ParamReader&                                PR) const
 {
   occ::handle<IGESData_IGESEntity> tempEntity;
-  gp_XYZ                      tempDirection;
-  double               tempLength;
-  double               tempreal;
+  gp_XYZ                           tempDirection;
+  double                           tempLength;
+  double                           tempreal;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // clang-format off
@@ -91,7 +91,7 @@ void IGESSolid_ToolSolidOfLinearExtrusion::ReadOwnParams(
 
 void IGESSolid_ToolSolidOfLinearExtrusion::WriteOwnParams(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,
-  IGESData_IGESWriter&                            IW) const
+  IGESData_IGESWriter&                                 IW) const
 {
   IW.Send(ent->Curve());
   IW.Send(ent->ExtrusionLength());
@@ -102,7 +102,7 @@ void IGESSolid_ToolSolidOfLinearExtrusion::WriteOwnParams(
 
 void IGESSolid_ToolSolidOfLinearExtrusion::OwnShared(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                            iter) const
 {
   iter.GetOneItem(ent->Curve());
 }
@@ -110,11 +110,11 @@ void IGESSolid_ToolSolidOfLinearExtrusion::OwnShared(
 void IGESSolid_ToolSolidOfLinearExtrusion::OwnCopy(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& another,
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,
-  Interface_CopyTool&                             TC) const
+  Interface_CopyTool&                                  TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Curve()));
   double tempLength    = another->ExtrusionLength();
-  gp_XYZ        tempDirection = another->ExtrusionDirection().XYZ();
+  gp_XYZ tempDirection = another->ExtrusionDirection().XYZ();
   ent->Init(tempEntity, tempLength, tempDirection);
 }
 
@@ -143,9 +143,9 @@ void IGESSolid_ToolSolidOfLinearExtrusion::OwnCheck(
 
 void IGESSolid_ToolSolidOfLinearExtrusion::OwnDump(
   const occ::handle<IGESSolid_SolidOfLinearExtrusion>& ent,
-  const IGESData_IGESDumper&                      dumper,
-  Standard_OStream&                               S,
-  const int                          level) const
+  const IGESData_IGESDumper&                           dumper,
+  Standard_OStream&                                    S,
+  const int                                            level) const
 {
   S << "IGESSolid_SolidOfLinearExtrusion\n"
     << "Curve entity        : ";

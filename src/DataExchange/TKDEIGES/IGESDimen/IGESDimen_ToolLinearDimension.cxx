@@ -36,7 +36,7 @@ IGESDimen_ToolLinearDimension::IGESDimen_ToolLinearDimension() {}
 
 void IGESDimen_ToolLinearDimension::ReadOwnParams(const occ::handle<IGESDimen_LinearDimension>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,
-                                                  IGESData_ParamReader&                    PR) const
+                                                  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -78,8 +78,9 @@ void IGESDimen_ToolLinearDimension::ReadOwnParams(const occ::handle<IGESDimen_Li
   ent->Init(note, firstLeader, secondLeader, firstWitness, secondWitness);
 }
 
-void IGESDimen_ToolLinearDimension::WriteOwnParams(const occ::handle<IGESDimen_LinearDimension>& ent,
-                                                   IGESData_IGESWriter& IW) const
+void IGESDimen_ToolLinearDimension::WriteOwnParams(
+  const occ::handle<IGESDimen_LinearDimension>& ent,
+  IGESData_IGESWriter&                          IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstLeader());
@@ -89,7 +90,7 @@ void IGESDimen_ToolLinearDimension::WriteOwnParams(const occ::handle<IGESDimen_L
 }
 
 void IGESDimen_ToolLinearDimension::OwnShared(const occ::handle<IGESDimen_LinearDimension>& ent,
-                                              Interface_EntityIterator&                iter) const
+                                              Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstLeader());
@@ -100,7 +101,7 @@ void IGESDimen_ToolLinearDimension::OwnShared(const occ::handle<IGESDimen_Linear
 
 void IGESDimen_ToolLinearDimension::OwnCopy(const occ::handle<IGESDimen_LinearDimension>& another,
                                             const occ::handle<IGESDimen_LinearDimension>& ent,
-                                            Interface_CopyTool&                      TC) const
+                                            Interface_CopyTool&                           TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, TC.Transferred(another->FirstLeader()));
@@ -131,9 +132,9 @@ void IGESDimen_ToolLinearDimension::OwnCheck(const occ::handle<IGESDimen_LinearD
 }
 
 void IGESDimen_ToolLinearDimension::OwnDump(const occ::handle<IGESDimen_LinearDimension>& ent,
-                                            const IGESData_IGESDumper&               dumper,
-                                            Standard_OStream&                        S,
-                                            const int                   level) const
+                                            const IGESData_IGESDumper&                    dumper,
+                                            Standard_OStream&                             S,
+                                            const int level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

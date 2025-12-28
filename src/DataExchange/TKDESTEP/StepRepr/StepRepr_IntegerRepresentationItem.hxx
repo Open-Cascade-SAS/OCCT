@@ -30,7 +30,7 @@ public:
   Standard_EXPORT StepRepr_IntegerRepresentationItem();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const int                  theValue);
+                            const int                                    theValue);
 
   inline void SetValue(const int theValue) { value = theValue; }
 

@@ -35,7 +35,7 @@ public:
 
 private:
   Standard_EXPORT static bool Parse(const occ::handle<ExprIntrp_Generator>& gen,
-                                                const TCollection_AsciiString&     str);
+                                    const TCollection_AsciiString&          str);
 
 private:
   friend class ExprIntrp_GenExp;

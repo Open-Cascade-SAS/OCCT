@@ -26,9 +26,7 @@ extern bool Draw_Bounds;
 
 //=================================================================================================
 
-void Draw_Display::DrawMarker(const gp_Pnt&          pt,
-                              const Draw_MarkerShape S,
-                              const int Size)
+void Draw_Display::DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const int Size)
 {
   gp_Pnt2d p;
   Project(pt, p);
@@ -37,16 +35,14 @@ void Draw_Display::DrawMarker(const gp_Pnt&          pt,
 
 //=================================================================================================
 
-void Draw_Display::DrawMarker(const gp_Pnt2d&        pt,
-                              const Draw_MarkerShape S,
-                              const int ISize)
+void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const int ISize)
 {
   Draw_Bounds = false;
 
-  gp_Pnt2d      p1 = pt;
-  gp_Pnt2d      p2 = p1;
-  gp_Circ2d     C;
-  double Size = ((double)ISize) / Zoom();
+  gp_Pnt2d  p1 = pt;
+  gp_Pnt2d  p2 = p1;
+  gp_Circ2d C;
+  double    Size = ((double)ISize) / Zoom();
 
   switch (S)
   {
@@ -154,17 +150,17 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
 
 //=================================================================================================
 
-void Draw_Display::Draw(const gp_Circ&         C,
-                        const double    A1,
-                        const double    A3,
-                        const bool ModifyWithZoom)
+void Draw_Display::Draw(const gp_Circ& C,
+                        const double   A1,
+                        const double   A3,
+                        const bool     ModifyWithZoom)
 {
   double A2 = A3;
   while (A2 < A1)
     A2 += 2 * M_PI;
 
-  double    angle = DEFLECTION / (C.Radius() * Zoom());
-  int n     = (int)((A2 - A1) / angle);
+  double angle = DEFLECTION / (C.Radius() * Zoom());
+  int    n     = (int)((A2 - A1) / angle);
   if (n > MAXPNT)
   {
     angle = (A2 - A1) / MAXPNT;
@@ -207,17 +203,17 @@ void Draw_Display::Draw(const gp_Circ&         C,
 
 //=================================================================================================
 
-void Draw_Display::Draw(const gp_Circ2d&       C,
-                        const double    A1,
-                        const double    A3,
-                        const bool ModifyWithZoom)
+void Draw_Display::Draw(const gp_Circ2d& C,
+                        const double     A1,
+                        const double     A3,
+                        const bool       ModifyWithZoom)
 {
   double A2 = A3;
   while (A2 < A1)
     A2 += 2 * M_PI;
 
-  double    angle = DEFLECTION / (C.Radius() * Zoom());
-  int n     = (int)((A2 - A1) / angle);
+  double angle = DEFLECTION / (C.Radius() * Zoom());
+  int    n     = (int)((A2 - A1) / angle);
   if (n > MAXPNT)
   {
     angle = (A2 - A1) / MAXPNT;

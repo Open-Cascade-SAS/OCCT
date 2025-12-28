@@ -28,16 +28,16 @@
 //=================================================================================================
 
 bool BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
-                                            const TopoDS_Shape& S2,
-                                            gp_Pnt&             P1,
-                                            gp_Pnt&             P2,
-                                            double&      dist)
+                                const TopoDS_Shape& S2,
+                                gp_Pnt&             P1,
+                                gp_Pnt&             P2,
+                                double&             dist)
 {
   dist = Precision::Infinite();
 
-  TopLoc_Location            L;
+  TopLoc_Location                 L;
   occ::handle<Poly_Triangulation> Tr;
-  TopExp_Explorer            exFace;
+  TopExp_Explorer                 exFace;
 
   int nbn1 = 0;
   for (exFace.Init(S1, TopAbs_FACE); exFace.More(); exFace.Next())
@@ -107,8 +107,8 @@ bool BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
     const gp_Pnt& PP1 = TP1(i1);
     for (i2 = 1; i2 <= nbn2; i2++)
     {
-      const gp_Pnt&       PP2  = TP2(i2);
-      const double dCur = PP1.Distance(PP2);
+      const gp_Pnt& PP2  = TP2(i2);
+      const double  dCur = PP1.Distance(PP2);
       if (dist > dCur)
       {
         P1   = PP1;

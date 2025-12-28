@@ -64,8 +64,8 @@ private:
 
   LDOM_BasicText(const LDOM_CharacterData& aText);
 
-  static LDOM_BasicText& Create(const LDOM_Node::NodeType      aType,
-                                const LDOMBasicString&         aData,
+  static LDOM_BasicText& Create(const LDOM_Node::NodeType           aType,
+                                const LDOMBasicString&              aData,
                                 const occ::handle<LDOM_MemManager>& aDoc);
   // Creation
 

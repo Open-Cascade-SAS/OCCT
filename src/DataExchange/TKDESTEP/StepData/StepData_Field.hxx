@@ -47,8 +47,7 @@ public:
 
   //! Creates a Field from another one. If <copy> is True, Handled
   //! data (Select,String,List, not entities) are copied
-  Standard_EXPORT StepData_Field(const StepData_Field&  other,
-                                 const bool copy = false);
+  Standard_EXPORT StepData_Field(const StepData_Field& other, const bool copy = false);
 
   //! Gets the copy of the values of another field
   Standard_EXPORT void CopyFrom(const StepData_Field& other);
@@ -112,10 +111,7 @@ public:
 
   //! Declares a field as an homogeneous square list, with initial
   //! sizes, and initial lowers
-  Standard_EXPORT void SetList2(const int siz1,
-                                const int siz2,
-                                const int f1 = 1,
-                                const int f2 = 1);
+  Standard_EXPORT void SetList2(const int siz1, const int siz2, const int f1 = 1, const int f2 = 1);
 
   //! Sets an undetermined value : can be String, SelectMember,
   //! HArray(1-2) ... else, an Entity
@@ -127,9 +123,7 @@ public:
   Standard_EXPORT void ClearItem(const int num);
 
   //! Internal access to an Integer Value for a list, plus its kind
-  Standard_EXPORT void SetInt(const int num,
-                              const int val,
-                              const int kind);
+  Standard_EXPORT void SetInt(const int num, const int val, const int kind);
 
   //! Sets an Integer Value for a list (rank num)
   //! (recognizes a SelectMember)
@@ -141,9 +135,7 @@ public:
 
   //! Sets an Enum Value (Integer counterpart), also its text
   //! expression if known (if list has been set as "any")
-  Standard_EXPORT void SetEnum(const int num,
-                               const int val,
-                               const char* text = "");
+  Standard_EXPORT void SetEnum(const int num, const int val, const char* text = "");
 
   Standard_EXPORT void SetReal(const int num, const double val);
 
@@ -151,14 +143,12 @@ public:
 
   Standard_EXPORT void SetEntity(const int num, const occ::handle<Standard_Transient>& val);
 
-  Standard_EXPORT bool IsSet(const int n1 = 1,
-                                         const int n2 = 1) const;
+  Standard_EXPORT bool IsSet(const int n1 = 1, const int n2 = 1) const;
 
   //! Returns the kind of an item in a list or double list
   //! It is the kind of the list, except if it is "Any", in such a
   //! case the true kind is determined and returned
-  Standard_EXPORT int ItemKind(const int n1 = 1,
-                                            const int n2 = 1) const;
+  Standard_EXPORT int ItemKind(const int n1 = 1, const int n2 = 1) const;
 
   //! Returns the kind of the field
   //! <type> True (D) : returns only the type itself
@@ -173,36 +163,28 @@ public:
 
   Standard_EXPORT int Int() const;
 
-  Standard_EXPORT int Integer(const int n1 = 1,
-                                           const int n2 = 1) const;
+  Standard_EXPORT int Integer(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT bool Boolean(const int n1 = 1,
-                                           const int n2 = 1) const;
+  Standard_EXPORT bool Boolean(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT StepData_Logical Logical(const int n1 = 1,
-                                           const int n2 = 1) const;
+  Standard_EXPORT StepData_Logical Logical(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT double Real(const int n1 = 1,
-                                     const int n2 = 1) const;
+  Standard_EXPORT double Real(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT const char* String(const int n1 = 1,
-                                          const int n2 = 1) const;
+  Standard_EXPORT const char* String(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT int Enum(const int n1 = 1,
-                                        const int n2 = 1) const;
+  Standard_EXPORT int Enum(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT const char* EnumText(const int n1 = 1,
-                                            const int n2 = 1) const;
+  Standard_EXPORT const char* EnumText(const int n1 = 1, const int n2 = 1) const;
 
-  Standard_EXPORT occ::handle<Standard_Transient> Entity(const int n1 = 1,
-                                                    const int n2 = 1) const;
+  Standard_EXPORT occ::handle<Standard_Transient> Entity(const int n1 = 1, const int n2 = 1) const;
 
   Standard_EXPORT occ::handle<Standard_Transient> Transient() const;
 
 private:
-  int           thekind;
-  int           theint;
-  double              thereal;
+  int                             thekind;
+  int                             theint;
+  double                          thereal;
   occ::handle<Standard_Transient> theany;
 };
 

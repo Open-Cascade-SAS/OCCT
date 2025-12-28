@@ -43,11 +43,10 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle(const gp_Circ&          C,
 //=============================================================================
 
 GeomToStep_MakeCircle::GeomToStep_MakeCircle(const occ::handle<Geom_Circle>& Cer,
-                                             const StepData_Factors&    theLocalFactors)
+                                             const StepData_Factors&         theLocalFactors)
 {
   gp_Circ C;
   C = Cer->Circ();
-#include "GeomToStep_MakeCircle_gen.pxx"
 }
 
 //=============================================================================
@@ -56,15 +55,15 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle(const occ::handle<Geom_Circle>& Cer
 //=============================================================================
 
 GeomToStep_MakeCircle::GeomToStep_MakeCircle(const occ::handle<Geom2d_Circle>& Cer,
-                                             const StepData_Factors&      theLocalFactors)
+                                             const StepData_Factors&           theLocalFactors)
 {
   gp_Circ2d C2d;
   C2d = Cer->Circ2d();
 
   occ::handle<StepGeom_Circle>           CStep = new StepGeom_Circle;
-  StepGeom_Axis2Placement           Ax2;
+  StepGeom_Axis2Placement                Ax2;
   occ::handle<StepGeom_Axis2Placement2d> Ax2Step;
-  double                     Rayon;
+  double                                 Rayon;
 
   GeomToStep_MakeAxis2Placement2d MkAxis2(C2d.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();

@@ -32,8 +32,8 @@ TopClass_Classifier2d::TopClass_Classifier2d()
       myParam(0.0),
       myTolerance(0.0),
       myClosest(0),
-      myState(TopAbs_UNKNOWN),      // skv OCC12627
-      myIsHeadOrEnd(false) // skv OCC12627
+      myState(TopAbs_UNKNOWN), // skv OCC12627
+      myIsHeadOrEnd(false)     // skv OCC12627
 {
 }
 
@@ -72,7 +72,7 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
   const IntRes2d_IntersectionPoint* PClosest = NULL;
 
   double dMin = RealLast();
-  nbPoints           = myIntersector.NbPoints();
+  nbPoints    = myIntersector.NbPoints();
   for (iPoint = 1; iPoint <= nbPoints; iPoint++)
   {
     const IntRes2d_IntersectionPoint& PInter = myIntersector.Point(iPoint);
@@ -221,8 +221,8 @@ void TopClass_Classifier2d::Compare(const TheEdge& E, const TopAbs_Orientation O
   else
   {
     // PClosest is Head or End of the edge : update the complex transition
-    gp_Dir2d      Tang2d, Norm2d;
-    double Curv;
+    gp_Dir2d Tang2d, Norm2d;
+    double   Curv;
     myIntersector.LocalGeometry(E, PClosest->ParamOnSecond(), Tang2d, Norm2d, Curv);
     gp_Dir Tang(Tang2d.X(), Tang2d.Y(), 0.);
     gp_Dir Norm(Norm2d.X(), Norm2d.Y(), 0.);

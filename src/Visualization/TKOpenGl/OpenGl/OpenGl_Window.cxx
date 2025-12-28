@@ -176,7 +176,7 @@ OpenGl_Window::OpenGl_Window()
 void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                          const occ::handle<Aspect_Window>&        thePlatformWindow,
                          const occ::handle<Aspect_Window>&        theSizeWindow,
-                         Aspect_RenderingContext             theGContext,
+                         Aspect_RenderingContext                  theGContext,
                          const occ::handle<OpenGl_Caps>&          theCaps,
                          const occ::handle<OpenGl_Context>&       theShareCtx)
 {

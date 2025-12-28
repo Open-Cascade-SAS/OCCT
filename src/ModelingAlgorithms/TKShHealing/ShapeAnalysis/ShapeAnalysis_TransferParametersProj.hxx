@@ -51,12 +51,11 @@ public:
   //! to pcurve (if To2d is True) or back (if To2d is False)
   Standard_EXPORT virtual occ::handle<NCollection_HSequence<double>> Perform(
     const occ::handle<NCollection_HSequence<double>>& Papams,
-    const bool                 To2d) override;
+    const bool                                        To2d) override;
 
   //! Transfers parameter given by Param from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual double Perform(const double    Param,
-                                                const bool To2d) override;
+  Standard_EXPORT virtual double Perform(const double Param, const bool To2d) override;
 
   //! Returns modifiable flag forcing projection
   //! If it is False (default), projection is done only
@@ -66,10 +65,10 @@ public:
 
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
-  Standard_EXPORT virtual void TransferRange(TopoDS_Edge&           newEdge,
-                                             const double    prevPar,
-                                             const double    currPar,
-                                             const bool Is2d) override;
+  Standard_EXPORT virtual void TransferRange(TopoDS_Edge& newEdge,
+                                             const double prevPar,
+                                             const double currPar,
+                                             const bool   Is2d) override;
 
   //! Returns False;
   Standard_EXPORT virtual bool IsSameRange() const override;
@@ -91,18 +90,18 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParametersProj, ShapeAnalysis_TransferParameters)
 
 private:
-  Standard_EXPORT double PreformSegment(const double    Param,
-                                               const bool To2d,
-                                               const double    First,
-                                               const double    Last);
+  Standard_EXPORT double PreformSegment(const double Param,
+                                        const bool   To2d,
+                                        const double First,
+                                        const double Last);
 
-  occ::handle<Geom_Curve>       myCurve;
-  occ::handle<Geom2d_Curve>     myCurve2d;
-  Adaptor3d_CurveOnSurface myAC3d;
-  double            myPrecision;
-  TopLoc_Location          myLocation;
-  bool         myForceProj;
-  bool         myInitOK;
+  occ::handle<Geom_Curve>   myCurve;
+  occ::handle<Geom2d_Curve> myCurve2d;
+  Adaptor3d_CurveOnSurface  myAC3d;
+  double                    myPrecision;
+  TopLoc_Location           myLocation;
+  bool                      myForceProj;
+  bool                      myInitOK;
 };
 
 #endif // _ShapeAnalysis_TransferParametersProj_HeaderFile

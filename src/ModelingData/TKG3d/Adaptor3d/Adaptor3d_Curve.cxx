@@ -80,9 +80,7 @@ void Adaptor3d_Curve::Intervals(NCollection_Array1<double>&, const GeomAbs_Shape
 
 // occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::Trim(const double First, const double
 // Last, const double Tol) const
-occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::Trim(const double,
-                                              const double,
-                                              const double) const
+occ::handle<Adaptor3d_Curve> Adaptor3d_Curve::Trim(const double, const double, const double) const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Trim");
 }

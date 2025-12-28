@@ -32,7 +32,7 @@ RWStepKinematics_RWMechanismStateRepresentation::RWStepKinematics_RWMechanismSta
 
 void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     theData,
-  const int                                     theNum,
+  const int                                                       theNum,
   occ::handle<Interface_Check>&                                   theArch,
   const occ::handle<StepKinematics_MechanismStateRepresentation>& theEnt) const
 {
@@ -46,12 +46,12 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
 
   // Inherited field : items
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems;
-  occ::handle<StepRepr_RepresentationItem>          anEnt;
-  int                             nsub;
+  occ::handle<StepRepr_RepresentationItem>                                   anEnt;
+  int                                                                        nsub;
   if (theData->ReadSubList(theNum, 2, "items", theArch, nsub))
   {
     int nb = theData->NbParams(nsub);
-    aItems              = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
+    aItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (theData->ReadEntity(nsub,
@@ -89,7 +89,7 @@ void RWStepKinematics_RWMechanismStateRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWMechanismStateRepresentation::WriteStep(
-  StepData_StepWriter&                                       theSW,
+  StepData_StepWriter&                                            theSW,
   const occ::handle<StepKinematics_MechanismStateRepresentation>& theEnt) const
 {
   // Inherited field : name
@@ -114,7 +114,7 @@ void RWStepKinematics_RWMechanismStateRepresentation::WriteStep(
 
 void RWStepKinematics_RWMechanismStateRepresentation::Share(
   const occ::handle<StepKinematics_MechanismStateRepresentation>& theEnt,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                                       iter) const
 {
   int nbElem = theEnt->NbItems();
   for (int i = 1; i <= nbElem; i++)

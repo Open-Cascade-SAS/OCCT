@@ -38,10 +38,7 @@ class IntPatch_Line : public Standard_Transient
 public:
   //! To set the values returned by IsUIsoS1,....
   //! The default values are False.
-  void SetValue(const bool Uiso1,
-                const bool Viso1,
-                const bool Uiso2,
-                const bool Viso2);
+  void SetValue(const bool Uiso1, const bool Viso1, const bool Uiso2, const bool Viso2);
 
   //! Returns the type of geometry 3d (Line, Circle, Parabola,
   //! Hyperbola, Ellipse, Analytic, Walking, Restriction)
@@ -110,13 +107,13 @@ public:
 protected:
   //! To initialize the fields, when the transitions
   //! are In or Out.
-  Standard_EXPORT IntPatch_Line(const bool  Tang,
+  Standard_EXPORT IntPatch_Line(const bool              Tang,
                                 const IntSurf_TypeTrans Trans1,
                                 const IntSurf_TypeTrans Trans2);
 
   //! To initialize the fields, when the transitions
   //! are Touch.
-  Standard_EXPORT IntPatch_Line(const bool  Tang,
+  Standard_EXPORT IntPatch_Line(const bool              Tang,
                                 const IntSurf_Situation Situ1,
                                 const IntSurf_Situation Situ2);
 
@@ -127,15 +124,15 @@ protected:
   IntPatch_IType typ;
 
 private:
-  bool  tg;
+  bool              tg;
   IntSurf_TypeTrans tS1;
   IntSurf_TypeTrans tS2;
   IntSurf_Situation sit1;
   IntSurf_Situation sit2;
-  bool  uS1;
-  bool  vS1;
-  bool  uS2;
-  bool  vS2;
+  bool              uS1;
+  bool              vS1;
+  bool              uS2;
+  bool              vS2;
 };
 
 #include <IntPatch_Line.lxx>

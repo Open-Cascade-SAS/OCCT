@@ -37,7 +37,7 @@ RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::
 
 void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         theData,
-  const int                                         theNum,
+  const int                                                           theNum,
   occ::handle<Interface_Check>&                                       theArch,
   const occ::handle<StepKinematics_LinearFlexibleAndPlanarCurvePair>& theEnt) const
 {
@@ -60,7 +60,7 @@ void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -124,7 +124,7 @@ void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::WriteStep(
-  StepData_StepWriter&                                           theSW,
+  StepData_StepWriter&                                                theSW,
   const occ::handle<StepKinematics_LinearFlexibleAndPlanarCurvePair>& theEnt) const
 {
 
@@ -162,7 +162,7 @@ void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::WriteStep(
 
 void RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::Share(
   const occ::handle<StepKinematics_LinearFlexibleAndPlanarCurvePair>& theEnt,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                           iter) const
 {
 
   // Inherited fields of RepresentationItem

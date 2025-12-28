@@ -32,8 +32,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
   double al1, be1, ga1;
   double al2, be2, ga2;
 
-  double Det =
-    std::max(std::abs(A1), std::max(std::abs(A2), std::max(std::abs(B1), std::abs(B2))));
+  double Det = std::max(std::abs(A1), std::max(std::abs(A2), std::max(std::abs(B1), std::abs(B2))));
 
   if (std::abs(A1) == Det)
   {
@@ -92,10 +91,10 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
   }
   else
   {
-    para             = false;
-    iden             = false;
-    empt             = false;
-    nbp              = 1;
+    para      = false;
+    iden      = false;
+    empt      = false;
+    nbp       = 1;
     double XS = (be1 * ga2 / al1 - be2 * ga1 / al1) / denom;
     double YS = (rap * ga1 - ga2) / denom;
 
@@ -103,8 +102,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
         || ((std::abs(A1) != Det) && (std::abs(B1) != Det) && (std::abs(A2) != Det)))
     {
       double temp = XS;
-      XS                 = YS;
-      YS                 = temp;
+      XS          = YS;
+      YS          = temp;
     }
 
     double La, Mu;

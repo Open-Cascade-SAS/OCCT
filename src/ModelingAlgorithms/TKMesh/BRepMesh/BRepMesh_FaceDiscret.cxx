@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
 
 //=================================================================================================
 
-BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory)
+BRepMesh_FaceDiscret::BRepMesh_FaceDiscret(
+  const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory)
     : myAlgoFactory(theAlgoFactory)
 {
 }
@@ -67,8 +68,8 @@ private:
 //=================================================================================================
 
 bool BRepMesh_FaceDiscret::performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                                       const IMeshTools_Parameters&   theParameters,
-                                                       const Message_ProgressRange&   theRange)
+                                           const IMeshTools_Parameters&        theParameters,
+                                           const Message_ProgressRange&        theRange)
 {
   myModel      = theModel;
   myParameters = theParameters;
@@ -93,7 +94,7 @@ bool BRepMesh_FaceDiscret::performInternal(const occ::handle<IMeshData_Model>& t
 
 //=================================================================================================
 
-void BRepMesh_FaceDiscret::process(const int       theFaceIndex,
+void BRepMesh_FaceDiscret::process(const int                    theFaceIndex,
                                    const Message_ProgressRange& theRange) const
 {
   const IMeshData::IFaceHandle& aDFace = myModel->GetFace(theFaceIndex);

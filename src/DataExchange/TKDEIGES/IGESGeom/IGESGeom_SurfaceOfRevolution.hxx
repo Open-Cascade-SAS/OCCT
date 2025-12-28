@@ -42,8 +42,8 @@ public:
   //! - anEndAngle  : End angle of the surface of revolution
   Standard_EXPORT void Init(const occ::handle<IGESGeom_Line>&       anAxis,
                             const occ::handle<IGESData_IGESEntity>& aGeneratrix,
-                            const double                aStartAngle,
-                            const double                anEndAngle);
+                            const double                            aStartAngle,
+                            const double                            anEndAngle);
 
   //! returns the axis of revolution
   Standard_EXPORT occ::handle<IGESGeom_Line> AxisOfRevolution() const;
@@ -62,8 +62,8 @@ public:
 private:
   occ::handle<IGESGeom_Line>       theLine;
   occ::handle<IGESData_IGESEntity> theGeneratrix;
-  double               theStartAngle;
-  double               theEndAngle;
+  double                           theStartAngle;
+  double                           theEndAngle;
 };
 
 #endif // _IGESGeom_SurfaceOfRevolution_HeaderFile

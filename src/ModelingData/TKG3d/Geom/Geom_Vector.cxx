@@ -65,7 +65,7 @@ double Geom_Vector::Angle(const occ::handle<Geom_Vector>& Other) const
 }
 
 double Geom_Vector::AngleWithRef(const occ::handle<Geom_Vector>& Other,
-                                        const occ::handle<Geom_Vector>& VRef) const
+                                 const occ::handle<Geom_Vector>& VRef) const
 {
 
   return gpVec.AngleWithRef(Other->Vec(), VRef->Vec());
@@ -84,7 +84,7 @@ double Geom_Vector::Dot(const occ::handle<Geom_Vector>& Other) const
 }
 
 double Geom_Vector::DotCross(const occ::handle<Geom_Vector>& V1,
-                                    const occ::handle<Geom_Vector>& V2) const
+                             const occ::handle<Geom_Vector>& V2) const
 {
 
   return gpVec.DotCross(V1->Vec(), V2->Vec());

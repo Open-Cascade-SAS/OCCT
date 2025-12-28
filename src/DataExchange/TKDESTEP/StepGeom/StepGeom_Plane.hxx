@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepGeom_Plane();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Plane, StepGeom_ElementarySurface)
-
 };
 
 #endif // _StepGeom_Plane_HeaderFile

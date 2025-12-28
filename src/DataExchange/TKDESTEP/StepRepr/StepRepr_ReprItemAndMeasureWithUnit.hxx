@@ -34,7 +34,8 @@ public:
   Standard_EXPORT void Init(const occ::handle<StepBasic_MeasureWithUnit>&   aMWU,
                             const occ::handle<StepRepr_RepresentationItem>& aRI);
 
-  Standard_EXPORT occ::handle<StepRepr_MeasureRepresentationItem> GetMeasureRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_MeasureRepresentationItem> GetMeasureRepresentationItem()
+    const;
 
   Standard_EXPORT void SetMeasureWithUnit(const occ::handle<StepBasic_MeasureWithUnit>& aMWU);
 

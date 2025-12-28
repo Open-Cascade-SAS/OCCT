@@ -38,17 +38,16 @@ public:
   //! deducted from data (reports) stored in the model.
   //! Class method, can be called by any one
   Standard_EXPORT static const char* CVal(const occ::handle<Standard_Transient>&       ent,
-                                               const occ::handle<Interface_InterfaceModel>& model);
+                                          const occ::handle<Interface_InterfaceModel>& model);
 
   //! Returns the Signature for a Transient object, as a validity
   //! deducted from data (reports) stored in the model
   //! Calls the class method CVal
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignValidity, IFSelect_Signature)
-
 };
 
 #endif // _IFSelect_SignValidity_HeaderFile

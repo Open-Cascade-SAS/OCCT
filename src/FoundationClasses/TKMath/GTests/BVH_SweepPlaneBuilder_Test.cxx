@@ -20,8 +20,8 @@
 template <class T, int N>
 BVH_Box<T, N> ComputeSetBox(BVH_Set<T, N>* theSet)
 {
-  BVH_Box<T, N>          aBox;
-  const int aSize = theSet->Size();
+  BVH_Box<T, N> aBox;
+  const int     aSize = theSet->Size();
   for (int i = 0; i < aSize; ++i)
   {
     aBox.Combine(theSet->Box(i));
@@ -123,9 +123,8 @@ TEST(BVH_SweepPlaneBuilderTest, BuildMultipleTriangles_Grid)
   {
     for (int j = 0; j < aGridSize; ++j)
     {
-      BVH::Array<double, 3>::Append(
-        aTriangulation.Vertices,
-        BVH_Vec3d(static_cast<double>(i), static_cast<double>(j), 0.0));
+      BVH::Array<double, 3>::Append(aTriangulation.Vertices,
+                                    BVH_Vec3d(static_cast<double>(i), static_cast<double>(j), 0.0));
     }
   }
 
@@ -175,8 +174,7 @@ TEST(BVH_SweepPlaneBuilderTest, SplitAlongDifferentAxes)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
 
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_SweepPlaneBuilder<double, 3> aBuilder(1, 32, 1);
@@ -201,8 +199,7 @@ TEST(BVH_SweepPlaneBuilderTest, DegenerateCase_AllSamePosition)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.1, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.1, 0.0));
 
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_SweepPlaneBuilder<double, 3> aBuilder(1, 32, 1);
@@ -231,8 +228,7 @@ TEST(BVH_SweepPlaneBuilderTest, SAHQuality_VerifyBetter)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.4, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.2, 0.4, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   // Group 2: right side (spatially separated)
@@ -242,9 +238,8 @@ TEST(BVH_SweepPlaneBuilderTest, SAHQuality_VerifyBetter)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.4, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.2, 0.4, 0.0));
-    BVH::Array<int, 4>::Append(
-      aTriangulation.Elements,
-      BVH_Vec4i((5 + i) * 3, (5 + i) * 3 + 1, (5 + i) * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                               BVH_Vec4i((5 + i) * 3, (5 + i) * 3 + 1, (5 + i) * 3 + 2, 0));
   }
 
   BVH_SweepPlaneBuilder<double, 3> aBuilder(2, 32, 1);
@@ -298,8 +293,7 @@ TEST(BVH_SweepPlaneBuilderTest, LeafSize_RespectMaxSize)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_SweepPlaneBuilder<double, 3> aBuilder(5, 32, 1); // Leaf size = 5

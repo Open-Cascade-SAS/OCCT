@@ -135,9 +135,9 @@ public:
   //!                    Null value is allowed (no possibility to read).
   //! @param theWriter - instance of the write driver for the format.
   //!                    Null value is allowed (no possibility to write).
-  Standard_EXPORT void DefineFormat(const TCollection_AsciiString&      theFormat,
-                                    const TCollection_AsciiString&      theDescription,
-                                    const TCollection_AsciiString&      theExtension,
+  Standard_EXPORT void DefineFormat(const TCollection_AsciiString&           theFormat,
+                                    const TCollection_AsciiString&           theDescription,
+                                    const TCollection_AsciiString&           theExtension,
                                     const occ::handle<PCDM_RetrievalDriver>& theReader,
                                     const occ::handle<PCDM_StorageDriver>&   theWriter);
 
@@ -166,8 +166,7 @@ public:
   //! int nbdoc = anApp->NbDocuments();
   //! for (int i = 1; i <= nbdoc; i++) {
   //! aApp->GetDocument(i,aDoc);
-  Standard_EXPORT void GetDocument(const int    index,
-                                   occ::handle<TDocStd_Document>& aDoc) const;
+  Standard_EXPORT void GetDocument(const int index, occ::handle<TDocStd_Document>& aDoc) const;
 
   //! Constructs the empty new document aDoc.
   //! This document will have the format format.
@@ -175,12 +174,12 @@ public:
   //! application, the new document is handled by the
   //! applicative session.
   Standard_EXPORT virtual void NewDocument(const TCollection_ExtendedString& format,
-                                           occ::handle<CDM_Document>& aDoc) override;
+                                           occ::handle<CDM_Document>&        aDoc) override;
 
   //! A non-virtual method taking a TDocStd_Documment object as an input.
   //! Internally it calls a virtual method NewDocument() with CDM_Document object.
   Standard_EXPORT void NewDocument(const TCollection_ExtendedString& format,
-                                   occ::handle<TDocStd_Document>&         aDoc);
+                                   occ::handle<TDocStd_Document>&    aDoc);
 
   //! Initialize the document aDoc for the applicative session.
   //! This virtual function is called by NewDocument
@@ -189,8 +188,7 @@ public:
   //! =============
   //! to open/save a document
   //! =======================
-  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const
-    override;
+  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const override;
 
   //! Close the given document. the document is not any more
   //! handled by the applicative session.
@@ -227,10 +225,10 @@ public:
   //! @param[in]  theRange  optional progress indicator
   //! @return reading status
   Standard_EXPORT PCDM_ReaderStatus
-    Open(const TCollection_ExtendedString& thePath,
-         occ::handle<TDocStd_Document>&         theDoc,
-         const occ::handle<PCDM_ReaderFilter>&  theFilter,
-         const Message_ProgressRange&      theRange = Message_ProgressRange());
+    Open(const TCollection_ExtendedString&     thePath,
+         occ::handle<TDocStd_Document>&        theDoc,
+         const occ::handle<PCDM_ReaderFilter>& theFilter,
+         const Message_ProgressRange&          theRange = Message_ProgressRange());
 
   //! Retrieves the document from specified file.
   //! In order not to override a version of the document which is already in memory,
@@ -240,7 +238,7 @@ public:
   //! @param[in]  theRange optional progress indicator
   //! @return reading status
   PCDM_ReaderStatus Open(const TCollection_ExtendedString& thePath,
-                         occ::handle<TDocStd_Document>&         theDoc,
+                         occ::handle<TDocStd_Document>&    theDoc,
                          const Message_ProgressRange&      theRange = Message_ProgressRange())
   {
     return Open(thePath, theDoc, occ::handle<PCDM_ReaderFilter>(), theRange);
@@ -253,19 +251,19 @@ public:
   //! @param[in]     theRange   optional progress indicator
   //! @return reading status
   Standard_EXPORT PCDM_ReaderStatus
-    Open(Standard_IStream&                theIStream,
+    Open(Standard_IStream&                     theIStream,
          occ::handle<TDocStd_Document>&        theDoc,
          const occ::handle<PCDM_ReaderFilter>& theFilter,
-         const Message_ProgressRange&     theRange = Message_ProgressRange());
+         const Message_ProgressRange&          theRange = Message_ProgressRange());
 
   //! Retrieves document from standard stream.
   //! @param[in,out] theIStream input seekable stream
   //! @param[out]    theDoc     result document
   //! @param[in]     theRange   optional progress indicator
   //! @return reading status
-  PCDM_ReaderStatus Open(Standard_IStream&            theIStream,
-                         occ::handle<TDocStd_Document>&    theDoc,
-                         const Message_ProgressRange& theRange = Message_ProgressRange())
+  PCDM_ReaderStatus Open(Standard_IStream&              theIStream,
+                         occ::handle<TDocStd_Document>& theDoc,
+                         const Message_ProgressRange&   theRange = Message_ProgressRange())
   {
     return Open(theIStream, theDoc, occ::handle<PCDM_ReaderFilter>(), theRange);
   }
@@ -273,16 +271,16 @@ public:
   //! Save the active document in the file <name> in the
   //! path <path>. overwrites the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const occ::handle<TDocStd_Document>&   theDoc,
-           const TCollection_ExtendedString& path,
-           const Message_ProgressRange&      theRange = Message_ProgressRange());
+    SaveAs(const occ::handle<TDocStd_Document>& theDoc,
+           const TCollection_ExtendedString&    path,
+           const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Save theDoc to standard SEEKABLE stream theOStream.
   //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus
     SaveAs(const occ::handle<TDocStd_Document>& theDoc,
-           Standard_OStream&               theOStream,
-           const Message_ProgressRange&    theRange = Message_ProgressRange());
+           Standard_OStream&                    theOStream,
+           const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Save aDoc active document.
   //! Exceptions:
@@ -290,29 +288,29 @@ public:
   //! was not retrieved in the applicative session by using Open.
   Standard_EXPORT PCDM_StoreStatus
     Save(const occ::handle<TDocStd_Document>& theDoc,
-         const Message_ProgressRange&    theRange = Message_ProgressRange());
+         const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Save the active document in the file <name> in the
   //! path <path>. overwrite the file if it already exists.
   Standard_EXPORT PCDM_StoreStatus
-    SaveAs(const occ::handle<TDocStd_Document>&   theDoc,
-           const TCollection_ExtendedString& path,
-           TCollection_ExtendedString&       theStatusMessage,
-           const Message_ProgressRange&      theRange = Message_ProgressRange());
+    SaveAs(const occ::handle<TDocStd_Document>& theDoc,
+           const TCollection_ExtendedString&    path,
+           TCollection_ExtendedString&          theStatusMessage,
+           const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Save theDoc TO standard SEEKABLE stream theOStream.
   //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus
     SaveAs(const occ::handle<TDocStd_Document>& theDoc,
-           Standard_OStream&               theOStream,
-           TCollection_ExtendedString&     theStatusMessage,
-           const Message_ProgressRange&    theRange = Message_ProgressRange());
+           Standard_OStream&                    theOStream,
+           TCollection_ExtendedString&          theStatusMessage,
+           const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Save the document overwriting the previous file
   Standard_EXPORT PCDM_StoreStatus
     Save(const occ::handle<TDocStd_Document>& theDoc,
-         TCollection_ExtendedString&     theStatusMessage,
-         const Message_ProgressRange&    theRange = Message_ProgressRange());
+         TCollection_ExtendedString&          theStatusMessage,
+         const Message_ProgressRange&         theRange = Message_ProgressRange());
 
   //! Notification that is fired at each OpenTransaction event.
   Standard_EXPORT virtual void OnOpenTransaction(const occ::handle<TDocStd_Document>& theDoc);
@@ -330,7 +328,7 @@ public:
 
 protected:
   occ::handle<Resource_Manager> myResources;
-  bool         myIsDriverLoaded;
+  bool                          myIsDriverLoaded;
 };
 
 #endif // _TDocStd_Application_HeaderFile

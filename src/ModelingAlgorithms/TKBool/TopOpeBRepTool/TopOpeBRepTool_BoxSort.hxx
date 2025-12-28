@@ -26,14 +26,9 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Bnd_Box.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Integer.hxx>
 class TopOpeBRepTool_HBoxTool;
 
 class TopOpeBRepTool_BoxSort
@@ -61,7 +56,8 @@ public:
 
   Standard_EXPORT const occ::handle<NCollection_HArray1<Bnd_Box>>& HAB() const;
 
-  Standard_EXPORT static void MakeHABCOB(const occ::handle<NCollection_HArray1<Bnd_Box>>& HAB, Bnd_Box& COB);
+  Standard_EXPORT static void MakeHABCOB(const occ::handle<NCollection_HArray1<Bnd_Box>>& HAB,
+                                         Bnd_Box&                                         COB);
 
   Standard_EXPORT const TopoDS_Shape& HABShape(const int I) const;
 
@@ -75,22 +71,21 @@ public:
 
   Standard_EXPORT const NCollection_List<int>::Iterator& Compare(const TopoDS_Shape& S);
 
-  Standard_EXPORT const TopoDS_Shape& TouchedShape(
-    const NCollection_List<int>::Iterator& I) const;
+  Standard_EXPORT const TopoDS_Shape& TouchedShape(const NCollection_List<int>::Iterator& I) const;
 
   Standard_EXPORT const Bnd_Box& Box(const TopoDS_Shape& S) const;
 
   Standard_EXPORT ~TopOpeBRepTool_BoxSort();
 
 private:
-  Bnd_Box                             myCOB;
-  Bnd_BoundSortBox                    myBSB;
-  NCollection_List<int>::Iterator myIterator;
-  TopoDS_Shape                        myLastCompareShape;
-  Bnd_Box                             myLastCompareShapeBox;
-  occ::handle<TopOpeBRepTool_HBoxTool>     myHBT;
-  occ::handle<NCollection_HArray1<Bnd_Box>>            myHAB;
-  occ::handle<NCollection_HArray1<int>>    myHAI;
+  Bnd_Box                                   myCOB;
+  Bnd_BoundSortBox                          myBSB;
+  NCollection_List<int>::Iterator           myIterator;
+  TopoDS_Shape                              myLastCompareShape;
+  Bnd_Box                                   myLastCompareShapeBox;
+  occ::handle<TopOpeBRepTool_HBoxTool>      myHBT;
+  occ::handle<NCollection_HArray1<Bnd_Box>> myHAB;
+  occ::handle<NCollection_HArray1<int>>     myHAI;
 };
 
 #endif // _TopOpeBRepTool_BoxSort_HeaderFile

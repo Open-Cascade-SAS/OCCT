@@ -89,9 +89,9 @@ public:
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfPolylines(int     theMaxVertexs,
-                             int     theMaxBounds,
-                             int     theMaxEdges,
+  Graphic3d_ArrayOfPolylines(int                  theMaxVertexs,
+                             int                  theMaxBounds,
+                             int                  theMaxEdges,
                              Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_POLYLINES,
                                     theMaxVertexs,
@@ -109,9 +109,9 @@ public:
   //! be used to specify per-vertex color values
   //! @param theHasBColors when TRUE AddBound(number,Color) should be used to specify sub-group
   //! color
-  Graphic3d_ArrayOfPolylines(int theMaxVertexs,
-                             int theMaxBounds  = 0,
-                             int theMaxEdges   = 0,
+  Graphic3d_ArrayOfPolylines(int  theMaxVertexs,
+                             int  theMaxBounds  = 0,
+                             int  theMaxEdges   = 0,
                              bool theHasVColors = false,
                              bool theHasBColors = false)
       : Graphic3d_ArrayOfPrimitives(

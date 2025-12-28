@@ -54,22 +54,22 @@ public:
   //! @param[in] theDetailingLevel the lowest shape type to be processed, lower shapes are ignored
   //! @return the processed shape
   Standard_EXPORT virtual TopoDS_Shape ProcessShape(
-    const TopoDS_Shape&          theShape,
-    const double          thePrec,
-    const double          theMaxTol,
-    const char*       thePrscfile,
-    const char*       thePseq,
-    occ::handle<Standard_Transient>&  theInfo,
-    const Message_ProgressRange& theProgress       = Message_ProgressRange(),
-    const bool       theNonManifold    = false,
-    const TopAbs_ShapeEnum       theDetailingLevel = TopAbs_VERTEX) const;
+    const TopoDS_Shape&              theShape,
+    const double                     thePrec,
+    const double                     theMaxTol,
+    const char*                      thePrscfile,
+    const char*                      thePseq,
+    occ::handle<Standard_Transient>& theInfo,
+    const Message_ProgressRange&     theProgress       = Message_ProgressRange(),
+    const bool                       theNonManifold    = false,
+    const TopAbs_ShapeEnum           theDetailingLevel = TopAbs_VERTEX) const;
 
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.
-  Standard_EXPORT virtual bool CheckPCurve(const TopoDS_Edge&     theEdge,
-                                                       const TopoDS_Face&     theFace,
-                                                       const double    thePrecision,
-                                                       const bool theIsSeam) const;
+  Standard_EXPORT virtual bool CheckPCurve(const TopoDS_Edge& theEdge,
+                                           const TopoDS_Face& theFace,
+                                           const double       thePrecision,
+                                           const bool         theIsSeam) const;
 
   Standard_EXPORT virtual void MergeTransferInfo(const occ::handle<Transfer_TransientProcess>& TP,
                                                  const occ::handle<Standard_Transient>&        info,
@@ -81,7 +81,7 @@ public:
   //! restrict modifications to entities stored in TP starting
   //! from item startTPitem
   Standard_EXPORT virtual void MergeTransferInfo(const occ::handle<Transfer_FinderProcess>& FP,
-                                                 const occ::handle<Standard_Transient>&     info) const;
+                                                 const occ::handle<Standard_Transient>& info) const;
 
   DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer, Standard_Transient)
 };

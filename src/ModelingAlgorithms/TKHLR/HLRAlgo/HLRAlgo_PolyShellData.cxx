@@ -17,7 +17,6 @@
 #include <HLRAlgo_PolyShellData.hxx>
 
 #include <HLRAlgo_BiPoint.hxx>
-#include <HLRAlgo_BiPoint.hxx>
 #include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyShellData, Standard_Transient)

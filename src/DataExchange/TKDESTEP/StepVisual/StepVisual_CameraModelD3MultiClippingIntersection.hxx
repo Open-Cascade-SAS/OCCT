@@ -38,12 +38,14 @@ public:
       theShapeClipping);
 
   void SetShapeClipping(
-    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>& theShapeClipping)
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>&
+      theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>> ShapeClipping()
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+    ShapeClipping()
   {
     return myShapeClipping;
   }
@@ -51,6 +53,7 @@ public:
                           StepGeom_GeometricRepresentationItem)
 
 private:
-  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>> myShapeClipping;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingInterectionSelect>>
+    myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingIntersection_HeaderFile

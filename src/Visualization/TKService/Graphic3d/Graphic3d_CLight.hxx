@@ -99,10 +99,7 @@ public:
   }
 
   //! Setup location of positional/spot light.
-  void SetPosition(double theX, double theY, double theZ)
-  {
-    SetPosition(gp_Pnt(theX, theY, theZ));
-  }
+  void SetPosition(double theX, double theY, double theZ) { SetPosition(gp_Pnt(theX, theY, theZ)); }
 
   //! Returns constant attenuation factor of positional/spot light source; 1.0f by default.
   //! Distance attenuation factors of reducing positional/spot light intensity depending on the
@@ -131,8 +128,7 @@ public:
 
   //! Defines the coefficients of attenuation; values should be >= 0.0 and their summ should not be
   //! equal to 0.
-  Standard_EXPORT void SetAttenuation(float theConstAttenuation,
-                                      float theLinearAttenuation);
+  Standard_EXPORT void SetAttenuation(float theConstAttenuation, float theLinearAttenuation);
 
   //! @name directional/spot light additional properties
 public:
@@ -278,17 +274,17 @@ protected:
   TCollection_AsciiString myName;                    //!< user given name
   gp_Pnt                  myPosition;                //!< light position
   Quantity_ColorRGBA      myColor;                   //!< light color
-  NCollection_Vec4<float>          myDirection;               //!< direction of directional/spot light
-  NCollection_Vec4<float>          myParams;                  //!< packed light parameters
+  NCollection_Vec4<float> myDirection;               //!< direction of directional/spot light
+  NCollection_Vec4<float> myParams;                  //!< packed light parameters
                                                      // clang-format off
   float                mySmoothness;  //!< radius for point light or cone angle for directional light
                                                      // clang-format on
-  float                myIntensity;     //!< intensity multiplier for light
+  float                             myIntensity;     //!< intensity multiplier for light
   const Graphic3d_TypeOfLightSource myType;          //!< Graphic3d_TypeOfLightSource enumeration
-  size_t                     myRevision;      //!< modification counter
-  bool                  myIsHeadlight;   //!< flag to mark head light
-  bool                  myIsEnabled;     //!< enabled state
-  bool                  myToCastShadows; //!< casting shadows is requested
+  size_t                            myRevision;      //!< modification counter
+  bool                              myIsHeadlight;   //!< flag to mark head light
+  bool                              myIsEnabled;     //!< enabled state
+  bool                              myToCastShadows; //!< casting shadows is requested
 };
 
 #endif // Graphic3d_CLight_HeaderFile

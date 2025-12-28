@@ -118,11 +118,11 @@ private:
 
   Standard_EXPORT void Init();
 
-  occ::handle<CDF_StoreList>      myList;
-  occ::handle<CDM_Document>       myMainDocument;
-  occ::handle<CDM_Document>       myCurrentDocument;
-  bool           myHasSubComponents;
-  bool           myIsMainDocument;
+  occ::handle<CDF_StoreList> myList;
+  occ::handle<CDM_Document>  myMainDocument;
+  occ::handle<CDM_Document>  myCurrentDocument;
+  bool                       myHasSubComponents;
+  bool                       myIsMainDocument;
   TCollection_ExtendedString myPath;
   TCollection_ExtendedString myText;
   PCDM_StoreStatus           myStatus;

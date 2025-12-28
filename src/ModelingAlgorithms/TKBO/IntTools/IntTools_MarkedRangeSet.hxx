@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 
 class IntTools_Range;
 
@@ -34,9 +33,9 @@ public:
 
   //! build set of ranges which consists of one range with
   //! boundary values theFirstBoundary and theLastBoundary
-  Standard_EXPORT IntTools_MarkedRangeSet(const double    theFirstBoundary,
-                                          const double    theLastBoundary,
-                                          const int theInitFlag);
+  Standard_EXPORT IntTools_MarkedRangeSet(const double theFirstBoundary,
+                                          const double theLastBoundary,
+                                          const int    theInitFlag);
 
   //! Build set of ranges based on the array of progressive sorted values
   //!
@@ -44,13 +43,13 @@ public:
   //! The constructor do not check if the values of array are not sorted
   //! It should be checked before function invocation
   Standard_EXPORT IntTools_MarkedRangeSet(const NCollection_Array1<double>& theSortedArray,
-                                          const int      theInitFlag);
+                                          const int                         theInitFlag);
 
   //! build set of ranges which consists of one range with
   //! boundary values theFirstBoundary and theLastBoundary
-  Standard_EXPORT void SetBoundaries(const double    theFirstBoundary,
-                                     const double    theLastBoundary,
-                                     const int theInitFlag);
+  Standard_EXPORT void SetBoundaries(const double theFirstBoundary,
+                                     const double theLastBoundary,
+                                     const int    theInitFlag);
 
   //! Build set of ranges based on the array of progressive sorted values
   //!
@@ -58,35 +57,23 @@ public:
   //! The function do not check if the values of array are not sorted
   //! It should be checked before function invocation
   Standard_EXPORT void SetRanges(const NCollection_Array1<double>& theSortedArray,
-                                 const int      theInitFlag);
+                                 const int                         theInitFlag);
 
   //! Inserts a new range marked with flag theFlag
   //! It replace the existing ranges or parts of ranges
   //! and their flags.
   //! Returns True if the range is inside the initial boundaries,
   //! otherwise or in case of some error returns False
-  Standard_EXPORT bool InsertRange(const double    theFirstBoundary,
-                                               const double    theLastBoundary,
-                                               const int theFlag);
+  Standard_EXPORT bool InsertRange(const double theFirstBoundary,
+                                   const double theLastBoundary,
+                                   const int    theFlag);
 
   //! Inserts a new range marked with flag theFlag
   //! It replace the existing ranges or parts of ranges
   //! and their flags.
   //! Returns True if the range is inside the initial boundaries,
   //! otherwise or in case of some error returns False
-  Standard_EXPORT bool InsertRange(const IntTools_Range&  theRange,
-                                               const int theFlag);
-
-  //! Inserts a new range marked with flag theFlag
-  //! It replace the existing ranges or parts of ranges
-  //! and their flags.
-  //! The index theIndex is a position where the range will be inserted.
-  //! Returns True if the range is inside the initial boundaries,
-  //! otherwise or in case of some error returns False
-  Standard_EXPORT bool InsertRange(const double    theFirstBoundary,
-                                               const double    theLastBoundary,
-                                               const int theFlag,
-                                               const int theIndex);
+  Standard_EXPORT bool InsertRange(const IntTools_Range& theRange, const int theFlag);
 
   //! Inserts a new range marked with flag theFlag
   //! It replace the existing ranges or parts of ranges
@@ -94,9 +81,20 @@ public:
   //! The index theIndex is a position where the range will be inserted.
   //! Returns True if the range is inside the initial boundaries,
   //! otherwise or in case of some error returns False
-  Standard_EXPORT bool InsertRange(const IntTools_Range&  theRange,
-                                               const int theFlag,
-                                               const int theIndex);
+  Standard_EXPORT bool InsertRange(const double theFirstBoundary,
+                                   const double theLastBoundary,
+                                   const int    theFlag,
+                                   const int    theIndex);
+
+  //! Inserts a new range marked with flag theFlag
+  //! It replace the existing ranges or parts of ranges
+  //! and their flags.
+  //! The index theIndex is a position where the range will be inserted.
+  //! Returns True if the range is inside the initial boundaries,
+  //! otherwise or in case of some error returns False
+  Standard_EXPORT bool InsertRange(const IntTools_Range& theRange,
+                                   const int             theFlag,
+                                   const int             theIndex);
 
   //! Set flag theFlag for range with index theIndex
   Standard_EXPORT void SetFlag(const int theIndex, const int theFlag);
@@ -115,8 +113,7 @@ public:
   //! If UseLower is true then lower boundary of the range
   //! can be equal to theValue, otherwise upper boundary of the range
   //! can be equal to theValue.
-  Standard_EXPORT int GetIndex(const double    theValue,
-                                            const bool UseLower) const;
+  Standard_EXPORT int GetIndex(const double theValue, const bool UseLower) const;
 
   //! Returns number of ranges
   int Length() const { return myRangeNumber; }
@@ -126,10 +123,10 @@ public:
   Standard_EXPORT IntTools_Range Range(const int theIndex) const;
 
 private:
-  NCollection_Sequence<double>    myRangeSetStorer;
-  int          myRangeNumber;
-  NCollection_Sequence<int> myFlags;
-  NCollection_Sequence<int> myFoundIndices;
+  NCollection_Sequence<double> myRangeSetStorer;
+  int                          myRangeNumber;
+  NCollection_Sequence<int>    myFlags;
+  NCollection_Sequence<int>    myFoundIndices;
 };
 
 #endif // _IntTools_MarkedRangeSet_HeaderFile

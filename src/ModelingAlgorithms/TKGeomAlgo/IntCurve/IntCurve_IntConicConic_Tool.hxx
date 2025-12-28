@@ -47,21 +47,18 @@ double NormalizeOnCircleDomain(const double Param, const IntRes2d_Domain& Domain
 class Interval
 {
 public:
-  double    Binf;
-  double    Bsup;
-  bool HasFirstBound;
-  bool HasLastBound;
-  bool IsNull;
+  double Binf;
+  double Bsup;
+  bool   HasFirstBound;
+  bool   HasLastBound;
+  bool   IsNull;
 
   Interval();
   Interval(const double a, const double b);
   Interval(const IntRes2d_Domain& Domain);
-  Interval(const double    a,
-           const bool hf,
-           const double    b,
-           const bool hl);
-  double Length();
-  Interval      IntersectionWithBounded(const Interval& Inter);
+  Interval(const double a, const bool hf, const double b, const bool hl);
+  double   Length();
+  Interval IntersectionWithBounded(const Interval& Inter);
 };
 
 //======================================================================
@@ -70,9 +67,9 @@ public:
 class PeriodicInterval
 {
 public:
-  double    Binf;
-  double    Bsup;
-  bool isnull;
+  double Binf;
+  double Bsup;
+  bool   isnull;
 
   void SetNull() { isnull = true; }
 
@@ -83,8 +80,8 @@ public:
     if (!isnull)
     {
       double t = Binf;
-      Binf            = Bsup;
-      Bsup            = t + PIpPI;
+      Binf     = Bsup;
+      Bsup     = t + PIpPI;
       if (Binf > PIpPI)
       {
         Binf -= PIpPI;

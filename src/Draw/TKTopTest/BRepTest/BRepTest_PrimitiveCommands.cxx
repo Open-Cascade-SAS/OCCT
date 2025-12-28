@@ -37,13 +37,13 @@
 
 static int box(Draw_Interpretor&, int n, const char** a)
 {
-  gp_Pnt           anOrigin;
-  gp_XYZ           aParams;
-  gp_Dir           aDir;
-  gp_Dir           aXDir;
-  bool isMinMax  = false;
-  bool isPreview = false;
-  bool isAxis    = false;
+  gp_Pnt anOrigin;
+  gp_XYZ aParams;
+  gp_Dir aDir;
+  gp_Dir aXDir;
+  bool   isMinMax  = false;
+  bool   isPreview = false;
+  bool   isAxis    = false;
 
   for (int anArgIter = 2; anArgIter < n; ++anArgIter)
   {
@@ -96,9 +96,9 @@ static int box(Draw_Interpretor&, int n, const char** a)
     }
     else if (anArgIter + 5 < n || anArgIter + 2 < n)
     {
-      double    aValue     = 0.0;
-      int aCountReal = 0;
-      int anIter     = anArgIter;
+      double aValue     = 0.0;
+      int    aCountReal = 0;
+      int    anIter     = anArgIter;
       while (anIter < n && Draw::ParseReal(a[anIter], aValue))
       {
         anIter++;
@@ -251,7 +251,7 @@ static int cylinder(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  TopoDS_Solid       S;
+  TopoDS_Solid            S;
   occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(DrawTrSurf::Get(a[2]));
 
   if (n == 4)

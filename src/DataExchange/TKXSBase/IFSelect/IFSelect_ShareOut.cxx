@@ -44,7 +44,7 @@ bool IFSelect_ShareOut::RemoveItem(const occ::handle<Standard_Transient>& item)
   if (!modifier.IsNull())
   {
     bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
-    int atnum    = ModifierRank(modifier);
+    int  atnum    = ModifierRank(modifier);
     return RemoveModifier(formodel, atnum);
   }
   DeclareAndCast(IFSelect_Dispatch, disp, item);
@@ -115,7 +115,7 @@ bool IFSelect_ShareOut::RemoveDispatch(const int rank)
 //  ####                            MODIFIERS                             ####
 
 void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                    const int                  atnum)
+                                    const int                                    atnum)
 {
   bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
   if (ModifierRank(modifier) == 0)
@@ -125,8 +125,8 @@ void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>&
 }
 
 void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                    const int                  dispnum,
-                                    const int                  atnum)
+                                    const int                                    dispnum,
+                                    const int                                    atnum)
 {
   bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
   if (ModifierRank(modifier) == 0)
@@ -136,8 +136,8 @@ void IFSelect_ShareOut::AddModifier(const occ::handle<IFSelect_GeneralModifier>&
 }
 
 void IFSelect_ShareOut::AddModif(const occ::handle<IFSelect_GeneralModifier>& modifier,
-                                 const bool                  formodel,
-                                 const int                  atnum)
+                                 const bool                                   formodel,
+                                 const int                                    atnum)
 {
   if (formodel)
   {
@@ -163,9 +163,8 @@ int IFSelect_ShareOut::NbModifiers(const bool formodel) const
     return thefilemodifiers.Length();
 }
 
-occ::handle<IFSelect_GeneralModifier> IFSelect_ShareOut::GeneralModifier(
-  const bool formodel,
-  const int atnum) const
+occ::handle<IFSelect_GeneralModifier> IFSelect_ShareOut::GeneralModifier(const bool formodel,
+                                                                         const int  atnum) const
 {
   if (formodel)
     return themodelmodifiers.Value(atnum);
@@ -178,10 +177,9 @@ occ::handle<IFSelect_Modifier> IFSelect_ShareOut::ModelModifier(const int num) c
   return occ::down_cast<IFSelect_Modifier>(themodelmodifiers.Value(num));
 }
 
-int IFSelect_ShareOut::ModifierRank(
-  const occ::handle<IFSelect_GeneralModifier>& modifier) const
+int IFSelect_ShareOut::ModifierRank(const occ::handle<IFSelect_GeneralModifier>& modifier) const
 {
-  int i;
+  int  i;
   bool formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
   if (formodel)
   {
@@ -198,8 +196,7 @@ int IFSelect_ShareOut::ModifierRank(
   return 0;
 }
 
-bool IFSelect_ShareOut::RemoveModifier(const bool formodel,
-                                                   const int atnum)
+bool IFSelect_ShareOut::RemoveModifier(const bool formodel, const int atnum)
 {
   if (atnum <= 0)
     return false;
@@ -220,9 +217,7 @@ bool IFSelect_ShareOut::RemoveModifier(const bool formodel,
 
 //    ChangeModifierRank amounts to a circular permutation :
 //    before is put in after, those that are between rotate
-bool IFSelect_ShareOut::ChangeModifierRank(const bool formodel,
-                                                       const int before,
-                                                       const int after)
+bool IFSelect_ShareOut::ChangeModifierRank(const bool formodel, const int before, const int after)
 {
   int nb;
   if (before <= 0 || after <= 0)
@@ -260,8 +255,8 @@ bool IFSelect_ShareOut::ChangeModifierRank(const bool formodel,
 //  ####                    FILE NAMING                    ####
 //  Note : thenbdefs applies as long as we don't change the main terms
 
-bool IFSelect_ShareOut::SetRootName(const int                  num,
-                                                const occ::handle<TCollection_HAsciiString>& name)
+bool IFSelect_ShareOut::SetRootName(const int                                    num,
+                                    const occ::handle<TCollection_HAsciiString>& name)
 {
   if (num < 1 || num > thedisps.Length())
     return false;
@@ -312,8 +307,7 @@ void IFSelect_ShareOut::SetPrefix(const occ::handle<TCollection_HAsciiString>& p
   thenbdefs = 0;
 }
 
-bool IFSelect_ShareOut::SetDefaultRootName(
-  const occ::handle<TCollection_HAsciiString>& defrt)
+bool IFSelect_ShareOut::SetDefaultRootName(const occ::handle<TCollection_HAsciiString>& defrt)
 {
   if (RootNumber(defrt) != 0)
     return false;
@@ -355,9 +349,9 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const int dnum,
                                                     const int nbpack)
 {
   occ::handle<TCollection_HAsciiString> rot    = RootName(dnum);
-  int                 num    = pnum;
-  int                 npac   = nbpack;
-  bool                 sufnum = (npac > 1 || num > 1);
+  int                                   num    = pnum;
+  int                                   npac   = nbpack;
+  bool                                  sufnum = (npac > 1 || num > 1);
   if (rot.IsNull())
   {
     rot = thedefrt;
@@ -382,8 +376,8 @@ TCollection_AsciiString IFSelect_ShareOut::FileName(const int dnum,
     //  idnum not used : this method can be redefined and use idnum ...
     //  If nbpack = 0 or 1, num = 1 no suffix, otherwise suffix "_num" as is
     //  MODIF of 3-NOV-1995 -> to avoid any confusion, num = 1 also gives _1
-    int nbch = 0;
-    char             format[30], suffixe[30];
+    int  nbch = 0;
+    char format[30], suffixe[30];
     format[1] = ' ';
     if (npac >= num)
     {

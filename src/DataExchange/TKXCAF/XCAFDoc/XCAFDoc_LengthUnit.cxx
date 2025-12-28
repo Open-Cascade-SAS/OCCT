@@ -34,16 +34,16 @@ XCAFDoc_LengthUnit::XCAFDoc_LengthUnit()
 //=================================================================================================
 
 occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label&               theLabel,
-                                                   const TCollection_AsciiString& theUnitName,
-                                                   const double            theUnitValue)
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const double                   theUnitValue)
 {
   return Set(theLabel, GetID(), theUnitName, theUnitValue);
 }
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label&    theLabel,
-                                                   const double theUnitValue)
+occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label& theLabel,
+                                                        const double     theUnitValue)
 {
   TCollection_AsciiString aUnitName =
     UnitsMethods::DumpLengthUnit(theUnitValue, UnitsMethods_LengthUnit_Meter);
@@ -53,9 +53,9 @@ occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label&    theL
 //=================================================================================================
 
 occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label&               theLabel,
-                                                   const Standard_GUID&           theGUID,
-                                                   const TCollection_AsciiString& theUnitName,
-                                                   const double            theUnitValue)
+                                                        const Standard_GUID&           theGUID,
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const double                   theUnitValue)
 {
   occ::handle<XCAFDoc_LengthUnit> A;
   if (!theLabel.FindAttribute(theGUID, A))
@@ -70,8 +70,7 @@ occ::handle<XCAFDoc_LengthUnit> XCAFDoc_LengthUnit::Set(const TDF_Label&        
 
 //=================================================================================================
 
-void XCAFDoc_LengthUnit::Set(const TCollection_AsciiString& theUnitName,
-                             const double            theUnitValue)
+void XCAFDoc_LengthUnit::Set(const TCollection_AsciiString& theUnitName, const double theUnitValue)
 {
   Backup();
   myUnitName       = theUnitName;
@@ -98,8 +97,8 @@ const Standard_GUID& XCAFDoc_LengthUnit::ID() const
 void XCAFDoc_LengthUnit::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   occ::handle<XCAFDoc_LengthUnit> anAttr = occ::down_cast<XCAFDoc_LengthUnit>(theWith);
-  myUnitName                        = anAttr->GetUnitName();
-  myUnitScaleValue                  = anAttr->GetUnitValue();
+  myUnitName                             = anAttr->GetUnitName();
+  myUnitScaleValue                       = anAttr->GetUnitValue();
 }
 
 //=================================================================================================

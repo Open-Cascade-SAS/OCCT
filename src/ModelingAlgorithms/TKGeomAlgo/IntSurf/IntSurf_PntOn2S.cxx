@@ -23,10 +23,7 @@ IntSurf_PntOn2S::IntSurf_PntOn2S()
 {
 }
 
-void IntSurf_PntOn2S::SetValue(const gp_Pnt&          Pt,
-                               const bool OnFirst,
-                               const double    U,
-                               const double    V)
+void IntSurf_PntOn2S::SetValue(const gp_Pnt& Pt, const bool OnFirst, const double U, const double V)
 {
 
   pt = Pt;
@@ -42,9 +39,7 @@ void IntSurf_PntOn2S::SetValue(const gp_Pnt&          Pt,
   }
 }
 
-void IntSurf_PntOn2S::SetValue(const bool OnFirst,
-                               const double    U,
-                               const double    V)
+void IntSurf_PntOn2S::SetValue(const bool OnFirst, const double U, const double V)
 {
 
   if (OnFirst)
@@ -69,9 +64,7 @@ gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const bool OnFirst) const
   return PointOnSurf;
 }
 
-void IntSurf_PntOn2S::ParametersOnSurface(const bool OnFirst,
-                                          double&         U,
-                                          double&         V) const
+void IntSurf_PntOn2S::ParametersOnSurface(const bool OnFirst, double& U, double& V) const
 {
   if (OnFirst)
   {
@@ -86,8 +79,8 @@ void IntSurf_PntOn2S::ParametersOnSurface(const bool OnFirst,
 }
 
 bool IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
-                                         const double    theTol3D,
-                                         const double    theTol2D) const
+                             const double           theTol3D,
+                             const double           theTol2D) const
 {
   if (pt.SquareDistance(theOterPoint.Value()) > theTol3D * theTol3D)
     return false;

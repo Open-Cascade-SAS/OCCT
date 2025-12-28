@@ -32,7 +32,7 @@ RWStepFEA_RWCurveElementIntervalConstant::RWStepFEA_RWCurveElementIntervalConsta
 
 void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                              num,
+  const int                                                num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepFEA_CurveElementIntervalConstant>& ent) const
 {
@@ -75,7 +75,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepFEA_CurveElementIntervalConstant>& ent) const
 {
 
@@ -94,7 +94,7 @@ void RWStepFEA_RWCurveElementIntervalConstant::WriteStep(
 
 void RWStepFEA_RWCurveElementIntervalConstant::Share(
   const occ::handle<StepFEA_CurveElementIntervalConstant>& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of CurveElementInterval

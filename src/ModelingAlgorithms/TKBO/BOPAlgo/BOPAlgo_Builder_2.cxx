@@ -26,7 +26,6 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <NCollection_Vector.hxx>
-#include <BOPDS_Interf.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
@@ -38,12 +37,9 @@
 #include <BRep_Tool.hxx>
 #include <GeomLib.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Vector.hxx>
 #include <IntTools_Context.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Map.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -51,15 +47,15 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 #include <algorithm>
 //
-static TopoDS_Face BuildDraftFace(const TopoDS_Face&                        theFace,
-                                  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theImages,
-                                  occ::handle<IntTools_Context>&                 theCtx,
-                                  const occ::handle<Message_Report>&             theReport);
+static TopoDS_Face BuildDraftFace(
+  const TopoDS_Face& theFace,
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                     theImages,
+  occ::handle<IntTools_Context>&     theCtx,
+  const occ::handle<Message_Report>& theReport);
 
 //=================================================================================================
 
@@ -109,9 +105,9 @@ public:
 
   //
 protected:
-  bool         myFlag;
-  TopoDS_Shape             myShape1;
-  TopoDS_Shape             myShape2;
+  bool                          myFlag;
+  TopoDS_Shape                  myShape1;
+  TopoDS_Shape                  myShape2;
   occ::handle<IntTools_Context> myContext;
 };
 
@@ -198,15 +194,15 @@ public:
 
     double aT1, aT2, dummy;
     //
-    int iFlag = myContext->ComputeVF(myV, myF, aT1, aT2, dummy, myFuzzyValue);
-    myIsInternal           = (iFlag == 0);
+    int iFlag    = myContext->ComputeVF(myV, myF, aT1, aT2, dummy, myFuzzyValue);
+    myIsInternal = (iFlag == 0);
   }
 
   //
 protected:
-  bool         myIsInternal;
-  TopoDS_Vertex            myV;
-  TopoDS_Face              myF;
+  bool                          myIsInternal;
+  TopoDS_Vertex                 myV;
+  TopoDS_Face                   myF;
   occ::handle<IntTools_Context> myContext;
 };
 
@@ -235,23 +231,23 @@ void BOPAlgo_Builder::FillImagesFaces(const Message_ProgressRange& theRange)
 
 void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 {
-  bool                   bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
-  int                   i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
-  TopoDS_Face                        aFF, aFSD;
-  TopoDS_Edge                        aSp, aEE;
-  TopAbs_Orientation                 anOriF, anOriE;
-  TopExp_Explorer                    aExp;
+  bool                                     bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
+  int                                      i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
+  TopoDS_Face                              aFF, aFSD;
+  TopoDS_Edge                              aSp, aEE;
+  TopAbs_Orientation                       anOriF, anOriE;
+  TopExp_Explorer                          aExp;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
-  NCollection_List<int>              aLIAV;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMFence;
-  occ::handle<NCollection_BaseAllocator>  aAllocator;
-  BOPAlgo_VectorOfBuilderFace        aVBF;
+  NCollection_List<int>                    aLIAV;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
+  occ::handle<NCollection_BaseAllocator>                 aAllocator;
+  BOPAlgo_VectorOfBuilderFace                            aVBF;
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope f
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  NCollection_List<TopoDS_Shape> aLE(aAllocator);
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aMDE(100, aAllocator);
+  NCollection_List<TopoDS_Shape>                         aLE(aAllocator);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMDE(100, aAllocator);
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
   // Build temporary map of faces images to avoid rebuilding
@@ -273,8 +269,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     }
     //
     const TopoDS_Face& aF        = (*(TopoDS_Face*)(&aSI.Shape()));
-    bool   isUClosed = false, isVClosed = false,
-                     isChecked = false;
+    bool               isUClosed = false, isVClosed = false, isChecked = false;
     //
     bHasFaceInfo = myDS->HasFaceInfo(i);
     if (!bHasFaceInfo)
@@ -469,7 +464,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     for (j = 1; j <= aNbPBIn; ++j)
     {
       const occ::handle<BOPDS_PaveBlock>& aPB = aMPBIn(j);
-      nSp                                = aPB->Edge();
+      nSp                                     = aPB->Edge();
       Standard_ASSERT(nSp >= 0, "Face information is not up to date", continue);
       aSp = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       //
@@ -484,8 +479,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     for (j = 1; j <= aNbPBSc; ++j)
     {
       const occ::handle<BOPDS_PaveBlock>& aPB = aMPBSc(j);
-      nSp                                = aPB->Edge();
-      aSp                                = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
+      nSp                                     = aPB->Edge();
+      aSp                                     = (*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       //
       aSp.Orientation(TopAbs_FORWARD);
       aLE.Append(aSp);
@@ -534,8 +529,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
   aNbBF = aFacesIm.Extent();
   for (k = 1; k <= aNbBF; ++k)
   {
-    const TopoDS_Face& aF            = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
-    anOriF                           = aF.Orientation();
+    const TopoDS_Face& aF                      = TopoDS::Face(myDS->Shape(aFacesIm.FindKey(k)));
+    anOriF                                     = aF.Orientation();
     const NCollection_List<TopoDS_Shape>& aLFR = aFacesIm(k);
     //
     NCollection_List<TopoDS_Shape>* pLFIm = myImages.Bound(aF, NCollection_List<TopoDS_Shape>());
@@ -557,8 +552,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 typedef NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>>
   BOPAlgo_IndexedDataMapOfSetListOfShape;
 
-static void AddEdgeSet(const TopoDS_Shape&                      theS,
-                       BOPAlgo_IndexedDataMapOfSetListOfShape&  theMap,
+static void AddEdgeSet(const TopoDS_Shape&                           theS,
+                       BOPAlgo_IndexedDataMapOfSetListOfShape&       theMap,
                        const occ::handle<NCollection_BaseAllocator>& theAllocator)
 {
   // Make set
@@ -578,7 +573,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   // It is necessary to analyze all Face/Face intersections
   // and find all faces with equal sets of edges
   const NCollection_Vector<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
-  int              aNbFFs = aFFs.Length();
+  int                                       aNbFFs = aFFs.Length();
   if (!aNbFFs)
     return;
 
@@ -621,7 +616,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   std::sort(aFIVec.begin(), aFIVec.end());
 
   // Data map of set of edges with all faces having this set
-  NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>> anESetFaces(1, aAllocator);
+  NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>> anESetFaces(1,
+                                                                                       aAllocator);
   // Map of planar bounded faces. If such faces have the same Edge set
   // they are considered Same domain, without additional check.
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFPlanar(1, aAllocator);
@@ -633,7 +629,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       return;
     }
-    const int nF  = aFIVec(i);
+    const int              nF  = aFIVec(i);
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(nF);
     const TopoDS_Shape&    aF  = aSI.Shape();
 
@@ -673,7 +669,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   BOPAlgo_VectorOfPairOfShapeBoolean aVPSB;
 
   // Back and forth map of SD faces to make the blocks
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aDMSLS(1, aAllocator);
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aDMSLS(1, aAllocator);
 
   int aNbSets = anESetFaces.Extent();
   for (int i = 1; i <= aNbSets; ++i)
@@ -691,7 +688,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     for (; aIt1.More(); aIt1.Next())
     {
       const TopoDS_Shape& aF1          = aIt1.Value();
-      bool    bCheckPlanar = aMFPlanar.Contains(aF1);
+      bool                bCheckPlanar = aMFPlanar.Contains(aF1);
 
       NCollection_List<TopoDS_Shape>::Iterator aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
@@ -758,8 +755,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     // If there are no original faces in the group, the first face from
     // the group will be used as the SD face.
     // Such SD face will be representative of the whole group in the result.
-    TopoDS_Face*                       pFSD  = NULL;
-    int                   nFMin = ::IntegerLast();
+    TopoDS_Face*                             pFSD  = NULL;
+    int                                      nFMin = ::IntegerLast();
     NCollection_List<TopoDS_Shape>::Iterator aItLF(aLSD);
     for (; aItLF.More(); aItLF.Next())
     {
@@ -808,7 +805,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     if (aSI.ShapeType() != TopAbs_FACE)
       continue;
 
-    const TopoDS_Shape&   aF    = aSI.Shape();
+    const TopoDS_Shape&             aF    = aSI.Shape();
     NCollection_List<TopoDS_Shape>* pLFIm = myImages.ChangeSeek(aF);
     if (!pLFIm)
       continue;
@@ -856,7 +853,7 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
       return;
     }
 
-    const TopoDS_Shape&         aF    = aSI.Shape();
+    const TopoDS_Shape&                   aF    = aSI.Shape();
     const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aF);
     if (!pLFIm)
       continue;
@@ -917,13 +914,15 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
 // function : HasMultiConnected
 // purpose  : Checks if the edge has multi-connected vertices.
 //=======================================================================
-static bool HasMultiConnected(const TopoDS_Edge&                  theEdge,
-                                          NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap)
+static bool HasMultiConnected(
+  const TopoDS_Edge& theEdge,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    theMap)
 {
   TopoDS_Iterator itV(theEdge);
   for (; itV.More(); itV.Next())
   {
-    const TopoDS_Shape&   aV    = itV.Value();
+    const TopoDS_Shape&             aV    = itV.Value();
     NCollection_List<TopoDS_Shape>* pList = theMap.ChangeSeek(aV);
     if (!pList)
     {
@@ -949,16 +948,18 @@ static bool HasMultiConnected(const TopoDS_Edge&                  theEdge,
 // purpose  : Build draft faces, updating the bounding edges,
 //           according to the information stored into the <theImages> map
 //=======================================================================
-TopoDS_Face BuildDraftFace(const TopoDS_Face&                        theFace,
-                           const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theImages,
-                           occ::handle<IntTools_Context>&                 theCtx,
-                           const occ::handle<Message_Report>&             theReport)
+TopoDS_Face BuildDraftFace(
+  const TopoDS_Face& theFace,
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                     theImages,
+  occ::handle<IntTools_Context>&     theCtx,
+  const occ::handle<Message_Report>& theReport)
 {
   BRep_Builder aBB;
   // Take the information from the original face
-  TopLoc_Location             aLoc;
+  TopLoc_Location                  aLoc;
   const occ::handle<Geom_Surface>& aS   = BRep_Tool::Surface(theFace, aLoc);
-  const double         aTol = BRep_Tool::Tolerance(theFace);
+  const double                     aTol = BRep_Tool::Tolerance(theFace);
   // Make the new face, without any wires
   TopoDS_Face aDraftFace;
   aBB.MakeFace(aDraftFace, aS, aLoc, aTol);
@@ -968,7 +969,8 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face&                        theFace,
   // the vertices appearance, and if the multi-connexity is met return
   // the null face to use the BuilderFace algorithm for checking the
   // possibility of split.
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aVerticesCounter;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVerticesCounter;
 
   // Check that the edges of the initial face have not been unified during intersection.
   // Otherwise, it will be necessary to check validity of the new wires.

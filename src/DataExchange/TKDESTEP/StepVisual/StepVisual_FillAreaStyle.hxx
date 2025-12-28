@@ -34,8 +34,9 @@ public:
   //! Returns a FillAreaStyle
   Standard_EXPORT StepVisual_FillAreaStyle();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
-                            const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                        aName,
+    const occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>>& aFillStyles);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
@@ -53,7 +54,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_FillAreaStyle, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>            name;
+  occ::handle<TCollection_HAsciiString>                        name;
   occ::handle<NCollection_HArray1<StepVisual_FillStyleSelect>> fillStyles;
 };
 

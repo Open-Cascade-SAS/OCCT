@@ -90,27 +90,29 @@ Standard_EXPORT TOPKRO KRO_DSFILLER_INTFF("intersection face/face");
 #include <Geom2dInt_TheProjPCurOfGInter.hxx>
 
 static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      theWLine,
-                                                  const int             theRank,
-                                                  const occ::handle<Adaptor3d_Surface>&   theSurface,
-                                                  const occ::handle<Adaptor3d_TopolTool>& theDomain,
-                                                  const double                theTolArc);
+                                      const int                               theRank,
+                                      const occ::handle<Adaptor3d_Surface>&   theSurface,
+                                      const occ::handle<Adaptor3d_TopolTool>& theDomain,
+                                      const double                            theTolArc);
 
-static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntPatch_WLine>&    theWLine,
-                                                     const occ::handle<Adaptor2d_Curve2d>& theArc,
-                                                     const int           theRank);
+static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(
+  const occ::handle<IntPatch_WLine>&    theWLine,
+  const occ::handle<Adaptor2d_Curve2d>& theArc,
+  const int                             theRank);
 
-static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     theSeqOfWLine,
-                                         const int             theRank,
-                                         const occ::handle<Adaptor3d_Surface>&   theSurface,
-                                         const occ::handle<Adaptor3d_TopolTool>& theDomain,
-                                         const double                theTolArc);
+static occ::handle<IntPatch_RLine> BuildRLine(
+  const NCollection_Sequence<occ::handle<IntPatch_Line>>& theSeqOfWLine,
+  const int                                               theRank,
+  const occ::handle<Adaptor3d_Surface>&                   theSurface,
+  const occ::handle<Adaptor3d_TopolTool>&                 theDomain,
+  const double                                            theTolArc);
 
-static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           slin,
-                              const occ::handle<Adaptor3d_Surface>&   theSurface1,
-                              const occ::handle<Adaptor3d_TopolTool>& theDomain1,
-                              const occ::handle<Adaptor3d_Surface>&   theSurface2,
-                              const occ::handle<Adaptor3d_TopolTool>& theDomain2,
-                              const double                theTolArc);
+static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& slin,
+                              const occ::handle<Adaptor3d_Surface>&             theSurface1,
+                              const occ::handle<Adaptor3d_TopolTool>&           theDomain1,
+                              const occ::handle<Adaptor3d_Surface>&             theSurface2,
+                              const occ::handle<Adaptor3d_TopolTool>&           theDomain2,
+                              const double                                      theTolArc);
 // modified by NIZHNY-MKK  Mon Apr  2 12:14:38 2001.END
 
 // modified by NIZHNY-OFV  Fri Mar 29 12:37:21 2002.BEGIN
@@ -121,37 +123,38 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
 #include <Extrema_ExtPC.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <GeomAdaptor_Curve.hxx>
-static void MergeWLinesIfAllSegmentsAlongRestriction(NCollection_Sequence<occ::handle<IntPatch_Line>>&           theSlin,
-                                                     const occ::handle<Adaptor3d_Surface>&   theSurface1,
-                                                     const occ::handle<Adaptor3d_TopolTool>& theDomain1,
-                                                     const occ::handle<Adaptor3d_Surface>&   theSurface2,
-                                                     const occ::handle<Adaptor3d_TopolTool>& theDomain2,
-                                                     const double                theTolArc);
+static void MergeWLinesIfAllSegmentsAlongRestriction(
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+  const occ::handle<Adaptor3d_Surface>&             theSurface1,
+  const occ::handle<Adaptor3d_TopolTool>&           theDomain1,
+  const occ::handle<Adaptor3d_Surface>&             theSurface2,
+  const occ::handle<Adaptor3d_TopolTool>&           theDomain2,
+  const double                                      theTolArc);
 //------------------------------------------------------------------------------------------------
-static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           theSlin,
-                               const int&            theRankS,
-                               const occ::handle<Adaptor3d_Surface>&   theSurfaceObj,
-                               const occ::handle<Adaptor3d_TopolTool>& theDomainObj,
-                               const occ::handle<Adaptor3d_Surface>&   theSurfaceTool,
-                               const gp_Pnt&                      theTestPoint,
-                               double&                     theVrtxTol,
-                               occ::handle<IntSurf_LineOn2S>&          theLineOn2S,
-                               double&                     theFirst,
-                               double&                     theLast);
+static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+                  const int&                                        theRankS,
+                  const occ::handle<Adaptor3d_Surface>&             theSurfaceObj,
+                  const occ::handle<Adaptor3d_TopolTool>&           theDomainObj,
+                  const occ::handle<Adaptor3d_Surface>&             theSurfaceTool,
+                  const gp_Pnt&                                     theTestPoint,
+                  double&                                           theVrtxTol,
+                  occ::handle<IntSurf_LineOn2S>&                    theLineOn2S,
+                  double&                                           theFirst,
+                  double&                                           theLast);
 //------------------------------------------------------------------------------------------------
 static bool IsPointOK(const gp_Pnt&            theTestPnt,
-                                  const Adaptor3d_Surface& theTestSurface,
-                                  const double&     theTol);
+                      const Adaptor3d_Surface& theTestSurface,
+                      const double&            theTol);
 //-------------------------------------------------------------------------------------------------
 static bool GetPointOn2S(const gp_Pnt&            theTestPnt,
-                                     const Adaptor3d_Surface& theTestSurface,
-                                     const double&     theTol,
-                                     Extrema_POnSurf&         theResultPoint);
+                         const Adaptor3d_Surface& theTestSurface,
+                         const double&            theTol,
+                         Extrema_POnSurf&         theResultPoint);
 //-------------------------------------------------------------------------------------------------------------------------
 static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
-  NCollection_Sequence<occ::handle<IntPatch_Line>>&        theSlin,
-  const double&            theVrtxTol,
-  const occ::handle<IntSurf_LineOn2S>& theLineOn2S);
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+  const double&                                     theVrtxTol,
+  const occ::handle<IntSurf_LineOn2S>&              theLineOn2S);
 
 //---------------------------------------------------------------------------------------------------------------------------
 // modified by NIZHNY-OFV  Fri Mar 29 12:41:02 2002.END
@@ -193,8 +196,8 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
   S1.Initialize(myFace1);
   BRepAdaptor_Surface& S2 = *mySurface2;
   S2.Initialize(myFace2);
-  mySurfaceType1                          = S1.GetType();
-  mySurfaceType2                          = S2.GetType();
+  mySurfaceType1                               = S1.GetType();
+  mySurfaceType2                               = S2.GetType();
   const occ::handle<Adaptor3d_Surface>& aSurf1 = mySurface1; // to avoid ambiguity
   myDomain1->Initialize(aSurf1);
   const occ::handle<Adaptor3d_Surface>& aSurf2 = mySurface2; // to avoid ambiguity
@@ -213,9 +216,9 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
     myTol2 = (myTol2 > 1.e-4) ? 1.e-4 : myTol2;
   }
 
-  double tol1 = myTol1;
-  double tol2 = myTol2;
-  GLOBAL_tolFF       = std::max(tol1, tol2);
+  double tol1  = myTol1;
+  double tol2  = myTol2;
+  GLOBAL_tolFF = std::max(tol1, tol2);
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
@@ -228,15 +231,8 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
 #endif
 
   myIntersector.SetTolerances(myTol1, myTol2, MaxUV, Deflection);
-  myIntersector.Perform(mySurface1,
-                        myDomain1,
-                        mySurface2,
-                        myDomain2,
-                        myTol1,
-                        myTol2,
-                        true,
-                        true,
-                        false);
+  myIntersector
+    .Perform(mySurface1, myDomain1, mySurface2, myDomain2, myTol1, myTol2, true, true, false);
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO())
@@ -362,7 +358,8 @@ bool TopOpeBRep_FacesIntersector::IsRestriction(const TopoDS_Shape& E) const
 
 //=================================================================================================
 
-const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRep_FacesIntersector::Restrictions() const
+const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRep_FacesIntersector::
+  Restrictions() const
 {
   return myEdgeRestrictionMap;
 }
@@ -372,7 +369,7 @@ const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRep_
 void TopOpeBRep_FacesIntersector::PrepareLines()
 {
   myLineNb                = 0;
-  int n      = myIntersector.NbLines();
+  int n                   = myIntersector.NbLines();
   myHAL                   = new NCollection_HArray1<TopOpeBRep_LineInter>(0, n);
   BRepAdaptor_Surface& S1 = *mySurface1;
   BRepAdaptor_Surface& S2 = *mySurface2;
@@ -452,7 +449,7 @@ void TopOpeBRep_FacesIntersector::PrepareLines()
       myHAL = new NCollection_HArray1<TopOpeBRep_LineInter>(1, myLineNb);
       for (int index = 1; index <= myLineNb; index++)
       {
-        TopOpeBRep_LineInter&        LI = myHAL->ChangeValue(index);
+        TopOpeBRep_LineInter&             LI = myHAL->ChangeValue(index);
         const occ::handle<IntPatch_Line>& L  = aSeqOfResultLines.Value(index);
         LI.SetLine(L, S1, S2);
         LI.Index(index);
@@ -568,8 +565,7 @@ void TopOpeBRep_FacesIntersector::ResetIntersection()
 
 //=================================================================================================
 
-void TopOpeBRep_FacesIntersector::ForceTolerances(const double Tol1,
-                                                  const double Tol2)
+void TopOpeBRep_FacesIntersector::ForceTolerances(const double Tol1, const double Tol2)
 {
   myTol1            = Tol1;
   myTol2            = Tol2;
@@ -615,7 +611,7 @@ void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape&, const Top
 //=================================================================================================
 
 double TopOpeBRep_FacesIntersector::ToleranceMax(const TopoDS_Shape&    S,
-                                                        const TopAbs_ShapeEnum T) const
+                                                 const TopAbs_ShapeEnum T) const
 {
   TopExp_Explorer e(S, T);
   if (!e.More())
@@ -635,20 +631,20 @@ double TopOpeBRep_FacesIntersector::ToleranceMax(const TopoDS_Shape&    S,
 // purpose:
 // ================================================================================================
 static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      theWLine,
-                                                  const int             theRank,
-                                                  const occ::handle<Adaptor3d_Surface>&   theSurface,
-                                                  const occ::handle<Adaptor3d_TopolTool>& theDomain,
-                                                  const double                theTolArc)
+                                      const int                               theRank,
+                                      const occ::handle<Adaptor3d_Surface>&   theSurface,
+                                      const occ::handle<Adaptor3d_TopolTool>& theDomain,
+                                      const double                            theTolArc)
 {
 
   bool result = false;
-  int NbPnts = theWLine->NbPnts();
-  int along  = 0;
+  int  NbPnts = theWLine->NbPnts();
+  int  along  = 0;
 
   for (int i = 1; i <= NbPnts; i++)
   {
     const IntSurf_PntOn2S& Pmid = theWLine->Point(i);
-    double          u = 0., v = 0.;
+    double                 u = 0., v = 0.;
     if (theRank == 1)
       Pmid.ParametersOnS1(u, v);
     else
@@ -683,9 +679,10 @@ static bool TestWLineAlongRestriction(const occ::handle<IntPatch_WLine>&      th
 // static function: BuildRLineBasedOnWLine
 // purpose:
 // ================================================================================================
-static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntPatch_WLine>&    theWLine,
-                                                     const occ::handle<Adaptor2d_Curve2d>& theArc,
-                                                     const int           theRank)
+static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(
+  const occ::handle<IntPatch_WLine>&    theWLine,
+  const occ::handle<Adaptor2d_Curve2d>& theArc,
+  const int                             theRank)
 {
   occ::handle<IntPatch_RLine> anRLine;
 
@@ -693,8 +690,8 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
     return anRLine;
 
   gp_Pnt2d              aPOnLine;
-  double         u = 0., v = 0.;
-  int      nbvtx = theWLine->NbVertex();
+  double                u = 0., v = 0.;
+  int                   nbvtx = theWLine->NbVertex();
   const IntPatch_Point& Vtx1  = theWLine->Vertex(1);
   const IntPatch_Point& Vtx2  = theWLine->Vertex(nbvtx);
 
@@ -707,7 +704,7 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
     Vtx1.ParametersOnS2(u, v);
   }
 
-  aPOnLine           = gp_Pnt2d(u, v);
+  aPOnLine    = gp_Pnt2d(u, v);
   double par1 = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, aPOnLine, 1.e-7);
 
   if (theRank == 1)
@@ -718,7 +715,7 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
   {
     Vtx2.ParametersOnS2(u, v);
   }
-  aPOnLine           = gp_Pnt2d(u, v);
+  aPOnLine    = gp_Pnt2d(u, v);
   double par2 = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, aPOnLine, 1.e-7);
 
   double tol = (Vtx1.Tolerance() > Vtx2.Tolerance()) ? Vtx1.Tolerance() : Vtx2.Tolerance();
@@ -730,10 +727,9 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
 
   occ::handle<IntSurf_LineOn2S>        aLineOn2S = new IntSurf_LineOn2S();
   const occ::handle<IntSurf_LineOn2S>& Lori      = theWLine->Curve();
-  IntSurf_Transition              TransitionUndecided;
+  IntSurf_Transition                   TransitionUndecided;
 
-  anRLine =
-    new IntPatch_RLine(false, theWLine->TransitionOnS1(), theWLine->TransitionOnS2());
+  anRLine = new IntPatch_RLine(false, theWLine->TransitionOnS1(), theWLine->TransitionOnS2());
 
   if (IsOnFirst)
   {
@@ -774,8 +770,8 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
       {
         Vtx.ParametersOnS2(u, v);
       }
-      gp_Pnt2d      atmpPoint(u, v);
-      double apar = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, atmpPoint, 1.e-7);
+      gp_Pnt2d atmpPoint(u, v);
+      double   apar = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, atmpPoint, 1.e-7);
       Vtx.SetParameter(apar);
       anRLine->AddVertex(Vtx);
     }
@@ -822,8 +818,8 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
       {
         Vtx.ParametersOnS2(u, v);
       }
-      gp_Pnt2d      atmpPoint(u, v);
-      double apar = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, atmpPoint, 1.e-7);
+      gp_Pnt2d atmpPoint(u, v);
+      double   apar = Geom2dInt_TheProjPCurOfGInter::FindParameter(*theArc, atmpPoint, 1.e-7);
       Vtx.SetParameter(apar);
       anRLine->AddVertex(Vtx);
     }
@@ -848,18 +844,20 @@ static occ::handle<IntPatch_RLine> BuildRLineBasedOnWLine(const occ::handle<IntP
 // purpose: build rline based on group of wlines
 //          return null handle if it is not possible to build rline
 // ================================================================================================
-static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     theSeqOfWLine,
-                                         const int             theRank,
-                                         const occ::handle<Adaptor3d_Surface>&   theSurface,
-                                         const occ::handle<Adaptor3d_TopolTool>& theDomain,
-                                         const double                theTolArc)
+static occ::handle<IntPatch_RLine> BuildRLine(
+  const NCollection_Sequence<occ::handle<IntPatch_Line>>& theSeqOfWLine,
+  const int                                               theRank,
+  const occ::handle<Adaptor3d_Surface>&                   theSurface,
+  const occ::handle<Adaptor3d_TopolTool>&                 theDomain,
+  const double                                            theTolArc)
 {
   occ::handle<IntPatch_RLine>        anRLine;
-  const occ::handle<IntPatch_WLine>& aWLine1 = *((occ::handle<IntPatch_WLine>*)&(theSeqOfWLine.Value(1)));
+  const occ::handle<IntPatch_WLine>& aWLine1 =
+    *((occ::handle<IntPatch_WLine>*)&(theSeqOfWLine.Value(1)));
   const occ::handle<IntPatch_WLine>& aWLine2 =
     *((occ::handle<IntPatch_WLine>*)&(theSeqOfWLine.Value(theSeqOfWLine.Length())));
-  const IntPatch_Point&            P1  = aWLine1->Vertex(1);
-  const IntPatch_Point&            P2  = aWLine2->Vertex(aWLine2->NbVertex());
+  const IntPatch_Point&                 P1  = aWLine1->Vertex(1);
+  const IntPatch_Point&                 P2  = aWLine2->Vertex(aWLine2->NbVertex());
   const occ::handle<Adaptor3d_HVertex>& aV1 = (theRank == 1) ? P1.VertexOnS1() : P1.VertexOnS2();
   const occ::handle<Adaptor3d_HVertex>& aV2 = (theRank == 1) ? P2.VertexOnS1() : P2.VertexOnS2();
 
@@ -898,7 +896,7 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
           buildrline = false;
         else
         {
-          double          u = RealLast(), v = RealLast();
+          double                 u = RealLast(), v = RealLast();
           const IntSurf_PntOn2S& POn2S = aWLine->Point(indexpnt);
           if (theRank == 1)
           {
@@ -908,12 +906,12 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
           {
             POn2S.ParametersOnS2(u, v);
           }
-          gp_Pnt2d      aPOnArc, aPOnLine(u, v);
-          double par =
+          gp_Pnt2d aPOnArc, aPOnLine(u, v);
+          double   par =
             Geom2dInt_TheProjPCurOfGInter::FindParameter(*theDomain->Value(), aPOnLine, 1e-7);
           aPOnArc = theDomain->Value()->Value(par);
-          gp_Pnt        ap;
-          gp_Vec        ad1u, ad1v;
+          gp_Pnt ap;
+          gp_Vec ad1u, ad1v;
           double nad1u, nad1v, tolu, tolv;
 
           theSurface->D1(u, v, ap, ad1u, ad1v);
@@ -960,10 +958,8 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
             trans2 = atmpWLine->TransitionOnS2();
           }
 
-          int ParamMinOnLine =
-            (int)atmpWLine->Vertex(1).ParameterOnLine();
-          int ParamMaxOnLine =
-            (int)atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine();
+          int ParamMinOnLine = (int)atmpWLine->Vertex(1).ParameterOnLine();
+          int ParamMaxOnLine = (int)atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine();
 
           for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
           {
@@ -985,7 +981,7 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
         for (apointindex = 2; apointindex <= aWLine1->NbVertex(); apointindex++)
         {
           IntPatch_Point aPoint = aWLine1->Vertex(apointindex);
-          double  aTolerance =
+          double         aTolerance =
             (aPoint.Tolerance() > P1.Tolerance()) ? aPoint.Tolerance() : P1.Tolerance();
           if (aPoint.Value().IsEqual(P1.Value(), aTolerance))
           {
@@ -997,7 +993,7 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
         for (apointindex = 1; apointindex < aWLine2->NbVertex(); apointindex++)
         {
           IntPatch_Point aPoint = aWLine2->Vertex(apointindex);
-          double  aTolerance =
+          double         aTolerance =
             (aPoint.Tolerance() > P2.Tolerance()) ? aPoint.Tolerance() : P2.Tolerance();
           if (aPoint.Value().IsEqual(P2.Value(), aTolerance))
           {
@@ -1022,12 +1018,12 @@ static occ::handle<IntPatch_RLine> BuildRLine(const NCollection_Sequence<occ::ha
 // static function: TestWLinesToAnArc
 // purpose: test if possible to replace group of wlines by rline and replace in the sequence slin
 // ================================================================================================
-static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           slin,
-                              const occ::handle<Adaptor3d_Surface>&   theSurface1,
-                              const occ::handle<Adaptor3d_TopolTool>& theDomain1,
-                              const occ::handle<Adaptor3d_Surface>&   theSurface2,
-                              const occ::handle<Adaptor3d_TopolTool>& theDomain2,
-                              const double                theTolArc)
+static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& slin,
+                              const occ::handle<Adaptor3d_Surface>&             theSurface1,
+                              const occ::handle<Adaptor3d_TopolTool>&           theDomain1,
+                              const occ::handle<Adaptor3d_Surface>&             theSurface2,
+                              const occ::handle<Adaptor3d_TopolTool>&           theDomain2,
+                              const double                                      theTolArc)
 {
 
   NCollection_Sequence<occ::handle<IntPatch_Line>> aSeqOfWLine;
@@ -1038,11 +1034,11 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
     {
       if (slin.Value(i)->ArcType() != IntPatch_Walking)
         continue;
-      const occ::handle<IntPatch_WLine>& aWLine   = *((occ::handle<IntPatch_WLine>*)&(slin.Value(i)));
-      int              nbvtx    = aWLine->NbVertex();
-      const IntPatch_Point&         Vtx1     = aWLine->Vertex(1);
-      const IntPatch_Point&         Vtx2     = aWLine->Vertex(nbvtx);
-      bool              isvertex = false, wlineWasAppended = false;
+      const occ::handle<IntPatch_WLine>& aWLine = *((occ::handle<IntPatch_WLine>*)&(slin.Value(i)));
+      int                                nbvtx  = aWLine->NbVertex();
+      const IntPatch_Point&              Vtx1   = aWLine->Vertex(1);
+      const IntPatch_Point&              Vtx2   = aWLine->Vertex(nbvtx);
+      bool                               isvertex = false, wlineWasAppended = false;
 
       if (rank == 1)
         isvertex = Vtx1.IsVertexOnS1();
@@ -1079,7 +1075,7 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
         const occ::handle<IntPatch_WLine>& aLastWLine =
           *((occ::handle<IntPatch_WLine>*)&(aSeqOfWLine.Value(aSeqOfWLine.Length())));
         const IntPatch_Point& aLastPoint = aLastWLine->Vertex(aLastWLine->NbVertex());
-        double         aTolerance =
+        double                aTolerance =
           (aLastPoint.Tolerance() > Vtx1.Tolerance()) ? aLastPoint.Tolerance() : Vtx1.Tolerance();
         if (aLastPoint.Value().IsEqual(Vtx1.Value(), aTolerance))
         {
@@ -1166,20 +1162,21 @@ static void TestWLinesToAnArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& 
 //           we should merge segments of WLines into single WLine equals to the same
 //           RLine.
 //====================================================================================
-static void MergeWLinesIfAllSegmentsAlongRestriction(NCollection_Sequence<occ::handle<IntPatch_Line>>&           theSlin,
-                                                     const occ::handle<Adaptor3d_Surface>&   theSurface1,
-                                                     const occ::handle<Adaptor3d_TopolTool>& theDomain1,
-                                                     const occ::handle<Adaptor3d_Surface>&   theSurface2,
-                                                     const occ::handle<Adaptor3d_TopolTool>& theDomain2,
-                                                     const double                theTolArc)
+static void MergeWLinesIfAllSegmentsAlongRestriction(
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+  const occ::handle<Adaptor3d_Surface>&             theSurface1,
+  const occ::handle<Adaptor3d_TopolTool>&           theDomain1,
+  const occ::handle<Adaptor3d_Surface>&             theSurface2,
+  const occ::handle<Adaptor3d_TopolTool>&           theDomain2,
+  const double                                      theTolArc)
 {
-  int i = 0, rank = 0;
-  double    tol = 1.e-9;
+  int    i = 0, rank = 0;
+  double tol = 1.e-9;
 
   // here we check that all segments of WLines placed along restriction
-  int     WLOnRS1  = 0;
-  int     WLOnRS2  = 0;
-  int     NbWLines = 0;
+  int                          WLOnRS1  = 0;
+  int                          WLOnRS2  = 0;
+  int                          NbWLines = 0;
   NCollection_Sequence<gp_Pnt> sqVertexPoints;
 
   for (rank = 1; rank <= 2; rank++)
@@ -1190,10 +1187,11 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(NCollection_Sequence<occ::h
       if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
         continue;
       NbWLines++;
-      const occ::handle<IntPatch_WLine>& aWLine = *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
-      int              nbvtx  = aWLine->NbVertex();
-      const IntPatch_Point&         Vtx1   = aWLine->Vertex(1);
-      const IntPatch_Point&         Vtx2   = aWLine->Vertex(nbvtx);
+      const occ::handle<IntPatch_WLine>& aWLine =
+        *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
+      int                   nbvtx = aWLine->NbVertex();
+      const IntPatch_Point& Vtx1  = aWLine->Vertex(1);
+      const IntPatch_Point& Vtx2  = aWLine->Vertex(nbvtx);
       if (rank == 1)
       {
         sqVertexPoints.Append(Vtx1.Value());
@@ -1226,34 +1224,33 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(NCollection_Sequence<occ::h
   if (sqVertexPoints.Value(1).IsEqual(sqVertexPoints.Value(sqVertexPoints.Length()), tol))
     return;
 
-  double    TolVrtx = 1.e-5;
-  int testPointIndex =
-    (sqVertexPoints.Length() > 3) ? ((int)sqVertexPoints.Length() / 2) : 2;
-  gp_Pnt        testPoint = sqVertexPoints.Value(testPointIndex);
+  double TolVrtx        = 1.e-5;
+  int    testPointIndex = (sqVertexPoints.Length() > 3) ? ((int)sqVertexPoints.Length() / 2) : 2;
+  gp_Pnt testPoint      = sqVertexPoints.Value(testPointIndex);
   double Fp = 0., Lp = 0.;
 
   occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();
   //
   int arcnumber = (WLineRank == 1) ? GetArc(theSlin,
-                                                         WLineRank,
-                                                         theSurface1,
-                                                         theDomain1,
-                                                         theSurface2,
-                                                         testPoint,
-                                                         TolVrtx,
-                                                         aLineOn2S,
-                                                         Fp,
-                                                         Lp)
-                                                : GetArc(theSlin,
-                                                         WLineRank,
-                                                         theSurface2,
-                                                         theDomain2,
-                                                         theSurface1,
-                                                         testPoint,
-                                                         TolVrtx,
-                                                         aLineOn2S,
-                                                         Fp,
-                                                         Lp);
+                                            WLineRank,
+                                            theSurface1,
+                                            theDomain1,
+                                            theSurface2,
+                                            testPoint,
+                                            TolVrtx,
+                                            aLineOn2S,
+                                            Fp,
+                                            Lp)
+                                   : GetArc(theSlin,
+                                            WLineRank,
+                                            theSurface2,
+                                            theDomain2,
+                                            theSurface1,
+                                            testPoint,
+                                            TolVrtx,
+                                            aLineOn2S,
+                                            Fp,
+                                            Lp);
   //
   if (arcnumber == 0)
   {
@@ -1280,21 +1277,21 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(NCollection_Sequence<occ::h
 //           are IN or ON return the LineOn2S based on points3D were given from detected arc.
 //           Returns 0 if it is not possible to create merged WLine.
 //========================================================================================
-static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           theSlin,
-                               const int&            theRankS,
-                               const occ::handle<Adaptor3d_Surface>&   theSurfaceObj,
-                               const occ::handle<Adaptor3d_TopolTool>& theDomainObj,
-                               const occ::handle<Adaptor3d_Surface>&   theSurfaceTool,
-                               const gp_Pnt&                      theTestPoint,
-                               double&                     theVrtxTol,
-                               occ::handle<IntSurf_LineOn2S>&          theLineOn2S,
-                               double&                     theFirst,
-                               double&                     theLast)
+static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+                  const int&                                        theRankS,
+                  const occ::handle<Adaptor3d_Surface>&             theSurfaceObj,
+                  const occ::handle<Adaptor3d_TopolTool>&           theDomainObj,
+                  const occ::handle<Adaptor3d_Surface>&             theSurfaceTool,
+                  const gp_Pnt&                                     theTestPoint,
+                  double&                                           theVrtxTol,
+                  occ::handle<IntSurf_LineOn2S>&                    theLineOn2S,
+                  double&                                           theFirst,
+                  double&                                           theLast)
 {
   // 1. find number of arc (edge) on which the WLine segments are placed.
 
-  double    MinDistance2 = 1.e+200, firstES1 = 0., lastES1 = 0.;
-  int ArcNumber = 0, CurArc = 0, i = 0, j = 0;
+  double MinDistance2 = 1.e+200, firstES1 = 0., lastES1 = 0.;
+  int    ArcNumber = 0, CurArc = 0, i = 0, j = 0;
   theFirst = 0.;
   theLast  = 0.;
 
@@ -1306,7 +1303,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
     if (anEAddress == NULL)
       continue;
 
-    TopoDS_Edge*       anE    = (TopoDS_Edge*)anEAddress;
+    TopoDS_Edge*            anE    = (TopoDS_Edge*)anEAddress;
     occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
     if (aCEdge.IsNull()) // e.g. degenerated edge, see OCC21770
       continue;
@@ -1332,12 +1329,12 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
 
   // 2. load parameters of founded edge and its arc.
   CurArc = 0;
-  NCollection_Sequence<gp_Pnt>      PointsFromArc;
+  NCollection_Sequence<gp_Pnt>   PointsFromArc;
   occ::handle<Adaptor2d_Curve2d> arc = NULL;
-  double             tol = 1.e-7;
-  NCollection_Sequence<double>    WLVertexParameters;
-  bool          classifyOK = true;
-  double             CheckTol   = 1.e-5;
+  double                         tol = 1.e-7;
+  NCollection_Sequence<double>   WLVertexParameters;
+  bool                           classifyOK = true;
+  double                         CheckTol   = 1.e-5;
 
   for (theDomainObj->Init(); theDomainObj->More(); theDomainObj->Next())
   {
@@ -1352,9 +1349,10 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
       if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
         continue;
 
-      const occ::handle<IntPatch_WLine>& aWLine = *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
+      const occ::handle<IntPatch_WLine>& aWLine =
+        *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
 
-      int       nbpnts  = aWLine->NbPnts();
+      int                    nbpnts  = aWLine->NbPnts();
       const IntSurf_PntOn2S& POn2S_F = aWLine->Point(1);
       const IntSurf_PntOn2S& POn2S_L = aWLine->Point(nbpnts);
 
@@ -1397,21 +1395,21 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
       }
     }
 
-    void* anEAddress = theDomainObj->Edge();
-    TopoDS_Edge*     anE        = (TopoDS_Edge*)anEAddress;
-    TopoDS_Vertex    V1, V2;
+    void*         anEAddress = theDomainObj->Edge();
+    TopoDS_Edge*  anE        = (TopoDS_Edge*)anEAddress;
+    TopoDS_Vertex V1, V2;
     TopExp::Vertices(*anE, V1, V2);
-    double MaxVertexTol = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
-    theVrtxTol                 = MaxVertexTol;
-    double EdgeTol      = BRep_Tool::Tolerance(*anE);
-    CheckTol                   = std::max(MaxVertexTol, EdgeTol);
-    occ::handle<Geom_Curve> aCEdge  = BRep_Tool::Curve(*anE, firstES1, lastES1);
+    double MaxVertexTol            = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+    theVrtxTol                     = MaxVertexTol;
+    double EdgeTol                 = BRep_Tool::Tolerance(*anE);
+    CheckTol                       = std::max(MaxVertexTol, EdgeTol);
+    occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
     // classification gaps
     //  a. min - first
     if (std::abs(firstES1 - WLVertexParameters.Value(1)) > arc->Resolution(MaxVertexTol))
     {
       double param = (firstES1 + WLVertexParameters.Value(1)) / 2.;
-      gp_Pnt        point;
+      gp_Pnt point;
       aCEdge->D0(param, point);
       if (!IsPointOK(point, *theSurfaceTool, CheckTol))
       {
@@ -1424,7 +1422,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
         > arc->Resolution(MaxVertexTol))
     {
       double param = (lastES1 + WLVertexParameters.Value(WLVertexParameters.Length())) / 2.;
-      gp_Pnt        point;
+      gp_Pnt point;
       aCEdge->D0(param, point);
       if (!IsPointOK(point, *theSurfaceTool, CheckTol))
       {
@@ -1439,8 +1437,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
       if (std::abs(WLVertexParameters.Value(i * 2 + 1) - WLVertexParameters.Value(i * 2))
           > arc->Resolution(MaxVertexTol))
       {
-        double param =
-          (WLVertexParameters.Value(i * 2) + WLVertexParameters.Value(i * 2 + 1)) / 2.;
+        double param = (WLVertexParameters.Value(i * 2) + WLVertexParameters.Value(i * 2 + 1)) / 2.;
         gp_Pnt point;
         aCEdge->D0(param, point);
         if (!IsPointOK(point, *theSurfaceTool, CheckTol))
@@ -1479,11 +1476,11 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
   // create IntSurf_LineOn2S from points < PointsFromArc >
   for (i = 1; i <= PointsFromArc.Length(); i++)
   {
-    Extrema_POnSurf  pOnS1;
-    Extrema_POnSurf  pOnS2;
-    gp_Pnt           arcpoint = PointsFromArc.Value(i);
-    bool isOnS1   = GetPointOn2S(arcpoint, *theSurfaceObj, CheckTol, pOnS1);
-    bool isOnS2   = GetPointOn2S(arcpoint, *theSurfaceTool, CheckTol, pOnS2);
+    Extrema_POnSurf pOnS1;
+    Extrema_POnSurf pOnS2;
+    gp_Pnt          arcpoint = PointsFromArc.Value(i);
+    bool            isOnS1   = GetPointOn2S(arcpoint, *theSurfaceObj, CheckTol, pOnS1);
+    bool            isOnS2   = GetPointOn2S(arcpoint, *theSurfaceTool, CheckTol, pOnS2);
     if (isOnS1 && isOnS2)
     {
       double u1 = 0., v1 = 0., u2 = 0., v2 = 0.;
@@ -1504,16 +1501,16 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>&           th
 //  purpose: returns the state of testPoint on OTHER face.
 //========================================================================================
 static bool IsPointOK(const gp_Pnt&            theTestPnt,
-                                  const Adaptor3d_Surface& theTestSurface,
-                                  const double&     theTol)
+                      const Adaptor3d_Surface& theTestSurface,
+                      const double&            theTol)
 {
-  bool result = false;
-  double    ExtTol = theTol; // 1.e-7;
-  Extrema_ExtPS    extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
+  bool          result = false;
+  double        ExtTol = theTol; // 1.e-7;
+  Extrema_ExtPS extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
   if (extPS.IsDone() && extPS.NbExt() > 0)
   {
-    int i        = 0;
-    double    MinDist2 = 1.e+200;
+    int    i        = 0;
+    double MinDist2 = 1.e+200;
     for (i = 1; i <= extPS.NbExt(); i++)
     {
       if (extPS.SquareDistance(i) < MinDist2)
@@ -1533,17 +1530,17 @@ static bool IsPointOK(const gp_Pnt&            theTestPnt,
 //  purpose: check state of testPoint and returns result point if state is OK.
 //========================================================================================
 static bool GetPointOn2S(const gp_Pnt&            theTestPnt,
-                                     const Adaptor3d_Surface& theTestSurface,
-                                     const double&     theTol,
-                                     Extrema_POnSurf&         theResultPoint)
+                         const Adaptor3d_Surface& theTestSurface,
+                         const double&            theTol,
+                         Extrema_POnSurf&         theResultPoint)
 {
-  bool result = false;
-  double    ExtTol = theTol; // 1.e-7;
-  Extrema_ExtPS    extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
+  bool          result = false;
+  double        ExtTol = theTol; // 1.e-7;
+  Extrema_ExtPS extPS(theTestPnt, theTestSurface, ExtTol, ExtTol);
   if (extPS.IsDone() && extPS.NbExt() > 0)
   {
-    int i = 0, minext = 1;
-    double    MinDist2 = 1.e+200;
+    int    i = 0, minext = 1;
+    double MinDist2 = 1.e+200;
     for (i = 1; i <= extPS.NbExt(); i++)
     {
       if (extPS.SquareDistance(i) < MinDist2)
@@ -1568,9 +1565,9 @@ static bool GetPointOn2S(const gp_Pnt&            theTestPnt,
 //           merging are OK.
 //========================================================================================
 static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
-  NCollection_Sequence<occ::handle<IntPatch_Line>>&        theSlin,
-  const double&            theVrtxTol,
-  const occ::handle<IntSurf_LineOn2S>& theLineOn2S)
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+  const double&                                     theVrtxTol,
+  const occ::handle<IntSurf_LineOn2S>&              theLineOn2S)
 {
   occ::handle<IntPatch_WLine> mWLine;
   if (theLineOn2S->NbPoints() == 0)
@@ -1580,14 +1577,15 @@ static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
   //
   IntSurf_TypeTrans trans1 = IntSurf_Undecided;
   IntSurf_TypeTrans trans2 = IntSurf_Undecided;
-  int  i      = 0;
+  int               i      = 0;
 
   for (i = 1; i <= theSlin.Length(); i++)
   {
     if (theSlin.Value(i)->ArcType() != IntPatch_Walking)
       continue;
 
-    const occ::handle<IntPatch_WLine>& aWLine = *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
+    const occ::handle<IntPatch_WLine>& aWLine =
+      *((occ::handle<IntPatch_WLine>*)&(theSlin.Value(i)));
 
     if (aWLine->TransitionOnS1() != IntSurf_Undecided && aWLine->TransitionOnS1() != IntSurf_Touch)
       trans1 = aWLine->TransitionOnS1();
@@ -1597,8 +1595,8 @@ static occ::handle<IntPatch_WLine> GetMergedWLineOnRestriction(
 
   mWLine = new IntPatch_WLine(theLineOn2S, false, trans1, trans2);
 
-  int NbPnts = mWLine->NbPnts();
-  IntPatch_Point   aFirstVertex, aLastVertex;
+  int            NbPnts = mWLine->NbPnts();
+  IntPatch_Point aFirstVertex, aLastVertex;
 
   aFirstVertex.SetValue(mWLine->Point(1).Value(), theVrtxTol, false);
   aLastVertex.SetValue(mWLine->Point(NbPnts).Value(), theVrtxTol, false);

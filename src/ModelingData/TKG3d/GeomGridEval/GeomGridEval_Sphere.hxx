@@ -21,7 +21,6 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for sphere grid points.
 //!
@@ -97,10 +96,11 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
-                                                            const NCollection_Array1<double>& theVParams,
-                                                            int                         theNU,
-                                                            int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams,
+    int                               theNU,
+    int                               theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param theUVPairs array of UV coordinate pairs

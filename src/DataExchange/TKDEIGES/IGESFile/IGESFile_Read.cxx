@@ -55,17 +55,17 @@ static Interface_ParamType LesTypes[10];
 
 //  New way: Protocol is sufficient
 
-int IGESFile_Read(char*                             nomfic,
-                               const occ::handle<IGESData_IGESModel>& amodel,
-                               const occ::handle<IGESData_Protocol>&  protocol)
+int IGESFile_Read(char*                                  nomfic,
+                  const occ::handle<IGESData_IGESModel>& amodel,
+                  const occ::handle<IGESData_Protocol>&  protocol)
 {
   occ::handle<IGESData_FileRecognizer> nulreco;
   return IGESFile_Read(nomfic, amodel, protocol, nulreco, false);
 }
 
-int IGESFile_ReadFNES(char*                             nomfic,
-                                   const occ::handle<IGESData_IGESModel>& amodel,
-                                   const occ::handle<IGESData_Protocol>&  protocol)
+int IGESFile_ReadFNES(char*                                  nomfic,
+                      const occ::handle<IGESData_IGESModel>& amodel,
+                      const occ::handle<IGESData_Protocol>&  protocol)
 {
   occ::handle<IGESData_FileRecognizer> nulreco;
   return IGESFile_Read(nomfic, amodel, protocol, nulreco, true);
@@ -73,11 +73,11 @@ int IGESFile_ReadFNES(char*                             nomfic,
 
 //  Old way: with Recognizer
 
-int IGESFile_Read(char*                                  nomfic,
-                               const occ::handle<IGESData_IGESModel>&      amodel,
-                               const occ::handle<IGESData_Protocol>&       protocol,
-                               const occ::handle<IGESData_FileRecognizer>& reco,
-                               const bool                 modefnes)
+int IGESFile_Read(char*                                       nomfic,
+                  const occ::handle<IGESData_IGESModel>&      amodel,
+                  const occ::handle<IGESData_Protocol>&       protocol,
+                  const occ::handle<IGESData_FileRecognizer>& reco,
+                  const bool                                  modefnes)
 {
   //====================================
   Message_Msg Msg1  = Message_Msg("XSTEP_1");
@@ -191,9 +191,9 @@ int IGESFile_Read(char*                                  nomfic,
 
 void IGESFile_ReadHeader(const occ::handle<IGESData_IGESReaderData>& IR)
 {
-  int l = 0; // szv#4:S4163:12Mar99 i,j,k not needed
-  char*            parval;
-  int              typarg;
+  int   l = 0; // szv#4:S4163:12Mar99 i,j,k not needed
+  char* parval;
+  int   typarg;
   //  first the start lines (comments)
   // szv#4:S4163:12Mar99 optimized
   /*

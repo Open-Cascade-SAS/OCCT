@@ -68,7 +68,8 @@ public:
   class Iterator
   {
     //! Short-cut definition of map iterator type
-    typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator ObjectMapIterator;
+    typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator
+      ObjectMapIterator;
 
   public:
     //! Default constructor without initialization.
@@ -113,7 +114,7 @@ public:
 
   private:
     const SelectMgr_SelectableObjectSet* mySet;
-    int                     mySubsetIdx;
+    int                                  mySubsetIdx;
     ObjectMapIterator                    mySubsetIt;
   };
 
@@ -146,7 +147,7 @@ public:
   //! Updates outdated BVH trees and remembers the last state of the
   //! camera view-projection matrices and viewport (window) dimensions.
   Standard_EXPORT void UpdateBVH(const occ::handle<Graphic3d_Camera>& theCam,
-                                 const NCollection_Vec2<int>&          theWinSize);
+                                 const NCollection_Vec2<int>&         theWinSize);
 
   //! Marks every BVH subset for update.
   Standard_EXPORT void MarkDirty();
@@ -171,15 +172,12 @@ public:
   }
 
   //! Returns true if the specified object subset is empty.
-  bool IsEmpty(const BVHSubset theSubset) const
-  {
-    return myObjects[theSubset].IsEmpty();
-  }
+  bool IsEmpty(const BVHSubset theSubset) const { return myObjects[theSubset].IsEmpty(); }
 
   //! Returns object from subset theSubset by theIndex given. The method allows to get selectable
   //! object referred by the index of an element of the subset's BVH tree.
-  const occ::handle<SelectMgr_SelectableObject>& GetObjectById(const BVHSubset        theSubset,
-                                                          const int theIndex) const
+  const occ::handle<SelectMgr_SelectableObject>& GetObjectById(const BVHSubset theSubset,
+                                                               const int       theIndex) const
   {
     return myObjects[theSubset].FindKey(theIndex + 1);
   }
@@ -199,8 +197,11 @@ private:
   {
     if (theObject->TransformPersistence().IsNull())
     {
-      const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPresentations = theObject->Presentations();
-      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPresentations); aPrsIter.More();
+      const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPresentations =
+        theObject->Presentations();
+      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
+             aPresentations);
+           aPrsIter.More();
            aPrsIter.Next())
       {
         const occ::handle<PrsMgr_Presentation>& aPrs3d = aPrsIter.ChangeValue();

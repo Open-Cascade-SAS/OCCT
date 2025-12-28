@@ -64,9 +64,9 @@ public:
   //! "XAxis". The "YAxis" is parallel to the directrix of the
   //! parabola. The "Location" point of "MirrorAxis" is the vertex of the parabola
   //! Status is "NegativeFocusLength" if Focal < 0.0
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
-                                     const double    Focal,
-                                     const bool Sense);
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& MirrorAxis,
+                                     const double   Focal,
+                                     const bool     Sense);
 
   //! D is the directrix of the parabola and F the focus point.
   //! The symmetry axis "XAxis" of the parabola is normal to the
@@ -74,9 +74,7 @@ public:
   //! "Location" point is the vertex of the parabola.
   //! The "YAxis" of the parabola is parallel to D and its "Location"
   //! point is the vertex of the parabola.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d&         D,
-                                     const gp_Pnt2d&        F,
-                                     const bool Sense = true);
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& D, const gp_Pnt2d& F, const bool Sense = true);
 
   //! Make a parabola with focal point S1 and
   //! center O

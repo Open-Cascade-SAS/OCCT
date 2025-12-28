@@ -36,7 +36,8 @@ public:
   //! Get activated selection modes for a shape.
   //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes
-  virtual NCollection_List<IVtk_SelectionMode> GetSelectionModes(const IVtk_IShape::Handle& theShape) const = 0;
+  virtual NCollection_List<IVtk_SelectionMode> GetSelectionModes(
+    const IVtk_IShape::Handle& theShape) const = 0;
 
 public: // @name Set selectable shapes and selection modes
   //! Activates/deactivates the given selection mode for the shape.
@@ -56,8 +57,8 @@ public: // @name Set selectable shapes and selection modes
   //! @param[in]  theMode Selection mode to be activated
   //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   virtual void SetSelectionMode(const NCollection_List<IVtk_IShape::Handle>& theShapes,
-                                const IVtk_SelectionMode theMode,
-                                const bool               theIsTurnOn = true) = 0;
+                                const IVtk_SelectionMode                     theMode,
+                                const bool theIsTurnOn = true) = 0;
 
 public: // @name Picking methods
   virtual bool Pick(const double theX, const double theY) = 0;
@@ -78,7 +79,8 @@ public: // @name Obtain picking results
   //! @param[out]  theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
   //! in the order of increasing depth (the ID of the sub-shape closest to the eye
   //! is the first in the list)
-  virtual void SubShapesPicked(const IVtk_IdType theId, NCollection_List<IVtk_IdType>& theShapeList) const = 0;
+  virtual void SubShapesPicked(const IVtk_IdType              theId,
+                               NCollection_List<IVtk_IdType>& theShapeList) const = 0;
 };
 
 #endif // __IVTK_ISHAPEPICKERALGO_H__

@@ -37,17 +37,15 @@ public:
   //! reference. Locates instance in theLocation and applies specified transformation persistence
   //! mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  occ::handle<AIS_InteractiveObject> Connect(const occ::handle<AIS_InteractiveObject>&   theAnotherObj,
-                                        const occ::handle<TopLoc_Datum3D>&          theLocation,
-                                        const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
+  occ::handle<AIS_InteractiveObject> Connect(
+    const occ::handle<AIS_InteractiveObject>&   theAnotherObj,
+    const occ::handle<TopLoc_Datum3D>&          theLocation,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
   {
     return connect(theAnotherObj, theLocation, theTrsfPers);
   }
 
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Object;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
 
   virtual int Signature() const override { return 1; }
 
@@ -77,15 +75,16 @@ public:
   }
 
   //! Assigns interactive context.
-  Standard_EXPORT virtual void SetContext(const occ::handle<AIS_InteractiveContext>& theCtx)
-    override;
+  Standard_EXPORT virtual void SetContext(
+    const occ::handle<AIS_InteractiveContext>& theCtx) override;
 
 public: // short aliases to Connect() method
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
   //! reference. Copies local transformation and transformation persistence mode from
   //! theInteractive.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  occ::handle<AIS_InteractiveObject> Connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj)
+  occ::handle<AIS_InteractiveObject> Connect(
+    const occ::handle<AIS_InteractiveObject>& theAnotherObj)
   {
     return connect(theAnotherObj,
                    theAnotherObj->LocalTransformationGeom(),
@@ -96,8 +95,9 @@ public: // short aliases to Connect() method
   //! reference. Locates instance in theLocation and copies transformation persistence mode from
   //! theInteractive.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  occ::handle<AIS_InteractiveObject> Connect(const occ::handle<AIS_InteractiveObject>& theAnotherObj,
-                                        const gp_Trsf&                       theLocation)
+  occ::handle<AIS_InteractiveObject> Connect(
+    const occ::handle<AIS_InteractiveObject>& theAnotherObj,
+    const gp_Trsf&                            theLocation)
   {
     return connect(theAnotherObj,
                    new TopLoc_Datum3D(theLocation),
@@ -108,9 +108,10 @@ public: // short aliases to Connect() method
   //! reference. Locates instance in theLocation and applies specified transformation persistence
   //! mode.
   //! @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
-  occ::handle<AIS_InteractiveObject> Connect(const occ::handle<AIS_InteractiveObject>&   theAnotherObj,
-                                        const gp_Trsf&                         theLocation,
-                                        const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
+  occ::handle<AIS_InteractiveObject> Connect(
+    const occ::handle<AIS_InteractiveObject>&   theAnotherObj,
+    const gp_Trsf&                              theLocation,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
   {
     return connect(theAnotherObj, new TopLoc_Datum3D(theLocation), theTrsfPers);
   }

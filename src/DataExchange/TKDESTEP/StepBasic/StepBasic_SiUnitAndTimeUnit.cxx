@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndTimeUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndTimeUnit::StepBasic_SiUnitAndTimeUnit() {}
 
-void StepBasic_SiUnitAndTimeUnit::Init(const bool     hasAprefix,
+void StepBasic_SiUnitAndTimeUnit::Init(const bool                 hasAprefix,
                                        const StepBasic_SiPrefix   aPrefix,
                                        const StepBasic_SiUnitName aName)
 {

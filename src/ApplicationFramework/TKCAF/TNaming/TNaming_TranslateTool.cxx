@@ -26,7 +26,6 @@
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
-#include <BRep_PointRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
 #include <BRep_PolygonOnClosedSurface.hxx>
 #include <BRep_PolygonOnClosedTriangulation.hxx>
@@ -127,9 +126,11 @@ void TNaming_TranslateTool::MakeCompound(TopoDS_Shape& S) const
 // Update methods
 //=================================================================================================
 
-void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                         S1,
-                                         TopoDS_Shape&                               S2,
-                                         NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap) const
+void TNaming_TranslateTool::UpdateVertex(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
   const occ::handle<BRep_TVertex>& TTV1 = *((occ::handle<BRep_TVertex>*)&(S1.TShape()));
   const occ::handle<BRep_TVertex>& TTV2 = *((occ::handle<BRep_TVertex>*)&(S2.TShape()));
@@ -196,9 +197,11 @@ void TNaming_TranslateTool::UpdateVertex(const TopoDS_Shape&                    
 // purpose  : Transient->Transient
 //=======================================================================
 
-void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                         S1,
-                                       TopoDS_Shape&                               S2,
-                                       NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap) const
+void TNaming_TranslateTool::UpdateEdge(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
   const occ::handle<BRep_TEdge>& TTE1 = *((occ::handle<BRep_TEdge>*)&(S1.TShape()));
   const occ::handle<BRep_TEdge>& TTE2 = *((occ::handle<BRep_TEdge>*)&(S2.TShape()));
@@ -216,11 +219,11 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
 
   // Representations
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TTE1->Curves());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              lcr = TTE2->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          lcr = TTE2->ChangeCurves();
   lcr.Clear();
 
   occ::handle<BRep_GCurve> GC;
-  double       f, l;
+  double                   f, l;
   while (itcr.More())
   {
 
@@ -341,9 +344,11 @@ void TNaming_TranslateTool::UpdateEdge(const TopoDS_Shape&                      
 // purpose  : Transient->Transient
 //=======================================================================
 
-void TNaming_TranslateTool::UpdateFace(const TopoDS_Shape&                         S1,
-                                       TopoDS_Shape&                               S2,
-                                       NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap) const
+void TNaming_TranslateTool::UpdateFace(
+  const TopoDS_Shape& S1,
+  TopoDS_Shape&       S2,
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
+    aMap) const
 {
   const occ::handle<BRep_TFace>& TTF1 = *((occ::handle<BRep_TFace>*)&(S1.TShape()));
   const occ::handle<BRep_TFace>& TTF2 = *((occ::handle<BRep_TFace>*)&(S2.TShape()));

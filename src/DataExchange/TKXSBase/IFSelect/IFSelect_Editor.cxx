@@ -46,15 +46,15 @@ void IFSelect_Editor::SetNbValues(const int nbval)
   thenbval = nbval;
 }
 
-void IFSelect_Editor::SetValue(const int              num,
+void IFSelect_Editor::SetValue(const int                                num,
                                const occ::handle<Interface_TypedValue>& typval,
-                               const char*              shortname,
-                               const IFSelect_EditValue            editmode)
+                               const char*                              shortname,
+                               const IFSelect_EditValue                 editmode)
 {
   if (num < 1 || num > thenbval)
     return;
   TCollection_AsciiString shn(shortname);
-  int        lng = shn.Length();
+  int                     lng = shn.Length();
   if (lng > 0)
     thenames.Bind(shortname, num);
   if (lng > themaxsh)
@@ -104,8 +104,7 @@ int IFSelect_Editor::MaxList(const int num) const
   return thelists.Value(num);
 }
 
-const char* IFSelect_Editor::Name(const int num,
-                                       const bool isshort) const
+const char* IFSelect_Editor::Name(const int num, const bool isshort) const
 {
   if (num < 1 || num > thenbval)
     return "";
@@ -244,8 +243,7 @@ int IFSelect_Editor::NameNumber(const char* name) const
   return res;
 }
 
-occ::handle<IFSelect_EditForm> IFSelect_Editor::Form(const bool readonly,
-                                                const bool undoable) const
+occ::handle<IFSelect_EditForm> IFSelect_Editor::Form(const bool readonly, const bool undoable) const
 {
   return new IFSelect_EditForm(this, readonly, undoable, Label().ToCString());
 }
@@ -253,25 +251,24 @@ occ::handle<IFSelect_EditForm> IFSelect_Editor::Form(const bool readonly,
 occ::handle<IFSelect_ListEditor> IFSelect_Editor::ListEditor(const int num) const
 {
   occ::handle<IFSelect_ListEditor> led;
-  int            max = MaxList(num);
+  int                              max = MaxList(num);
   if (max < 0)
     return led;
   led = new IFSelect_ListEditor(TypedValue(num), max);
   return led;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_Editor::ListValue(
-  const occ::handle<IFSelect_EditForm>& /*form*/,
-  const int /*num*/) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_Editor::
+  ListValue(const occ::handle<IFSelect_EditForm>& /*form*/, const int /*num*/) const
 {
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list;
   return list;
 }
 
 bool IFSelect_Editor::Update(const occ::handle<IFSelect_EditForm>& /*form*/,
-                                         const int /*num*/,
-                                         const occ::handle<TCollection_HAsciiString>& /*newval*/,
-                                         const bool /*enforce*/) const
+                             const int /*num*/,
+                             const occ::handle<TCollection_HAsciiString>& /*newval*/,
+                             const bool /*enforce*/) const
 {
   return true;
 }

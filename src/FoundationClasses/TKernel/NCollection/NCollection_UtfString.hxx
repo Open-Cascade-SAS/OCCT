@@ -58,10 +58,7 @@ public:
 
   //! Retrieve Unicode symbol at specified position.
   //! Warning! This is a slow access. Iterator should be used for consecutive parsing.
-  char32_t operator[](const int theCharIndex) const
-  {
-    return GetChar(theCharIndex);
-  }
+  char32_t operator[](const int theCharIndex) const { return GetChar(theCharIndex); }
 
   //! Initialize empty string.
   NCollection_UtfString();
@@ -85,16 +82,14 @@ public:
   //! @param theLength    the length limit in Unicode symbols (NOT bytes!)
   //! The string is copied till NULL symbol or, if theLength >0,
   //! till either NULL or theLength-th symbol (which comes first).
-  NCollection_UtfString(const char16_t* theCopyUtf16,
-                        const int    theLength = -1);
+  NCollection_UtfString(const char16_t* theCopyUtf16, const int theLength = -1);
 
   //! Copy constructor from UTF-32 string.
   //! @param theCopyUtf32 UTF-32 string to copy
   //! @param theLength    the length limit in Unicode symbols (NOT bytes!)
   //! The string is copied till NULL symbol or, if theLength >0,
   //! till either NULL or theLength-th symbol (which comes first).
-  NCollection_UtfString(const char32_t* theCopyUtf32,
-                        const int    theLength = -1);
+  NCollection_UtfString(const char32_t* theCopyUtf32, const int theLength = -1);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)                                         \
   || (defined(_MSC_VER) && _MSC_VER >= 1900)
@@ -105,8 +100,7 @@ public:
   //! till either NULL or theLength-th symbol (which comes first).
   //!
   //! This constructor is undefined if wchar_t is the same type as char16_t.
-  NCollection_UtfString(const wchar_t* theCopyUtfWide,
-                        const int   theLength = -1);
+  NCollection_UtfString(const wchar_t* theCopyUtfWide, const int theLength = -1);
 #endif
 
   //! Copy from Unicode string in UTF-8, UTF-16, or UTF-32 encoding,
@@ -145,8 +139,7 @@ public:
   //! @param theStart start index (inclusive) of subString
   //! @param theEnd   end index   (exclusive) of subString
   //! @return the substring
-  NCollection_UtfString SubString(const int theStart,
-                                  const int theEnd) const;
+  NCollection_UtfString SubString(const int theStart, const int theEnd) const;
 
   //! Returns NULL-terminated Unicode string.
   //! Should not be modified or deleted!
@@ -235,7 +228,7 @@ public: //! @name compare operators
 private: //! @name low-level methods
   //! Implementation of copy routine for string of the same type
   void fromUnicodeImpl(const Type*                    theStringUtf,
-                       const int         theLength,
+                       const int                      theLength,
                        NCollection_UtfIterator<Type>& theIterator)
   {
     Type* anOldBuffer = myString; // necessary in case of self-copying
@@ -246,8 +239,7 @@ private: //! @name low-level methods
     {
     }
 
-    mySize =
-      int((uint8_t*)theIterator.BufferHere() - (uint8_t*)theStringUtf);
+    mySize   = int((uint8_t*)theIterator.BufferHere() - (uint8_t*)theStringUtf);
     myLength = theIterator.Index();
     myString = strAlloc(mySize);
     strCopy((uint8_t*)myString, (const uint8_t*)theStringUtf, mySize);
@@ -260,12 +252,12 @@ private: //! @name low-level methods
   void fromUnicodeImpl(
     typename opencascade::std::enable_if<!opencascade::std::is_same<Type, TypeFrom>::value,
                                          const TypeFrom*>::type theStringUtf,
-    const int                                      theLength,
+    const int                                                   theLength,
     NCollection_UtfIterator<TypeFrom>&                          theIterator)
   {
     Type* anOldBuffer = myString; // necessary in case of self-copying
 
-    mySize                            = 0;
+    mySize               = 0;
     const int aLengthMax = (theLength > 0) ? theLength : IntegerLast();
     for (; *theIterator != 0 && theIterator.Index() < aLengthMax; ++theIterator)
     {
@@ -302,26 +294,24 @@ private: //! @name low-level methods
   static void strFree(Type*& thePtr) { Standard::Free(thePtr); }
 
   //! Provides bytes interface to avoid incorrect pointer arithmetics.
-  static void strCopy(uint8_t*         theStrDst,
-                      const uint8_t*   theStrSrc,
-                      const int theSizeBytes) noexcept
+  static void strCopy(uint8_t* theStrDst, const uint8_t* theStrSrc, const int theSizeBytes) noexcept
   {
     std::memcpy(theStrDst, theStrSrc, (size_t)theSizeBytes);
   }
 
   //! Compare two Unicode strings per-byte.
-  static bool strAreEqual(const Type*            theString1,
-                          const int theSizeBytes1,
-                          const Type*            theString2,
-                          const int theSizeBytes2) noexcept
+  static bool strAreEqual(const Type* theString1,
+                          const int   theSizeBytes1,
+                          const Type* theString2,
+                          const int   theSizeBytes2) noexcept
   {
     return (theSizeBytes1 == theSizeBytes2)
            && (std::memcmp(theString1, theString2, (size_t)theSizeBytes1) == 0);
   }
 
-private:                     //! @name private fields
-  Type*            myString; //!< string buffer
-  int mySize;   //!< buffer size in bytes, excluding NULL-termination symbol
+private:          //! @name private fields
+  Type* myString; //!< string buffer
+  int   mySize;   //!< buffer size in bytes, excluding NULL-termination symbol
   // clang-format off
   int myLength; //!< length of the string in Unicode symbols (cached value, excluding NULL-termination symbol)
   // clang-format on

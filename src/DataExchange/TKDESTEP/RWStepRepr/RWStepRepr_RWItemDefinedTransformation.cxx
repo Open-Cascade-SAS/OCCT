@@ -25,7 +25,7 @@ RWStepRepr_RWItemDefinedTransformation::RWStepRepr_RWItemDefinedTransformation()
 
 void RWStepRepr_RWItemDefinedTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepRepr_ItemDefinedTransformation>& ent) const
 {
@@ -57,7 +57,7 @@ void RWStepRepr_RWItemDefinedTransformation::ReadStep(
 }
 
 void RWStepRepr_RWItemDefinedTransformation::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepRepr_ItemDefinedTransformation>& ent) const
 {
 
@@ -71,7 +71,7 @@ void RWStepRepr_RWItemDefinedTransformation::WriteStep(
 
 void RWStepRepr_RWItemDefinedTransformation::Share(
   const occ::handle<StepRepr_ItemDefinedTransformation>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
   iter.AddItem(ent->TransformItem1());
   iter.AddItem(ent->TransformItem2());

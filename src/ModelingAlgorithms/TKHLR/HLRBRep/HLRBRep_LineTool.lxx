@@ -25,7 +25,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
 
 inline double HLRBRep_LineTool::FirstParameter(const gp_Lin&)
 {
@@ -47,7 +46,9 @@ inline int HLRBRep_LineTool::NbIntervals(const gp_Lin&, const GeomAbs_Shape)
   return 1;
 }
 
-inline void HLRBRep_LineTool::Intervals(const gp_Lin&, NCollection_Array1<double>&, const GeomAbs_Shape)
+inline void HLRBRep_LineTool::Intervals(const gp_Lin&,
+                                        NCollection_Array1<double>&,
+                                        const GeomAbs_Shape)
 {
 }
 
@@ -96,22 +97,18 @@ inline void HLRBRep_LineTool::D1(const gp_Lin& C, const double U, gp_Pnt& P, gp_
   ElCLib::D1(U, C, P, V);
 }
 
-inline void HLRBRep_LineTool::D2(const gp_Lin&       C,
-                                 const double U,
-                                 gp_Pnt&             P,
-                                 gp_Vec&             V1,
-                                 gp_Vec&             V2)
+inline void HLRBRep_LineTool::D2(const gp_Lin& C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
 {
   ElCLib::D1(U, C, P, V1);
   V2 = gp_Vec(0, 0, 0);
 }
 
-inline void HLRBRep_LineTool::D3(const gp_Lin&       C,
-                                 const double U,
-                                 gp_Pnt&             P,
-                                 gp_Vec&             V1,
-                                 gp_Vec&             V2,
-                                 gp_Vec&             V3)
+inline void HLRBRep_LineTool::D3(const gp_Lin& C,
+                                 const double  U,
+                                 gp_Pnt&       P,
+                                 gp_Vec&       V1,
+                                 gp_Vec&       V2,
+                                 gp_Vec&       V3)
 {
   ElCLib::D1(U, C, P, V1);
   V2 = V3 = gp_Vec(0, 0, 0);
@@ -203,9 +200,7 @@ inline void HLRBRep_LineTool::KnotsAndMultiplicities(const gp_Lin&,
 {
 }
 
-inline int HLRBRep_LineTool::NbSamples(const gp_Lin&,
-                                                    const double,
-                                                    const double)
+inline int HLRBRep_LineTool::NbSamples(const gp_Lin&, const double, const double)
 {
   return 3;
 }

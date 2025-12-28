@@ -34,9 +34,9 @@ HelixGeom_BuilderApproxCurve::~HelixGeom_BuilderApproxCurve() {}
 
 //=================================================================================================
 
-void HelixGeom_BuilderApproxCurve::SetApproxParameters(const GeomAbs_Shape    aCont,
-                                                       const int aMaxDegree,
-                                                       const int aMaxSeg)
+void HelixGeom_BuilderApproxCurve::SetApproxParameters(const GeomAbs_Shape aCont,
+                                                       const int           aMaxDegree,
+                                                       const int           aMaxSeg)
 {
   myCont      = aCont;
   myMaxDegree = aMaxDegree;
@@ -45,9 +45,9 @@ void HelixGeom_BuilderApproxCurve::SetApproxParameters(const GeomAbs_Shape    aC
 
 //=================================================================================================
 
-void HelixGeom_BuilderApproxCurve::ApproxParameters(GeomAbs_Shape&    aCont,
-                                                    int& aMaxDegree,
-                                                    int& aMaxSeg) const
+void HelixGeom_BuilderApproxCurve::ApproxParameters(GeomAbs_Shape& aCont,
+                                                    int&           aMaxDegree,
+                                                    int&           aMaxSeg) const
 {
   aCont      = myCont;
   aMaxDegree = myMaxDegree;

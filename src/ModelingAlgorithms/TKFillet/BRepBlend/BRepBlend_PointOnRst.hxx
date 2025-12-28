@@ -36,16 +36,16 @@ public:
   //! with the transition TLine on the walking line, and
   //! TArc on the arc A.
   Standard_EXPORT BRepBlend_PointOnRst(const occ::handle<Adaptor2d_Curve2d>& A,
-                                       const double              Param,
-                                       const IntSurf_Transition&        TLine,
-                                       const IntSurf_Transition&        TArc);
+                                       const double                          Param,
+                                       const IntSurf_Transition&             TLine,
+                                       const IntSurf_Transition&             TArc);
 
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
   Standard_EXPORT void SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
-                              const double              Param,
-                              const IntSurf_Transition&        TLine,
-                              const IntSurf_Transition&        TArc);
+                              const double                          Param,
+                              const IntSurf_Transition&             TLine,
+                              const IntSurf_Transition&             TArc);
 
   //! Returns the arc of restriction containing the
   //! vertex.
@@ -65,9 +65,9 @@ public:
 
 private:
   occ::handle<Adaptor2d_Curve2d> arc;
-  IntSurf_Transition        traline;
-  IntSurf_Transition        traarc;
-  double             prm;
+  IntSurf_Transition             traline;
+  IntSurf_Transition             traarc;
+  double                         prm;
 };
 
 #include <BRepBlend_PointOnRst.lxx>

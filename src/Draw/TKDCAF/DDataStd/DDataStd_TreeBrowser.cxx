@@ -96,7 +96,7 @@ TDF_Label DDataStd_TreeBrowser::Label() const
 
 TCollection_AsciiString DDataStd_TreeBrowser::OpenRoot() const
 {
-  TCollection_AsciiString   list;
+  TCollection_AsciiString        list;
   occ::handle<TDataStd_TreeNode> TN;
   if (myRoot.FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), TN))
   {
@@ -113,11 +113,11 @@ TCollection_AsciiString DDataStd_TreeBrowser::OpenRoot() const
 
 TCollection_AsciiString DDataStd_TreeBrowser::OpenNode(const TDF_Label& aLabel) const
 {
-  TCollection_AsciiString   list;
+  TCollection_AsciiString        list;
   occ::handle<TDataStd_TreeNode> nodeToOpen;
   if (aLabel.FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), nodeToOpen))
   {
-    bool          split   = false;
+    bool                           split   = false;
     occ::handle<TDataStd_TreeNode> current = nodeToOpen->First();
     while (!current.IsNull())
     {
@@ -140,7 +140,7 @@ TCollection_AsciiString DDataStd_TreeBrowser::OpenNode(const TDF_Label& aLabel) 
 //=======================================================================
 
 void DDataStd_TreeBrowser::OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeNode,
-                                    TCollection_AsciiString&         aList) const
+                                    TCollection_AsciiString&              aList) const
 {
   // Label entry. -0
   TCollection_AsciiString tmp;

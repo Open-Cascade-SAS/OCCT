@@ -58,9 +58,8 @@ public:
   //! if Index1d not in the Range [1,Nb1dSpaces]
   //! if Index2d not in the Range [1,Nb1dSpaces]
   //! if the Approx is not Done
-  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Curve2dFromTwo1d(
-    const int Index1d,
-    const int Index2d) const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Curve2dFromTwo1d(const int Index1d,
+                                                                    const int Index2d) const;
 
   //! returns a rational curve whose poles correspond to
   //! the index2d of the 2D space and whose weights correspond
@@ -69,7 +68,7 @@ public:
   //! if Index2d not in the Range [1,Nb2dSpaces]
   //! if the Approx is not Done
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Curve2d(const int Index1d,
-                                                      const int Index2d) const;
+                                                           const int Index2d) const;
 
   //! returns a polynomial curve whose poles correspond to
   //! the Index3D 3D space
@@ -83,8 +82,7 @@ public:
   //! if Index1D not in the Range [1,Nb1dSpaces]
   //! if Index3D not in the Range [1,Nb3dSpaces]
   //! if the Approx is not Done
-  Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve(const int Index1D,
-                                                  const int Index3D) const;
+  Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve(const int Index1D, const int Index3D) const;
 
 private:
   AdvApprox_ApproxAFunction myApprox;

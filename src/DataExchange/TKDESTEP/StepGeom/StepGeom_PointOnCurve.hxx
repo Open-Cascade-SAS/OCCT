@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Curve>&           aBasisCurve,
-                            const double                     aPointParameter);
+                            const double                                 aPointParameter);
 
   Standard_EXPORT void SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve);
 
@@ -47,7 +47,7 @@ public:
 
 private:
   occ::handle<StepGeom_Curve> basisCurve;
-  double          pointParameter;
+  double                      pointParameter;
 };
 
 #endif // _StepGeom_PointOnCurve_HeaderFile

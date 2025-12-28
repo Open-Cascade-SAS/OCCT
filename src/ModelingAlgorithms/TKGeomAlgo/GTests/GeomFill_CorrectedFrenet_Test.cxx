@@ -22,10 +22,7 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 
 #include <gtest/gtest.h>
@@ -150,7 +147,7 @@ TEST(GeomFill_CorrectedFrenet, ActualReproducerCase)
   for (int i = 2; i <= aPoints.Length(); i++)
   {
     occ::handle<Geom_Curve> aCurve = GC_MakeSegment(aPoints(i - 1), aPoints(i)).Value();
-    TopoDS_Edge        anEdge = BRepBuilderAPI_MakeEdge(aCurve).Edge();
+    TopoDS_Edge             anEdge = BRepBuilderAPI_MakeEdge(aCurve).Edge();
     anExtend.Add(anEdge);
   }
 

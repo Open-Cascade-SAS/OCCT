@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_UAttribute, TDF_Attribute)
 //=================================================================================================
 
 occ::handle<TDataStd_UAttribute> TDataStd_UAttribute::Set(const TDF_Label&     label,
-                                                     const Standard_GUID& guid)
+                                                          const Standard_GUID& guid)
 {
   occ::handle<TDataStd_UAttribute> A;
   if (!label.FindAttribute(guid, A))

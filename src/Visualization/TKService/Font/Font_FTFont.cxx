@@ -80,9 +80,9 @@ void Font_FTFont::Release()
 //=================================================================================================
 
 bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
-                       const TCollection_AsciiString&    theFileName,
-                       const Font_FTFontParams&          theParams,
-                       const int            theFaceId)
+                       const TCollection_AsciiString&         theFileName,
+                       const Font_FTFontParams&               theParams,
+                       const int                              theFaceId)
 {
   Release();
   myBuffer     = theData;
@@ -195,13 +195,13 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
 //=================================================================================================
 
 occ::handle<Font_FTFont> Font_FTFont::FindAndCreate(const TCollection_AsciiString& theFontName,
-                                               const Font_FontAspect          theFontAspect,
-                                               const Font_FTFontParams&       theParams,
-                                               const Font_StrictLevel         theStrictLevel)
+                                                    const Font_FontAspect          theFontAspect,
+                                                    const Font_FTFontParams&       theParams,
+                                                    const Font_StrictLevel         theStrictLevel)
 {
   occ::handle<Font_FontMgr> aFontMgr    = Font_FontMgr::GetInstance();
-  Font_FontAspect      aFontAspect = theFontAspect;
-  Font_FTFontParams    aParams     = theParams;
+  Font_FontAspect           aFontAspect = theFontAspect;
+  Font_FTFontParams         aParams     = theParams;
   if (occ::handle<Font_SystemFont> aRequestedFont =
         aFontMgr->FindFont(theFontName, theStrictLevel, aFontAspect))
   {
@@ -210,7 +210,7 @@ occ::handle<Font_FTFont> Font_FTFont::FindAndCreate(const TCollection_AsciiStrin
       aParams.IsSingleStrokeFont = true;
     }
 
-    int               aFaceId = 0;
+    int                            aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(aFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     occ::handle<Font_FTFont> aFont = new Font_FTFont();
@@ -254,8 +254,8 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
                               const Font_FTFontParams&       theParams,
                               Font_StrictLevel               theStrictLevel)
 {
-  Font_FTFontParams aParams     = theParams;
-  myFontAspect                  = theFontAspect;
+  Font_FTFontParams aParams          = theParams;
+  myFontAspect                       = theFontAspect;
   occ::handle<Font_FontMgr> aFontMgr = Font_FontMgr::GetInstance();
   if (occ::handle<Font_SystemFont> aRequestedFont =
         aFontMgr->FindFont(theFontName.ToCString(), theStrictLevel, myFontAspect))
@@ -265,7 +265,7 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
       aParams.IsSingleStrokeFont = true;
     }
 
-    int               aFaceId = 0;
+    int                            aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     return Init(aPath, aParams, aFaceId);
@@ -298,12 +298,13 @@ bool Font_FTFont::findAndInitFallback(Font_UnicodeSubset theSubset)
   myFallbackFaces[theSubset]->myToUseUnicodeSubsetFallback = false; // no recursion
 
   occ::handle<Font_FontMgr> aFontMgr = Font_FontMgr::GetInstance();
-  if (occ::handle<Font_SystemFont> aRequestedFont = aFontMgr->FindFallbackFont(theSubset, myFontAspect))
+  if (occ::handle<Font_SystemFont> aRequestedFont =
+        aFontMgr->FindFallbackFont(theSubset, myFontAspect))
   {
     Font_FTFontParams aParams  = myFontParams;
     aParams.IsSingleStrokeFont = aRequestedFont->IsSingleStrokeFont();
 
-    int               aFaceId = 0;
+    int                            aFaceId = 0;
     const TCollection_AsciiString& aPath =
       aRequestedFont->FontPathAny(myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     if (myFallbackFaces[theSubset]->Init(aPath, aParams, aFaceId))
@@ -564,9 +565,7 @@ float Font_FTFont::AdvanceY(char32_t theUChar, char32_t theUCharNext)
 
 //=================================================================================================
 
-bool Font_FTFont::getKerning(FT_Vector&         theKern,
-                             char32_t theUCharCurr,
-                             char32_t theUCharNext) const
+bool Font_FTFont::getKerning(FT_Vector& theKern, char32_t theUCharCurr, char32_t theUCharNext) const
 {
 #ifdef HAVE_FREETYPE
   theKern.x = 0;

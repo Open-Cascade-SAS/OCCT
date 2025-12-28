@@ -22,7 +22,7 @@ RWStepVisual_RWSurfaceStyleControlGrid::RWStepVisual_RWSurfaceStyleControlGrid()
 
 void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleControlGrid::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleControlGrid::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent) const
 {
 
@@ -60,7 +60,7 @@ void RWStepVisual_RWSurfaceStyleControlGrid::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleControlGrid::Share(
   const occ::handle<StepVisual_SurfaceStyleControlGrid>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->StyleOfControlGrid());

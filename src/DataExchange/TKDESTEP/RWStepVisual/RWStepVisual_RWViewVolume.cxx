@@ -25,7 +25,7 @@
 RWStepVisual_RWViewVolume::RWStepVisual_RWViewVolume() {}
 
 void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                 num,
+                                         const int                                   num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepVisual_ViewVolume>&   ent) const
 {
@@ -115,7 +115,7 @@ void RWStepVisual_RWViewVolume::ReadStep(const occ::handle<StepData_StepReaderDa
             aViewWindow);
 }
 
-void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                 SW,
+void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                      SW,
                                           const occ::handle<StepVisual_ViewVolume>& ent) const
 {
 
@@ -157,7 +157,7 @@ void RWStepVisual_RWViewVolume::WriteStep(StepData_StepWriter&                 S
 }
 
 void RWStepVisual_RWViewVolume::Share(const occ::handle<StepVisual_ViewVolume>& ent,
-                                      Interface_EntityIterator&            iter) const
+                                      Interface_EntityIterator&                 iter) const
 {
 
   iter.GetOneItem(ent->ProjectionPoint());

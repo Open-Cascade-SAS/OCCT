@@ -49,16 +49,16 @@ inline int GeomConvert_CompBezierSurfacesToBSplineSurface::NbVPoles() const
 }
 
 // ================================================================================
-inline const occ::handle<NCollection_HArray2<gp_Pnt>>& GeomConvert_CompBezierSurfacesToBSplineSurface::Poles()
-  const
+inline const occ::handle<NCollection_HArray2<gp_Pnt>>&
+  GeomConvert_CompBezierSurfacesToBSplineSurface::Poles() const
 // ================================================================================
 {
   return myPoles;
 }
 
 // ================================================================================
-inline const occ::handle<NCollection_HArray1<double>>& GeomConvert_CompBezierSurfacesToBSplineSurface::UKnots()
-  const
+inline const occ::handle<NCollection_HArray1<double>>&
+  GeomConvert_CompBezierSurfacesToBSplineSurface::UKnots() const
 // ================================================================================
 {
   return myUKnots;
@@ -72,8 +72,8 @@ inline int GeomConvert_CompBezierSurfacesToBSplineSurface::UDegree() const
 }
 
 // ================================================================================
-inline const occ::handle<NCollection_HArray1<double>>& GeomConvert_CompBezierSurfacesToBSplineSurface::VKnots()
-  const
+inline const occ::handle<NCollection_HArray1<double>>&
+  GeomConvert_CompBezierSurfacesToBSplineSurface::VKnots() const
 // ================================================================================
 {
   return myVKnots;

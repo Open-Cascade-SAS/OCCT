@@ -44,7 +44,7 @@ public:
   //! respected for all vectors and matrix declarations.
   Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
                                        const math_Vector&               Tolerance,
-                                       const int           NbIterations = 100);
+                                       const int                        NbIterations = 100);
 
   //! is used in a sub-class to initialize correctly all the fields
   //! of this class.
@@ -53,7 +53,7 @@ public:
   //! The method SetTolerance must be called after this
   //! constructor.
   Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                       const int           NbIterations = 100);
+                                       const int                        NbIterations = 100);
 
   //! Destructor
   Standard_EXPORT virtual ~math_FunctionSetRoot();
@@ -84,7 +84,7 @@ public:
   //! for all unknowns.
   Standard_EXPORT void Perform(math_FunctionSetWithDerivatives& theFunction,
                                const math_Vector&               theStartingPoint,
-                               const bool theStopOnDivergent = false);
+                               const bool                       theStopOnDivergent = false);
 
   //! Improves the root of function from the initial guess point.
   //! The infinum and supremum may be given to constrain the solution.
@@ -94,7 +94,7 @@ public:
                                const math_Vector&               theStartingPoint,
                                const math_Vector&               theInfBound,
                                const math_Vector&               theSupBound,
-                               const bool theStopOnDivergent = false);
+                               const bool                       theStopOnDivergent = false);
 
   //! Returns true if the computations are successful, otherwise returns false.
   bool IsDone() const { return Done; }
@@ -180,10 +180,10 @@ protected:
   math_Vector Tol;
 
 private:
-  bool   Done;
-  int   Kount;
-  int   State;
-  int   Itermax;
+  bool               Done;
+  int                Kount;
+  int                State;
+  int                Itermax;
   math_Vector        InfBound;
   math_Vector        SupBound;
   math_Vector        SolSave;
@@ -198,7 +198,7 @@ private:
   math_Vector        Temp2;
   math_Vector        Temp3;
   math_Vector        Temp4;
-  bool   myIsDivergent;
+  bool               myIsDivergent;
 };
 
 inline Standard_OStream& operator<<(Standard_OStream& theStream, const math_FunctionSetRoot& theF)

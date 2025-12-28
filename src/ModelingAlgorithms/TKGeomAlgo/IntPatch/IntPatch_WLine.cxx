@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine, IntPatch_PointLine)
 #include <stdio.h>
 
 IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
-                               const bool          Tang,
-                               const IntSurf_TypeTrans         Trans1,
-                               const IntSurf_TypeTrans         Trans2)
+                               const bool                           Tang,
+                               const IntSurf_TypeTrans              Trans1,
+                               const IntSurf_TypeTrans              Trans2)
     : IntPatch_PointLine(Tang, Trans1, Trans2),
       fipt(false),
       lapt(false),
@@ -45,9 +45,9 @@ IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
 }
 
 IntPatch_WLine::IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
-                               const bool          Tang,
-                               const IntSurf_Situation         Situ1,
-                               const IntSurf_Situation         Situ2)
+                               const bool                           Tang,
+                               const IntSurf_Situation              Situ1,
+                               const IntSurf_Situation              Situ2)
     : IntPatch_PointLine(Tang, Situ1, Situ2),
       fipt(false),
       lapt(false),
@@ -146,10 +146,10 @@ static void RecadreMemePeriode(double&      u1,
 
 static void RecadreMemePeriode(IntSurf_PntOn2S&       POn2S,
                                const IntSurf_PntOn2S& RefPOn2S,
-                               const double    up1,
-                               const double    vp1,
-                               const double    up2,
-                               const double    vp2)
+                               const double           up1,
+                               const double           vp1,
+                               const double           up2,
+                               const double           vp2)
 {
   double u1, v1, u2, v2, pu1, pv1, pu2, pv2;
   POn2S.Parameters(u1, v1, u2, v2);
@@ -158,9 +158,7 @@ static void RecadreMemePeriode(IntSurf_PntOn2S&       POn2S,
   POn2S.SetValue(u1, v1, u2, v2);
 }
 
-static bool CompareVertexAndPoint(const gp_Pnt&        V,
-                                              const gp_Pnt&        P,
-                                              const double& Tol)
+static bool CompareVertexAndPoint(const gp_Pnt& V, const gp_Pnt& P, const double& Tol)
 {
   const double aSQDist = V.SquareDistance(P);
   const double aSQTol  = Tol * Tol;
@@ -292,9 +290,9 @@ bool SameVtxRst(const IntPatch_Point& vtx1, const IntPatch_Point& vtx2)
   return (true);
 }
 
-static bool CompareVerticesOnSurf(const IntPatch_Point&  vtx1,
-                                              const IntPatch_Point&  vtx2,
-                                              const bool onFirst)
+static bool CompareVerticesOnSurf(const IntPatch_Point& vtx1,
+                                  const IntPatch_Point& vtx2,
+                                  const bool            onFirst)
 {
   double u1, v1, u2, v2, tolU, tolV;
   if (onFirst)
@@ -327,9 +325,9 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   // MSV Oct 15, 2001: use tolerance of vertex instead of RTol where
   //                   it is possible
 
-  int i, j, k, nbvtx, nbponline;
-  int indicevertexonline;
-  double    indicevertex;
+  int    i, j, k, nbvtx, nbponline;
+  int    indicevertexonline;
+  double indicevertex;
 
   bool APointDeleted = false;
   //----------------------------------------------------------
@@ -339,7 +337,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   //-- sur celle ci ne doivent pas avoir le meme parametre
   //--
   double Tol = RTol;
-  nbvtx             = NbVertex();
+  nbvtx      = NbVertex();
 
 #if DEBUGV
   std::cout << "\n----------- avant ComputeVertexParameters -------------" << std::endl;
@@ -386,9 +384,9 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
             if (d < maxtol || CompareVerticesOnS1(VTXi, VTXj) || CompareVerticesOnS2(VTXi, VTXj))
             {
               //-- Creation Vtx (REF:S1(i)  S2(j))    (On Garde S1(i))
-              double    newtoli = std::max(toli, tolj + d * 1.01);
-              double    newtolj = std::max(tolj, toli + d * 1.01);
-              bool acreer  = false;
+              double newtoli = std::max(toli, tolj + d * 1.01);
+              double newtolj = std::max(tolj, toli + d * 1.01);
+              bool   acreer  = false;
               if (VTXi.IsOnDomS1())
               {
                 if (VTXj.IsOnDomS1())
@@ -599,7 +597,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   {
     const IntSurf_PntOn2S& aPnt1 = curv->Value(i - 1);
     const IntSurf_PntOn2S& aPnt2 = curv->Value(i);
-    double          d     = (aPnt1.Value()).SquareDistance((aPnt2.Value()));
+    double                 d     = (aPnt1.Value()).SquareDistance((aPnt2.Value()));
     if (d < dmini)
     {
       curv->RemovePoint(i);
@@ -624,7 +622,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   for (i = 1; i <= nbvtx; i++)
   {
     const gp_Pnt& P    = svtx.Value(i).Value();
-    double vTol = svtx.Value(i).Tolerance();
+    double        vTol = svtx.Value(i).Tolerance();
 
     indicevertex       = svtx.Value(i).ParameterOnLine();
     indicevertexonline = (int)indicevertex;
@@ -951,7 +949,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
 
   bool bFirst = false;
   bool bLast  = false;
-  nbponline               = NbPnts();
+  nbponline   = NbPnts();
   for (i = 1; i <= nbvtx; i++)
   {
     double pol = svtx.Value(i).ParameterOnLine();
@@ -968,9 +966,9 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   }
   if (bFirst == false)
   {
-    double    pu1, pv1, pu2, pv2;
-    bool vtxfound = false;
-    IntPatch_Point   vtx;
+    double         pu1, pv1, pu2, pv2;
+    bool           vtxfound = false;
+    IntPatch_Point vtx;
     curv->Value(1).Parameters(pu1, pv1, pu2, pv2);
     for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
     {
@@ -997,9 +995,9 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
   }
   if (bLast == false)
   {
-    double    pu1, pv1, pu2, pv2;
-    bool vtxfound = false;
-    IntPatch_Point   vtx;
+    double         pu1, pv1, pu2, pv2;
+    bool           vtxfound = false;
+    IntPatch_Point vtx;
     curv->Value(nbponline).Parameters(pu1, pv1, pu2, pv2);
     for (i = 1; (vtxfound == false) && (i <= nbvtx); i++)
     {
@@ -1255,8 +1253,8 @@ void IntPatch_WLine::Dump(const int theMode) const
       for (int i = 1; i <= aNbVertex; i++)
       {
         Vertex(i).Dump();
-        double    polr = Vertex(i).ParameterOnLine();
-        int pol  = static_cast<int>(polr);
+        double polr = Vertex(i).ParameterOnLine();
+        int    pol  = static_cast<int>(polr);
 
         if (pol >= 1 && pol <= aNbVertex)
         {

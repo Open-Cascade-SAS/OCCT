@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Interface_CheckStatus.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class Interface_InterfaceModel;
@@ -73,7 +72,7 @@ public:
   //! If <ent> has no recorded result, it remains empty
   //! Returns True if a result is recorded, False else
   Standard_EXPORT bool Fill(const occ::handle<Transfer_TransientProcess>& TP,
-                                        const occ::handle<Standard_Transient>&        ent);
+                            const occ::handle<Standard_Transient>&        ent);
 
   //! Clears some data attached to binders used by TransientProcess,
   //! which become useless once the transfer has been done,
@@ -112,15 +111,16 @@ public:
 
   //! Internal method which returns the list of ResultFromTransient,
   //! according level (2:complete; 1:sub-level 1; 0:main only)
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Results(const int level) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Results(
+    const int level) const;
 
   //! Returns the list of recorded starting entities, ending by the
   //! root. Entities with check but no transfer result are ignored
   //! <level> = 2 (D), considers the complete list
   //! <level> = 1      considers the main result plus immediate subs
   //! <level> = 0      just the main result
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferredList(
-    const int level = 2) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+                  TransferredList(const int level = 2) const;
 
   //! Returns the list of starting entities to which a check status
   //! is attached.
@@ -133,15 +133,14 @@ public:
   //! Remark : result True and check=0 will give an empty list
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> CheckedList(
     const Interface_CheckStatus check,
-    const bool      result) const;
+    const bool                  result) const;
 
   //! Returns the check-list of this set of results
   //! <erronly> true : only fails are considered
   //! <level> = 0 : considers only main binder
   //! <level> = 1 : considers main binder plus immediate subs
   //! <level> = 2 (D) : considers all checks
-  Standard_EXPORT Interface_CheckIterator CheckList(const bool erronly,
-                                                    const int level = 2) const;
+  Standard_EXPORT Interface_CheckIterator CheckList(const bool erronly, const int level = 2) const;
 
   //! Returns the check status with corresponds to the content
   //! of this ResultFromModel; considers all levels of transfer
@@ -158,11 +157,11 @@ public:
 
 private:
   occ::handle<Interface_InterfaceModel>     themodel;
-  TCollection_AsciiString              thename;
+  TCollection_AsciiString                   thename;
   occ::handle<Transfer_ResultFromTransient> themain;
-  TCollection_AsciiString              themlab;
-  int                     themnum;
-  Interface_CheckStatus                themchk;
+  TCollection_AsciiString                   themlab;
+  int                                       themnum;
+  Interface_CheckStatus                     themchk;
 };
 
 #endif // _Transfer_ResultFromModel_HeaderFile

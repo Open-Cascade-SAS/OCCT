@@ -24,7 +24,6 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_XYZ.hxx>
 
 //=================================================================================================
@@ -37,23 +36,23 @@ public:
   {
   }
 
-  virtual void Evaluate(int* Dimension,
-                        double     StartEnd[2],
-                        double*    Parameter,
-                        int* DerivativeRequest,
-                        double*    Result, // [Dimension]
-                        int* ErrorCode);
+  virtual void Evaluate(int*    Dimension,
+                        double  StartEnd[2],
+                        double* Parameter,
+                        int*    DerivativeRequest,
+                        double* Result, // [Dimension]
+                        int*    ErrorCode);
 
 private:
   Approx_SweepApproximation& Tool;
 };
 
 void Approx_SweepApproximation_Eval::Evaluate(int*, /*Dimension*/
-                                              double     StartEnd[2],
-                                              double*    Parameter,
-                                              int* DerivativeRequest,
-                                              double*    Result, // [Dimension]
-                                              int* ErrorCode)
+                                              double  StartEnd[2],
+                                              double* Parameter,
+                                              int*    DerivativeRequest,
+                                              double* Result, // [Dimension]
+                                              int*    ErrorCode)
 {
   *ErrorCode = Tool.Eval(*Parameter, *DerivativeRequest, StartEnd[0], StartEnd[1], Result[0]);
 }
@@ -69,19 +68,19 @@ Approx_SweepApproximation::Approx_SweepApproximation(const occ::handle<Approx_Sw
   done    = false;
 }
 
-void Approx_SweepApproximation::Perform(const double    First,
-                                        const double    Last,
-                                        const double    Tol3d,
-                                        const double    BoundTol,
-                                        const double    Tol2d,
-                                        const double    TolAngular,
-                                        const GeomAbs_Shape    Continuity,
-                                        const int Degmax,
-                                        const int Segmax)
+void Approx_SweepApproximation::Perform(const double        First,
+                                        const double        Last,
+                                        const double        Tol3d,
+                                        const double        BoundTol,
+                                        const double        Tol2d,
+                                        const double        TolAngular,
+                                        const GeomAbs_Shape Continuity,
+                                        const int           Degmax,
+                                        const int           Segmax)
 {
-  int NbPolSect, NbKnotSect, ii;
-  double    Tol, Tol3dMin = Tol3d, The3D2DTol = 0;
-  GeomAbs_Shape    continuity = Continuity;
+  int           NbPolSect, NbKnotSect, ii;
+  double        Tol, Tol3dMin = Tol3d, The3D2DTol = 0;
+  GeomAbs_Shape continuity = Continuity;
 
   // (1) Characteristics of a section
   myFunc->SectionShape(NbPolSect, NbKnotSect, udeg);
@@ -271,17 +270,18 @@ void Approx_SweepApproximation::Perform(const double    First,
 // purpose  : Call F(t) and store the results
 //=================================================================================================
 
-void Approx_SweepApproximation::Approximation(const occ::handle<NCollection_HArray1<double>>& OneDTol,
-                                              const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-                                              const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                              const double                  BoundTol,
-                                              const double                  First,
-                                              const double                  Last,
-                                              const GeomAbs_Shape                  Continuity,
-                                              const int               Degmax,
-                                              const int               Segmax,
-                                              const AdvApprox_EvaluatorFunction& TheApproxFunction,
-                                              const AdvApprox_Cutting&           TheCuttingTool)
+void Approx_SweepApproximation::Approximation(
+  const occ::handle<NCollection_HArray1<double>>& OneDTol,
+  const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+  const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+  const double                                    BoundTol,
+  const double                                    First,
+  const double                                    Last,
+  const GeomAbs_Shape                             Continuity,
+  const int                                       Degmax,
+  const int                                       Segmax,
+  const AdvApprox_EvaluatorFunction&              TheApproxFunction,
+  const AdvApprox_Cutting&                        TheCuttingTool)
 {
   AdvApprox_ApproxAFunction Approx(Num1DSS,
                                    Num2DSS,
@@ -313,7 +313,7 @@ void Approx_SweepApproximation::Approximation(const occ::handle<NCollection_HArr
     if (Num1DSS == Num3DSS)
     {
       double wpoid;
-      gp_Pnt        P;
+      gp_Pnt P;
       for (ii = 1; ii <= Num3DSS; ii++)
       {
         for (jj = 1; jj <= Approx.NbPoles(); jj++)
@@ -353,8 +353,9 @@ void Approx_SweepApproximation::Approximation(const occ::handle<NCollection_HArr
 
       for (ii = 1; ii <= Num2DSS; ii++)
       {
-        TrsfInv                           = AAffin->Value(ii).Inverted();
-        occ::handle<NCollection_HArray1<gp_Pnt2d>> P2d = new (NCollection_HArray1<gp_Pnt2d>)(1, Approx.NbPoles());
+        TrsfInv = AAffin->Value(ii).Inverted();
+        occ::handle<NCollection_HArray1<gp_Pnt2d>> P2d =
+          new (NCollection_HArray1<gp_Pnt2d>)(1, Approx.NbPoles());
         Approx.Poles2d(ii, P2d->ChangeArray1());
         // do not forget to apply inverted homothety.
         for (jj = 1; jj <= Approx.NbPoles(); jj++)
@@ -398,11 +399,11 @@ void Approx_SweepApproximation::Approximation(const occ::handle<NCollection_HArr
   }
 }
 
-int Approx_SweepApproximation::Eval(const double    Parameter,
-                                                 const int DerivativeRequest,
-                                                 const double    First,
-                                                 const double    Last,
-                                                 double&         Result)
+int Approx_SweepApproximation::Eval(const double Parameter,
+                                    const int    DerivativeRequest,
+                                    const double First,
+                                    const double Last,
+                                    double&      Result)
 {
   int ier = 0;
   switch (DerivativeRequest)
@@ -423,13 +424,13 @@ int Approx_SweepApproximation::Eval(const double    Parameter,
 }
 
 bool Approx_SweepApproximation::D0(const double Param,
-                                               const double First,
-                                               const double Last,
-                                               double&      Result)
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  int index, ii;
-  bool Ok          = true;
-  double*   LocalResult = &Result;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   // Management of limits
   if ((first != First) || (Last != last))
@@ -491,15 +492,15 @@ bool Approx_SweepApproximation::D0(const double Param,
 }
 
 bool Approx_SweepApproximation::D1(const double Param,
-                                               const double First,
-                                               const double Last,
-                                               double&      Result)
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  gp_XY            Vcoord;
-  gp_Vec           Vaux;
-  int index, ii;
-  bool Ok          = true;
-  double*   LocalResult = &Result;
+  gp_XY   Vcoord;
+  gp_Vec  Vaux;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   if ((first != First) || (Last != last))
   {
@@ -573,15 +574,15 @@ bool Approx_SweepApproximation::D1(const double Param,
 }
 
 bool Approx_SweepApproximation::D2(const double Param,
-                                               const double First,
-                                               const double Last,
-                                               double&      Result)
+                                   const double First,
+                                   const double Last,
+                                   double&      Result)
 {
-  gp_XY            Vcoord;
-  gp_Vec           Vaux;
-  int index, ii;
-  bool Ok          = true;
-  double*   LocalResult = &Result;
+  gp_XY   Vcoord;
+  gp_Vec  Vaux;
+  int     index, ii;
+  bool    Ok          = true;
+  double* LocalResult = &Result;
 
   // management of limits
   if ((first != First) || (Last != last))
@@ -686,12 +687,12 @@ void Approx_SweepApproximation::SurfShape(int& UDegree,
   NbVKnots = tabVKnots->Length();
 }
 
-void Approx_SweepApproximation::Surface(NCollection_Array2<gp_Pnt>&      TPoles,
-                                        NCollection_Array2<double>&    TWeights,
-                                        NCollection_Array1<double>&    TUKnots,
-                                        NCollection_Array1<double>&    TVKnots,
-                                        NCollection_Array1<int>& TUMults,
-                                        NCollection_Array1<int>& TVMults) const
+void Approx_SweepApproximation::Surface(NCollection_Array2<gp_Pnt>& TPoles,
+                                        NCollection_Array2<double>& TWeights,
+                                        NCollection_Array1<double>& TUKnots,
+                                        NCollection_Array1<double>& TVKnots,
+                                        NCollection_Array1<int>&    TUMults,
+                                        NCollection_Array1<int>&    TVMults) const
 {
   if (!done)
   {
@@ -707,8 +708,8 @@ void Approx_SweepApproximation::Surface(NCollection_Array2<gp_Pnt>&      TPoles,
 
 double Approx_SweepApproximation::MaxErrorOnSurf() const
 {
-  int ii;
-  double    MaxError = 0, err;
+  int    ii;
+  double MaxError = 0, err;
   if (!done)
   {
     throw StdFail_NotDone("Approx_SweepApproximation");
@@ -740,8 +741,8 @@ double Approx_SweepApproximation::MaxErrorOnSurf() const
 
 double Approx_SweepApproximation::AverageErrorOnSurf() const
 {
-  int ii;
-  double    MoyError = 0, err;
+  int    ii;
+  double MoyError = 0, err;
   if (!done)
   {
     throw StdFail_NotDone("Approx_SweepApproximation");
@@ -769,9 +770,7 @@ double Approx_SweepApproximation::AverageErrorOnSurf() const
   return MoyError / Num3DSS;
 }
 
-void Approx_SweepApproximation::Curves2dShape(int& Degree,
-                                              int& NbPoles,
-                                              int& NbKnots) const
+void Approx_SweepApproximation::Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const
 {
   if (!done)
   {
@@ -786,10 +785,10 @@ void Approx_SweepApproximation::Curves2dShape(int& Degree,
   NbKnots = tab2dKnots->Length();
 }
 
-void Approx_SweepApproximation::Curve2d(const int   Index,
-                                        NCollection_Array1<gp_Pnt2d>&    TPoles,
-                                        NCollection_Array1<double>&    TKnots,
-                                        NCollection_Array1<int>& TMults) const
+void Approx_SweepApproximation::Curve2d(const int                     Index,
+                                        NCollection_Array1<gp_Pnt2d>& TPoles,
+                                        NCollection_Array1<double>&   TKnots,
+                                        NCollection_Array1<int>&      TMults) const
 {
   if (!done)
   {

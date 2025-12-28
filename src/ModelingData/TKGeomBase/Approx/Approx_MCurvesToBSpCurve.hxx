@@ -47,8 +47,8 @@ public:
   Standard_EXPORT const AppParCurves_MultiBSpCurve& ChangeValue();
 
 private:
-  AppParCurves_MultiBSpCurve        mySpline;
-  bool                  myDone;
+  AppParCurves_MultiBSpCurve                    mySpline;
+  bool                                          myDone;
   NCollection_Sequence<AppParCurves_MultiCurve> myCurves;
 };
 

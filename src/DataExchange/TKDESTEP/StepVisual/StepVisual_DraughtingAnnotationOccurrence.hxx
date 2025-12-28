@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingAnnotationOccurrence,
                           StepVisual_AnnotationOccurrence)
-
 };
 
 #endif // _StepVisual_DraughtingAnnotationOccurrence_HeaderFile

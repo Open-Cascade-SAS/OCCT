@@ -31,8 +31,8 @@ IntTools_Curve::IntTools_Curve()
 IntTools_Curve::IntTools_Curve(const occ::handle<Geom_Curve>&   the3dCurve,
                                const occ::handle<Geom2d_Curve>& the2dCurve1,
                                const occ::handle<Geom2d_Curve>& the2dCurve2,
-                               const double         theTolerance,
-                               const double         theTangentialTolerance)
+                               const double                     theTolerance,
+                               const double                     theTangentialTolerance)
     : myTolerance(theTolerance),
       myTangentialTolerance(theTangentialTolerance)
 {
@@ -44,16 +44,16 @@ IntTools_Curve::IntTools_Curve(const occ::handle<Geom_Curve>&   the3dCurve,
 bool IntTools_Curve::HasBounds() const
 {
   occ::handle<Geom_BoundedCurve> aC3DBounded = occ::down_cast<Geom_BoundedCurve>(my3dCurve);
-  bool          bIsBounded  = !aC3DBounded.IsNull();
+  bool                           bIsBounded  = !aC3DBounded.IsNull();
   return bIsBounded;
 }
 
 //=================================================================================================
 
 bool IntTools_Curve::Bounds(double& theFirst,
-                                        double& theLast,
-                                        gp_Pnt&        theFirstPnt,
-                                        gp_Pnt&        theLastPnt) const
+                            double& theLast,
+                            gp_Pnt& theFirstPnt,
+                            gp_Pnt& theLastPnt) const
 {
   bool bIsBounded = HasBounds();
   if (bIsBounded)
@@ -70,8 +70,7 @@ bool IntTools_Curve::Bounds(double& theFirst,
 
 bool IntTools_Curve::D0(const double& thePar, gp_Pnt& thePnt) const
 {
-  bool bInside =
-    !(thePar < my3dCurve->FirstParameter() && thePar > my3dCurve->LastParameter());
+  bool bInside = !(thePar < my3dCurve->FirstParameter() && thePar > my3dCurve->LastParameter());
   if (bInside)
   {
     my3dCurve->D0(thePar, thePnt);

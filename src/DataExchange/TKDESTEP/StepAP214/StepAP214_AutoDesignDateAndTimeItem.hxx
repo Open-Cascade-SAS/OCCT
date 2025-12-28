@@ -43,15 +43,15 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ApprovalPersonOrganization (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> ApprovalPersonOrganization() const;
+  Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> ApprovalPersonOrganization()
+    const;
 
   //! returns Value as a AutoDesignDateAndPersonAssignment (Null if another type)
   Standard_EXPORT occ::handle<StepAP214_AutoDesignDateAndPersonAssignment>
-    AutoDesignDateAndPersonAssignment() const;
+                  AutoDesignDateAndPersonAssignment() const;
 
   Standard_EXPORT occ::handle<StepBasic_ProductDefinitionEffectivity> ProductDefinitionEffectivity()
     const;
-
 };
 
 #endif // _StepAP214_AutoDesignDateAndTimeItem_HeaderFile

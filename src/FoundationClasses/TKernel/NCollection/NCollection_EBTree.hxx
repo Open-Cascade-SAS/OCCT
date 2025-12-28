@@ -196,12 +196,12 @@ bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj
                                                                                                    \
     /* Access to the methods of EBTree */                                                          \
                                                                                                    \
-    bool Remove(const _OBJTYPE& theObj)                                                \
+    bool Remove(const _OBJTYPE& theObj)                                                            \
     {                                                                                              \
       return ChangeETree().Remove(theObj);                                                         \
     }                                                                                              \
                                                                                                    \
-    bool Contains(const _OBJTYPE& theObj) const                                        \
+    bool Contains(const _OBJTYPE& theObj) const                                                    \
     {                                                                                              \
       return ETree().Contains(theObj);                                                             \
     }                                                                                              \

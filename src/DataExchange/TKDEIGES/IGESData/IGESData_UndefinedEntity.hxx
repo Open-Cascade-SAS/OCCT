@@ -85,8 +85,8 @@ public:
   //! (hence, Directory Error Status is non null; and standard Read
   //! will work with an acceptable DirectoryPart)
   Standard_EXPORT virtual bool ReadDir(const occ::handle<IGESData_IGESReaderData>& IR,
-                                                   IGESData_DirPart&                      DP,
-                                                   occ::handle<Interface_Check>&               ach);
+                                       IGESData_DirPart&                           DP,
+                                       occ::handle<Interface_Check>&               ach);
 
   //! reads own parameters from file; PR gives access to them, IR
   //! detains parameter types and values
@@ -94,7 +94,7 @@ public:
   //! reference unless they cannot be; no list interpretation
   //! No property or associativity list is managed
   Standard_EXPORT virtual void ReadOwnParams(const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                  PR);
+                                             IGESData_ParamReader&                       PR);
 
   //! writes parameters to IGESWriter, taken from UndefinedContent
   Standard_EXPORT virtual void WriteOwnParams(IGESData_IGESWriter& IW) const;
@@ -102,7 +102,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESData_UndefinedEntity, IGESData_IGESEntity)
 
 private:
-  int                   thedstat;
+  int                                     thedstat;
   occ::handle<Interface_UndefinedContent> thecont;
 };
 

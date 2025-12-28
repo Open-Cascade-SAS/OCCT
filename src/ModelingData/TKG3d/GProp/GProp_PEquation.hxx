@@ -23,7 +23,6 @@
 #include <GProp_EquaType.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 class gp_Pln;
 class gp_Lin;

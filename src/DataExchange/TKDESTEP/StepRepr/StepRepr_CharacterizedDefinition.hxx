@@ -58,8 +58,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as ProductDefinitionRelationship (or Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
+                  ProductDefinitionRelationship() const;
 
   //! Returns Value as ProductDefinitionShape (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ProductDefinitionShape> ProductDefinitionShape() const;
@@ -72,7 +72,6 @@ public:
 
   //! Returns Value as DocumentFile (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_DocumentFile> DocumentFile() const;
-
 };
 
 #endif // _StepRepr_CharacterizedDefinition_HeaderFile

@@ -36,12 +36,12 @@ IGESSolid_ToolCylindricalSurface::IGESSolid_ToolCylindricalSurface() {}
 void IGESSolid_ToolCylindricalSurface::ReadOwnParams(
   const occ::handle<IGESSolid_CylindricalSurface>& ent,
   const occ::handle<IGESData_IGESReaderData>&      IR,
-  IGESData_ParamReader&                       PR) const
+  IGESData_ParamReader&                            PR) const
 {
   occ::handle<IGESGeom_Point>     tempLocation;
   occ::handle<IGESGeom_Direction> tempAxis;
   occ::handle<IGESGeom_Direction> tempRefdir; // default Unparametrised
-  double              tempRadius;
+  double                          tempRadius;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
@@ -71,7 +71,7 @@ void IGESSolid_ToolCylindricalSurface::ReadOwnParams(
 
 void IGESSolid_ToolCylindricalSurface::WriteOwnParams(
   const occ::handle<IGESSolid_CylindricalSurface>& ent,
-  IGESData_IGESWriter&                        IW) const
+  IGESData_IGESWriter&                             IW) const
 {
   IW.Send(ent->LocationPoint());
   IW.Send(ent->Axis());
@@ -80,17 +80,19 @@ void IGESSolid_ToolCylindricalSurface::WriteOwnParams(
     IW.Send(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolCylindricalSurface::OwnShared(const occ::handle<IGESSolid_CylindricalSurface>& ent,
-                                                 Interface_EntityIterator& iter) const
+void IGESSolid_ToolCylindricalSurface::OwnShared(
+  const occ::handle<IGESSolid_CylindricalSurface>& ent,
+  Interface_EntityIterator&                        iter) const
 {
   iter.GetOneItem(ent->LocationPoint());
   iter.GetOneItem(ent->Axis());
   iter.GetOneItem(ent->ReferenceDir());
 }
 
-void IGESSolid_ToolCylindricalSurface::OwnCopy(const occ::handle<IGESSolid_CylindricalSurface>& another,
-                                               const occ::handle<IGESSolid_CylindricalSurface>& ent,
-                                               Interface_CopyTool&                         TC) const
+void IGESSolid_ToolCylindricalSurface::OwnCopy(
+  const occ::handle<IGESSolid_CylindricalSurface>& another,
+  const occ::handle<IGESSolid_CylindricalSurface>& ent,
+  Interface_CopyTool&                              TC) const
 {
   double tempRadius;
 
@@ -124,9 +126,10 @@ IGESData_DirChecker IGESSolid_ToolCylindricalSurface::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolCylindricalSurface::OwnCheck(const occ::handle<IGESSolid_CylindricalSurface>& ent,
-                                                const Interface_ShareTool&,
-                                                occ::handle<Interface_Check>& ach) const
+void IGESSolid_ToolCylindricalSurface::OwnCheck(
+  const occ::handle<IGESSolid_CylindricalSurface>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() <= 0.0)
     ach->AddFail("Radius : Value <= 0.0");
@@ -138,9 +141,9 @@ void IGESSolid_ToolCylindricalSurface::OwnCheck(const occ::handle<IGESSolid_Cyli
 }
 
 void IGESSolid_ToolCylindricalSurface::OwnDump(const occ::handle<IGESSolid_CylindricalSurface>& ent,
-                                               const IGESData_IGESDumper&                  dumper,
-                                               Standard_OStream&                           S,
-                                               const int level) const
+                                               const IGESData_IGESDumper& dumper,
+                                               Standard_OStream&          S,
+                                               const int                  level) const
 {
   S << "IGESSolid_CylindricalSurface\n";
 

@@ -19,8 +19,7 @@
 
 StepAP214_AutoDesignOrganizationItem::StepAP214_AutoDesignOrganizationItem() {}
 
-int StepAP214_AutoDesignOrganizationItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_AutoDesignOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

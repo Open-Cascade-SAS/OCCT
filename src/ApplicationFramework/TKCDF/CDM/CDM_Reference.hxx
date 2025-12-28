@@ -51,15 +51,15 @@ public:
 private:
   Standard_EXPORT CDM_Reference(const occ::handle<CDM_Document>& aFromDocument,
                                 const occ::handle<CDM_Document>& aToDocument,
-                                const int      aReferenceIdentifier,
-                                const int      aToDocumentVersion);
+                                const int                        aReferenceIdentifier,
+                                const int                        aToDocumentVersion);
 
   Standard_EXPORT CDM_Reference(const occ::handle<CDM_Document>&    aFromDocument,
                                 const occ::handle<CDM_MetaData>&    aMetaData,
-                                const int         aReferenceIdentifier,
+                                const int                           aReferenceIdentifier,
                                 const occ::handle<CDM_Application>& anApplication,
-                                const int         aToDocumentVersion,
-                                const bool         UseStorageConfiguration);
+                                const int                           aToDocumentVersion,
+                                const bool                          UseStorageConfiguration);
 
   Standard_EXPORT void Update(const occ::handle<CDM_MetaData>& aMetaData);
 
@@ -89,12 +89,12 @@ private:
   Standard_EXPORT bool IsStored() const;
 
   occ::handle<CDM_Document>    myToDocument;
-  CDM_DocumentPointer     myFromDocument;
-  int        myReferenceIdentifier;
+  CDM_DocumentPointer          myFromDocument;
+  int                          myReferenceIdentifier;
   occ::handle<CDM_Application> myApplication;
   occ::handle<CDM_MetaData>    myMetaData;
-  int        myDocumentVersion;
-  bool        myUseStorageConfiguration;
+  int                          myDocumentVersion;
+  bool                         myUseStorageConfiguration;
 };
 
 #endif // _CDM_Reference_HeaderFile

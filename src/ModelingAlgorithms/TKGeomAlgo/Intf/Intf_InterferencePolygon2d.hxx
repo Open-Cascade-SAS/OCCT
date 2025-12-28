@@ -63,16 +63,16 @@ private:
 
   //! Computes the intersection between two segments
   //! <BegO><EndO> et <BegT><EndT>.
-  Standard_EXPORT void Intersect(const int iO,
-                                 const int iT,
-                                 const gp_Pnt2d&        BegO,
-                                 const gp_Pnt2d&        EndO,
-                                 const gp_Pnt2d&        BegT,
-                                 const gp_Pnt2d&        EndT);
+  Standard_EXPORT void Intersect(const int       iO,
+                                 const int       iT,
+                                 const gp_Pnt2d& BegO,
+                                 const gp_Pnt2d& EndO,
+                                 const gp_Pnt2d& BegT,
+                                 const gp_Pnt2d& EndT);
 
   bool oClos;
   bool tClos;
-  int nbso;
+  int  nbso;
 };
 
 #endif // _Intf_InterferencePolygon2d_HeaderFile

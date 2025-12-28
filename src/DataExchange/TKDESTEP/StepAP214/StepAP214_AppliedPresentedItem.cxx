@@ -31,13 +31,13 @@ void StepAP214_AppliedPresentedItem::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>> StepAP214_AppliedPresentedItem::Items() const
+occ::handle<NCollection_HArray1<StepAP214_PresentedItemSelect>> StepAP214_AppliedPresentedItem::
+  Items() const
 {
   return items;
 }
 
-StepAP214_PresentedItemSelect StepAP214_AppliedPresentedItem::ItemsValue(
-  const int num) const
+StepAP214_PresentedItemSelect StepAP214_AppliedPresentedItem::ItemsValue(const int num) const
 {
   return items->Value(num);
 }

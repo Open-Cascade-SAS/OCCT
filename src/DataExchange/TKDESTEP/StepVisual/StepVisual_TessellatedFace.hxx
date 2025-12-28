@@ -35,18 +35,19 @@ public:
   Standard_EXPORT StepVisual_TessellatedFace();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
-                            const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
-                            const int                    thePnmax,
-                            const occ::handle<NCollection_HArray2<double>>&      theNormals,
-                            const bool                    theHasGeometricLink,
-                            const StepVisual_FaceOrSurface&           theGeometricLink);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
+                            const int                                       thePnmax,
+                            const occ::handle<NCollection_HArray2<double>>& theNormals,
+                            const bool                                      theHasGeometricLink,
+                            const StepVisual_FaceOrSurface&                 theGeometricLink);
 
   //! Returns field Coordinates
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(
+    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field Pnmax
   Standard_EXPORT int Pnmax() const;
@@ -75,11 +76,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedFace, StepVisual_TessellatedStructuredItem)
 
 private:
-  occ::handle<StepVisual_CoordinatesList> myCoordinates;
-  int                   myPnmax;
-  occ::handle<NCollection_HArray2<double>>      myNormals;
-  StepVisual_FaceOrSurface           myGeometricLink;    //!< optional
-  bool                   myHasGeometricLink; //!< flag "is GeometricLink defined"
+  occ::handle<StepVisual_CoordinatesList>  myCoordinates;
+  int                                      myPnmax;
+  occ::handle<NCollection_HArray2<double>> myNormals;
+  StepVisual_FaceOrSurface                 myGeometricLink;    //!< optional
+  bool                                     myHasGeometricLink; //!< flag "is GeometricLink defined"
 };
 
 #endif // _StepVisual_TessellatedFace_HeaderFile_

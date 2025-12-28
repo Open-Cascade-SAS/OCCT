@@ -97,8 +97,8 @@ void gp_GTrsf::Power(const int N)
   {
     if (shape == gp_Other)
     {
-      int Npower  = std::abs(N) - 1;
-      gp_XYZ           Temploc = loc;
+      int    Npower  = std::abs(N) - 1;
+      gp_XYZ Temploc = loc;
       //      double Tempscale = scale;
       gp_Mat Tempmatrix(matrix);
       for (;;)
@@ -153,7 +153,7 @@ void gp_GTrsf::SetForm()
   //
   // don t trust the initial values !
   //
-  gp_Mat        M(matrix);
+  gp_Mat M(matrix);
   double s = M.Determinant();
 
   if (std::abs(s) < gp::Resolution())

@@ -45,7 +45,7 @@ const occ::handle<OSD_FileSystem>& OSD_FileSystem::DefaultFileSystem()
 //=================================================================================================
 
 void OSD_FileSystem::AddDefaultProtocol(const occ::handle<OSD_FileSystem>& theFileSystem,
-                                        bool                          theIsPreferred)
+                                        bool                               theIsPreferred)
 {
   occ::handle<OSD_FileSystemSelector> aFileSelector =
     occ::down_cast<OSD_FileSystemSelector>(DefaultFileSystem());

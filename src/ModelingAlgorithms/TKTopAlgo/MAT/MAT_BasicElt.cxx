@@ -17,7 +17,6 @@
 #include <MAT_Arc.hxx>
 #include <MAT_BasicElt.hxx>
 #include <MAT_Node.hxx>
-#include <MAT_Arc.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Type.hxx>
 

@@ -25,8 +25,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Circ2d&       C,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
                                                      const IntRes2d_Domain& D2,
-                                                     const double    TolConf,
-                                                     const double    Tol)
+                                                     const double           TolConf,
+                                                     const double           Tol)
 {
   if (!D1.IsClosed())
   {
@@ -47,8 +47,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Elips2d&      E,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
                                                      const IntRes2d_Domain& D2,
-                                                     const double    TolConf,
-                                                     const double    Tol)
+                                                     const double           TolConf,
+                                                     const double           Tol)
 {
   if (!D1.IsClosed())
   {
@@ -69,8 +69,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Parab2d&      Prb,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
                                                      const IntRes2d_Domain& D2,
-                                                     const double    TolConf,
-                                                     const double    Tol)
+                                                     const double           TolConf,
+                                                     const double           Tol)
 {
 
   Perform(IntCurve_IConicTool(Prb), D1, PCurve, D2, TolConf, Tol);
@@ -82,8 +82,8 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen(const gp_Hypr2d&       H,
                                                      const IntRes2d_Domain& D1,
                                                      const ThePCurve&       PCurve,
                                                      const IntRes2d_Domain& D2,
-                                                     const double    TolConf,
-                                                     const double    Tol)
+                                                     const double           TolConf,
+                                                     const double           Tol)
 {
 
   Perform(IntCurve_IConicTool(H), D1, PCurve, D2, TolConf, Tol);

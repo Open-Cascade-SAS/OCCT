@@ -20,15 +20,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Message_ProgressRange.hxx>
 
@@ -52,13 +45,18 @@ public:
   //! When all faces of the shape are treated the intersection
   //! vertices have to be fused using the FuseVertices method.
   //! theDMVV contains the vertices that should be fused
-  Standard_EXPORT static void Compute(const occ::handle<BRepAlgo_AsDes>&              AsDes,
-                                      const TopoDS_Face&                         F,
-                                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&          NewEdges,
-                                      const double                        Tol,
-                                      const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&  theEdgeIntEdges,
-                                      NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theDMVV,
-                                      const Message_ProgressRange&               theRange);
+  Standard_EXPORT static void Compute(
+    const occ::handle<BRepAlgo_AsDes>&                                   AsDes,
+    const TopoDS_Face&                                                   F,
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& NewEdges,
+    const double                                                         Tol,
+    const NCollection_DataMap<TopoDS_Shape,
+                              NCollection_List<TopoDS_Shape>,
+                              TopTools_ShapeMapHasher>&                  theEdgeIntEdges,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>&                 theDMVV,
+    const Message_ProgressRange&                                         theRange);
 
   //! Computes the intersection between the offset edges of the <FI>.
   //! All intersection vertices will be stored in AsDes2d.
@@ -66,20 +64,23 @@ public:
   //! have to be fused using the FuseVertices method.
   //! theDMVV contains the vertices that should be fused.
   Standard_EXPORT static bool ConnexIntByInt(
-    const TopoDS_Face&                         FI,
-    BRepOffset_Offset&                         OFI,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&              MES,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&        Build,
-    const occ::handle<BRepAlgo_AsDes>&              theAsDes,
-    const occ::handle<BRepAlgo_AsDes>&              AsDes2d,
-    const double                        Offset,
-    const double                        Tol,
-    const BRepOffset_Analyse&                  Analyse,
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&                FacesWithVerts,
-    BRepAlgo_Image&                            theImageVV,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&        theEdgeIntEdges,
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theDMVV,
-    const Message_ProgressRange&               theRange);
+    const TopoDS_Face&                                                              FI,
+    BRepOffset_Offset&                                                              OFI,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       MES,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Build,
+    const occ::handle<BRepAlgo_AsDes>&                                              theAsDes,
+    const occ::handle<BRepAlgo_AsDes>&                                              AsDes2d,
+    const double                                                                    Offset,
+    const double                                                                    Tol,
+    const BRepOffset_Analyse&                                                       Analyse,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&                  FacesWithVerts,
+    BRepAlgo_Image&                                                                 theImageVV,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                                                         theEdgeIntEdges,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>& theDMVV,
+    const Message_ProgressRange&                         theRange);
 
   //! Computes the intersection between the offset edges generated
   //! from vertices and stored into AsDes as descendants of the <FI>.
@@ -88,29 +89,33 @@ public:
   //! have to be fused using the FuseVertices method.
   //! theDMVV contains the vertices that should be fused.
   Standard_EXPORT static void ConnexIntByIntInVert(
-    const TopoDS_Face&                         FI,
-    BRepOffset_Offset&                         OFI,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&              MES,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&        Build,
-    const occ::handle<BRepAlgo_AsDes>&              AsDes,
-    const occ::handle<BRepAlgo_AsDes>&              AsDes2d,
-    const double                        Tol,
-    const BRepOffset_Analyse&                  Analyse,
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theDMVV,
-    const Message_ProgressRange&               theRange);
+    const TopoDS_Face&                                                              FI,
+    BRepOffset_Offset&                                                              OFI,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       MES,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Build,
+    const occ::handle<BRepAlgo_AsDes>&                                              AsDes,
+    const occ::handle<BRepAlgo_AsDes>&                                              AsDes2d,
+    const double                                                                    Tol,
+    const BRepOffset_Analyse&                                                       Analyse,
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>&                            theDMVV,
+    const Message_ProgressRange&                                                    theRange);
 
   //! Fuses the chains of vertices in the theDMVV
   //! and updates AsDes by replacing the old vertices
   //! with the new ones.
   Standard_EXPORT static bool FuseVertices(
-    const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theDMVV,
-    const occ::handle<BRepAlgo_AsDes>&                    theAsDes,
-    BRepAlgo_Image&                                  theImageVV);
+    const NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>& theDMVV,
+    const occ::handle<BRepAlgo_AsDes>&                         theAsDes,
+    BRepAlgo_Image&                                            theImageVV);
 
   //! extents the edge
-  Standard_EXPORT static bool ExtentEdge(const TopoDS_Edge&  E,
-                                                     TopoDS_Edge&        NE,
-                                                     const double theOffset);
+  Standard_EXPORT static bool ExtentEdge(const TopoDS_Edge& E,
+                                         TopoDS_Edge&       NE,
+                                         const double       theOffset);
 };
 
 #endif // _BRepOffset_Inter2d_HeaderFile

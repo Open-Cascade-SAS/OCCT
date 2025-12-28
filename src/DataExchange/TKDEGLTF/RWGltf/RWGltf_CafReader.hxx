@@ -87,29 +87,25 @@ public:
   bool ToPrintDebugMessages() const { return myToPrintDebugMessages; }
 
   //! Sets flag to print debug information.
-  void SetToPrintDebugMessages(const bool theToPrint)
-  {
-    myToPrintDebugMessages = theToPrint;
-  }
+  void SetToPrintDebugMessages(const bool theToPrint) { myToPrintDebugMessages = theToPrint; }
 
 protected:
   //! Read the mesh from specified file.
   Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
-                                                       const TCollection_AsciiString& theFile,
-                                                       const Message_ProgressRange&   theProgress,
-                                                       const bool         theToProbe)
-    override;
+                                           const TCollection_AsciiString& theFile,
+                                           const Message_ProgressRange&   theProgress,
+                                           const bool                     theToProbe) override;
 
   //! Fill document with new root shapes.
   Standard_EXPORT virtual void fillDocument() override;
 
   //! Append new shape into the document (recursively).
   Standard_EXPORT bool addShapeIntoDoc(CafDocumentTools&              theTools,
-                                                   const TopoDS_Shape&            theShape,
-                                                   const TDF_Label&               theLabel,
-                                                   const TCollection_AsciiString& theParentName,
-                                                   const bool theHasScale = false,
-                                                   const gp_XYZ& theScale = gp_XYZ(0., 0., 0.));
+                                       const TopoDS_Shape&            theShape,
+                                       const TDF_Label&               theLabel,
+                                       const TCollection_AsciiString& theParentName,
+                                       const bool                     theHasScale = false,
+                                       const gp_XYZ& theScale = gp_XYZ(0., 0., 0.));
 
   //! Create primitive array reader context.
   //! Can be overridden by sub-class to read triangulation into application-specific data structures
@@ -118,12 +114,12 @@ protected:
 
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
   Standard_EXPORT virtual bool readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
-                                                        const TCollection_AsciiString&   theFile,
-                                                        const Message_ProgressRange& theProgress);
+                                            const TCollection_AsciiString&   theFile,
+                                            const Message_ProgressRange&     theProgress);
 
   //! Set reader for each late data.
   Standard_EXPORT void updateLateDataReader(
-    NCollection_Vector<TopoDS_Face>&          theFaces,
+    NCollection_Vector<TopoDS_Face>&               theFaces,
     const occ::handle<RWMesh_TriangulationReader>& theReader) const;
 
 protected:
@@ -134,13 +130,13 @@ protected:
 protected:
   bool myToParallel;           //!< flag to use multithreading; FALSE by default
   bool myToSkipEmptyNodes;     //!< ignore nodes without Geometry; TRUE by default
-                                           // clang-format off
+                               // clang-format off
   bool myToLoadAllScenes;       //!< flag to load all scenes in the document, FALSE by default
   bool myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   bool myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
   bool myToSkipLateDataLoading; //!< flag to skip triangulation loading
   bool myToKeepLateData;        //!< flag to keep information about deferred storage to load/unload triangulation later
-                                           // clang-format on
+                               // clang-format on
   bool myToPrintDebugMessages; //!< flag to print additional debug information
   bool myToApplyScale;         //!< flag to apply non-uniform scaling
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*

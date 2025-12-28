@@ -41,7 +41,7 @@ public:
   //! all vectors and matrix declarations.
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                              const math_Vector&               theXTolerance,
-                                             const double              theFTolerance,
+                                             const double                     theFTolerance,
                                              const int theNbIterations = 100);
 
   //! This constructor should be used in a sub-class to initialize
@@ -50,7 +50,7 @@ public:
   //! all vectors and matrix declarations.
   //! The method SetTolerance must be called before performing the algorithm.
   Standard_EXPORT math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                             const double              theFTolerance,
+                                             const double                     theFTolerance,
                                              const int theNbIterations = 100);
 
   //! Destructor
@@ -133,7 +133,7 @@ public:
 
 protected:
   math_Vector        TolX;
-  double      TolF;
+  double             TolF;
   math_IntegerVector Indx;
   math_Vector        Scratch;
   math_Vector        Sol;
@@ -143,9 +143,9 @@ protected:
 
 private:
   bool Done;
-  int State;
-  int Iter;
-  int Itermax;
+  int  State;
+  int  Iter;
+  int  Itermax;
 };
 
 #include <math_NewtonFunctionSetRoot.lxx>

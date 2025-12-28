@@ -50,8 +50,8 @@ public:
 
 private:
   occ::handle<TopLoc_Datum3D> myDatum;
-  int       myPower;
-  gp_Trsf                myTrsf;
+  int                         myPower;
+  gp_Trsf                     myTrsf;
 };
 
 #endif // _TopLoc_ItemLocation_HeaderFile

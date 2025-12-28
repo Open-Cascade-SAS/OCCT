@@ -55,8 +55,7 @@ bool Bnd_Range::Union(const Bnd_Range& theOther)
 
 //=================================================================================================
 
-int Bnd_Range::IsIntersected(const double theVal,
-                                          const double thePeriod) const
+int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
 {
   if (IsVoid())
     return false;
@@ -91,9 +90,9 @@ int Bnd_Range::IsIntersected(const double theVal,
   //   2. aDF/aPeriod==2.0, aDL/aPeriod==2.6 =>
   //         std::floor(aDF/aPeriod) == std::floor(aDL/aPeriod) == 2.
 
-  const double    aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
-  const int aPar1 = static_cast<int>(std::floor(aVal1));
-  const int aPar2 = static_cast<int>(std::floor(aVal2));
+  const double aVal1 = aDF / aPeriod, aVal2 = aDL / aPeriod;
+  const int    aPar1 = static_cast<int>(std::floor(aVal1));
+  const int    aPar2 = static_cast<int>(std::floor(aVal2));
   if (aPar1 != aPar2)
   { // Interval (myFirst, myLast] intersects seam-edge
     if (IsEqual(aVal2, static_cast<double>(aPar2)))
@@ -125,9 +124,9 @@ int Bnd_Range::IsIntersected(const double theVal,
 
 //=================================================================================================
 
-void Bnd_Range::Split(const double          theVal,
+void Bnd_Range::Split(const double                 theVal,
                       NCollection_List<Bnd_Range>& theList,
-                      const double          thePeriod) const
+                      const double                 thePeriod) const
 {
   const double aPeriod = std::abs(thePeriod);
   if (IsIntersected(theVal, aPeriod) != 1)

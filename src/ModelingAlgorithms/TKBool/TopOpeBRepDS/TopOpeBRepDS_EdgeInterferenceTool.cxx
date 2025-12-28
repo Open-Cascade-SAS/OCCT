@@ -47,7 +47,7 @@ static double Parameter(const occ::handle<TopOpeBRepDS_Interference>& I)
 
 //=================================================================================================
 
-void TopOpeBRepDS_EdgeInterferenceTool::Init(const TopoDS_Shape&                      E,
+void TopOpeBRepDS_EdgeInterferenceTool::Init(const TopoDS_Shape&                           E,
                                              const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   myEdgeOrientation = E.Orientation();
@@ -64,7 +64,7 @@ void TopOpeBRepDS_EdgeInterferenceTool::Init(const TopoDS_Shape&                
 
   // par = parametre sur l'arete croisee
   double par = ::Parameter(I);
-  gp_Dir        T, N;
+  gp_Dir T, N;
   double C;
   TopOpeBRepTool_ShapeTool::EdgeData(E, par, T, N, C);
   myTool.Reset(T, N, C);
@@ -72,8 +72,8 @@ void TopOpeBRepDS_EdgeInterferenceTool::Init(const TopoDS_Shape&                
 
 //=================================================================================================
 
-void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape&                      E,
-                                            const TopoDS_Shape&                      V,
+void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape&                           E,
+                                            const TopoDS_Shape&                           V,
                                             const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   TopAbs_Orientation Eori = E.Orientation();
@@ -90,8 +90,8 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape&                 
   }
 
   // V est un sommet de E ?
-  bool VofE = false;
-  TopoDS_Iterator  it(E, false);
+  bool            VofE = false;
+  TopoDS_Iterator it(E, false);
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S = it.Value();
@@ -109,11 +109,11 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape&                 
   // V est un sommet de E
   const TopoDS_Vertex& VV  = TopoDS::Vertex(V);
   const TopoDS_Edge&   EE  = TopoDS::Edge(E);
-  double        par = BRep_Tool::Parameter(VV, EE);
+  double               par = BRep_Tool::Parameter(VV, EE);
 
   gp_Dir             T, N;
-  double      C;
-  double      tol    = TopOpeBRepTool_ShapeTool::EdgeData(E, par, T, N, C);
+  double             C;
+  double             tol    = TopOpeBRepTool_ShapeTool::EdgeData(E, par, T, N, C);
   TopAbs_Orientation oriloc = I->Transition().Orientation(TopAbs_IN);
   TopAbs_Orientation oritan = it.Value().Orientation();
   myTool.Compare(tol, T, N, C, oriloc, oritan);
@@ -142,8 +142,8 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape& E,
   double par = ::Parameter(I);
 
   gp_Dir             T, N;
-  double      C;
-  double      tol    = TopOpeBRepTool_ShapeTool::EdgeData(E, par, T, N, C);
+  double             C;
+  double             tol    = TopOpeBRepTool_ShapeTool::EdgeData(E, par, T, N, C);
   TopAbs_Orientation oriloc = I->Transition().Orientation(TopAbs_IN);
   TopAbs_Orientation oritan = TopAbs_INTERNAL;
   myTool.Compare(tol, T, N, C, oriloc, oritan);
@@ -151,7 +151,8 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add(const TopoDS_Shape& E,
 
 //=================================================================================================
 
-void TopOpeBRepDS_EdgeInterferenceTool::Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const
+void TopOpeBRepDS_EdgeInterferenceTool::Transition(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   TopOpeBRepDS_Transition& T = I->ChangeTransition();
 

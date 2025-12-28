@@ -79,7 +79,7 @@ private:
   TopoDS_Face         myFace;
   TopExp_Explorer     myExplorer;
   Geom2dAdaptor_Curve myCurve;
-  bool    myHasNullCurves;
+  bool                myHasNullCurves;
 };
 
 #endif // _StdPrs_ToolRFace_HeaderFile

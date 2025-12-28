@@ -32,10 +32,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_DrawingWithRotation, IGESData_IGESEntity)
 
 IGESDraw_DrawingWithRotation::IGESDraw_DrawingWithRotation() {}
 
-void IGESDraw_DrawingWithRotation::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-                                        const occ::handle<NCollection_HArray1<gp_XY>>&    allViewOrigins,
-                                        const occ::handle<NCollection_HArray1<double>>& allOrientationAngles,
-                                        const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAnnotations)
+void IGESDraw_DrawingWithRotation::Init(
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+  const occ::handle<NCollection_HArray1<gp_XY>>&                                allViewOrigins,
+  const occ::handle<NCollection_HArray1<double>>&                           allOrientationAngles,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAnnotations)
 {
   int Len = allViews->Length();
   if (allViews->Lower() != 1 || (allViewOrigins->Lower() != 1 || allViewOrigins->Length() != Len)
@@ -57,8 +58,7 @@ int IGESDraw_DrawingWithRotation::NbViews() const
   return (theViews->Length());
 }
 
-occ::handle<IGESData_ViewKindEntity> IGESDraw_DrawingWithRotation::ViewItem(
-  const int Index) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_DrawingWithRotation::ViewItem(const int Index) const
 {
   return (theViews->Value(Index));
 }
@@ -78,16 +78,14 @@ int IGESDraw_DrawingWithRotation::NbAnnotations() const
   return (theAnnotations.IsNull() ? 0 : theAnnotations->Length());
 }
 
-occ::handle<IGESData_IGESEntity> IGESDraw_DrawingWithRotation::Annotation(
-  const int Index) const
+occ::handle<IGESData_IGESEntity> IGESDraw_DrawingWithRotation::Annotation(const int Index) const
 {
   return (theAnnotations->Value(Index));
 }
 
-gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const int NumView,
-                                                  const gp_XYZ&          ViewCoords) const
+gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const int NumView, const gp_XYZ& ViewCoords) const
 {
-  gp_XY         thisOrigin     = theViewOrigins->Value(NumView);
+  gp_XY  thisOrigin     = theViewOrigins->Value(NumView);
   double XOrigin        = thisOrigin.X();
   double YOrigin        = thisOrigin.Y();
   double theScaleFactor = 0.;
@@ -117,7 +115,7 @@ gp_XY IGESDraw_DrawingWithRotation::ViewToDrawing(const int NumView,
 
 bool IGESDraw_DrawingWithRotation::DrawingUnit(double& val) const
 {
-  val                           = 0.;
+  val                                = 0.;
   occ::handle<Standard_Type> typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
   if (NbTypedProperties(typunit) != 1)
     return false;
@@ -130,7 +128,7 @@ bool IGESDraw_DrawingWithRotation::DrawingUnit(double& val) const
 
 bool IGESDraw_DrawingWithRotation::DrawingSize(double& X, double& Y) const
 {
-  X = Y                         = 0.;
+  X = Y                              = 0.;
   occ::handle<Standard_Type> typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
   if (NbTypedProperties(typsize) != 1)
     return false;

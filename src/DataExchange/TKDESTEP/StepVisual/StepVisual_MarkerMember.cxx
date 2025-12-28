@@ -47,8 +47,7 @@ const char* StepVisual_MarkerMember::EnumText() const
   return tool.Text(Int()).ToCString();
 }
 
-void StepVisual_MarkerMember::SetEnumText(const int /*val*/,
-                                          const char* text)
+void StepVisual_MarkerMember::SetEnumText(const int /*val*/, const char* text)
 {
   int vl = tool.Value(text);
   if (vl >= 0)

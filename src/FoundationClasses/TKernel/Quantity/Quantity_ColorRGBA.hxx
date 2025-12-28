@@ -113,8 +113,7 @@ public:
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
-  static bool ColorFromName(const char* theColorNameString,
-                                        Quantity_ColorRGBA&    theColor) noexcept
+  static bool ColorFromName(const char* theColorNameString, Quantity_ColorRGBA& theColor) noexcept
   {
     Quantity_ColorRGBA aColor;
     if (!Quantity_Color::ColorFromName(theColorNameString, aColor.ChangeRGB()))
@@ -141,11 +140,9 @@ public:
   static TCollection_AsciiString ColorToHex(const Quantity_ColorRGBA& theColor,
                                             const bool theToPrefixHash = true) noexcept
   {
-    NCollection_Vec4<float> anSRgb =
-      Convert_LinearRGB_To_sRGB((NCollection_Vec4<float>)theColor);
-    NCollection_Vec4<int> anSRgbInt(anSRgb * 255.0f
-                                                 + NCollection_Vec4<float>(0.5f));
-    char                               aBuff[12];
+    NCollection_Vec4<float> anSRgb = Convert_LinearRGB_To_sRGB((NCollection_Vec4<float>)theColor);
+    NCollection_Vec4<int>   anSRgbInt(anSRgb * 255.0f + NCollection_Vec4<float>(0.5f));
+    char                    aBuff[12];
     Sprintf(aBuff,
             theToPrefixHash ? "#%02X%02X%02X%02X" : "%02X%02X%02X%02X",
             anSRgbInt.r(),
@@ -181,8 +178,7 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
-                                                int&       theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
 
 private:
   static void myTestSize3() { Standard_STATIC_ASSERT(sizeof(float) * 3 == sizeof(Quantity_Color)); }
@@ -193,8 +189,8 @@ private:
   }
 
 private:
-  Quantity_Color     myRgb;
-  float myAlpha;
+  Quantity_Color myRgb;
+  float          myAlpha;
 };
 
 namespace std

@@ -55,12 +55,12 @@ public:
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum number of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
-                                    const double      theFirstParam,
-                                    const double      theLastParam,
-                                    const double      theLinDeflection,
-                                    const double      theAngDeflection,
-                                    const int   theMinPointsNb = 2,
-                                    const double      theMinSize = Precision::Confusion());
+                                    const double             theFirstParam,
+                                    const double             theLastParam,
+                                    const double             theLinDeflection,
+                                    const double             theAngDeflection,
+                                    const int                theMinPointsNb = 2,
+                                    const double             theMinSize = Precision::Confusion());
 
   //! Constructor.
   //! Initiates discretization of geometric curve corresponding
@@ -74,13 +74,13 @@ public:
   //! @param theAngDeflection angular deflection.
   //! @param theMinPointsNb minimum number of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(const occ::handle<BRepAdaptor_Surface>& theSurface,
-                                    const GeomAbs_IsoType              theIsoType,
-                                    const double                theParamIso,
-                                    const double                theFirstParam,
-                                    const double                theLastParam,
-                                    const double                theLinDeflection,
-                                    const double                theAngDeflection,
-                                    const int             theMinPointsNb = 2,
+                                    const GeomAbs_IsoType                   theIsoType,
+                                    const double                            theParamIso,
+                                    const double                            theFirstParam,
+                                    const double                            theLastParam,
+                                    const double                            theLinDeflection,
+                                    const double                            theAngDeflection,
+                                    const int                               theMinPointsNb = 2,
                                     const double theMinSize = Precision::Confusion());
 
   //! Adds point to already calculated points (or replaces existing).
@@ -89,9 +89,7 @@ public:
   //! @param theIsReplace if TRUE replaces existing point lying within
   //! parametric tolerance of the given point.
   //! @return index of new added point or found with parametric tolerance
-  int AddPoint(const gp_Pnt&          thePoint,
-                            const double    theParam,
-                            const bool theIsReplace = true)
+  int AddPoint(const gp_Pnt& thePoint, const double theParam, const bool theIsReplace = true)
   {
     return myDiscretTool.AddPoint(thePoint, theParam, theIsReplace);
   }
@@ -107,11 +105,11 @@ public:
   //! @param[out] thePoint discretization point.
   //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
-  Standard_EXPORT bool Value(const int theIndex,
-                                         const double    theIsoParam,
-                                         double&         theParam,
-                                         gp_Pnt&                thePoint,
-                                         gp_Pnt2d&              theUV) const;
+  Standard_EXPORT bool Value(const int    theIndex,
+                             const double theIsoParam,
+                             double&      theParam,
+                             gp_Pnt&      thePoint,
+                             gp_Pnt2d&    theUV) const;
 
   //! Gets parameters of discretization point with the given index.
   //! @param theIndex index of discretization point.
@@ -120,11 +118,11 @@ public:
   //! @param[out] thePoint discretization point.
   //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
-  Standard_EXPORT bool Value(const int             theIndex,
-                                         const occ::handle<BRepAdaptor_Surface>& theSurface,
-                                         double&                     theParam,
-                                         gp_Pnt&                            thePoint,
-                                         gp_Pnt2d&                          theUV) const;
+  Standard_EXPORT bool Value(const int                               theIndex,
+                             const occ::handle<BRepAdaptor_Surface>& theSurface,
+                             double&                                 theParam,
+                             gp_Pnt&                                 thePoint,
+                             gp_Pnt2d&                               theUV) const;
 
 public: //! @name static API
   //! Computes normal to the given surface at the specified
@@ -136,10 +134,10 @@ public: //! @name static API
   //! @param[out] theNormal normal vector at the point specified by the parameters.
   //! @return FALSE if the normal can not be computed, TRUE elsewhere.
   Standard_EXPORT static bool Normal(const occ::handle<BRepAdaptor_Surface>& theSurface,
-                                                 const double                theParamU,
-                                                 const double                theParamV,
-                                                 gp_Pnt&                            thePoint,
-                                                 gp_Dir&                            theNormal);
+                                     const double                            theParamU,
+                                     const double                            theParamV,
+                                     gp_Pnt&                                 thePoint,
+                                     gp_Dir&                                 theNormal);
 
   //! Checks intersection between two lines defined by two points.
   //! @param theStartPnt1 start point of first line.
@@ -171,18 +169,18 @@ public: //! @name static API
   //! if FALSE returns NoIntersection flag.
   //! @param[out] theIntPnt point of intersection.
   //! @return status of intersection check.
-  Standard_EXPORT static IntFlag IntSegSeg(const gp_XY&           theStartPnt1,
-                                           const gp_XY&           theEndPnt1,
-                                           const gp_XY&           theStartPnt2,
-                                           const gp_XY&           theEndPnt2,
-                                           const bool isConsiderEndPointTouch,
-                                           const bool isConsiderPointOnSegment,
-                                           gp_Pnt2d&              theIntPnt);
+  Standard_EXPORT static IntFlag IntSegSeg(const gp_XY& theStartPnt1,
+                                           const gp_XY& theEndPnt1,
+                                           const gp_XY& theStartPnt2,
+                                           const gp_XY& theEndPnt2,
+                                           const bool   isConsiderEndPointTouch,
+                                           const bool   isConsiderPointOnSegment,
+                                           gp_Pnt2d&    theIntPnt);
 
   //! Compute deflection of the given segment.
   static double SquareDeflectionOfSegment(const gp_Pnt& theFirstPoint,
-                                                 const gp_Pnt& theLastPoint,
-                                                 const gp_Pnt& theMidPoint)
+                                          const gp_Pnt& theLastPoint,
+                                          const gp_Pnt& theMidPoint)
   {
     // 23.03.2010 skl for OCC21645 - change precision for comparison
     if (theFirstPoint.SquareDistance(theLastPoint) > Precision::SquareConfusion())
@@ -204,10 +202,10 @@ public: //! @name static API
   // direction we fall back to the initial vertex count: cells_count = 2 ^ log10 (
   // initial_vertex_count )
   Standard_EXPORT static std::pair<int, int> CellsCount(
-    const occ::handle<Adaptor3d_Surface>&     theSurface,
-    const int               theVerticesNb,
-    const double                  theDeflection,
-    const BRepMesh_DefaultRangeSplitter* theRangeSplitter);
+    const occ::handle<Adaptor3d_Surface>& theSurface,
+    const int                             theVerticesNb,
+    const double                          theDeflection,
+    const BRepMesh_DefaultRangeSplitter*  theRangeSplitter);
 
 private:
   //! Classifies the point in case of coincidence of two vectors.
@@ -217,8 +215,8 @@ private:
   //! @return zero value if point is out of segment and non zero value
   //! if point is between the first and the second point of segment.
   static int classifyPoint(const gp_XY& thePoint1,
-                                        const gp_XY& thePoint2,
-                                        const gp_XY& thePointToCheck);
+                           const gp_XY& thePoint2,
+                           const gp_XY& thePointToCheck);
 
 private:
   const TopoDS_Edge*          myEdge;

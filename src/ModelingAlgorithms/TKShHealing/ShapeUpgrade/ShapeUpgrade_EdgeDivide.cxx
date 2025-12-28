@@ -49,9 +49,9 @@ bool ShapeUpgrade_EdgeDivide::Compute(const TopoDS_Edge& anEdge)
 {
   Clear();
 
-  double      f, l;
+  double                  f, l;
   occ::handle<Geom_Curve> curve3d = BRep_Tool::Curve(anEdge, f, l);
-  myHasCurve3d               = !curve3d.IsNull();
+  myHasCurve3d                    = !curve3d.IsNull();
 
   occ::handle<ShapeUpgrade_SplitCurve3d> theSplit3dTool = GetSplitCurve3dTool();
   if (myHasCurve3d)
@@ -63,7 +63,7 @@ bool ShapeUpgrade_EdgeDivide::Compute(const TopoDS_Edge& anEdge)
 
   // on pcurve(s): all knots
   // assume that if seam-edge, its pcurve1 and pcurve2 has the same split knots !!!
-  double        f2d = 0., l2d = 0.;
+  double                    f2d = 0., l2d = 0.;
   occ::handle<Geom2d_Curve> pcurve1;
   if (!myFace.IsNull())
   { // process free edges

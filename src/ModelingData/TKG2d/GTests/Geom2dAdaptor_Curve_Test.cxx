@@ -175,7 +175,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
 {
   // Test loading with null curve
   occ::handle<Geom2d_Curve> aNullCurve;
-  Geom2dAdaptor_Curve  anAdaptor;
+  Geom2dAdaptor_Curve       anAdaptor;
 
   EXPECT_THROW(anAdaptor.Load(aNullCurve, 0.0, 10.0), Standard_NullObject);
 }

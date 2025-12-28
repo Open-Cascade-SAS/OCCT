@@ -33,7 +33,7 @@ Graphic3d_CullingTool::Graphic3d_CullingTool()
 //=================================================================================================
 
 void Graphic3d_CullingTool::SetViewVolume(const occ::handle<Graphic3d_Camera>& theCamera,
-                                          const NCollection_Mat4<double>&          theModelWorld)
+                                          const NCollection_Mat4<double>&      theModelWorld)
 {
   const bool hasModelTrsf = !theModelWorld.IsIdentity();
   if (!myWorldViewProjState.IsChanged(theCamera->WorldViewProjState()) && !hasModelTrsf)
@@ -91,7 +91,8 @@ void Graphic3d_CullingTool::SetViewVolume(const occ::handle<Graphic3d_Camera>& t
 
       myClipPlanes[aFaceIdx * 2 + i].Origin = aPlanePnts[0];
       myClipPlanes[aFaceIdx * 2 + i].Normal =
-        NCollection_Vec3<double>::Cross(aPlanePnts[1] - aPlanePnts[0], aPlanePnts[2] - aPlanePnts[0])
+        NCollection_Vec3<double>::Cross(aPlanePnts[1] - aPlanePnts[0],
+                                        aPlanePnts[2] - aPlanePnts[0])
           .Normalized()
         * (i == 0 ? -1.f : 1.f);
     }
@@ -100,9 +101,9 @@ void Graphic3d_CullingTool::SetViewVolume(const occ::handle<Graphic3d_Camera>& t
 
 //=================================================================================================
 
-void Graphic3d_CullingTool::SetViewportSize(int theViewportWidth,
-                                            int theViewportHeight,
-                                            double    theResolutionRatio)
+void Graphic3d_CullingTool::SetViewportSize(int    theViewportWidth,
+                                            int    theViewportHeight,
+                                            double theResolutionRatio)
 {
   myViewportHeight = theViewportHeight > 0 ? theViewportHeight : 1;
   myViewportWidth  = theViewportWidth > 0 ? theViewportWidth : 1;
@@ -113,10 +114,10 @@ void Graphic3d_CullingTool::SetViewportSize(int theViewportWidth,
 //=================================================================================================
 
 double Graphic3d_CullingTool::SignedPlanePointDistance(const NCollection_Vec4<double>& theNormal,
-                                                              const NCollection_Vec4<double>& thePnt)
+                                                       const NCollection_Vec4<double>& thePnt)
 {
-  const double aNormLength = std::sqrt(
-    theNormal.x() * theNormal.x() + theNormal.y() * theNormal.y() + theNormal.z() * theNormal.z());
+  const double aNormLength = std::sqrt(theNormal.x() * theNormal.x() + theNormal.y() * theNormal.y()
+                                       + theNormal.z() * theNormal.z());
 
   if (aNormLength < gp::Resolution())
     return 0.0;
@@ -131,8 +132,7 @@ double Graphic3d_CullingTool::SignedPlanePointDistance(const NCollection_Vec4<do
 
 //=================================================================================================
 
-void Graphic3d_CullingTool::SetCullingDistance(CullingContext& theCtx,
-                                               double   theDistance) const
+void Graphic3d_CullingTool::SetCullingDistance(CullingContext& theCtx, double theDistance) const
 {
   theCtx.DistCull = -1.0;
   if (!myIsProjectionParallel)
@@ -164,12 +164,11 @@ void Graphic3d_CullingTool::CacheClipPtsProjections()
   {
     double aMaxProj = -std::numeric_limits<double>::max();
     double aMinProj = std::numeric_limits<double>::max();
-    for (int aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB;
-         ++aCornerIter)
+    for (int aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB; ++aCornerIter)
     {
       double aProjection = myClipVerts[aCornerIter].Dot(myClipPlanes[aPlaneIter].Normal);
-      aMaxProj                  = std::max(aProjection, aMaxProj);
-      aMinProj                  = std::min(aProjection, aMinProj);
+      aMaxProj           = std::max(aProjection, aMaxProj);
+      aMinProj           = std::min(aProjection, aMinProj);
     }
     myMaxClipProjectionPts[aPlaneIter] = aMaxProj;
     myMinClipProjectionPts[aPlaneIter] = aMinProj;
@@ -177,18 +176,17 @@ void Graphic3d_CullingTool::CacheClipPtsProjections()
 
   // project frustum onto main axes
   NCollection_Vec3<double> anAxes[] = {NCollection_Vec3<double>(1.0, 0.0, 0.0),
-                              NCollection_Vec3<double>(0.0, 1.0, 0.0),
-                              NCollection_Vec3<double>(0.0, 0.0, 1.0)};
+                                       NCollection_Vec3<double>(0.0, 1.0, 0.0),
+                                       NCollection_Vec3<double>(0.0, 0.0, 1.0)};
   for (int aDim = 0; aDim < 3; ++aDim)
   {
     double aMaxProj = -std::numeric_limits<double>::max();
     double aMinProj = std::numeric_limits<double>::max();
-    for (int aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB;
-         ++aCornerIter)
+    for (int aCornerIter = 0; aCornerIter < Graphic3d_Camera::FrustumVerticesNB; ++aCornerIter)
     {
       double aProjection = myClipVerts[aCornerIter].Dot(anAxes[aDim]);
-      aMaxProj                  = std::max(aProjection, aMaxProj);
-      aMinProj                  = std::min(aProjection, aMinProj);
+      aMaxProj           = std::max(aProjection, aMaxProj);
+      aMinProj           = std::min(aProjection, aMinProj);
     }
     myMaxOrthoProjectionPts[aDim] = aMaxProj;
     myMinOrthoProjectionPts[aDim] = aMinProj;

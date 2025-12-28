@@ -28,23 +28,19 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //
 static void MakeShell(const NCollection_List<TopoDS_Shape>&, TopoDS_Shell&);
 //
-static void RefineShell(TopoDS_Shell&                                    theShell,
-                        const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
+static void RefineShell(TopoDS_Shell&                                              theShell,
+                        const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                         NCollection_List<TopoDS_Shape>,
+                                                         TopTools_ShapeMapHasher>& theMEF,
                         NCollection_List<TopoDS_Shape>&                            aLShX);
 
 //=================================================================================================
@@ -103,7 +99,8 @@ BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter()
 
 //=================================================================================================
 
-BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator)
+BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter(
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Algo(theAllocator),
       myStartShapes(theAllocator),
       myShells(theAllocator),
@@ -156,18 +153,19 @@ void BOPAlgo_ShellSplitter::Perform(const Message_ProgressRange& theRange)
 
 void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
 {
-  int                          aNbLF, aNbOff, aNbFP;
-  int                          i;
-  TopAbs_Orientation                        anOr;
-  TopoDS_Edge                               aEL;
-  BRep_Builder                              aBB;
-  TopoDS_Iterator                           aItS;
-  TopExp_Explorer                           aExp;
-  NCollection_List<TopoDS_Shape>::Iterator        aItF;
-  BOPTools_CoupleOfShape                    aCSOff;
-  NCollection_Map<TopoDS_Shape>               AddedFacesMap;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aEFMap, aMEFP;
-  occ::handle<IntTools_Context>                  aContext;
+  int                                      aNbLF, aNbOff, aNbFP;
+  int                                      i;
+  TopAbs_Orientation                       anOr;
+  TopoDS_Edge                              aEL;
+  BRep_Builder                             aBB;
+  TopoDS_Iterator                          aItS;
+  TopExp_Explorer                          aExp;
+  NCollection_List<TopoDS_Shape>::Iterator aItF;
+  BOPTools_CoupleOfShape                   aCSOff;
+  NCollection_Map<TopoDS_Shape>            AddedFacesMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                aEFMap, aMEFP;
+  occ::handle<IntTools_Context> aContext;
   //
   aContext = new IntTools_Context;
   //
@@ -246,7 +244,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   }
   //
   const int aNbShapes      = aLFConnected.Extent();
-  bool       bAllFacesTaken = false;
+  bool      bAllFacesTaken = false;
   //
   // Build the shells
   aItF.Initialize(aLFConnected);
@@ -272,7 +270,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     for (; aItS.More(); aItS.Next())
     {
       const TopoDS_Face& aF         = (*(TopoDS_Face*)(&aItS.Value()));
-      bool   isBoundary = aBoundaryFaces.Contains(aF);
+      bool               isBoundary = aBoundaryFaces.Contains(aF);
       //
       // loop on edges of aF; find a good neighbor face of aF by aE
       aExp.Init(aF, TopAbs_EDGE);
@@ -284,7 +282,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         if (aMEFP.Contains(aE))
         {
           const NCollection_List<TopoDS_Shape>& aLFP = aMEFP.FindFromKey(aE);
-          aNbFP                            = aLFP.Extent();
+          aNbFP                                      = aLFP.Extent();
           if (aNbFP > 1)
           {
             continue;
@@ -304,7 +302,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         //
         // candidate faces list
         const NCollection_List<TopoDS_Shape>& aLF = aEFMap.FindFromKey(aE);
-        aNbLF                           = aLF.Extent();
+        aNbLF                                     = aLF.Extent();
         if (!aNbLF)
         {
           continue;
@@ -314,8 +312,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         // take only not-processed faces as a candidates
         NCollection_List<BOPTools_CoupleOfShape> aLCSOff;
         //
-        int                   aNbWaysInside = 0;
-        TopoDS_Face                        aSelF;
+        int                                      aNbWaysInside = 0;
+        TopoDS_Face                              aSelF;
         NCollection_List<TopoDS_Shape>::Iterator aItLF(aLF);
         for (; aItLF.More(); aItLF.Next())
         {
@@ -441,8 +439,10 @@ TopoDS_Shape FindShape(const TopoDS_Shape& theShapeToFind, const TopoDS_Shape& t
 
 //=================================================================================================
 
-void RefineShell(TopoDS_Shell&                                    theShell,
-                 const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
+void RefineShell(TopoDS_Shell&                                              theShell,
+                 const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                  NCollection_List<TopoDS_Shape>,
+                                                  TopTools_ShapeMapHasher>& theMEF,
                  NCollection_List<TopoDS_Shape>&                            theLShSp)
 {
   TopoDS_Iterator aIt(theShell);
@@ -458,7 +458,7 @@ void RefineShell(TopoDS_Shell&                                    theShell,
   int i, aNbMEF = theMEF.Extent();
   for (i = 1; i <= aNbMEF; ++i)
   {
-    const TopoDS_Edge&          aE  = TopoDS::Edge(theMEF.FindKey(i));
+    const TopoDS_Edge&                    aE  = TopoDS::Edge(theMEF.FindKey(i));
     const NCollection_List<TopoDS_Shape>& aLF = theMEF(i);
     if (aLF.Extent() > 2)
     {
@@ -483,7 +483,7 @@ void RefineShell(TopoDS_Shell&                                    theShell,
     //
     // check for internal edges - count faces, in which the edge
     // is internal, twice
-    int                   aNbF = 0;
+    int                                      aNbF = 0;
     NCollection_List<TopoDS_Shape>::Iterator aItLF(aLF);
     for (; aItLF.More() && aNbF <= 2; aItLF.Next())
     {
@@ -516,12 +516,12 @@ void RefineShell(TopoDS_Shell&                                    theShell,
     return;
   }
   //
-  TopoDS_Builder                     aBB;
-  TopExp_Explorer                    aExp;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         aMFB;
-  NCollection_Map<TopoDS_Shape>        aMFProcessed;
-  NCollection_List<TopoDS_Shape>               aLFP, aLFP1;
-  NCollection_List<TopoDS_Shape>::Iterator aItLF, aItLFP;
+  TopoDS_Builder                                                aBB;
+  TopExp_Explorer                                               aExp;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMFB;
+  NCollection_Map<TopoDS_Shape>                                 aMFProcessed;
+  NCollection_List<TopoDS_Shape>                                aLFP, aLFP1;
+  NCollection_List<TopoDS_Shape>::Iterator                      aItLF, aItLFP;
   //
   // The first Face
   for (; aIt.More(); aIt.Next())
@@ -619,11 +619,11 @@ void RefineShell(TopoDS_Shell&                                    theShell,
 
 void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
 {
-  bool                            bIsRegular;
-  int                            aNbVCBK, k;
+  bool                                                bIsRegular;
+  int                                                 aNbVCBK, k;
   NCollection_List<BOPTools_ConnexityBlock>::Iterator aItCB;
-  NCollection_List<TopoDS_Shape>::Iterator          aIt;
-  BOPAlgo_VectorOfCBK                         aVCBK;
+  NCollection_List<TopoDS_Shape>::Iterator            aIt;
+  BOPAlgo_VectorOfCBK                                 aVCBK;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
   myShells.Clear();
@@ -664,9 +664,9 @@ void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
   //===================================================
   for (k = 0; k < aNbVCBK; ++k)
   {
-    BOPAlgo_CBK&                   aCBK = aVCBK(k);
-    const BOPTools_ConnexityBlock& aCB  = aCBK.ConnexityBlock();
-    const NCollection_List<TopoDS_Shape>&    aLS  = aCB.Loops();
+    BOPAlgo_CBK&                          aCBK = aVCBK(k);
+    const BOPTools_ConnexityBlock&        aCB  = aCBK.ConnexityBlock();
+    const NCollection_List<TopoDS_Shape>& aLS  = aCB.Loops();
     aIt.Initialize(aLS);
     for (; aIt.More(); aIt.Next())
     {
@@ -681,7 +681,7 @@ void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
 
 void MakeShell(const NCollection_List<TopoDS_Shape>& aLS, TopoDS_Shell& aShell)
 {
-  BRep_Builder                       aBB;
+  BRep_Builder                             aBB;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   aBB.MakeShell(aShell);

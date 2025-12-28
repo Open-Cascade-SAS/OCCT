@@ -33,10 +33,10 @@ static const TopoDS_Shape& check(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
-                                             const gp_Vec&          V,
-                                             const bool Copy,
-                                             const bool Canonize)
+BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape& S,
+                                             const gp_Vec&       V,
+                                             const bool          Copy,
+                                             const bool          Canonize)
     : myPrism(check(S), V, Copy, Canonize)
 {
   Build();
@@ -44,11 +44,11 @@ BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
-                                             const gp_Dir&          D,
-                                             const bool Inf,
-                                             const bool Copy,
-                                             const bool Canonize)
+BRepPrimAPI_MakePrism::BRepPrimAPI_MakePrism(const TopoDS_Shape& S,
+                                             const gp_Dir&       D,
+                                             const bool          Inf,
+                                             const bool          Copy,
+                                             const bool          Canonize)
     : myPrism(check(S), D, Inf, Copy, Canonize)
 {
   Build();

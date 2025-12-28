@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_GLine, IntPatch_Line)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -60,7 +60,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Lin&           L,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -101,7 +101,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Lin& L, const bool Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -123,7 +123,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Circ&          C,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -164,7 +164,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Circ& C, const bool Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -186,7 +186,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Elips&         E,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -227,7 +227,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Elips& E, const bool Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -249,7 +249,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Parab&         P,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -290,7 +290,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Parab& P, const bool Tang)
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -312,7 +312,7 @@ IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
 //=======================================================================
 
 IntPatch_GLine::IntPatch_GLine(const gp_Hypr&          H,
-                               const bool  Tang,
+                               const bool              Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -417,9 +417,9 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
 
 void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
 {
-  bool    SortIsOK, APointDeleted;
-  bool    SortAgain = true;
-  int    i, j;
+  bool         SortIsOK, APointDeleted;
+  bool         SortAgain = true;
+  int          i, j;
   const double ParamMinOnLine = (fipt ? Vertex(indf).ParameterOnLine() : -100000.0);
   const double ParamMaxOnLine = (lapt ? Vertex(indl).ParameterOnLine() : 100000.0);
 
@@ -596,9 +596,9 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
   //-- Tri des vertex et suppression des Vtx superflus
   //--
   //// modified by jgv, 2.11.01 for BUC61033 ////
-  double    u1min = RealLast(), u1max = RealFirst();
-  double    u2min = RealLast(), u2max = RealFirst();
-  bool ToBreak = false;
+  double u1min = RealLast(), u1max = RealFirst();
+  double u2min = RealLast(), u2max = RealFirst();
+  bool   ToBreak = false;
   ///////////////////////////////////////////////
   do
   {
@@ -647,9 +647,9 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
       {
         if (i != j)
         {
-          IntPatch_Point&  VTXM1  = svtx.ChangeValue(j);
-          bool kill   = false;
-          bool killm1 = false;
+          IntPatch_Point& VTXM1  = svtx.ChangeValue(j);
+          bool            kill   = false;
+          bool            killm1 = false;
           if (std::abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PrecisionPConfusion)
           {
             if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1()) //-- OnS1    OnS1
@@ -814,7 +814,7 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               // eap, =>>
               double       newParam = ponline;
               const double PiPi     = M_PI + M_PI;
-              bool    is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
+              bool         is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
 
               if (nbvtx > 2 && // do this check if seam edge only gives vertices
                   !is2PI)      // but always change 2PI -> 0

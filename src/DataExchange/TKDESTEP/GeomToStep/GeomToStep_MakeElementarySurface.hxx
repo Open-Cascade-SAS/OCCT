@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeElementarySurface(
     const occ::handle<Geom_ElementarySurface>& S,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
+    const StepData_Factors&                    theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_ElementarySurface>& Value() const;
 

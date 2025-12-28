@@ -115,7 +115,10 @@ public:
   {
   }
 
-  void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc) { myAllocator = theAlloc; }
+  void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
+  {
+    myAllocator = theAlloc;
+  }
 
   const occ::handle<NCollection_BaseAllocator>& Allocator() const noexcept { return myAllocator; }
 

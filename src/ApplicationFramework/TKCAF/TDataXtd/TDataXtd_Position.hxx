@@ -64,9 +64,9 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
-                                     const occ::handle<TDF_RelocationTable>& aRelocTationable) const
-    override;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       intoAttribute,
+    const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
 
   Standard_EXPORT const gp_Pnt& GetPosition() const;
 

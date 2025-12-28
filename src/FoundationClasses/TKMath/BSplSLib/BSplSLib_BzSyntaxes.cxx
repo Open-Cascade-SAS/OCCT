@@ -26,14 +26,14 @@
 
 //=================================================================================================
 
-void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>&   Poles,
+void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>& Poles,
                                  const NCollection_Array2<double>* Weights,
-                                 NCollection_Array2<gp_Pnt>&         CachePoles,
+                                 NCollection_Array2<gp_Pnt>&       CachePoles,
                                  NCollection_Array2<double>*       CacheWeights)
 {
-  int     i;
-  int     uclas = Poles.ColLength();
-  int     vclas = Poles.RowLength();
+  int                        i;
+  int                        uclas = Poles.ColLength();
+  int                        vclas = Poles.RowLength();
   NCollection_Array1<double> biduflatknots(1, uclas << 1);
   NCollection_Array1<double> bidvflatknots(1, vclas << 1);
 
@@ -70,9 +70,9 @@ void BSplSLib::PolesCoefficients(const NCollection_Array2<gp_Pnt>&   Poles,
   else
   {
     // BuilCache exige que les resultats soient formates en [MaxCoeff,MinCoeff]
-    NCollection_Array2<gp_Pnt>   CPoles(1, vclas, 1, uclas);
+    NCollection_Array2<gp_Pnt> CPoles(1, vclas, 1, uclas);
     NCollection_Array2<double> CWeights(1, vclas, 1, uclas);
-    int     ii, jj;
+    int                        ii, jj;
     BSplSLib::BuildCache(0.,
                          0.,
                          1.,

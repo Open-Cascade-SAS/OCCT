@@ -49,12 +49,12 @@ public:
   //! 1 = left justified
   //! 2 = right justified
   //! - aExtnVal    : Extension value if aExtnFlag = 2
-  Standard_EXPORT void Init(const int nbPropVal,
-                            const double    aWidth,
-                            const int aCornering,
-                            const int aExtnFlag,
-                            const int aJustifFlag,
-                            const double    aExtnVal);
+  Standard_EXPORT void Init(const int    nbPropVal,
+                            const double aWidth,
+                            const int    aCornering,
+                            const int    aExtnFlag,
+                            const int    aJustifFlag,
+                            const double aExtnVal);
 
   //! returns the number of property values
   //! is always 5
@@ -86,12 +86,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LineWidening, IGESData_IGESEntity)
 
 private:
-  int theNbPropertyValues;
-  double    theWidth;
-  int theCorneringCode;
-  int theExtensionFlag;
-  int theJustificationFlag;
-  double    theExtensionValue;
+  int    theNbPropertyValues;
+  double theWidth;
+  int    theCorneringCode;
+  int    theExtensionFlag;
+  int    theJustificationFlag;
+  double theExtensionValue;
 };
 
 #endif // _IGESAppli_LineWidening_HeaderFile

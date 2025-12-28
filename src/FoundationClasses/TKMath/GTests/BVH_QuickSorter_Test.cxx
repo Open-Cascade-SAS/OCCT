@@ -107,8 +107,7 @@ TEST(BVH_QuickSorterTest, SortAlongYAxis)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, y - 0.5, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, y, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, y + 0.5, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(1); // Sort along Y
@@ -130,8 +129,7 @@ TEST(BVH_QuickSorterTest, SortAlongZAxis)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, z));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, z));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.5, 1.0, z));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(2); // Sort along Z
@@ -153,8 +151,7 @@ TEST(BVH_QuickSorterTest, SortRangeInSet)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   // Reverse the middle 3 elements (indices 1, 2, 3) manually
@@ -194,8 +191,7 @@ TEST(BVH_QuickSorterTest, AlreadySorted)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(0);
@@ -219,8 +215,7 @@ TEST(BVH_QuickSorterTest, ReverseSorted)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(0);
@@ -244,8 +239,7 @@ TEST(BVH_QuickSorterTest, DuplicateValues)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(0);
@@ -268,8 +262,7 @@ TEST(BVH_QuickSorterTest, AllSameValue)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(0);
@@ -294,8 +287,7 @@ TEST(BVH_QuickSorterTest, LargeDataSet)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.9, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 0.9, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements,
-                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_QuickSorter<double, 3> aSorter(0);

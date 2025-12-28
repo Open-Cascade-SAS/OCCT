@@ -47,7 +47,7 @@ TopoDSToStep_FacetedError TopoDSToStep_FacetedTool::CheckTopoDSShape(const TopoD
     else if (Su->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       occ::handle<Geom_BSplineSurface> aBsplS = occ::down_cast<Geom_BSplineSurface>(Su);
-      int            uDeg, vDeg, nUPol, nVPol;
+      int                              uDeg, vDeg, nUPol, nVPol;
       uDeg = aBsplS->UDegree();
       if (uDeg == 1)
       {
@@ -76,7 +76,7 @@ TopoDSToStep_FacetedError TopoDSToStep_FacetedTool::CheckTopoDSShape(const TopoD
     else if (Su->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
     {
       occ::handle<Geom_BezierSurface> aBzS = occ::down_cast<Geom_BezierSurface>(Su);
-      int           uDeg, vDeg, nUPol, nVPol;
+      int                             uDeg, vDeg, nUPol, nVPol;
       uDeg = aBzS->UDegree();
       if (uDeg == 1)
       {
@@ -116,7 +116,7 @@ TopoDSToStep_FacetedError TopoDSToStep_FacetedTool::CheckTopoDSShape(const TopoD
       const TopoDS_Edge anEdge = TopoDS::Edge(EdgeExp.Current());
       EdgeExp.Next();
 
-      double        cf, cl;
+      double                    cf, cl;
       occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(anEdge, aFace, cf, cl);
 
       if (C2d->IsKind(STANDARD_TYPE(Geom2d_Line)))

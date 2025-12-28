@@ -209,8 +209,8 @@ public: //! @name Rules for Accept/Reject
   //! Metric is computed to choose the best branch.
   //! Returns true if the node should be rejected, false otherwise.
   virtual bool RejectNode(const BVH_VecNt& theCornerMin,
-                                      const BVH_VecNt& theCornerMax,
-                                      MetricType&      theMetric) const = 0;
+                          const BVH_VecNt& theCornerMax,
+                          MetricType&      theMetric) const = 0;
 
   //! Leaf element acceptance.
   //! Metric of the parent leaf-node is passed to avoid the check on the
@@ -243,16 +243,16 @@ protected: //! @name Internal structures
   struct BVH_NodeInStack
   {
     //! Constructor
-    constexpr BVH_NodeInStack(const int theNodeID = 0,
-                              const MetricType&      theMetric = MetricType()) noexcept
+    constexpr BVH_NodeInStack(const int         theNodeID = 0,
+                              const MetricType& theMetric = MetricType()) noexcept
         : NodeID(theNodeID),
           Metric(theMetric)
     {
     }
 
     // Fields
-    int NodeID; //!< Id of the node in the BVH tree
-    MetricType       Metric; //!< Metric computed for the node
+    int        NodeID; //!< Id of the node in the BVH tree
+    MetricType Metric; //!< Metric computed for the node
   };
 
 protected: //! @name Fields
@@ -296,15 +296,14 @@ public: //! @name Rules for Accept/Reject
   //! Metric is computed to choose the best branch.
   //! Returns true if the pair of nodes should be rejected, false otherwise.
   virtual bool RejectNode(const BVH_VecNt& theCornerMin1,
-                                      const BVH_VecNt& theCornerMax1,
-                                      const BVH_VecNt& theCornerMin2,
-                                      const BVH_VecNt& theCornerMax2,
-                                      MetricType&      theMetric) const = 0;
+                          const BVH_VecNt& theCornerMax1,
+                          const BVH_VecNt& theCornerMin2,
+                          const BVH_VecNt& theCornerMax2,
+                          MetricType&      theMetric) const = 0;
 
   //! Leaf element acceptance.
   //! Returns true if the pair of elements is accepted, false otherwise.
-  virtual bool Accept(const int theIndex1,
-                                  const int theIndex2) = 0;
+  virtual bool Accept(const int theIndex1, const int theIndex2) = 0;
 
 public: //! @name Selection
   //! Selection of the pairs of elements of two BVH trees by the
@@ -326,16 +325,16 @@ public: //! @name Selection
   //! rules defined in Accept/Reject methods.
   //! Returns the number of accepted pairs of elements.
   int Select(const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH1,
-                          const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2);
+             const opencascade::handle<BVH_Tree<NumType, Dimension>>& theBVH2);
 
 protected: //! @name Internal structures
   //! Auxiliary structure for keeping the pair of nodes to process
   struct BVH_PairNodesInStack
   {
     //! Constructor
-    constexpr BVH_PairNodesInStack(const int theNodeID1 = 0,
-                                   const int theNodeID2 = 0,
-                                   const MetricType&      theMetric  = MetricType()) noexcept
+    constexpr BVH_PairNodesInStack(const int         theNodeID1 = 0,
+                                   const int         theNodeID2 = 0,
+                                   const MetricType& theMetric  = MetricType()) noexcept
         : NodeID1(theNodeID1),
           NodeID2(theNodeID2),
           Metric(theMetric)
@@ -343,9 +342,9 @@ protected: //! @name Internal structures
     }
 
     // Fields
-    int NodeID1; //!< Id of the node in the first BVH tree
-    int NodeID2; //!< Id of the node in the second BVH tree
-    MetricType       Metric;  //!< Metric computed for the pair of nodes
+    int        NodeID1; //!< Id of the node in the first BVH tree
+    int        NodeID2; //!< Id of the node in the second BVH tree
+    MetricType Metric;  //!< Metric computed for the pair of nodes
   };
 
 protected: //! @name Fields

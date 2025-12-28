@@ -23,12 +23,12 @@
 
 //============================================================
 int BRepBlend_HCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>& C,
-                                                 const double            U0,
-                                                 const double            U1)
+                                    const double                        U0,
+                                    const double                        U1)
 {
-  GeomAbs_CurveType    typC     = C->GetType();
-  static double nbsOther = 10.0;
-  double        nbs      = nbsOther;
+  GeomAbs_CurveType typC     = C->GetType();
+  static double     nbsOther = 10.0;
+  double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -37,7 +37,7 @@ int BRepBlend_HCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>& C,
   else if (typC == GeomAbs_BSplineCurve)
   {
     occ::handle<Geom_BSplineCurve> BSC = C->BSpline();
-    nbs                           = BSC->NbKnots();
+    nbs                                = BSC->NbKnots();
     nbs *= BSC->Degree();
     nbs *= BSC->LastParameter() - BSC->FirstParameter();
     nbs /= U1 - U0;

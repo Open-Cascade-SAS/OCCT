@@ -26,12 +26,12 @@
 // function : AddInterference
 // purpose  : insert an interference in a sorted list
 //=======================================================================
-void HLRBRep_EdgeIList::AddInterference(NCollection_List<HLRAlgo_Interference>&           IL,
-                                        const HLRAlgo_Interference&         I,
-                                        const HLRBRep_EdgeInterferenceTool& T)
+void HLRBRep_EdgeIList::AddInterference(NCollection_List<HLRAlgo_Interference>& IL,
+                                        const HLRAlgo_Interference&             I,
+                                        const HLRBRep_EdgeInterferenceTool&     T)
 {
   NCollection_List<HLRAlgo_Interference>::Iterator It(IL);
-  double                          p = T.ParameterOfInterference(I);
+  double                                           p = T.ParameterOfInterference(I);
   while (It.More())
   {
     if (p < T.ParameterOfInterference(It.Value()))
@@ -47,11 +47,10 @@ void HLRBRep_EdgeIList::AddInterference(NCollection_List<HLRAlgo_Interference>& 
 //=================================================================================================
 
 #ifdef OCCT_DEBUG_SI
-static bool SimilarInterference(const HLRAlgo_Interference& I1,
-                                            const HLRAlgo_Interference& I2)
+static bool SimilarInterference(const HLRAlgo_Interference& I1, const HLRAlgo_Interference& I2)
 {
-  double      p1, p2;
-  double      eps = 1.e-7;
+  double             p1, p2;
+  double             eps = 1.e-7;
   TopAbs_Orientation or1, or2;
   // int l1, l2; //levels
 
@@ -67,13 +66,13 @@ static bool SimilarInterference(const HLRAlgo_Interference& I1,
   return IsSimilar;
 }
 #endif
-void HLRBRep_EdgeIList::ProcessComplex(NCollection_List<HLRAlgo_Interference>&           IL,
-                                       const HLRBRep_EdgeInterferenceTool& T)
+void HLRBRep_EdgeIList::ProcessComplex(NCollection_List<HLRAlgo_Interference>& IL,
+                                       const HLRBRep_EdgeInterferenceTool&     T)
 {
-  TopCnx_EdgeFaceTransition              transTool;
-  gp_Dir                                 TgtE, NormE, TgtI, NormI;
-  const double                    TolAng = 0.0001;
-  double                          CurvE, CurvI;
+  TopCnx_EdgeFaceTransition                        transTool;
+  gp_Dir                                           TgtE, NormE, TgtI, NormI;
+  const double                                     TolAng = 0.0001;
+  double                                           CurvE, CurvI;
   NCollection_List<HLRAlgo_Interference>::Iterator It1(IL);
 
   while (It1.More())

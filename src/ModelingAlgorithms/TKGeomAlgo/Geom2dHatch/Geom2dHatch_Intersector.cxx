@@ -33,8 +33,8 @@ Geom2dHatch_Intersector::Geom2dHatch_Intersector()
 //=================================================================================================
 
 void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
-                                      const double        P,
-                                      const double        Tol,
+                                      const double               P,
+                                      const double               Tol,
                                       const Geom2dAdaptor_Curve& C)
 {
 
@@ -53,8 +53,8 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
                      Precision::PIntersection());
 
   occ::handle<Geom2d_Line> GL = new Geom2d_Line(L);
-  Geom2dAdaptor_Curve CGA(GL);
-  void*               ptrpoureviterlesproblemesdeconst = (void*)(&C);
+  Geom2dAdaptor_Curve      CGA(GL);
+  void*                    ptrpoureviterlesproblemesdeconst = (void*)(&C);
 
   Geom2dInt_GInter Inter(CGA,
                          DL,
@@ -68,10 +68,10 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
 //=================================================================================================
 
 void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
-                                            const double        U,
+                                            const double               U,
                                             gp_Dir2d&                  Tang,
                                             gp_Dir2d&                  Norm,
-                                            double&             C) const
+                                            double&                    C) const
 {
   // double f,l;
   Geom2dLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());

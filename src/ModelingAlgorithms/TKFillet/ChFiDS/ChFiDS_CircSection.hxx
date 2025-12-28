@@ -41,10 +41,10 @@ public:
   Standard_EXPORT void Get(gp_Lin& C, double& F, double& L) const;
 
 private:
-  gp_Circ       myCirc;
-  gp_Lin        myLin;
-  double myF;
-  double myL;
+  gp_Circ myCirc;
+  gp_Lin  myLin;
+  double  myF;
+  double  myL;
 };
 
 #endif // _ChFiDS_CircSection_HeaderFile

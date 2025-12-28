@@ -55,7 +55,7 @@ public:
   Standard_EXPORT Vrml_ShapeHints(const Vrml_VertexOrdering aVertexOrdering = Vrml_UNKNOWN_ORDERING,
                                   const Vrml_ShapeType      aShapeType = Vrml_UNKNOWN_SHAPE_TYPE,
                                   const Vrml_FaceType       aFaceType  = Vrml_CONVEX,
-                                  const double       aAngle     = 0.5);
+                                  const double              aAngle     = 0.5);
 
   Standard_EXPORT void SetVertexOrdering(const Vrml_VertexOrdering aVertexOrdering);
 
@@ -79,7 +79,7 @@ private:
   Vrml_VertexOrdering myVertexOrdering;
   Vrml_ShapeType      myShapeType;
   Vrml_FaceType       myFaceType;
-  double       myAngle;
+  double              myAngle;
 };
 
 #endif // _Vrml_ShapeHints_HeaderFile

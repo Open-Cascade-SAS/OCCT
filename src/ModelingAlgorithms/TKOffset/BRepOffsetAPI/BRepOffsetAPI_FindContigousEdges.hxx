@@ -53,8 +53,8 @@ public:
   //! Set option to false. This argument (defaulted to true) will
   //! serve in subsequent software releases for performing an
   //! analysis of degenerated shapes.
-  Standard_EXPORT BRepOffsetAPI_FindContigousEdges(const double    tolerance = 1.0e-06,
-                                                   const bool option = true);
+  Standard_EXPORT BRepOffsetAPI_FindContigousEdges(const double tolerance = 1.0e-06,
+                                                   const bool   option    = true);
 
   //! Initializes this algorithm for identifying contiguous edges
   //! on shapes using the tolerance of contiguity tolerance.
@@ -110,8 +110,7 @@ public:
   //! - index is less than 1, or
   //! - index is greater than the number of contiguous edges
   //! found by the function Perform on the shapes added to this algorithm.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ContigousEdgeCouple(
-    const int index) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ContigousEdgeCouple(const int index) const;
 
   //! Returns the edge on the initial shape, of which the
   //! modified copy contains the edge section.

@@ -32,13 +32,13 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_makeTransition();
 
-  Standard_EXPORT bool Initialize(const TopoDS_Edge&  E,
-                                              const double pbef,
-                                              const double paft,
-                                              const double parE,
-                                              const TopoDS_Face&  FS,
-                                              const gp_Pnt2d&     uv,
-                                              const double factor);
+  Standard_EXPORT bool Initialize(const TopoDS_Edge& E,
+                                  const double       pbef,
+                                  const double       paft,
+                                  const double       parE,
+                                  const TopoDS_Face& FS,
+                                  const gp_Pnt2d&    uv,
+                                  const double       factor);
 
   Standard_EXPORT void Setfactor(const double factor);
 
@@ -59,17 +59,17 @@ public:
   Standard_EXPORT bool MkTonE(TopAbs_State& stb, TopAbs_State& sta);
 
 private:
-  TopoDS_Edge      myE;
-  double    mypb;
-  double    mypa;
-  double    mypE;
-  TopoDS_Face      myFS;
-  gp_Pnt2d         myuv;
-  bool hasES;
-  TopoDS_Edge      myES;
-  double    mypES;
-  bool isT2d;
-  double    myfactor;
+  TopoDS_Edge myE;
+  double      mypb;
+  double      mypa;
+  double      mypE;
+  TopoDS_Face myFS;
+  gp_Pnt2d    myuv;
+  bool        hasES;
+  TopoDS_Edge myES;
+  double      mypES;
+  bool        isT2d;
+  double      myfactor;
 };
 
 #endif // _TopOpeBRepTool_makeTransition_HeaderFile

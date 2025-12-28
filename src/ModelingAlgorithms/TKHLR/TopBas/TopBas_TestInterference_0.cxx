@@ -22,8 +22,8 @@ TopBas_TestInterference::TopBas_TestInterference() {}
 
 //=================================================================================================
 
-TopBas_TestInterference::TopBas_TestInterference(const double&     Inters,
-                                                 const int&  Bound,
+TopBas_TestInterference::TopBas_TestInterference(const double&            Inters,
+                                                 const int&               Bound,
                                                  const TopAbs_Orientation Orient,
                                                  const TopAbs_Orientation Trans,
                                                  const TopAbs_Orientation BTrans)

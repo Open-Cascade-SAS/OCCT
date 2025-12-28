@@ -39,8 +39,8 @@ void StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::SetPlaneAngleMeasureWi
 
 //=================================================================================================
 
-occ::handle<StepBasic_PlaneAngleMeasureWithUnit> StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::
-  GetPlaneAngleMeasureWithUnit() const
+occ::handle<StepBasic_PlaneAngleMeasureWithUnit>
+  StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::GetPlaneAngleMeasureWithUnit() const
 {
   return myPlaneAngleMeasureWithUnit;
 }

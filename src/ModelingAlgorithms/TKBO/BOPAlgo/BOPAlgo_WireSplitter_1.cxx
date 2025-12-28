@@ -38,32 +38,23 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Sequence.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher>
-  MyDataMapOfShapeBoolean;
+typedef NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher> MyDataMapOfShapeBoolean;
 //
 
 static double Angle(const gp_Dir2d& aDir2D);
 
-static double Angle2D(const TopoDS_Vertex&            aV,
-                             const TopoDS_Edge&              anEdge,
-                             const TopoDS_Face&              myFace,
-                             const GeomAdaptor_Surface&      aGAS,
-                             const bool          aFlag,
-                             const occ::handle<IntTools_Context>& theContext);
+static double Angle2D(const TopoDS_Vertex&                 aV,
+                      const TopoDS_Edge&                   anEdge,
+                      const TopoDS_Face&                   myFace,
+                      const GeomAdaptor_Surface&           aGAS,
+                      const bool                           aFlag,
+                      const occ::handle<IntTools_Context>& theContext);
 
 static void GetNextVertex(const TopoDS_Vertex& aV, const TopoDS_Edge& aE, TopoDS_Vertex& aV1);
 
@@ -77,17 +68,19 @@ static gp_Pnt2d Coord2d(const TopoDS_Vertex& aV1, const TopoDS_Edge& aE1, const 
 
 static double ClockWiseAngle(const double aAngleIn, const double aAngleOut);
 
-static void Path(const GeomAdaptor_Surface&                   aGAS,
-                 const TopoDS_Face&                           myFace,
-                 const MyDataMapOfShapeBoolean&               aVertMap,
-                 const TopoDS_Vertex&                         aVa,
-                 const TopoDS_Edge&                           aEOuta,
-                 BOPAlgo_EdgeInfo&                            anEdgeInfo,
-                 NCollection_Sequence<TopoDS_Shape>&                    aLS,
-                 NCollection_Sequence<TopoDS_Shape>&                    aVertVa,
+static void Path(const GeomAdaptor_Surface&                           aGAS,
+                 const TopoDS_Face&                                   myFace,
+                 const MyDataMapOfShapeBoolean&                       aVertMap,
+                 const TopoDS_Vertex&                                 aVa,
+                 const TopoDS_Edge&                                   aEOuta,
+                 BOPAlgo_EdgeInfo&                                    anEdgeInfo,
+                 NCollection_Sequence<TopoDS_Shape>&                  aLS,
+                 NCollection_Sequence<TopoDS_Shape>&                  aVertVa,
                  NCollection_Sequence<gp_Pnt2d>&                      aCoordVa,
-                 BOPTools_ConnexityBlock&                     aCB,
-                 NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<BOPAlgo_EdgeInfo>, TopTools_ShapeMapHasher>& mySmartMap);
+                 BOPTools_ConnexityBlock&                             aCB,
+                 NCollection_IndexedDataMap<TopoDS_Shape,
+                                            NCollection_List<BOPAlgo_EdgeInfo>,
+                                            TopTools_ShapeMapHasher>& mySmartMap);
 
 static double Angle(const gp_Dir2d& aDir2D);
 
@@ -97,7 +90,9 @@ static double UTolerance2D(const TopoDS_Vertex& aV, const GeomAdaptor_Surface& a
 static double VTolerance2D(const TopoDS_Vertex& aV, const GeomAdaptor_Surface& aGAS);
 
 static void RefineAngles(const TopoDS_Face& myFace,
-                         NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<BOPAlgo_EdgeInfo>, TopTools_ShapeMapHasher>&,
+                         NCollection_IndexedDataMap<TopoDS_Shape,
+                                                    NCollection_List<BOPAlgo_EdgeInfo>,
+                                                    TopTools_ShapeMapHasher>&,
                          const occ::handle<IntTools_Context>&);
 
 static void RefineAngles(const TopoDS_Vertex&,
@@ -106,32 +101,35 @@ static void RefineAngles(const TopoDS_Vertex&,
                          const occ::handle<IntTools_Context>&);
 
 static bool RefineAngle2D(const TopoDS_Vertex&,
-                                      const TopoDS_Edge&,
-                                      const TopoDS_Face&,
-                                      const double,
-                                      const double,
-                                      const double,
-                                      double&,
-                                      const occ::handle<IntTools_Context>&);
+                          const TopoDS_Edge&,
+                          const TopoDS_Face&,
+                          const double,
+                          const double,
+                          const double,
+                          double&,
+                          const occ::handle<IntTools_Context>&);
 
 //=================================================================================================
 
-void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
-                                      BOPTools_ConnexityBlock&        aCB,
+void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&                   myFace,
+                                      BOPTools_ConnexityBlock&             aCB,
                                       const occ::handle<IntTools_Context>& theContext)
 {
-  bool                     bNothingToDo, bIsClosed, bIsIN;
-  int                     aIx, aNb, i, aCntIn, aCntOut;
-  double                        aAngle;
-  TopAbs_Orientation                   aOr;
-  TopoDS_Iterator                      aItS;
-  TopoDS_Vertex                        aVV;
-  TopoDS_Shape                         aV1;
-  NCollection_List<TopoDS_Shape>::Iterator   aIt;
+  bool                                         bNothingToDo, bIsClosed, bIsIN;
+  int                                          aIx, aNb, i, aCntIn, aCntOut;
+  double                                       aAngle;
+  TopAbs_Orientation                           aOr;
+  TopoDS_Iterator                              aItS;
+  TopoDS_Vertex                                aVV;
+  TopoDS_Shape                                 aV1;
+  NCollection_List<TopoDS_Shape>::Iterator     aIt;
   NCollection_List<BOPAlgo_EdgeInfo>::Iterator aItLEI;
   //
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<BOPAlgo_EdgeInfo>, TopTools_ShapeMapHasher> mySmartMap(100);
-  MyDataMapOfShapeBoolean                     aVertMap;
+  NCollection_IndexedDataMap<TopoDS_Shape,
+                             NCollection_List<BOPAlgo_EdgeInfo>,
+                             TopTools_ShapeMapHasher>
+                          mySmartMap(100);
+  MyDataMapOfShapeBoolean aVertMap;
   //
   const NCollection_List<TopoDS_Shape>& myEdges = aCB.Shapes();
 
@@ -165,7 +163,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
       }
       //
       NCollection_List<BOPAlgo_EdgeInfo>& aLEI = mySmartMap(aIx);
-      BOPAlgo_EdgeInfo        aEI;
+      BOPAlgo_EdgeInfo                    aEI;
       //
       aEI.SetEdge(aE);
       aOr   = aV.Orientation();
@@ -201,9 +199,9 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
   bNothingToDo = true;
   for (i = 1; i <= aNb; i++)
   {
-    aCntIn                                       = 0;
-    aCntOut                                      = 0;
-    const NCollection_List<BOPAlgo_EdgeInfo>&        aLEInfo = mySmartMap(i);
+    aCntIn                                               = 0;
+    aCntOut                                              = 0;
+    const NCollection_List<BOPAlgo_EdgeInfo>&    aLEInfo = mySmartMap(i);
     NCollection_List<BOPAlgo_EdgeInfo>::Iterator anIt(aLEInfo);
     for (; anIt.More(); anIt.Next())
     {
@@ -230,10 +228,13 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
   // If there are such edges there is something to do with.
   if (bNothingToDo)
   {
-    int aNbE, aNbMapEE;
+    int  aNbE, aNbMapEE;
     bool bFlag;
     //
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapEE(100);
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      aMapEE(100);
     aNbE = myEdges.Extent();
     //
     aIt.Initialize(myEdges);
@@ -258,7 +259,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
     for (i = 1; i <= aNbMapEE; ++i)
     {
       const NCollection_List<TopoDS_Shape>& aLEx = aMapEE(i);
-      aNbE                             = aLEx.Extent();
+      aNbE                                       = aLEx.Extent();
       if (aNbE == 1)
       { // usual case
         continue;
@@ -299,7 +300,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
   //
   for (i = 1; i <= aNb; i++)
   {
-    const TopoDS_Vertex&          aV   = (*(TopoDS_Vertex*)(&mySmartMap.FindKey(i)));
+    const TopoDS_Vertex&                      aV   = (*(TopoDS_Vertex*)(&mySmartMap.FindKey(i)));
     const NCollection_List<BOPAlgo_EdgeInfo>& aLEI = mySmartMap(i);
     aItLEI.Initialize(aLEI);
     for (; aItLEI.More(); aItLEI.Next())
@@ -324,13 +325,13 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
   //
   // 4. Do
   //
-  bool         bIsOut, bIsNotPassed;
+  bool                               bIsOut, bIsNotPassed;
   NCollection_Sequence<TopoDS_Shape> aLS, aVertVa;
-  NCollection_Sequence<gp_Pnt2d>   aCoordVa;
+  NCollection_Sequence<gp_Pnt2d>     aCoordVa;
   //
   for (i = 1; i <= aNb; ++i)
   {
-    const TopoDS_Vertex&          aVa  = (*(TopoDS_Vertex*)(&mySmartMap.FindKey(i)));
+    const TopoDS_Vertex&                      aVa  = (*(TopoDS_Vertex*)(&mySmartMap.FindKey(i)));
     const NCollection_List<BOPAlgo_EdgeInfo>& aLEI = mySmartMap(i);
     aItLEI.Initialize(aLEI);
     for (; aItLEI.More(); aItLEI.Next())
@@ -355,27 +356,29 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&              myFace,
 
 //=================================================================================================
 
-void Path(const GeomAdaptor_Surface&                   aGAS,
-          const TopoDS_Face&                           myFace,
-          const MyDataMapOfShapeBoolean&               aVertMap,
-          const TopoDS_Vertex&                         aVFirst,
-          const TopoDS_Edge&                           aEFirst,
-          BOPAlgo_EdgeInfo&                            aEIFirst,
-          NCollection_Sequence<TopoDS_Shape>&                    aLS,
-          NCollection_Sequence<TopoDS_Shape>&                    aVertVa,
+void Path(const GeomAdaptor_Surface&                           aGAS,
+          const TopoDS_Face&                                   myFace,
+          const MyDataMapOfShapeBoolean&                       aVertMap,
+          const TopoDS_Vertex&                                 aVFirst,
+          const TopoDS_Edge&                                   aEFirst,
+          BOPAlgo_EdgeInfo&                                    aEIFirst,
+          NCollection_Sequence<TopoDS_Shape>&                  aLS,
+          NCollection_Sequence<TopoDS_Shape>&                  aVertVa,
           NCollection_Sequence<gp_Pnt2d>&                      aCoordVa,
-          BOPTools_ConnexityBlock&                     aCB,
-          NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<BOPAlgo_EdgeInfo>, TopTools_ShapeMapHasher>& mySmartMap)
+          BOPTools_ConnexityBlock&                             aCB,
+          NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<BOPAlgo_EdgeInfo>,
+                                     TopTools_ShapeMapHasher>& mySmartMap)
 {
-  int                     i, j, aNb, aNbj;
-  double                        anAngleIn, anAngleOut, anAngle, aMinAngle;
-  double                        aTol2D, aTol2D2, aD2, aTwoPI;
-  bool                     anIsSameV2d, anIsSameV, anIsOut, anIsNotPassed;
-  bool                     bIsClosed;
-  TopoDS_Vertex                        aVa, aVb;
-  TopoDS_Edge                          aEOuta;
+  int                                          i, j, aNb, aNbj;
+  double                                       anAngleIn, anAngleOut, anAngle, aMinAngle;
+  double                                       aTol2D, aTol2D2, aD2, aTwoPI;
+  bool                                         anIsSameV2d, anIsSameV, anIsOut, anIsNotPassed;
+  bool                                         bIsClosed;
+  TopoDS_Vertex                                aVa, aVb;
+  TopoDS_Edge                                  aEOuta;
   NCollection_List<BOPAlgo_EdgeInfo>::Iterator anIt;
-  double                        eps = Epsilon(1.);
+  double                                       eps = Epsilon(1.);
   //
   aVa                          = aVFirst;
   aEOuta                       = aEFirst;
@@ -422,7 +425,7 @@ void Path(const GeomAdaptor_Surface&                   aGAS,
     bIsClosed = aVertMap.Find(aVb);
     {
       NCollection_List<TopoDS_Shape> aBuf;
-      bool     bHasEdge = false;
+      bool                           bHasEdge = false;
       //
       aNb = aLS.Length();
       for (i = aNb; i > 0; --i)
@@ -494,8 +497,8 @@ void Path(const GeomAdaptor_Surface&                   aGAS,
             return;
           }
           //
-          NCollection_Sequence<TopoDS_Shape>                aLSt, aVertVat;
-          NCollection_Sequence<gp_Pnt2d>                  aCoordVat;
+          NCollection_Sequence<TopoDS_Shape>      aLSt, aVertVat;
+          NCollection_Sequence<gp_Pnt2d>          aCoordVat;
           NCollection_Sequence<BOPAlgo_EdgeInfo*> anInfoSeqTmp;
           //
           aVb = (*(TopoDS_Vertex*)(&aVertVa(i)));
@@ -524,12 +527,12 @@ void Path(const GeomAdaptor_Surface&                   aGAS,
     // aEOutb
     BOPAlgo_EdgeInfo* pEdgeInfo = NULL;
     //
-    anAngleIn             = AngleIn(aEOuta, aLEInfo);
-    aMinAngle             = 100.;
-    int iCnt = NbWaysOut(aLEInfo);
+    anAngleIn = AngleIn(aEOuta, aLEInfo);
+    aMinAngle = 100.;
+    int iCnt  = NbWaysOut(aLEInfo);
 
-    bool  isBoundary    = !anEdgeInfo->IsInside();
-    int  aNbWaysInside = 0;
+    bool              isBoundary    = !anEdgeInfo->IsInside();
+    int               aNbWaysInside = 0;
     BOPAlgo_EdgeInfo* pOnlyWayIn    = NULL;
 
     anIt.Initialize(aLEInfo);
@@ -660,9 +663,9 @@ double ClockWiseAngle(const double aAngleIn, const double aAngleOut)
 
 gp_Pnt2d Coord2d(const TopoDS_Vertex& aV1, const TopoDS_Edge& aE1, const TopoDS_Face& aF)
 {
-  double        aT, aFirst, aLast;
+  double                    aT, aFirst, aLast;
   occ::handle<Geom2d_Curve> aC2D;
-  gp_Pnt2d             aP2D1;
+  gp_Pnt2d                  aP2D1;
   //
   aT   = BRep_Tool::Parameter(aV1, aE1, aF);
   aC2D = BRep_Tool::CurveOnSurface(aE1, aF, aFirst, aLast);
@@ -675,7 +678,7 @@ gp_Pnt2d Coord2d(const TopoDS_Vertex& aV1, const TopoDS_Edge& aE1, const TopoDS_
 
 gp_Pnt2d Coord2dVf(const TopoDS_Edge& aE, const TopoDS_Face& aF)
 {
-  double   aCoord = 99.;
+  double          aCoord = 99.;
   gp_Pnt2d        aP2D1(aCoord, aCoord);
   TopoDS_Iterator aIt;
   //
@@ -698,8 +701,8 @@ gp_Pnt2d Coord2dVf(const TopoDS_Edge& aE, const TopoDS_Face& aF)
 
 int NbWaysOut(const NCollection_List<BOPAlgo_EdgeInfo>& aLEInfo)
 {
-  bool                     bIsOut, bIsNotPassed;
-  int                     iCnt = 0;
+  bool                                         bIsOut, bIsNotPassed;
+  int                                          iCnt = 0;
   NCollection_List<BOPAlgo_EdgeInfo>::Iterator anIt;
   //
   anIt.Initialize(aLEInfo);
@@ -721,8 +724,8 @@ int NbWaysOut(const NCollection_List<BOPAlgo_EdgeInfo>& aLEInfo)
 
 double AngleIn(const TopoDS_Edge& aEIn, const NCollection_List<BOPAlgo_EdgeInfo>& aLEInfo)
 {
-  double                        anAngleIn;
-  bool                     anIsIn;
+  double                                       anAngleIn;
+  bool                                         anIsIn;
   NCollection_List<BOPAlgo_EdgeInfo>::Iterator anIt;
 
   anIt.Initialize(aLEInfo);
@@ -763,16 +766,16 @@ void GetNextVertex(const TopoDS_Vertex& aV, const TopoDS_Edge& aE, TopoDS_Vertex
 
 //=================================================================================================
 
-double Angle2D(const TopoDS_Vertex&            aV,
-                      const TopoDS_Edge&              anEdge,
-                      const TopoDS_Face&              myFace,
-                      const GeomAdaptor_Surface&      aGAS,
-                      const bool          bIsIN,
-                      const occ::handle<IntTools_Context>& theContext)
+double Angle2D(const TopoDS_Vertex&                 aV,
+               const TopoDS_Edge&                   anEdge,
+               const TopoDS_Face&                   myFace,
+               const GeomAdaptor_Surface&           aGAS,
+               const bool                           bIsIN,
+               const occ::handle<IntTools_Context>& theContext)
 {
-  double        aFirst, aLast, aToler, dt, aTV, aTV1, anAngle, aTX;
-  gp_Pnt2d             aPV, aPV1;
-  gp_Vec2d             aV2D;
+  double                    aFirst, aLast, aToler, dt, aTV, aTV1, anAngle, aTX;
+  gp_Pnt2d                  aPV, aPV1;
+  gp_Vec2d                  aV2D;
   occ::handle<Geom2d_Curve> aC2D;
   //
   aTV = BRep_Tool::Parameter(aV, anEdge, myFace);
@@ -798,9 +801,9 @@ double Angle2D(const TopoDS_Vertex&            aV,
       double R = LProp.Curvature();
       if (R > Precision::PConfusion())
       {
-        R                    = 1. / R;
+        R             = 1. / R;
         double cosphi = R / (R + tol2d);
-        dt                   = std::max(dt, std::acos(cosphi)); // to avoid small dt for big R.
+        dt            = std::max(dt, std::acos(cosphi)); // to avoid small dt for big R.
       }
     }
   }
@@ -841,8 +844,8 @@ double Angle2D(const TopoDS_Vertex&            aV,
 
 double Angle(const gp_Dir2d& aDir2D)
 {
-  gp_Dir2d      aRefDir(gp_Dir2d::D::X);
-  double anAngle;
+  gp_Dir2d aRefDir(gp_Dir2d::D::X);
+  double   anAngle;
 
   anAngle = aRefDir.Angle(aDir2D);
   if (anAngle < 0.)
@@ -854,7 +857,7 @@ double Angle(const gp_Dir2d& aDir2D)
 
 double Tolerance2D(const TopoDS_Vertex& aV, const GeomAdaptor_Surface& aGAS)
 {
-  double       aTol2D, anUr, aVr, aTolV3D;
+  double              aTol2D, anUr, aVr, aTolV3D;
   GeomAbs_SurfaceType aType;
   //
   aType   = aGAS.GetType();
@@ -898,14 +901,16 @@ double VTolerance2D(const TopoDS_Vertex& aV, const GeomAdaptor_Surface& aGAS)
 
 //=================================================================================================
 
-void RefineAngles(const TopoDS_Face&                           myFace,
-                  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<BOPAlgo_EdgeInfo>, TopTools_ShapeMapHasher>& mySmartMap,
-                  const occ::handle<IntTools_Context>&              theContext)
+void RefineAngles(const TopoDS_Face&                                   myFace,
+                  NCollection_IndexedDataMap<TopoDS_Shape,
+                                             NCollection_List<BOPAlgo_EdgeInfo>,
+                                             TopTools_ShapeMapHasher>& mySmartMap,
+                  const occ::handle<IntTools_Context>&                 theContext)
 {
   const int aNb = mySmartMap.Extent();
   for (int i = 1; i <= aNb; ++i)
   {
-    const TopoDS_Vertex&    aV   = *((TopoDS_Vertex*)&mySmartMap.FindKey(i));
+    const TopoDS_Vertex&                aV   = *((TopoDS_Vertex*)&mySmartMap.FindKey(i));
     NCollection_List<BOPAlgo_EdgeInfo>& aLEI = mySmartMap(i);
     RefineAngles(aV, myFace, aLEI, theContext);
   }
@@ -916,16 +921,16 @@ void RefineAngles(const TopoDS_Face&                           myFace,
 //
 //=================================================================================================
 
-void RefineAngles(const TopoDS_Vertex&            aV,
-                  const TopoDS_Face&              myFace,
-                  NCollection_List<BOPAlgo_EdgeInfo>&         aLEI,
+void RefineAngles(const TopoDS_Vertex&                 aV,
+                  const TopoDS_Face&                   myFace,
+                  NCollection_List<BOPAlgo_EdgeInfo>&  aLEI,
                   const occ::handle<IntTools_Context>& theContext)
 {
-  bool                     bIsIn, bIsBoundary, bRefined;
-  int                     iCntBnd, iCntInt;
-  double                        aA, aA1, aA2;
-  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>          aDMSR;
-  NCollection_List<BOPAlgo_EdgeInfo>::Iterator aItLEI;
+  bool                                                               bIsIn, bIsBoundary, bRefined;
+  int                                                                iCntBnd, iCntInt;
+  double                                                             aA, aA1, aA2;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aDMSR;
+  NCollection_List<BOPAlgo_EdgeInfo>::Iterator                       aItLEI;
   //
   aA1     = 0.; // angle of outgoing edge
   aA2     = 0.; // angle of incoming edge
@@ -975,7 +980,7 @@ void RefineAngles(const TopoDS_Vertex&            aV,
       continue;
     }
     //
-    aA                = aEI.Angle();
+    aA         = aEI.Angle();
     double aDA = ClockWiseAngle(aA2, aA);
     if (aDA < aDelta)
     {
@@ -1024,25 +1029,25 @@ void RefineAngles(const TopoDS_Vertex&            aV,
 
 //=================================================================================================
 
-bool RefineAngle2D(const TopoDS_Vertex&            aV,
-                               const TopoDS_Edge&              aE,
-                               const TopoDS_Face&              myFace,
-                               const double             aA1,
-                               const double             aA2,
-                               const double             aDelta,
-                               double&                  aA,
-                               const occ::handle<IntTools_Context>& theContext)
+bool RefineAngle2D(const TopoDS_Vertex&                 aV,
+                   const TopoDS_Edge&                   aE,
+                   const TopoDS_Face&                   myFace,
+                   const double                         aA1,
+                   const double                         aA2,
+                   const double                         aDelta,
+                   double&                              aA,
+                   const occ::handle<IntTools_Context>& theContext)
 {
-  bool     bRet;
-  int     i, j, aNbP;
-  double        aTV, aTol, aT1, aT2, dT, aAngle, aT, aTOp;
-  double        aTolInt, aAi, aXi, aYi, aT1j, aT2j, aT1max, aT2max, aCf;
-  gp_Pnt2d             aPV, aP, aP1, aP2;
+  bool                      bRet;
+  int                       i, j, aNbP;
+  double                    aTV, aTol, aT1, aT2, dT, aAngle, aT, aTOp;
+  double                    aTolInt, aAi, aXi, aYi, aT1j, aT2j, aT1max, aT2max, aCf;
+  gp_Pnt2d                  aPV, aP, aP1, aP2;
   occ::handle<Geom2d_Curve> aC2D;
   occ::handle<Geom2d_Line>  aLi;
-  Geom2dAdaptor_Curve  aGAC1, aGAC2;
-  Geom2dInt_GInter     aGInter;
-  IntRes2d_Domain      aDomain1, aDomain2;
+  Geom2dAdaptor_Curve       aGAC1, aGAC2;
+  Geom2dInt_GInter          aGInter;
+  IntRes2d_Domain           aDomain1, aDomain2;
   //
   bRet    = true;
   aCf     = 0.01;
@@ -1106,7 +1111,7 @@ bool RefineAngle2D(const TopoDS_Vertex&            aV,
       gp_Vec2d aV2D(aPV, aP);
       gp_Dir2d aDir2D(aV2D);
       //
-      aAngle            = Angle(aDir2D);
+      aAngle     = Angle(aDir2D);
       double aDA = ClockWiseAngle(aA2, aAngle);
       if (aDA < aDelta)
       {

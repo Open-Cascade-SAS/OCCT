@@ -42,7 +42,6 @@ public:
 
   //! returns Value as a ShellBasedSurfaceModel (Null if another type)
   Standard_EXPORT occ::handle<StepShape_ShellBasedSurfaceModel> ShellBasedSurfaceModel() const;
-
 };
 
 #endif // _StepShape_SurfaceModel_HeaderFile

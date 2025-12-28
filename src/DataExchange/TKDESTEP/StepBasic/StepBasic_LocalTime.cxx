@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_LocalTime, Standard_Transient)
 
 StepBasic_LocalTime::StepBasic_LocalTime() {}
 
-void StepBasic_LocalTime::Init(const int aHourComponent,
-                               const bool hasAminuteComponent,
-                               const int aMinuteComponent,
-                               const bool hasAsecondComponent,
-                               const double    aSecondComponent,
+void StepBasic_LocalTime::Init(const int    aHourComponent,
+                               const bool   hasAminuteComponent,
+                               const int    aMinuteComponent,
+                               const bool   hasAsecondComponent,
+                               const double aSecondComponent,
                                const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone)
 {
   // --- classe own fields ---
@@ -87,7 +87,8 @@ bool StepBasic_LocalTime::HasSecondComponent() const
   return hasSecondComponent;
 }
 
-void StepBasic_LocalTime::SetZone(const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone)
+void StepBasic_LocalTime::SetZone(
+  const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone)
 {
   zone = aZone;
 }

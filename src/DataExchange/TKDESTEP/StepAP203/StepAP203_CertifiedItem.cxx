@@ -37,7 +37,8 @@ int StepAP203_CertifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent)
 
 //=================================================================================================
 
-occ::handle<StepRepr_SuppliedPartRelationship> StepAP203_CertifiedItem::SuppliedPartRelationship() const
+occ::handle<StepRepr_SuppliedPartRelationship> StepAP203_CertifiedItem::SuppliedPartRelationship()
+  const
 {
   return occ::down_cast<StepRepr_SuppliedPartRelationship>(Value());
 }

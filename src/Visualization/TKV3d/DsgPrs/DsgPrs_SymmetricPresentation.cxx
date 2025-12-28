@@ -41,23 +41,22 @@
 //===================================================================
 void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                       const gp_Pnt&                     AttachmentPoint1,
-                                       const gp_Pnt&                     AttachmentPoint2,
-                                       const gp_Dir&                     aDirection1,
-                                       const gp_Lin&                     aAxis,
-                                       const gp_Pnt&                     OffsetPoint)
+                                       const gp_Pnt&                          AttachmentPoint1,
+                                       const gp_Pnt&                          AttachmentPoint2,
+                                       const gp_Dir&                          aDirection1,
+                                       const gp_Lin&                          aAxis,
+                                       const gp_Pnt&                          OffsetPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  gp_Pnt        ProjOffsetPoint = ElCLib::Value(ElCLib::Parameter(aAxis, OffsetPoint), aAxis);
-  gp_Pnt        PjAttachPnt1    = ElCLib::Value(ElCLib::Parameter(aAxis, AttachmentPoint1), aAxis);
-  gp_Dir        aDirectionAxis  = aAxis.Direction();
-  double h =
-    fabs(ProjOffsetPoint.Distance(PjAttachPnt1) / cos(aDirectionAxis.Angle(aDirection1)));
+  gp_Pnt ProjOffsetPoint = ElCLib::Value(ElCLib::Parameter(aAxis, OffsetPoint), aAxis);
+  gp_Pnt PjAttachPnt1    = ElCLib::Value(ElCLib::Parameter(aAxis, AttachmentPoint1), aAxis);
+  gp_Dir aDirectionAxis  = aAxis.Direction();
+  double h = fabs(ProjOffsetPoint.Distance(PjAttachPnt1) / cos(aDirectionAxis.Angle(aDirection1)));
 
-  gp_Vec        VL1(aDirection1);
-  gp_Vec        VLa(PjAttachPnt1, ProjOffsetPoint);
+  gp_Vec VL1(aDirection1);
+  gp_Vec VLa(PjAttachPnt1, ProjOffsetPoint);
   double scal;
   scal = VL1.Dot(VLa);
   if (scal < 0)
@@ -87,11 +86,11 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     P2 = ProjOffsetPoint.Translated(VPntat1Axe);
   }
 
-  gp_Lin        L3 = gce_MakeLin(P1, P2);
+  gp_Lin L3 = gce_MakeLin(P1, P2);
   double parmin, parmax, parcur;
-  parmin             = ElCLib::Parameter(L3, P1);
-  parmax             = parmin;
-  parcur             = ElCLib::Parameter(L3, P2);
+  parmin      = ElCLib::Parameter(L3, P1);
+  parmax      = parmin;
+  parcur      = ElCLib::Parameter(L3, P2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
@@ -117,7 +116,7 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
 
   double X, Y, Z;
   double D1(aAxis.Distance(AttachmentPoint1)), coeff(.5);
-  gp_Pnt        pint, Pj_P1, P1Previous = P1;
+  gp_Pnt pint, Pj_P1, P1Previous = P1;
 
   /*=======================================================
    TO AVOID CROSSING
@@ -131,9 +130,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
            /  NO \                  /   YES  \
   =======================================================*/
 
-  bool Cross = false;
-  gp_Vec           Attch1_PjAttch1(AttachmentPoint1, PjAttachPnt1);
-  gp_Vec           v(P1, ProjOffsetPoint);
+  bool   Cross = false;
+  gp_Vec Attch1_PjAttch1(AttachmentPoint1, PjAttachPnt1);
+  gp_Vec v(P1, ProjOffsetPoint);
   if (v.IsOpposite((Attch1_PjAttch1), Precision::Confusion()))
   {
     Cross = true;
@@ -150,7 +149,7 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
          |<------------->|
   ===================================*/
 
-  gp_Vec        Vfix;
+  gp_Vec Vfix;
   double alpha, b;
 
   if (aAxis.Distance(P1) > D1 * (1 + coeff) && !Cross)
@@ -426,9 +425,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
           /__\
 */
   double Dist = (aAxis.Distance(AttachmentPoint1) + aAxis.Distance(AttachmentPoint2)) / 75;
-  gp_Vec        vs(aDirectionAxis);
-  gp_Vec        vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-  gp_Vec        vsymper(vsym.Y(), -vsym.X(), vsym.Z());
+  gp_Vec vs(aDirectionAxis);
+  gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
+  gp_Vec vsymper(vsym.Y(), -vsym.X(), vsym.Z());
 
   aPrims->AddBound(5);
   gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
@@ -457,11 +456,11 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
 //===================================================================
 void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                       const gp_Pnt&                     AttachmentPoint1,
-                                       const gp_Pnt&                     AttachmentPoint2,
-                                       const gp_Circ&                    aCircle1,
-                                       const gp_Lin&                     aAxis,
-                                       const gp_Pnt&                     OffsetPoint)
+                                       const gp_Pnt&                          AttachmentPoint1,
+                                       const gp_Pnt&                          AttachmentPoint2,
+                                       const gp_Circ&                         aCircle1,
+                                       const gp_Lin&                          aAxis,
+                                       const gp_Pnt&                          OffsetPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -489,11 +488,11 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   gp_Vec v(P1, ProjOffsetPoint);
   gp_Pnt P2 = ProjOffsetPoint.Translated(v);
 
-  gp_Lin        L3 = gce_MakeLin(P1, P2);
+  gp_Lin L3 = gce_MakeLin(P1, P2);
   double parmin, parmax, parcur;
-  parmin             = ElCLib::Parameter(L3, P1);
-  parmax             = parmin;
-  parcur             = ElCLib::Parameter(L3, P2);
+  parmin      = ElCLib::Parameter(L3, P1);
+  parmax      = parmin;
+  parcur      = ElCLib::Parameter(L3, P2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
@@ -522,10 +521,10 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== PROCESSING OF CALL 1 =====
-  int nbp           = 10;
-  double    ParamP1       = ElCLib::Parameter(aCircle1, P1);
-  double    ParamPAttach1 = ElCLib::Parameter(aCircle1, AttachmentPoint1);
-  double    alpha, Dalpha, alphaIter;
+  int    nbp           = 10;
+  double ParamP1       = ElCLib::Parameter(aCircle1, P1);
+  double ParamPAttach1 = ElCLib::Parameter(aCircle1, AttachmentPoint1);
+  double alpha, Dalpha, alphaIter;
 
   alpha = fabs(ParamP1 - ParamPAttach1);
   if (ParamP1 < ParamPAttach1)
@@ -566,12 +565,12 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== PROCESSING OF CALL 2 =====
-  gp_Pnt        Center2 = ProjCenter1.Translated(Vp.Reversed());
-  gp_Dir        DirC2   = aCircle1.Axis().Direction();
-  gp_Ax2        AxeC2(Center2, DirC2);
-  gp_Circ       aCircle2(AxeC2, aCircle1.Radius());
-  double ParamP2       = ElCLib::Parameter(aCircle2, P2);
-  double ParamPAttach2 = ElCLib::Parameter(aCircle2, AttachmentPoint2);
+  gp_Pnt  Center2 = ProjCenter1.Translated(Vp.Reversed());
+  gp_Dir  DirC2   = aCircle1.Axis().Direction();
+  gp_Ax2  AxeC2(Center2, DirC2);
+  gp_Circ aCircle2(AxeC2, aCircle1.Radius());
+  double  ParamP2       = ElCLib::Parameter(aCircle2, P2);
+  double  ParamPAttach2 = ElCLib::Parameter(aCircle2, AttachmentPoint2);
 
   alpha = fabs(ParamP2 - ParamPAttach2);
   if (alpha <= Precision::Confusion())
@@ -692,10 +691,10 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
             /__\
   */
   double Dist           = aAxis.Distance(Center1) / 37;
-  gp_Dir        aDirectionAxis = aAxis.Direction();
-  gp_Vec        vs(aDirectionAxis);
-  gp_Vec        vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-  gp_Vec        vsymper(vsym.Y(), -vsym.X(), vsym.Z());
+  gp_Dir aDirectionAxis = aAxis.Direction();
+  gp_Vec vs(aDirectionAxis);
+  gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
+  gp_Vec vsymper(vsym.Y(), -vsym.X(), vsym.Z());
 
   aPrims->AddBound(5);
   gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
@@ -724,10 +723,10 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
 //===================================================================
 void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                        const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                       const gp_Pnt&                     AttachmentPoint1,
-                                       const gp_Pnt&                     AttachmentPoint2,
-                                       const gp_Lin&                     aAxis,
-                                       const gp_Pnt&                     OffsetPoint)
+                                       const gp_Pnt&                          AttachmentPoint1,
+                                       const gp_Pnt&                          AttachmentPoint2,
+                                       const gp_Lin&                          aAxis,
+                                       const gp_Pnt&                          OffsetPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -738,7 +737,7 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     //  SYMMETRY WHEN THE REFERENCE POINT IS ON THE AXIS OF SYM.:
     //==============================================================
     // Marker of localisation of the face
-    Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
+    Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
     occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
       new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
     aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);
@@ -801,11 +800,11 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     gp_Pnt P1 = ProjOffsetPoint.Translated(PjAtt1_Att1);
     gp_Pnt P2 = ProjOffsetPoint.Translated(PjAtt1_Att1.Reversed());
 
-    gp_Lin        L3 = gce_MakeLin(P1, P2);
+    gp_Lin L3 = gce_MakeLin(P1, P2);
     double parmin, parmax, parcur;
-    parmin             = ElCLib::Parameter(L3, P1);
-    parmax             = parmin;
-    parcur             = ElCLib::Parameter(L3, P2);
+    parmin      = ElCLib::Parameter(L3, P1);
+    parmax      = parmin;
+    parcur      = ElCLib::Parameter(L3, P2);
     double dist = std::abs(parmin - parcur);
     if (parcur < parmin)
       parmin = parcur;
@@ -871,7 +870,7 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     aPresentation->NewGroup();
     aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-    Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
+    Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
     occ::handle<Graphic3d_AspectMarker3d> aMarkerAspAtt =
       new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
     aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAspAtt);
@@ -941,10 +940,10 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
             /__\
     */
     double Dist           = P1.Distance(P2) / 75;
-    gp_Dir        aDirectionAxis = aAxis.Direction();
-    gp_Vec        vs(aDirectionAxis);
-    gp_Vec        vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-    gp_Vec        vsymper(vsym.Y(), -vsym.X(), vsym.Z());
+    gp_Dir aDirectionAxis = aAxis.Direction();
+    gp_Vec vs(aDirectionAxis);
+    gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
+    gp_Vec vsymper(vsym.Y(), -vsym.X(), vsym.Z());
 
     aPrims->AddBound(5);
     gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));

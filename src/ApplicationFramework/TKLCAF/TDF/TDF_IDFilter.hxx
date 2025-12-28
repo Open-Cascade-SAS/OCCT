@@ -22,7 +22,6 @@
 
 #include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
-#include <Standard_GUID.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
@@ -116,8 +115,8 @@ private:
   TDF_IDFilter& operator=(const TDF_IDFilter& theOther);
 
 private:
-  bool myIgnore;
-  NCollection_Map<Standard_GUID>        myIDMap;
+  bool                           myIgnore;
+  NCollection_Map<Standard_GUID> myIDMap;
 };
 
 #include <TDF_IDFilter.lxx>

@@ -40,9 +40,7 @@ public:
 
   //! Returns the value of the function and the derivative
   //! for the variable <X>.
-  Standard_EXPORT bool Values(const double X,
-                                          double&      F,
-                                          double&      D);
+  Standard_EXPORT bool Values(const double X, double& F, double& D);
 
   //! True if Param corresponds to a minus
   //! of the radius of curvature.
@@ -50,7 +48,7 @@ public:
 
 private:
   occ::handle<Geom2d_Curve> theCurve;
-  double        epsX;
+  double                    epsX;
 };
 
 #endif // _Geom2dLProp_FuncCurExt_HeaderFile

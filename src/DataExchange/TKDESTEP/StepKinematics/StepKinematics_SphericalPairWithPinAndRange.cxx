@@ -34,25 +34,25 @@ StepKinematics_SphericalPairWithPinAndRange::StepKinematics_SphericalPairWithPin
 void StepKinematics_SphericalPairWithPinAndRange::Init(
   const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
   const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-  const bool                       hasItemDefinedTransformation_Description,
+  const bool                                        hasItemDefinedTransformation_Description,
   const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
   const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
   const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
   const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-  const bool                       theLowOrderKinematicPair_TX,
-  const bool                       theLowOrderKinematicPair_TY,
-  const bool                       theLowOrderKinematicPair_TZ,
-  const bool                       theLowOrderKinematicPair_RX,
-  const bool                       theLowOrderKinematicPair_RY,
-  const bool                       theLowOrderKinematicPair_RZ,
-  const bool                       hasLowerLimitYaw,
-  const double                          theLowerLimitYaw,
-  const bool                       hasUpperLimitYaw,
-  const double                          theUpperLimitYaw,
-  const bool                       hasLowerLimitRoll,
-  const double                          theLowerLimitRoll,
-  const bool                       hasUpperLimitRoll,
-  const double                          theUpperLimitRoll)
+  const bool                                        theLowOrderKinematicPair_TX,
+  const bool                                        theLowOrderKinematicPair_TY,
+  const bool                                        theLowOrderKinematicPair_TZ,
+  const bool                                        theLowOrderKinematicPair_RX,
+  const bool                                        theLowOrderKinematicPair_RY,
+  const bool                                        theLowOrderKinematicPair_RZ,
+  const bool                                        hasLowerLimitYaw,
+  const double                                      theLowerLimitYaw,
+  const bool                                        hasUpperLimitYaw,
+  const double                                      theUpperLimitYaw,
+  const bool                                        hasLowerLimitRoll,
+  const double                                      theLowerLimitRoll,
+  const bool                                        hasUpperLimitRoll,
+  const double                                      theUpperLimitRoll)
 {
   StepKinematics_SphericalPairWithPin::Init(theRepresentationItem_Name,
                                             theItemDefinedTransformation_Name,
@@ -110,8 +110,7 @@ double StepKinematics_SphericalPairWithPinAndRange::LowerLimitYaw() const
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitYaw(
-  const double theLowerLimitYaw)
+void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitYaw(const double theLowerLimitYaw)
 {
   myLowerLimitYaw = theLowerLimitYaw;
 }
@@ -132,8 +131,7 @@ double StepKinematics_SphericalPairWithPinAndRange::UpperLimitYaw() const
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitYaw(
-  const double theUpperLimitYaw)
+void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitYaw(const double theUpperLimitYaw)
 {
   myUpperLimitYaw = theUpperLimitYaw;
 }
@@ -154,8 +152,7 @@ double StepKinematics_SphericalPairWithPinAndRange::LowerLimitRoll() const
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitRoll(
-  const double theLowerLimitRoll)
+void StepKinematics_SphericalPairWithPinAndRange::SetLowerLimitRoll(const double theLowerLimitRoll)
 {
   myLowerLimitRoll = theLowerLimitRoll;
 }
@@ -176,8 +173,7 @@ double StepKinematics_SphericalPairWithPinAndRange::UpperLimitRoll() const
 
 //=================================================================================================
 
-void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitRoll(
-  const double theUpperLimitRoll)
+void StepKinematics_SphericalPairWithPinAndRange::SetUpperLimitRoll(const double theUpperLimitRoll)
 {
   myUpperLimitRoll = theUpperLimitRoll;
 }

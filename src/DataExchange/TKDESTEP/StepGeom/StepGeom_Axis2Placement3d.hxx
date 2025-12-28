@@ -35,9 +35,9 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_CartesianPoint>&  aLocation,
-                            const bool                  hasAaxis,
+                            const bool                                   hasAaxis,
                             const occ::handle<StepGeom_Direction>&       aAxis,
-                            const bool                  hasArefDirection,
+                            const bool                                   hasArefDirection,
                             const occ::handle<StepGeom_Direction>&       aRefDirection);
 
   Standard_EXPORT void SetAxis(const occ::handle<StepGeom_Direction>& aAxis);
@@ -61,8 +61,8 @@ public:
 private:
   occ::handle<StepGeom_Direction> axis;
   occ::handle<StepGeom_Direction> refDirection;
-  bool           hasAxis;
-  bool           hasRefDirection;
+  bool                            hasAxis;
+  bool                            hasRefDirection;
 };
 
 #endif // _StepGeom_Axis2Placement3d_HeaderFile

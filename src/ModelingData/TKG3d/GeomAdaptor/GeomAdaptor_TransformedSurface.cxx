@@ -26,7 +26,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface() {}
 
 GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
   const occ::handle<Geom_Surface>& theSurface,
-  const gp_Trsf&              theTrsf)
+  const gp_Trsf&                   theTrsf)
     : mySurf(theSurface),
       myTrsf(theTrsf)
 {
@@ -36,13 +36,13 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
 
 GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
   const occ::handle<Geom_Surface>& theSurface,
-  const double         theUFirst,
-  const double         theULast,
-  const double         theVFirst,
-  const double         theVLast,
-  const gp_Trsf&              theTrsf,
-  const double         theTolU,
-  const double         theTolV)
+  const double                     theUFirst,
+  const double                     theULast,
+  const double                     theVFirst,
+  const double                     theVLast,
+  const gp_Trsf&                   theTrsf,
+  const double                     theTolU,
+  const double                     theTolV)
     : mySurf(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV),
       myTrsf(theTrsf)
 {
@@ -54,10 +54,10 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::ShallowCopy() con
 {
   occ::handle<GeomAdaptor_TransformedSurface> aCopy = new GeomAdaptor_TransformedSurface();
 
-  const occ::handle<Adaptor3d_Surface> aSurface     = mySurf.ShallowCopy();
-  const GeomAdaptor_Surface&      aGeomSurface = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
-  aCopy->mySurf                                = aGeomSurface;
-  aCopy->myTrsf                                = myTrsf;
+  const occ::handle<Adaptor3d_Surface> aSurface = mySurf.ShallowCopy();
+  const GeomAdaptor_Surface& aGeomSurface       = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
+  aCopy->mySurf                                 = aGeomSurface;
+  aCopy->myTrsf                                 = myTrsf;
 
   return aCopy;
 }
@@ -65,7 +65,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::ShallowCopy() con
 //==================================================================================================
 
 void GeomAdaptor_TransformedSurface::UIntervals(NCollection_Array1<double>& theT,
-                                                const GeomAbs_Shape   theS) const
+                                                const GeomAbs_Shape         theS) const
 {
   mySurf.UIntervals(theT, theS);
 }
@@ -73,7 +73,7 @@ void GeomAdaptor_TransformedSurface::UIntervals(NCollection_Array1<double>& theT
 //==================================================================================================
 
 void GeomAdaptor_TransformedSurface::VIntervals(NCollection_Array1<double>& theT,
-                                                const GeomAbs_Shape   theS) const
+                                                const GeomAbs_Shape         theS) const
 {
   mySurf.VIntervals(theT, theS);
 }
@@ -81,8 +81,8 @@ void GeomAdaptor_TransformedSurface::VIntervals(NCollection_Array1<double>& theT
 //==================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::UTrim(const double theFirst,
-                                                                const double theLast,
-                                                                const double theTol) const
+                                                                     const double theLast,
+                                                                     const double theTol) const
 {
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
   HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
@@ -92,8 +92,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::UTrim(const doubl
 //==================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const double theFirst,
-                                                                const double theLast,
-                                                                const double theTol) const
+                                                                     const double theLast,
+                                                                     const double theTol) const
 {
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
   HS->Load(occ::down_cast<Geom_Surface>(mySurf.Surface()->Transformed(myTrsf)));
@@ -102,17 +102,14 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const doubl
 
 //==================================================================================================
 
-gp_Pnt GeomAdaptor_TransformedSurface::Value(const double theU,
-                                             const double theV) const
+gp_Pnt GeomAdaptor_TransformedSurface::Value(const double theU, const double theV) const
 {
   return mySurf.Value(theU, theV).Transformed(myTrsf);
 }
 
 //==================================================================================================
 
-void GeomAdaptor_TransformedSurface::D0(const double theU,
-                                        const double theV,
-                                        gp_Pnt&             theP) const
+void GeomAdaptor_TransformedSurface::D0(const double theU, const double theV, gp_Pnt& theP) const
 {
   mySurf.D0(theU, theV, theP);
   theP.Transform(myTrsf);
@@ -122,9 +119,9 @@ void GeomAdaptor_TransformedSurface::D0(const double theU,
 
 void GeomAdaptor_TransformedSurface::D1(const double theU,
                                         const double theV,
-                                        gp_Pnt&             theP,
-                                        gp_Vec&             theD1U,
-                                        gp_Vec&             theD1V) const
+                                        gp_Pnt&      theP,
+                                        gp_Vec&      theD1U,
+                                        gp_Vec&      theD1V) const
 {
   mySurf.D1(theU, theV, theP, theD1U, theD1V);
   theP.Transform(myTrsf);
@@ -136,12 +133,12 @@ void GeomAdaptor_TransformedSurface::D1(const double theU,
 
 void GeomAdaptor_TransformedSurface::D2(const double theU,
                                         const double theV,
-                                        gp_Pnt&             theP,
-                                        gp_Vec&             theD1U,
-                                        gp_Vec&             theD1V,
-                                        gp_Vec&             theD2U,
-                                        gp_Vec&             theD2V,
-                                        gp_Vec&             theD2UV) const
+                                        gp_Pnt&      theP,
+                                        gp_Vec&      theD1U,
+                                        gp_Vec&      theD1V,
+                                        gp_Vec&      theD2U,
+                                        gp_Vec&      theD2V,
+                                        gp_Vec&      theD2UV) const
 {
   mySurf.D2(theU, theV, theP, theD1U, theD1V, theD2U, theD2V, theD2UV);
   theP.Transform(myTrsf);
@@ -156,16 +153,16 @@ void GeomAdaptor_TransformedSurface::D2(const double theU,
 
 void GeomAdaptor_TransformedSurface::D3(const double theU,
                                         const double theV,
-                                        gp_Pnt&             theP,
-                                        gp_Vec&             theD1U,
-                                        gp_Vec&             theD1V,
-                                        gp_Vec&             theD2U,
-                                        gp_Vec&             theD2V,
-                                        gp_Vec&             theD2UV,
-                                        gp_Vec&             theD3U,
-                                        gp_Vec&             theD3V,
-                                        gp_Vec&             theD3UUV,
-                                        gp_Vec&             theD3UVV) const
+                                        gp_Pnt&      theP,
+                                        gp_Vec&      theD1U,
+                                        gp_Vec&      theD1V,
+                                        gp_Vec&      theD2U,
+                                        gp_Vec&      theD2V,
+                                        gp_Vec&      theD2UV,
+                                        gp_Vec&      theD3U,
+                                        gp_Vec&      theD3V,
+                                        gp_Vec&      theD3UUV,
+                                        gp_Vec&      theD3UVV) const
 {
   mySurf.D3(theU,
             theV,
@@ -193,10 +190,10 @@ void GeomAdaptor_TransformedSurface::D3(const double theU,
 
 //==================================================================================================
 
-gp_Vec GeomAdaptor_TransformedSurface::DN(const double    theU,
-                                          const double    theV,
-                                          const int theNu,
-                                          const int theNv) const
+gp_Vec GeomAdaptor_TransformedSurface::DN(const double theU,
+                                          const double theV,
+                                          const int    theNu,
+                                          const int    theNv) const
 {
   return mySurf.DN(theU, theV, theNu, theNv).Transformed(myTrsf);
 }

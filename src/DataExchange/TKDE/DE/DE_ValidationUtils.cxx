@@ -27,8 +27,8 @@
 bool DE_ValidationUtils::ValidateConfigurationNode(
   const occ::handle<DE_ConfigurationNode>& theNode,
   const occ::handle<Standard_Type>&        theExpectedType,
-  const TCollection_AsciiString&      theContext,
-  const bool              theIsVerbose)
+  const TCollection_AsciiString&           theContext,
+  const bool                               theIsVerbose)
 {
   if (theNode.IsNull())
   {
@@ -55,10 +55,9 @@ bool DE_ValidationUtils::ValidateConfigurationNode(
 
 //=================================================================================================
 
-bool DE_ValidationUtils::ValidateFileForReading(
-  const TCollection_AsciiString& thePath,
-  const TCollection_AsciiString& theContext,
-  const bool         theIsVerbose)
+bool DE_ValidationUtils::ValidateFileForReading(const TCollection_AsciiString& thePath,
+                                                const TCollection_AsciiString& theContext,
+                                                const bool                     theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
@@ -112,10 +111,9 @@ bool DE_ValidationUtils::ValidateFileForReading(
 
 //=================================================================================================
 
-bool DE_ValidationUtils::ValidateFileForWriting(
-  const TCollection_AsciiString& thePath,
-  const TCollection_AsciiString& theContext,
-  const bool         theIsVerbose)
+bool DE_ValidationUtils::ValidateFileForWriting(const TCollection_AsciiString& thePath,
+                                                const TCollection_AsciiString& theContext,
+                                                const bool                     theIsVerbose)
 {
   if (thePath.IsEmpty())
   {
@@ -156,10 +154,9 @@ bool DE_ValidationUtils::ValidateFileForWriting(
 
 //=================================================================================================
 
-bool DE_ValidationUtils::ValidateReadStreamList(
-  const DE_Provider::ReadStreamList& theStreams,
-  const TCollection_AsciiString&     theContext,
-  const bool             theIsVerbose)
+bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamList& theStreams,
+                                                const TCollection_AsciiString&     theContext,
+                                                const bool                         theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
@@ -211,10 +208,9 @@ bool DE_ValidationUtils::ValidateReadStreamList(
 
 //=================================================================================================
 
-bool DE_ValidationUtils::ValidateWriteStreamList(
-  DE_Provider::WriteStreamList&  theStreams,
-  const TCollection_AsciiString& theContext,
-  const bool         theIsVerbose)
+bool DE_ValidationUtils::ValidateWriteStreamList(DE_Provider::WriteStreamList&  theStreams,
+                                                 const TCollection_AsciiString& theContext,
+                                                 const bool                     theIsVerbose)
 {
   if (theStreams.IsEmpty())
   {
@@ -267,8 +263,8 @@ bool DE_ValidationUtils::ValidateWriteStreamList(
 //=================================================================================================
 
 bool DE_ValidationUtils::ValidateDocument(const occ::handle<TDocStd_Document>& theDocument,
-                                                      const TCollection_AsciiString&  theContext,
-                                                      const bool          theIsVerbose)
+                                          const TCollection_AsciiString&       theContext,
+                                          const bool                           theIsVerbose)
 {
   if (theDocument.IsNull())
   {
@@ -284,10 +280,9 @@ bool DE_ValidationUtils::ValidateDocument(const occ::handle<TDocStd_Document>& t
 
 //=================================================================================================
 
-bool DE_ValidationUtils::WarnLengthUnitNotSupported(
-  const double            theLengthUnit,
-  const TCollection_AsciiString& theContext,
-  const bool         theIsVerbose)
+bool DE_ValidationUtils::WarnLengthUnitNotSupported(const double                   theLengthUnit,
+                                                    const TCollection_AsciiString& theContext,
+                                                    const bool                     theIsVerbose)
 {
   if (theIsVerbose && theLengthUnit != 1.0)
   {
@@ -301,11 +296,11 @@ bool DE_ValidationUtils::WarnLengthUnitNotSupported(
 
 //=================================================================================================
 
-bool DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString& thePath,
-                                                         occ::handle<NCollection_Buffer>&    theBuffer)
+bool DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString&   thePath,
+                                             occ::handle<NCollection_Buffer>& theBuffer)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(thePath, std::ios::in | std::ios::binary);
 
   if (aStream.get() == nullptr)
@@ -319,8 +314,8 @@ bool DE_ValidationUtils::CreateContentBuffer(const TCollection_AsciiString& theP
 
 //=================================================================================================
 
-bool DE_ValidationUtils::CreateContentBuffer(std::istream&               theStream,
-                                                         occ::handle<NCollection_Buffer>& theBuffer)
+bool DE_ValidationUtils::CreateContentBuffer(std::istream&                    theStream,
+                                             occ::handle<NCollection_Buffer>& theBuffer)
 {
   constexpr std::streamsize aBufferLength = 2048;
 

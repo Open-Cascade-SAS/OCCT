@@ -34,16 +34,14 @@ bool OSD_CachedFileSystem::IsSupportedPath(const TCollection_AsciiString& theUrl
 
 //=================================================================================================
 
-bool OSD_CachedFileSystem::IsOpenIStream(
-  const std::shared_ptr<std::istream>& theStream) const
+bool OSD_CachedFileSystem::IsOpenIStream(const std::shared_ptr<std::istream>& theStream) const
 {
   return myLinkedFS->IsOpenIStream(theStream);
 }
 
 //=================================================================================================
 
-bool OSD_CachedFileSystem::IsOpenOStream(
-  const std::shared_ptr<std::ostream>& theStream) const
+bool OSD_CachedFileSystem::IsOpenOStream(const std::shared_ptr<std::ostream>& theStream) const
 {
   return myLinkedFS->IsOpenOStream(theStream);
 }

@@ -27,15 +27,16 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Flow, IGESData_IGESEntity)
 
 IGESAppli_Flow::IGESAppli_Flow() {}
 
-void IGESAppli_Flow::Init(const int                                nbContextFlags,
-                          const int                                aFlowType,
-                          const int                                aFuncFlag,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allFlowAssocs,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>&         allConnectPoints,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allJoins,
-                          const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&        allFlowNames,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& allTextDisps,
-                          const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allContFlowAssocs)
+void IGESAppli_Flow::Init(
+  const int                                                                      nbContextFlags,
+  const int                                                                      aFlowType,
+  const int                                                                      aFuncFlag,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allFlowAssocs,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>&    allConnectPoints,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allJoins,
+  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allFlowNames,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& allTextDisps,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allContFlowAssocs)
 {
   theNbContextFlags          = nbContextFlags;
   theTypeOfFlow              = aFlowType;
@@ -128,8 +129,7 @@ occ::handle<IGESGraph_TextDisplayTemplate> IGESAppli_Flow::TextDisplayTemplate(
   return theTextDisplayTemplates->Value(Index);
 }
 
-occ::handle<IGESData_IGESEntity> IGESAppli_Flow::ContFlowAssociativity(
-  const int Index) const
+occ::handle<IGESData_IGESEntity> IGESAppli_Flow::ContFlowAssociativity(const int Index) const
 {
   return theContFlowAssociativities->Value(Index);
 }

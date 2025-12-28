@@ -173,10 +173,7 @@ public:
     return (mySec > anOther.mySec) || (mySec == anOther.mySec && myUSec > anOther.myUSec);
   }
 
-  constexpr bool operator>(const Quantity_Date& anOther) const noexcept
-  {
-    return IsLater(anOther);
-  }
+  constexpr bool operator>(const Quantity_Date& anOther) const noexcept { return IsLater(anOther); }
 
   //! Checks the validity of a date - returns true if a
   //! date defined from the year yyyy, the month mm,
@@ -196,13 +193,13 @@ public:
   //! -   mis lies within the range [0, 999],
   //! -   mics lies within the range [0, 999].C
   Standard_EXPORT static bool IsValid(const int mm,
-                                                  const int dd,
-                                                  const int yy,
-                                                  const int hh,
-                                                  const int mn,
-                                                  const int ss,
-                                                  const int mis  = 0,
-                                                  const int mics = 0);
+                                      const int dd,
+                                      const int yy,
+                                      const int hh,
+                                      const int mn,
+                                      const int ss,
+                                      const int mis  = 0,
+                                      const int mics = 0);
 
   //! Returns true if a year is a leap year.
   //! The leap years are divisible by 4 and not by 100 except

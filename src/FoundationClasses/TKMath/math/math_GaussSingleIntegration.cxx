@@ -52,27 +52,27 @@ math_GaussSingleIntegration::math_GaussSingleIntegration()
 {
 }
 
-math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         F,
-                                                         const double    Lower,
-                                                         const double    Upper,
-                                                         const int Order)
+math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function& F,
+                                                         const double   Lower,
+                                                         const double   Upper,
+                                                         const int      Order)
 {
   int theOrder = std::min(math::GaussPointsMax(), Order);
   Perform(F, Lower, Upper, theOrder);
 }
 
-math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         F,
-                                                         const double    Lower,
-                                                         const double    Upper,
-                                                         const int Order,
-                                                         const double    Tol)
+math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function& F,
+                                                         const double   Lower,
+                                                         const double   Upper,
+                                                         const int      Order,
+                                                         const double   Tol)
 {
   int theOrder = std::min(math::GaussPointsMax(), Order);
 
   const int IterMax    = 13; // Max number of iteration
   int       NIter      = 1;  // current number of iteration
   int       NbInterval = 1;  // current number of subintervals
-  double          dU, OldLen, Len;
+  double    dU, OldLen, Len;
 
   Perform(F, Lower, Upper, theOrder);
   Len = Val;
@@ -95,17 +95,17 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function&         
   Val = Len;
 }
 
-void math_GaussSingleIntegration::Perform(math_Function&         F,
-                                          const double    Lower,
-                                          const double    Upper,
-                                          const int Order)
+void math_GaussSingleIntegration::Perform(math_Function& F,
+                                          const double   Lower,
+                                          const double   Upper,
+                                          const int      Order)
 {
-  double    xr, xm, dx;
-  int j;
-  double    F1, F2;
-  bool Ok1;
-  math_Vector      GaussP(1, Order);
-  math_Vector      GaussW(1, Order);
+  double      xr, xm, dx;
+  int         j;
+  double      F1, F2;
+  bool        Ok1;
+  math_Vector GaussP(1, Order);
+  math_Vector GaussW(1, Order);
   Done = false;
 
   // Recuperation des points de Gauss dans le fichier GaussPoints.

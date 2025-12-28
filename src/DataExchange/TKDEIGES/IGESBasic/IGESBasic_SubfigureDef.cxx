@@ -27,9 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
 IGESBasic_SubfigureDef::IGESBasic_SubfigureDef() {}
 
-void IGESBasic_SubfigureDef::Init(const int                      aDepth,
-                                  const occ::handle<TCollection_HAsciiString>&     aName,
-                                  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities)
+void IGESBasic_SubfigureDef::Init(
+  const int                                                                 aDepth,
+  const occ::handle<TCollection_HAsciiString>&                              aName,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities)
 {
   if (!allAssocEntities.IsNull() && allAssocEntities->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_SubfigureDef : Init");
@@ -54,8 +55,7 @@ int IGESBasic_SubfigureDef::NbEntities() const
   return (theAssocEntities.IsNull() ? 0 : theAssocEntities->Length());
 }
 
-occ::handle<IGESData_IGESEntity> IGESBasic_SubfigureDef::AssociatedEntity(
-  const int Index) const
+occ::handle<IGESData_IGESEntity> IGESBasic_SubfigureDef::AssociatedEntity(const int Index) const
 {
   return theAssocEntities->Value(Index);
 }

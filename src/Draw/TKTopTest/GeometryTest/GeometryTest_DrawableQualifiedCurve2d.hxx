@@ -29,21 +29,19 @@ class GeometryTest_DrawableQualifiedCurve2d : public DrawTrSurf_Curve2d
 
 public:
   //! Creates a drawable curve from a curve of package Geom.
-  Standard_EXPORT GeometryTest_DrawableQualifiedCurve2d(
-    const occ::handle<Geom2d_Curve>& theCurve,
-    const GccEnt_Position       thePosition,
-    const bool      theDispOrigin = true);
+  Standard_EXPORT GeometryTest_DrawableQualifiedCurve2d(const occ::handle<Geom2d_Curve>& theCurve,
+                                                        const GccEnt_Position thePosition,
+                                                        const bool            theDispOrigin = true);
 
   //! Creates a drawable curve from a curve of package Geom.
-  Standard_EXPORT GeometryTest_DrawableQualifiedCurve2d(
-    const occ::handle<Geom2d_Curve>& theCurve,
-    const Draw_Color&           theColor,
-    const int      theDiscret,
-    const GccEnt_Position       thePosition,
-    const bool      theDispOrigin     = true,
-    const bool      theDispCurvRadius = false,
-    const double         theRadiusMax      = 1.0e3,
-    const double         theRatioOfRadius  = 0.1);
+  Standard_EXPORT GeometryTest_DrawableQualifiedCurve2d(const occ::handle<Geom2d_Curve>& theCurve,
+                                                        const Draw_Color&                theColor,
+                                                        const int                        theDiscret,
+                                                        const GccEnt_Position thePosition,
+                                                        const bool            theDispOrigin = true,
+                                                        const bool   theDispCurvRadius      = false,
+                                                        const double theRadiusMax           = 1.0e3,
+                                                        const double theRatioOfRadius       = 0.1);
 
   //! \returns position of a solution
   GccEnt_Position GetPosition() const { return myPosition; }

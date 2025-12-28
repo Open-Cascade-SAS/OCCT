@@ -37,17 +37,13 @@ public:
 
   virtual const char* Name() const override { return "NULL_STYLE"; }
 
-  virtual bool SetName(const char* /*theName*/) override
-  {
-    return true;
-  }
+  virtual bool SetName(const char* /*theName*/) override { return true; }
 
   int Kind() const override { return 4; }
 
   Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int theValue,
-                                           const char* theText) override;
+  Standard_EXPORT virtual void SetEnumText(const int theValue, const char* theText) override;
 
   Standard_EXPORT void SetValue(const StepVisual_NullStyle theValue);
 

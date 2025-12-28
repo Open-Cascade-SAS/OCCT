@@ -22,12 +22,8 @@
 #include <Precision.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_Real.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 #include <algorithm>
@@ -40,9 +36,9 @@
 static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
 
 {
-  NCollection_Array1<double>    Knots(1, BS->NbKnots());
-  NCollection_Array1<double>    Weights(1, BS->NbPoles());
-  NCollection_Array1<int> Mults(1, BS->NbKnots());
+  NCollection_Array1<double> Knots(1, BS->NbKnots());
+  NCollection_Array1<double> Weights(1, BS->NbPoles());
+  NCollection_Array1<int>    Mults(1, BS->NbKnots());
   // clang-format off
   int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
   double           Denom0,Denom1,                            // denominator value for u=0 & u=1
@@ -91,18 +87,19 @@ static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_A
 //    	     store them in TAB(4 coefficients)
 //=======================================================================
 
-static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
+static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
+                         NCollection_Array1<double>&             TAB)
 
 {
-  NCollection_Array1<double>    Knots(1, BS->NbKnots());
-  NCollection_Array1<double>    Weights(1, BS->NbPoles());
-  NCollection_Array1<int> Mults(1, BS->NbKnots());
-  int        Degree, Index0, Index1;
-  double           Denom0, Denom1, // denominateur value for u=0 & u=1
-                                          // clang-format off
+  NCollection_Array1<double> Knots(1, BS->NbKnots());
+  NCollection_Array1<double> Weights(1, BS->NbPoles());
+  NCollection_Array1<int>    Mults(1, BS->NbKnots());
+  int                        Degree, Index0, Index1;
+  double                     Denom0, Denom1, // denominateur value for u=0 & u=1
+                                             // clang-format off
                           Deriv0,Deriv1 ; // denominator value for u=0 & u=1
   bool        Periodic;       // derivative denominatur value for u=0 & 1
-                                          // clang-format on
+                                             // clang-format on
 
   BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
@@ -193,19 +190,19 @@ static void Polemax(const NCollection_Array1<gp_Pnt2d>& Poles, int& min, int& ma
 // purpose  : give the knots U4 and U5 to insert to a(u)
 //=======================================================================
 
-static void PolyTest(const NCollection_Array1<double>&      Herm,
+static void PolyTest(const NCollection_Array1<double>&     Herm,
                      const occ::handle<Geom_BSplineCurve>& BS,
-                     double&                   U4,
-                     double&                   U5,
-                     int&                boucle,
-                     const double              TolPoles,
+                     double&                               U4,
+                     double&                               U5,
+                     int&                                  boucle,
+                     const double                          TolPoles,
                      //		     const double                 TolKnots,
                      const double,
                      const double Ux,
                      const double Uy)
 
 {
-  int     index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
+  int                          index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
   NCollection_Array1<gp_Pnt2d> Polesinit(0, 3);
   // clang-format off
   occ::handle<NCollection_HArray1<double>>  Knots;                  //array of the BSpline knots + the ones inserted
@@ -453,19 +450,19 @@ static void PolyTest(const NCollection_Array1<double>&      Herm,
 // purpose  : give the knots U4 and U5 to insert to a(u)
 //=======================================================================
 
-static void PolyTest(const NCollection_Array1<double>&        Herm,
+static void PolyTest(const NCollection_Array1<double>&       Herm,
                      const occ::handle<Geom2d_BSplineCurve>& BS,
-                     double&                     U4,
-                     double&                     U5,
-                     int&                  boucle,
-                     const double                TolPoles,
+                     double&                                 U4,
+                     double&                                 U5,
+                     int&                                    boucle,
+                     const double                            TolPoles,
                      //		     const double                TolKnots,
                      const double,
                      const double Ux,
                      const double Uy)
 
 {
-  int     index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
+  int                          index, i, I1 = 0, I2 = 0, I3 = 0, I4 = 0; // knots index
   NCollection_Array1<gp_Pnt2d> Polesinit(0, 3);
   // clang-format off
   occ::handle<NCollection_HArray1<double>>  Knots;                  //array of the BSpline knots + the ones inserted
@@ -716,9 +713,7 @@ static void PolyTest(const NCollection_Array1<double>&        Herm,
 // purpose  : insert the knots in BS knot sequence if they are not null.
 //=======================================================================
 
-static void InsertKnots(occ::handle<Geom2d_BSplineCurve>& BS,
-                        const double          U4,
-                        const double          U5)
+static void InsertKnots(occ::handle<Geom2d_BSplineCurve>& BS, const double U4, const double U5)
 
 {
   if (U4 != 0.0)                 // insertion of :0 knot if U4=0
@@ -750,19 +745,19 @@ static void MovePoles(occ::handle<Geom2d_BSplineCurve>& BS)
 //=================================================================================================
 
 occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom_BSplineCurve>& BS,
-                                             const double              TolPoles,
-                                             const double              TolKnots)
+                                                  const double                          TolPoles,
+                                                  const double                          TolKnots)
 
 {
   NCollection_Array1<double> Herm(0, 3);
-  double        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  int        boucle = 1;             // loop mark
-  NCollection_Array1<double>    Knots(1, 2);
-  NCollection_Array1<int> Multiplicities(1, 2);
-  NCollection_Array1<gp_Pnt2d>    Poles(1, 4);
-  int        zeroboucle = 0;
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off
@@ -851,19 +846,19 @@ occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom_BSpline
 //=======================================================================
 
 occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom2d_BSplineCurve>& BS,
-                                             const double                TolPoles,
-                                             const double                TolKnots)
+                                                  const double                            TolPoles,
+                                                  const double                            TolKnots)
 
 {
   NCollection_Array1<double> Herm(0, 3);
-  double        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  int        boucle = 1;             // loop mark
-  NCollection_Array1<double>    Knots(1, 2);
-  NCollection_Array1<int> Multiplicities(1, 2);
-  NCollection_Array1<gp_Pnt2d>    Poles(1, 4);
-  int        zeroboucle = 0;
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off
@@ -950,21 +945,21 @@ occ::handle<Geom2d_BSplineCurve> Hermit::Solution(const occ::handle<Geom2d_BSpli
 //=================================================================================================
 
 void Hermit::Solutionbis(const occ::handle<Geom_BSplineCurve>& BS,
-                         double&                   Knotmin,
-                         double&                   Knotmax,
-                         const double              TolPoles,
-                         const double              TolKnots)
+                         double&                               Knotmin,
+                         double&                               Knotmax,
+                         const double                          TolPoles,
+                         const double                          TolKnots)
 
 {
   NCollection_Array1<double> Herm(0, 3);
-  double        Upos1 = 0.0, Upos2 = 1.0,  // positivity knots
-    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0, // tolerance knots
-    Uint1 = 0.0, Uint2 = 1.0;                     // tolerance knots for the first loop
-  int        boucle = 1;             // loop mark
-  NCollection_Array1<double>    Knots(1, 2);
-  NCollection_Array1<int> Multiplicities(1, 2);
-  NCollection_Array1<gp_Pnt2d>    Poles(1, 4);
-  int        zeroboucle = 0;
+  double                     Upos1 = 0.0, Upos2 = 1.0, // positivity knots
+    Ux = 0.0, Uy = 1.0, Utol1 = 0.0, Utol2 = 1.0,      // tolerance knots
+    Uint1 = 0.0, Uint2 = 1.0;                          // tolerance knots for the first loop
+  int                          boucle = 1;             // loop mark
+  NCollection_Array1<double>   Knots(1, 2);
+  NCollection_Array1<int>      Multiplicities(1, 2);
+  NCollection_Array1<gp_Pnt2d> Poles(1, 4);
+  int                          zeroboucle = 0;
   HermiteCoeff(BS, Herm); // computation of the Hermite coefficient
 
   // clang-format off

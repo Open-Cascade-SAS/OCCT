@@ -34,8 +34,8 @@ public:
   Standard_EXPORT BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Curve>& PC1,
                                             const occ::handle<Geom2d_Curve>& PC2,
                                             const occ::handle<Geom_Surface>& S,
-                                            const TopLoc_Location&      L,
-                                            const GeomAbs_Shape         C);
+                                            const TopLoc_Location&           L,
+                                            const GeomAbs_Shape              C);
 
   void SetUVPoints2(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
@@ -49,10 +49,9 @@ public:
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT virtual bool IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                                        const occ::handle<Geom_Surface>& S2,
-                                                        const TopLoc_Location&      L1,
-                                                        const TopLoc_Location&      L2) const
-    override;
+                                            const occ::handle<Geom_Surface>& S2,
+                                            const TopLoc_Location&           L1,
+                                            const TopLoc_Location&           L2) const override;
 
   Standard_EXPORT virtual const occ::handle<Geom2d_Curve>& PCurve2() const override;
 
@@ -77,15 +76,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnClosedSurface, BRep_CurveOnSurface)
 
 private:
   occ::handle<Geom2d_Curve> myPCurve2;
-  GeomAbs_Shape        myContinuity;
-  gp_Pnt2d             myUV21;
-  gp_Pnt2d             myUV22;
+  GeomAbs_Shape             myContinuity;
+  gp_Pnt2d                  myUV21;
+  gp_Pnt2d                  myUV22;
 };
 
 #include <BRep_CurveOnClosedSurface.lxx>

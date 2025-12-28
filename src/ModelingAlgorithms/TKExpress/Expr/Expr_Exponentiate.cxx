@@ -22,7 +22,6 @@
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr_Product.hxx>
-#include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Expr_Sum.hxx>
 #include <Standard_Type.hxx>
@@ -45,7 +44,7 @@ occ::handle<Expr_GeneralExpression> Expr_Exponentiate::ShallowSimplified() const
   if (mysecond->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     occ::handle<Expr_NumericValue> myNVs  = occ::down_cast<Expr_NumericValue>(mysecond);
-    double             myvals = myNVs->GetValue();
+    double                         myvals = myNVs->GetValue();
     if (myvals == 0.0)
     {
       // case X ** 0
@@ -65,7 +64,7 @@ occ::handle<Expr_GeneralExpression> Expr_Exponentiate::ShallowSimplified() const
   if (myfirst->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     occ::handle<Expr_NumericValue> myNVf  = occ::down_cast<Expr_NumericValue>(myfirst);
-    double             myValf = myNVf->GetValue();
+    double                         myValf = myNVf->GetValue();
     if (myValf == 1.0)
     {
       return myNVf;
@@ -134,7 +133,7 @@ occ::handle<Expr_GeneralExpression> Expr_Exponentiate::Derivative(
   occ::handle<Expr_Product> firstmember = new Expr_Product(prod1);
 
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> prod2;
-  occ::handle<Expr_Exponentiate>        exp2 =
+  occ::handle<Expr_Exponentiate>                            exp2 =
     new Expr_Exponentiate(Expr::CopyShare(myfirst), Expr::CopyShare(mysecond));
   prod2.Append(exp2->ShallowSimplified()); // g(X) ** h(X)
 
@@ -149,7 +148,7 @@ occ::handle<Expr_GeneralExpression> Expr_Exponentiate::Derivative(
 }
 
 double Expr_Exponentiate::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                          const NCollection_Array1<double>&      vals) const
+                                   const NCollection_Array1<double>& vals) const
 {
   double res = FirstOperand()->Evaluate(vars, vals);
   return std::pow(res, SecondOperand()->Evaluate(vars, vals));
@@ -159,7 +158,7 @@ TCollection_AsciiString Expr_Exponentiate::String() const
 {
   occ::handle<Expr_GeneralExpression> op1 = FirstOperand();
   occ::handle<Expr_GeneralExpression> op2 = SecondOperand();
-  TCollection_AsciiString        str;
+  TCollection_AsciiString             str;
   if (op1->NbSubExpressions() > 1)
   {
     str = "(";

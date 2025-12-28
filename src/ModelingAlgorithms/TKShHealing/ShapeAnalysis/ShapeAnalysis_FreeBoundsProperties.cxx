@@ -35,29 +35,26 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
 #define NbControl 23
 
-static void ContourProperties(const TopoDS_Wire& wire,
-                              double&     countourArea,
-                              double&     countourLength)
+static void ContourProperties(const TopoDS_Wire& wire, double& countourArea, double& countourLength)
 {
-  int nbe    = 0;
-  double    length = 0.0;
-  gp_XYZ           area(.0, .0, .0);
-  gp_XYZ           prev, cont;
+  int    nbe    = 0;
+  double length = 0.0;
+  gp_XYZ area(.0, .0, .0);
+  gp_XYZ prev, cont;
 
   for (BRepTools_WireExplorer exp(wire); exp.More(); exp.Next())
   {
     const TopoDS_Edge& Edge = exp.Current();
     nbe++;
 
-    double      First, Last;
+    double                  First, Last;
     occ::handle<Geom_Curve> c3d;
-    ShapeAnalysis_Edge sae;
+    ShapeAnalysis_Edge      sae;
     if (!sae.Curve3d(Edge, c3d, First, Last))
       continue;
 
@@ -73,9 +70,9 @@ static void ContourProperties(const TopoDS_Wire& wire,
     for (int i = ibeg; i < NbControl; i++)
     {
       double prm     = ((NbControl - 1 - i) * First + i * Last) / (NbControl - 1);
-      gp_Pnt        pntCurr = c3d->Value(prm);
-      gp_XYZ        curr    = pntCurr.XYZ();
-      gp_XYZ        delta   = curr - prev;
+      gp_Pnt pntCurr = c3d->Value(prm);
+      gp_XYZ curr    = pntCurr.XYZ();
+      gp_XYZ delta   = curr - prev;
       length += delta.Modulus();
       area += curr ^ prev;
       prev = curr;
@@ -102,11 +99,10 @@ ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties()
 //    	     <shape> should be a compound of faces.
 //=======================================================================
 
-ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(
-  const TopoDS_Shape&    shape,
-  const double    tolerance,
-  const bool splitclosed,
-  const bool splitopen)
+ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape,
+                                                                       const double tolerance,
+                                                                       const bool   splitclosed,
+                                                                       const bool   splitopen)
 {
   myClosedFreeBounds = new NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>();
   myOpenFreeBounds   = new NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>();
@@ -119,10 +115,9 @@ ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(
 //    	     <shape> should be a compound of shells.
 //=======================================================================
 
-ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(
-  const TopoDS_Shape&    shape,
-  const bool splitclosed,
-  const bool splitopen)
+ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(const TopoDS_Shape& shape,
+                                                                       const bool splitclosed,
+                                                                       const bool splitopen)
 {
   myClosedFreeBounds = new NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>();
   myOpenFreeBounds   = new NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>();
@@ -136,10 +131,10 @@ ShapeAnalysis_FreeBoundsProperties::ShapeAnalysis_FreeBoundsProperties(
 //   	     <shape> should be a compound of faces.
 //=======================================================================
 
-void ShapeAnalysis_FreeBoundsProperties::Init(const TopoDS_Shape&    shape,
-                                              const double    tolerance,
-                                              const bool splitclosed,
-                                              const bool splitopen)
+void ShapeAnalysis_FreeBoundsProperties::Init(const TopoDS_Shape& shape,
+                                              const double        tolerance,
+                                              const bool          splitclosed,
+                                              const bool          splitopen)
 {
   Init(shape, splitclosed, splitopen);
   myTolerance = tolerance;
@@ -151,9 +146,9 @@ void ShapeAnalysis_FreeBoundsProperties::Init(const TopoDS_Shape&    shape,
 //   	     <shape> should be a compound of shells.
 //=======================================================================
 
-void ShapeAnalysis_FreeBoundsProperties::Init(const TopoDS_Shape&    shape,
-                                              const bool splitclosed,
-                                              const bool splitopen)
+void ShapeAnalysis_FreeBoundsProperties::Init(const TopoDS_Shape& shape,
+                                              const bool          splitclosed,
+                                              const bool          splitopen)
 {
   myShape       = shape;
   mySplitClosed = splitclosed;
@@ -206,22 +201,23 @@ bool ShapeAnalysis_FreeBoundsProperties::DispatchBounds()
     tmpOpenBounds   = safb.GetOpenWires();
   }
 
-  ShapeExtend_Explorer              shexpl;
+  ShapeExtend_Explorer                             shexpl;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> tmpSeq =
     shexpl.SeqFromCompound(tmpClosedBounds, false);
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= tmpSeq->Length(); i++)
   {
-    TopoDS_Wire                         wire   = TopoDS::Wire(tmpSeq->Value(i));
+    TopoDS_Wire                              wire   = TopoDS::Wire(tmpSeq->Value(i));
     occ::handle<ShapeAnalysis_FreeBoundData> fbData = new ShapeAnalysis_FreeBoundData();
     fbData->SetFreeBound(wire);
     myClosedFreeBounds->Append(fbData);
   }
 
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> tmpSeq2 = shexpl.SeqFromCompound(tmpOpenBounds, false);
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> tmpSeq2 =
+    shexpl.SeqFromCompound(tmpOpenBounds, false);
   for (i = 1; i <= tmpSeq2->Length(); i++)
   {
-    TopoDS_Wire                         wire   = TopoDS::Wire(tmpSeq2->Value(i));
+    TopoDS_Wire                              wire   = TopoDS::Wire(tmpSeq2->Value(i));
     occ::handle<ShapeAnalysis_FreeBoundData> fbData = new ShapeAnalysis_FreeBoundData;
     fbData->SetFreeBound(wire);
     myOpenFreeBounds->Append(fbData);
@@ -253,14 +249,14 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const double prec)
 
 bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(
   occ::handle<ShapeAnalysis_FreeBoundData>& fbData,
-  const double                  prec)
+  const double                              prec)
 {
   ShapeExtend_WireData swd(fbData->FreeBound());
   if (swd.NbEdges() > 1)
     for (int j = 1; j <= swd.NbEdges(); j++)
     {
-      TopoDS_Wire   notch;
-      double dMax;
+      TopoDS_Wire notch;
+      double      dMax;
       if (CheckNotches(fbData->FreeBound(), j, notch, dMax, prec))
         fbData->AddNotch(notch, dMax);
     }
@@ -273,7 +269,7 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(
 bool ShapeAnalysis_FreeBoundsProperties::CheckContours(const double prec)
 {
   bool status = false;
-  int i; // svv Jan11 2000 : porting on DEC
+  int  i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= myClosedFreeBounds->Length(); i++)
   {
     occ::handle<ShapeAnalysis_FreeBoundData> fbData = myClosedFreeBounds->Value(i);
@@ -290,15 +286,15 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckContours(const double prec)
 
 //=================================================================================================
 
-bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire&     wire,
-                                                                  const int num,
-                                                                  TopoDS_Wire&           notch,
-                                                                  double&         distMax,
-                                                                  const double /*prec*/)
+bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire& wire,
+                                                      const int          num,
+                                                      TopoDS_Wire&       notch,
+                                                      double&            distMax,
+                                                      const double /*prec*/)
 {
-  double                tol = std::max(myTolerance, Precision::Confusion());
+  double                            tol = std::max(myTolerance, Precision::Confusion());
   occ::handle<ShapeExtend_WireData> wdt = new ShapeExtend_WireData(wire);
-  BRep_Builder                 B;
+  BRep_Builder                      B;
   B.MakeWire(notch);
 
   if ((num <= 0) || (num > wdt->NbEdges()))
@@ -322,9 +318,9 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire&     wir
   TopoDS_Edge E2 = wdt->Edge(n2);
   B.Add(notch, E2);
 
-  double      First1, Last1, First2, Last2;
+  double                  First1, Last1, First2, Last2;
   occ::handle<Geom_Curve> c3d1, c3d2;
-  ShapeAnalysis_Edge sae;
+  ShapeAnalysis_Edge      sae;
   // szv#4:S4163:12Mar99 optimized
   if (!sae.Curve3d(E1, c3d1, First1, Last1) || !sae.Curve3d(E2, c3d2, First2, Last2))
     return false;
@@ -345,7 +341,7 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire&     wir
     for (int i = 0; i < NbControl; i++)
     {
       double prm     = ((NbControl - 1 - i) * First1 + i * Last1) / (NbControl - 1);
-      gp_Pnt        pntCurr = c3d1->Value(prm);
+      gp_Pnt pntCurr = c3d1->Value(prm);
 
       double p1, p2;
       if (First2 < Last2)
@@ -361,7 +357,7 @@ bool ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_Wire&     wir
 
       // szv#4:S4163:12Mar99 warning
       GeomAPI_ProjectPointOnCurve ppc(pntCurr, c3d2, p1, p2);
-      double               newDist = (ppc.NbPoints() ? ppc.LowerDistance() : 0);
+      double                      newDist = (ppc.NbPoints() ? ppc.LowerDistance() : 0);
       if (newDist > distMax)
         distMax = newDist;
     }
@@ -385,7 +381,7 @@ bool ShapeAnalysis_FreeBoundsProperties::FillProperties(
   double aver = 0;
 
   if (length != 0.)
-  {                                             // szv#4:S4163:12Mar99 anti-exception
+  {                                      // szv#4:S4163:12Mar99 anti-exception
     double k = area / (length * length); // szv#4:S4163:12Mar99
     // szv#4:S4163:12Mar99 optimized
     if (k != 0.)

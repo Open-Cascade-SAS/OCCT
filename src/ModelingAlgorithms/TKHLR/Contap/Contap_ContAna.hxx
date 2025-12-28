@@ -71,8 +71,8 @@ public:
   Standard_EXPORT gp_Lin Line(const int Index) const;
 
 private:
-  bool  done;
-  int  nbSol;
+  bool              done;
+  int               nbSol;
   GeomAbs_CurveType typL;
   gp_Pnt            pt1;
   gp_Pnt            pt2;
@@ -82,7 +82,7 @@ private:
   gp_Dir            dir2;
   gp_Dir            dir3;
   gp_Dir            dir4;
-  double     prm;
+  double            prm;
 };
 
 #include <Contap_ContAna.lxx>

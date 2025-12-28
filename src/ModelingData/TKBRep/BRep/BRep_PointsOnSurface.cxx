@@ -23,9 +23,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointsOnSurface, BRep_PointRepresentation)
 
 //=================================================================================================
 
-BRep_PointsOnSurface::BRep_PointsOnSurface(const double         P,
+BRep_PointsOnSurface::BRep_PointsOnSurface(const double                     P,
                                            const occ::handle<Geom_Surface>& S,
-                                           const TopLoc_Location&      L)
+                                           const TopLoc_Location&           L)
     : BRep_PointRepresentation(P, L),
       mySurface(S)
 {

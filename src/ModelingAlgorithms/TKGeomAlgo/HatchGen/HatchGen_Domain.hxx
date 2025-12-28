@@ -82,9 +82,9 @@ public:
   Standard_EXPORT void Dump(const int Index = 0) const;
 
 private:
-  bool         myHasFirstPoint;
+  bool                     myHasFirstPoint;
   HatchGen_PointOnHatching myFirstPoint;
-  bool         myHasSecondPoint;
+  bool                     myHasSecondPoint;
   HatchGen_PointOnHatching mySecondPoint;
 };
 

@@ -41,9 +41,9 @@ inline void Contap_Point::SetVertex(const occ::handle<Adaptor3d_HVertex>& V)
 }
 
 inline void Contap_Point::SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
-                                 const double              Param,
-                                 const IntSurf_Transition&        TLine,
-                                 const IntSurf_Transition&        TArc)
+                                 const double                          Param,
+                                 const IntSurf_Transition&             TLine,
+                                 const IntSurf_Transition&             TArc)
 {
 
   onarc   = true;

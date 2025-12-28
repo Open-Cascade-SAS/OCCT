@@ -39,13 +39,13 @@ public:
   Standard_EXPORT TopoDSToStep_MakeStepFace();
 
   Standard_EXPORT TopoDSToStep_MakeStepFace(
-    const TopoDS_Face&                    F,
-    TopoDSToStep_Tool&                    T,
+    const TopoDS_Face&                         F,
+    TopoDSToStep_Tool&                         T,
     const occ::handle<Transfer_FinderProcess>& FP,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
+    const StepData_Factors&                    theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT void Init(const TopoDS_Face&                    F,
-                            TopoDSToStep_Tool&                    T,
+  Standard_EXPORT void Init(const TopoDS_Face&                         F,
+                            TopoDSToStep_Tool&                         T,
                             const occ::handle<Transfer_FinderProcess>& FP,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
@@ -55,7 +55,7 @@ public:
 
 private:
   occ::handle<StepShape_TopologicalRepresentationItem> myResult;
-  TopoDSToStep_MakeFaceError                      myError;
+  TopoDSToStep_MakeFaceError                           myError;
 };
 
 #endif // _TopoDSToStep_MakeStepFace_HeaderFile

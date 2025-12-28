@@ -26,15 +26,8 @@
 #include <NCollection_HSequence.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
 class Transfer_Binder;
@@ -64,27 +57,27 @@ public:
   //! Transfer of an entity. I.E. in the binder bound to that Entity
   //! If no result or result not a single Shape, returns a Null Shape
   Standard_EXPORT static TopoDS_Shape ShapeResult(const occ::handle<Transfer_TransientProcess>& TP,
-                                                  const occ::handle<Standard_Transient>&        ent);
+                                                  const occ::handle<Standard_Transient>& ent);
 
   //! Sets a Shape as a result for a starting entity <ent>
   //! (reverse of ShapeResult)
   //! It simply creates a ShapeBinder then binds it to the entity
   Standard_EXPORT static void SetShapeResult(const occ::handle<Transfer_TransientProcess>& TP,
                                              const occ::handle<Standard_Transient>&        ent,
-                                             const TopoDS_Shape&                      result);
+                                             const TopoDS_Shape&                           result);
 
   //! Gets the Shapes recorded in a TransientProcess as result of a
   //! Transfer, considers roots only or all results according
   //! <rootsonly>, returns them as a HSequence
   Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>> Shapes(
     const occ::handle<Transfer_TransientProcess>& TP,
-    const bool                   rootsonly = true);
+    const bool                                    rootsonly = true);
 
   //! Gets the Shapes recorded in a TransientProcess as result of a
   //! Transfer, for a given list of starting entities, returns
   //! the shapes as a HSequence
   Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>> Shapes(
-    const occ::handle<Transfer_TransientProcess>&    TP,
+    const occ::handle<Transfer_TransientProcess>&                              TP,
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Returns a Status regarding a Shape in a FinderProcess
@@ -92,26 +85,27 @@ public:
   //! - REVERSED means bound with REVERSE Orientation
   //! - EXTERNAL means NOT BOUND
   //! - INTERNAL is not used
-  Standard_EXPORT static TopAbs_Orientation ShapeState(const occ::handle<Transfer_FinderProcess>& FP,
-                                                       const TopoDS_Shape&                   shape);
+  Standard_EXPORT static TopAbs_Orientation ShapeState(
+    const occ::handle<Transfer_FinderProcess>& FP,
+    const TopoDS_Shape&                        shape);
 
   //! Returns the result (as a Binder) attached to a given Shape
   //! Null if none
   Standard_EXPORT static occ::handle<Transfer_Binder> ResultFromShape(
     const occ::handle<Transfer_FinderProcess>& FP,
-    const TopoDS_Shape&                   shape);
+    const TopoDS_Shape&                        shape);
 
   //! Returns the result as pure Transient attached to a Shape
   //! first one if multiple result
   Standard_EXPORT static occ::handle<Standard_Transient> TransientFromShape(
     const occ::handle<Transfer_FinderProcess>& FP,
-    const TopoDS_Shape&                   shape);
+    const TopoDS_Shape&                        shape);
 
   //! Binds a Transient Result to a Shape in a FinderProcess
   //! (as first result if multiple : does not add it to existing one)
   Standard_EXPORT static void SetTransientFromShape(const occ::handle<Transfer_FinderProcess>& FP,
-                                                    const TopoDS_Shape&                   shape,
-                                                    const occ::handle<Standard_Transient>&     result);
+                                                    const TopoDS_Shape&                    shape,
+                                                    const occ::handle<Standard_Transient>& result);
 
   //! Returns a ShapeMapper for a given Shape (location included)
   //! Either <shape> is already mapped, then its Mapper is returned
@@ -119,7 +113,7 @@ public:
   //! it is not mapped here (use Bind or FindElseBind to do this)
   Standard_EXPORT static occ::handle<TransferBRep_ShapeMapper> ShapeMapper(
     const occ::handle<Transfer_FinderProcess>& FP,
-    const TopoDS_Shape&                   shape);
+    const TopoDS_Shape&                        shape);
 
   //! Fills sequence of TransferResultInfo for each type of entity
   //! given in the EntityTypes (entity are given as objects).
@@ -127,8 +121,8 @@ public:
   //! compare with entities in EntityTypes.
   //! TopAbs_ShapeEnum).
   Standard_EXPORT static void TransferResultInfo(
-    const occ::handle<Transfer_TransientProcess>&            TP,
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&         EntityTypes,
+    const occ::handle<Transfer_TransientProcess>&                                     TP,
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&        EntityTypes,
     occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq);
 
   //! Fills sequence of TransferResultInfo for each type of shape
@@ -136,16 +130,16 @@ public:
   //! TopAbs_ShapeEnum).
   //! The Finders in the FP are considered as ShapeMappers.
   Standard_EXPORT static void TransferResultInfo(
-    const occ::handle<Transfer_FinderProcess>&               FP,
-    const occ::handle<NCollection_HSequence<int>>&           ShapeTypes,
+    const occ::handle<Transfer_FinderProcess>&                                        FP,
+    const occ::handle<NCollection_HSequence<int>>&                                    ShapeTypes,
     occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq);
 
   //! Prints the results of transfer to given priner with given header.
   Standard_EXPORT static void PrintResultInfo(
     const occ::handle<Message_Printer>&                 Printer,
-    const Message_Msg&                             Header,
+    const Message_Msg&                                  Header,
     const occ::handle<TransferBRep_TransferResultInfo>& ResultInfo,
-    const bool                         printEmpty = true);
+    const bool                                          printEmpty = true);
 
   //! Performs a heavy check by calling the Analyser from BRepCheck
   //! This tool computes a lot of information about integrity of a
@@ -156,8 +150,8 @@ public:
   //! 1(D) + Curves/Surfaces not C0  ;  2 + SameParameter on Edges
   //! Warning : entities to which checks are bound are the Shapes themselves,
   //! embedded in ShapeMapper
-  Standard_EXPORT static Interface_CheckIterator BRepCheck(const TopoDS_Shape&    shape,
-                                                           const int lev = 1);
+  Standard_EXPORT static Interface_CheckIterator BRepCheck(const TopoDS_Shape& shape,
+                                                           const int           lev = 1);
 
   //! Takes a starting CheckIterator which brings checks bound with
   //! starting objects (Shapes, Transient from an Imagine appli ...)
@@ -167,7 +161,7 @@ public:
   //! Starting objects for which no individual result is recorded
   //! remain in their state
   Standard_EXPORT static Interface_CheckIterator ResultCheckList(
-    const Interface_CheckIterator&          chl,
+    const Interface_CheckIterator&               chl,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model);
 
@@ -176,9 +170,8 @@ public:
   //! be either Imagine objects entities for an Interface Norm.
   //! <alsoshapes> commands Shapes to be returned too
   //! (as ShapeMapper), see also CheckedShapes
-  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Checked(
-    const Interface_CheckIterator& chl,
-    const bool         alsoshapes = false);
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+    Checked(const Interface_CheckIterator& chl, const bool alsoshapes = false);
 
   //! Returns the list of shapes to which a non-empty Check is bound
   //! in a check-list
@@ -189,8 +182,9 @@ public:
   //! (if OK) or one check. <obj> can be, either a true Transient
   //! object or entity, or a ShapeMapper, in that case the Shape is
   //! considered
-  Standard_EXPORT static Interface_CheckIterator CheckObject(const Interface_CheckIterator&    chl,
-                                                             const occ::handle<Standard_Transient>& obj);
+  Standard_EXPORT static Interface_CheckIterator CheckObject(
+    const Interface_CheckIterator&         chl,
+    const occ::handle<Standard_Transient>& obj);
 };
 
 #endif // _TransferBRep_HeaderFile

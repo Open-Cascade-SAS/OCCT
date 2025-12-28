@@ -47,7 +47,7 @@ const XmlObjMgt_DOMString& XmlObjMgt::IdString()
 
 void XmlObjMgt::SetStringValue(XmlObjMgt_Element&         theElement,
                                const XmlObjMgt_DOMString& theData,
-                               const bool     isClearText)
+                               const bool                 isClearText)
 {
   XmlObjMgt_Document aDocument = theElement.getOwnerDocument();
   LDOM_Text          aText     = aDocument.createTextNode(theData);
@@ -110,7 +110,7 @@ void SprintfExtStr(char* out, const TCollection_ExtendedString& theString)
 //=======================================================================
 
 bool XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                theElement,
-                                              const TCollection_ExtendedString& theString)
+                                  const TCollection_ExtendedString& theString)
 {
   TCollection_AsciiString anAString;
   if (theString.IsAscii())
@@ -150,7 +150,7 @@ bool XmlObjMgt::SetExtendedString(XmlObjMgt_Element&                theElement,
 //=======================================================================
 
 bool XmlObjMgt::GetExtendedString(const XmlObjMgt_Element&    theElement,
-                                              TCollection_ExtendedString& theString)
+                                  TCollection_ExtendedString& theString)
 {
   theString = GetStringValue(theElement);
   return true;
@@ -163,7 +163,7 @@ bool XmlObjMgt::GetExtendedString(const XmlObjMgt_Element&    theElement,
 //=======================================================================
 
 bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
-                                              TCollection_AsciiString&   theTagEntry)
+                                  TCollection_AsciiString&   theTagEntry)
 {
   //    Check the prefix
   const size_t aPrefixSize = sizeof(aRefPrefix) - 1;
@@ -192,9 +192,9 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
 
     //  Check the integer value of the tag
     errno = 0;
-    char*            aPtr;
-    long             aTagValue = strtol(&aSource[1], &aPtr, 10);
-    int aLen      = (int)(aPtr - &aSource[1]);
+    char* aPtr;
+    long  aTagValue = strtol(&aSource[1], &aPtr, 10);
+    int   aLen      = (int)(aPtr - &aSource[1]);
     if (aTagValue < 0 || aLen == 0 || aPtr[0] != aQuote || errno == ERANGE || errno == EINVAL)
       return false;
     aTagEntryPtr[0] = ':';
@@ -226,8 +226,8 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
     return;
 
   //    Count the number of tags in the label entry string
-  const char*      aPtr      = aTagEntry;
-  int aTagCount = 0;
+  const char* aPtr      = aTagEntry;
+  int         aTagCount = 0;
   while (*aPtr)
     if (*aPtr++ == ':')
       aTagCount++;
@@ -250,9 +250,9 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
 
     //  Find the range of characters for an integer number
     errno = 0;
-    char*            ptr;
-    long             aTagValue = strtol(aTagEntry, &ptr, 10);
-    int aTagSize  = (int)(ptr - aTagEntry);
+    char* ptr;
+    long  aTagValue = strtol(aTagEntry, &ptr, 10);
+    int   aTagSize  = (int)(ptr - aTagEntry);
     if (aTagValue < 0 || aTagSize == 0 || errno == ERANGE || errno == EINVAL)
       return; // error
 
@@ -271,11 +271,10 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
 
 //=================================================================================================
 
-XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource,
-                                              const int   theId)
+XmlObjMgt_Element XmlObjMgt::FindChildElement(const XmlObjMgt_Element& theSource, const int theId)
 {
-  LDOM_Node        aNode = theSource.getFirstChild();
-  int anId;
+  LDOM_Node aNode = theSource.getFirstChild();
+  int       anId;
   while (!aNode.isNull())
   {
     if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)

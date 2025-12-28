@@ -116,8 +116,7 @@ inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element(const int IndE)
 // Purpose  : Returns the curve associated to the IndE-th element.
 //=======================================================================
 
-inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(
-  const int IndE) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve(const int IndE) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myElements.IsBound(IndE), "");
@@ -145,8 +144,7 @@ inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching(const int IndH)
 // Purpose  : Returns the curve associated to the IndH-th hatching.
 //=======================================================================
 
-inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(
-  const int IndH) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve(const int IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");

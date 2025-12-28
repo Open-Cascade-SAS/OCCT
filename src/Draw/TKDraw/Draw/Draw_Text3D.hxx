@@ -31,11 +31,11 @@ class Draw_Text3D : public Draw_Drawable3D
 public:
   Standard_EXPORT Draw_Text3D(const gp_Pnt& p, const char* T, const Draw_Color& col);
 
-  Standard_EXPORT Draw_Text3D(const gp_Pnt&          p,
-                              const char* T,
-                              const Draw_Color&      col,
-                              const double    moveX,
-                              const double    moveY);
+  Standard_EXPORT Draw_Text3D(const gp_Pnt&     p,
+                              const char*       T,
+                              const Draw_Color& col,
+                              const double      moveX,
+                              const double      moveY);
 
   Standard_EXPORT void SetPnt(const gp_Pnt& p);
 
@@ -47,8 +47,8 @@ private:
   gp_Pnt                  myPoint;
   Draw_Color              myColor;
   TCollection_AsciiString myText;
-  double           mymoveX;
-  double           mymoveY;
+  double                  mymoveX;
+  double                  mymoveY;
 };
 
 #endif // _Draw_Text3D_HeaderFile

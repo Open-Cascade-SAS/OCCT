@@ -46,8 +46,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as ProductDefinitionFormation (or Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation() const;
-
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 };
 
 #endif // _StepRepr_ConfigurationDesignItem_HeaderFile

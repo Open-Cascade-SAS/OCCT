@@ -24,9 +24,6 @@
 #include <IntSurf_LineOn2S.hxx>
 
 #include <Contap_Point.hxx>
-#include <Contap_Point.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 
 inline const occ::handle<IntSurf_LineOn2S>& Contap_Line::LineOn2S() const
 {

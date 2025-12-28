@@ -34,8 +34,7 @@ public:
                                        const occ::handle<Adaptor3d_Curve>&   C,
                                        const occ::handle<Law_Function>&      Law);
 
-  Standard_EXPORT void Set(const bool           OnFirst,
-                           const occ::handle<Adaptor2d_Curve2d>& COnSurf);
+  Standard_EXPORT void Set(const bool OnFirst, const occ::handle<Adaptor2d_Curve2d>& COnSurf);
 
   Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const;
 
@@ -72,10 +71,10 @@ private:
   occ::handle<Adaptor3d_Curve>   curv;
   occ::handle<Adaptor2d_Curve2d> csurf;
   occ::handle<Law_Function>      fevol;
-  double             sg1;
-  double             sg2;
-  int          choix;
-  bool          first;
+  double                         sg1;
+  double                         sg2;
+  int                            choix;
+  bool                           first;
 };
 
 #endif // _BlendFunc_EvolRadInv_HeaderFile

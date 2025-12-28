@@ -26,10 +26,10 @@ StepRepr_CharacterizedRepresentation::StepRepr_CharacterizedRepresentation() {}
 //=================================================================================================
 
 void StepRepr_CharacterizedRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>&             theName,
-  const occ::handle<TCollection_HAsciiString>&             theDescription,
+  const occ::handle<TCollection_HAsciiString>&                                      theName,
+  const occ::handle<TCollection_HAsciiString>&                                      theDescription,
   const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theItems,
-  const occ::handle<StepRepr_RepresentationContext>&       theContextOfItems)
+  const occ::handle<StepRepr_RepresentationContext>& theContextOfItems)
 {
   myDescription = theDescription;
   StepRepr_Representation::Init(theName, theItems, theContextOfItems);

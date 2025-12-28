@@ -43,7 +43,8 @@ public:
   Standard_EXPORT occ::handle<StepRepr_ConfigurationDesign> Configuration() const;
 
   //! Set field Configuration
-  Standard_EXPORT void SetConfiguration(const occ::handle<StepRepr_ConfigurationDesign>& Configuration);
+  Standard_EXPORT void SetConfiguration(
+    const occ::handle<StepRepr_ConfigurationDesign>& Configuration);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ConfigurationEffectivity, StepBasic_ProductDefinitionEffectivity)
 

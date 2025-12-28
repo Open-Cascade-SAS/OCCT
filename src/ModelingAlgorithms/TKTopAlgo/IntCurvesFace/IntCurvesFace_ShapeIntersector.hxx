@@ -23,10 +23,7 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Real.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
@@ -66,15 +63,13 @@ public:
   //!
   //! For an infinite line PInf and PSup can be
   //! +/- RealLast.
-  Standard_EXPORT void PerformNearest(const gp_Lin&       L,
-                                      const double PInf,
-                                      const double PSup);
+  Standard_EXPORT void PerformNearest(const gp_Lin& L, const double PInf, const double PSup);
 
   //! same method for a HCurve from Adaptor3d.
   //! PInf an PSup can also be -INF and +INF.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>& HCu,
-                               const double            PInf,
-                               const double            PSup);
+                               const double                        PInf,
+                               const double                        PSup);
 
   //! True when the intersection has been computed.
   bool IsDone() const { return myIsDone; }
@@ -147,15 +142,15 @@ public:
   Standard_EXPORT virtual ~IntCurvesFace_ShapeIntersector();
 
 private:
-  bool                                        myIsDone;
-  int                                        myNbFaces;
-  NCollection_Array1<int>                                 myPtrNums;
-  NCollection_Array1<int>                                 myPtrIndexNums;
+  bool                                                         myIsDone;
+  int                                                          myNbFaces;
+  NCollection_Array1<int>                                      myPtrNums;
+  NCollection_Array1<int>                                      myPtrIndexNums;
   NCollection_Sequence<occ::handle<IntCurvesFace_Intersector>> myIntersector;
-  NCollection_Sequence<int>                               myIndexPt;
-  NCollection_Sequence<int>                               myIndexFace;
-  NCollection_Sequence<int>                               myIndexIntPnt;
-  NCollection_Sequence<double>                                  myIndexPar;
+  NCollection_Sequence<int>                                    myIndexPt;
+  NCollection_Sequence<int>                                    myIndexFace;
+  NCollection_Sequence<int>                                    myIndexIntPnt;
+  NCollection_Sequence<double>                                 myIndexPar;
 };
 
 #endif // _IntCurvesFace_ShapeIntersector_HeaderFile

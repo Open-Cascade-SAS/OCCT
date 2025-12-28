@@ -23,7 +23,8 @@
 
 //=================================================================================================
 
-LDOM_Element::LDOM_Element(const LDOM_BasicElement& anElem, const occ::handle<LDOM_MemManager>& aDoc)
+LDOM_Element::LDOM_Element(const LDOM_BasicElement&            anElem,
+                           const occ::handle<LDOM_MemManager>& aDoc)
     : LDOM_Node(anElem, aDoc)
 {
 }

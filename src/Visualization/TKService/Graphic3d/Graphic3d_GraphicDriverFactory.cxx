@@ -28,7 +28,8 @@ static NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& getDriverF
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& Graphic3d_GraphicDriverFactory::DriverFactories()
+const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>&
+  Graphic3d_GraphicDriverFactory::DriverFactories()
 {
   return getDriverFactories();
 }
@@ -37,9 +38,9 @@ const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& Graphic3d_G
 
 void Graphic3d_GraphicDriverFactory::RegisterFactory(
   const occ::handle<Graphic3d_GraphicDriverFactory>& theFactory,
-  bool                                          theIsPreferred)
+  bool                                               theIsPreferred)
 {
-  const TCollection_AsciiString       aName      = theFactory->Name();
+  const TCollection_AsciiString                                  aName      = theFactory->Name();
   NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& aFactories = getDriverFactories();
   if (theIsPreferred)
   {
@@ -48,7 +49,8 @@ void Graphic3d_GraphicDriverFactory::RegisterFactory(
     return;
   }
 
-  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories); anIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories);
+       anIter.More();
        anIter.Next())
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value()->Name(), aName, false))
@@ -64,7 +66,8 @@ void Graphic3d_GraphicDriverFactory::RegisterFactory(
 void Graphic3d_GraphicDriverFactory::UnregisterFactory(const TCollection_AsciiString& theName)
 {
   NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& aFactories = getDriverFactories();
-  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories); anIter.More();)
+  for (NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>::Iterator anIter(aFactories);
+       anIter.More();)
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value()->Name(), theName, false))
     {

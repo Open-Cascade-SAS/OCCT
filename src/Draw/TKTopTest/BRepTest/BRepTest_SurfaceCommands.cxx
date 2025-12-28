@@ -72,8 +72,8 @@ static int mkface(Draw_Interpretor&, int n, const char** a)
     return 1;
   }
 
-  bool mkface = a[0][2] == 'f';
-  TopoDS_Shape     res;
+  bool         mkface = a[0][2] == 'f';
+  TopoDS_Shape res;
 
   bool Segment = false;
   if (!mkface && (n == 4 || n == 8))
@@ -93,8 +93,8 @@ static int mkface(Draw_Interpretor&, int n, const char** a)
   {
     if (!mkface)
       return 1;
-    bool orient = (n == 4);
-    TopoDS_Shape     W      = DBRep::Get(a[3], TopAbs_WIRE);
+    bool         orient = (n == 4);
+    TopoDS_Shape W      = DBRep::Get(a[3], TopAbs_WIRE);
     if (W.IsNull())
       return 1;
     res = BRepBuilderAPI_MakeFace(S, TopoDS::Wire(W), orient);
@@ -191,7 +191,7 @@ static int mksurface(Draw_Interpretor&, int n, const char** a)
   TopoDS_Shape S = DBRep::Get(a[2], TopAbs_FACE);
   if (S.IsNull())
     return 1;
-  TopLoc_Location      L;
+  TopLoc_Location           L;
   occ::handle<Geom_Surface> C = BRep_Tool::Surface(TopoDS::Face(S), L);
 
   DrawTrSurf::Set(a[1], C->Transformed(L.Transformation()));
@@ -274,7 +274,7 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
       DBRep_WriteColorOrientation();
     Draw_Color col, savecol = DrawTrSurf_CurveColor(Draw_rouge);
 
-    char*         name = new char[100];
+    char*  name = new char[100];
     double f, l;
     S.Orientation(TopAbs_FORWARD);
     TopExp_Explorer ex(S, TopAbs_EDGE);
@@ -291,14 +291,14 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
       DrawTrSurf_CurveColor(col);
 
       Sprintf(name, "%s_%d", a[1], i);
-      double    fr = c->FirstParameter(), lr = c->LastParameter();
-      bool IsPeriodic = c->IsPeriodic();
+      double fr = c->FirstParameter(), lr = c->LastParameter();
+      bool   IsPeriodic = c->IsPeriodic();
       if (c->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
       {
         const occ::handle<Geom2d_Curve>& aC = occ::down_cast<Geom2d_TrimmedCurve>(c)->BasisCurve();
-        IsPeriodic                     = aC->IsPeriodic();
-        fr                             = aC->FirstParameter();
-        lr                             = aC->LastParameter();
+        IsPeriodic                          = aC->IsPeriodic();
+        fr                                  = aC->FirstParameter();
+        lr                                  = aC->LastParameter();
       }
       if (!IsPeriodic && ((fr - f > Precision::PConfusion()) || (l - lr > Precision::PConfusion())))
       {
@@ -320,18 +320,18 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
     if (SF.IsNull())
       return 1;
 
-    Draw_Color                 col, savecol = DrawTrSurf_CurveColor(Draw_rouge);
-    double              f, l;
+    Draw_Color                      col, savecol = DrawTrSurf_CurveColor(Draw_rouge);
+    double                          f, l;
     const occ::handle<Geom2d_Curve> c =
       BRep_Tool::CurveOnSurface(TopoDS::Edge(SE), TopoDS::Face(SF), f, l);
-    double    fr = c->FirstParameter(), lr = c->LastParameter();
-    bool IsPeriodic = c->IsPeriodic();
+    double fr = c->FirstParameter(), lr = c->LastParameter();
+    bool   IsPeriodic = c->IsPeriodic();
     if (c->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
     {
       const occ::handle<Geom2d_Curve>& aC = occ::down_cast<Geom2d_TrimmedCurve>(c)->BasisCurve();
-      IsPeriodic                     = aC->IsPeriodic();
-      fr                             = aC->FirstParameter();
-      lr                             = aC->LastParameter();
+      IsPeriodic                          = aC->IsPeriodic();
+      fr                                  = aC->FirstParameter();
+      lr                                  = aC->LastParameter();
     }
 
     col = DBRep_ColorOrientation(SE.Orientation());
@@ -358,25 +358,23 @@ static int pcurve(Draw_Interpretor&, int n, const char** a)
 // sewing
 //=======================================================================
 
-static int sewing(Draw_Interpretor& theDi,
-                               int  theArgc,
-                               const char**      theArgv)
+static int sewing(Draw_Interpretor& theDi, int theArgc, const char** theArgv)
 {
-  BRepBuilderAPI_Sewing    aSewing;
-  int         aPar = 1;
+  BRepBuilderAPI_Sewing              aSewing;
+  int                                aPar = 1;
   NCollection_Sequence<TopoDS_Shape> aSeq;
 
-  double    aTol               = 1.0e-06;
-  bool aSewingMode        = true;
-  bool anAnalysisMode     = true;
-  bool aCuttingMode       = true;
-  bool aNonManifoldMode   = false;
-  bool aSameParameterMode = true;
-  bool aFloatingEdgesMode = false;
-  bool aFaceMode          = true;
-  bool aSetMinTol         = false;
-  double    aMinTol            = 0.;
-  double    aMaxTol            = Precision::Infinite();
+  double aTol               = 1.0e-06;
+  bool   aSewingMode        = true;
+  bool   anAnalysisMode     = true;
+  bool   aCuttingMode       = true;
+  bool   aNonManifoldMode   = false;
+  bool   aSameParameterMode = true;
+  bool   aFloatingEdgesMode = false;
+  bool   aFaceMode          = true;
+  bool   aSetMinTol         = false;
+  double aMinTol            = 0.;
+  double aMaxTol            = Precision::Infinite();
 
   for (int i = 2; i < theArgc; i++)
   {
@@ -512,9 +510,7 @@ static int sewing(Draw_Interpretor& theDi,
 
 //=================================================================================================
 
-int fastsewing(Draw_Interpretor& theDI,
-                            int  theNArg,
-                            const char**      theArgVal)
+int fastsewing(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 3)
   {
@@ -547,8 +543,8 @@ int fastsewing(Draw_Interpretor& theDI,
 
   if (aStatus)
   {
-    theDI << "Error: There are some problems while adding ("
-          << (static_cast<int>(aStatus)) << ")\n";
+    theDI << "Error: There are some problems while adding (" << (static_cast<int>(aStatus))
+          << ")\n";
     aFS.GetStatuses(&std::cout);
   }
 
@@ -558,8 +554,8 @@ int fastsewing(Draw_Interpretor& theDI,
 
   if (aStatus)
   {
-    theDI << "Error: There are some problems while performing ("
-          << (static_cast<int>(aStatus)) << ")\n";
+    theDI << "Error: There are some problems while performing (" << (static_cast<int>(aStatus))
+          << ")\n";
     aFS.GetStatuses(&std::cout);
   }
 
@@ -579,8 +575,8 @@ static int continuity(Draw_Interpretor&, int n, const char** a)
 
   BRepOffsetAPI_FindContigousEdges aFind;
 
-  TopoDS_Shape     sh = DBRep::Get(a[1]);
-  int i  = 1;
+  TopoDS_Shape sh = DBRep::Get(a[1]);
+  int          i  = 1;
   if (sh.IsNull())
   {
     if (n < 3)
@@ -738,7 +734,7 @@ static int projponf(Draw_Interpretor& di, int n, const char** a)
   }
   //
   // get surface
-  TopLoc_Location             aLoc;
+  TopLoc_Location                  aLoc;
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(aFace, aLoc);
   // move point to surface location
   aP.Transform(aLoc.Transformation().Inverted());

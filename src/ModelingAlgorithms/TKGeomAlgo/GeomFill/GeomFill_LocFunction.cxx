@@ -21,7 +21,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
-#include <NCollection_Array1.hxx>
 
 GeomFill_LocFunction::GeomFill_LocFunction(const occ::handle<GeomFill_LocationLaw>& Law)
     : V(1, 4),
@@ -33,13 +32,13 @@ GeomFill_LocFunction::GeomFill_LocFunction(const occ::handle<GeomFill_LocationLa
 }
 
 bool GeomFill_LocFunction::D0(const double Param,
-                                          //					   const double First,
-                                          const double,
-                                          //					   const double Last)
-                                          const double)
+                              //					   const double First,
+                              const double,
+                              //					   const double Last)
+                              const double)
 {
-  gp_Mat           aM;
-  bool B;
+  gp_Mat aM;
+  bool   B;
   B = myLaw->D0(Param, aM, V.ChangeValue(1));
   V(2).SetXYZ(aM.Column(1));
   V(3).SetXYZ(aM.Column(2));
@@ -48,15 +47,15 @@ bool GeomFill_LocFunction::D0(const double Param,
 }
 
 bool GeomFill_LocFunction::D1(const double Param,
-                                          //					   const double First,
-                                          const double,
-                                          //					   const double Last)
-                                          const double)
+                              //					   const double First,
+                              const double,
+                              //					   const double Last)
+                              const double)
 {
   NCollection_Array1<gp_Pnt2d> T1(1, 1);
   NCollection_Array1<gp_Vec2d> T2(1, 1);
-  gp_Mat               aM, aDM;
-  bool     B;
+  gp_Mat                       aM, aDM;
+  bool                         B;
   B = myLaw->D1(Param, aM, V.ChangeValue(1), aDM, DV.ChangeValue(1), T1, T2);
 
   V(2).SetXYZ(aM.Column(1));
@@ -70,15 +69,15 @@ bool GeomFill_LocFunction::D1(const double Param,
 }
 
 bool GeomFill_LocFunction::D2(const double Param,
-                                          //					   const double First,
-                                          const double,
-                                          //					   const double Last)
-                                          const double)
+                              //					   const double First,
+                              const double,
+                              //					   const double Last)
+                              const double)
 {
   NCollection_Array1<gp_Pnt2d> T1(1, 1);
   NCollection_Array1<gp_Vec2d> T2(1, 1), T3(1, 1);
-  gp_Mat               aM, aDM, aD2M;
-  bool     B;
+  gp_Mat                       aM, aDM, aD2M;
+  bool                         B;
   B = myLaw->D2(Param,
                 aM,
                 V.ChangeValue(1),
@@ -104,14 +103,14 @@ bool GeomFill_LocFunction::D2(const double Param,
   return B;
 }
 
-void GeomFill_LocFunction::DN(const double    Param,
-                              const double    First,
-                              const double    Last,
-                              const int Order,
-                              double&         Result,
-                              int&      Ier)
+void GeomFill_LocFunction::DN(const double Param,
+                              const double First,
+                              const double Last,
+                              const int    Order,
+                              double&      Result,
+                              int&         Ier)
 {
-  bool     B;
+  bool          B;
   double*       AddrResult  = &Result;
   const double* LocalResult = NULL;
 

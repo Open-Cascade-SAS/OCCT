@@ -53,8 +53,7 @@ public:
   //! @param isToFaceBasis if TRUE converts point to face basis,
   //! otherwise performs reverse conversion.
   //! @return scaled point.
-  Standard_EXPORT gp_Pnt2d Scale(const gp_Pnt2d&        thePoint,
-                                 const bool isToFaceBasis) const;
+  Standard_EXPORT gp_Pnt2d Scale(const gp_Pnt2d& thePoint, const bool isToFaceBasis) const;
 
   //! Returns list of nodes generated using surface data and specified parameters.
   //! By default returns null ptr.
@@ -70,12 +69,10 @@ public:
 
 protected:
   //! Computes parametric tolerance taking length along U and V into account.
-  Standard_EXPORT virtual void computeTolerance(const double theLenU,
-                                                const double theLenV);
+  Standard_EXPORT virtual void computeTolerance(const double theLenU, const double theLenV);
 
   //! Computes parametric delta taking length along U and V and value of tolerance into account.
-  Standard_EXPORT virtual void computeDelta(const double theLengthU,
-                                            const double theLengthV);
+  Standard_EXPORT virtual void computeDelta(const double theLengthU, const double theLengthV);
 
 public:
   //! Returns face model.
@@ -105,19 +102,19 @@ private:
   double computeLengthV();
 
   //! Updates discrete range of surface according to its geometric range.
-  void updateRange(const double    theGeomFirst,
-                   const double    theGeomLast,
-                   const bool isPeriodic,
-                   double&         theDiscreteFirst,
-                   double&         theDiscreteLast);
+  void updateRange(const double theGeomFirst,
+                   const double theGeomLast,
+                   const bool   isPeriodic,
+                   double&      theDiscreteFirst,
+                   double&      theDiscreteLast);
 
 protected:
-  IMeshData::IFaceHandle                  myDFace;
+  IMeshData::IFaceHandle    myDFace;
   std::pair<double, double> myRangeU;
   std::pair<double, double> myRangeV;
   std::pair<double, double> myDelta;
   std::pair<double, double> myTolerance;
-  bool                        myIsValid;
+  bool                      myIsValid;
 };
 
 #endif

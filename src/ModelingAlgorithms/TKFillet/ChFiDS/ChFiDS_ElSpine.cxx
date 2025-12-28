@@ -51,8 +51,8 @@ occ::handle<Adaptor3d_Curve> ChFiDS_ElSpine::ShallowCopy() const
   occ::handle<ChFiDS_ElSpine> aCopy = new ChFiDS_ElSpine();
 
   const occ::handle<Adaptor3d_Curve> aCurve     = curve.ShallowCopy();
-  const GeomAdaptor_Curve&      aGeomCurve = *(occ::down_cast<GeomAdaptor_Curve>(aCurve));
-  aCopy->curve                             = aGeomCurve;
+  const GeomAdaptor_Curve&           aGeomCurve = *(occ::down_cast<GeomAdaptor_Curve>(aCurve));
+  aCopy->curve                                  = aGeomCurve;
 
   aCopy->ptfirst              = ptfirst;
   aCopy->ptlast               = ptlast;
@@ -123,8 +123,8 @@ void ChFiDS_ElSpine::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shap
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> ChFiDS_ElSpine::Trim(const double First,
-                                             const double Last,
-                                             const double Tol) const
+                                                  const double Last,
+                                                  const double Tol) const
 {
   return curve.Trim(First, Last, Tol);
 }
@@ -197,11 +197,7 @@ void ChFiDS_ElSpine::D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 
 //=================================================================================================
 
-void ChFiDS_ElSpine::D3(const double AbsC,
-                        gp_Pnt&             P,
-                        gp_Vec&             V1,
-                        gp_Vec&             V2,
-                        gp_Vec&             V3) const
+void ChFiDS_ElSpine::D3(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
   curve.D3(AbsC, P, V1, V2, V3);
 }

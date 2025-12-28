@@ -37,8 +37,8 @@ void StepShape_FacetedBrepAndBrepWithVoids::Init(
 }
 
 void StepShape_FacetedBrepAndBrepWithVoids::Init(
-  const occ::handle<TCollection_HAsciiString>&               aName,
-  const occ::handle<StepShape_ClosedShell>&                  aOuter,
+  const occ::handle<TCollection_HAsciiString>&                                        aName,
+  const occ::handle<StepShape_ClosedShell>&                                           aOuter,
   const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids)
 {
   // --- class inherited fields ---
@@ -86,7 +86,8 @@ void StepShape_FacetedBrepAndBrepWithVoids::SetVoids(
   brepWithVoids->SetVoids(aVoids);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> StepShape_FacetedBrepAndBrepWithVoids::Voids() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>
+  StepShape_FacetedBrepAndBrepWithVoids::Voids() const
 {
   return brepWithVoids->Voids();
 }

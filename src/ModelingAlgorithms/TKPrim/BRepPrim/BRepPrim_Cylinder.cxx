@@ -27,9 +27,9 @@
 
 //=================================================================================================
 
-BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Ax2&       Position,
-                                     const double Radius,
-                                     const double Height)
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Ax2& Position,
+                                     const double  Radius,
+                                     const double  Height)
     : BRepPrim_Revolution(Position, 0, Height),
       myRadius(Radius)
 {
@@ -76,9 +76,7 @@ BRepPrim_Cylinder::BRepPrim_Cylinder(const double R, const double H)
 
 //=================================================================================================
 
-BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt&       Center,
-                                     const double R,
-                                     const double H)
+BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt& Center, const double R, const double H)
     : BRepPrim_Revolution(gp_Ax2(Center, gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 0, H),
       myRadius(R)
 {
@@ -90,7 +88,7 @@ BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Pnt&       Center,
 TopoDS_Face BRepPrim_Cylinder::MakeEmptyLateralFace() const
 {
   occ::handle<Geom_CylindricalSurface> C = new Geom_CylindricalSurface(Axes(), myRadius);
-  TopoDS_Face                     F;
+  TopoDS_Face                          F;
   myBuilder.Builder().MakeFace(F, C, Precision::Confusion());
   return F;
 }

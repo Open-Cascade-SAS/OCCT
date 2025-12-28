@@ -22,7 +22,7 @@
 RWStepVisual_RWInvisibility::RWStepVisual_RWInvisibility() {}
 
 void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepVisual_Invisibility>& ent) const
 {
@@ -35,12 +35,12 @@ void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReader
   // --- own field : invisibleItems ---
 
   occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>> aInvisibleItems;
-  StepVisual_InvisibleItem                  aInvisibleItemsItem;
-  int                          nsub1;
+  StepVisual_InvisibleItem                                   aInvisibleItemsItem;
+  int                                                        nsub1;
   if (data->ReadSubList(num, 1, "invisible_items", ach, nsub1))
   {
-    int nb1 = data->NbParams(nsub1);
-    aInvisibleItems      = new NCollection_HArray1<StepVisual_InvisibleItem>(1, nb1);
+    int nb1         = data->NbParams(nsub1);
+    aInvisibleItems = new NCollection_HArray1<StepVisual_InvisibleItem>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -54,7 +54,7 @@ void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aInvisibleItems);
 }
 
-void RWStepVisual_RWInvisibility::WriteStep(StepData_StepWriter&                   SW,
+void RWStepVisual_RWInvisibility::WriteStep(StepData_StepWriter&                        SW,
                                             const occ::handle<StepVisual_Invisibility>& ent) const
 {
 
@@ -69,7 +69,7 @@ void RWStepVisual_RWInvisibility::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepVisual_RWInvisibility::Share(const occ::handle<StepVisual_Invisibility>& ent,
-                                        Interface_EntityIterator&              iter) const
+                                        Interface_EntityIterator&                   iter) const
 {
 
   int nbElem1 = ent->NbInvisibleItems();

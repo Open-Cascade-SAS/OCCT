@@ -68,16 +68,14 @@ public:
   }
 
   //! Returns centroid position along the given axis.
-  virtual T Center(const int theIndex,
-                   const int theAxis) const override
+  virtual T Center(const int theIndex, const int theAxis) const override
   {
     // Note: general implementation, not optimal
     return BVH::CenterAxis<T, N>::Center(myObjects.Value(theIndex)->Box(), theAxis);
   }
 
   //! Performs transposing the two given objects in the set.
-  virtual void Swap(const int theIndex1,
-                    const int theIndex2) override
+  virtual void Swap(const int theIndex1, const int theIndex2) override
   {
     std::swap(myObjects.ChangeValue(theIndex1), myObjects.ChangeValue(theIndex2));
   }

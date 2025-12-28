@@ -46,8 +46,7 @@ public:
 
   //! returns Value as a FunctionallyDefinedTransformation (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_FunctionallyDefinedTransformation>
-    FunctionallyDefinedTransformation() const;
-
+                  FunctionallyDefinedTransformation() const;
 };
 
 #endif // _StepRepr_Transformation_HeaderFile

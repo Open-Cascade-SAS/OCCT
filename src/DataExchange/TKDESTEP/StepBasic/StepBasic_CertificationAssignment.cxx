@@ -37,7 +37,8 @@ void StepBasic_CertificationAssignment::Init(
 
 //=================================================================================================
 
-occ::handle<StepBasic_Certification> StepBasic_CertificationAssignment::AssignedCertification() const
+occ::handle<StepBasic_Certification> StepBasic_CertificationAssignment::AssignedCertification()
+  const
 {
   return theAssignedCertification;
 }

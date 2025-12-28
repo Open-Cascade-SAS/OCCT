@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepBasic_DigitalDocument();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DigitalDocument, StepBasic_Document)
-
 };
 
 #endif // _StepBasic_DigitalDocument_HeaderFile

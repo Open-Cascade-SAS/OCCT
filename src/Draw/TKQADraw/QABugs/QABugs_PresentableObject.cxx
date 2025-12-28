@@ -28,12 +28,12 @@ QABugs_PresentableObject::QABugs_PresentableObject(
 
 void QABugs_PresentableObject::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                        const occ::handle<Prs3d_Presentation>& thePrs,
-                                       const int            theMode)
+                                       const int                              theMode)
 {
   const occ::handle<Graphic3d_Structure>& aStructure = thePrs;
   occ::handle<Graphic3d_Group>            aGroup     = aStructure->NewGroup();
   occ::handle<Prs3d_ShadingAspect>        anAspect   = myDrawer->ShadingAspect();
-  Graphic3d_MaterialAspect           aMat       = anAspect->Aspect()->FrontMaterial();
+  Graphic3d_MaterialAspect                aMat       = anAspect->Aspect()->FrontMaterial();
   aMat.SetAmbientColor(Quantity_NOC_BLACK);
   aMat.SetDiffuseColor(Quantity_NOC_BLACK);
   aMat.SetSpecularColor(Quantity_NOC_BLACK);
@@ -44,8 +44,8 @@ void QABugs_PresentableObject::Compute(const occ::handle<PrsMgr_PresentationMana
   occ::handle<Graphic3d_ArrayOfTriangles> aPrims =
     new Graphic3d_ArrayOfTriangles(6,
                                    0,
-                                   theMode == 1,   // normals
-                                   true); // color per vertex
+                                   theMode == 1, // normals
+                                   true);        // color per vertex
   switch (theMode)
   {
     case 0: {
@@ -85,7 +85,6 @@ void QABugs_PresentableObject::Compute(const occ::handle<PrsMgr_PresentationMana
   aGroup->AddPrimitiveArray(aPrims);
 }
 
-void QABugs_PresentableObject::ComputeSelection(const occ::handle<SelectMgr_Selection>&,
-                                                const int)
+void QABugs_PresentableObject::ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int)
 {
 }

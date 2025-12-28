@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 #include <NCollection_Map.hxx>
-#include <IntTools_SurfaceRangeSample.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Array1.hxx>
@@ -31,7 +30,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <IntTools_SurfaceRangeSample.hxx>
 #include <NCollection_List.hxx>
 class IntTools_SurfaceRangeSample;
 class Bnd_Box;
@@ -44,10 +42,10 @@ public:
 
   Standard_EXPORT IntTools_SurfaceRangeLocalizeData();
 
-  Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const int theNbSampleU,
-                                                    const int theNbSampleV,
-                                                    const double    theMinRangeU,
-                                                    const double    theMinRangeV);
+  Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const int    theNbSampleU,
+                                                    const int    theNbSampleV,
+                                                    const double theMinRangeU,
+                                                    const double theMinRangeV);
 
   Standard_EXPORT IntTools_SurfaceRangeLocalizeData(const IntTools_SurfaceRangeLocalizeData& Other);
 
@@ -71,8 +69,7 @@ public:
 
   Standard_EXPORT void AddBox(const IntTools_SurfaceRangeSample& theRange, const Bnd_Box& theBox);
 
-  Standard_EXPORT bool FindBox(const IntTools_SurfaceRangeSample& theRange,
-                                           Bnd_Box&                           theBox) const;
+  Standard_EXPORT bool FindBox(const IntTools_SurfaceRangeSample& theRange, Bnd_Box& theBox) const;
 
   Standard_EXPORT bool IsRangeOut(const IntTools_SurfaceRangeSample& theRange) const;
 
@@ -111,13 +108,10 @@ public:
   double GetVParam(const int theIndex) const;
 
   //! Set the grid point.
-  void SetGridPoint(const int theUIndex,
-                    const int theVIndex,
-                    const gp_Pnt&          thePoint);
+  void SetGridPoint(const int theUIndex, const int theVIndex, const gp_Pnt& thePoint);
 
   //! Set the grid point.
-  const gp_Pnt& GetGridPoint(const int theUIndex,
-                             const int theVIndex) const;
+  const gp_Pnt& GetGridPoint(const int theUIndex, const int theVIndex) const;
 
   //! Sets the frame area. Used to work with grid points.
   Standard_EXPORT void SetFrame(const double theUMin,
@@ -132,8 +126,7 @@ public:
   int GetNBVPointsInFrame() const;
 
   //! Returns the grid point in frame.
-  Standard_EXPORT const gp_Pnt& GetPointInFrame(const int theUIndex,
-                                                const int theVIndex) const;
+  Standard_EXPORT const gp_Pnt& GetPointInFrame(const int theUIndex, const int theVIndex) const;
 
   //! Query the U parameter of the grid points
   //! at that index in frame.
@@ -147,20 +140,20 @@ public:
   Standard_EXPORT void ClearGrid();
 
 private:
-  int                   myNbSampleU;
-  int                   myNbSampleV;
-  double                      myMinRangeU;
-  double                      myMinRangeV;
-  NCollection_Map<IntTools_SurfaceRangeSample>        myMapRangeOut;
+  int                                                       myNbSampleU;
+  int                                                       myNbSampleV;
+  double                                                    myMinRangeU;
+  double                                                    myMinRangeV;
+  NCollection_Map<IntTools_SurfaceRangeSample>              myMapRangeOut;
   NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> myMapBox;
-  occ::handle<NCollection_HArray1<double>>      myUParams;
-  occ::handle<NCollection_HArray1<double>>      myVParams;
-  occ::handle<NCollection_HArray2<gp_Pnt>>        myGridPoints;
-  int                   myUIndMin;
-  int                   myUIndMax;
-  int                   myVIndMin;
-  int                   myVIndMax;
-  double                      myDeflection;
+  occ::handle<NCollection_HArray1<double>>                  myUParams;
+  occ::handle<NCollection_HArray1<double>>                  myVParams;
+  occ::handle<NCollection_HArray2<gp_Pnt>>                  myGridPoints;
+  int                                                       myUIndMin;
+  int                                                       myUIndMax;
+  int                                                       myVIndMin;
+  int                                                       myVIndMax;
+  double                                                    myDeflection;
 };
 
 #include <IntTools_SurfaceRangeLocalizeData.lxx>

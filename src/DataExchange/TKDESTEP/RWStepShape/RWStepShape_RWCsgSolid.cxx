@@ -21,7 +21,7 @@
 RWStepShape_RWCsgSolid::RWStepShape_RWCsgSolid() {}
 
 void RWStepShape_RWCsgSolid::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepShape_CsgSolid>&      ent) const
 {
@@ -60,7 +60,7 @@ void RWStepShape_RWCsgSolid::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aTreeRootExpression);
 }
 
-void RWStepShape_RWCsgSolid::WriteStep(StepData_StepWriter&              SW,
+void RWStepShape_RWCsgSolid::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepShape_CsgSolid>& ent) const
 {
 
@@ -75,7 +75,7 @@ void RWStepShape_RWCsgSolid::WriteStep(StepData_StepWriter&              SW,
 }
 
 void RWStepShape_RWCsgSolid::Share(const occ::handle<StepShape_CsgSolid>& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&              iter) const
 {
   // idem ...
   iter.GetOneItem(ent->TreeRootExpression().BooleanResult());

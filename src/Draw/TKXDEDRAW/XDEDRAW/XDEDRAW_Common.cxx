@@ -37,18 +37,16 @@
 // function : SetCurWS
 // purpose  : Set current file if many files are read
 //=======================================================================
-static int SetCurWS(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int SetCurWS(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 2)
   {
     theDI << "Use: " << theArgVec[0] << " filename \n";
     return 1;
   }
-  const TCollection_AsciiString   aSessionName(theArgVec[1]);
-  occ::handle<XSControl_WorkSession>   aSession;
-  const XSControl_WorkSessionMap& aWSList = XSDRAW::WorkSessionList();
+  const TCollection_AsciiString      aSessionName(theArgVec[1]);
+  occ::handle<XSControl_WorkSession> aSession;
+  const XSControl_WorkSessionMap&    aWSList = XSDRAW::WorkSessionList();
   if (!aWSList.Find(aSessionName, aSession))
   {
     TCollection_AsciiString aWSs;
@@ -69,9 +67,7 @@ static int SetCurWS(Draw_Interpretor& theDI,
 // function : GetDicWSList
 // purpose  : List all files recorded after translation
 //=======================================================================
-static int GetDicWSList(Draw_Interpretor& theDI,
-                                     int  theNbArgs,
-                                     const char**      theArgVec)
+static int GetDicWSList(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   (void)theNbArgs;
   (void)theArgVec;
@@ -89,9 +85,7 @@ static int GetDicWSList(Draw_Interpretor& theDI,
 // function : GetCurWS
 // purpose  : Return name of file which is current
 //=======================================================================
-static int GetCurWS(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int GetCurWS(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   (void)theNbArgs;
   (void)theArgVec;
@@ -104,9 +98,7 @@ static int GetCurWS(Draw_Interpretor& theDI,
 // function : FromShape
 // purpose  : Apply fromshape command to all the loaded WSs
 //=======================================================================
-static int FromShape(Draw_Interpretor& theDI,
-                                  int  theNbArgs,
-                                  const char**      theArgVec)
+static int FromShape(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -137,9 +129,7 @@ static int FromShape(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int Expand(Draw_Interpretor& theDI,
-                               int  theNbArgs,
-                               const char**      theArgVec)
+static int Expand(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -157,7 +147,7 @@ static int Expand(Draw_Interpretor& theDI,
   }
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  bool          recurs     = false;
+  bool                           recurs     = false;
   if (atoi(theArgVec[2]) != 0)
     recurs = true;
 
@@ -202,9 +192,7 @@ static int Expand(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int Extract(Draw_Interpretor& theDI,
-                                int  theNbArgs,
-                                const char**      theArgVec)
+static int Extract(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 4)
   {
@@ -219,8 +207,8 @@ static int Extract(Draw_Interpretor& theDI,
     theDI << "Error " << theArgVec[1] << " is not a document\n";
     return 1;
   }
-  TDF_Label        aDstLabel;
-  int anArgInd = 3;
+  TDF_Label aDstLabel;
+  int       anArgInd = 3;
   TDF_Tool::Label(aDstDoc->GetData(), theArgVec[2], aDstLabel);
   occ::handle<XCAFDoc_ShapeTool> aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDstDoc->Main());
   if (aDstLabel.IsNull())
@@ -263,9 +251,7 @@ static int Extract(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int Filter(Draw_Interpretor& theDI,
-                               int  theNbArgs,
-                               const char**      theArgVec)
+static int Filter(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
   {

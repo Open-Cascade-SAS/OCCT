@@ -24,7 +24,6 @@
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
-#include <NCollection_Sequence.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
@@ -63,63 +62,68 @@ public:
   Standard_EXPORT IGESToBRep_TopoCurve(const IGESToBRep_TopoCurve& CS);
 
   //! Creates a tool TopoCurve ready to run.
-  Standard_EXPORT IGESToBRep_TopoCurve(const double    eps,
-                                       const double    epsGeom,
-                                       const double    epsCoeff,
-                                       const bool mode,
-                                       const bool modeapprox,
-                                       const bool optimized);
+  Standard_EXPORT IGESToBRep_TopoCurve(const double eps,
+                                       const double epsGeom,
+                                       const double epsCoeff,
+                                       const bool   mode,
+                                       const bool   modeapprox,
+                                       const bool   optimized);
 
   Standard_EXPORT TopoDS_Shape TransferTopoCurve(const occ::handle<IGESData_IGESEntity>& start);
 
   Standard_EXPORT TopoDS_Shape Transfer2dTopoCurve(const occ::handle<IGESData_IGESEntity>& start,
-                                                   const TopoDS_Face&                 face,
-                                                   const gp_Trsf2d&                   trans,
-                                                   const double                uFact);
+                                                   const TopoDS_Face&                      face,
+                                                   const gp_Trsf2d&                        trans,
+                                                   const double                            uFact);
 
-  Standard_EXPORT TopoDS_Shape TransferTopoBasicCurve(const occ::handle<IGESData_IGESEntity>& start);
+  Standard_EXPORT TopoDS_Shape
+    TransferTopoBasicCurve(const occ::handle<IGESData_IGESEntity>& start);
 
-  Standard_EXPORT TopoDS_Shape Transfer2dTopoBasicCurve(const occ::handle<IGESData_IGESEntity>& start,
-                                                        const TopoDS_Face&                 face,
-                                                        const gp_Trsf2d&                   trans,
-                                                        const double                uFact);
+  Standard_EXPORT TopoDS_Shape
+    Transfer2dTopoBasicCurve(const occ::handle<IGESData_IGESEntity>& start,
+                             const TopoDS_Face&                      face,
+                             const gp_Trsf2d&                        trans,
+                             const double                            uFact);
 
   Standard_EXPORT TopoDS_Vertex TransferPoint(const occ::handle<IGESGeom_Point>& start);
 
   Standard_EXPORT TopoDS_Vertex Transfer2dPoint(const occ::handle<IGESGeom_Point>& start);
 
-  Standard_EXPORT TopoDS_Shape TransferCompositeCurve(const occ::handle<IGESGeom_CompositeCurve>& start);
+  Standard_EXPORT TopoDS_Shape
+    TransferCompositeCurve(const occ::handle<IGESGeom_CompositeCurve>& start);
 
   Standard_EXPORT TopoDS_Shape
     Transfer2dCompositeCurve(const occ::handle<IGESGeom_CompositeCurve>& start,
-                             const TopoDS_Face&                     face,
-                             const gp_Trsf2d&                       trans,
-                             const double                    uFact);
+                             const TopoDS_Face&                          face,
+                             const gp_Trsf2d&                            trans,
+                             const double                                uFact);
 
   Standard_EXPORT TopoDS_Shape TransferOffsetCurve(const occ::handle<IGESGeom_OffsetCurve>& start);
 
   Standard_EXPORT TopoDS_Shape Transfer2dOffsetCurve(const occ::handle<IGESGeom_OffsetCurve>& start,
-                                                     const TopoDS_Face&                  face,
-                                                     const gp_Trsf2d&                    trans,
-                                                     const double                 uFact);
+                                                     const TopoDS_Face&                       face,
+                                                     const gp_Trsf2d&                         trans,
+                                                     const double uFact);
 
-  Standard_EXPORT TopoDS_Shape TransferCurveOnSurface(const occ::handle<IGESGeom_CurveOnSurface>& start);
+  Standard_EXPORT TopoDS_Shape
+    TransferCurveOnSurface(const occ::handle<IGESGeom_CurveOnSurface>& start);
 
   //! Transfers a CurveOnSurface directly on a face to trim it.
   //! The CurveOnSurface have to be defined Outer or Inner.
-  Standard_EXPORT TopoDS_Shape TransferCurveOnFace(TopoDS_Face&                           face,
-                                                   const occ::handle<IGESGeom_CurveOnSurface>& start,
-                                                   const gp_Trsf2d&                       trans,
-                                                   const double                    uFact,
-                                                   const bool                 IsCurv);
+  Standard_EXPORT TopoDS_Shape
+    TransferCurveOnFace(TopoDS_Face&                                face,
+                        const occ::handle<IGESGeom_CurveOnSurface>& start,
+                        const gp_Trsf2d&                            trans,
+                        const double                                uFact,
+                        const bool                                  IsCurv);
 
   Standard_EXPORT TopoDS_Shape TransferBoundary(const occ::handle<IGESGeom_Boundary>& start);
 
   //! Transfers a Boundary directly on a face to trim it.
-  Standard_EXPORT TopoDS_Shape TransferBoundaryOnFace(TopoDS_Face&                     face,
+  Standard_EXPORT TopoDS_Shape TransferBoundaryOnFace(TopoDS_Face&                          face,
                                                       const occ::handle<IGESGeom_Boundary>& start,
-                                                      const gp_Trsf2d&                 trans,
-                                                      const double              uFact);
+                                                      const gp_Trsf2d&                      trans,
+                                                      const double                          uFact);
 
   Standard_EXPORT void ApproxBSplineCurve(const occ::handle<Geom_BSplineCurve>& start);
 
@@ -148,14 +152,14 @@ public:
 private:
   Standard_EXPORT TopoDS_Shape
     TransferCompositeCurveGeneral(const occ::handle<IGESGeom_CompositeCurve>& start,
-                                  const bool                 is2d,
-                                  const TopoDS_Face&                     face,
-                                  const gp_Trsf2d&                       trans,
-                                  const double                    uFact);
+                                  const bool                                  is2d,
+                                  const TopoDS_Face&                          face,
+                                  const gp_Trsf2d&                            trans,
+                                  const double                                uFact);
 
   NCollection_Sequence<occ::handle<Geom_Curve>>   TheCurves;
   NCollection_Sequence<occ::handle<Geom2d_Curve>> TheCurves2d;
-  bool           TheBadCase;
+  bool                                            TheBadCase;
 };
 
 #endif // _IGESToBRep_TopoCurve_HeaderFile

@@ -107,7 +107,8 @@ void BinTools_IStream::GoTo(const uint64_t& thePosition)
 TopAbs_ShapeEnum BinTools_IStream::ShapeType()
 {
   return TopAbs_ShapeEnum(
-    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1) >> 2);
+    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1)
+    >> 2);
 }
 
 //=================================================================================================
@@ -115,7 +116,8 @@ TopAbs_ShapeEnum BinTools_IStream::ShapeType()
 TopAbs_Orientation BinTools_IStream::ShapeOrientation()
 {
   return TopAbs_Orientation(
-    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1) & 3);
+    (static_cast<uint8_t>(myLastType) - static_cast<uint8_t>(BinTools_ObjectType_EndShape) - 1)
+    & 3);
 }
 
 //=================================================================================================
@@ -224,14 +226,12 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Trsf& theValue)
 
 //=================================================================================================
 
-void BinTools_IStream::ReadBools(bool& theBool1,
-                                 bool& theBool2,
-                                 bool& theBool3)
+void BinTools_IStream::ReadBools(bool& theBool1, bool& theBool2, bool& theBool3)
 {
   uint8_t aByte = ReadByte();
-  theBool1            = (aByte & 1) == 1;
-  theBool2            = (aByte & 2) == 2;
-  theBool3            = (aByte & 4) == 4;
+  theBool1      = (aByte & 1) == 1;
+  theBool2      = (aByte & 2) == 2;
+  theBool3      = (aByte & 4) == 4;
 }
 
 //=================================================================================================
@@ -245,11 +245,11 @@ void BinTools_IStream::ReadBools(bool& theBool1,
                                  bool& theBool7)
 {
   uint8_t aByte = ReadByte();
-  theBool1            = (aByte & 1) == 1;
-  theBool2            = (aByte & 2) == 2;
-  theBool3            = (aByte & 4) == 4;
-  theBool4            = (aByte & 8) == 8;
-  theBool5            = (aByte & 16) == 16;
-  theBool6            = (aByte & 32) == 32;
-  theBool7            = (aByte & 64) == 64;
+  theBool1      = (aByte & 1) == 1;
+  theBool2      = (aByte & 2) == 2;
+  theBool3      = (aByte & 4) == 4;
+  theBool4      = (aByte & 8) == 8;
+  theBool5      = (aByte & 16) == 16;
+  theBool6      = (aByte & 32) == 32;
+  theBool7      = (aByte & 64) == 64;
 }

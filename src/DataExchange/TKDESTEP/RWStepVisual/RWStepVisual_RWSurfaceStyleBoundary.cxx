@@ -22,7 +22,7 @@ RWStepVisual_RWSurfaceStyleBoundary::RWStepVisual_RWSurfaceStyleBoundary() {}
 
 void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepVisual_SurfaceStyleBoundary>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleBoundary::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleBoundary::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepVisual_SurfaceStyleBoundary>& ent) const
 {
 
@@ -58,8 +58,9 @@ void RWStepVisual_RWSurfaceStyleBoundary::WriteStep(
   SW.Send(ent->StyleOfBoundary());
 }
 
-void RWStepVisual_RWSurfaceStyleBoundary::Share(const occ::handle<StepVisual_SurfaceStyleBoundary>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepVisual_RWSurfaceStyleBoundary::Share(
+  const occ::handle<StepVisual_SurfaceStyleBoundary>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->StyleOfBoundary());

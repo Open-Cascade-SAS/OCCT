@@ -27,7 +27,7 @@ StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel() {}
 //=================================================================================================
 
 void StepShape_EdgeBasedWireframeModel::Init(
-  const occ::handle<TCollection_HAsciiString>&            aRepresentationItem_Name,
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
   const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>& aEbwmBoundary)
 {
   StepGeom_GeometricRepresentationItem::Init(aRepresentationItem_Name);
@@ -37,7 +37,8 @@ void StepShape_EdgeBasedWireframeModel::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> StepShape_EdgeBasedWireframeModel::EbwmBoundary() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>
+  StepShape_EdgeBasedWireframeModel::EbwmBoundary() const
 {
   return theEbwmBoundary;
 }

@@ -21,12 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Interface_EntityList.hxx>
 #include <Standard_Transient.hxx>
 #include <Interface_ParamType.hxx>
@@ -71,10 +68,10 @@ public:
   //! Returns data of a Parameter : its type, and the entity if it
   //! designates en entity ("ent") or its literal value else ("str")
   //! Returned value (Boolean) : True if it is an Entity, False else
-  Standard_EXPORT bool ParamData(const int            num,
-                                             Interface_ParamType&              ptype,
-                                             occ::handle<Standard_Transient>&       ent,
-                                             occ::handle<TCollection_HAsciiString>& val) const;
+  Standard_EXPORT bool ParamData(const int                              num,
+                                 Interface_ParamType&                   ptype,
+                                 occ::handle<Standard_Transient>&       ent,
+                                 occ::handle<TCollection_HAsciiString>& val) const;
 
   //! Returns the ParamType of a Param, given its rank
   //! Error if num is not between 1 and NbParams
@@ -95,11 +92,11 @@ public:
   Standard_EXPORT void Reservate(const int nb, const int nblit);
 
   //! Adds a literal Parameter to the list
-  Standard_EXPORT void AddLiteral(const Interface_ParamType               ptype,
+  Standard_EXPORT void AddLiteral(const Interface_ParamType                    ptype,
                                   const occ::handle<TCollection_HAsciiString>& val);
 
   //! Adds a Parameter which references an Entity
-  Standard_EXPORT void AddEntity(const Interface_ParamType         ptype,
+  Standard_EXPORT void AddEntity(const Interface_ParamType              ptype,
                                  const occ::handle<Standard_Transient>& ent);
 
   //! Removes a Parameter given its rank
@@ -107,14 +104,14 @@ public:
 
   //! Sets a new value for the Parameter <num>, to a literal value
   //! (if it referenced formerly an Entity, this Entity is removed)
-  Standard_EXPORT void SetLiteral(const int                  num,
-                                  const Interface_ParamType               ptype,
+  Standard_EXPORT void SetLiteral(const int                                    num,
+                                  const Interface_ParamType                    ptype,
                                   const occ::handle<TCollection_HAsciiString>& val);
 
   //! Sets a new value for the Parameter <num>, to reference an
   //! Entity. To simply change the Entity, see the variant below
-  Standard_EXPORT void SetEntity(const int            num,
-                                 const Interface_ParamType         ptype,
+  Standard_EXPORT void SetEntity(const int                              num,
+                                 const Interface_ParamType              ptype,
                                  const occ::handle<Standard_Transient>& ent);
 
   //! Changes the Entity referenced by the Parameter <num>
@@ -129,16 +126,16 @@ public:
   //! GetFromAnother method from Undefined entity of each Interface
   //! (the basic operation is the same regardless the norm)
   Standard_EXPORT void GetFromAnother(const occ::handle<Interface_UndefinedContent>& other,
-                                      Interface_CopyTool&                       TC);
+                                      Interface_CopyTool&                            TC);
 
   DEFINE_STANDARD_RTTIEXT(Interface_UndefinedContent, Standard_Transient)
 
 private:
-  int                        thenbparams;
-  int                        thenbstr;
-  occ::handle<NCollection_HArray1<int>>        theparams;
+  int                                                                     thenbparams;
+  int                                                                     thenbstr;
+  occ::handle<NCollection_HArray1<int>>                                   theparams;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> thevalues;
-  Interface_EntityList                    theentities;
+  Interface_EntityList                                                    theentities;
 };
 
 #endif // _Interface_UndefinedContent_HeaderFile

@@ -50,18 +50,18 @@
 // Out      : True if the chamfer has been computed
 //           False else
 //=======================================================================
-bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const occ::handle<ChFiDS_SurfData>& Data,
-                                       const ChFiDS_ChamfMode         theMode,
-                                       const gp_Pln&                  Pl1,
-                                       const gp_Pln&                  Pl2,
-                                       const TopAbs_Orientation       Or1,
-                                       const TopAbs_Orientation       Or2,
-                                       const double            theDis1,
-                                       const double            theDis2,
-                                       const gp_Lin&                  Spine,
-                                       const double            First,
-                                       const TopAbs_Orientation       Of1)
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
+                           const occ::handle<ChFiDS_SurfData>& Data,
+                           const ChFiDS_ChamfMode              theMode,
+                           const gp_Pln&                       Pl1,
+                           const gp_Pln&                       Pl2,
+                           const TopAbs_Orientation            Or1,
+                           const TopAbs_Orientation            Or2,
+                           const double                        theDis1,
+                           const double                        theDis2,
+                           const gp_Lin&                       Spine,
+                           const double                        First,
+                           const TopAbs_Orientation            Of1)
 {
 
   // Creation of the plane which carry the chamfer
@@ -83,7 +83,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // compute the intersection line of Pl1 and Pl2
   IntAna_QuadQuadGeo LInt(Pl1, Pl2, Precision::Angular(), Precision::Confusion());
 
-  gp_Pnt        P;
+  gp_Pnt P;
   double Fint;
   if (LInt.IsDone())
   {
@@ -117,10 +117,10 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     double SinAlpha   = std::sin(Alpha);
     double CosAlpha   = std::cos(Alpha);
     double CotanAlpha = CosAlpha / SinAlpha;
-    Dis1                     = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
+    Dis1              = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
     double CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
     double FullDist1  = aDis2 / CosBeta;
-    Dis2                     = FullDist1 - aDis1 / SinAlpha;
+    Dis2              = FullDist1 - aDis1 / SinAlpha;
   }
 
   // Compute a point on the plane Pl1 and on the chamfer
@@ -167,8 +167,8 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // Compute the orientation of the chamfer plane
   gp_Dir norplch = gpl->Pln().Position().XDirection().Crossed(gpl->Pln().Position().YDirection());
 
-  gp_Dir           DirCh12(gp_Vec(P1, P2));
-  bool toreverse = (norplch.Dot(norface1) <= 0.);
+  gp_Dir DirCh12(gp_Vec(P1, P2));
+  bool   toreverse = (norplch.Dot(norface1) <= 0.);
   if (VecTransl1.Dot(DirCh12) > 0)
     toreverse = !toreverse;
 
@@ -180,14 +180,14 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
   // Loading of the FaceInterferences with pcurves & 3d curves.
 
   // case face 1
-  gp_Lin            linPln(P1, xdir);
+  gp_Lin                 linPln(P1, xdir);
   occ::handle<Geom_Line> GLinPln1 = new Geom_Line(linPln);
 
   double u, v;
   ElSLib::PlaneParameters(Pos1, P1, u, v);
-  gp_Pnt2d            p2dPln(u, v);
-  gp_Dir2d            dir2dPln(xdir.Dot(Pos1.XDirection()), xdir.Dot(Pos1.YDirection()));
-  gp_Lin2d            lin2dPln(p2dPln, dir2dPln);
+  gp_Pnt2d                 p2dPln(u, v);
+  gp_Dir2d                 dir2dPln(xdir.Dot(Pos1.XDirection()), xdir.Dot(Pos1.YDirection()));
+  gp_Lin2d                 lin2dPln(p2dPln, dir2dPln);
   occ::handle<Geom2d_Line> GLin2dPln1 = new Geom2d_Line(lin2dPln);
 
   ElSLib::PlaneParameters(PlanAx3, P1, u, v);

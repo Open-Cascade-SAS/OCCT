@@ -46,7 +46,7 @@ public:
   //! Other parameters for approximation have default values.
   Standard_EXPORT ProjLib_ComputeApprox(const occ::handle<Adaptor3d_Curve>&   C,
                                         const occ::handle<Adaptor3d_Surface>& S,
-                                        const double              Tol);
+                                        const double                          Tol);
 
   //! Performs projecting.
   //! In case of approximation current values of parameters are used:
@@ -61,8 +61,7 @@ public:
   //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
   //! If theDegMin/Max < 0, algorithm uses values that are chosen depending of types curve 3d
   //! and surface.
-  Standard_EXPORT void SetDegree(const int theDegMin,
-                                 const int theDegMax);
+  Standard_EXPORT void SetDegree(const int theDegMin, const int theDegMax);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default
@@ -82,13 +81,13 @@ public:
   Standard_EXPORT double Tolerance() const;
 
 private:
-  double               myTolerance;
+  double                           myTolerance;
   occ::handle<Geom2d_BSplineCurve> myBSpline;
   occ::handle<Geom2d_BezierCurve>  myBezier;
-  int            myDegMin;
-  int            myDegMax;
-  int            myMaxSegments;
-  AppParCurves_Constraint     myBndPnt;
+  int                              myDegMin;
+  int                              myDegMax;
+  int                              myMaxSegments;
+  AppParCurves_Constraint          myBndPnt;
 };
 
 #endif // _ProjLib_ComputeApprox_HeaderFile

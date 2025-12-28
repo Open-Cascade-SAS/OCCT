@@ -32,8 +32,7 @@
 
 StepAP214_PersonAndOrganizationItem::StepAP214_PersonAndOrganizationItem() {}
 
-int StepAP214_PersonAndOrganizationItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_PersonAndOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

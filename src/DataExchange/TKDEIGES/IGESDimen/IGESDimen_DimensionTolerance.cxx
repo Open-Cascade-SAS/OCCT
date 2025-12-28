@@ -23,15 +23,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
 
 IGESDimen_DimensionTolerance::IGESDimen_DimensionTolerance() {}
 
-void IGESDimen_DimensionTolerance::Init(const int nbPropVal,
-                                        const int aSecTolFlag,
-                                        const int aTolType,
-                                        const int aTolPlaceFlag,
-                                        const double    anUpperTol,
-                                        const double    aLowerTol,
-                                        const bool aSignFlag,
-                                        const int aFracFlag,
-                                        const int aPrecision)
+void IGESDimen_DimensionTolerance::Init(const int    nbPropVal,
+                                        const int    aSecTolFlag,
+                                        const int    aTolType,
+                                        const int    aTolPlaceFlag,
+                                        const double anUpperTol,
+                                        const double aLowerTol,
+                                        const bool   aSignFlag,
+                                        const int    aFracFlag,
+                                        const int    aPrecision)
 {
   theNbPropertyValues       = nbPropVal;
   theSecondaryToleranceFlag = aSecTolFlag;

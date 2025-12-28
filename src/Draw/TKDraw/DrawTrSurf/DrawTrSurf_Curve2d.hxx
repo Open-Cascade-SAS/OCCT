@@ -32,15 +32,15 @@ class DrawTrSurf_Curve2d : public DrawTrSurf_Drawable
 public:
   //! creates a drawable curve from a curve of package Geom2d.
   Standard_EXPORT DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C,
-                                     const bool      DispOrigin = true);
+                                     const bool                       DispOrigin = true);
 
   Standard_EXPORT DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C,
-                                     const Draw_Color&           aColor,
-                                     const int      Discret,
-                                     const bool      DispOrigin     = true,
-                                     const bool      DispCurvRadius = false,
-                                     const double         RadiusMax      = 1.0e3,
-                                     const double         RatioOfRadius  = 0.1);
+                                     const Draw_Color&                aColor,
+                                     const int                        Discret,
+                                     const bool                       DispOrigin     = true,
+                                     const bool                       DispCurvRadius = false,
+                                     const double                     RadiusMax      = 1.0e3,
+                                     const double                     RatioOfRadius  = 0.1);
 
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
@@ -79,11 +79,11 @@ public:
 
 protected:
   occ::handle<Geom2d_Curve> curv;
-  Draw_Color           look;
-  bool     disporigin;
-  bool     dispcurvradius;
-  double        radiusmax;
-  double        radiusratio;
+  Draw_Color                look;
+  bool                      disporigin;
+  bool                      dispcurvradius;
+  double                    radiusmax;
+  double                    radiusratio;
 };
 
 #endif // _DrawTrSurf_Curve2d_HeaderFile

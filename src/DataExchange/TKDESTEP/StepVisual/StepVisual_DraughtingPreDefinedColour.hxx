@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepVisual_DraughtingPreDefinedColour();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingPreDefinedColour, StepVisual_PreDefinedColour)
-
 };
 
 #endif // _StepVisual_DraughtingPreDefinedColour_HeaderFile

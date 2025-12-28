@@ -47,13 +47,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
@@ -166,7 +161,7 @@ static void Hunt(const NCollection_Array1<double>& Arr, const double Coord, int&
 { // Warning: Hunt is used to find number of knot which equals coordinate component,
   //        when coordinate component definitely equals a knot only.
   constexpr double Tol = Precision::PConfusion() / 10;
-  int        i   = 1;
+  int              i   = 1;
   while ((i <= Arr.Upper()) && (std::abs(Coord - Arr(i)) > Tol))
   {
     i++;
@@ -180,10 +175,7 @@ static void Hunt(const NCollection_Array1<double>& Arr, const double Coord, int&
 
 //=================================================================================================
 
-static void ReverseParam(const double In1,
-                         const double In2,
-                         double&      Out1,
-                         double&      Out2)
+static void ReverseParam(const double In1, const double In2, double& Out1, double& Out2)
 {
 
   if (In1 > In2)
@@ -200,10 +192,7 @@ static void ReverseParam(const double In1,
 
 //=================================================================================================
 
-static void ReverseParam(const int In1,
-                         const int In2,
-                         int&      Out1,
-                         int&      Out2)
+static void ReverseParam(const int In1, const int In2, int& Out1, int& Out2)
 {
   if (In1 > In2)
   {
@@ -220,14 +209,14 @@ static void ReverseParam(const int In1,
 //=================================================================================================
 
 static void FindBounds(const NCollection_Array1<double>& Arr,
-                       const double         Coord,
-                       const double         Der,
-                       int&           Bound1,
-                       int&           Bound2,
-                       bool&           DerNull)
+                       const double                      Coord,
+                       const double                      Der,
+                       int&                              Bound1,
+                       int&                              Bound2,
+                       bool&                             DerNull)
 
 {
-  int        N   = 0;
+  int              N   = 0;
   constexpr double Tol = Precision::PConfusion() / 10;
   Hunt(Arr, Coord, N);
   DerNull = false;
@@ -279,18 +268,18 @@ static void FindBounds(const NCollection_Array1<double>& Arr,
 
 //=================================================================================================
 
-static void Locate1Coord(const int           Index,
-                         const gp_Pnt2d&                  UV,
-                         const gp_Vec2d&                  DUV,
+static void Locate1Coord(const int                             Index,
+                         const gp_Pnt2d&                       UV,
+                         const gp_Vec2d&                       DUV,
                          const occ::handle<Geom_BSplineCurve>& BSplC,
-                         gp_Pnt2d&                        LeftBot,
-                         gp_Pnt2d&                        RightTop)
+                         gp_Pnt2d&                             LeftBot,
+                         gp_Pnt2d&                             RightTop)
 {
-  double           Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
-  constexpr double Tol     = Precision::PConfusion() / 10;
-  int        i       = 1, Bnd1, Bnd2;
-  bool        DIsNull = false;
-  NCollection_Array1<double>    Arr(1, BSplC->NbKnots());
+  double                     Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
+  constexpr double           Tol     = Precision::PConfusion() / 10;
+  int                        i       = 1, Bnd1, Bnd2;
+  bool                       DIsNull = false;
+  NCollection_Array1<double> Arr(1, BSplC->NbKnots());
   BSplC->Knots(Arr);
 
   if (Index == 1)
@@ -450,17 +439,17 @@ static void Locate1Coord(const int           Index,
 
 //=================================================================================================
 
-static void Locate1Coord(const int             Index,
-                         const gp_Pnt2d&                    UV,
-                         const gp_Vec2d&                    DUV,
+static void Locate1Coord(const int                               Index,
+                         const gp_Pnt2d&                         UV,
+                         const gp_Vec2d&                         DUV,
                          const occ::handle<Geom_BSplineSurface>& BSplS,
-                         bool&                  DIsNull,
-                         gp_Pnt2d&                          LeftBot,
-                         gp_Pnt2d&                          RightTop)
+                         bool&                                   DIsNull,
+                         gp_Pnt2d&                               LeftBot,
+                         gp_Pnt2d&                               RightTop)
 {
   double           Comp1 = 0, DComp1 = 0;
   constexpr double Tol = Precision::PConfusion() / 10;
-  int        i = 1, Up = 0, Up1, Up2, Down = 0, Down1, Down2;
+  int              i = 1, Up = 0, Up1, Up2, Down = 0, Down1, Down2;
   double           cur = 0.;
 
   DIsNull = false;
@@ -666,13 +655,13 @@ static void Locate1Coord(const int             Index,
 // purpose  : along non-BSpline curve
 //=======================================================================
 
-static void Locate2Coord(const int Index,
-                         const gp_Pnt2d&        UV,
-                         const gp_Vec2d&        DUV,
+static void Locate2Coord(const int       Index,
+                         const gp_Pnt2d& UV,
+                         const gp_Vec2d& DUV,
                          const double    I1,
                          const double    I2,
-                         gp_Pnt2d&              LeftBot,
-                         gp_Pnt2d&              RightTop)
+                         gp_Pnt2d&       LeftBot,
+                         gp_Pnt2d&       RightTop)
 {
   constexpr double Tol   = Precision::PConfusion() / 10;
   double           Comp1 = 0, DComp1 = 0;
@@ -775,17 +764,17 @@ static void Locate2Coord(const int Index,
 
 //=================================================================================================
 
-static void Locate2Coord(const int             Index,
-                         const gp_Pnt2d&                    UV,
-                         const gp_Vec2d&                    DUV,
+static void Locate2Coord(const int                               Index,
+                         const gp_Pnt2d&                         UV,
+                         const gp_Vec2d&                         DUV,
                          const occ::handle<Geom_BSplineSurface>& BSplS,
-                         const NCollection_Array1<double>&        Arr,
-                         gp_Pnt2d&                          LeftBot,
-                         gp_Pnt2d&                          RightTop)
+                         const NCollection_Array1<double>&       Arr,
+                         gp_Pnt2d&                               LeftBot,
+                         gp_Pnt2d&                               RightTop)
 {
   double           Comp = 0, DComp = 0, Tmp1 = 0.0, Tmp2 = 0.0;
   constexpr double Tol = Precision::PConfusion() / 10;
-  int        N = 0, NUp = 0, NLo = 0;
+  int              N = 0, NUp = 0, NLo = 0;
   if (Index == 1)
   {
     Comp  = UV.X();
@@ -1001,8 +990,8 @@ GeomAbs_Shape Adaptor3d_CurveOnSurface::Continuity() const
 // Auxiliary: adds roots of equation to sorted sequence of parameters
 // along curve, keeping it sorted and avoiding repetitions (within tolerance Tol)
 static void AddIntervals(const occ::handle<NCollection_HSequence<double>>& theParameters,
-                         const math_FunctionRoots&              theRoots,
-                         double                          theTol)
+                         const math_FunctionRoots&                         theRoots,
+                         double                                            theTol)
 {
   if (!theRoots.IsDone() || theRoots.IsAllNull())
     return;
@@ -1046,8 +1035,8 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
   NCollection_Array1<double> TabV(TabBuf(nu + 2), 1, nv + 1);
   NCollection_Array1<double> TabC(TabBuf(nu + nv + 3), 1, nc + 1);
 
-  int NbSample = 20;
-  double    U, V, Tdeb, Tfin;
+  int    NbSample = 20;
+  double U, V, Tdeb, Tfin;
   Tdeb = myCurve->FirstParameter();
   Tfin = myCurve->LastParameter();
 
@@ -1115,8 +1104,8 @@ void Adaptor3d_CurveOnSurface::Intervals(NCollection_Array1<double>& T, const Ge
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> Adaptor3d_CurveOnSurface::Trim(const double First,
-                                                       const double Last,
-                                                       const double Tol) const
+                                                            const double Last,
+                                                            const double Tol) const
 {
   occ::handle<Adaptor3d_CurveOnSurface> HCS = new Adaptor3d_CurveOnSurface();
   HCS->Load(mySurface);
@@ -1275,16 +1264,16 @@ void Adaptor3d_CurveOnSurface::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec&
 //=================================================================================================
 
 void Adaptor3d_CurveOnSurface::D3(const double U,
-                                  gp_Pnt&             P,
-                                  gp_Vec&             V1,
-                                  gp_Vec&             V2,
-                                  gp_Vec&             V3) const
+                                  gp_Pnt&      P,
+                                  gp_Vec&      V1,
+                                  gp_Vec&      V2,
+                                  gp_Vec&      V3) const
 {
 
   constexpr double Tol = Precision::PConfusion() / 10;
-  gp_Pnt2d                UV;
-  gp_Vec2d                DW, D2W, D3W;
-  gp_Vec                  D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV;
+  gp_Pnt2d         UV;
+  gp_Vec2d         DW, D2W, D3W;
+  gp_Vec           D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV;
 
   double FP = myCurve->FirstParameter();
   double LP = myCurve->LastParameter();
@@ -1454,7 +1443,7 @@ occ::handle<Geom_BezierCurve> Adaptor3d_CurveOnSurface::Bezier() const
                                  "Adaptor3d_CurveOnSurface : Bezier");
 
   occ::handle<Geom2d_BezierCurve> Bez2d   = myCurve->Bezier();
-  int           NbPoles = Bez2d->NbPoles();
+  int                             NbPoles = Bez2d->NbPoles();
 
   const gp_Pln& Plane = mySurface->Plane();
 
@@ -1486,7 +1475,7 @@ occ::handle<Geom_BSplineCurve> Adaptor3d_CurveOnSurface::BSpline() const
                                  "Adaptor3d_CurveOnSurface : BSpline");
 
   occ::handle<Geom2d_BSplineCurve> Bsp2d   = myCurve->BSpline();
-  int            NbPoles = Bsp2d->NbPoles();
+  int                              NbPoles = Bsp2d->NbPoles();
 
   const gp_Pln& Plane = mySurface->Plane();
 
@@ -1496,8 +1485,8 @@ occ::handle<Geom_BSplineCurve> Adaptor3d_CurveOnSurface::BSpline() const
     Poles(i) = to3d(Plane, Bsp2d->Pole(i));
   }
 
-  NCollection_Array1<double>    Knots(1, Bsp2d->NbKnots());
-  NCollection_Array1<int> Mults(1, Bsp2d->NbKnots());
+  NCollection_Array1<double> Knots(1, Bsp2d->NbKnots());
+  NCollection_Array1<int>    Mults(1, Bsp2d->NbKnots());
   Bsp2d->Knots(Knots);
   Bsp2d->Multiplicities(Mults);
 
@@ -1727,10 +1716,10 @@ void Adaptor3d_CurveOnSurface::EvalKPart()
 void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 {
   double           FirstPar, LastPar;
-  gp_Pnt2d                UV, LeftBot, RightTop;
-  gp_Vec2d                DUV;
+  gp_Pnt2d         UV, LeftBot, RightTop;
+  gp_Vec2d         DUV;
   constexpr double Tol = Precision::PConfusion() / 10;
-  bool        Ok  = true;
+  bool             Ok  = true;
 
   FirstPar = myCurve->FirstParameter();
   myCurve->D1(FirstPar, UV, DUV);
@@ -1817,11 +1806,11 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 
 //=================================================================================================
 
-bool Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                  UV,
-                                                             const gp_Vec2d&                  DUV,
-                                                             const occ::handle<Adaptor3d_Surface>& S,
-                                                             gp_Pnt2d& LeftBot,
-                                                             gp_Pnt2d& RightTop) const
+bool Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                       UV,
+                                                 const gp_Vec2d&                       DUV,
+                                                 const occ::handle<Adaptor3d_Surface>& S,
+                                                 gp_Pnt2d&                             LeftBot,
+                                                 gp_Pnt2d& RightTop) const
 {
   occ::handle<Adaptor3d_Curve> AHC = S->BasisCurve();
 
@@ -1855,13 +1844,13 @@ bool Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d&                
 
 //=================================================================================================
 
-bool Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&                  UV,
-                                                             const gp_Vec2d&                  DUV,
-                                                             const occ::handle<Adaptor3d_Surface>& S,
-                                                             gp_Pnt2d& LeftBot,
-                                                             gp_Pnt2d& RightTop) const
+bool Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&                       UV,
+                                                 const gp_Vec2d&                       DUV,
+                                                 const occ::handle<Adaptor3d_Surface>& S,
+                                                 gp_Pnt2d&                             LeftBot,
+                                                 gp_Pnt2d& RightTop) const
 {
-  bool            Ok = true;
+  bool                             Ok = true;
   occ::handle<Adaptor3d_Surface>   AHS;
   occ::handle<Geom_BSplineSurface> BSplS;
   AHS                            = S->BasisSurface();
@@ -1885,14 +1874,14 @@ bool Adaptor3d_CurveOnSurface::LocatePart_Offset(const gp_Pnt2d&                
 
 //=================================================================================================
 
-void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                  UV,
-                                          const gp_Vec2d&                  DUV,
+void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                       UV,
+                                          const gp_Vec2d&                       DUV,
                                           const occ::handle<Adaptor3d_Surface>& S,
-                                          gp_Pnt2d&                        LeftBot,
-                                          gp_Pnt2d&                        RightTop) const
+                                          gp_Pnt2d&                             LeftBot,
+                                          gp_Pnt2d&                             RightTop) const
 {
   occ::handle<Geom_BSplineSurface> BSplS;
-  BSplS                     = S->BSpline();
+  BSplS         = S->BSpline();
   bool DUIsNull = false, DVIsNull = false;
 
   Locate1Coord(1, UV, DUV, BSplS, DUIsNull, LeftBot, RightTop);

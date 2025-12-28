@@ -36,12 +36,12 @@ IGESGraph_ToolLineFontDefTemplate::IGESGraph_ToolLineFontDefTemplate() {}
 void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams(
   const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
   const occ::handle<IGESData_IGESReaderData>&       IR,
-  IGESData_ParamReader&                        PR) const
+  IGESData_ParamReader&                             PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int               tempOrientation;
-  double                  tempDistance, tempScale;
+  int                                 tempOrientation;
+  double                              tempDistance, tempScale;
   occ::handle<IGESBasic_SubfigureDef> tempTemplateEntity;
 
   // clang-format off
@@ -63,7 +63,7 @@ void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams(
 
 void IGESGraph_ToolLineFontDefTemplate::WriteOwnParams(
   const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
-  IGESData_IGESWriter&                         IW) const
+  IGESData_IGESWriter&                              IW) const
 {
   IW.Send(ent->Orientation());
   IW.Send(ent->TemplateEntity());
@@ -71,8 +71,9 @@ void IGESGraph_ToolLineFontDefTemplate::WriteOwnParams(
   IW.Send(ent->Scale());
 }
 
-void IGESGraph_ToolLineFontDefTemplate::OwnShared(const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
-                                                  Interface_EntityIterator& iter) const
+void IGESGraph_ToolLineFontDefTemplate::OwnShared(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  Interface_EntityIterator&                         iter) const
 {
   iter.GetOneItem(ent->TemplateEntity());
 }
@@ -80,7 +81,7 @@ void IGESGraph_ToolLineFontDefTemplate::OwnShared(const occ::handle<IGESGraph_Li
 void IGESGraph_ToolLineFontDefTemplate::OwnCopy(
   const occ::handle<IGESGraph_LineFontDefTemplate>& another,
   const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
-  Interface_CopyTool&                          TC) const
+  Interface_CopyTool&                               TC) const
 {
   int tempOrientation = another->Orientation();
   DeclareAndCast(IGESBasic_SubfigureDef,
@@ -108,9 +109,10 @@ IGESData_DirChecker IGESGraph_ToolLineFontDefTemplate::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolLineFontDefTemplate::OwnCheck(const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
-                                                 const Interface_ShareTool&,
-                                                 occ::handle<Interface_Check>& ach) const
+void IGESGraph_ToolLineFontDefTemplate::OwnCheck(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  const Interface_ShareTool&,
+  occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() == 0)
     ach->AddWarning("Line Font Rank is zero");
@@ -118,10 +120,11 @@ void IGESGraph_ToolLineFontDefTemplate::OwnCheck(const occ::handle<IGESGraph_Lin
     ach->AddWarning("Invalid Value As Line Font Rank");
 }
 
-void IGESGraph_ToolLineFontDefTemplate::OwnDump(const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
-                                                const IGESData_IGESDumper&                   dumper,
-                                                Standard_OStream&                            S,
-                                                const int level) const
+void IGESGraph_ToolLineFontDefTemplate::OwnDump(
+  const occ::handle<IGESGraph_LineFontDefTemplate>& ent,
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                                         level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 

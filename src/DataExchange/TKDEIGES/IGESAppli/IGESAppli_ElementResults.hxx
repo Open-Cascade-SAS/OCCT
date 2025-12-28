@@ -21,15 +21,10 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESAppli_FiniteElement.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 class IGESDimen_GeneralNote;
 class IGESBasic_HArray1OfHArray1OfInteger;
 class IGESBasic_HArray1OfHArray1OfReal;
@@ -59,19 +54,20 @@ public:
   //! - allnbResDataLocs  : Number of result data report locations
   //! - allResDataLocs    : Result Data Report Locations
   //! - allResults        : List of Result data values of FEM analysis
-  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&               aNote,
-                            const int                             aSubCase,
-                            const double                                aTime,
-                            const int                             nbResults,
-                            const int                             aResRepFlag,
-                            const occ::handle<NCollection_HArray1<int>>&            allElementIdents,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>&    allFiniteElems,
-                            const occ::handle<NCollection_HArray1<int>>&            allTopTypes,
-                            const occ::handle<NCollection_HArray1<int>>&            nbLayers,
-                            const occ::handle<NCollection_HArray1<int>>&            allDataLayerFlags,
-                            const occ::handle<NCollection_HArray1<int>>&            allnbResDataLocs,
-                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allResDataLocs,
-                            const occ::handle<IGESBasic_HArray1OfHArray1OfReal>&    allResults);
+  Standard_EXPORT void Init(
+    const occ::handle<IGESDimen_GeneralNote>&                                     aNote,
+    const int                                                                     aSubCase,
+    const double                                                                  aTime,
+    const int                                                                     nbResults,
+    const int                                                                     aResRepFlag,
+    const occ::handle<NCollection_HArray1<int>>&                                  allElementIdents,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>& allFiniteElems,
+    const occ::handle<NCollection_HArray1<int>>&                                  allTopTypes,
+    const occ::handle<NCollection_HArray1<int>>&                                  nbLayers,
+    const occ::handle<NCollection_HArray1<int>>&                                  allDataLayerFlags,
+    const occ::handle<NCollection_HArray1<int>>&                                  allnbResDataLocs,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&                       allResDataLocs,
+    const occ::handle<IGESBasic_HArray1OfHArray1OfReal>&                          allResults);
 
   //! Changes the FormNumber (which indicates Type of Result)
   //! Error if not in range [0-34]
@@ -115,8 +111,7 @@ public:
 
   //! returns Result Data Report Locations
   //! UNFINISHED
-  Standard_EXPORT int ResultDataLoc(const int NElem,
-                                                 const int NLoc) const;
+  Standard_EXPORT int ResultDataLoc(const int NElem, const int NLoc) const;
 
   //! returns total number of results
   Standard_EXPORT int NbResults(const int Index) const;
@@ -124,15 +119,14 @@ public:
   //! returns Result data value for an Element, given its
   //! order between 1 and <NbResults(NElem)> (direct access)
   //! For a more comprehensive access, see below
-  Standard_EXPORT double ResultData(const int NElem,
-                                           const int num) const;
+  Standard_EXPORT double ResultData(const int NElem, const int num) const;
 
   //! Computes, for a given Element <NElem>, the rank of a
   //! individual Result Data, given <NVal>,<NLay>,<NLoc>
   Standard_EXPORT int ResultRank(const int NElem,
-                                              const int NVal,
-                                              const int NLay,
-                                              const int NLoc) const;
+                                 const int NVal,
+                                 const int NLay,
+                                 const int NLoc) const;
 
   //! returns Result data values of FEM analysis, according this
   //! definition :
@@ -144,9 +138,9 @@ public:
   //! computed by ResultRank, in which the leftmost subscript
   //! changes most rapidly
   Standard_EXPORT double ResultData(const int NElem,
-                                           const int NVal,
-                                           const int NLay,
-                                           const int NLoc) const;
+                                    const int NVal,
+                                    const int NLay,
+                                    const int NLoc) const;
 
   //! Returns in once the entire list of data for an Element,
   //! addressed as by ResultRank (See above)
@@ -155,19 +149,19 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_ElementResults, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESDimen_GeneralNote>               theNote;
-  int                            theSubcaseNumber;
-  double                               theTime;
-  int                            theNbResultValues;
-  int                            theResultReportFlag;
-  occ::handle<NCollection_HArray1<int>>            theElementIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>>    theElements;
-  occ::handle<NCollection_HArray1<int>>            theElementTopologyTypes;
-  occ::handle<NCollection_HArray1<int>>            theNbLayers;
-  occ::handle<NCollection_HArray1<int>>            theDataLayerFlags;
-  occ::handle<NCollection_HArray1<int>>            theNbResultDataLocs;
-  occ::handle<IGESBasic_HArray1OfHArray1OfInteger> theResultDataLocs;
-  occ::handle<IGESBasic_HArray1OfHArray1OfReal>    theResultData;
+  occ::handle<IGESDimen_GeneralNote>                                     theNote;
+  int                                                                    theSubcaseNumber;
+  double                                                                 theTime;
+  int                                                                    theNbResultValues;
+  int                                                                    theResultReportFlag;
+  occ::handle<NCollection_HArray1<int>>                                  theElementIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_FiniteElement>>> theElements;
+  occ::handle<NCollection_HArray1<int>>                                  theElementTopologyTypes;
+  occ::handle<NCollection_HArray1<int>>                                  theNbLayers;
+  occ::handle<NCollection_HArray1<int>>                                  theDataLayerFlags;
+  occ::handle<NCollection_HArray1<int>>                                  theNbResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                       theResultDataLocs;
+  occ::handle<IGESBasic_HArray1OfHArray1OfReal>                          theResultData;
 };
 
 #endif // _IGESAppli_ElementResults_HeaderFile

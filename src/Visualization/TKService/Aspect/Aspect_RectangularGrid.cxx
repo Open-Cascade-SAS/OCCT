@@ -93,15 +93,15 @@ void Aspect_RectangularGrid::Compute(const double X,
                                      double&      gridX,
                                      double&      gridY) const
 {
-  double    D1      = b1 * X - a1 * Y - c1;
-  double    D2      = b2 * X - a2 * Y - c2;
-  int n1      = int(std::abs(D1) / myXStep + 0.5);
-  int n2      = int(std::abs(D2) / myYStep + 0.5);
-  double    offset1 = c1 + double(n1) * std::copysign(myXStep, D1);
-  double    offset2 = c2 + double(n2) * std::copysign(myYStep, D2);
-  double    Delta   = a1 * b2 - b1 * a2;
-  gridX                    = (offset2 * a1 - offset1 * a2) / Delta;
-  gridY                    = (offset2 * b1 - offset1 * b2) / Delta;
+  double D1      = b1 * X - a1 * Y - c1;
+  double D2      = b2 * X - a2 * Y - c2;
+  int    n1      = int(std::abs(D1) / myXStep + 0.5);
+  int    n2      = int(std::abs(D2) / myYStep + 0.5);
+  double offset1 = c1 + double(n1) * std::copysign(myXStep, D1);
+  double offset2 = c2 + double(n2) * std::copysign(myYStep, D2);
+  double Delta   = a1 * b2 - b1 * a2;
+  gridX          = (offset2 * a1 - offset1 * a2) / Delta;
+  gridY          = (offset2 * b1 - offset1 * b2) / Delta;
 }
 
 double Aspect_RectangularGrid::XStep() const
@@ -167,8 +167,7 @@ void Aspect_RectangularGrid::Init()
   //-zov
 }
 
-bool Aspect_RectangularGrid::CheckAngle(const double alpha,
-                                                    const double beta) const
+bool Aspect_RectangularGrid::CheckAngle(const double alpha, const double beta) const
 {
   return (std::abs(std::sin(alpha) * std::cos(beta + M_PI / 2.)
                    - std::cos(alpha) * std::sin(beta + M_PI / 2.))

@@ -49,8 +49,7 @@ occ::handle<Interface_InterfaceModel> IGESData_Protocol::NewModel() const
   return new IGESData_IGESModel;
 }
 
-bool IGESData_Protocol::IsSuitableModel(
-  const occ::handle<Interface_InterfaceModel>& model) const
+bool IGESData_Protocol::IsSuitableModel(const occ::handle<Interface_InterfaceModel>& model) const
 {
   return model->IsKind(STANDARD_TYPE(IGESData_IGESModel));
 }

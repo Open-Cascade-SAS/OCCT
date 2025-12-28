@@ -26,7 +26,7 @@ void BRepMesh_CylinderRangeSplitter::Reset(const IMeshData::IFaceHandle& theDFac
   BRepMesh_DefaultRangeSplitter::Reset(theDFace, theParameters);
 
   const double aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
-  myDu                        = GCPnts_TangentialDeflection::ArcAngularStep(aRadius,
+  myDu                 = GCPnts_TangentialDeflection::ArcAngularStep(aRadius,
                                                      GetDFace()->GetDeflection(),
                                                      theParameters.Angle,
                                                      theParameters.MinSize);
@@ -42,8 +42,8 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_CylinderRangeSplitter::GenerateSurfaceNo
 
   const double aRadius = GetDFace()->GetSurface()->Cylinder().Radius();
 
-  int    nbU     = 0;
-  int    nbV     = 0;
+  int          nbU     = 0;
+  int          nbV     = 0;
   const double su      = aRangeU.second - aRangeU.first;
   const double sv      = aRangeV.second - aRangeV.first;
   const double aArcLen = su * aRadius;

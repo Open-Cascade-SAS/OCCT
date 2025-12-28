@@ -109,14 +109,14 @@ size_t Graphic3d_LightSet::UpdateRevision()
   myAmbient.SetValues(0.0f, 0.0f, 0.0f, 0.0f);
   memset(myLightTypesEnabled, 0, sizeof(myLightTypesEnabled));
   NCollection_LocalArray<char, 32> aKeyLong(myLights.Extent() + 1);
-  int                 aLightLast = 0;
+  int                              aLightLast = 0;
   for (NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator aLightIter(
          myLights);
        aLightIter.More();
        aLightIter.Next())
   {
     const occ::handle<Graphic3d_CLight>& aLight = aLightIter.Key();
-    aLightIter.ChangeValue()               = aLight->Revision();
+    aLightIter.ChangeValue()                    = aLight->Revision();
     if (!aLight->IsEnabled())
     {
       continue;

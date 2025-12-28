@@ -31,8 +31,7 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_BlockIterator();
 
-  Standard_EXPORT TopOpeBRepBuild_BlockIterator(const int Lower,
-                                                const int Upper);
+  Standard_EXPORT TopOpeBRepBuild_BlockIterator(const int Lower, const int Upper);
 
   void Initialize();
 

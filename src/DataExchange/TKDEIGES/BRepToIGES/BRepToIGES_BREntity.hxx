@@ -72,12 +72,10 @@ public:
   Standard_EXPORT void AddWarning(const TopoDS_Shape& start, const char* amess);
 
   //! Records a new Fail message
-  Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start,
-                               const char*            amess);
+  Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start, const char* amess);
 
   //! Records a new Warning message
-  Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
-                                  const char*            amess);
+  Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start, const char* amess);
 
   //! Returns True if start was already treated and has a result in "TheMap"
   //! else returns False.
@@ -88,7 +86,7 @@ public:
   Standard_EXPORT occ::handle<Standard_Transient> GetShapeResult(const TopoDS_Shape& start) const;
 
   //! set in "TheMap" the result of the transfer of the Shape "start".
-  Standard_EXPORT void SetShapeResult(const TopoDS_Shape&               start,
+  Standard_EXPORT void SetShapeResult(const TopoDS_Shape&                    start,
                                       const occ::handle<Standard_Transient>& result);
 
   //! Returns True if start was already treated and has a result in "TheMap"
@@ -116,9 +114,9 @@ public:
 
 private:
   occ::handle<IGESData_IGESModel>     TheModel;
-  double                  TheUnitFactor;
-  bool               myConvSurface;
-  bool               myPCurveMode;
+  double                              TheUnitFactor;
+  bool                                myConvSurface;
+  bool                                myPCurveMode;
   occ::handle<Transfer_FinderProcess> TheMap;
 };
 

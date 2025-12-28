@@ -23,7 +23,6 @@
 #include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class XCAFDoc_ShapeTool;
 class TDF_Label;
@@ -60,23 +59,20 @@ public:
   //! Returns Layer defined by label lab
   //! Returns False if the label is not in Layertable
   //! or does not define a Layer
-  Standard_EXPORT bool GetLayer(const TDF_Label&            lab,
-                                            TCollection_ExtendedString& aLayer) const;
+  Standard_EXPORT bool GetLayer(const TDF_Label& lab, TCollection_ExtendedString& aLayer) const;
 
   //! Finds a Layer definition in a Layertable and returns
   //! its label if found
   //! Returns False if Layer is not found in Layertable
-  Standard_EXPORT bool FindLayer(const TCollection_ExtendedString& aLayer,
-                                             TDF_Label&                        lab) const;
+  Standard_EXPORT bool FindLayer(const TCollection_ExtendedString& aLayer, TDF_Label& lab) const;
 
   //! Finds a Layer definition in a Layertable by name
   //! Returns first founded label with the same name if <theToFindWithProperty> is false
   //! If <theToFindWithProperty> is true returns first label that
   //! contains or not contains visible attr, according to the <theToFindVisible> parameter
-  Standard_EXPORT TDF_Label
-    FindLayer(const TCollection_ExtendedString& aLayer,
-              const bool            theToFindWithProperty = false,
-              const bool            theToFindVisible      = true) const;
+  Standard_EXPORT TDF_Label FindLayer(const TCollection_ExtendedString& aLayer,
+                                      const bool theToFindWithProperty = false,
+                                      const bool theToFindVisible      = true) const;
 
   //! Adds a Layer definition to a Layertable and returns
   //! its label (returns existing label if the same Layer
@@ -87,7 +83,7 @@ public:
   //! Returns existing label (if it is already defined)
   //! of visible or invisible layer, according to <theToFindVisible> parameter
   Standard_EXPORT TDF_Label AddLayer(const TCollection_ExtendedString& theLayer,
-                                     const bool            theToFindVisible) const;
+                                     const bool                        theToFindVisible) const;
 
   //! Removes Layer from the Layertable
   Standard_EXPORT void RemoveLayer(const TDF_Label& lab) const;
@@ -100,9 +96,9 @@ public:
   //! defined by <LayerL>
   //! optional parameter <shapeInOneLayer> show could shape be
   //! in number of layers or only in one.
-  Standard_EXPORT void SetLayer(const TDF_Label&       L,
-                                const TDF_Label&       LayerL,
-                                const bool shapeInOneLayer = false) const;
+  Standard_EXPORT void SetLayer(const TDF_Label& L,
+                                const TDF_Label& LayerL,
+                                const bool       shapeInOneLayer = false) const;
 
   //! Sets a link from label <L> to Layer <aLayer>
   //! in the Layertable
@@ -111,7 +107,7 @@ public:
   //! in number of layers or only in one.
   Standard_EXPORT void SetLayer(const TDF_Label&                  L,
                                 const TCollection_ExtendedString& aLayer,
-                                const bool shapeInOneLayer = false) const;
+                                const bool                        shapeInOneLayer = false) const;
 
   //! Removes a link from label <L> to all layers
   Standard_EXPORT void UnSetLayers(const TDF_Label& L) const;
@@ -119,34 +115,34 @@ public:
   //! Remove link from label <L> and Layer <aLayer>.
   //! returns FALSE if no such layer.
   Standard_EXPORT bool UnSetOneLayer(const TDF_Label&                  L,
-                                                 const TCollection_ExtendedString& aLayer) const;
+                                     const TCollection_ExtendedString& aLayer) const;
 
   //! Remove link from label <L> and Layer <aLayerL>.
   //! returns FALSE if <aLayerL> is not a layer label.
-  Standard_EXPORT bool UnSetOneLayer(const TDF_Label& L,
-                                                 const TDF_Label& aLayerL) const;
+  Standard_EXPORT bool UnSetOneLayer(const TDF_Label& L, const TDF_Label& aLayerL) const;
 
   //! Returns True if label <L> has a Layer associated
   //! with the <aLayer>.
-  Standard_EXPORT bool IsSet(const TDF_Label&                  L,
-                                         const TCollection_ExtendedString& aLayer) const;
+  Standard_EXPORT bool IsSet(const TDF_Label& L, const TCollection_ExtendedString& aLayer) const;
 
   //! Returns True if label <L> has a Layer associated
   //! with the <aLayerL> label.
   Standard_EXPORT bool IsSet(const TDF_Label& L, const TDF_Label& aLayerL) const;
 
   //! Return sequence of strings <aLayerS> that associated with label <L>.
-  Standard_EXPORT bool GetLayers(const TDF_Label&                           L,
-                                             occ::handle<NCollection_HSequence<TCollection_ExtendedString>>& aLayerS);
+  Standard_EXPORT bool GetLayers(
+    const TDF_Label&                                                L,
+    occ::handle<NCollection_HSequence<TCollection_ExtendedString>>& aLayerS);
 
   //! Return sequence of labels <aLayerSL> that associated with label <L>.
   Standard_EXPORT bool GetLayers(const TDF_Label& L, NCollection_Sequence<TDF_Label>& aLayerLS);
 
   //! Return sequence of strings that associated with label <L>.
-  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_ExtendedString>> GetLayers(const TDF_Label& L);
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_ExtendedString>> GetLayers(
+    const TDF_Label& L);
 
   //! Return sequanese of shape labels that assigned with layers to <ShLabels>.
-  Standard_EXPORT static void GetShapesOfLayer(const TDF_Label&   theLayerL,
+  Standard_EXPORT static void GetShapesOfLayer(const TDF_Label&                 theLayerL,
                                                NCollection_Sequence<TDF_Label>& theShLabels);
 
   //! Return TRUE if layer is visible, FALSE if invisible.
@@ -154,28 +150,25 @@ public:
 
   //! Set the visibility of layer. If layer is invisible when on it's layer
   //! will set UAttribute with corresponding GUID.
-  Standard_EXPORT void SetVisibility(const TDF_Label&       layerL,
-                                     const bool isvisible = true) const;
+  Standard_EXPORT void SetVisibility(const TDF_Label& layerL, const bool isvisible = true) const;
 
   //! Sets a link from label that containing shape <Sh>
   //! with layer that situated at label <LayerL>.
   //! optional parameter <shapeInOneLayer> show could shape be
   //! in number of layers or only in one.
   //! return FALSE if no such shape <Sh> or label <LayerL>
-  Standard_EXPORT bool
-    SetLayer(const TopoDS_Shape&    Sh,
-             const TDF_Label&       LayerL,
-             const bool shapeInOneLayer = false);
+  Standard_EXPORT bool SetLayer(const TopoDS_Shape& Sh,
+                                const TDF_Label&    LayerL,
+                                const bool          shapeInOneLayer = false);
 
   //! Sets a link from label that containing shape <Sh>
   //! with layer <aLayer>. Add <aLayer> to LayerTable if nessesery.
   //! optional parameter <shapeInOneLayer> show could shape be
   //! in number of layers or only in one.
   //! return FALSE if no such shape <Sh>.
-  Standard_EXPORT bool
-    SetLayer(const TopoDS_Shape&               Sh,
-             const TCollection_ExtendedString& aLayer,
-             const bool            shapeInOneLayer = false);
+  Standard_EXPORT bool SetLayer(const TopoDS_Shape&               Sh,
+                                const TCollection_ExtendedString& aLayer,
+                                const bool                        shapeInOneLayer = false);
 
   //! Remove link between shape <Sh> and all Layers at LayerTable.
   //! return FALSE if no such shape <Sh> in XCAF Document.
@@ -184,7 +177,7 @@ public:
   //! Remove link between shape <Sh> and layer <aLayer>.
   //! returns FALSE if no such layer <aLayer> or shape <Sh>.
   Standard_EXPORT bool UnSetOneLayer(const TopoDS_Shape&               Sh,
-                                                 const TCollection_ExtendedString& aLayer);
+                                     const TCollection_ExtendedString& aLayer);
 
   //! Remove link between shape <Sh> and layer <aLayerL>.
   //! returns FALSE if no such layer <aLayerL> or shape <Sh>.
@@ -192,28 +185,29 @@ public:
 
   //! Returns True if shape <Sh> has a Layer associated
   //! with the <aLayer>.
-  Standard_EXPORT bool IsSet(const TopoDS_Shape&               Sh,
-                                         const TCollection_ExtendedString& aLayer);
+  Standard_EXPORT bool IsSet(const TopoDS_Shape& Sh, const TCollection_ExtendedString& aLayer);
 
   //! Returns True if shape <Sh> has a Layer associated
   //! with the <aLayerL>.
   Standard_EXPORT bool IsSet(const TopoDS_Shape& Sh, const TDF_Label& aLayerL);
 
   //! Return sequence of strings <aLayerS> that associated with shape <Sh>.
-  Standard_EXPORT bool GetLayers(const TopoDS_Shape&                        Sh,
-                                             occ::handle<NCollection_HSequence<TCollection_ExtendedString>>& aLayerS);
+  Standard_EXPORT bool GetLayers(
+    const TopoDS_Shape&                                             Sh,
+    occ::handle<NCollection_HSequence<TCollection_ExtendedString>>& aLayerS);
 
   //! Return sequence of labels <aLayerLS> that associated with shape <Sh>.
   Standard_EXPORT bool GetLayers(const TopoDS_Shape& Sh, NCollection_Sequence<TDF_Label>& aLayerLS);
 
   //! Return sequence of strings that associated with shape <Sh>.
-  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_ExtendedString>> GetLayers(const TopoDS_Shape& Sh);
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_ExtendedString>> GetLayers(
+    const TopoDS_Shape& Sh);
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LayerTool, TDataStd_GenericEmpty)
 

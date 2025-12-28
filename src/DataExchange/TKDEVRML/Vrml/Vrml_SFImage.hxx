@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Vrml_SFImageNumber.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
@@ -34,9 +33,9 @@ class Vrml_SFImage : public Standard_Transient
 public:
   Standard_EXPORT Vrml_SFImage();
 
-  Standard_EXPORT Vrml_SFImage(const int                  aWidth,
-                               const int                  aHeight,
-                               const Vrml_SFImageNumber                aNumber,
+  Standard_EXPORT Vrml_SFImage(const int                                    aWidth,
+                               const int                                    aHeight,
+                               const Vrml_SFImageNumber                     aNumber,
                                const occ::handle<NCollection_HArray1<int>>& anArray);
 
   Standard_EXPORT void SetWidth(const int aWidth);
@@ -60,11 +59,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Vrml_SFImage, Standard_Transient)
 
 private:
-  int                 myWidth;
-  int                 myHeight;
-  Vrml_SFImageNumber               myNumber;
+  int                                   myWidth;
+  int                                   myHeight;
+  Vrml_SFImageNumber                    myNumber;
   occ::handle<NCollection_HArray1<int>> myArray;
-  bool                 myArrayFlag;
+  bool                                  myArrayFlag;
 };
 
 #endif // _Vrml_SFImage_HeaderFile

@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepBasic_TimeMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_TimeMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 };
 
 #endif // _StepBasic_TimeMeasureWithUnit_HeaderFile

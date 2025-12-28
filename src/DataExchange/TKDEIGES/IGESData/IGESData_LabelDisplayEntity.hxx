@@ -28,7 +28,6 @@ class IGESData_LabelDisplayEntity : public IGESData_IGESEntity
 
 public:
   DEFINE_STANDARD_RTTIEXT(IGESData_LabelDisplayEntity, IGESData_IGESEntity)
-
 };
 
 #endif // _IGESData_LabelDisplayEntity_HeaderFile

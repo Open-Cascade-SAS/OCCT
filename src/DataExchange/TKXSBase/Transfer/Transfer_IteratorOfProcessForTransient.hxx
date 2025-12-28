@@ -60,8 +60,9 @@ public:
   //! which are attached to starting data given by <only>
   //! <keep> = True (D) : keeps. <keep> = False : rejects
   //! Does nothing if <withstarts> was False
-  Standard_EXPORT void Filter(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                              const bool                      keep = true);
+  Standard_EXPORT void Filter(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const bool                                                                 keep = true);
 
   //! Returns True if Starting Object is available
   //! (defined at Creation Time)

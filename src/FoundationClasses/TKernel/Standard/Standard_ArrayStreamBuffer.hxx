@@ -96,8 +96,7 @@ protected:
 
 public:
   //! Read a bunch of bytes at once.
-  Standard_EXPORT virtual std::streamsize xsgetn(char*           thePtr,
-                                                 std::streamsize theCount) override;
+  Standard_EXPORT virtual std::streamsize xsgetn(char* thePtr, std::streamsize theCount) override;
 
 private:
   // copying is not allowed

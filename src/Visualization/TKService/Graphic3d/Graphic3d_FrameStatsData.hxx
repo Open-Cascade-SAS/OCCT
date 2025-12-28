@@ -48,25 +48,16 @@ public:
   double ImmediateFrameRateCpu() const { return myFpsCpuImmediate; }
 
   //! Get counter value.
-  size_t CounterValue(Graphic3d_FrameStatsCounter theIndex) const
-  {
-    return myCounters[theIndex];
-  }
+  size_t CounterValue(Graphic3d_FrameStatsCounter theIndex) const { return myCounters[theIndex]; }
 
   //! Get counter value.
-  size_t operator[](Graphic3d_FrameStatsCounter theIndex) const
-  {
-    return CounterValue(theIndex);
-  }
+  size_t operator[](Graphic3d_FrameStatsCounter theIndex) const { return CounterValue(theIndex); }
 
   //! Get timer value.
   double TimerValue(Graphic3d_FrameStatsTimer theIndex) const { return myTimers[theIndex]; }
 
   //! Get timer value.
-  double operator[](Graphic3d_FrameStatsTimer theIndex) const
-  {
-    return TimerValue(theIndex);
-  }
+  double operator[](Graphic3d_FrameStatsTimer theIndex) const { return TimerValue(theIndex); }
 
   //! Empty constructor.
   Standard_EXPORT Graphic3d_FrameStatsData();
@@ -90,13 +81,13 @@ public:
   Standard_EXPORT void FillMax(const Graphic3d_FrameStatsData& theOther);
 
 protected:
-  std::vector<size_t> myCounters;     //!< counters
-  std::vector<double> myTimers;       //!< timers
-  std::vector<double> myTimersMin;    //!< minimal values of timers
-  std::vector<double> myTimersMax;    //!< maximum values of timers
-  double              myFps;          //!< FPS     meter (frames per seconds, elapsed time)
-  double              myFpsCpu;       //!< CPU FPS meter (frames per seconds, CPU time)
-  double              myFpsImmediate; //!< FPS     meter for immediate redraws
+  std::vector<size_t> myCounters;        //!< counters
+  std::vector<double> myTimers;          //!< timers
+  std::vector<double> myTimersMin;       //!< minimal values of timers
+  std::vector<double> myTimersMax;       //!< maximum values of timers
+  double              myFps;             //!< FPS     meter (frames per seconds, elapsed time)
+  double              myFpsCpu;          //!< CPU FPS meter (frames per seconds, CPU time)
+  double              myFpsImmediate;    //!< FPS     meter for immediate redraws
   double              myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
 };
 
@@ -135,29 +126,20 @@ public:
   OSD_Timer& ChangeTimer(Graphic3d_FrameStatsTimer theTimer) { return myOsdTimers[theTimer]; }
 
   //! Get counter value.
-  size_t& ChangeCounterValue(Graphic3d_FrameStatsCounter theIndex)
-  {
-    return myCounters[theIndex];
-  }
+  size_t& ChangeCounterValue(Graphic3d_FrameStatsCounter theIndex) { return myCounters[theIndex]; }
 
   //! Modify counter value.
-  size_t& operator[](Graphic3d_FrameStatsCounter theIndex)
-  {
-    return ChangeCounterValue(theIndex);
-  }
+  size_t& operator[](Graphic3d_FrameStatsCounter theIndex) { return ChangeCounterValue(theIndex); }
 
   //! Modify timer value.
   double& ChangeTimerValue(Graphic3d_FrameStatsTimer theIndex) { return myTimers[theIndex]; }
 
   //! Modify timer value.
-  double& operator[](Graphic3d_FrameStatsTimer theIndex)
-  {
-    return ChangeTimerValue(theIndex);
-  }
+  double& operator[](Graphic3d_FrameStatsTimer theIndex) { return ChangeTimerValue(theIndex); }
 
 protected:
-  std::vector<OSD_Timer>     myOsdTimers;  //!< precise timers for time measurements
-  std::vector<double> myTimersPrev; //!< previous timers values
+  std::vector<OSD_Timer> myOsdTimers;  //!< precise timers for time measurements
+  std::vector<double>    myTimersPrev; //!< previous timers values
 };
 
 #endif // _Graphic3d_FrameStatsData_HeaderFile

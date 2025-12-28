@@ -27,8 +27,7 @@ StepRepr_ConfigurationDesignItem::StepRepr_ConfigurationDesignItem() {}
 
 //=================================================================================================
 
-int StepRepr_ConfigurationDesignItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepRepr_ConfigurationDesignItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

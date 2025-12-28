@@ -46,8 +46,8 @@ public:
   //! Null if unparametrised surface.
   Standard_EXPORT void Init(const occ::handle<IGESGeom_Point>&     aLocation,
                             const occ::handle<IGESGeom_Direction>& anAxis,
-                            const double               aRadius,
-                            const double               anAngle,
+                            const double                           aRadius,
+                            const double                           anAngle,
                             const occ::handle<IGESGeom_Direction>& aRefdir);
 
   //! returns the location of the point on the axis
@@ -75,8 +75,8 @@ public:
 private:
   occ::handle<IGESGeom_Point>     theLocationPoint;
   occ::handle<IGESGeom_Direction> theAxis;
-  double              theRadius;
-  double              theAngle;
+  double                          theRadius;
+  double                          theAngle;
   occ::handle<IGESGeom_Direction> theRefDir;
 };
 

@@ -45,15 +45,13 @@ public:
   //! the (shells,blocks of face) of <LS>, using the classifier <LC>.
   Standard_EXPORT TopOpeBRepBuild_Area3dBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                 TopOpeBRepBuild_LoopClassifier& LC,
-                                                const bool ForceClass = false);
+                                                const bool                      ForceClass = false);
 
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT virtual void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                                TopOpeBRepBuild_LoopClassifier& LC,
-                                               const bool ForceClass = false)
-    override;
-
+                                               const bool ForceClass = false) override;
 };
 
 #endif // _TopOpeBRepBuild_Area3dBuilder_HeaderFile

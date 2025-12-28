@@ -53,10 +53,9 @@ public:
   //! Simply, 0 is for "Execution OK"
   //! The Protocol can be used to work (e.g. create the Model, read
   //! and recognize the Entities)
-  Standard_EXPORT virtual int ReadFile(
-    const char*            name,
-    occ::handle<Interface_InterfaceModel>& model,
-    const occ::handle<Interface_Protocol>& protocol) const = 0;
+  Standard_EXPORT virtual int ReadFile(const char*                            name,
+                                       occ::handle<Interface_InterfaceModel>& model,
+                                       const occ::handle<Interface_Protocol>& protocol) const = 0;
 
   //! Interface to read a data from the specified stream.
   //! @param model is the resulting Model, which has to be created by this method.
@@ -64,11 +63,10 @@ public:
   //! Return value is a status: 0 - OK, 1 - read failure, -1 - stream failure.
   //!
   //! Default implementation returns 1 (error).
-  Standard_EXPORT virtual int ReadStream(
-    const char*            theName,
-    std::istream&                     theIStream,
-    occ::handle<Interface_InterfaceModel>& model,
-    const occ::handle<Interface_Protocol>& protocol) const;
+  Standard_EXPORT virtual int ReadStream(const char*                            theName,
+                                         std::istream&                          theIStream,
+                                         occ::handle<Interface_InterfaceModel>& model,
+                                         const occ::handle<Interface_Protocol>& protocol) const;
 
   //! Gives the way to Write a File from a Model.
   //! <ctx> contains all necessary information : the model, the
@@ -99,11 +97,10 @@ public:
   //! by another way (do not forget to Bind each copied result with
   //! its original entity in TC) and returns True, or does not know
   //! how to copy and returns False
-  Standard_EXPORT virtual bool CopyModel(
-    const occ::handle<Interface_InterfaceModel>& original,
-    const occ::handle<Interface_InterfaceModel>& newmodel,
-    const Interface_EntityIterator&         list,
-    Interface_CopyTool&                     TC) const;
+  Standard_EXPORT virtual bool CopyModel(const occ::handle<Interface_InterfaceModel>& original,
+                                         const occ::handle<Interface_InterfaceModel>& newmodel,
+                                         const Interface_EntityIterator&              list,
+                                         Interface_CopyTool&                          TC) const;
 
   //! Gives the way of dumping an entity under a form comprehensive
   //! for each norm. <model> helps to identify, number ... entities.
@@ -112,14 +109,14 @@ public:
   Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                           const occ::handle<Interface_Protocol>&       protocol,
                                           const occ::handle<Standard_Transient>&       entity,
-                                          Standard_OStream&                       S,
-                                          const int                  level) const = 0;
+                                          Standard_OStream&                            S,
+                                          const int level) const = 0;
 
   //! Calls deferred DumpEntity with the recorded default level
   Standard_EXPORT void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                   const occ::handle<Interface_Protocol>&       protocol,
                                   const occ::handle<Standard_Transient>&       entity,
-                                  Standard_OStream&                       S) const;
+                                  Standard_OStream&                            S) const;
 
   //! Records a default level and a maximum value for level
   //! level for DumpEntity can go between 0 and <max>
@@ -143,7 +140,7 @@ protected:
   Standard_EXPORT IFSelect_WorkLibrary();
 
 private:
-  int                        thelevdef;
+  int                                                                     thelevdef;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> thelevhlp;
 };
 

@@ -35,7 +35,7 @@ RWStepDimTol_RWConcentricityTolerance::RWStepDimTol_RWConcentricityTolerance() {
 
 void RWStepDimTol_RWConcentricityTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                           num,
+  const int                                             num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepDimTol_ConcentricityTolerance>& ent) const
 {
@@ -69,7 +69,7 @@ void RWStepDimTol_RWConcentricityTolerance::ReadStep(
   // Inherited fields of GeometricToleranceWithDatumReference
 
   occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
-                   aGeometricToleranceWithDatumReference_DatumSystem;
+      aGeometricToleranceWithDatumReference_DatumSystem;
   int sub5 = 0;
   if (data->ReadSubList(num, 5, "geometric_tolerance_with_datum_reference.datum_system", ach, sub5))
   {
@@ -96,7 +96,7 @@ void RWStepDimTol_RWConcentricityTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWConcentricityTolerance::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepDimTol_ConcentricityTolerance>& ent) const
 {
 
@@ -128,7 +128,7 @@ void RWStepDimTol_RWConcentricityTolerance::WriteStep(
 
 void RWStepDimTol_RWConcentricityTolerance::Share(
   const occ::handle<StepDimTol_ConcentricityTolerance>& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of GeometricTolerance

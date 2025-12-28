@@ -35,27 +35,21 @@ GeomFill_PipeError GeomFill_TrihedronLaw::ErrorStatus() const
   return GeomFill_PipeOk;
 }
 
-bool GeomFill_TrihedronLaw::D1(const double,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&)
+bool GeomFill_TrihedronLaw::D1(const double, gp_Vec&, gp_Vec&, gp_Vec&, gp_Vec&, gp_Vec&, gp_Vec&)
 {
   throw Standard_NotImplemented(" GeomFill_TrihedronLaw::D2");
 }
 
 bool GeomFill_TrihedronLaw::D2(const double,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&,
-                                           gp_Vec&)
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&,
+                               gp_Vec&)
 {
   throw Standard_NotImplemented(" GeomFill_TrihedronLaw::D2");
 }

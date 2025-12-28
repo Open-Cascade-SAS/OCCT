@@ -43,9 +43,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESDefs_GeneralModule::IGESDefs_GeneralModule() {}
 
-void IGESDefs_GeneralModule::OwnSharedCase(const int             CN,
+void IGESDefs_GeneralModule::OwnSharedCase(const int                               CN,
                                            const occ::handle<IGESData_IGESEntity>& ent,
-                                           Interface_EntityIterator&          iter) const
+                                           Interface_EntityIterator&               iter) const
 {
   switch (CN)
   {
@@ -110,8 +110,9 @@ void IGESDefs_GeneralModule::OwnSharedCase(const int             CN,
   }
 }
 
-IGESData_DirChecker IGESDefs_GeneralModule::DirChecker(const int             CN,
-                                                       const occ::handle<IGESData_IGESEntity>& ent) const
+IGESData_DirChecker IGESDefs_GeneralModule::DirChecker(
+  const int                               CN,
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -170,9 +171,9 @@ IGESData_DirChecker IGESDefs_GeneralModule::DirChecker(const int             CN,
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESDefs_GeneralModule::OwnCheckCase(const int             CN,
+void IGESDefs_GeneralModule::OwnCheckCase(const int                               CN,
                                           const occ::handle<IGESData_IGESEntity>& ent,
-                                          const Interface_ShareTool&         shares,
+                                          const Interface_ShareTool&              shares,
                                           occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
@@ -238,8 +239,7 @@ void IGESDefs_GeneralModule::OwnCheckCase(const int             CN,
   }
 }
 
-bool IGESDefs_GeneralModule::NewVoid(const int      CN,
-                                                 occ::handle<Standard_Transient>& ent) const
+bool IGESDefs_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -270,10 +270,10 @@ bool IGESDefs_GeneralModule::NewVoid(const int      CN,
   return true;
 }
 
-void IGESDefs_GeneralModule::OwnCopyCase(const int             CN,
+void IGESDefs_GeneralModule::OwnCopyCase(const int                               CN,
                                          const occ::handle<IGESData_IGESEntity>& entfrom,
                                          const occ::handle<IGESData_IGESEntity>& entto,
-                                         Interface_CopyTool&                TC) const
+                                         Interface_CopyTool&                     TC) const
 {
   switch (CN)
   {
@@ -332,8 +332,8 @@ void IGESDefs_GeneralModule::OwnCopyCase(const int             CN,
 }
 
 int IGESDefs_GeneralModule::CategoryNumber(const int /*CN*/,
-                                                        const occ::handle<Standard_Transient>& /*ent*/,
-                                                        const Interface_ShareTool&) const
+                                           const occ::handle<Standard_Transient>& /*ent*/,
+                                           const Interface_ShareTool&) const
 {
   return Interface_Category::Number("Auxiliary");
 }

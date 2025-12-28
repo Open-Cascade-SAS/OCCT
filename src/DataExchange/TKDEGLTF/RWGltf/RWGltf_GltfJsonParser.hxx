@@ -81,7 +81,11 @@ public:
   void SetErrorPrefix(const TCollection_AsciiString& theErrPrefix) { myErrorPrefix = theErrPrefix; }
 
   //! Set map for storing node attributes.
-  void SetAttributeMap(NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>& theAttribMap) { myAttribMap = &theAttribMap; }
+  void SetAttributeMap(
+    NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>& theAttribMap)
+  {
+    myAttribMap = &theAttribMap;
+  }
 
   //! Set map for storing non-uniform scalings.
   void SetScaleMap(NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>& theScaleMap)
@@ -96,7 +100,11 @@ public:
   }
 
   //! Set metadata map.
-  void SetMetadata(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theMetadata) { myMetadata = &theMetadata; }
+  void SetMetadata(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theMetadata)
+  {
+    myMetadata = &theMetadata;
+  }
 
   //! Set flag to translate asset.extras into metadata.
   void SetReadAssetExtras(bool theToRead) { myToReadAssetExtras = theToRead; }
@@ -159,41 +167,42 @@ protected:
 
   //! Parse standard material.
   Standard_EXPORT bool gltfParseStdMaterial(occ::handle<RWGltf_MaterialCommon>& theMat,
-                                            const RWGltf_JsonValue&        theMatNode);
+                                            const RWGltf_JsonValue&             theMatNode);
 
   //! Parse pbrMetallicRoughness material.
   Standard_EXPORT bool gltfParsePbrMaterial(occ::handle<RWGltf_MaterialMetallicRoughness>& theMat,
-                                            const RWGltf_JsonValue&                   theMatNode);
+                                            const RWGltf_JsonValue& theMatNode);
 
   //! Parse common material (KHR_materials_common extension).
   Standard_EXPORT bool gltfParseCommonMaterial(occ::handle<RWGltf_MaterialCommon>& theMat,
-                                               const RWGltf_JsonValue&        theMatNode);
+                                               const RWGltf_JsonValue&             theMatNode);
 
   //! Parse texture definition.
-  Standard_EXPORT bool gltfParseTexture(occ::handle<Image_Texture>&  theTexture,
-                                        const RWGltf_JsonValue* theTextureId);
+  Standard_EXPORT bool gltfParseTexture(occ::handle<Image_Texture>& theTexture,
+                                        const RWGltf_JsonValue*     theTextureId);
 
   //! Parse texture definition in binary buffer of GLB file.
-  Standard_EXPORT bool gltfParseTexturInGlbBuffer(occ::handle<Image_Texture>&         theTexture,
+  Standard_EXPORT bool gltfParseTexturInGlbBuffer(occ::handle<Image_Texture>&    theTexture,
                                                   const RWGltf_JsonValue&        theBinVal,
                                                   const TCollection_AsciiString& theBufferViewId,
                                                   const RWGltf_JsonValue&        theBufferViewName);
 
   //! Parse texture definition in binary buffer of glTF file.
-  Standard_EXPORT bool gltfParseTextureInBufferView(occ::handle<Image_Texture>&         theTexture,
+  Standard_EXPORT bool gltfParseTextureInBufferView(occ::handle<Image_Texture>&    theTexture,
                                                     const TCollection_AsciiString& theSourceId,
                                                     const TCollection_AsciiString& theBufferViewhId,
                                                     const RWGltf_JsonValue&        theBufferView);
 
   //! Bind material definition to the map.
-  Standard_EXPORT void gltfBindMaterial(const occ::handle<RWGltf_MaterialMetallicRoughness>& theMatPbr,
-                                        const occ::handle<RWGltf_MaterialCommon>& theMatCommon);
+  Standard_EXPORT void gltfBindMaterial(
+    const occ::handle<RWGltf_MaterialMetallicRoughness>& theMatPbr,
+    const occ::handle<RWGltf_MaterialCommon>&            theMatCommon);
 
 protected:
   //! Parse scene array of nodes recursively.
-  Standard_EXPORT bool gltfParseSceneNodes(NCollection_Sequence<TopoDS_Shape>&    theShapeSeq,
-                                           const RWGltf_JsonValue&      theSceneNodes,
-                                           const Message_ProgressRange& theProgress);
+  Standard_EXPORT bool gltfParseSceneNodes(NCollection_Sequence<TopoDS_Shape>& theShapeSeq,
+                                           const RWGltf_JsonValue&             theSceneNodes,
+                                           const Message_ProgressRange&        theProgress);
 
   //! Parse scene node recursively.
   Standard_EXPORT bool gltfParseSceneNode(TopoDS_Shape&                  theNodeShape,
@@ -213,26 +222,29 @@ protected:
                                           const RWGltf_JsonValue&        thePrimArray);
 
   //! Parse accessor.
-  Standard_EXPORT bool gltfParseAccessor(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
-                                         const TCollection_AsciiString&               theName,
-                                         const RWGltf_JsonValue&                      theAccessor,
-                                         const RWGltf_GltfArrayType                   theType,
-                                         const RWGltf_JsonValue* theCompBuffView);
+  Standard_EXPORT bool gltfParseAccessor(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
+    const TCollection_AsciiString&                    theName,
+    const RWGltf_JsonValue&                           theAccessor,
+    const RWGltf_GltfArrayType                        theType,
+    const RWGltf_JsonValue*                           theCompBuffView);
 
   //! Parse buffer view.
-  Standard_EXPORT bool gltfParseBufferView(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
-                                           const TCollection_AsciiString&               theName,
-                                           const RWGltf_JsonValue&    theBufferView,
-                                           const RWGltf_GltfAccessor& theAccessor,
-                                           const RWGltf_GltfArrayType theType);
+  Standard_EXPORT bool gltfParseBufferView(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
+    const TCollection_AsciiString&                    theName,
+    const RWGltf_JsonValue&                           theBufferView,
+    const RWGltf_GltfAccessor&                        theAccessor,
+    const RWGltf_GltfArrayType                        theType);
 
   //! Parse buffer.
-  Standard_EXPORT bool gltfParseBuffer(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
-                                       const TCollection_AsciiString&               theName,
-                                       const RWGltf_JsonValue&                      theBuffer,
-                                       const RWGltf_GltfAccessor&                   theAccessor,
-                                       const RWGltf_GltfBufferView&                 theView,
-                                       const RWGltf_GltfArrayType                   theType);
+  Standard_EXPORT bool gltfParseBuffer(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData,
+    const TCollection_AsciiString&                    theName,
+    const RWGltf_JsonValue&                           theBuffer,
+    const RWGltf_GltfAccessor&                        theAccessor,
+    const RWGltf_GltfBufferView&                      theView,
+    const RWGltf_GltfArrayType                        theType);
 
 protected:
   //! Read vec4 from specified item.
@@ -299,12 +311,12 @@ protected:
   };
 
   //! Bind name attribute.
-  void bindNodeShape(TopoDS_Shape&                     theShape,
-                     const TopLoc_Location&            theLoc,
-                     const bool                        theHasScale,
-                     const gp_XYZ&                     theScale,
-                     const TCollection_AsciiString&    theNodeId,
-                     const RWGltf_JsonValue*           theUserName,
+  void bindNodeShape(TopoDS_Shape&                          theShape,
+                     const TopLoc_Location&                 theLoc,
+                     const bool                             theHasScale,
+                     const gp_XYZ&                          theScale,
+                     const TCollection_AsciiString&         theNodeId,
+                     const RWGltf_JsonValue*                theUserName,
                      const occ::handle<TDataStd_NamedData>& theExtras)
   {
     bindNamedShape(theShape,
@@ -318,9 +330,9 @@ protected:
   }
 
   //! Bind name attribute.
-  void bindMeshShape(TopoDS_Shape&                     theShape,
-                     const TCollection_AsciiString&    theMeshId,
-                     const RWGltf_JsonValue*           theUserName,
+  void bindMeshShape(TopoDS_Shape&                          theShape,
+                     const TCollection_AsciiString&         theMeshId,
+                     const RWGltf_JsonValue*                theUserName,
                      const occ::handle<TDataStd_NamedData>& theExtras)
   {
     bindNamedShape(theShape,
@@ -346,13 +358,13 @@ protected:
   }
 
   //! Bind name attribute.
-  Standard_EXPORT void bindNamedShape(TopoDS_Shape&                     theShape,
-                                      ShapeMapGroup                     theGroup,
-                                      const TopLoc_Location&            theLoc,
-                                      const bool                        theHasScale,
-                                      const gp_XYZ&                     theScale,
-                                      const TCollection_AsciiString&    theId,
-                                      const RWGltf_JsonValue*           theUserName,
+  Standard_EXPORT void bindNamedShape(TopoDS_Shape&                          theShape,
+                                      ShapeMapGroup                          theGroup,
+                                      const TopLoc_Location&                 theLoc,
+                                      const bool                             theHasScale,
+                                      const gp_XYZ&                          theScale,
+                                      const TCollection_AsciiString&         theId,
+                                      const RWGltf_JsonValue*                theUserName,
                                       const occ::handle<TDataStd_NamedData>& theExtras);
 
   //! Find named shape.
@@ -457,7 +469,8 @@ private:
 
   //! Fill lines and points data not deferred.
   //! @param theMeshData source glTF triangulation
-  Standard_EXPORT bool fillMeshData(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData) const;
+  Standard_EXPORT bool fillMeshData(
+    const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData) const;
 
 #endif
 protected:
@@ -467,25 +480,28 @@ protected:
 
 protected:
   NCollection_Sequence<TopoDS_Shape>* myRootShapes; //!< sequence of result root shapes
-  NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>*  myAttribMap;  //!< shape attributes
+  NCollection_DataMap<TopoDS_Shape, RWMesh_NodeAttributes, TopTools_ShapeMapHasher>*
+    myAttribMap; //!< shape attributes
   NCollection_IndexedMap<TCollection_AsciiString>*
     myExternalFiles; //!< list of external file references
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
-    myShapeScaleMap;                                //!< map of shapes with non-uniform scalings
-                                                    // clang-format off
+    myShapeScaleMap;                        //!< map of shapes with non-uniform scalings
+                                            // clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< transformation from glTF to OCCT coordinate system
-                                                    // clang-format on
-  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>* myMetadata; //!< file metadata
+                                            // clang-format on
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>*
+    myMetadata; //!< file metadata
 
   mutable std::shared_ptr<std::istream> myStream; //!< input stream
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<RWGltf_MaterialMetallicRoughness>>
-                                                                              myMaterialsPbr;
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<RWGltf_MaterialCommon>> myMaterialsCommon;
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>>   myMaterials;
-  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>                  myShapeMap[3];
+    myMaterialsPbr;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<RWGltf_MaterialCommon>>
+                                                                                 myMaterialsCommon;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>> myMaterials;
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>                     myShapeMap[3];
 
-  NCollection_DataMap<TCollection_AsciiString, bool>                       myProbedFiles;
+  NCollection_DataMap<TCollection_AsciiString, bool>                            myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_Buffer>> myDecodedBuffers;
   NCollection_Vector<TopoDS_Face> myFaceList; //!< face list for loading triangulation
 

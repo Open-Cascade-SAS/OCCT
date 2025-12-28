@@ -56,8 +56,8 @@ public:
   //! string astorageformat.
   //! If a document is created outside of an application using this constructor, it must be
   //! managed by a Handle. Otherwise memory problems could appear: call of
-  //! TDocStd_Owner::GetDocument creates a occ::handle<TDocStd_Document>, so, releasing it will produce a
-  //! crash.
+  //! TDocStd_Owner::GetDocument creates a occ::handle<TDocStd_Document>, so, releasing it will
+  //! produce a crash.
   Standard_EXPORT TDocStd_Document(const TCollection_ExtendedString& astorageformat);
 
   //! the document is saved in a file.
@@ -213,8 +213,8 @@ public:
   //! to change format (advanced programming)
   //! ================
   Standard_EXPORT virtual void Update(const occ::handle<CDM_Document>& aToDocument,
-                                      const int      aReferenceIdentifier,
-                                      void* const      aModifContext) override;
+                                      const int                        aReferenceIdentifier,
+                                      void* const                      aModifContext) override;
 
   Standard_EXPORT virtual TCollection_ExtendedString StorageFormat() const override;
 
@@ -266,28 +266,29 @@ protected:
   //! methods for protection of changes outside transactions
   Standard_EXPORT virtual void OpenTransaction();
 
-  TCollection_ExtendedString myStorageFormat;
-  NCollection_List<occ::handle<TDF_Delta>>              myUndos;
-  NCollection_List<occ::handle<TDF_Delta>>              myRedos;
+  TCollection_ExtendedString               myStorageFormat;
+  NCollection_List<occ::handle<TDF_Delta>> myUndos;
+  NCollection_List<occ::handle<TDF_Delta>> myRedos;
 
 private:
   //! Appends delta to the first delta in the myUndoFILO
   //! private methods
   //! ===============
-  Standard_EXPORT static void AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundDelta>& theDelta1,
-                                                    const occ::handle<TDF_Delta>&             theDelta2);
+  Standard_EXPORT static void AppendDeltaToTheFirst(
+    const occ::handle<TDocStd_CompoundDelta>& theDelta1,
+    const occ::handle<TDF_Delta>&             theDelta2);
 
-  occ::handle<TDF_Data>      myData;
-  int      myUndoLimit;
-  TDF_Transaction       myUndoTransaction;
-  occ::handle<TDF_Delta>     myFromUndo;
-  occ::handle<TDF_Delta>     myFromRedo;
-  int      mySaveTime;
-  bool      myIsNestedTransactionMode;
-  NCollection_List<occ::handle<TDF_Delta>>         myUndoFILO;
-  bool      myOnlyTransactionModification;
-  bool      mySaveEmptyLabels;
-  TDocStd_FormatVersion myStorageFormatVersion;
+  occ::handle<TDF_Data>                    myData;
+  int                                      myUndoLimit;
+  TDF_Transaction                          myUndoTransaction;
+  occ::handle<TDF_Delta>                   myFromUndo;
+  occ::handle<TDF_Delta>                   myFromRedo;
+  int                                      mySaveTime;
+  bool                                     myIsNestedTransactionMode;
+  NCollection_List<occ::handle<TDF_Delta>> myUndoFILO;
+  bool                                     myOnlyTransactionModification;
+  bool                                     mySaveEmptyLabels;
+  TDocStd_FormatVersion                    myStorageFormatVersion;
 };
 
 #include <TDocStd_Document.lxx>

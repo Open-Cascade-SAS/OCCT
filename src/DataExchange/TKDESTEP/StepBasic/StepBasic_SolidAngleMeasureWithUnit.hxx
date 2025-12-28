@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepBasic_SolidAngleMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SolidAngleMeasureWithUnit, StepBasic_MeasureWithUnit)
-
 };
 
 #endif // _StepBasic_SolidAngleMeasureWithUnit_HeaderFile

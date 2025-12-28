@@ -54,8 +54,7 @@ Standard_OStream& BinTools::PutReal(Standard_OStream& theOS, const double& theVa
 
 //=================================================================================================
 
-Standard_OStream& BinTools::PutShortReal(Standard_OStream&         theOS,
-                                         const float& theValue)
+Standard_OStream& BinTools::PutShortReal(Standard_OStream& theOS, const float& theValue)
 {
 #ifdef DO_INVERSE
   const float aValue = InverseShortReal(theValue);
@@ -142,8 +141,8 @@ Standard_IStream& BinTools::GetBool(Standard_IStream& IS, bool& aValue)
 
 void BinTools::Write(const TopoDS_Shape&          theShape,
                      Standard_OStream&            theStream,
-                     const bool       theWithTriangles,
-                     const bool       theWithNormals,
+                     const bool                   theWithTriangles,
+                     const bool                   theWithNormals,
                      const BinTools_FormatVersion theVersion,
                      const Message_ProgressRange& theRange)
 {
@@ -171,14 +170,14 @@ void BinTools::Read(TopoDS_Shape&                theShape,
 //=================================================================================================
 
 bool BinTools::Write(const TopoDS_Shape&          theShape,
-                                 const char*       theFile,
-                                 const bool       theWithTriangles,
-                                 const bool       theWithNormals,
-                                 const BinTools_FormatVersion theVersion,
-                                 const Message_ProgressRange& theRange)
+                     const char*                  theFile,
+                     const bool                   theWithTriangles,
+                     const bool                   theWithNormals,
+                     const BinTools_FormatVersion theVersion,
+                     const Message_ProgressRange& theRange)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream =
+  std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
   aStream->precision(15);
   if (aStream.get() == NULL || !aStream->good())
@@ -192,11 +191,11 @@ bool BinTools::Write(const TopoDS_Shape&          theShape,
 //=================================================================================================
 
 bool BinTools::Read(TopoDS_Shape&                theShape,
-                                const char*       theFile,
-                                const Message_ProgressRange& theRange)
+                    const char*                  theFile,
+                    const Message_ProgressRange& theRange)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {

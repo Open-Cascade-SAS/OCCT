@@ -49,13 +49,11 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X,
-                                               math_Matrix&       D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
   Standard_EXPORT void Set(const double Param) override;
 
-  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
-                                              const double Tol) override;
+  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
 
   Standard_EXPORT const gp_Pnt& PointOnS1() const override;
 
@@ -79,15 +77,13 @@ public:
                                const double V1,
                                const double U2,
                                const double V2,
-                               gp_Vec&             TgFirst,
-                               gp_Vec&             TgLast,
-                               gp_Vec&             NormFirst,
-                               gp_Vec&             NormLast) const override;
+                               gp_Vec&      TgFirst,
+                               gp_Vec&      TgLast,
+                               gp_Vec&      NormFirst,
+                               gp_Vec&      NormLast) const override;
 
   //! Sets the distances and the "quadrant".
-  Standard_EXPORT void Set(const double    Dist1,
-                           const double    Dist2,
-                           const int Choix) override;
+  Standard_EXPORT void Set(const double Dist1, const double Dist2, const int Choix) override;
 
   //! Returns the length of the maximum section
   Standard_EXPORT double GetSectionSize() const override;

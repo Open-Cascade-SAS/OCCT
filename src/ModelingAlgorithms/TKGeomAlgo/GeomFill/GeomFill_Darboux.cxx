@@ -27,7 +27,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_Type.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Darboux, GeomFill_TrihedronLaw)
@@ -39,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_Darboux, GeomFill_TrihedronLaw)
 static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 {
   double Norma  = F.Magnitude();
-  gp_Vec        Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
+  gp_Vec Result = (DF - F * (F * DF) / (Norma * Norma)) / Norma;
   return Result;
 }
 
@@ -50,7 +49,7 @@ static gp_Vec FDeriv(const gp_Vec& F, const gp_Vec& DF)
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
   double Norma = F.Magnitude();
-  gp_Vec        Result =
+  gp_Vec Result =
     (D2F - 2 * DF * (F * DF) / (Norma * Norma)) / Norma
     - F
         * ((DF.SquareMagnitude() + F * D2F - 3 * (F * DF) * (F * DF) / (Norma * Norma))
@@ -62,12 +61,12 @@ static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 // function : NormalD0
 // purpose  : computes Normal to Surface
 //=======================================================================
-static void NormalD0(const double              U,
-                     const double              V,
+static void NormalD0(const double                          U,
+                     const double                          V,
                      const occ::handle<Adaptor3d_Surface>& Surf,
-                     gp_Dir&                          Normal,
-                     int&                OrderU,
-                     int&                OrderV)
+                     gp_Dir&                               Normal,
+                     int&                                  OrderU,
+                     int&                                  OrderV)
 {
   //  gp_Vec D1U,D1V,D2U,D2V,DUV;
   gp_Vec        D1U, D1V;
@@ -80,7 +79,7 @@ static void NormalD0(const double              U,
 #endif
   gp_Pnt P;
   Surf->D1(U, V, P, D1U, D1V);
-  double      MagTol = 0.000000001;
+  double             MagTol = 0.000000001;
   CSLib_NormalStatus NStatus;
   CSLib::Normal(D1U, D1V, MagTol, NStatus, Normal);
 
@@ -90,11 +89,11 @@ static void NormalD0(const double              U,
     {
       throw Geom_UndefinedValue();
     }
-    int   MaxOrder = 3;
+    int                        MaxOrder = 3;
     NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder, 0, MaxOrder);
     NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 1, 0, MaxOrder + 1);
-    int   i, j; // OrderU,OrderV;
-    double      Umin, Umax, Vmin, Vmax;
+    int                        i, j; // OrderU,OrderV;
+    double                     Umin, Umax, Vmin, Vmax;
     Umin = Surf->FirstUParameter();
     Umax = Surf->LastUParameter();
     Vmin = Surf->FirstVParameter();
@@ -150,12 +149,12 @@ static void NormalD0(const double              U,
 // function : NormalD1
 // purpose  : computes Normal to Surface and its first derivative
 //=======================================================================
-static void NormalD1(const double              U,
-                     const double              V,
+static void NormalD1(const double                          U,
+                     const double                          V,
                      const occ::handle<Adaptor3d_Surface>& Surf,
-                     gp_Dir&                          Normal,
-                     gp_Vec&                          D1UNormal,
-                     gp_Vec&                          D1VNormal)
+                     gp_Dir&                               Normal,
+                     gp_Vec&                               D1UNormal,
+                     gp_Vec&                               D1VNormal)
 {
 #ifdef CHECK
   GeomAbs_Shape Cont = (Surf->Surface().UContinuity() < Surf->Surface().VContinuity())
@@ -169,7 +168,7 @@ static void NormalD1(const double              U,
   gp_Vec d2u, d2v, d2uv;
   gp_Pnt P;
   Surf->D2(U, V, P, D1UNormal, D1VNormal, d2u, d2v, d2uv);
-  double      MagTol = 0.000000001;
+  double             MagTol = 0.000000001;
   CSLib_NormalStatus NStatus;
   CSLib::Normal(D1UNormal, D1VNormal, MagTol, NStatus, Normal);
   int MaxOrder;
@@ -177,11 +176,11 @@ static void NormalD1(const double              U,
     MaxOrder = 0;
   else
     MaxOrder = 3;
-  int   OrderU, OrderV;
+  int                        OrderU, OrderV;
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder + 1, 0, MaxOrder + 1);
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 2, 0, MaxOrder + 2);
-  int   i, j;
-  double      Umin, Umax, Vmin, Vmax;
+  int                        i, j;
+  double                     Umin, Umax, Vmin, Vmax;
   Umin = Surf->FirstUParameter();
   Umax = Surf->LastUParameter();
   Vmin = Surf->FirstVParameter();
@@ -231,15 +230,15 @@ static void NormalD1(const double              U,
 // function : NormalD2
 // purpose  : computes Normal to Surface and its first and second derivatives
 //=======================================================================
-static void NormalD2(const double              U,
-                     const double              V,
+static void NormalD2(const double                          U,
+                     const double                          V,
                      const occ::handle<Adaptor3d_Surface>& Surf,
-                     gp_Dir&                          Normal,
-                     gp_Vec&                          D1UNormal,
-                     gp_Vec&                          D1VNormal,
-                     gp_Vec&                          D2UNormal,
-                     gp_Vec&                          D2VNormal,
-                     gp_Vec&                          D2UVNormal)
+                     gp_Dir&                               Normal,
+                     gp_Vec&                               D1UNormal,
+                     gp_Vec&                               D1VNormal,
+                     gp_Vec&                               D2UNormal,
+                     gp_Vec&                               D2VNormal,
+                     gp_Vec&                               D2UVNormal)
 {
 #ifdef CHECK
   GeomAbs_Shape Cont = (Surf->Surface().UContinuity() < Surf->Surface().VContinuity())
@@ -253,7 +252,7 @@ static void NormalD2(const double              U,
   gp_Vec d3u, d3uuv, d3uvv, d3v;
   gp_Pnt P;
   Surf->D3(U, V, P, D1UNormal, D1VNormal, D2UNormal, D2VNormal, D2UVNormal, d3u, d3v, d3uuv, d3uvv);
-  double      MagTol = 0.000000001;
+  double             MagTol = 0.000000001;
   CSLib_NormalStatus NStatus;
   CSLib::Normal(D1UNormal, D1VNormal, MagTol, NStatus, Normal);
   int MaxOrder;
@@ -261,10 +260,10 @@ static void NormalD2(const double              U,
     MaxOrder = 0;
   else
     MaxOrder = 3;
-  int   OrderU, OrderV;
+  int                        OrderU, OrderV;
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder + 2, 0, MaxOrder + 2);
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 3, 0, MaxOrder + 3);
-  int   i, j;
+  int                        i, j;
 
   double Umin, Umax, Vmin, Vmax;
   Umin = Surf->FirstUParameter();
@@ -329,15 +328,12 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_Darboux::Copy() const
   return copy;
 }
 
-bool GeomFill_Darboux::D0(const double Param,
-                                      gp_Vec&             Tangent,
-                                      gp_Vec&             Normal,
-                                      gp_Vec&             BiNormal)
+bool GeomFill_Darboux::D0(const double Param, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& BiNormal)
 {
-  gp_Pnt2d                  C2d;
-  gp_Vec2d                  D2d;
-  gp_Pnt                    S;
-  gp_Vec                    dS_du, dS_dv;
+  gp_Pnt2d                       C2d;
+  gp_Vec2d                       D2d;
+  gp_Pnt                         S;
+  gp_Vec                         dS_du, dS_dv;
   occ::handle<Adaptor2d_Curve2d> myCurve2d =
     static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetCurve();
   occ::handle<Adaptor3d_Surface> mySupport =
@@ -364,17 +360,17 @@ bool GeomFill_Darboux::D0(const double Param,
 }
 
 bool GeomFill_Darboux::D1(const double Param,
-                                      gp_Vec&             Tangent,
-                                      gp_Vec&             DTangent,
-                                      gp_Vec&             Normal,
-                                      gp_Vec&             DNormal,
-                                      gp_Vec&             BiNormal,
-                                      gp_Vec&             DBiNormal)
+                          gp_Vec&      Tangent,
+                          gp_Vec&      DTangent,
+                          gp_Vec&      Normal,
+                          gp_Vec&      DNormal,
+                          gp_Vec&      BiNormal,
+                          gp_Vec&      DBiNormal)
 {
-  gp_Pnt2d                  C2d;
-  gp_Vec2d                  D2d, D2_2d;
-  gp_Pnt                    S;
-  gp_Vec                    dS_du, dS_dv, d2S_du, d2S_dv, d2S_duv, F, DF;
+  gp_Pnt2d                       C2d;
+  gp_Vec2d                       D2d, D2_2d;
+  gp_Pnt                         S;
+  gp_Vec                         dS_du, dS_dv, d2S_du, d2S_dv, d2S_duv, F, DF;
   occ::handle<Adaptor2d_Curve2d> myCurve2d =
     static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetCurve();
   occ::handle<Adaptor3d_Surface> mySupport =
@@ -406,15 +402,15 @@ bool GeomFill_Darboux::D1(const double Param,
 }
 
 bool GeomFill_Darboux::D2(const double Param,
-                                      gp_Vec&             Tangent,
-                                      gp_Vec&             DTangent,
-                                      gp_Vec&             D2Tangent,
-                                      gp_Vec&             Normal,
-                                      gp_Vec&             DNormal,
-                                      gp_Vec&             D2Normal,
-                                      gp_Vec&             BiNormal,
-                                      gp_Vec&             DBiNormal,
-                                      gp_Vec&             D2BiNormal)
+                          gp_Vec&      Tangent,
+                          gp_Vec&      DTangent,
+                          gp_Vec&      D2Tangent,
+                          gp_Vec&      Normal,
+                          gp_Vec&      DNormal,
+                          gp_Vec&      D2Normal,
+                          gp_Vec&      BiNormal,
+                          gp_Vec&      DBiNormal,
+                          gp_Vec&      D2BiNormal)
 {
   gp_Pnt2d C2d;
   gp_Vec2d D2d, D2_2d, D3_2d;
@@ -495,11 +491,11 @@ void GeomFill_Darboux::Intervals(NCollection_Array1<double>& T, const GeomAbs_Sh
 
 void GeomFill_Darboux::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  int Num = 20; // order of digitalization
-  gp_Vec           T, N, BN;
-  ATangent           = gp_Vec(0, 0, 0);
-  ANormal            = gp_Vec(0, 0, 0);
-  ABiNormal          = gp_Vec(0, 0, 0);
+  int    Num = 20; // order of digitalization
+  gp_Vec T, N, BN;
+  ATangent    = gp_Vec(0, 0, 0);
+  ANormal     = gp_Vec(0, 0, 0);
+  ABiNormal   = gp_Vec(0, 0, 0);
   double Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
   double Param;
   for (int i = 0; i <= Num; i++)

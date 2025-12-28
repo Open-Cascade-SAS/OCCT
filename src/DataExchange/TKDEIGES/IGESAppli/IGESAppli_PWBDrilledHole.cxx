@@ -23,10 +23,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBDrilledHole, IGESData_IGESEntity)
 
 IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole() {}
 
-void IGESAppli_PWBDrilledHole::Init(const int nbPropVal,
-                                    const double    aDrillDia,
-                                    const double    aFinishDia,
-                                    const int aCode)
+void IGESAppli_PWBDrilledHole::Init(const int    nbPropVal,
+                                    const double aDrillDia,
+                                    const double aFinishDia,
+                                    const int    aCode)
 {
   theNbPropertyValues = nbPropVal;
   theDrillDiameter    = aDrillDia;

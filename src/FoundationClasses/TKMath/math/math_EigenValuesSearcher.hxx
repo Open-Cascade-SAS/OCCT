@@ -24,7 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
 //! This class finds eigenvalues and eigenvectors of real symmetric tridiagonal matrices.
@@ -75,8 +74,8 @@ public:
 private:
   NCollection_Array1<double> myDiagonal;     //!< Copy of input diagonal elements
   NCollection_Array1<double> mySubdiagonal;  //!< Copy of input subdiagonal elements
-  bool                  myIsDone;       //!< Computation success flag
-  int                  myN;            //!< Matrix dimension
+  bool                       myIsDone;       //!< Computation success flag
+  int                        myN;            //!< Matrix dimension
   NCollection_Array1<double> myEigenValues;  //!< Computed eigenvalues
   NCollection_Array2<double> myEigenVectors; //!< Computed eigenvectors stored column-wise
 };

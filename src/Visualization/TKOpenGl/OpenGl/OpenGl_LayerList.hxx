@@ -67,7 +67,7 @@ public:
   Standard_EXPORT void AddStructure(const OpenGl_Structure*         theStruct,
                                     const Graphic3d_ZLayerId        theLayerId,
                                     const Graphic3d_DisplayPriority thePriority,
-                                    bool isForChangePriority = false);
+                                    bool                            isForChangePriority = false);
 
   //! Remove structure from structure list and return its previous priority
   Standard_EXPORT void RemoveStructure(const OpenGl_Structure* theStructure);
@@ -99,15 +99,15 @@ public:
 
   //! Update culling state - should be called before rendering.
   Standard_EXPORT void UpdateCulling(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                     const bool          theToDrawImmediate);
+                                     const bool                           theToDrawImmediate);
 
   //! Render this element
   Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                              const bool          theToDrawImmediate,
-                              const OpenGl_LayerFilter        theFilterMode,
-                              const Graphic3d_ZLayerId        theLayersToProcess,
-                              OpenGl_FrameBuffer*             theReadDrawFbo,
-                              OpenGl_FrameBuffer*             theOitAccumFbo) const;
+                              const bool                           theToDrawImmediate,
+                              const OpenGl_LayerFilter             theFilterMode,
+                              const Graphic3d_ZLayerId             theLayersToProcess,
+                              OpenGl_FrameBuffer*                  theReadDrawFbo,
+                              OpenGl_FrameBuffer*                  theOitAccumFbo) const;
 
   //! Returns the set of OpenGL Z-layers.
   const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const { return myLayers; }
@@ -199,16 +199,16 @@ protected:
   //! @param[in] theReadDrawFbo  the framebuffer for reading depth and writing final color.
   //! @param[in] theOitAccumFbo  the framebuffer for accumulating color and coverage for OIT
   //! process.
-  Standard_EXPORT void renderTransparent(const occ::handle<OpenGl_Workspace>&   theWorkspace,
-                                         OpenGl_LayerStack::iterator&      theLayerIter,
-                                         const OpenGl_GlobalLayerSettings& theGlobalSettings,
-                                         OpenGl_FrameBuffer*               theReadDrawFbo,
-                                         OpenGl_FrameBuffer*               theOitAccumFbo) const;
+  Standard_EXPORT void renderTransparent(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                         OpenGl_LayerStack::iterator&         theLayerIter,
+                                         const OpenGl_GlobalLayerSettings&    theGlobalSettings,
+                                         OpenGl_FrameBuffer*                  theReadDrawFbo,
+                                         OpenGl_FrameBuffer*                  theOitAccumFbo) const;
 
   // Render structures within specified layer.
-  Standard_EXPORT void renderLayer(const occ::handle<OpenGl_Workspace>&   theWorkspace,
-                                   const OpenGl_GlobalLayerSettings& theDefaultSettings,
-                                   const Graphic3d_Layer&            theLayer) const;
+  Standard_EXPORT void renderLayer(const occ::handle<OpenGl_Workspace>& theWorkspace,
+                                   const OpenGl_GlobalLayerSettings&    theDefaultSettings,
+                                   const Graphic3d_Layer&               theLayer) const;
 
 protected:
   NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;

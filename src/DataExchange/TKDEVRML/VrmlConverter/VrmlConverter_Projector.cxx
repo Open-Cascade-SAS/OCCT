@@ -20,9 +20,6 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <Vrml_Instancing.hxx>
 #include <Vrml_TransformSeparator.hxx>
@@ -30,26 +27,26 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_Projector, Standard_Transient)
 
-VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS_Shape>&    Shapes,
-                                                 const double              Focus,
-                                                 const double              DX,
-                                                 const double              DY,
-                                                 const double              DZ,
-                                                 const double              XUp,
-                                                 const double              YUp,
-                                                 const double              ZUp,
-                                                 const VrmlConverter_TypeOfCamera Camera,
-                                                 const VrmlConverter_TypeOfLight  Light)
+VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS_Shape>& Shapes,
+                                                 const double                            Focus,
+                                                 const double                            DX,
+                                                 const double                            DY,
+                                                 const double                            DZ,
+                                                 const double                            XUp,
+                                                 const double                            YUp,
+                                                 const double                            ZUp,
+                                                 const VrmlConverter_TypeOfCamera        Camera,
+                                                 const VrmlConverter_TypeOfLight         Light)
 
 {
 
   myTypeOfCamera = Camera;
   myTypeOfLight  = Light;
 
-  int i;
-  Bnd_Box          box;
-  double    Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
-  double    Xtarget, Ytarget, Ztarget, Angle, MaxAngle, Height, MaxHeight;
+  int     i;
+  Bnd_Box box;
+  double  Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
+  double  Xtarget, Ytarget, Ztarget, Angle, MaxAngle, Height, MaxHeight;
 
   for (i = Shapes.Lower(); i <= Shapes.Upper(); i++)
   {
@@ -195,7 +192,7 @@ VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS
     }
 */
 
-    gp_Pnt             CurP;
+    gp_Pnt                     CurP;
     NCollection_Array1<gp_Pnt> ArrP(1, 8);
 
     CurP.SetCoord(Xmin, Ymin, Zmin);

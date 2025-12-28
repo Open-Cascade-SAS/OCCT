@@ -34,7 +34,7 @@ static TCollection_AsciiString putLineNumbers(const TCollection_AsciiString& the
   std::stringstream aStream;
   theSource.Print(aStream);
   std::string             aLine;
-  int        aLineNumber = 1;
+  int                     aLineNumber = 1;
   TCollection_AsciiString aResultSource;
   while (std::getline(aStream, aLine))
   {
@@ -90,11 +90,11 @@ OpenGl_ShaderObject::~OpenGl_ShaderObject()
 
 //=================================================================================================
 
-bool OpenGl_ShaderObject::LoadAndCompile(const occ::handle<OpenGl_Context>&  theCtx,
-                                                     const TCollection_AsciiString& theId,
-                                                     const TCollection_AsciiString& theSource,
-                                                     bool                           theIsVerbose,
-                                                     bool theToPrintSource)
+bool OpenGl_ShaderObject::LoadAndCompile(const occ::handle<OpenGl_Context>& theCtx,
+                                         const TCollection_AsciiString&     theId,
+                                         const TCollection_AsciiString&     theSource,
+                                         bool                               theIsVerbose,
+                                         bool                               theToPrintSource)
 {
   if (!theIsVerbose)
   {
@@ -163,9 +163,9 @@ bool OpenGl_ShaderObject::LoadAndCompile(const occ::handle<OpenGl_Context>&  the
 
 //=================================================================================================
 
-void OpenGl_ShaderObject::DumpSourceCode(const occ::handle<OpenGl_Context>&  theCtx,
-                                         const TCollection_AsciiString& theId,
-                                         const TCollection_AsciiString& theSource) const
+void OpenGl_ShaderObject::DumpSourceCode(const occ::handle<OpenGl_Context>& theCtx,
+                                         const TCollection_AsciiString&     theId,
+                                         const TCollection_AsciiString&     theSource) const
 {
   theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                       GL_DEBUG_TYPE_OTHER,
@@ -178,8 +178,8 @@ void OpenGl_ShaderObject::DumpSourceCode(const occ::handle<OpenGl_Context>&  the
 // function : LoadSource
 // purpose  : Loads shader source code
 // =======================================================================
-bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>&  theCtx,
-                                                 const TCollection_AsciiString& theSource)
+bool OpenGl_ShaderObject::LoadSource(const occ::handle<OpenGl_Context>& theCtx,
+                                     const TCollection_AsciiString&     theSource)
 {
   if (myShaderID == NO_SHADER)
   {
@@ -216,7 +216,7 @@ bool OpenGl_ShaderObject::Compile(const occ::handle<OpenGl_Context>& theCtx)
 // purpose  : Fetches information log of the last compile operation
 // =======================================================================
 bool OpenGl_ShaderObject::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx,
-                                                   TCollection_AsciiString&      theLog)
+                                       TCollection_AsciiString&           theLog)
 {
   if (myShaderID == NO_SHADER)
   {
@@ -367,11 +367,11 @@ static bool restoreShaderSource(TCollection_AsciiString&       theSource,
 
 //=================================================================================================
 
-bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>&  theCtx,
-                                                      const TCollection_AsciiString& theProgramId,
-                                                      const TCollection_AsciiString& theFolder,
-                                                      bool               theToBeautify,
-                                                      bool               theToReset)
+bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>& theCtx,
+                                          const TCollection_AsciiString&     theProgramId,
+                                          const TCollection_AsciiString&     theFolder,
+                                          bool                               theToBeautify,
+                                          bool                               theToReset)
 {
   const TCollection_AsciiString aFileName =
     theFolder + "/" + theProgramId + getShaderExtension(myType);

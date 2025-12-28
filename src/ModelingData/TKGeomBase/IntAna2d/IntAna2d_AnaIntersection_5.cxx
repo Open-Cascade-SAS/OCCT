@@ -24,13 +24,13 @@
 
 void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle, const IntAna2d_Conic& Conic)
 {
-  bool CIsDirect = Circle.IsDirect();
-  double    A, B, C, D, E, F;
-  double    pcc, pss, p2sc, pc, ps, pcte;
-  double    radius    = Circle.Radius();
-  double    radius_P2 = radius * radius;
-  int i;
-  double    tx, ty, S;
+  bool   CIsDirect = Circle.IsDirect();
+  double A, B, C, D, E, F;
+  double pcc, pss, p2sc, pc, ps, pcte;
+  double radius    = Circle.Radius();
+  double radius_P2 = radius * radius;
+  int    i;
+  double tx, ty, S;
 
   done = false;
   nbp  = 0;

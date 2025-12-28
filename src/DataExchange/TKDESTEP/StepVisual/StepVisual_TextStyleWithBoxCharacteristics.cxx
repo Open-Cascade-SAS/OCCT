@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TextStyleWithBoxCharacteristics, StepVisua
 StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics() {}
 
 void StepVisual_TextStyleWithBoxCharacteristics::Init(
-  const occ::handle<TCollection_HAsciiString>&                    aName,
-  const occ::handle<StepVisual_TextStyleForDefinedFont>&          aCharacterAppearance,
+  const occ::handle<TCollection_HAsciiString>&                                aName,
+  const occ::handle<StepVisual_TextStyleForDefinedFont>&                      aCharacterAppearance,
   const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics)
 {
   // --- classe own fields ---
@@ -36,8 +36,8 @@ void StepVisual_TextStyleWithBoxCharacteristics::SetCharacteristics(
   characteristics = aCharacteristics;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> StepVisual_TextStyleWithBoxCharacteristics::
-  Characteristics() const
+occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>
+  StepVisual_TextStyleWithBoxCharacteristics::Characteristics() const
 {
   return characteristics;
 }

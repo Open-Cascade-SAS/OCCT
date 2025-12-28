@@ -22,20 +22,9 @@
 
 #include <Standard_Integer.hxx>
 #include <gp_XYZ.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 class TCollection_HAsciiString;
@@ -79,32 +68,34 @@ public:
   //! - texts                : Text strings
   //! raises exception if there is mismatch between the various
   //! Array Lengths.
-  Standard_EXPORT void Init(const double                            width,
-                            const double                            height,
-                            const int                         justifyCode,
-                            const gp_XYZ&                                  areaLoc,
-                            const double                            areaRotationAngle,
-                            const gp_XYZ&                                  baseLinePos,
-                            const double                            normalInterlineSpace,
-                            const occ::handle<NCollection_HArray1<int>>&        charDisplays,
-                            const occ::handle<NCollection_HArray1<double>>&           charWidths,
-                            const occ::handle<NCollection_HArray1<double>>&           charHeights,
-                            const occ::handle<NCollection_HArray1<double>>&           interCharSpc,
-                            const occ::handle<NCollection_HArray1<double>>&           interLineSpc,
-                            const occ::handle<NCollection_HArray1<int>>&        fontStyles,
-                            const occ::handle<NCollection_HArray1<double>>&           charAngles,
-                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& controlCodeStrings,
-                            const occ::handle<NCollection_HArray1<int>>&        nbChars,
-                            const occ::handle<NCollection_HArray1<double>>&           boxWidths,
-                            const occ::handle<NCollection_HArray1<double>>&           boxHeights,
-                            const occ::handle<NCollection_HArray1<int>>&        charSetCodes,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&    charSetEntities,
-                            const occ::handle<NCollection_HArray1<double>>&           slAngles,
-                            const occ::handle<NCollection_HArray1<double>>&           rotAngles,
-                            const occ::handle<NCollection_HArray1<int>>&        mirrorFlags,
-                            const occ::handle<NCollection_HArray1<int>>&        rotateFlags,
-                            const occ::handle<NCollection_HArray1<gp_XYZ>>&             startPoints,
-                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts);
+  Standard_EXPORT void Init(
+    const double                                    width,
+    const double                                    height,
+    const int                                       justifyCode,
+    const gp_XYZ&                                   areaLoc,
+    const double                                    areaRotationAngle,
+    const gp_XYZ&                                   baseLinePos,
+    const double                                    normalInterlineSpace,
+    const occ::handle<NCollection_HArray1<int>>&    charDisplays,
+    const occ::handle<NCollection_HArray1<double>>& charWidths,
+    const occ::handle<NCollection_HArray1<double>>& charHeights,
+    const occ::handle<NCollection_HArray1<double>>& interCharSpc,
+    const occ::handle<NCollection_HArray1<double>>& interLineSpc,
+    const occ::handle<NCollection_HArray1<int>>&    fontStyles,
+    const occ::handle<NCollection_HArray1<double>>& charAngles,
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&
+                                                                              controlCodeStrings,
+    const occ::handle<NCollection_HArray1<int>>&                              nbChars,
+    const occ::handle<NCollection_HArray1<double>>&                           boxWidths,
+    const occ::handle<NCollection_HArray1<double>>&                           boxHeights,
+    const occ::handle<NCollection_HArray1<int>>&                              charSetCodes,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& charSetEntities,
+    const occ::handle<NCollection_HArray1<double>>&                           slAngles,
+    const occ::handle<NCollection_HArray1<double>>&                           rotAngles,
+    const occ::handle<NCollection_HArray1<int>>&                              mirrorFlags,
+    const occ::handle<NCollection_HArray1<int>>&                              rotateFlags,
+    const occ::handle<NCollection_HArray1<gp_XYZ>>&                           startPoints,
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts);
 
   //! returns width of text containment area of all strings in the note
   Standard_EXPORT double TextWidth() const;
@@ -184,8 +175,7 @@ public:
 
   //! returns ControlCodeString of string
   //! raises exception if Index <= 0 or Index > NbStrings()
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> ControlCodeString(
-    const int Index) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ControlCodeString(const int Index) const;
 
   //! returns number of characters in string or zero
   //! raises exception if Index <= 0 or Index > NbStrings()
@@ -263,31 +253,31 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_NewGeneralNote, IGESData_IGESEntity)
 
 private:
-  double                           theWidth;
-  double                           theHeight;
-  int                        theJustifyCode;
-  gp_XYZ                                  theAreaLoc;
-  double                           theAreaRotationAngle;
-  gp_XYZ                                  theBaseLinePos;
-  double                           theNormalInterlineSpace;
-  occ::handle<NCollection_HArray1<int>>        theCharDisplays;
-  occ::handle<NCollection_HArray1<double>>           theCharWidths;
-  occ::handle<NCollection_HArray1<double>>           theCharHeights;
-  occ::handle<NCollection_HArray1<double>>           theInterCharSpaces;
-  occ::handle<NCollection_HArray1<double>>           theInterlineSpaces;
-  occ::handle<NCollection_HArray1<int>>        theFontStyles;
-  occ::handle<NCollection_HArray1<double>>           theCharAngles;
+  double                                                                  theWidth;
+  double                                                                  theHeight;
+  int                                                                     theJustifyCode;
+  gp_XYZ                                                                  theAreaLoc;
+  double                                                                  theAreaRotationAngle;
+  gp_XYZ                                                                  theBaseLinePos;
+  double                                                                  theNormalInterlineSpace;
+  occ::handle<NCollection_HArray1<int>>                                   theCharDisplays;
+  occ::handle<NCollection_HArray1<double>>                                theCharWidths;
+  occ::handle<NCollection_HArray1<double>>                                theCharHeights;
+  occ::handle<NCollection_HArray1<double>>                                theInterCharSpaces;
+  occ::handle<NCollection_HArray1<double>>                                theInterlineSpaces;
+  occ::handle<NCollection_HArray1<int>>                                   theFontStyles;
+  occ::handle<NCollection_HArray1<double>>                                theCharAngles;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theControlCodeStrings;
-  occ::handle<NCollection_HArray1<int>>        theNbChars;
-  occ::handle<NCollection_HArray1<double>>           theBoxWidths;
-  occ::handle<NCollection_HArray1<double>>           theBoxHeights;
-  occ::handle<NCollection_HArray1<int>>        theCharSetCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    theCharSetEntities;
-  occ::handle<NCollection_HArray1<double>>           theSlantAngles;
-  occ::handle<NCollection_HArray1<double>>           theRotationAngles;
-  occ::handle<NCollection_HArray1<int>>        theMirrorFlags;
-  occ::handle<NCollection_HArray1<int>>        theRotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>             theStartPoints;
+  occ::handle<NCollection_HArray1<int>>                                   theNbChars;
+  occ::handle<NCollection_HArray1<double>>                                theBoxWidths;
+  occ::handle<NCollection_HArray1<double>>                                theBoxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   theCharSetCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      theCharSetEntities;
+  occ::handle<NCollection_HArray1<double>>                                theSlantAngles;
+  occ::handle<NCollection_HArray1<double>>                                theRotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   theMirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   theRotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                theStartPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theTexts;
 };
 

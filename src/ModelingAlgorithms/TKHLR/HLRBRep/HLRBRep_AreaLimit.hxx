@@ -33,8 +33,8 @@ class HLRBRep_AreaLimit : public Standard_Transient
 public:
   //! The previous and next field are set to NULL.
   Standard_EXPORT HLRBRep_AreaLimit(const HLRAlgo_Intersection& V,
-                                    const bool      Boundary,
-                                    const bool      Interference,
+                                    const bool                  Boundary,
+                                    const bool                  Interference,
                                     const TopAbs_State          StateBefore,
                                     const TopAbs_State          StateAfter,
                                     const TopAbs_State          EdgeBefore,
@@ -75,13 +75,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(HLRBRep_AreaLimit, Standard_Transient)
 
 private:
-  HLRAlgo_Intersection      myVertex;
-  bool          myBoundary;
-  bool          myInterference;
-  TopAbs_State              myStateBefore;
-  TopAbs_State              myStateAfter;
-  TopAbs_State              myEdgeBefore;
-  TopAbs_State              myEdgeAfter;
+  HLRAlgo_Intersection           myVertex;
+  bool                           myBoundary;
+  bool                           myInterference;
+  TopAbs_State                   myStateBefore;
+  TopAbs_State                   myStateAfter;
+  TopAbs_State                   myEdgeBefore;
+  TopAbs_State                   myEdgeAfter;
   occ::handle<HLRBRep_AreaLimit> myPrevious;
   occ::handle<HLRBRep_AreaLimit> myNext;
 };

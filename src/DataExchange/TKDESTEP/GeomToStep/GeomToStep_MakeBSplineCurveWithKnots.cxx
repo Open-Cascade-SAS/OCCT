@@ -23,20 +23,13 @@
 #include <StepData_Factors.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //=============================================================================
 // Creation d' une bspline_curve_with_knots de
@@ -44,7 +37,7 @@
 //=============================================================================
 GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots(
   const occ::handle<Geom_BSplineCurve>& BS,
-  const StepData_Factors&          theLocalFactors){
+  const StepData_Factors&               theLocalFactors){
 #define Array1OfPnt_gen NCollection_Array1<gp_Pnt>
 #include "GeomToStep_MakeBSplineCurveWithKnots_gen.pxx"
 #undef Array1OfPnt_gen
@@ -57,10 +50,9 @@ GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots(
 
 GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots(
   const occ::handle<Geom2d_BSplineCurve>& BS,
-  const StepData_Factors&            theLocalFactors)
+  const StepData_Factors&                 theLocalFactors)
 {
 #define Array1OfPnt_gen NCollection_Array1<gp_Pnt2d>
-#include "GeomToStep_MakeBSplineCurveWithKnots_gen.pxx"
 #undef Array1OfPnt_gen
 }
 
@@ -68,7 +60,8 @@ GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots(
 // renvoi des valeurs
 //=============================================================================
 
-const occ::handle<StepGeom_BSplineCurveWithKnots>& GeomToStep_MakeBSplineCurveWithKnots::Value() const
+const occ::handle<StepGeom_BSplineCurveWithKnots>& GeomToStep_MakeBSplineCurveWithKnots::Value()
+  const
 {
   StdFail_NotDone_Raise_if(!done, "GeomToStep_MakeBSplineCurveWithKnots::Value() - no result");
   return theBSplineCurveWithKnots;

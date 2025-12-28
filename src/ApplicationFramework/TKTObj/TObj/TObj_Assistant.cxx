@@ -21,8 +21,6 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_Type.hxx>
 
@@ -63,8 +61,8 @@ int& TObj_Assistant::getVersion()
 occ::handle<TObj_Model> TObj_Assistant::FindModel(const char* theName)
 {
   TCollection_ExtendedString aName(theName, true);
-  int           i = getModels().Length();
-  occ::handle<TObj_Model>         aModel;
+  int                        i = getModels().Length();
+  occ::handle<TObj_Model>    aModel;
   for (; i > 0; i--)
   {
     aModel = occ::down_cast<TObj_Model>(getModels().Value(i));

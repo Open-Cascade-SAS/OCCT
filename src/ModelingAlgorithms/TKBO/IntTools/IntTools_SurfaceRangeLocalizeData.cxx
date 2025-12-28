@@ -15,7 +15,6 @@
 
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
-#include <Bnd_Box.hxx>
 #include <NCollection_List.hxx>
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
@@ -36,11 +35,10 @@ IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData()
   //  Modified by skv - Thu Nov  3 11:58:24 2005 Optimization End
 }
 
-IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData(
-  const int theNbSampleU,
-  const int theNbSampleV,
-  const double    theMinRangeU,
-  const double    theMinRangeV)
+IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData(const int    theNbSampleU,
+                                                                     const int    theNbSampleV,
+                                                                     const double theMinRangeU,
+                                                                     const double theMinRangeV)
 {
   myNbSampleU = theNbSampleU;
   myNbSampleV = theNbSampleV;
@@ -103,9 +101,8 @@ void IntTools_SurfaceRangeLocalizeData::AddBox(const IntTools_SurfaceRangeSample
   myMapBox.Bind(theRange, theBox);
 }
 
-bool IntTools_SurfaceRangeLocalizeData::FindBox(
-  const IntTools_SurfaceRangeSample& theRange,
-  Bnd_Box&                           theBox) const
+bool IntTools_SurfaceRangeLocalizeData::FindBox(const IntTools_SurfaceRangeSample& theRange,
+                                                Bnd_Box&                           theBox) const
 {
   if (myMapBox.IsBound(theRange))
   {
@@ -224,9 +221,8 @@ void IntTools_SurfaceRangeLocalizeData::SetFrame(const double theUMin,
     myVIndMin = aLen + 1;
 }
 
-const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(
-  const int theUIndex,
-  const int theVIndex) const
+const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(const int theUIndex,
+                                                                 const int theVIndex) const
 {
   int aFrmUInd = theUIndex + myUIndMin - 1;
   int aFrmVInd = theVIndex + myVIndMin - 1;
@@ -237,8 +233,7 @@ const gp_Pnt& IntTools_SurfaceRangeLocalizeData::GetPointInFrame(
   return myGridPoints->Value(aFrmUInd, aFrmVInd);
 }
 
-double IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(
-  const int theIndex) const
+double IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(const int theIndex) const
 {
   int aFrmInd = theIndex + myUIndMin - 1;
 
@@ -248,8 +243,7 @@ double IntTools_SurfaceRangeLocalizeData::GetUParamInFrame(
   return myUParams->Value(aFrmInd);
 }
 
-double IntTools_SurfaceRangeLocalizeData::GetVParamInFrame(
-  const int theIndex) const
+double IntTools_SurfaceRangeLocalizeData::GetVParamInFrame(const int theIndex) const
 {
   int aFrmInd = theIndex + myVIndMin - 1;
 

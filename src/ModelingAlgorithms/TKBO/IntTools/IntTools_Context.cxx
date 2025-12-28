@@ -227,8 +227,8 @@ IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
   IntTools_FClass2d* pFClass2d = NULL;
   if (!myFClass2dMap.Find(aF, pFClass2d))
   {
-    double aTolF;
-    TopoDS_Face   aFF;
+    double      aTolF;
+    TopoDS_Face aFF;
     //
     aFF = aF;
     aFF.Orientation(TopAbs_FORWARD);
@@ -345,14 +345,14 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
   Geom2dHatch_Hatcher* pHatcher = NULL;
   if (!myHatcherMap.Find(aF, pHatcher))
   {
-    double               aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
-    double               aU1, aU2, aEpsT;
-    TopAbs_Orientation          aOrE;
+    double                           aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
+    double                           aU1, aU2, aEpsT;
+    TopAbs_Orientation               aOrE;
     occ::handle<Geom_Surface>        aS;
     occ::handle<Geom2d_Curve>        aC2D;
     occ::handle<Geom2d_TrimmedCurve> aCT2D;
-    TopoDS_Face                 aFF;
-    TopExp_Explorer             aExp;
+    TopoDS_Face                      aFF;
+    TopExp_Explorer                  aExp;
     //
     aTolHatch2D   = 1.e-8;
     aTolHatch3D   = 1.e-8;
@@ -362,8 +362,7 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
     //
     Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
     pHatcher = (Geom2dHatch_Hatcher*)myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher));
-    new (pHatcher)
-      Geom2dHatch_Hatcher(aIntr, aTolHatch2D, aTolHatch3D, true, false);
+    new (pHatcher) Geom2dHatch_Hatcher(aIntr, aTolHatch2D, aTolHatch3D, true, false);
     //
     aFF = aF;
     aFF.Orientation(TopAbs_FORWARD);
@@ -435,18 +434,18 @@ IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Fa
 
 //=================================================================================================
 
-int IntTools_Context::ComputePE(const gp_Pnt&       aP1,
-                                             const double aTolP1,
-                                             const TopoDS_Edge&  aE2,
-                                             double&      aT,
-                                             double&      aDist)
+int IntTools_Context::ComputePE(const gp_Pnt&      aP1,
+                                const double       aTolP1,
+                                const TopoDS_Edge& aE2,
+                                double&            aT,
+                                double&            aDist)
 {
   if (!BRep_Tool::IsGeometric(aE2))
   {
     return -2;
   }
-  double    aTolE2, aTolSum;
-  int aNbProj;
+  double aTolE2, aTolSum;
+  int    aNbProj;
   //
   GeomAPI_ProjectPointOnCurve& aProjector = ProjPC(aE2);
   aProjector.Perform(aP1);
@@ -477,8 +476,8 @@ int IntTools_Context::ComputePE(const gp_Pnt&       aP1,
       const TopoDS_Vertex& aV = TopoDS::Vertex(itV.Value());
       if (aV.Orientation() == TopAbs_FORWARD || aV.Orientation() == TopAbs_REVERSED)
       {
-        gp_Pnt aPV           = BRep_Tool::Pnt(aV);
-        aTolSum              = aTolP1 + BRep_Tool::Tolerance(aV) + Precision::Confusion();
+        gp_Pnt aPV    = BRep_Tool::Pnt(aV);
+        aTolSum       = aTolP1 + BRep_Tool::Tolerance(aV) + Precision::Confusion();
         double aDist1 = aP1.Distance(aPV);
         if (aDist1 < aDist && aDist1 < aTolSum)
         {
@@ -498,10 +497,10 @@ int IntTools_Context::ComputePE(const gp_Pnt&       aP1,
 //=================================================================================================
 
 int IntTools_Context::ComputeVE(const TopoDS_Vertex& theV,
-                                             const TopoDS_Edge&   theE,
-                                             double&       theT,
-                                             double&       theTol,
-                                             const double  theFuzz)
+                                const TopoDS_Edge&   theE,
+                                double&              theT,
+                                double&              theTol,
+                                const double         theFuzz)
 {
   if (BRep_Tool::Degenerated(theE))
   {
@@ -511,9 +510,9 @@ int IntTools_Context::ComputeVE(const TopoDS_Vertex& theV,
   {
     return -2;
   }
-  double    aDist, aTolV, aTolE, aTolSum;
-  int aNbProj;
-  gp_Pnt           aP;
+  double aDist, aTolV, aTolE, aTolSum;
+  int    aNbProj;
+  gp_Pnt aP;
   //
   aP = BRep_Tool::Pnt(theV);
   //
@@ -544,14 +543,14 @@ int IntTools_Context::ComputeVE(const TopoDS_Vertex& theV,
 //=================================================================================================
 
 int IntTools_Context::ComputeVF(const TopoDS_Vertex& theVertex,
-                                             const TopoDS_Face&   theFace,
-                                             double&       theU,
-                                             double&       theV,
-                                             double&       theTol,
-                                             const double  theFuzz)
+                                const TopoDS_Face&   theFace,
+                                double&              theU,
+                                double&              theV,
+                                double&              theTol,
+                                const double         theFuzz)
 {
   double aTolV, aTolF, aTolSum, aDist;
-  gp_Pnt        aP;
+  gp_Pnt aP;
 
   aP = BRep_Tool::Pnt(theVertex);
   //
@@ -581,8 +580,8 @@ int IntTools_Context::ComputeVF(const TopoDS_Vertex& theVertex,
     return -2;
   }
   //
-  gp_Pnt2d         aP2d(theU, theV);
-  bool pri = IsPointInFace(theFace, aP2d);
+  gp_Pnt2d aP2d(theU, theV);
+  bool     pri = IsPointInFace(theFace, aP2d);
   if (!pri)
   { //  the point lays on the surface but out of the face
     return -3;
@@ -614,12 +613,10 @@ bool IntTools_Context::IsPointInFace(const TopoDS_Face& aF, const gp_Pnt2d& aP2d
 
 //=================================================================================================
 
-bool IntTools_Context::IsPointInFace(const gp_Pnt&       aP,
-                                                 const TopoDS_Face&  aF,
-                                                 const double aTol)
+bool IntTools_Context::IsPointInFace(const gp_Pnt& aP, const TopoDS_Face& aF, const double aTol)
 {
-  bool bIn = false;
-  double    aDist;
+  bool   bIn = false;
+  double aDist;
   //
   GeomAPI_ProjectPointOnSurf& aProjector = ProjPS(aF);
   aProjector.Perform(aP);
@@ -655,12 +652,12 @@ bool IntTools_Context::IsPointInOnFace(const TopoDS_Face& aF, const gp_Pnt2d& aP
 
 //=================================================================================================
 
-bool IntTools_Context::IsValidPointForFace(const gp_Pnt&       aP,
-                                                       const TopoDS_Face&  aF,
-                                                       const double aTol)
+bool IntTools_Context::IsValidPointForFace(const gp_Pnt&      aP,
+                                           const TopoDS_Face& aF,
+                                           const double       aTol)
 {
-  bool bFlag;
-  double    Umin, U, V;
+  bool   bFlag;
+  double Umin, U, V;
 
   GeomAPI_ProjectPointOnSurf& aProjector = ProjPS(aF);
   aProjector.Perform(aP);
@@ -685,10 +682,10 @@ bool IntTools_Context::IsValidPointForFace(const gp_Pnt&       aP,
 
 //=================================================================================================
 
-bool IntTools_Context::IsValidPointForFaces(const gp_Pnt&       aP,
-                                                        const TopoDS_Face&  aF1,
-                                                        const TopoDS_Face&  aF2,
-                                                        const double aTol)
+bool IntTools_Context::IsValidPointForFaces(const gp_Pnt&      aP,
+                                            const TopoDS_Face& aF1,
+                                            const TopoDS_Face& aF2,
+                                            const double       aTol)
 {
   bool bFlag1, bFlag2;
 
@@ -703,15 +700,15 @@ bool IntTools_Context::IsValidPointForFaces(const gp_Pnt&       aP,
 
 //=================================================================================================
 
-bool IntTools_Context::IsValidBlockForFace(const double   aT1,
-                                                       const double   aT2,
-                                                       const IntTools_Curve& aC,
-                                                       const TopoDS_Face&    aF,
-                                                       const double   aTol)
+bool IntTools_Context::IsValidBlockForFace(const double          aT1,
+                                           const double          aT2,
+                                           const IntTools_Curve& aC,
+                                           const TopoDS_Face&    aF,
+                                           const double          aTol)
 {
-  bool bFlag;
-  double    aTInterm;
-  gp_Pnt           aPInterm;
+  bool   bFlag;
+  double aTInterm;
+  gp_Pnt aPInterm;
 
   aTInterm = IntTools_Tools::IntermediatePoint(aT1, aT2);
 
@@ -725,31 +722,31 @@ bool IntTools_Context::IsValidBlockForFace(const double   aT1,
 
 //=================================================================================================
 
-bool IntTools_Context::IsValidBlockForFaces(const double   theT1,
-                                                        const double   theT2,
-                                                        const IntTools_Curve& theC,
-                                                        const TopoDS_Face&    theF1,
-                                                        const TopoDS_Face&    theF2,
-                                                        const double   theTol)
+bool IntTools_Context::IsValidBlockForFaces(const double          theT1,
+                                            const double          theT2,
+                                            const IntTools_Curve& theC,
+                                            const TopoDS_Face&    theF1,
+                                            const TopoDS_Face&    theF2,
+                                            const double          theTol)
 {
-  const int      aNbElem = 2;
+  const int                        aNbElem = 2;
   const occ::handle<Geom2d_Curve>& aPC1    = theC.FirstCurve2d();
   const occ::handle<Geom2d_Curve>& aPC2    = theC.SecondCurve2d();
   const occ::handle<Geom_Curve>&   aC3D    = theC.Curve();
 
   const occ::handle<Geom2d_Curve>* anArrPC[aNbElem] = {&aPC1, &aPC2};
-  const TopoDS_Face*          anArrF[aNbElem]  = {&theF1, &theF2};
+  const TopoDS_Face*               anArrF[aNbElem]  = {&theF1, &theF2};
 
   const double aMidPar = IntTools_Tools::IntermediatePoint(theT1, theT2);
-  const gp_Pnt        aP(aC3D->Value(aMidPar));
+  const gp_Pnt aP(aC3D->Value(aMidPar));
 
-  bool bFlag = true;
-  gp_Pnt2d         aPnt2D;
+  bool     bFlag = true;
+  gp_Pnt2d aPnt2D;
 
   for (int i = 0; (i < 2) && bFlag; ++i)
   {
     const occ::handle<Geom2d_Curve>& aPC = *anArrPC[i];
-    const TopoDS_Face&          aF  = *anArrF[i];
+    const TopoDS_Face&               aF  = *anArrF[i];
 
     if (!aPC.IsNull())
     {
@@ -768,12 +765,12 @@ bool IntTools_Context::IsValidBlockForFaces(const double   theT1,
 //=================================================================================================
 
 bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
-                                                  const IntTools_Curve& aC,
-                                                  const double   aTolC,
-                                                  double&        aT)
+                                      const IntTools_Curve& aC,
+                                      const double          aTolC,
+                                      double&               aT)
 {
-  bool bRet;
-  double    aTolV;
+  bool   bRet;
+  double aTolV;
   //
   aTolV = BRep_Tool::Tolerance(aV);
   bRet  = IntTools_Context::IsVertexOnLine(aV, aTolV, aC, aTolC, aT);
@@ -784,14 +781,14 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 //=================================================================================================
 
 bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
-                                                  const double   aTolV,
-                                                  const IntTools_Curve& aC,
-                                                  const double   aTolC,
-                                                  double&        aT)
+                                      const double          aTolV,
+                                      const IntTools_Curve& aC,
+                                      const double          aTolC,
+                                      double&               aT)
 {
-  double    aFirst, aLast, aDist, aTolSum;
-  int aNbProj;
-  gp_Pnt           aPv;
+  double aFirst, aLast, aDist, aTolSum;
+  int    aNbProj;
+  gp_Pnt aPv;
 
   aPv = BRep_Tool::Pnt(aV);
 
@@ -821,8 +818,8 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
   //
   // Checking extremities first
   // It is necessary to chose the closest bound to the point
-  bool bFirstValid = false;
-  double    aFirstDist  = Precision::Infinite();
+  bool   bFirstValid = false;
+  double aFirstDist  = Precision::Infinite();
   //
   if (!Precision::IsInfinite(aFirst))
   {
@@ -849,9 +846,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
         else
         {
           // Local search may fail. Try to use more precise algo.
-          Extrema_ExtPC    anExt2(aPv, aGAC, 1.e-10);
-          double    aMinDist = RealLast();
-          int aMinIdx  = -1;
+          Extrema_ExtPC anExt2(aPv, aGAC, 1.e-10);
+          double        aMinDist = RealLast();
+          int           aMinIdx  = -1;
           if (anExt2.IsDone())
           {
             for (int anIdx = 1; anIdx <= anExt2.NbExt(); anIdx++)
@@ -906,9 +903,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
         else
         {
           // Local search may fail. Try to use more precise algo.
-          Extrema_ExtPC    anExt2(aPv, aGAC, 1.e-10);
-          double    aMinDist = RealLast();
-          int aMinIdx  = -1;
+          Extrema_ExtPC anExt2(aPv, aGAC, 1.e-10);
+          double        aMinDist = RealLast();
+          int           aMinIdx  = -1;
           if (anExt2.IsDone())
           {
             for (int anIdx = 1; anIdx <= anExt2.NbExt(); anIdx++)
@@ -984,9 +981,7 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 
 //=================================================================================================
 
-bool IntTools_Context::ProjectPointOnEdge(const gp_Pnt&      aP,
-                                                      const TopoDS_Edge& anEdge,
-                                                      double&     aT)
+bool IntTools_Context::ProjectPointOnEdge(const gp_Pnt& aP, const TopoDS_Edge& anEdge, double& aT)
 {
   int aNbPoints;
 
@@ -1029,10 +1024,10 @@ void IntTools_Context::clearCachedPOnSProjectors()
 //=================================================================================================
 
 void IntTools_Context::UVBounds(const TopoDS_Face& theFace,
-                                double&     UMin,
-                                double&     UMax,
-                                double&     VMin,
-                                double&     VMax)
+                                double&            UMin,
+                                double&            UMax,
+                                double&            VMin,
+                                double&            VMax)
 {
   const BRepAdaptor_Surface& aBAS = SurfaceAdaptor(theFace);
   UMin                            = aBAS.FirstUParameter();

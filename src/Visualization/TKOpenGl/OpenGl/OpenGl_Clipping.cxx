@@ -80,7 +80,7 @@ void OpenGl_Clipping::SetLocalPlanes(const occ::handle<Graphic3d_SequenceOfHClip
 //=================================================================================================
 
 void OpenGl_Clipping::add(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
-                          const int                        theStartIndex)
+                          const int                                          theStartIndex)
 {
   if (thePlanes.IsNull())
   {
@@ -114,7 +114,7 @@ void OpenGl_Clipping::add(const occ::handle<Graphic3d_SequenceOfHClipPlane>& the
 //=================================================================================================
 
 void OpenGl_Clipping::remove(const occ::handle<Graphic3d_SequenceOfHClipPlane>& thePlanes,
-                             const int                        theStartIndex)
+                             const int                                          theStartIndex)
 {
   if (thePlanes.IsNull())
   {
@@ -146,17 +146,16 @@ void OpenGl_Clipping::remove(const occ::handle<Graphic3d_SequenceOfHClipPlane>& 
 
 //=================================================================================================
 
-bool OpenGl_Clipping::SetEnabled(const OpenGl_ClippingIterator& thePlane,
-                                             const bool         theIsEnabled)
+bool OpenGl_Clipping::SetEnabled(const OpenGl_ClippingIterator& thePlane, const bool theIsEnabled)
 {
   const int aPlaneIndex = thePlane.PlaneIndex();
-  bool&      isDisabled  = myDisabledPlanes.ChangeValue(aPlaneIndex);
+  bool&     isDisabled  = myDisabledPlanes.ChangeValue(aPlaneIndex);
   if (isDisabled == !theIsEnabled)
   {
     return false;
   }
 
-  isDisabled                          = !theIsEnabled;
+  isDisabled             = !theIsEnabled;
   const int aNbSubPlanes = thePlane.Value()->NbChainNextPlanes();
   if (thePlane.Value()->IsCapping())
   {
@@ -189,9 +188,9 @@ void OpenGl_Clipping::RestoreDisabled()
       continue;
     }
 
-    isDisabled                                      = false;
+    isDisabled                                           = false;
     const occ::handle<Graphic3d_ClipPlane>& aPlane       = aPlaneIter.Value();
-    const int             aNbSubPlanes = aPlane->NbChainNextPlanes();
+    const int                               aNbSubPlanes = aPlane->NbChainNextPlanes();
     myNbChains += 1;
     if (aPlane->IsCapping())
     {
@@ -223,7 +222,7 @@ void OpenGl_Clipping::DisableGlobal()
 //=================================================================================================
 
 void OpenGl_Clipping::DisableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
-                                       const int             theSubPlaneIndex)
+                                       const int                               theSubPlaneIndex)
 {
   myCappedChain    = theChain;
   myCappedSubPlane = theSubPlaneIndex;
@@ -232,7 +231,7 @@ void OpenGl_Clipping::DisableAllExcept(const occ::handle<Graphic3d_ClipPlane>& t
 //=================================================================================================
 
 void OpenGl_Clipping::EnableAllExcept(const occ::handle<Graphic3d_ClipPlane>& theChain,
-                                      const int             theSubPlaneIndex)
+                                      const int                               theSubPlaneIndex)
 {
   myCappedChain    = theChain;
   myCappedSubPlane = -theSubPlaneIndex;

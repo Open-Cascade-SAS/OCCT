@@ -42,8 +42,8 @@ public:
                                      const Sweep_NumShape&  N,
                                      const TopLoc_Location& L,
                                      const gp_Ax1&          A,
-                                     const double    D,
-                                     const bool C);
+                                     const double           D,
+                                     const bool             C);
 
   //! Builds the vertex addressed by [aGenV,aDirV], with its
   //! geometric part, but without subcomponents.
@@ -53,14 +53,12 @@ public:
   //! Builds the edge addressed by [aGenV,aDirE], with its
   //! geometric part, but without subcomponents.
   Standard_EXPORT TopoDS_Shape MakeEmptyDirectingEdge(const TopoDS_Shape&   aGenV,
-                                                      const Sweep_NumShape& aDirE)
-    override;
+                                                      const Sweep_NumShape& aDirE) override;
 
   //! Builds the edge addressed by [aGenE,aDirV], with its
   //! geometric part, but without subcomponents.
   Standard_EXPORT TopoDS_Shape MakeEmptyGeneratingEdge(const TopoDS_Shape&   aGenE,
-                                                       const Sweep_NumShape& aDirV)
-    override;
+                                                       const Sweep_NumShape& aDirV) override;
 
   //! Sets the parameters of the new vertex on the new
   //! face. The new face and new vertex where generated
@@ -137,48 +135,44 @@ public:
   //! Returns true if aNewSubShape (addressed by
   //! aSubGenS and aDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
-  Standard_EXPORT bool
-    GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
-                    const TopoDS_Shape&   aNewSubShape,
-                    const TopoDS_Shape&   aGenS,
-                    const TopoDS_Shape&   aSubGenS,
-                    const Sweep_NumShape& aDirS) const override;
+  Standard_EXPORT bool GGDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
+                                       const TopoDS_Shape&   aNewSubShape,
+                                       const TopoDS_Shape&   aGenS,
+                                       const TopoDS_Shape&   aSubGenS,
+                                       const Sweep_NumShape& aDirS) const override;
 
   //! Returns true if aNewSubShape (addressed by
   //! aGenS and aSubDirS) must be added in aNewShape
   //! (addressed by aGenS and aDirS).
-  Standard_EXPORT bool
-    GDDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
-                    const TopoDS_Shape&   aNewSubShape,
-                    const TopoDS_Shape&   aGenS,
-                    const Sweep_NumShape& aDirS,
-                    const Sweep_NumShape& aSubDirS) const override;
+  Standard_EXPORT bool GDDShapeIsToAdd(const TopoDS_Shape&   aNewShape,
+                                       const TopoDS_Shape&   aNewSubShape,
+                                       const TopoDS_Shape&   aGenS,
+                                       const Sweep_NumShape& aDirS,
+                                       const Sweep_NumShape& aSubDirS) const override;
 
   //! In some particular cases the topology of a
   //! generated face must be composed of independent
   //! closed wires, in this case this function returns
   //! true. The only case in which the function may
   //! return true is a planar face in a closed revol.
-  Standard_EXPORT bool
-    SeparatedWires(const TopoDS_Shape&   aNewShape,
-                   const TopoDS_Shape&   aNewSubShape,
-                   const TopoDS_Shape&   aGenS,
-                   const TopoDS_Shape&   aSubGenS,
-                   const Sweep_NumShape& aDirS) const override;
+  Standard_EXPORT bool SeparatedWires(const TopoDS_Shape&   aNewShape,
+                                      const TopoDS_Shape&   aNewSubShape,
+                                      const TopoDS_Shape&   aGenS,
+                                      const TopoDS_Shape&   aSubGenS,
+                                      const Sweep_NumShape& aDirS) const override;
 
   //! In some particular cases the topology of a
   //! generated Shell must be composed of independent
   //! closed Shells, in this case this function returns
   //! a Compound of independent Shells.
-  Standard_EXPORT virtual TopoDS_Shape SplitShell(const TopoDS_Shape& aNewShape) const
-    override;
+  Standard_EXPORT virtual TopoDS_Shape SplitShell(const TopoDS_Shape& aNewShape) const override;
 
   //! Returns true if aDirS and aGenS addresses a
   //! resulting Shape. In some specific cases the shape
   //! can be geometrically inexsistant, then this
   //! function returns false.
   Standard_EXPORT bool HasShape(const TopoDS_Shape&   aGenS,
-                                            const Sweep_NumShape& aDirS) const override;
+                                const Sweep_NumShape& aDirS) const override;
 
   //! Returns true when the geometry of aGenS is not
   //! modified by the rotation.
@@ -192,7 +186,7 @@ public:
 
 private:
   double myAng;
-  gp_Ax1        myAxe;
+  gp_Ax1 myAxe;
 };
 
 #endif // _BRepSweep_Rotation_HeaderFile

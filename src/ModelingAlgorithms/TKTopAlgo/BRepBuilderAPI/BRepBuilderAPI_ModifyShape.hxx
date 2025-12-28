@@ -24,7 +24,6 @@
 #include <BRepTools_Modifier.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class BRepTools_Modification;
 
@@ -50,8 +49,8 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
+    const TopoDS_Shape& S) override;
 
   //! Returns the modified shape corresponding to <S>.
   //! S can correspond to the entire initial shape or to its subshape.
@@ -78,7 +77,7 @@ protected:
   //! set the field <myInitialShape> to <S>, and set the
   //! field <myModification> with <M>, the performs the
   //! modification.
-  Standard_EXPORT BRepBuilderAPI_ModifyShape(const TopoDS_Shape&                   S,
+  Standard_EXPORT BRepBuilderAPI_ModifyShape(const TopoDS_Shape&                        S,
                                              const occ::handle<BRepTools_Modification>& M);
 
   //! Performs the previously given modification on the
@@ -92,8 +91,8 @@ protected:
   //! Performs the modification <M> on the shape <S>.
   Standard_EXPORT void DoModif(const TopoDS_Shape& S, const occ::handle<BRepTools_Modification>& M);
 
-  BRepTools_Modifier             myModifier;
-  TopoDS_Shape                   myInitialShape;
+  BRepTools_Modifier                  myModifier;
+  TopoDS_Shape                        myInitialShape;
   occ::handle<BRepTools_Modification> myModification;
 
 private:

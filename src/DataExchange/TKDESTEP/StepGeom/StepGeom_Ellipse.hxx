@@ -32,9 +32,9 @@ public:
   Standard_EXPORT StepGeom_Ellipse();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&          aPosition,
-                            const double                     aSemiAxis1,
-                            const double                     aSemiAxis2);
+                            const StepGeom_Axis2Placement&               aPosition,
+                            const double                                 aSemiAxis1,
+                            const double                                 aSemiAxis2);
 
   Standard_EXPORT void SetSemiAxis1(const double aSemiAxis1);
 

@@ -87,17 +87,11 @@ public:
   //! Makes the transformation into a rotation.
   //! A1 is the axis rotation and Ang is the angular value
   //! of the rotation in radians.
-  void SetRotation(const gp_Ax1& theA1, const double theAng)
-  {
-    gpTrsf.SetRotation(theA1, theAng);
-  }
+  void SetRotation(const gp_Ax1& theA1, const double theAng) { gpTrsf.SetRotation(theA1, theAng); }
 
   //! Makes the transformation into a scale. P is the center of
   //! the scale and S is the scaling value.
-  void SetScale(const gp_Pnt& thePnt, const double theScale)
-  {
-    gpTrsf.SetScale(thePnt, theScale);
-  }
+  void SetScale(const gp_Pnt& thePnt, const double theScale) { gpTrsf.SetScale(thePnt, theScale); }
 
   //! Makes a transformation allowing passage from the coordinate
   //! system "FromSystem1" to the coordinate system "ToSystem2".
@@ -155,10 +149,7 @@ public:
   //! It is a 3 rows X 4 columns matrix.
   //!
   //! Raised if Row < 1 or Row > 3 or Col < 1 or Col > 4
-  double Value(const int theRow, const int theCol) const
-  {
-    return gpTrsf.Value(theRow, theCol);
-  }
+  double Value(const int theRow, const int theCol) const { return gpTrsf.Value(theRow, theCol); }
 
   //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
@@ -178,7 +169,10 @@ public:
 
   //! Computes the transformation composed with Other and <me> .
   //! <me> = <me> * Other.
-  void Multiply(const occ::handle<Geom_Transformation>& theOther) { gpTrsf.Multiply(theOther->Trsf()); }
+  void Multiply(const occ::handle<Geom_Transformation>& theOther)
+  {
+    gpTrsf.Multiply(theOther->Trsf());
+  }
 
   //! Computes the following composition of transformations
   //! if N > 0  <me> * <me> * .......* <me>.
@@ -205,8 +199,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Transformation> Copy() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   gp_Trsf gpTrsf;

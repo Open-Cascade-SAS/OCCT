@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&           T,
+HLRBRep_VertexList::HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&                     T,
                                        const NCollection_List<HLRAlgo_Interference>::Iterator& I)
     : myIterator(I),
       myTool(T),

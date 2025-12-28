@@ -21,8 +21,8 @@ StepShape_Torus::StepShape_Torus() {}
 
 void StepShape_Torus::Init(const occ::handle<TCollection_HAsciiString>& aName,
                            const occ::handle<StepGeom_Axis1Placement>&  aPosition,
-                           const double                     aMajorRadius,
-                           const double                     aMinorRadius)
+                           const double                                 aMajorRadius,
+                           const double                                 aMinorRadius)
 {
   // --- classe own fields ---
   position    = aPosition;

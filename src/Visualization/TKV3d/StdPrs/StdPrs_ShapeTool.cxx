@@ -34,8 +34,7 @@
 
 //=================================================================================================
 
-StdPrs_ShapeTool::StdPrs_ShapeTool(const TopoDS_Shape&    theShape,
-                                   const bool theAllVertices)
+StdPrs_ShapeTool::StdPrs_ShapeTool(const TopoDS_Shape& theShape, const bool theAllVertices)
     : myShape(theShape)
 {
   myEdgeMap.Clear();
@@ -88,7 +87,7 @@ Bnd_Box StdPrs_ShapeTool::FaceBound() const
 
 bool StdPrs_ShapeTool::IsPlanarFace(const TopoDS_Face& theFace)
 {
-  TopLoc_Location             l;
+  TopLoc_Location                  l;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(theFace, l);
   if (S.IsNull())
   {
@@ -129,7 +128,7 @@ int StdPrs_ShapeTool::Neighbours() const
 occ::handle<NCollection_HSequence<TopoDS_Shape>> StdPrs_ShapeTool::FacesOfEdge() const
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> H = new NCollection_HSequence<TopoDS_Shape>();
-  const NCollection_List<TopoDS_Shape>&       L = myEdgeMap.FindFromIndex(myEdge);
+  const NCollection_List<TopoDS_Shape>&            L = myEdgeMap.FindFromIndex(myEdge);
   for (NCollection_List<TopoDS_Shape>::Iterator LI(L); LI.More(); LI.Next())
   {
     H->Append(LI.Value());
@@ -141,7 +140,7 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> StdPrs_ShapeTool::FacesOfEdge()
 
 bool StdPrs_ShapeTool::HasSurface() const
 {
-  TopLoc_Location             l;
+  TopLoc_Location                  l;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(GetFace(), l);
   return !S.IsNull();
 }
@@ -164,7 +163,7 @@ bool StdPrs_ShapeTool::HasCurve() const
 
 void StdPrs_ShapeTool::PolygonOnTriangulation(occ::handle<Poly_PolygonOnTriangulation>& Indices,
                                               occ::handle<Poly_Triangulation>&          T,
-                                              TopLoc_Location&                     l) const
+                                              TopLoc_Location&                          l) const
 {
   BRep_Tool::PolygonOnTriangulation(GetCurve(), Indices, T, l);
 }

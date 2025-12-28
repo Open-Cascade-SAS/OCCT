@@ -26,7 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 namespace
 {
 //! Checks whether two format arrays are equal or not.
-static bool operator==(const NCollection_Vector<int>& theFmt1, const NCollection_Vector<int>& theFmt2)
+static bool operator==(const NCollection_Vector<int>& theFmt1,
+                       const NCollection_Vector<int>& theFmt2)
 {
   if (theFmt1.Length() != theFmt2.Length())
     return false;
@@ -139,8 +140,7 @@ bool OpenGl_FrameBuffer::InitWrapper(
 
   theGlContext->arbFBO->glGenFramebuffers(1, &myGlFBufferId);
   theGlContext->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myGlFBufferId);
-  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-       ++aColorBufferIdx)
+  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
   {
     const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
     if (aColorTexture->IsValid())
@@ -189,10 +189,10 @@ bool OpenGl_FrameBuffer::InitWrapper(
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
-                                          const NCollection_Vec2<int>&        theSize,
-                                          const int        theColorFormat,
-                                          const int        theDepthFormat,
-                                          const int        theNbSamples)
+                              const NCollection_Vec2<int>&       theSize,
+                              const int                          theColorFormat,
+                              const int                          theDepthFormat,
+                              const int                          theNbSamples)
 {
   NCollection_Vector<int> aColorFormats;
   if (theColorFormat != 0)
@@ -205,10 +205,10 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
-                                          const NCollection_Vec2<int>&        theSize,
-                                          const NCollection_Vector<int>&    theColorFormats,
-                                          const occ::handle<OpenGl_Texture>& theDepthStencilTexture,
-                                          const int        theNbSamples)
+                              const NCollection_Vec2<int>&       theSize,
+                              const NCollection_Vector<int>&     theColorFormats,
+                              const occ::handle<OpenGl_Texture>& theDepthStencilTexture,
+                              const int                          theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -249,19 +249,18 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   myIsOwnBuffer         = true;
 
   // setup viewport sizes as is
-  myVPSizeX                     = theSize.x();
-  myVPSizeY                     = theSize.y();
+  myVPSizeX        = theSize.x();
+  myVPSizeY        = theSize.y();
   const int aSizeX = theSize.x() > 0 ? theSize.x() : 2;
   const int aSizeY = theSize.y() > 0 ? theSize.y() : 2;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (theNbSamples != 0)
   {
-    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-         ++aColorBufferIdx)
+    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
-      const GLint                   aColorFormat  = myColorFormats(aColorBufferIdx);
+      const GLint                        aColorFormat  = myColorFormats(aColorBufferIdx);
       if (aColorFormat == 0
           || !aColorTexture
                 ->Init2DMultisample(theGlContext, theNbSamples, aColorFormat, aSizeX, aSizeY))
@@ -273,12 +272,11 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   }
   else
   {
-    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-         ++aColorBufferIdx)
+    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
-      const GLint                   aColorFormat  = myColorFormats(aColorBufferIdx);
-      const OpenGl_TextureFormat    aFormat =
+      const GLint                        aColorFormat  = myColorFormats(aColorBufferIdx);
+      const OpenGl_TextureFormat         aFormat =
         OpenGl_TextureFormat::FindSizedFormat(theGlContext, aColorFormat);
       if (!aFormat.IsValid()
           || !aColorTexture->Init(theGlContext,
@@ -296,8 +294,7 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   theGlContext->arbFBO->glGenFramebuffers(1, &myGlFBufferId);
   theGlContext->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myGlFBufferId);
 
-  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-       ++aColorBufferIdx)
+  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
   {
     const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
     if (aColorTexture->IsValid())
@@ -346,10 +343,10 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
-                                          const NCollection_Vec2<int>&        theSize,
-                                          const NCollection_Vector<int>&    theColorFormats,
-                                          const int        theDepthFormat,
-                                          const int        theNbSamples)
+                              const NCollection_Vec2<int>&       theSize,
+                              const NCollection_Vector<int>&     theColorFormats,
+                              const int                          theDepthFormat,
+                              const int                          theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -397,20 +394,19 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   myIsOwnDepth  = true;
 
   // setup viewport sizes as is
-  myVPSizeX                           = theSize.x();
-  myVPSizeY                           = theSize.y();
+  myVPSizeX              = theSize.x();
+  myVPSizeY              = theSize.y();
   const int aSizeX       = theSize.x() > 0 ? theSize.x() : 2;
   const int aSizeY       = theSize.y() > 0 ? theSize.y() : 2;
-  bool                   hasStencilRB = false;
+  bool      hasStencilRB = false;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (theNbSamples != 0)
   {
-    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-         ++aColorBufferIdx)
+    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
-      const GLint                   aColorFormat  = myColorFormats(aColorBufferIdx);
+      const GLint                        aColorFormat  = myColorFormats(aColorBufferIdx);
       if (aColorFormat == 0
           || !aColorTexture
                 ->Init2DMultisample(theGlContext, theNbSamples, aColorFormat, aSizeX, aSizeY))
@@ -429,12 +425,11 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   }
   else
   {
-    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-         ++aColorBufferIdx)
+    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
-      const GLint                   aColorFormat  = myColorFormats(aColorBufferIdx);
-      const OpenGl_TextureFormat    aFormat =
+      const GLint                        aColorFormat  = myColorFormats(aColorBufferIdx);
+      const OpenGl_TextureFormat         aFormat =
         OpenGl_TextureFormat::FindSizedFormat(theGlContext, aColorFormat);
       if (!aFormat.IsValid()
           || !aColorTexture->Init(theGlContext,
@@ -493,8 +488,7 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
   // Build FBO and setup it as texture
   theGlContext->arbFBO->glGenFramebuffers(1, &myGlFBufferId);
   theGlContext->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myGlFBufferId);
-  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-       ++aColorBufferIdx)
+  for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
   {
     const occ::handle<OpenGl_Texture>& aColorTexture = myColorTextures(aColorBufferIdx);
     if (aColorTexture->IsValid())
@@ -568,10 +562,10 @@ bool OpenGl_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theGlContext,
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContext,
-                                              const NCollection_Vec2<int>&        theViewportSize,
-                                              const int        theColorFormat,
-                                              const int        theDepthFormat,
-                                              const int        theNbSamples)
+                                  const NCollection_Vec2<int>&       theViewportSize,
+                                  const int                          theColorFormat,
+                                  const int                          theDepthFormat,
+                                  const int                          theNbSamples)
 {
   NCollection_Vector<int> aColorFormats;
   aColorFormats.Append(theColorFormat);
@@ -581,10 +575,10 @@ bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContex
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContext,
-                                              const NCollection_Vec2<int>&        theViewportSize,
-                                              const NCollection_Vector<int>&    theColorFormats,
-                                              const int        theDepthFormat,
-                                              const int        theNbSamples)
+                                  const NCollection_Vec2<int>&       theViewportSize,
+                                  const NCollection_Vector<int>&     theColorFormats,
+                                  const int                          theDepthFormat,
+                                  const int                          theNbSamples)
 {
   if (myVPSizeX == theViewportSize.x() && myVPSizeY == theViewportSize.y()
       && myColorFormats == theColorFormats && myDepthFormat == theDepthFormat
@@ -599,10 +593,10 @@ bool OpenGl_FrameBuffer::InitLazy(const occ::handle<OpenGl_Context>& theGlContex
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::InitWithRB(const occ::handle<OpenGl_Context>& theGlCtx,
-                                                const NCollection_Vec2<int>&        theSize,
-                                                const int        theColorFormat,
-                                                const int        theDepthFormat,
-                                                const unsigned int theColorRBufferFromWindow)
+                                    const NCollection_Vec2<int>&       theSize,
+                                    const int                          theColorFormat,
+                                    const int                          theDepthFormat,
+                                    const unsigned int                 theColorRBufferFromWindow)
 {
   NCollection_Vector<int> aColorFormats;
   if (theColorFormat != 0)
@@ -620,11 +614,11 @@ bool OpenGl_FrameBuffer::InitWithRB(const occ::handle<OpenGl_Context>& theGlCtx,
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>& theGlCtx,
-                                                      const NCollection_Vec2<int>&        theSize,
-                                                      const NCollection_Vector<int>&    theColorFormats,
-                                                      const int        theDepthFormat,
-                                                      const int        theNbSamples,
-                                                      const unsigned int theColorRBufferFromWindow)
+                                          const NCollection_Vec2<int>&       theSize,
+                                          const NCollection_Vector<int>&     theColorFormats,
+                                          const int                          theDepthFormat,
+                                          const int                          theNbSamples,
+                                          const unsigned int theColorRBufferFromWindow)
 {
   myColorFormats = theColorFormats;
   if (!myColorTextures.IsEmpty())
@@ -667,8 +661,8 @@ bool OpenGl_FrameBuffer::initRenderBuffer(const occ::handle<OpenGl_Context>& the
   myIsOwnDepth  = true;
 
   // setup viewport sizes as is
-  myVPSizeX                     = theSize.x();
-  myVPSizeY                     = theSize.y();
+  myVPSizeX        = theSize.x();
+  myVPSizeY        = theSize.y();
   const int aSizeX = theSize.x() > 0 ? theSize.x() : 2;
   const int aSizeY = theSize.y() > 0 ? theSize.y() : 2;
 
@@ -945,8 +939,7 @@ void OpenGl_FrameBuffer::Release(OpenGl_Context* theGlCtx)
 
   if (myIsOwnColor)
   {
-    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length();
-         ++aColorBufferIdx)
+    for (int aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       myColorTextures(aColorBufferIdx)->Release(theGlCtx);
     }
@@ -973,8 +966,7 @@ void OpenGl_FrameBuffer::SetupViewport(const occ::handle<OpenGl_Context>& theGlC
 
 //=================================================================================================
 
-void OpenGl_FrameBuffer::ChangeViewport(const int theVPSizeX,
-                                        const int theVPSizeY)
+void OpenGl_FrameBuffer::ChangeViewport(const int theVPSizeX, const int theVPSizeY)
 {
   myVPSizeX = theVPSizeX;
   myVPSizeY = theVPSizeY;
@@ -1029,7 +1021,7 @@ inline size_t getAligned(const size_t theNumber, const size_t theAlignment)
 template <typename T>
 inline void convertRowFromRgba(T*                     theRgbRow,
                                const Image_ColorRGBA* theRgbaRow,
-                               const size_t    theWidth)
+                               const size_t           theWidth)
 {
   for (size_t aCol = 0; aCol < theWidth; ++aCol)
   {
@@ -1044,9 +1036,9 @@ inline void convertRowFromRgba(T*                     theRgbRow,
 //=================================================================================================
 
 bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGlCtx,
-                                                const occ::handle<OpenGl_FrameBuffer>& theFbo,
-                                                Image_PixMap&                     theImage,
-                                                Graphic3d_BufferType              theBufferType)
+                                    const occ::handle<OpenGl_FrameBuffer>& theFbo,
+                                    Image_PixMap&                          theImage,
+                                    Graphic3d_BufferType                   theBufferType)
 {
   if (theGlCtx.IsNull() || theImage.IsEmpty())
   {
@@ -1224,10 +1216,9 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
   theGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   bool isBatchCopy = !theImage.IsTopDown();
 
-  const GLint   anExtraBytes = GLint(theImage.RowExtraBytes());
-  GLint         aPixelsWidth = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
-  size_t aSizeRowBytesEstim =
-    getAligned(theImage.SizePixelBytes() * aPixelsWidth, anAligment);
+  const GLint anExtraBytes       = GLint(theImage.RowExtraBytes());
+  GLint       aPixelsWidth       = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  size_t      aSizeRowBytesEstim = getAligned(theImage.SizePixelBytes() * aPixelsWidth, anAligment);
   if (anExtraBytes < anAligment)
   {
     aPixelsWidth = 0;
@@ -1248,8 +1239,8 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
 
   if (toConvRgba2Rgb)
   {
-    const size_t aRowSize = theImage.SizeX() * 4;
-    NCollection_Buffer  aRowBuffer(Image_PixMap::DefaultAllocator());
+    const size_t       aRowSize = theImage.SizeX() * 4;
+    NCollection_Buffer aRowBuffer(Image_PixMap::DefaultAllocator());
     if (!aRowBuffer.Allocate(aRowSize))
     {
       return false;

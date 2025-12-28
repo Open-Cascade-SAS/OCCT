@@ -28,7 +28,6 @@
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_OccAllocator.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <vector>
@@ -45,21 +44,21 @@ public:
   }
 
   void Init(const occ::handle<Geom_Surface>& Surface,
-            const double         Umin,
-            const double         Usup,
-            const double         Vmin,
-            const double         Vsup);
+            const double                     Umin,
+            const double                     Usup,
+            const double                     Vmin,
+            const double                     Vsup);
   void Init();
   void Perform(const gp_Pnt& P);
 
   bool IsDone() const { return myIsDone; }
 
-  void          LowerDistanceParameters(double& U, double& V) const;
+  void   LowerDistanceParameters(double& U, double& V) const;
   double LowerDistance() const;
 
 protected:
-  bool    myIsDone;
-  int    myIndex;
+  bool                myIsDone;
+  int                 myIndex;
   Extrema_ExtPS       myExtPS;
   GeomAdaptor_Surface myGeomAdaptor;
 };
@@ -67,10 +66,10 @@ protected:
 //=================================================================================================
 
 void ProjectPointOnSurf::Init(const occ::handle<Geom_Surface>& Surface,
-                              const double         Umin,
-                              const double         Usup,
-                              const double         Vmin,
-                              const double         Vsup)
+                              const double                     Umin,
+                              const double                     Usup,
+                              const double                     Vmin,
+                              const double                     Vsup)
 {
   constexpr double Tolerance = Precision::PConfusion();
   //
@@ -88,7 +87,7 @@ void ProjectPointOnSurf::Init()
   {
     // evaluate the lower distance and its index;
     double Dist2Min = myExtPS.SquareDistance(1);
-    myIndex                = 1;
+    myIndex         = 1;
     for (int i = 2; i <= myExtPS.NbExt(); i++)
     {
       const double Dist2 = myExtPS.SquareDistance(i);
@@ -129,13 +128,13 @@ double ProjectPointOnSurf::LowerDistance() const
 //=================================================================================================
 
 static double AdjustPeriodic(const double theParameter,
-                                    const double parmin,
-                                    const double parmax,
-                                    const double thePeriod,
-                                    double&      theOffset)
+                             const double parmin,
+                             const double parmax,
+                             const double thePeriod,
+                             double&      theOffset)
 {
   double aresult = theParameter;
-  theOffset             = 0.;
+  theOffset      = 0.;
   while (aresult < parmin)
   {
     aresult += thePeriod;
@@ -152,10 +151,10 @@ static double AdjustPeriodic(const double theParameter,
 //=================================================================================================
 
 static bool IsPointOnBoundary(const double theParameter,
-                                          const double theFirstBoundary,
-                                          const double theSecondBoundary,
-                                          const double theResolution,
-                                          bool&   IsOnFirstBoundary)
+                              const double theFirstBoundary,
+                              const double theSecondBoundary,
+                              const double theResolution,
+                              bool&        IsOnFirstBoundary)
 {
   IsOnFirstBoundary = true;
   if (fabs(theParameter - theFirstBoundary) < theResolution)
@@ -170,16 +169,16 @@ static bool IsPointOnBoundary(const double theParameter,
 
 //=================================================================================================
 
-static bool FindPoint(const gp_Pnt2d&     theFirstPoint,
-                                  const gp_Pnt2d&     theLastPoint,
-                                  const double theUmin,
-                                  const double theUmax,
-                                  const double theVmin,
-                                  const double theVmax,
-                                  gp_Pnt2d&           theNewPoint)
+static bool FindPoint(const gp_Pnt2d& theFirstPoint,
+                      const gp_Pnt2d& theLastPoint,
+                      const double    theUmin,
+                      const double    theUmax,
+                      const double    theVmin,
+                      const double    theVmax,
+                      gp_Pnt2d&       theNewPoint)
 {
-  gp_Vec2d         aVec(theFirstPoint, theLastPoint);
-  int i = 0, j = 0;
+  gp_Vec2d aVec(theFirstPoint, theLastPoint);
+  int      i = 0, j = 0;
 
   for (i = 0; i < 4; i++)
   {
@@ -287,8 +286,7 @@ int GeomInt_LineTool::NbVertex(const occ::handle<IntPatch_Line>& L)
 
 //=================================================================================================
 
-const IntPatch_Point& GeomInt_LineTool::Vertex(const occ::handle<IntPatch_Line>& L,
-                                               const int       I)
+const IntPatch_Point& GeomInt_LineTool::Vertex(const occ::handle<IntPatch_Line>& L, const int I)
 {
   switch (L->ArcType())
   {
@@ -315,8 +313,8 @@ double GeomInt_LineTool::FirstParameter(const occ::handle<IntPatch_Line>& L)
       occ::handle<IntPatch_ALine> alin = occ::down_cast<IntPatch_ALine>(L);
       if (alin->HasFirstPoint())
         return alin->FirstPoint().ParameterOnLine();
-      bool included;
-      double    firstp = alin->FirstParameter(included);
+      bool   included;
+      double firstp = alin->FirstParameter(included);
       if (!included)
         firstp += Epsilon(firstp);
       return firstp;
@@ -363,8 +361,8 @@ double GeomInt_LineTool::LastParameter(const occ::handle<IntPatch_Line>& L)
       occ::handle<IntPatch_ALine> alin = occ::down_cast<IntPatch_ALine>(L);
       if (alin->HasLastPoint())
         return alin->LastPoint().ParameterOnLine();
-      bool included;
-      double    lastp = alin->LastParameter(included);
+      bool   included;
+      double lastp = alin->LastParameter(included);
       if (!included)
         lastp -= Epsilon(lastp);
       return lastp;
@@ -406,21 +404,21 @@ double GeomInt_LineTool::LastParameter(const occ::handle<IntPatch_Line>& L)
 //=================================================================================================
 
 bool GeomInt_LineTool::DecompositionOfWLine(
-  const occ::handle<IntPatch_WLine>&      theWLine,
-  const occ::handle<GeomAdaptor_Surface>& theSurface1,
-  const occ::handle<GeomAdaptor_Surface>& theSurface2,
-  const double                aTolSum,
-  const GeomInt_LineConstructor&     theLConstructor,
-  NCollection_Sequence<occ::handle<IntPatch_Line>>&           theNewLines)
+  const occ::handle<IntPatch_WLine>&                theWLine,
+  const occ::handle<GeomAdaptor_Surface>&           theSurface1,
+  const occ::handle<GeomAdaptor_Surface>&           theSurface2,
+  const double                                      aTolSum,
+  const GeomInt_LineConstructor&                    theLConstructor,
+  NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines)
 {
   typedef NCollection_List<int> ListOfInteger;
   // have to use std::vector, not NCollection_Vector in order to use copy constructor of
   // ListOfInteger which will be created with specific allocator instance
   typedef std::vector<ListOfInteger, NCollection_OccAllocator<ListOfInteger>> ArrayOfListOfInteger;
 
-  bool bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
-  int nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;
-  double    aTol, umin, umax, vmin, vmax;
+  bool   bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
+  int    nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;
+  double aTol, umin, umax, vmin, vmax;
 
   // an inc allocator, it will contain wasted space (upon list's Clear()) but it should
   // still be faster than the standard allocator, and wasted memory should not be
@@ -428,10 +426,10 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   // this is a separate allocator from the anIncAlloc below what provides better data
   // locality in the latter (by avoiding wastes which will only be in anIdxAlloc)
   occ::handle<NCollection_IncAllocator> anIdxAlloc = new NCollection_IncAllocator();
-  ListOfInteger                    aListOfPointIndex(anIdxAlloc);
+  ListOfInteger                         aListOfPointIndex(anIdxAlloc);
 
   // GeomAPI_ProjectPointOnSurf aPrj1, aPrj2;
-  ProjectPointOnSurf   aPrj1, aPrj2;
+  ProjectPointOnSurf        aPrj1, aPrj2;
   occ::handle<Geom_Surface> aSurf1, aSurf2;
   //
   aNbParts = theLConstructor.NbParts();
@@ -442,7 +440,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
     return false;
   }
   //
-  occ::handle<NCollection_IncAllocator>        anIncAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator>   anIncAlloc = new NCollection_IncAllocator();
   NCollection_OccAllocator<ListOfInteger> anAlloc(anIncAlloc);
   const ListOfInteger  aDummy(anIncAlloc); // empty list to be copy constructed from
   ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy, anAlloc);
@@ -485,9 +483,9 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           continue;
         }
         //
-        double    aResolution, aPeriod, alowerboundary, aupperboundary, U, V;
-        double    aParameter, anoffset, anAdjustPar;
-        bool bIsOnFirstBoundary, bIsPointOnBoundary;
+        double aResolution, aPeriod, alowerboundary, aupperboundary, U, V;
+        double aParameter, anoffset, anAdjustPar;
+        bool   bIsOnFirstBoundary, bIsPointOnBoundary;
         //
         aResolution    = (!j) ? aGASurface->UResolution(aTol) : aGASurface->VResolution(aTol);
         aPeriod        = (!j) ? aGASurface->UPeriod() : aGASurface->VPeriod();
@@ -560,9 +558,10 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   }
   //
   // Correct wlines.begin
-  int              aLineType;
+  int                                       aLineType;
   NCollection_Array1<NCollection_List<int>> anArrayOfLineEnds(1, nblines);
-  occ::handle<IntSurf_LineOn2S> aSeqOfPntOn2S = new IntSurf_LineOn2S(new NCollection_IncAllocator());
+  occ::handle<IntSurf_LineOn2S>             aSeqOfPntOn2S =
+    new IntSurf_LineOn2S(new NCollection_IncAllocator());
   //
   for (i = 1; i <= nblines; i++)
   {
@@ -579,7 +578,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
     }
     //
     NCollection_List<int> aListOfFLIndex;
-    int      aneighbourindex, aLineTypeNeib;
+    int                   aneighbourindex, aLineTypeNeib;
     //
     for (j = 0; j < 2; j++)
     { // neighbour line choice
@@ -596,22 +595,22 @@ bool GeomInt_LineTool::DecompositionOfWLine(
       }
       //
       const ListOfInteger&   aNeighbour = anArrayOfLines[aneighbourindex];
-      int       anIndex    = (!j) ? aNeighbour.Last() : aNeighbour.First();
+      int                    anIndex    = (!j) ? aNeighbour.Last() : aNeighbour.First();
       const IntSurf_PntOn2S& aPoint     = theWLine->Point(anIndex);
       // check if need use derivative.begin .end [absence]
       //
-      IntSurf_PntOn2S  aNewP = aPoint;
-      int surfit, parit;
+      IntSurf_PntOn2S aNewP = aPoint;
+      int             surfit, parit;
       //
       for (surfit = 0; surfit < 2; ++surfit)
       {
 
         occ::handle<GeomAdaptor_Surface> aGASurface = (!surfit) ? theSurface1 : theSurface2;
 
-        umin            = aGASurface->FirstUParameter();
-        umax            = aGASurface->LastUParameter();
-        vmin            = aGASurface->FirstVParameter();
-        vmax            = aGASurface->LastVParameter();
+        umin     = aGASurface->FirstUParameter();
+        umax     = aGASurface->LastUParameter();
+        vmin     = aGASurface->FirstVParameter();
+        vmax     = aGASurface->LastVParameter();
         double U = 0., V = 0.;
 
         if (!surfit)
@@ -629,16 +628,15 @@ bool GeomInt_LineTool::DecompositionOfWLine(
         //
         for (parit = 0; parit < 2; parit++)
         {
-          bool isperiodic =
-            (!parit) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
+          bool isperiodic = (!parit) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
 
           double aResolution =
             (!parit) ? aGASurface->UResolution(aTol) : aGASurface->VResolution(aTol);
           double alowerboundary = (!parit) ? umin : vmin;
           double aupperboundary = (!parit) ? umax : vmax;
 
-          double    aParameter         = (!parit) ? U : V;
-          bool bIsOnFirstBoundary = true;
+          double aParameter         = (!parit) ? U : V;
+          bool   bIsOnFirstBoundary = true;
 
           if (!isperiodic)
           {
@@ -681,42 +679,40 @@ bool GeomInt_LineTool::DecompositionOfWLine(
         }
         else if (nbboundaries == 1)
         {
-          bool isperiodic =
-            (bIsUBoundary) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
+          bool isperiodic = (bIsUBoundary) ? aGASurface->IsUPeriodic() : aGASurface->IsVPeriodic();
 
           if (isperiodic)
           {
             double alowerboundary = (bIsUBoundary) ? umin : vmin;
             double aupperboundary = (bIsUBoundary) ? umax : vmax;
-            double aPeriod = (bIsUBoundary) ? aGASurface->UPeriod() : aGASurface->VPeriod();
-            double aParameter = (bIsUBoundary) ? U : V;
-            double anoffset   = 0.;
+            double aPeriod        = (bIsUBoundary) ? aGASurface->UPeriod() : aGASurface->VPeriod();
+            double aParameter     = (bIsUBoundary) ? U : V;
+            double anoffset       = 0.;
             double anAdjustPar =
               AdjustPeriodic(aParameter, alowerboundary, aupperboundary, aPeriod, anoffset);
 
             double adist = (bIsFirstBoundary) ? fabs(anAdjustPar - alowerboundary)
-                                                     : fabs(anAdjustPar - aupperboundary);
+                                              : fabs(anAdjustPar - aupperboundary);
             double anotherPar =
               (bIsFirstBoundary) ? (aupperboundary - adist) : (alowerboundary + adist);
             anotherPar += anoffset;
-            int aneighbourpointindex =
-              (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+            int aneighbourpointindex = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
             const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex);
-            double          nU1, nV1;
+            double                 nU1, nV1;
 
             if (surfit == 0)
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
             else
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
 
-            double adist1 = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
-            double adist2 = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
-            bComputeLineEnd      = true;
-            bool bCheckAngle1 = false;
-            bool bCheckAngle2 = false;
-            gp_Vec2d         aNewVec;
-            double    anewU = (bIsUBoundary) ? anotherPar : U;
-            double    anewV = (bIsUBoundary) ? V : anotherPar;
+            double adist1   = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
+            double adist2   = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
+            bComputeLineEnd = true;
+            bool     bCheckAngle1 = false;
+            bool     bCheckAngle2 = false;
+            gp_Vec2d aNewVec;
+            double   anewU = (bIsUBoundary) ? anotherPar : U;
+            double   anewV = (bIsUBoundary) ? V : anotherPar;
             //
             if (((adist1 - adist2) > Precision::PConfusion()) && (adist2 < (aPeriod / 4.)))
             {
@@ -750,7 +746,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
               {
                 anindexother = (j == 0) ? (anindexother + 1) : (anindexother - 1);
                 const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(anindexother);
-                double          nU2, nV2;
+                double                 nU2, nV2;
 
                 if (surfit == 0)
                   aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
@@ -771,7 +767,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
 
                     if (bCheckAngle1)
                     {
-                      double   U1, U2, V1, V2;
+                      double          U1, U2, V1, V2;
                       IntSurf_PntOn2S atmppoint = aNewP;
                       atmppoint.SetValue((surfit == 0), anewU, anewV);
                       atmppoint.Parameters(U1, V1, U2, V2);
@@ -800,18 +796,17 @@ bool GeomInt_LineTool::DecompositionOfWLine(
         //
         if (bComputeLineEnd)
         {
-          int aneighbourpointindex1 =
-            (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+          int aneighbourpointindex1 = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
           const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex1);
-          double          nU1, nV1;
+          double                 nU1, nV1;
 
           if (surfit == 0)
             aNeighbourPoint.ParametersOnS1(nU1, nV1);
           else
             aNeighbourPoint.ParametersOnS2(nU1, nV1);
-          gp_Pnt2d         ap1(nU1, nV1);
-          gp_Pnt2d         ap2(nU1, nV1);
-          int aneighbourpointindex2 = aneighbourpointindex1;
+          gp_Pnt2d ap1(nU1, nV1);
+          gp_Pnt2d ap2(nU1, nV1);
+          int      aneighbourpointindex2 = aneighbourpointindex1;
 
           while ((aneighbourpointindex2 <= aListOfIndex.Last())
                  && (aneighbourpointindex2 >= aListOfIndex.First()))
@@ -819,7 +814,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
             aneighbourpointindex2 =
               (j == 0) ? (aneighbourpointindex2 + 1) : (aneighbourpointindex2 - 1);
             const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(aneighbourpointindex2);
-            double          nU2, nV2;
+            double                 nU2, nV2;
 
             if (surfit == 0)
               aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
@@ -833,8 +828,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
               break;
             }
           }
-          gp_Pnt2d         anewpoint;
-          bool found = FindPoint(ap2, ap1, umin, umax, vmin, vmax, anewpoint);
+          gp_Pnt2d anewpoint;
+          bool     found = FindPoint(ap2, ap1, umin, umax, vmin, vmax, anewpoint);
 
           if (found)
           {
@@ -843,7 +838,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
 	    double aCriteria =aTolSum;// BRep_Tool::Tolerance(theFace1) + BRep_Tool::Tolerance(theFace2);
 	    //GeomAPI_ProjectPointOnSurf& aProjector = (surfit == 0) ? aPrj2 : aPrj1;
             // clang-format on
-            ProjectPointOnSurf&         aProjector = (surfit == 0) ? aPrj2 : aPrj1;
+            ProjectPointOnSurf&              aProjector = (surfit == 0) ? aPrj2 : aPrj1;
             occ::handle<GeomAdaptor_Surface> aSurface   = (surfit == 0) ? theSurface1 : theSurface2;
 
             gp_Pnt aP3d = aSurface->Value(anewpoint.X(), anewpoint.Y());
@@ -895,8 +890,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
         continue;
       }
       const NCollection_List<int>& aListOfFLIndex = anArrayOfLineEnds.Value(i);
-      bool             bhasfirstpoint = (aListOfFLIndex.Extent() == 2);
-      bool             bhaslastpoint  = (aListOfFLIndex.Extent() == 2);
+      bool                         bhasfirstpoint = (aListOfFLIndex.Extent() == 2);
+      bool                         bhaslastpoint  = (aListOfFLIndex.Extent() == 2);
 
       if (!bhasfirstpoint && !aListOfFLIndex.IsEmpty())
       {
@@ -907,10 +902,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
       {
         bhaslastpoint = (i != nblines);
       }
-      bool bIsFirstInside =
-        ((ifprm >= aListOfIndex.First()) && (ifprm <= aListOfIndex.Last()));
-      bool bIsLastInside =
-        ((ilprm >= aListOfIndex.First()) && (ilprm <= aListOfIndex.Last()));
+      bool bIsFirstInside = ((ifprm >= aListOfIndex.First()) && (ifprm <= aListOfIndex.Last()));
+      bool bIsLastInside  = ((ilprm >= aListOfIndex.First()) && (ilprm <= aListOfIndex.Last()));
 
       if (!bIsFirstInside && !bIsLastInside)
       {
@@ -937,7 +930,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           }
 
           // check end of split line (end is almost always)
-          int aneighbour   = i + 1;
+          int  aneighbour   = i + 1;
           bool bIsEndOfLine = true;
 
           if (aneighbour <= nblines)
@@ -1000,7 +993,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
             aLineOn2S->Add(aP);
           }
           // check end of split line (end is almost always)
-          int aneighbour   = i + 1;
+          int  aneighbour   = i + 1;
           bool bIsEndOfLine = true;
 
           if (aneighbour <= nblines)
@@ -1058,8 +1051,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   // Split wlines.end
   //
   // cda002/I3
-  double    fprm, lprm;
-  int ifprm, ilprm, aNbPoints, aIndex;
+  double fprm, lprm;
+  int    ifprm, ilprm, aNbPoints, aIndex;
   //
   aNbParts = theLConstructor.NbParts();
   //
@@ -1087,8 +1080,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
           if (aIndex == ifprm || aIndex == ilprm)
           {
             occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();
-            const IntSurf_PntOn2S&   aP1       = theWLine->Point(ifprm);
-            const IntSurf_PntOn2S&   aP2       = theWLine->Point(ilprm);
+            const IntSurf_PntOn2S&        aP1       = theWLine->Point(ifprm);
+            const IntSurf_PntOn2S&        aP2       = theWLine->Point(ilprm);
             aLineOn2S->Add(aP1);
             aLineOn2S->Add(aP2);
             occ::handle<IntPatch_WLine> aNewWLine = new IntPatch_WLine(aLineOn2S, false);

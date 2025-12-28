@@ -107,14 +107,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
-  occ::handle<Graphic3d_AspectText3d>    myTextAspect;
-  double                     myHeight;
-  Graphic3d_HorizontalTextAlignment myHorizontalJustification;
-  Graphic3d_VerticalTextAlignment   myVerticalJustification;
-  Graphic3d_TextPath                myOrientation;
+  occ::handle<Graphic3d_AspectText3d> myTextAspect;
+  double                              myHeight;
+  Graphic3d_HorizontalTextAlignment   myHorizontalJustification;
+  Graphic3d_VerticalTextAlignment     myVerticalJustification;
+  Graphic3d_TextPath                  myOrientation;
 };
 
 #endif // _Prs3d_TextAspect_HeaderFile

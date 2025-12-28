@@ -45,8 +45,8 @@ Graphic3d_Texture1D::Graphic3d_Texture1D(const Graphic3d_NameOfTexture1D theNOT,
 
 //=================================================================================================
 
-Graphic3d_Texture1D::Graphic3d_Texture1D(const occ::handle<Image_PixMap>&   thePixMap,
-                                         const Graphic3d_TypeOfTexture theType)
+Graphic3d_Texture1D::Graphic3d_Texture1D(const occ::handle<Image_PixMap>& thePixMap,
+                                         const Graphic3d_TypeOfTexture    theType)
     : Graphic3d_TextureMap(thePixMap, theType),
       myName(Graphic3d_NOT_1D_UNKNOWN)
 {
@@ -76,6 +76,6 @@ TCollection_AsciiString Graphic3d_Texture1D::TextureName(const int theRank)
   }
 
   TCollection_AsciiString aFileName(NameOfTexture1d_to_FileName[theRank - 1]);
-  int        i = aFileName.SearchFromEnd(".");
+  int                     i = aFileName.SearchFromEnd(".");
   return aFileName.SubString(4, i - 1);
 }

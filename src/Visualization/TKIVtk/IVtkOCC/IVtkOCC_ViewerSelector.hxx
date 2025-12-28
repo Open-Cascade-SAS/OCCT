@@ -35,17 +35,15 @@ public:
   //! Implements point picking
   //! @param[in]  theXPix, theYPix Display coordinates of the point
   //! @param[in]  theView  ICamera interface to update the projection parameters.
-  void Pick(const int    theXPix,
-            const int    theYPix,
-            const IVtk_IView::Handle& theView);
+  void Pick(const int theXPix, const int theYPix, const IVtk_IView::Handle& theView);
 
   //! Picking by rectangle
   //! @param[in]  theXMin, theYMin, theXMax, theYMax Rectangle coords
   //! @param[in]  theView ICamera interface to calculate projections
-  void Pick(const int    theXMin,
-            const int    theYMin,
-            const int    theXMax,
-            const int    theYMax,
+  void Pick(const int                 theXMin,
+            const int                 theYMin,
+            const int                 theXMax,
+            const int                 theYMax,
             const IVtk_IView::Handle& theView);
 
   //! Implements point picking
@@ -63,7 +61,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector)
 
 private:
-  int myPixTol;
+  int  myPixTol;
   bool myToUpdateTol;
 };
 

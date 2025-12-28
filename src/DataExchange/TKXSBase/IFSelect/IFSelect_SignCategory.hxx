@@ -34,12 +34,11 @@ public:
 
   //! Returns the Signature for a Transient object, as its Category
   //! recorded in the model
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignCategory, IFSelect_Signature)
-
 };
 
 #endif // _IFSelect_SignCategory_HeaderFile

@@ -103,7 +103,6 @@ protected:
   //! The basic method to make a Shape, used by all the
   //! Make methods.
   Standard_EXPORT void MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>& T) const;
-
 };
 
 #include <TopoDS_Builder.lxx>

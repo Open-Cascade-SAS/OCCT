@@ -31,7 +31,7 @@ StepBasic_ActionMethod::StepBasic_ActionMethod()
 //=================================================================================================
 
 void StepBasic_ActionMethod::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                  const bool                  hasDescription,
+                                  const bool                                   hasDescription,
                                   const occ::handle<TCollection_HAsciiString>& aDescription,
                                   const occ::handle<TCollection_HAsciiString>& aConsequence,
                                   const occ::handle<TCollection_HAsciiString>& aPurpose)
@@ -75,7 +75,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Description() cons
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_ActionMethod::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
@@ -96,7 +97,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_ActionMethod::Consequence() cons
 
 //=================================================================================================
 
-void StepBasic_ActionMethod::SetConsequence(const occ::handle<TCollection_HAsciiString>& aConsequence)
+void StepBasic_ActionMethod::SetConsequence(
+  const occ::handle<TCollection_HAsciiString>& aConsequence)
 {
   theConsequence = aConsequence;
 }

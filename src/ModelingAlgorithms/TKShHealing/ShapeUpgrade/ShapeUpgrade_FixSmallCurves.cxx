@@ -46,10 +46,10 @@ void ShapeUpgrade_FixSmallCurves::Init(const TopoDS_Edge& theEdge, const TopoDS_
 //=================================================================================================
 
 bool ShapeUpgrade_FixSmallCurves::Approx(occ::handle<Geom_Curve>& /*Curve3d*/,
-                                                     occ::handle<Geom2d_Curve>& /*Curve2d*/,
-                                                     occ::handle<Geom2d_Curve>& /*Curve2dR*/,
-                                                     double& /*First*/,
-                                                     double& /*Last*/)
+                                         occ::handle<Geom2d_Curve>& /*Curve2d*/,
+                                         occ::handle<Geom2d_Curve>& /*Curve2dR*/,
+                                         double& /*First*/,
+                                         double& /*Last*/)
 {
   return false;
 }

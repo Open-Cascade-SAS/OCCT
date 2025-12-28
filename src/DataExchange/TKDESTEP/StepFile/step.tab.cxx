@@ -1159,7 +1159,7 @@ parser::symbol_kind_type parser::yytranslate_(int t)
 
 void step::parser::error(const std::string& m)
 {
-  char             newmess[120];
+  char newmess[120];
   bool isSyntax = strncmp(m.c_str(), "syntax error", 12) == 0;
   if (isSyntax && m.length() > 13)
     Sprintf(newmess,

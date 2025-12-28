@@ -23,8 +23,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Face;
@@ -37,9 +35,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates the builder.
-  Standard_EXPORT DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
-                                   const double    Infinite,
-                                   const int NbIsos);
+  Standard_EXPORT DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
+                                   const double       Infinite,
+                                   const int          NbIsos);
 
   //! Returns the total number of domains.
   int NbDomains() const { return myNbDom; }
@@ -61,16 +59,16 @@ protected:
   Standard_EXPORT void FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve& theEdgePCurveMap);
 
 private:
-  double           myInfinite;
-  double           myUMin;
-  double           myUMax;
-  double           myVMin;
-  double           myVMax;
-  NCollection_Array1<double>    myUPrm;
-  NCollection_Array1<int> myUInd;
-  NCollection_Array1<double>    myVPrm;
-  NCollection_Array1<int> myVInd;
-  int        myNbDom;
+  double                     myInfinite;
+  double                     myUMin;
+  double                     myUMax;
+  double                     myVMin;
+  double                     myVMax;
+  NCollection_Array1<double> myUPrm;
+  NCollection_Array1<int>    myUInd;
+  NCollection_Array1<double> myVPrm;
+  NCollection_Array1<int>    myVInd;
+  int                        myNbDom;
 };
 
 #endif // _DBRep_IsoBuilder_HeaderFile

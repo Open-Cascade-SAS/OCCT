@@ -22,8 +22,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
@@ -45,9 +43,10 @@ public:
   //! - unitScales : Multiplicative Scale Factors
   //! raises exception if lengths of unitTypes, unitValues and
   //! unitScale are not same
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,
-                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitValues,
-                            const occ::handle<NCollection_HArray1<double>>&           unitScales);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitValues,
+    const occ::handle<NCollection_HArray1<double>>&                                unitScales);
 
   //! returns the Number of units defined by this entity
   Standard_EXPORT int NbUnits() const;
@@ -70,7 +69,7 @@ public:
 private:
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theUnitTypes;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theUnitValues;
-  occ::handle<NCollection_HArray1<double>>           theUnitScales;
+  occ::handle<NCollection_HArray1<double>>                                theUnitScales;
 };
 
 #endif // _IGESDefs_UnitsData_HeaderFile

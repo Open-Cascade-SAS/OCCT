@@ -69,8 +69,8 @@ const char* TObj_Application::ResourcesName()
 // purpose  : Saving the OCAF document
 //=======================================================================
 
-bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>&   theSourceDoc,
-                                                const TCollection_ExtendedString& theTargetFile)
+bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
+                                    const TCollection_ExtendedString&    theTargetFile)
 {
   const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theTargetFile);
   myIsError                      = (aStatus != PCDM_SS_OK);
@@ -88,7 +88,7 @@ bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>&   theSo
 //=======================================================================
 
 bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
-                                                Standard_OStream&               theOStream)
+                                    Standard_OStream&                    theOStream)
 {
   const PCDM_StoreStatus aStatus = SaveAs(theSourceDoc, theOStream);
   myIsError                      = (aStatus != PCDM_SS_OK);
@@ -106,7 +106,7 @@ bool TObj_Application::SaveDocument(const occ::handle<TDocStd_Document>& theSour
 //=======================================================================
 
 bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceFile,
-                                                occ::handle<TDocStd_Document>&         theTargetDoc)
+                                    occ::handle<TDocStd_Document>&    theTargetDoc)
 {
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
@@ -136,8 +136,8 @@ bool TObj_Application::LoadDocument(const TCollection_ExtendedString& theSourceF
 // purpose  : Loading the OCAF document from a stream
 //=======================================================================
 
-bool TObj_Application::LoadDocument(Standard_IStream&         theIStream,
-                                                occ::handle<TDocStd_Document>& theTargetDoc)
+bool TObj_Application::LoadDocument(Standard_IStream&              theIStream,
+                                    occ::handle<TDocStd_Document>& theTargetDoc)
 {
   PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
@@ -164,8 +164,8 @@ bool TObj_Application::LoadDocument(Standard_IStream&         theIStream,
 
 //=================================================================================================
 
-bool TObj_Application::CreateNewDocument(occ::handle<TDocStd_Document>&         theDoc,
-                                                     const TCollection_ExtendedString& theFormat)
+bool TObj_Application::CreateNewDocument(occ::handle<TDocStd_Document>&    theDoc,
+                                         const TCollection_ExtendedString& theFormat)
 {
   myIsError = false;
 

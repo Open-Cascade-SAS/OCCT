@@ -24,10 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Circle3D, Draw_Drawable3D)
 
 //=================================================================================================
 
-Draw_Circle3D::Draw_Circle3D(const gp_Circ&      C,
-                             const double A1,
-                             const double A2,
-                             const Draw_Color&   col)
+Draw_Circle3D::Draw_Circle3D(const gp_Circ&    C,
+                             const double      A1,
+                             const double      A2,
+                             const Draw_Color& col)
     : myCirc(C),
       myA1(A1),
       myA2(A2),

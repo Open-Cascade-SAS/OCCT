@@ -53,10 +53,10 @@ public:
   //! Builds the prism of base S and vector V. If C is true,
   //! S is copied. If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
-  Standard_EXPORT BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
-                                        const gp_Vec&          V,
-                                        const bool Copy     = false,
-                                        const bool Canonize = true);
+  Standard_EXPORT BRepPrimAPI_MakePrism(const TopoDS_Shape& S,
+                                        const gp_Vec&       V,
+                                        const bool          Copy     = false,
+                                        const bool          Canonize = true);
 
   //! Builds a semi-infinite or an infinite prism of base S.
   //! If Inf is true the prism is infinite, if Inf is false
@@ -64,11 +64,11 @@ public:
   //! is true S is copied (for semi-infinite prisms).
   //! If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
-  Standard_EXPORT BRepPrimAPI_MakePrism(const TopoDS_Shape&    S,
-                                        const gp_Dir&          D,
-                                        const bool Inf      = true,
-                                        const bool Copy     = false,
-                                        const bool Canonize = true);
+  Standard_EXPORT BRepPrimAPI_MakePrism(const TopoDS_Shape& S,
+                                        const gp_Dir&       D,
+                                        const bool          Inf      = true,
+                                        const bool          Copy     = false,
+                                        const bool          Canonize = true);
 
   //! Returns the internal sweeping algorithm.
   Standard_EXPORT const BRepSweep_Prism& Prism() const;
@@ -89,8 +89,8 @@ public:
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
   //! Returns ListOfShape from TopTools.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
-    override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
+    const TopoDS_Shape& S) override;
 
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;

@@ -35,9 +35,10 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
                             const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
                             const occ::handle<StepGeom_Direction>&           aExtrudedDirection,
-                            const double                         aDepth);
+                            const double                                     aDepth);
 
-  Standard_EXPORT void SetExtrudedDirection(const occ::handle<StepGeom_Direction>& aExtrudedDirection);
+  Standard_EXPORT void SetExtrudedDirection(
+    const occ::handle<StepGeom_Direction>& aExtrudedDirection);
 
   Standard_EXPORT occ::handle<StepGeom_Direction> ExtrudedDirection() const;
 
@@ -49,7 +50,7 @@ public:
 
 private:
   occ::handle<StepGeom_Direction> extrudedDirection;
-  double              depth;
+  double                          depth;
 };
 
 #endif // _StepShape_ExtrudedAreaSolid_HeaderFile

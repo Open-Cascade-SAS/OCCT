@@ -92,8 +92,7 @@ public:
   //! me->UReversed()->Value(me->UReversedParameter(U),V)
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual double UReversedParameter(const double U) const
-    override = 0;
+  Standard_EXPORT virtual double UReversedParameter(const double U) const override = 0;
 
   //! Reverses the V parametric direction of the surface.
   Standard_EXPORT virtual void VReverse() override;
@@ -104,8 +103,7 @@ public:
   //! me->VReversed()->Value(U,me->VReversedParameter(V))
   //! is the same point as
   //! me->Value(U,V)
-  Standard_EXPORT virtual double VReversedParameter(const double V) const
-    override = 0;
+  Standard_EXPORT virtual double VReversedParameter(const double V) const override = 0;
 
   //! Returns GeomAbs_CN, the global continuity of any elementary surface.
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
@@ -118,7 +116,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_ElementarySurface, Geom_Surface)
 

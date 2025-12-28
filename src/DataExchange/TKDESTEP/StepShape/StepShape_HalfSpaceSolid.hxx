@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Surface>&         aBaseSurface,
-                            const bool                  aAgreementFlag);
+                            const bool                                   aAgreementFlag);
 
   Standard_EXPORT void SetBaseSurface(const occ::handle<StepGeom_Surface>& aBaseSurface);
 
@@ -47,7 +47,7 @@ public:
 
 private:
   occ::handle<StepGeom_Surface> baseSurface;
-  bool         agreementFlag;
+  bool                          agreementFlag;
 };
 
 #endif // _StepShape_HalfSpaceSolid_HeaderFile

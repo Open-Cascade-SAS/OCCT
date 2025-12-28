@@ -21,7 +21,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -34,8 +33,6 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -43,12 +40,12 @@ IGESSolid_ToolBooleanTree::IGESSolid_ToolBooleanTree() {}
 
 void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_BooleanTree>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                  PR) const
+                                              IGESData_ParamReader&                       PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                     length, intvalue;
-  occ::handle<IGESData_IGESEntity>          entvalue;
-  occ::handle<NCollection_HArray1<int>>     tempOperations;
+  int                                                                length, intvalue;
+  occ::handle<IGESData_IGESEntity>                                   entvalue;
+  occ::handle<NCollection_HArray1<int>>                              tempOperations;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempOperands;
 
   bool st = PR.ReadInteger(PR.Current(), "Length of post-order notation", length);
@@ -101,7 +98,7 @@ void IGESSolid_ToolBooleanTree::ReadOwnParams(const occ::handle<IGESSolid_Boolea
 }
 
 void IGESSolid_ToolBooleanTree::WriteOwnParams(const occ::handle<IGESSolid_BooleanTree>& ent,
-                                               IGESData_IGESWriter&                 IW) const
+                                               IGESData_IGESWriter&                      IW) const
 {
   int length = ent->Length();
 
@@ -116,7 +113,7 @@ void IGESSolid_ToolBooleanTree::WriteOwnParams(const occ::handle<IGESSolid_Boole
 }
 
 void IGESSolid_ToolBooleanTree::OwnShared(const occ::handle<IGESSolid_BooleanTree>& ent,
-                                          Interface_EntityIterator&            iter) const
+                                          Interface_EntityIterator&                 iter) const
 {
   int length = ent->Length();
   for (int i = 1; i <= length; i++)
@@ -128,13 +125,14 @@ void IGESSolid_ToolBooleanTree::OwnShared(const occ::handle<IGESSolid_BooleanTre
 
 void IGESSolid_ToolBooleanTree::OwnCopy(const occ::handle<IGESSolid_BooleanTree>& another,
                                         const occ::handle<IGESSolid_BooleanTree>& ent,
-                                        Interface_CopyTool&                  TC) const
+                                        Interface_CopyTool&                       TC) const
 {
   int i;
 
-  int                     length         = another->Length();
-  occ::handle<NCollection_HArray1<int>>     tempOperations = new NCollection_HArray1<int>(1, length);
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempOperands   = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, length);
+  int                                   length         = another->Length();
+  occ::handle<NCollection_HArray1<int>> tempOperations = new NCollection_HArray1<int>(1, length);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempOperands =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, length);
 
   for (i = 1; i <= length; i++)
   {
@@ -192,9 +190,9 @@ void IGESSolid_ToolBooleanTree::OwnCheck(const occ::handle<IGESSolid_BooleanTree
 }
 
 void IGESSolid_ToolBooleanTree::OwnDump(const occ::handle<IGESSolid_BooleanTree>& ent,
-                                        const IGESData_IGESDumper&           dumper,
-                                        Standard_OStream&                    S,
-                                        const int               level) const
+                                        const IGESData_IGESDumper&                dumper,
+                                        Standard_OStream&                         S,
+                                        const int                                 level) const
 {
   int i, length = ent->Length();
 

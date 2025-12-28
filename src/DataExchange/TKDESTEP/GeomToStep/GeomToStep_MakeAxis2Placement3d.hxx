@@ -55,7 +55,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeAxis2Placement3d(
     const occ::handle<Geom_Axis2Placement>& A,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const StepData_Factors&                 theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Axis2Placement3d>& Value() const;
 

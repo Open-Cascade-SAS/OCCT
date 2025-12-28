@@ -92,28 +92,28 @@ IntAna_Curve::IntAna_Curve()
 // function : SetConeQuadValues
 // purpose  : Description de l intersection Cone Quadrique
 //=======================================================================
-void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
-                                     const double    Qxx,
-                                     const double    Qyy,
-                                     const double    Qzz,
-                                     const double    Qxy,
-                                     const double    Qxz,
-                                     const double    Qyz,
-                                     const double    Qx,
-                                     const double    Qy,
-                                     const double    Qz,
-                                     const double    Q1,
-                                     const double    TOL,
-                                     const double    DomInf,
-                                     const double    DomSup,
-                                     const bool twocurves,
-                                     const bool takezpositive)
+void IntAna_Curve::SetConeQuadValues(const gp_Cone& Cone,
+                                     const double   Qxx,
+                                     const double   Qyy,
+                                     const double   Qzz,
+                                     const double   Qxy,
+                                     const double   Qxz,
+                                     const double   Qyz,
+                                     const double   Qx,
+                                     const double   Qy,
+                                     const double   Qz,
+                                     const double   Q1,
+                                     const double   TOL,
+                                     const double   DomInf,
+                                     const double   DomSup,
+                                     const bool     twocurves,
+                                     const bool     takezpositive)
 {
 
   Ax3  = Cone.Position();
   RCyl = Cone.RefRadius();
 
-  Angle                      = Cone.SemiAngle();
+  Angle               = Cone.SemiAngle();
   double UnSurTgAngle = 1.0 / (std::tan(Cone.SemiAngle()));
 
   typequadric = GeomAbs_Cone;
@@ -158,30 +158,30 @@ void IntAna_Curve::SetConeQuadValues(const gp_Cone&         Cone,
 // function : SetCylinderQuadValues
 // purpose  : Description de l intersection Cylindre Quadrique
 //=======================================================================
-void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder&     Cyl,
-                                         const double    Qxx,
-                                         const double    Qyy,
-                                         const double    Qzz,
-                                         const double    Qxy,
-                                         const double    Qxz,
-                                         const double    Qyz,
-                                         const double    Qx,
-                                         const double    Qy,
-                                         const double    Qz,
-                                         const double    Q1,
-                                         const double    TOL,
-                                         const double    DomInf,
-                                         const double    DomSup,
-                                         const bool twocurves,
-                                         const bool takezpositive)
+void IntAna_Curve::SetCylinderQuadValues(const gp_Cylinder& Cyl,
+                                         const double       Qxx,
+                                         const double       Qyy,
+                                         const double       Qzz,
+                                         const double       Qxy,
+                                         const double       Qxz,
+                                         const double       Qyz,
+                                         const double       Qx,
+                                         const double       Qy,
+                                         const double       Qz,
+                                         const double       Q1,
+                                         const double       TOL,
+                                         const double       DomInf,
+                                         const double       DomSup,
+                                         const bool         twocurves,
+                                         const bool         takezpositive)
 {
 
   Ax3         = Cyl.Position();
   RCyl        = Cyl.Radius();
   typequadric = GeomAbs_Cylinder;
 
-  TwoCurves              = twocurves;     //-- deux  Z pour un meme parametre
-  TakeZPositive          = takezpositive; //-- Prendre sur la courbe le Z Positif
+  TwoCurves       = twocurves;     //-- deux  Z pour un meme parametre
+  TakeZPositive   = takezpositive; //-- Prendre sur la courbe le Z Positif
   double RCylmul2 = RCyl + RCyl;   //--   ( -B + std::sqrt())
 
   Z0Cte    = Q1;
@@ -291,8 +291,8 @@ void IntAna_Curve::InternalUVValue(const double theta,
   // Infinitesimal step of increasing curve parameter. See comment below.
   const double aDT = 100.0 * Epsilon(DomainSup + DomainSup - DomainInf);
 
-  double    Theta          = theta;
-  bool SecondSolution = false;
+  double Theta          = theta;
+  bool   SecondSolution = false;
 
   if ((Theta < DomainInf * aRelTolm) || ((Theta > DomainSup * aRelTolp) && (!TwoCurves))
       || (Theta > (DomainSup + DomainSup - DomainInf) * aRelTolp))
@@ -319,8 +319,8 @@ void IntAna_Curve::InternalUVValue(const double theta,
     SecondSolution = TakeZPositive;
   }
   //
-  cost                       = std::cos(Theta);
-  sint                       = std::sin(Theta);
+  cost                = std::cos(Theta);
+  sint                = std::sin(Theta);
   const double aSin2t = std::sin(Theta + Theta);
   const double aCos2t = std::cos(Theta + Theta);
 
@@ -436,8 +436,7 @@ bool IntAna_Curve::D1u(const double theta, gp_Pnt& Pt, gp_Vec& Vec)
 void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& theParams) const
 {
   const double aPIpPI = M_PI + M_PI, anEpsAng = 1.e-8,
-                      InternalPrecision =
-                        1.e-8; // precision of internal algorithm of values computation
+               InternalPrecision = 1.e-8; // precision of internal algorithm of values computation
   // clang-format off
   constexpr double aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
   // clang-format on
@@ -481,11 +480,11 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& t
   }
 
   const int aMaxPar          = 5;
-  double          aParams[aMaxPar] = {DomainInf,
-                                             DomainSup,
-                                             aTheta,
-                                    (TwoCurves) ? DomainSup + DomainSup - aTheta : RealLast(),
-                                    (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
+  double    aParams[aMaxPar] = {DomainInf,
+                                DomainSup,
+                                aTheta,
+                             (TwoCurves) ? DomainSup + DomainSup - aTheta : RealLast(),
+                             (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
 
   std::sort(aParams, aParams + aMaxPar - 1);
 
@@ -500,8 +499,7 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& t
     if (i && (aParams[i] - aParams[i - 1]) < Precision::PConfusion())
       continue;
 
-    double U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0,
-                  SigneSqrtDis = 0.0;
+    double U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0, SigneSqrtDis = 0.0;
     InternalUVValue(aParams[i], U, V, A, B, C, cost, sint, SigneSqrtDis);
     const gp_Pnt aP(InternalValue(U, V));
 

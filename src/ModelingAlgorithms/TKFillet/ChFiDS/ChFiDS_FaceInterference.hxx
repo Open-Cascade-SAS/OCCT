@@ -35,8 +35,8 @@ public:
 
   Standard_EXPORT ChFiDS_FaceInterference();
 
-  void SetInterference(const int      LineIndex,
-                       const TopAbs_Orientation    Trans,
+  void SetInterference(const int                        LineIndex,
+                       const TopAbs_Orientation         Trans,
                        const occ::handle<Geom2d_Curve>& PCurv1,
                        const occ::handle<Geom2d_Curve>& PCurv2);
 
@@ -69,12 +69,12 @@ public:
   Standard_EXPORT double Parameter(const bool IsFirst) const;
 
 private:
-  double        firstParam;
-  double        lastParam;
+  double                    firstParam;
+  double                    lastParam;
   occ::handle<Geom2d_Curve> pCurveOnFace;
   occ::handle<Geom2d_Curve> pCurveOnSurf;
-  int     lineindex;
-  TopAbs_Orientation   LineTransition;
+  int                       lineindex;
+  TopAbs_Orientation        LineTransition;
 };
 
 #include <ChFiDS_FaceInterference.lxx>

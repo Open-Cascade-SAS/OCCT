@@ -46,15 +46,14 @@ static constexpr int          RGB_COMPONENT_LAST_INDEX = 2; // Last RGB componen
 //! @param theColorComponentBase the base of the numeral system used to represent a color
 //! @return a color component taken from the integer
 static float takeColorComponentFromInteger(ColorInteger&      theColorInteger,
-                                                        const ColorInteger theColorComponentBase)
+                                           const ColorInteger theColorComponentBase)
 {
   Standard_ASSERT_RETURN(theColorComponentBase >= 2,
                          "'theColorComponentBase' must be greater than 1.",
                          0.0f);
-  const ColorInteger       aColorComponentMaxValue  = theColorComponentBase - 1;
-  const ColorInteger       aColorComponentAsInteger = theColorInteger % theColorComponentBase;
-  const float aColorComponent =
-    aColorComponentAsInteger * 1.0f / aColorComponentMaxValue;
+  const ColorInteger aColorComponentMaxValue  = theColorComponentBase - 1;
+  const ColorInteger aColorComponentAsInteger = theColorInteger % theColorComponentBase;
+  const float        aColorComponent = aColorComponentAsInteger * 1.0f / aColorComponentMaxValue;
   theColorInteger /= theColorComponentBase;
   return aColorComponent;
 }
@@ -215,19 +214,20 @@ bool Quantity_ColorRGBA::ColorFromHex(const char* const   theHexColorString,
 
 //=================================================================================================
 
-void Quantity_ColorRGBA::DumpJson(Standard_OStream& theOStream, int) const {
+void Quantity_ColorRGBA::DumpJson(Standard_OStream& theOStream, int) const
+{
   OCCT_DUMP_FIELD_VALUES_NUMERICAL(theOStream,
                                    "RGBA",
                                    4,
                                    myRgb.Red(),
                                    myRgb.Green(),
                                    myRgb.Blue(),
-                                   myAlpha)}
+                                   myAlpha)
+}
 
 //=================================================================================================
 
-bool Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream,
-                                                  int&       theStreamPos)
+bool Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
 {
   int aPos = theStreamPos;
 
@@ -241,9 +241,6 @@ bool Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream,
                          &aBlue,
                          &anAlpha)
 
-  SetValues((float)aRed,
-            (float)aGreen,
-            (float)aBlue,
-            (float)anAlpha);
+  SetValues((float)aRed, (float)aGreen, (float)aBlue, (float)anAlpha);
   return true;
 }

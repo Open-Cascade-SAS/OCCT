@@ -139,8 +139,8 @@ void BiTgte_CurveOnEdge::Intervals(NCollection_Array1<double>&, const GeomAbs_Sh
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> BiTgte_CurveOnEdge::Trim(const double,
-                                                 const double,
-                                                 const double) const
+                                                      const double,
+                                                      const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnEdge");
 }

@@ -40,8 +40,8 @@ void StepFEA_FeaCurveSectionGeometricRelationship::Init(
 
 //=================================================================================================
 
-occ::handle<StepElement_CurveElementSectionDefinition> StepFEA_FeaCurveSectionGeometricRelationship::
-  SectionRef() const
+occ::handle<StepElement_CurveElementSectionDefinition>
+  StepFEA_FeaCurveSectionGeometricRelationship::SectionRef() const
 {
   return theSectionRef;
 }
@@ -56,8 +56,8 @@ void StepFEA_FeaCurveSectionGeometricRelationship::SetSectionRef(
 
 //=================================================================================================
 
-occ::handle<StepElement_AnalysisItemWithinRepresentation> StepFEA_FeaCurveSectionGeometricRelationship::
-  Item() const
+occ::handle<StepElement_AnalysisItemWithinRepresentation>
+  StepFEA_FeaCurveSectionGeometricRelationship::Item() const
 {
   return theItem;
 }

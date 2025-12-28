@@ -144,11 +144,11 @@ void BinTools_LocationSet::Write(Standard_OStream& OS) const
     {
       TopLoc_Location L = myMap(i);
 
-      TopLoc_Location  L2         = L.NextLocation();
-      bool simple     = L2.IsIdentity();
-      int p          = L.FirstPower();
-      TopLoc_Location  L1         = L.FirstDatum();
-      bool elementary = (simple && p == 1);
+      TopLoc_Location L2         = L.NextLocation();
+      bool            simple     = L2.IsIdentity();
+      int             p          = L.FirstPower();
+      TopLoc_Location L1         = L.FirstDatum();
+      bool            elementary = (simple && p == 1);
       if (elementary)
       {
 
@@ -188,8 +188,8 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
 {
 
   myMap.Clear();
-  char             buffer[255];
-  int l1, p;
+  char buffer[255];
+  int  l1, p;
 
   IS >> buffer;
   if (IS.fail() || (strcmp(buffer, "Locations")))

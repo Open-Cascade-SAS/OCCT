@@ -21,10 +21,11 @@
 
 RWStepShape_RWExtrudedFaceSolid::RWStepShape_RWExtrudedFaceSolid() {}
 
-void RWStepShape_RWExtrudedFaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepShape_ExtrudedFaceSolid>& ent) const
+void RWStepShape_RWExtrudedFaceSolid::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepShape_ExtrudedFaceSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -67,7 +68,7 @@ void RWStepShape_RWExtrudedFaceSolid::ReadStep(const occ::handle<StepData_StepRe
 }
 
 void RWStepShape_RWExtrudedFaceSolid::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepShape_ExtrudedFaceSolid>& ent) const
 {
 
@@ -89,7 +90,7 @@ void RWStepShape_RWExtrudedFaceSolid::WriteStep(
 }
 
 void RWStepShape_RWExtrudedFaceSolid::Share(const occ::handle<StepShape_ExtrudedFaceSolid>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->SweptFace());

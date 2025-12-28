@@ -21,7 +21,8 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_CurveIterator::TopOpeBRepDS_CurveIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+TopOpeBRepDS_CurveIterator::TopOpeBRepDS_CurveIterator(
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
     : TopOpeBRepDS_InterferenceIterator(L)
 {
   Match();
@@ -33,7 +34,7 @@ bool TopOpeBRepDS_CurveIterator::MatchInterference(
   const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   TopOpeBRepDS_Kind GT = I->GeometryType();
-  bool  r  = (GT == TopOpeBRepDS_CURVE);
+  bool              r  = (GT == TopOpeBRepDS_CURVE);
   return r;
 }
 
@@ -42,7 +43,7 @@ bool TopOpeBRepDS_CurveIterator::MatchInterference(
 int TopOpeBRepDS_CurveIterator::Current() const
 {
   occ::handle<TopOpeBRepDS_Interference> I = Value();
-  int                  G = I->Geometry();
+  int                                    G = I->Geometry();
   return G;
 }
 
@@ -51,8 +52,8 @@ int TopOpeBRepDS_CurveIterator::Current() const
 TopAbs_Orientation TopOpeBRepDS_CurveIterator::Orientation(const TopAbs_State S) const
 {
   occ::handle<TopOpeBRepDS_Interference> I = Value();
-  const TopOpeBRepDS_Transition&    T = I->Transition();
-  TopAbs_Orientation                o = T.Orientation(S);
+  const TopOpeBRepDS_Transition&         T = I->Transition();
+  TopAbs_Orientation                     o = T.Orientation(S);
   return o;
 }
 

@@ -34,13 +34,11 @@
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //==================================================================================================
@@ -146,9 +144,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft)
   EXPECT_TRUE(aChecker.IsValid()) << "Loft shape is not valid";
 
   // Attempt thickness operation (this is where the regression occurs)
-  double                       anOffset = 2.0;
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -215,9 +213,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_IntersectionMod
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
   // Attempt thickness operation with intersection mode
-  double                       anOffset = 2.0;
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -274,9 +272,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_SimpleBox_Baseline)
   TopoDS_Shape aShape = aLoftMaker.Shape();
 
   // Thickness operation on ruled surface between two rectangles
-  double                       anOffset = 2.0;
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  double                         anOffset = 2.0;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aShape,
                                    aFacesToRemove,
@@ -383,8 +381,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToEllipseLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -428,8 +426,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToHexagonLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -472,8 +470,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToSquareLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -516,8 +514,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseToRectangleLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -561,8 +559,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_ThreeSectionLoft)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -606,8 +604,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_Ruled)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
   ASSERT_FALSE(aLoftShape.IsNull()) << "Loft shape is null";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -649,8 +647,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_SmallOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with a very small offset
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -692,8 +690,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_LargeOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with a larger offset
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -735,8 +733,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_NegativeOffset)
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
   // Try with negative offset (inward)
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -762,8 +760,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Cylinder_Baseline)
   TopoDS_Shape             aCylinder = aCylMaker.Shape();
   ASSERT_FALSE(aCylinder.IsNull()) << "Failed to create cylinder";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aCylinder,
                                    aFacesToRemove,
@@ -795,8 +793,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Sphere_Baseline)
   TopoDS_Shape           aSphere = aSphereMaker.Shape();
   ASSERT_FALSE(aSphere.IsNull()) << "Failed to create sphere";
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aSphere,
                                    aFacesToRemove,
@@ -836,8 +834,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_FusedBoxCylinder)
 
   TopoDS_Shape aFusedShape = aFuser.Shape();
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aFusedShape,
                                    aFacesToRemove,
@@ -881,8 +879,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   // The operation may or may not succeed on very thin geometry,
   // but it must not crash
@@ -929,8 +927,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_TallLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -970,8 +968,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToTriangleLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,
@@ -1013,8 +1011,8 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToOctagonLoft)
 
   TopoDS_Shape aLoftShape = aLoftMaker.Shape();
 
-  NCollection_List<TopoDS_Shape>         aFacesToRemove;
-  BRepOffsetAPI_MakeThickSolid aThickMaker;
+  NCollection_List<TopoDS_Shape> aFacesToRemove;
+  BRepOffsetAPI_MakeThickSolid   aThickMaker;
 
   aThickMaker.MakeThickSolidByJoin(aLoftShape,
                                    aFacesToRemove,

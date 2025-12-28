@@ -168,8 +168,7 @@ public: //! @name Shape periodicity & repetition
   //! @param[in] theDirectionID  The direction's ID (0 for X, 1 for Y, 2 for Z);
   //! @param[in] theTimes  Requested number of repetitions (sign of the value defines
   //!                      the side of the repetition direction (positive or negative)).
-  Standard_EXPORT void RepeatShape(const int theDirectionID,
-                                   const int theTimes);
+  Standard_EXPORT void RepeatShape(const int theDirectionID, const int theTimes);
 
   //! Clears the repetitions performed on the periodic shape,
   //! keeping the shape periodic.
@@ -271,8 +270,9 @@ private:
 
 protected: //! @name Fields
   // Inputs
-  NCollection_List<TopoDS_Shape>       myArguments;    //!< Input shapes for making them connected
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myAllInputsMap; //!< Map of all BRep sub-elements of the input shapes
+  NCollection_List<TopoDS_Shape> myArguments; //!< Input shapes for making them connected
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
+    myAllInputsMap; //!< Map of all BRep sub-elements of the input shapes
 
   // Tools
   BOPAlgo_MakePeriodic myPeriodicityMaker; //!< Tool for making the shape periodic
@@ -280,14 +280,16 @@ protected: //! @name Fields
   // Results
   NCollection_DataMap<TopoDS_Shape,
                       NCollection_List<TopoDS_Shape>>
-    myMaterials;                                //!< Map of the materials associations
-                                                //! for the border elements
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myOrigins; //!< Map of origins
-                                                //! (allows tracking the shape's ancestors)
+    myMaterials; //!< Map of the materials associations
+                 //! for the border elements
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myOrigins; //!< Map of origins
+               //! (allows tracking the shape's ancestors)
 
   occ::handle<BRepTools_History> myGlueHistory; //!< Gluing History
-  occ::handle<BRepTools_History> myHistory;     //!< Final History of shapes modifications
-                                           //! (including making the shape periodic and repetitions)
+  occ::handle<BRepTools_History>
+    myHistory; //!< Final History of shapes modifications
+               //! (including making the shape periodic and repetitions)
 
   TopoDS_Shape myGlued; //!< The resulting connected (glued) shape
   TopoDS_Shape myShape; //!< The resulting shape

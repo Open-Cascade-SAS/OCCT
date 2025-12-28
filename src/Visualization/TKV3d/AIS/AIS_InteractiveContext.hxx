@@ -23,7 +23,6 @@
 #include <AIS_DisplayMode.hxx>
 #include <AIS_DisplayStatus.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <AIS_InteractiveObject.hxx>
 #include <NCollection_List.hxx>
 #include <AIS_Selection.hxx>
 #include <AIS_SelectionModesConcurrency.hxx>
@@ -40,15 +39,12 @@
 #include <SelectMgr_AndOrFilter.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <NCollection_List.hxx>
 #include <SelectMgr_PickingStrategy.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Quantity_Color.hxx>
@@ -93,19 +89,16 @@ public: //! @name object display management
 
   //! Returns the status of the Interactive Context for the view of the Interactive Object.
   Standard_EXPORT void Status(const occ::handle<AIS_InteractiveObject>& anObj,
-                              TCollection_ExtendedString&          astatus) const;
+                              TCollection_ExtendedString&               astatus) const;
 
   //! Returns true if Object is displayed in the interactive context.
   Standard_EXPORT bool IsDisplayed(const occ::handle<AIS_InteractiveObject>& anIobj) const;
 
   Standard_EXPORT bool IsDisplayed(const occ::handle<AIS_InteractiveObject>& aniobj,
-                                               const int               aMode) const;
+                                   const int                                 aMode) const;
 
   //! Enable or disable automatic activation of default selection mode while displaying the object.
-  void SetAutoActivateSelection(const bool theIsAuto)
-  {
-    myIsAutoActivateSelMode = theIsAuto;
-  }
+  void SetAutoActivateSelection(const bool theIsAuto) { myIsAutoActivateSelMode = theIsAuto; }
 
   //! Manages displaying the new object should also automatically activate default selection mode;
   //! TRUE by default.
@@ -116,29 +109,29 @@ public: //! @name object display management
   //! context mode. The Interactive Object's default selection mode is activated if
   //! GetAutoActivateSelection() is TRUE. In general, this is 0.
   Standard_EXPORT void Display(const occ::handle<AIS_InteractiveObject>& theIObj,
-                               const bool               theToUpdateViewer);
+                               const bool                                theToUpdateViewer);
 
   //! Sets status, display mode and selection mode for specified Object
   //! If theSelectionMode equals -1, theIObj will not be activated: it will be displayed but will
   //! not be selectable.
   Standard_EXPORT void Display(
     const occ::handle<AIS_InteractiveObject>& theIObj,
-    const int               theDispMode,
-    const int               theSelectionMode,
-    const bool               theToUpdateViewer,
-    const PrsMgr_DisplayStatus           theDispStatus = PrsMgr_DisplayStatus_None);
+    const int                                 theDispMode,
+    const int                                 theSelectionMode,
+    const bool                                theToUpdateViewer,
+    const PrsMgr_DisplayStatus                theDispStatus = PrsMgr_DisplayStatus_None);
 
   //! Allows you to load the Interactive Object with a given selection mode,
   //! and/or with the desired decomposition option, whether the object is visualized or not.
   //! The loaded objects will be selectable but displayable in highlighting only when detected by
   //! the Selector.
   Standard_EXPORT void Load(const occ::handle<AIS_InteractiveObject>& theObj,
-                            const int               theSelectionMode = -1);
+                            const int                                 theSelectionMode = -1);
 
   //! Hides the object. The object's presentations are simply flagged as invisible and therefore
   //! excluded from redrawing. To show hidden objects, use Display().
   Standard_EXPORT void Erase(const occ::handle<AIS_InteractiveObject>& theIObj,
-                             const bool               theToUpdateViewer);
+                             const bool                                theToUpdateViewer);
 
   //! Hides all objects. The object's presentations are simply flagged as invisible and therefore
   //! excluded from redrawing. To show all hidden objects, use DisplayAll().
@@ -157,15 +150,15 @@ public: //! @name object display management
   //! Empties the graphic presentation of the mode indexed by aMode.
   //! Warning! Removes theIObj. theIObj is still active if it was previously activated.
   void ClearPrs(const occ::handle<AIS_InteractiveObject>& theIObj,
-                const int               theMode,
-                const bool               theToUpdateViewer)
+                const int                                 theMode,
+                const bool                                theToUpdateViewer)
   {
     ClearGlobalPrs(theIObj, theMode, theToUpdateViewer);
   }
 
   //! Removes Object from every viewer.
   Standard_EXPORT void Remove(const occ::handle<AIS_InteractiveObject>& theIObj,
-                              const bool               theToUpdateViewer);
+                              const bool                                theToUpdateViewer);
 
   //! Removes all the objects from Context.
   Standard_EXPORT void RemoveAll(const bool theToUpdateViewer);
@@ -173,19 +166,19 @@ public: //! @name object display management
   //! Recomputes the seen parts presentation of the Object.
   //! If theAllModes equals true, all presentations are present in the object even if unseen.
   Standard_EXPORT void Redisplay(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                 const bool               theToUpdateViewer,
-                                 const bool               theAllModes = false);
+                                 const bool                                theToUpdateViewer,
+                                 const bool                                theAllModes = false);
 
   //! Recomputes the Prs/Selection of displayed objects of a given type and a given signature.
   //! if signature = -1  doesn't take signature criterion.
   Standard_EXPORT void Redisplay(const AIS_KindOfInteractive theTypeOfObject,
-                                 const int      theSignature,
-                                 const bool      theToUpdateViewer);
+                                 const int                   theSignature,
+                                 const bool                  theToUpdateViewer);
 
   //! Recomputes the displayed presentations, flags the others.
   //! Doesn't update presentations.
   Standard_EXPORT void RecomputePrsOnly(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                        const bool               theToUpdateViewer,
+                                        const bool                                theToUpdateViewer,
                                         const bool theAllModes = false);
 
   //! Recomputes the active selections, flags the others.
@@ -197,7 +190,7 @@ public: //! @name object display management
   //! recomputation on its own. The method recomputes selections even if they are loaded without
   //! activation in particular selector.
   Standard_EXPORT void Update(const occ::handle<AIS_InteractiveObject>& theIObj,
-                              const bool               theUpdateViewer);
+                              const bool                                theUpdateViewer);
 
 public: //! @name highlighting management
   //! Returns default highlight style settings (could be overridden by PrsMgr_PresentableObject).
@@ -245,7 +238,7 @@ public: //! @name highlighting management
   //!
   //! If a new highlight style is created, its presentation Zlayer should be checked,
   //! otherwise highlighting might not work as expected.
-  void SetHighlightStyle(const Prs3d_TypeOfHighlight theStyleType,
+  void SetHighlightStyle(const Prs3d_TypeOfHighlight      theStyleType,
                          const occ::handle<Prs3d_Drawer>& theStyle)
   {
     myStyles[theStyleType] = theStyle;
@@ -287,12 +280,12 @@ public: //! @name highlighting management
   //! Returns highlight style of the object if it is marked as highlighted via global status
   //! @param[in] theObj  the object to check
   Standard_EXPORT bool HighlightStyle(const occ::handle<AIS_InteractiveObject>& theObj,
-                                                  occ::handle<Prs3d_Drawer>& theStyle) const;
+                                      occ::handle<Prs3d_Drawer>&                theStyle) const;
 
   //! Returns highlight style of the owner if it is selected
   //! @param[in] theOwner  the owner to check
   Standard_EXPORT bool HighlightStyle(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                  occ::handle<Prs3d_Drawer>& theStyle) const;
+                                      occ::handle<Prs3d_Drawer>&                theStyle) const;
 
   //! Returns true if the object is marked as highlighted via its global status
   //! @param[in] theObj  the object to check
@@ -305,11 +298,11 @@ public: //! @name highlighting management
   //! Changes the color of all the lines of the object in view.
   Standard_EXPORT void HilightWithColor(const occ::handle<AIS_InteractiveObject>& theObj,
                                         const occ::handle<Prs3d_Drawer>&          theStyle,
-                                        const bool               theToUpdateViewer);
+                                        const bool theToUpdateViewer);
 
   //! Removes highlighting from the Object.
   Standard_EXPORT void Unhilight(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                 const bool               theToUpdateViewer);
+                                 const bool                                theToUpdateViewer);
 
 public: //! @name object presence management (View affinity, Layer, Priority)
   //! Returns the display priority of the Object.
@@ -318,67 +311,68 @@ public: //! @name object presence management (View affinity, Layer, Priority)
 
   //! Sets the display priority of the seen parts presentation of the Object.
   Standard_EXPORT void SetDisplayPriority(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                          const Graphic3d_DisplayPriority      thePriority);
+                                          const Graphic3d_DisplayPriority           thePriority);
 
   Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed "
                       "instead of integer number to SetDisplayPriority()")
-  void SetDisplayPriority(const occ::handle<AIS_InteractiveObject>& theIObj,
-                          const int               thePriority)
+
+  void SetDisplayPriority(const occ::handle<AIS_InteractiveObject>& theIObj, const int thePriority)
   {
     SetDisplayPriority(theIObj, (Graphic3d_DisplayPriority)thePriority);
   }
 
   //! Get Z layer id set for displayed interactive object.
-  Standard_EXPORT Graphic3d_ZLayerId GetZLayer(const occ::handle<AIS_InteractiveObject>& theIObj) const;
+  Standard_EXPORT Graphic3d_ZLayerId
+    GetZLayer(const occ::handle<AIS_InteractiveObject>& theIObj) const;
 
   //! Set Z layer id for interactive object.
   //! The Z layers can be used to display temporarily presentations of some object in front of the
   //! other objects in the scene. The ids for Z layers are generated by V3d_Viewer.
   Standard_EXPORT void SetZLayer(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                 const Graphic3d_ZLayerId             theLayerId);
+                                 const Graphic3d_ZLayerId                  theLayerId);
 
   //! Setup object visibility in specified view.
   //! Has no effect if object is not displayed in this context.
   Standard_EXPORT void SetViewAffinity(const occ::handle<AIS_InteractiveObject>& theIObj,
                                        const occ::handle<V3d_View>&              theView,
-                                       const bool               theIsVisible);
+                                       const bool                                theIsVisible);
 
 public: //! @name Display Mode management
   //! Returns the Display Mode setting to be used by default.
   int DisplayMode() const { return myDefaultDrawer->DisplayMode(); }
 
   //! Sets the display mode of seen Interactive Objects (which have no overridden Display Mode).
-  Standard_EXPORT void SetDisplayMode(const int theMode,
-                                      const bool theToUpdateViewer);
+  Standard_EXPORT void SetDisplayMode(const int theMode, const bool theToUpdateViewer);
 
   //! Sets the display mode of seen Interactive Objects.
   //! theMode provides the display mode index of the entity theIObj.
   Standard_EXPORT void SetDisplayMode(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                      const int               theMode,
-                                      const bool               theToUpdateViewer);
+                                      const int                                 theMode,
+                                      const bool                                theToUpdateViewer);
 
   //! Unsets the display mode of seen Interactive Objects.
   Standard_EXPORT void UnsetDisplayMode(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                        const bool               theToUpdateViewer);
+                                        const bool theToUpdateViewer);
 
 public: //! @name object local transformation management
   //! Puts the location on the initial graphic representation and the selection for the Object.
   Standard_EXPORT void SetLocation(const occ::handle<AIS_InteractiveObject>& theObject,
-                                   const TopLoc_Location&               theLocation);
+                                   const TopLoc_Location&                    theLocation);
 
   //! Puts the Object back into its initial position.
   Standard_EXPORT void ResetLocation(const occ::handle<AIS_InteractiveObject>& theObject);
 
   //! Returns true if the Object has a location.
-  Standard_EXPORT bool
-    HasLocation(const occ::handle<AIS_InteractiveObject>& theObject) const;
+  Standard_EXPORT bool HasLocation(const occ::handle<AIS_InteractiveObject>& theObject) const;
 
   //! Returns the location of the Object.
-  Standard_EXPORT TopLoc_Location Location(const occ::handle<AIS_InteractiveObject>& theObject) const;
+  Standard_EXPORT TopLoc_Location
+    Location(const occ::handle<AIS_InteractiveObject>& theObject) const;
 
   //! Sets transform persistence.
-  Standard_EXPORT void SetTransformPersistence(const occ::handle<AIS_InteractiveObject>&   theObject,
-                                               const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
+  Standard_EXPORT void SetTransformPersistence(
+    const occ::handle<AIS_InteractiveObject>&   theObject,
+    const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 
 public: //! @name mouse picking logic (detection and dynamic highlighting of entities under cursor)
   //! Setup pixel tolerance for MoveTo() operation.
@@ -395,7 +389,7 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
   //! and changes previous sensitivity value of all sensitive entities in selection with theMode
   //! to the given theNewSensitivity.
   Standard_EXPORT void SetSelectionSensitivity(const occ::handle<AIS_InteractiveObject>& theObject,
-                                               const int               theMode,
+                                               const int                                 theMode,
                                                const int theNewSensitivity);
 
   //! Returns last active View (argument of MoveTo()/Select() methods).
@@ -410,26 +404,25 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
   //!                      (Prs3d_TypeOfHighlight_Dynamic and Prs3d_TypeOfHighlight_LocalDynamic)
   //! @sa PrsMgr_PresentableObject::DynamicHilightAttributes() defining per-object dynamic highlight
   //! style of detected owners (overrides defaults)
-  Standard_EXPORT AIS_StatusOfDetection MoveTo(const int  theXPix,
-                                               const int  theYPix,
+  Standard_EXPORT AIS_StatusOfDetection MoveTo(const int                    theXPix,
+                                               const int                    theYPix,
                                                const occ::handle<V3d_View>& theView,
-                                               const bool  theToRedrawOnUpdate);
+                                               const bool                   theToRedrawOnUpdate);
 
   //! Relays axis theAxis to the interactive context selectors.
   //! This is done by the view theView passing this axis to the main viewer and updating it.
   //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight
   //! detected object.
   //! @sa PickingStrategy()
-  Standard_EXPORT AIS_StatusOfDetection MoveTo(const gp_Ax1&           theAxis,
+  Standard_EXPORT AIS_StatusOfDetection MoveTo(const gp_Ax1&                theAxis,
                                                const occ::handle<V3d_View>& theView,
-                                               const bool  theToRedrawOnUpdate);
+                                               const bool                   theToRedrawOnUpdate);
 
   //! Clears the list of entities detected by MoveTo() and resets dynamic highlighting.
   //! @param theToRedrawImmediate if TRUE, the main Viewer will be redrawn on update
   //! @return TRUE if viewer needs to be updated (e.g. there were actually dynamically highlighted
   //! entities)
-  Standard_EXPORT bool
-    ClearDetected(bool theToRedrawImmediate = false);
+  Standard_EXPORT bool ClearDetected(bool theToRedrawImmediate = false);
 
   //! Returns true if there is a mouse-detected entity in context.
   //! @sa DetectedOwner(), HasNextDetected(), HilightPreviousDetected(), HilightNextDetected().
@@ -476,15 +469,13 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
   //! hilight the first one again.
   //! @return the Rank of hilighted entity
   //! @sa HasNextDetected(), HilightPreviousDetected().
-  Standard_EXPORT int
-    HilightNextDetected(const occ::handle<V3d_View>& theView,
-                        const bool  theToRedrawImmediate = true);
+  Standard_EXPORT int HilightNextDetected(const occ::handle<V3d_View>& theView,
+                                          const bool                   theToRedrawImmediate = true);
 
   //! Same as previous methods in reverse direction.
   //! @sa HasNextDetected(), HilightNextDetected().
-  Standard_EXPORT int
-    HilightPreviousDetected(const occ::handle<V3d_View>& theView,
-                            const bool  theToRedrawImmediate = true);
+  Standard_EXPORT int HilightPreviousDetected(const occ::handle<V3d_View>& theView,
+                                              const bool theToRedrawImmediate = true);
 
 public: //! @name iteration through detected entities
   //! Initialization for iteration through mouse-detected objects in
@@ -535,10 +526,10 @@ public: //! @name Selection management
   //! @return picking status
   //! @sa StdSelect_ViewerSelector3d::AllowOverlapDetection()
   Standard_EXPORT AIS_StatusOfPick
-    SelectRectangle(const NCollection_Vec2<int>&    thePntMin,
-                    const NCollection_Vec2<int>&    thePntMax,
-                    const occ::handle<V3d_View>&   theView,
-                    const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
+    SelectRectangle(const NCollection_Vec2<int>& thePntMin,
+                    const NCollection_Vec2<int>& thePntMax,
+                    const occ::handle<V3d_View>& theView,
+                    const AIS_SelectionScheme    theSelScheme = AIS_SelectionScheme_Replace);
 
   //! Select everything found in the polygon defined by bounding polyline.
   //! Viewer should be explicitly redrawn after selection.
@@ -548,8 +539,8 @@ public: //! @name Selection management
   //! @return picking status
   Standard_EXPORT AIS_StatusOfPick
     SelectPolygon(const NCollection_Array1<gp_Pnt2d>& thePolyline,
-                  const occ::handle<V3d_View>&     theView,
-                  const AIS_SelectionScheme   theSelScheme = AIS_SelectionScheme_Replace);
+                  const occ::handle<V3d_View>&        theView,
+                  const AIS_SelectionScheme           theSelScheme = AIS_SelectionScheme_Replace);
 
   //! Selects the topmost object picked by the point in the view,
   //! Viewer should be explicitly redrawn after selection.
@@ -558,9 +549,9 @@ public: //! @name Selection management
   //! @param[in] theSelScheme  selection scheme
   //! @return picking status
   Standard_EXPORT AIS_StatusOfPick
-    SelectPoint(const NCollection_Vec2<int>&    thePnt,
-                const occ::handle<V3d_View>&   theView,
-                const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
+    SelectPoint(const NCollection_Vec2<int>& thePnt,
+                const occ::handle<V3d_View>& theView,
+                const AIS_SelectionScheme    theSelScheme = AIS_SelectionScheme_Replace);
 
   //! Select and hilights the previous detected via AIS_InteractiveContext::MoveTo() method;
   //! unhilights the previous picked.
@@ -581,20 +572,22 @@ public: //! @name Selection management
   Standard_EXPORT Bnd_Box BoundingBoxOfSelection(const occ::handle<V3d_View>& theView) const;
 
   Standard_DEPRECATED("BoundingBoxOfSelection() should be called with View argument")
+
   Bnd_Box BoundingBoxOfSelection() const { return BoundingBoxOfSelection(occ::handle<V3d_View>()); }
 
   //! Sets list of owner selected/deselected using specified selection scheme.
   //! @param theOwners owners to change selection state
   //! @param theSelScheme selection scheme
   //! @return picking status
-  Standard_EXPORT AIS_StatusOfPick Select(const NCollection_Array1<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-                                          const AIS_SelectionScheme       theSelScheme);
+  Standard_EXPORT AIS_StatusOfPick
+    Select(const NCollection_Array1<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+           const AIS_SelectionScheme                                     theSelScheme);
 
   //! Fits the view correspondingly to the bounds of selected objects.
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.
   Standard_EXPORT void FitSelected(const occ::handle<V3d_View>& theView,
-                                   const double     theMargin,
-                                   const bool  theToUpdate);
+                                   const double                 theMargin,
+                                   const bool                   theToUpdate);
 
   //! Fits the view correspondingly to the bounds of selected objects.
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.
@@ -633,16 +626,16 @@ public: //! @name Selection management
   //! Marks owner given as selected and highlights it.
   //! Performs selection filters check.
   Standard_EXPORT void SetSelected(const occ::handle<SelectMgr_EntityOwner>& theOwners,
-                                   const bool               theToUpdateViewer);
+                                   const bool                                theToUpdateViewer);
 
   //! Puts the interactive object aniObj in the list of selected objects.
   //! Performs selection filters check.
   Standard_EXPORT void SetSelected(const occ::handle<AIS_InteractiveObject>& theObject,
-                                   const bool               theToUpdateViewer);
+                                   const bool                                theToUpdateViewer);
 
   //! Allows to highlight or unhighlight the owner given depending on its selection status
   Standard_EXPORT void AddOrRemoveSelected(const occ::handle<AIS_InteractiveObject>& theObject,
-                                           const bool               theToUpdateViewer);
+                                           const bool theToUpdateViewer);
 
   //! Updates Selected state of specified owner without calling HilightSelected().
   //! Has no effect if Selected state is not changed, and redirects to AddOrRemoveSelected()
@@ -651,7 +644,7 @@ public: //! @name Selection management
   //! @param theIsSelected new selected state
   //! @return TRUE if Selected state has been changed
   Standard_EXPORT bool SetSelectedState(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                    const bool theIsSelected);
+                                        const bool                                theIsSelected);
 
   //! Highlights selected objects.
   Standard_EXPORT void HilightSelected(const bool theToUpdateViewer);
@@ -670,7 +663,7 @@ public: //! @name Selection management
 
   //! Allows to highlight or unhighlight the owner given depending on its selection status
   Standard_EXPORT void AddOrRemoveSelected(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                           const bool               theToUpdateViewer);
+                                           const bool theToUpdateViewer);
 
   //! Returns true is the owner given is selected
   bool IsSelected(const occ::handle<SelectMgr_EntityOwner>& theOwner) const
@@ -748,7 +741,7 @@ public: //! @name immediate mode rendering
   Standard_DEPRECATED(
     "Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
   Standard_EXPORT bool ImmediateAdd(const occ::handle<AIS_InteractiveObject>& theObj,
-                                                const int               theMode = 0);
+                                    const int                                 theMode = 0);
 
   Standard_DEPRECATED(
     "Deprecated method - Graphic3d_ZLayerId with IsImmediate flag should be used instead")
@@ -792,16 +785,16 @@ public: //! @name management of active Selection Modes
   //! selection mode
   Standard_EXPORT void SetSelectionModeActive(
     const occ::handle<AIS_InteractiveObject>& theObj,
-    const int               theMode,
-    const bool               theToActivate,
-    const AIS_SelectionModesConcurrency  theConcurrency = AIS_SelectionModesConcurrency_Multiple,
-    const bool               theIsForce     = false);
+    const int                                 theMode,
+    const bool                                theToActivate,
+    const AIS_SelectionModesConcurrency theConcurrency = AIS_SelectionModesConcurrency_Multiple,
+    const bool                          theIsForce     = false);
 
   //! Activates the selection mode aMode whose index is given, for the given interactive entity
   //! anIobj.
   void Activate(const occ::handle<AIS_InteractiveObject>& theObj,
-                const int               theMode    = 0,
-                const bool               theIsForce = false)
+                const int                                 theMode    = 0,
+                const bool                                theIsForce = false)
   {
     SetSelectionModeActive(theObj,
                            theMode,
@@ -811,8 +804,7 @@ public: //! @name management of active Selection Modes
   }
 
   //! Activates the given selection mode for the all displayed objects.
-  Standard_EXPORT void Activate(const int theMode,
-                                const bool theIsForce = false);
+  Standard_EXPORT void Activate(const int theMode, const bool theIsForce = false);
 
   //! Deactivates all the activated selection modes of an object.
   void Deactivate(const occ::handle<AIS_InteractiveObject>& theObj)
@@ -835,13 +827,15 @@ public: //! @name management of active Selection Modes
 
   //! Returns the list of activated selection modes.
   Standard_EXPORT void ActivatedModes(const occ::handle<AIS_InteractiveObject>& anIobj,
-                                      NCollection_List<int>&               theList) const;
+                                      NCollection_List<int>&                    theList) const;
 
   //! Returns a collection containing all entity owners created for the interactive object in
   //! specified selection mode (in all active modes if the Mode == -1)
-  Standard_EXPORT void EntityOwners(occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>& theOwners,
-                                    const occ::handle<AIS_InteractiveObject>& theIObj,
-                                    const int               theMode = -1) const;
+  Standard_EXPORT void EntityOwners(
+    occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>&
+                                              theOwners,
+    const occ::handle<AIS_InteractiveObject>& theIObj,
+    const int                                 theMode = -1) const;
 
 public: //! @name Selection Filters management
   //! @return the context selection filter type.
@@ -856,7 +850,10 @@ public: //! @name Selection Filters management
   }
 
   //! Returns the list of filters active in a local context.
-  const NCollection_List<occ::handle<SelectMgr_Filter>>& Filters() const { return myFilters->StoredFilters(); }
+  const NCollection_List<occ::handle<SelectMgr_Filter>>& Filters() const
+  {
+    return myFilters->StoredFilters();
+  }
 
   //! @return the context selection global context filter.
   const occ::handle<SelectMgr_AndOrFilter>& GlobalFilter() const { return myFilters; }
@@ -865,7 +862,10 @@ public: //! @name Selection Filters management
   void AddFilter(const occ::handle<SelectMgr_Filter>& theFilter) { myFilters->Add(theFilter); }
 
   //! Removes a filter from context.
-  void RemoveFilter(const occ::handle<SelectMgr_Filter>& theFilter) { myFilters->Remove(theFilter); }
+  void RemoveFilter(const occ::handle<SelectMgr_Filter>& theFilter)
+  {
+    myFilters->Remove(theFilter);
+  }
 
   //! Remove all filters from context.
   void RemoveFilters() { myFilters->Clear(); }
@@ -914,7 +914,10 @@ public: //! @name common properties
 
   const occ::handle<PrsMgr_PresentationManager>& MainPrsMgr() const { return myMainPM; }
 
-  const occ::handle<StdSelect_ViewerSelector3d>& MainSelector() const { return mgrSelector->Selector(); }
+  const occ::handle<StdSelect_ViewerSelector3d>& MainSelector() const
+  {
+    return mgrSelector->Selector();
+  }
 
   //! Updates the current viewer.
   Standard_EXPORT void UpdateCurrentViewer();
@@ -922,65 +925,74 @@ public: //! @name common properties
   //! Returns the list of displayed objects of a particular Type WhichKind and Signature
   //! WhichSignature. By Default, WhichSignature equals -1. This means that there is a check on type
   //! only.
-  Standard_EXPORT void DisplayedObjects(NCollection_List<occ::handle<AIS_InteractiveObject>>& aListOfIO) const;
+  Standard_EXPORT void DisplayedObjects(
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& aListOfIO) const;
 
   //! gives the list of displayed objects of a particular Type and signature.
   //! by Default, <WhichSignature> = -1 means control only on <WhichKind>.
-  Standard_EXPORT void DisplayedObjects(const AIS_KindOfInteractive theWhichKind,
-                                        const int      theWhichSignature,
-                                        NCollection_List<occ::handle<AIS_InteractiveObject>>&      theListOfIO) const;
+  Standard_EXPORT void DisplayedObjects(
+    const AIS_KindOfInteractive                           theWhichKind,
+    const int                                             theWhichSignature,
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
 
   //! Returns the list theListOfIO of erased objects (hidden objects) particular Type WhichKind and
   //! Signature WhichSignature. By Default, WhichSignature equals 1. This means that there is a
   //! check on type only.
-  Standard_EXPORT void ErasedObjects(NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
+  Standard_EXPORT void ErasedObjects(
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
 
   //! gives the list of erased objects (hidden objects)
   //! Type and signature by Default, <WhichSignature> = -1 means control only on <WhichKind>.
-  Standard_EXPORT void ErasedObjects(const AIS_KindOfInteractive theWhichKind,
-                                     const int      theWhichSignature,
-                                     NCollection_List<occ::handle<AIS_InteractiveObject>>&      theListOfIO) const;
+  Standard_EXPORT void ErasedObjects(
+    const AIS_KindOfInteractive                           theWhichKind,
+    const int                                             theWhichSignature,
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
 
   //! Returns the list theListOfIO of objects with indicated display status particular Type
   //! WhichKind and Signature WhichSignature. By Default, WhichSignature equals 1. This means that
   //! there is a check on type only.
-  Standard_EXPORT void ObjectsByDisplayStatus(const PrsMgr_DisplayStatus theStatus,
-                                              NCollection_List<occ::handle<AIS_InteractiveObject>>&     theListOfIO) const;
+  Standard_EXPORT void ObjectsByDisplayStatus(
+    const PrsMgr_DisplayStatus                            theStatus,
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
 
   //! gives the list of objects with indicated display status
   //! Type and signature by Default, <WhichSignature> = -1 means control only on <WhichKind>.
-  Standard_EXPORT void ObjectsByDisplayStatus(const AIS_KindOfInteractive WhichKind,
-                                              const int      WhichSignature,
-                                              const PrsMgr_DisplayStatus  theStatus,
-                                              NCollection_List<occ::handle<AIS_InteractiveObject>>&      theListOfIO) const;
+  Standard_EXPORT void ObjectsByDisplayStatus(
+    const AIS_KindOfInteractive                           WhichKind,
+    const int                                             WhichSignature,
+    const PrsMgr_DisplayStatus                            theStatus,
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO) const;
 
   //! fills <aListOfIO> with objects of a particular Type and Signature with no consideration of
   //! display status. by Default, <WhichSignature> = -1 means control only on <WhichKind>. if
   //! <WhichKind> = AIS_KindOfInteractive_None and <WhichSignature> = -1, all the objects are put
   //! into the list.
   Standard_EXPORT void ObjectsInside(
-    NCollection_List<occ::handle<AIS_InteractiveObject>>&      aListOfIO,
-    const AIS_KindOfInteractive WhichKind      = AIS_KindOfInteractive_None,
-    const int      WhichSignature = -1) const;
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& aListOfIO,
+    const AIS_KindOfInteractive                           WhichKind = AIS_KindOfInteractive_None,
+    const int                                             WhichSignature = -1) const;
 
   //! Create iterator through all objects registered in context.
-  NCollection_DataMap<occ::handle<AIS_InteractiveObject>, occ::handle<AIS_GlobalStatus>>::Iterator ObjectIterator() const
+  NCollection_DataMap<occ::handle<AIS_InteractiveObject>, occ::handle<AIS_GlobalStatus>>::Iterator
+    ObjectIterator() const
   {
-    return NCollection_DataMap<occ::handle<AIS_InteractiveObject>, occ::handle<AIS_GlobalStatus>>::Iterator(myObjects);
+    return NCollection_DataMap<occ::handle<AIS_InteractiveObject>,
+                               occ::handle<AIS_GlobalStatus>>::Iterator(myObjects);
   }
 
   //! Rebuilds 1st level of BVH selection forcibly
   Standard_EXPORT void RebuildSelectionStructs();
 
   //! Disconnects theObjToDisconnect from theAssembly and removes dependent selection structures
-  Standard_EXPORT void Disconnect(const occ::handle<AIS_InteractiveObject>& theAssembly,
-                                  const occ::handle<AIS_InteractiveObject>& theObjToDisconnect = NULL);
+  Standard_EXPORT void Disconnect(
+    const occ::handle<AIS_InteractiveObject>& theAssembly,
+    const occ::handle<AIS_InteractiveObject>& theObjToDisconnect = NULL);
 
   //! Query objects visible or hidden in specified view due to affinity mask.
   Standard_EXPORT void ObjectsForView(
-    NCollection_List<occ::handle<AIS_InteractiveObject>>&     theListOfIO,
-    const occ::handle<V3d_View>&    theView,
-    const bool     theIsVisibleInView,
+    NCollection_List<occ::handle<AIS_InteractiveObject>>& theListOfIO,
+    const occ::handle<V3d_View>&                          theView,
+    const bool                                            theIsVisibleInView,
     const PrsMgr_DisplayStatus theStatus = PrsMgr_DisplayStatus_None) const;
 
   //! Return rotation gravity point.
@@ -1002,83 +1014,82 @@ public: //! @name common object display attributes
   //! material.
   Standard_EXPORT void SetLocalAttributes(const occ::handle<AIS_InteractiveObject>& theIObj,
                                           const occ::handle<Prs3d_Drawer>&          theDrawer,
-                                          const bool               theToUpdateViewer);
+                                          const bool theToUpdateViewer);
 
   //! Removes the settings for local attributes of the Object and returns to defaults.
   Standard_EXPORT void UnsetLocalAttributes(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                            const bool               theToUpdateViewer);
+                                            const bool theToUpdateViewer);
 
   //! change the current facing model apply on polygons for SetColor(), SetTransparency(),
   //! SetMaterial() methods default facing model is Aspect_TOFM_TWO_SIDE. This mean that attributes
   //! is applying both on the front and back face.
   Standard_EXPORT void SetCurrentFacingModel(
     const occ::handle<AIS_InteractiveObject>& aniobj,
-    const Aspect_TypeOfFacingModel       aModel = Aspect_TOFM_BOTH_SIDE);
+    const Aspect_TypeOfFacingModel            aModel = Aspect_TOFM_BOTH_SIDE);
 
   //! Returns true if a view of the Interactive Object has color.
   Standard_EXPORT bool HasColor(const occ::handle<AIS_InteractiveObject>& aniobj) const;
 
   //! Returns the color of the Object in the interactive context.
   Standard_EXPORT void Color(const occ::handle<AIS_InteractiveObject>& aniobj,
-                             Quantity_Color&                      acolor) const;
+                             Quantity_Color&                           acolor) const;
 
   //! Sets the color of the selected entity.
   Standard_EXPORT void SetColor(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                const Quantity_Color&                theColor,
-                                const bool               theToUpdateViewer);
+                                const Quantity_Color&                     theColor,
+                                const bool                                theToUpdateViewer);
 
   //! Removes the color selection for the selected entity.
   Standard_EXPORT void UnsetColor(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                  const bool               theToUpdateViewer);
+                                  const bool                                theToUpdateViewer);
 
   //! Returns the width of the Interactive Object in the interactive context.
   Standard_EXPORT virtual double Width(const occ::handle<AIS_InteractiveObject>& aniobj) const;
 
   //! Sets the width of the Object.
   Standard_EXPORT virtual void SetWidth(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                        const double                  theValue,
-                                        const bool               theToUpdateViewer);
+                                        const double                              theValue,
+                                        const bool theToUpdateViewer);
 
   //! Removes the width setting of the Object.
   Standard_EXPORT virtual void UnsetWidth(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                          const bool               theToUpdateViewer);
+                                          const bool theToUpdateViewer);
 
   //! Provides the type of material setting for the view of the Object.
   Standard_EXPORT void SetMaterial(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                   const Graphic3d_MaterialAspect&      theMaterial,
-                                   const bool               theToUpdateViewer);
+                                   const Graphic3d_MaterialAspect&           theMaterial,
+                                   const bool                                theToUpdateViewer);
 
   //! Removes the type of material setting for viewing the Object.
   Standard_EXPORT void UnsetMaterial(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                     const bool               theToUpdateViewer);
+                                     const bool                                theToUpdateViewer);
 
   //! Provides the transparency settings for viewing the Object.
   //! The transparency value aValue may be between 0.0, opaque, and 1.0, fully transparent.
   Standard_EXPORT void SetTransparency(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                       const double                  theValue,
-                                       const bool               theToUpdateViewer);
+                                       const double                              theValue,
+                                       const bool                                theToUpdateViewer);
 
   //! Removes the transparency settings for viewing the Object.
   Standard_EXPORT void UnsetTransparency(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                         const bool               theToUpdateViewer);
+                                         const bool theToUpdateViewer);
 
   //! Sets up polygon offsets for the given AIS_InteractiveObject.
   //! It simply calls AIS_InteractiveObject::SetPolygonOffsets().
   Standard_EXPORT void SetPolygonOffsets(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                         const int               theMode,
-                                         const float             theFactor,
-                                         const float             theUnits,
-                                         const bool               theToUpdateViewer);
+                                         const int                                 theMode,
+                                         const float                               theFactor,
+                                         const float                               theUnits,
+                                         const bool theToUpdateViewer);
 
   //! Simply calls AIS_InteractiveObject::HasPolygonOffsets().
-  Standard_EXPORT bool
-    HasPolygonOffsets(const occ::handle<AIS_InteractiveObject>& anObj) const;
+  Standard_EXPORT bool HasPolygonOffsets(const occ::handle<AIS_InteractiveObject>& anObj) const;
 
   //! Retrieves current polygon offsets settings for Object.
   Standard_EXPORT void PolygonOffsets(const occ::handle<AIS_InteractiveObject>& anObj,
-                                      int&                    aMode,
-                                      float&                  aFactor,
-                                      float&                  aUnits) const;
+                                      int&                                      aMode,
+                                      float&                                    aFactor,
+                                      float&                                    aUnits) const;
 
 public: //! @name trihedron display attributes
   //! Sets the size aSize of the trihedron.
@@ -1086,8 +1097,7 @@ public: //! @name trihedron display attributes
   //! Use of this function in one of your own interactive objects requires a call to the Compute
   //! function of the new class. This will recalculate the presentation for every trihedron
   //! displayed.
-  Standard_EXPORT void SetTrihedronSize(const double    theSize,
-                                        const bool theToUpdateViewer);
+  Standard_EXPORT void SetTrihedronSize(const double theSize, const bool theToUpdateViewer);
 
   //! returns the current value of trihedron size.
   Standard_EXPORT double TrihedronSize() const;
@@ -1095,13 +1105,12 @@ public: //! @name trihedron display attributes
 public: //! @name plane display attributes
   //! Sets the plane size defined by the length in the X direction XSize and that in the Y direction
   //! YSize.
-  Standard_EXPORT void SetPlaneSize(const double    theSizeX,
-                                    const double    theSizeY,
-                                    const bool theToUpdateViewer);
+  Standard_EXPORT void SetPlaneSize(const double theSizeX,
+                                    const double theSizeY,
+                                    const bool   theToUpdateViewer);
 
   //! Sets the plane size aSize.
-  Standard_EXPORT void SetPlaneSize(const double    theSize,
-                                    const bool theToUpdateViewer);
+  Standard_EXPORT void SetPlaneSize(const double theSize, const bool theToUpdateViewer);
 
   //! Returns true if the length in the X direction XSize is the same as that in the Y direction
   //! YSize.
@@ -1121,17 +1130,17 @@ public: //! @name tessellation deviation properties for automatic triangulation
   //! In drawing shapes, however, you are allowed to ask for a relative deviation.
   //! This deviation will be: SizeOfObject * DeviationCoefficient.
   Standard_EXPORT void SetDeviationCoefficient(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                               const double                  theCoefficient,
-                                               const bool theToUpdateViewer);
+                                               const double theCoefficient,
+                                               const bool   theToUpdateViewer);
 
   Standard_EXPORT void SetDeviationAngle(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                         const double                  theAngle,
-                                         const bool               theToUpdateViewer);
+                                         const double                              theAngle,
+                                         const bool theToUpdateViewer);
 
   //! Calls the AIS_Shape SetAngleAndDeviation to set both Angle and Deviation coefficients
   Standard_EXPORT void SetAngleAndDeviation(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                            const double                  theAngle,
-                                            const bool               theToUpdateViewer);
+                                            const double                              theAngle,
+                                            const bool theToUpdateViewer);
 
   //! Sets the deviation coefficient theCoefficient.
   //! Drawings of curves or patches are made with respect to a maximal chordal deviation.
@@ -1164,10 +1173,7 @@ public: //! @name tessellation deviation properties for automatic triangulation
   double DeviationCoefficient() const { return myDefaultDrawer->DeviationCoefficient(); }
 
   //! default 20 degrees
-  void SetDeviationAngle(const double theAngle)
-  {
-    myDefaultDrawer->SetDeviationAngle(theAngle);
-  }
+  void SetDeviationAngle(const double theAngle) { myDefaultDrawer->SetDeviationAngle(theAngle); }
 
   double DeviationAngle() const { return myDefaultDrawer->DeviationAngle(); }
 
@@ -1199,17 +1205,13 @@ public: //! @name HLR (Hidden Line Removal) display attributes
 
 public: //! @name iso-line display attributes
   //! Sets the number of U and V isoparameters displayed.
-  Standard_EXPORT void SetIsoNumber(const int NbIsos,
-                                    const AIS_TypeOfIso    WhichIsos = AIS_TOI_Both);
+  Standard_EXPORT void SetIsoNumber(const int NbIsos, const AIS_TypeOfIso WhichIsos = AIS_TOI_Both);
 
   //! Returns the number of U and V isoparameters displayed.
   Standard_EXPORT int IsoNumber(const AIS_TypeOfIso WhichIsos = AIS_TOI_Both);
 
   //! Returns True if drawing isoparameters on planes is enabled.
-  void IsoOnPlane(const bool theToSwitchOn)
-  {
-    myDefaultDrawer->SetIsoOnPlane(theToSwitchOn);
-  }
+  void IsoOnPlane(const bool theToSwitchOn) { myDefaultDrawer->SetIsoOnPlane(theToSwitchOn); }
 
   //! Returns True if drawing isoparameters on planes is enabled.
   //! if <forUIsos> = False,
@@ -1218,7 +1220,7 @@ public: //! @name iso-line display attributes
   //! Enables or disables on-triangulation build for isolines for a particular object.
   //! In case if on-triangulation builder is disabled, default on-plane builder will compute
   //! isolines for the object given.
-  Standard_EXPORT void IsoOnTriangulation(const bool               theIsEnabled,
+  Standard_EXPORT void IsoOnTriangulation(const bool                                theIsEnabled,
                                           const occ::handle<AIS_InteractiveObject>& theObject);
 
   //! Enables or disables on-triangulation build for isolines for default drawer.
@@ -1236,12 +1238,13 @@ public: //! @name iso-line display attributes
 public:
   Standard_DEPRECATED("Deprecated method Display() with obsolete argument "
                       "theToAllowDecomposition")
+
   void Display(const occ::handle<AIS_InteractiveObject>& theIObj,
-               const int               theDispMode,
-               const int               theSelectionMode,
-               const bool               theToUpdateViewer,
-               const bool               theToAllowDecomposition,
-               const PrsMgr_DisplayStatus           theDispStatus = PrsMgr_DisplayStatus_None)
+               const int                                 theDispMode,
+               const int                                 theSelectionMode,
+               const bool                                theToUpdateViewer,
+               const bool                                theToAllowDecomposition,
+               const PrsMgr_DisplayStatus                theDispStatus = PrsMgr_DisplayStatus_None)
   {
     (void)theToAllowDecomposition;
     Display(theIObj, theDispMode, theSelectionMode, theToUpdateViewer, theDispStatus);
@@ -1249,9 +1252,8 @@ public:
 
   Standard_DEPRECATED("Deprecated method Load() with obsolete last argument "
                       "theToAllowDecomposition")
-  void Load(const occ::handle<AIS_InteractiveObject>& theObj,
-            int                     theSelectionMode,
-            bool)
+
+  void Load(const occ::handle<AIS_InteractiveObject>& theObj, int theSelectionMode, bool)
   {
     Load(theObj, theSelectionMode);
   }
@@ -1260,8 +1262,8 @@ public:
   //! On dynamic detection by the mouse cursor, sensitive primitives are highlighted.
   //! The highlight color of entities detected by mouse movement is white by default.
   Standard_DEPRECATED("Deprecated method Hilight()")
-  void Hilight(const occ::handle<AIS_InteractiveObject>& theObj,
-               const bool               theIsToUpdateViewer)
+
+  void Hilight(const occ::handle<AIS_InteractiveObject>& theObj, const bool theIsToUpdateViewer)
   {
     return HilightWithColor(theObj, myStyles[Prs3d_TypeOfHighlight_Dynamic], theIsToUpdateViewer);
   }
@@ -1270,26 +1272,26 @@ public:
   Standard_DEPRECATED(
     "Deprecated method - presentation attributes should be assigned directly to object")
   Standard_EXPORT void SetSelectedAspect(const occ::handle<Prs3d_BasicAspect>& theAspect,
-                                         const bool           theToUpdateViewer);
+                                         const bool                            theToUpdateViewer);
 
   //! Selects everything found in the bounding rectangle defined by the pixel minima and maxima,
   //! XPMin, YPMin, XPMax, and YPMax in the view. The objects detected are passed to the main
   //! viewer, which is then updated.
   Standard_DEPRECATED("This method is deprecated - SelectRectangle() taking "
                       "AIS_SelectionScheme_Replace should be called instead")
-  Standard_EXPORT AIS_StatusOfPick Select(const int  theXPMin,
-                                          const int  theYPMin,
-                                          const int  theXPMax,
-                                          const int  theYPMax,
+  Standard_EXPORT AIS_StatusOfPick Select(const int                    theXPMin,
+                                          const int                    theYPMin,
+                                          const int                    theXPMax,
+                                          const int                    theYPMax,
                                           const occ::handle<V3d_View>& theView,
-                                          const bool  theToUpdateViewer);
+                                          const bool                   theToUpdateViewer);
 
   //! polyline selection; clears the previous picked list
   Standard_DEPRECATED("This method is deprecated - SelectPolygon() taking "
                       "AIS_SelectionScheme_Replace should be called instead")
   Standard_EXPORT AIS_StatusOfPick Select(const NCollection_Array1<gp_Pnt2d>& thePolyline,
-                                          const occ::handle<V3d_View>&     theView,
-                                          const bool      theToUpdateViewer);
+                                          const occ::handle<V3d_View>&        theView,
+                                          const bool                          theToUpdateViewer);
 
   //! Stores and hilights the previous detected; Unhilights the previous picked.
   //! @sa MoveTo().
@@ -1309,19 +1311,19 @@ public:
   Standard_DEPRECATED("This method is deprecated - SelectPolygon() taking AIS_SelectionScheme_XOR "
                       "should be called instead")
   Standard_EXPORT AIS_StatusOfPick ShiftSelect(const NCollection_Array1<gp_Pnt2d>& thePolyline,
-                                               const occ::handle<V3d_View>&     theView,
-                                               const bool      theToUpdateViewer);
+                                               const occ::handle<V3d_View>&        theView,
+                                               const bool theToUpdateViewer);
 
   //! Rectangle of selection; adds new detected entities into the picked list,
   //! removes the detected entities that were already stored.
   Standard_DEPRECATED("This method is deprecated - SelectRectangle() taking "
                       "AIS_SelectionScheme_XOR should be called instead")
-  Standard_EXPORT AIS_StatusOfPick ShiftSelect(const int  theXPMin,
-                                               const int  theYPMin,
-                                               const int  theXPMax,
-                                               const int  theYPMax,
+  Standard_EXPORT AIS_StatusOfPick ShiftSelect(const int                    theXPMin,
+                                               const int                    theYPMin,
+                                               const int                    theXPMax,
+                                               const int                    theYPMax,
                                                const occ::handle<V3d_View>& theView,
-                                               const bool  theToUpdateViewer);
+                                               const bool                   theToUpdateViewer);
 
 public:
   //! Updates the view of the current object in open context.
@@ -1329,8 +1331,9 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void SetCurrentObject(const occ::handle<AIS_InteractiveObject>& theIObj,
-                        const bool               theToUpdateViewer)
+                        const bool                                theToUpdateViewer)
   {
     SetSelected(theIObj, theToUpdateViewer);
   }
@@ -1341,8 +1344,9 @@ public:
   //! object, if 0 selection of the object is empty this method simply does nothing.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void AddOrRemoveCurrentObject(const occ::handle<AIS_InteractiveObject>& theObj,
-                                const bool               theIsToUpdateViewer)
+                                const bool                                theIsToUpdateViewer)
   {
     AddOrRemoveSelected(theObj, theIsToUpdateViewer);
   }
@@ -1352,6 +1356,7 @@ public:
   //! current objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void UpdateCurrent() { UpdateSelected(true); }
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
@@ -1359,6 +1364,7 @@ public:
   //! those selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
+
   bool IsCurrent(const occ::handle<AIS_InteractiveObject>& theObject) const
   {
     return IsSelected(theObject);
@@ -1369,6 +1375,7 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void InitCurrent() { InitSelected(); }
 
   //! Returns true if there is another object found by the scan of the list of current objects.
@@ -1376,6 +1383,7 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
+
   bool MoreCurrent() const { return MoreSelected(); }
 
   //! Continues the scan to the next object in the list of current objects.
@@ -1383,6 +1391,7 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void NextCurrent() { NextSelected(); }
 
   //! Returns the current interactive object.
@@ -1390,10 +1399,12 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
+
   occ::handle<AIS_InteractiveObject> Current() const { return SelectedInteractive(); }
 
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
+
   int NbCurrents() { return NbSelected(); }
 
   //! Highlights current objects.
@@ -1401,26 +1412,23 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void HilightCurrents(const bool theToUpdateViewer)
-  {
-    HilightSelected(theToUpdateViewer);
-  }
+
+  void HilightCurrents(const bool theToUpdateViewer) { HilightSelected(theToUpdateViewer); }
 
   //! Removes highlighting from current objects.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void UnhilightCurrents(const bool theToUpdateViewer)
-  {
-    UnhilightSelected(theToUpdateViewer);
-  }
+
+  void UnhilightCurrents(const bool theToUpdateViewer) { UnhilightSelected(theToUpdateViewer); }
 
   //! Empties previous current objects in order to get the current objects detected by the selector
   //! using UpdateCurrent. Objects selected when there is no open local context are called current
   //! objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
+
   void ClearCurrents(const bool theToUpdateViewer) { ClearSelected(theToUpdateViewer); }
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
@@ -1461,13 +1469,13 @@ public: //! @name sub-intensity management (deprecated)
   //! there is no local context. If a local context is open, the presentation of the Interactive
   //! Object activates the selection mode.
   Standard_EXPORT void SubIntensityOn(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                      const bool               theToUpdateViewer);
+                                      const bool                                theToUpdateViewer);
 
   //! Removes the subintensity option for the entity.
   //! If a local context is open, the presentation of the Interactive Object activates the selection
   //! mode.
   Standard_EXPORT void SubIntensityOff(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                       const bool               theToUpdateViewer);
+                                       const bool                                theToUpdateViewer);
 
   //! Returns selection instance
   const occ::handle<AIS_Selection>& Selection() const { return mySelection; }
@@ -1477,31 +1485,30 @@ public: //! @name sub-intensity management (deprecated)
   void SetSelection(const occ::handle<AIS_Selection>& theSelection) { mySelection = theSelection; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 protected: //! @name internal methods
   Standard_EXPORT void GetDefModes(const occ::handle<AIS_InteractiveObject>& anIobj,
-                                   int&                    Dmode,
-                                   int&                    HiMod,
-                                   int&                    SelMode) const;
+                                   int&                                      Dmode,
+                                   int&                                      HiMod,
+                                   int&                                      SelMode) const;
 
   Standard_EXPORT void EraseGlobal(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                   const bool               theToUpdateViewer);
+                                   const bool                                theToUpdateViewer);
 
   Standard_EXPORT void ClearGlobal(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                   const bool               theToUpdateViewer);
+                                   const bool                                theToUpdateViewer);
 
   Standard_EXPORT void ClearGlobalPrs(const occ::handle<AIS_InteractiveObject>& theObj,
-                                      const int               theMode,
-                                      const bool               theToUpdateViewer);
+                                      const int                                 theMode,
+                                      const bool                                theToUpdateViewer);
 
   Standard_EXPORT void InitAttributes();
 
   //! Highlights detected objects.
   //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to update view.
   Standard_EXPORT AIS_StatusOfDetection moveTo(const occ::handle<V3d_View>& theView,
-                                               const bool  theToRedrawOnUpdate);
+                                               const bool                   theToRedrawOnUpdate);
 
   //! Returns True if the object is detected.
   Standard_EXPORT bool isDetected(const occ::handle<AIS_InteractiveObject>& theObject);
@@ -1512,7 +1519,7 @@ protected: //! @name internal methods
   //! Helper function that highlights the owner given with <theStyle> without
   //! performing AutoHighlight checks, e.g. is used for dynamic highlight.
   Standard_EXPORT void highlightWithColor(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                          const occ::handle<V3d_Viewer>&            theViewer = NULL);
+                                          const occ::handle<V3d_Viewer>& theViewer = NULL);
 
   //! Helper function that highlights the owner given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
@@ -1522,29 +1529,29 @@ protected: //! @name internal methods
   //! selection.
   //! @param[in] theOwners  list of owners to highlight
   //! @param[in] theStyle   highlight style to apply or NULL to apply selection style
-  Standard_EXPORT void highlightOwners(const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-                                       const occ::handle<Prs3d_Drawer>&   theStyle);
+  Standard_EXPORT void highlightOwners(
+    const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
+    const occ::handle<Prs3d_Drawer>&                            theStyle);
 
   //! Helper function that highlights global owner of the object given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
   //! If global owner is null, it simply highlights the whole object
   Standard_EXPORT void highlightGlobal(const occ::handle<AIS_InteractiveObject>& theObj,
                                        const occ::handle<Prs3d_Drawer>&          theStyle,
-                                       const int               theDispMode);
+                                       const int                                 theDispMode);
 
   //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
   //! The function updates global status and selection state of owner and interactive object.
   //! If the parameter <theIsToHilightSubIntensity> is set to true, interactive objects with
   //! sub-intensity switched on in AIS_GlobalStatus will be highlighted with context's sub-intensity
   //! color.
-  Standard_EXPORT void unhighlightSelected(
-    const bool theIsToHilightSubIntensity = false);
+  Standard_EXPORT void unhighlightSelected(const bool theIsToHilightSubIntensity = false);
 
   //! Helper function that unhighlights the owners with check
   //! for AutoHighlight, e.g. is used for selection.
   Standard_EXPORT void unhighlightOwners(
     const NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners,
-    const bool        theIsToHilightSubIntensity = false);
+    const bool                                                  theIsToHilightSubIntensity = false);
 
   //! Helper function that unhighlights global selection owner of given interactive.
   //! The function does not perform any updates of global or owner status
@@ -1560,14 +1567,15 @@ protected: //! @name internal methods
   //! status AIS_DS_Displayed
   Standard_EXPORT void turnOnSubintensity(
     const occ::handle<AIS_InteractiveObject>& theObject          = NULL,
-    const int               theDispMode        = -1,
-    const bool               theIsDisplayedOnly = true) const;
+    const int                                 theDispMode        = -1,
+    const bool                                theIsDisplayedOnly = true) const;
 
   //! Helper function that highlights the object with sub-intensity color without any checks
   //! @param[in] theObject  the object that will be highlighted
   //! @param[in] theMode  display mode
-  Standard_EXPORT void highlightWithSubintensity(const occ::handle<AIS_InteractiveObject>& theObject,
-                                                 const int theMode) const;
+  Standard_EXPORT void highlightWithSubintensity(
+    const occ::handle<AIS_InteractiveObject>& theObject,
+    const int                                 theMode) const;
 
   //! Helper function that highlights the owner with sub-intensity color without any checks
   //! @param[in] theOwner  the owner that will be highlighted
@@ -1579,8 +1587,9 @@ protected: //! @name internal methods
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! dynamic highlight style of interactive context will be returned.
   //! @param[in] theObj  the object to check
-  const occ::handle<Prs3d_Drawer>& getHiStyle(const occ::handle<AIS_InteractiveObject>& theObj,
-                                         const occ::handle<SelectMgr_EntityOwner>& theOwner) const
+  const occ::handle<Prs3d_Drawer>& getHiStyle(
+    const occ::handle<AIS_InteractiveObject>& theObj,
+    const occ::handle<SelectMgr_EntityOwner>& theOwner) const
   {
     const occ::handle<Prs3d_Drawer>& aHiDrawer = theObj->DynamicHilightAttributes();
     if (!aHiDrawer.IsNull())
@@ -1595,14 +1604,15 @@ protected: //! @name internal methods
 
   //! Return TRUE if highlight style of owner requires full viewer redraw.
   Standard_EXPORT bool isSlowHiStyle(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                 const occ::handle<V3d_Viewer>& theViewer) const;
+                                     const occ::handle<V3d_Viewer>&            theViewer) const;
 
   //! Helper function that returns correct selection style for the object:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! selection style of interactive context will be returned.
   //! @param[in] theObj  the object to check
-  const occ::handle<Prs3d_Drawer>& getSelStyle(const occ::handle<AIS_InteractiveObject>& theObj,
-                                          const occ::handle<SelectMgr_EntityOwner>& theOwner) const
+  const occ::handle<Prs3d_Drawer>& getSelStyle(
+    const occ::handle<AIS_InteractiveObject>& theObj,
+    const occ::handle<SelectMgr_EntityOwner>& theOwner) const
   {
     const occ::handle<Prs3d_Drawer>& aHiDrawer = theObj->HilightAttributes();
     if (!aHiDrawer.IsNull())
@@ -1621,8 +1631,8 @@ protected: //! @name internal methods
 
   //! Return display mode for highlighting.
   int getHilightMode(const occ::handle<AIS_InteractiveObject>& theObj,
-                                  const occ::handle<Prs3d_Drawer>&          theStyle,
-                                  const int               theDispMode) const
+                     const occ::handle<Prs3d_Drawer>&          theStyle,
+                     const int                                 theDispMode) const
   {
     if (!theStyle.IsNull() && theStyle->DisplayMode() != -1
         && theObj->AcceptDisplayMode(theStyle->DisplayMode()))
@@ -1653,29 +1663,29 @@ protected: //! @name internal methods
   //! @param[in] theIObj the object to change status
   //! @param[in] theStatus status, if NULL, unbind object
   Standard_EXPORT void setObjectStatus(const occ::handle<AIS_InteractiveObject>& theIObj,
-                                       const PrsMgr_DisplayStatus           theStatus,
-                                       const int               theDispyMode,
-                                       const int               theSelectionMode);
+                                       const PrsMgr_DisplayStatus                theStatus,
+                                       const int                                 theDispyMode,
+                                       const int                                 theSelectionMode);
 
 protected: //! @name internal fields
-  NCollection_DataMap<occ::handle<AIS_InteractiveObject>, occ::handle<AIS_GlobalStatus>>              myObjects;
+  NCollection_DataMap<occ::handle<AIS_InteractiveObject>, occ::handle<AIS_GlobalStatus>> myObjects;
   occ::handle<SelectMgr_SelectionManager> mgrSelector;
   occ::handle<PrsMgr_PresentationManager> myMainPM;
   occ::handle<V3d_Viewer>                 myMainVwr;
-  V3d_View*                          myLastActiveView;
+  V3d_View*                               myLastActiveView;
   occ::handle<SelectMgr_EntityOwner>      myLastPicked;
-  bool                   myToHilightSelected;
+  bool                                    myToHilightSelected;
   occ::handle<AIS_Selection>              mySelection;
   occ::handle<SelectMgr_AndOrFilter>      myFilters; //!< context filter (the content active filters
-                                                //!  can be applied with AND or OR operation)
-  occ::handle<Prs3d_Drawer>      myDefaultDrawer;
-  occ::handle<Prs3d_Drawer>      myStyles[Prs3d_TypeOfHighlight_NB];
+                                                     //!  can be applied with AND or OR operation)
+  occ::handle<Prs3d_Drawer> myDefaultDrawer;
+  occ::handle<Prs3d_Drawer> myStyles[Prs3d_TypeOfHighlight_NB];
   NCollection_Sequence<int> myDetectedSeq;
-  int          myCurDetected;
-  int          myCurHighlighted;
+  int                       myCurDetected;
+  int                       myCurHighlighted;
   SelectMgr_PickingStrategy myPickingStrategy; //!< picking strategy to be applied within MoveTo()
-  bool          myAutoHilight;
-  bool          myIsAutoActivateSelMode;
+  bool                      myAutoHilight;
+  bool                      myIsAutoActivateSelMode;
 };
 
 #endif // _AIS_InteractiveContext_HeaderFile

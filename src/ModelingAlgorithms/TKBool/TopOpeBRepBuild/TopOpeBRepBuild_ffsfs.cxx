@@ -51,7 +51,7 @@ Standard_EXPORT void debffflo(const int i)
 }
 #endif
 
-static bool      STATIC_motheropedef = false;
+static bool                  STATIC_motheropedef = false;
 static TopOpeBRepBuild_GTopo STATIC_Gmotherope;
 
 Standard_EXPORT void FUN_setmotherope(const TopOpeBRepBuild_GTopo& G)
@@ -79,27 +79,27 @@ Standard_EXPORT const TopOpeBRepBuild_GTopo& FUN_motherope()
 Standard_EXPORTEXTERN bool GLOBAL_classifysplitedge;
 // Standard_IMPORT extern bool GLOBAL_revownsplfacori;
 Standard_EXPORTEXTERN bool GLOBAL_revownsplfacori;
-Standard_EXPORT void                   FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&    B,
-                                                                    const NCollection_List<TopoDS_Shape>& LF1,
-                                                                    const NCollection_List<TopoDS_Shape>& LF2,
-                                                                    const TopOpeBRepDS_Config   c1,
-                                                                    const TopOpeBRepDS_Config   c2);
-Standard_EXPORT void                   FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
-                                                                const TopoDS_Shape&      f,
-                                                                bool&        of1,
-                                                                bool&        of2);
+Standard_EXPORT void       FUNBUILD_ANCESTORRANKPREPARE(TopOpeBRepBuild_Builder&              B,
+                                                        const NCollection_List<TopoDS_Shape>& LF1,
+                                                        const NCollection_List<TopoDS_Shape>& LF2,
+                                                        const TopOpeBRepDS_Config             c1,
+                                                        const TopOpeBRepDS_Config             c2);
+Standard_EXPORT void       FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,
+                                                    const TopoDS_Shape&      f,
+                                                    bool&                    of1,
+                                                    bool&                    of2);
 
-static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
-                                           TopOpeBRepTool_ShapeClassifier& SC,
-                                           const NCollection_List<TopoDS_Shape>&     LF,
-                                           const TopoDS_Shape&             fsp,
-                                           bool&               p3ddef,
-                                           gp_Pnt&                         p3d);
-static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
-                                           TopOpeBRepTool_ShapeClassifier& SC,
-                                           const NCollection_List<TopoDS_Shape>&     LF1,
-                                           const NCollection_List<TopoDS_Shape>&     LF2,
-                                           const TopoDS_Shape&             fsp);
+static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
+                              TopOpeBRepTool_ShapeClassifier&       SC,
+                              const NCollection_List<TopoDS_Shape>& LF,
+                              const TopoDS_Shape&                   fsp,
+                              bool&                                 p3ddef,
+                              gp_Pnt&                               p3d);
+static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
+                              TopOpeBRepTool_ShapeClassifier&       SC,
+                              const NCollection_List<TopoDS_Shape>& LF1,
+                              const NCollection_List<TopoDS_Shape>& LF2,
+                              const TopoDS_Shape&                   fsp);
 #ifdef OCCT_DEBUG
 // static void FUN_getAncestorFsp(const occ::handle<TopOpeBRepDS_HDataStructure>&
 // HDS,TopOpeBRepTool_ShapeClassifier& SC,const NCollection_List<TopoDS_Shape>& LF1,const
@@ -108,12 +108,12 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
 // SplitAnc);
 #endif
 
-static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
-                                           TopOpeBRepTool_ShapeClassifier& SC,
-                                           const NCollection_List<TopoDS_Shape>&     LF,
-                                           const TopoDS_Shape&             fsp,
-                                           bool&               p3ddef,
-                                           gp_Pnt&                         p3d)
+static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
+                              TopOpeBRepTool_ShapeClassifier&       SC,
+                              const NCollection_List<TopoDS_Shape>& LF,
+                              const TopoDS_Shape&                   fsp,
+                              bool&                                 p3ddef,
+                              gp_Pnt&                               p3d)
 {
   const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS(); // How to do static <--> const
 
@@ -128,21 +128,20 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
     {
       if (!p3ddef)
       {
-        bool ok =
-          BRepClass3d_SolidExplorer::FindAPointInTheFace(TopoDS::Face(fsp), p3d);
+        bool ok = BRepClass3d_SolidExplorer::FindAPointInTheFace(TopoDS::Face(fsp), p3d);
         if (!ok)
           return 0;
         p3ddef = true;
       }
-      gp_Pnt2d         p2d;
-      double    dd = 0.;
-      bool ok = FUN_tool_projPonF(p3d, f, p2d, dd);
+      gp_Pnt2d p2d;
+      double   dd = 0.;
+      bool     ok = FUN_tool_projPonF(p3d, f, p2d, dd);
       if (!ok)
         return 0;
       double tolf = BRep_Tool::Tolerance(f) * 1.e1;
       if (dd > tolf)
         return 0;
-      double           TolClass = 1e-8;
+      double                  TolClass = 1e-8;
       BRepTopAdaptor_FClass2d FClass2d(f, TolClass);
       st = FClass2d.Perform(p2d);
     }
@@ -155,16 +154,16 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
   return 0;
 }
 
-static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
-                                           TopOpeBRepTool_ShapeClassifier& SC,
-                                           const NCollection_List<TopoDS_Shape>&     LF1,
-                                           const NCollection_List<TopoDS_Shape>&     LF2,
-                                           const TopoDS_Shape&             fsp)
+static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&              B,
+                              TopOpeBRepTool_ShapeClassifier&       SC,
+                              const NCollection_List<TopoDS_Shape>& LF1,
+                              const NCollection_List<TopoDS_Shape>& LF2,
+                              const TopoDS_Shape&                   fsp)
 {
   // IMPORTANT : fsp is split IN/OUT of F1,so it has only one ancestor face
   // LF1 faces sdm with LF2
   const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS();
-  bool                  of1, of2;
+  bool                              of1, of2;
   FUNBUILD_ANCESTORRANKGET(B, fsp, of1, of2);
   int rkfsp = 0;
   if (of1 && !of2)
@@ -173,10 +172,10 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
     rkfsp = 2;
   bool unk = (rkfsp == 0);
 
-  int rkf1   = BDS.AncestorRank(LF1.First());
-  int rkf2   = BDS.AncestorRank(LF2.First());
-  bool p3ddef = false;
-  gp_Pnt           p3d;
+  int    rkf1   = BDS.AncestorRank(LF1.First());
+  int    rkf2   = BDS.AncestorRank(LF2.First());
+  bool   p3ddef = false;
+  gp_Pnt p3d;
 
   bool ison1 = (rkf1 == rkfsp);
   bool ison2 = (rkf2 == rkfsp);
@@ -204,14 +203,16 @@ static int FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
   return 0;
 }
 
-Standard_EXPORT NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* GLOBAL_SplitAnc = NULL; // xpu260598
+Standard_EXPORT NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* GLOBAL_SplitAnc =
+  NULL; // xpu260598
 
-static void FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
-                               TopOpeBRepTool_ShapeClassifier& SC,
-                               const NCollection_List<TopoDS_Shape>&     LF1,
-                               const NCollection_List<TopoDS_Shape>&     LF2,
-                               const TopoDS_Shape&             FOR,
-                               NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* SplitAnc)
+static void FUN_getAncestorFsp(
+  TopOpeBRepBuild_Builder&                                         B,
+  TopOpeBRepTool_ShapeClassifier&                                  SC,
+  const NCollection_List<TopoDS_Shape>&                            LF1,
+  const NCollection_List<TopoDS_Shape>&                            LF2,
+  const TopoDS_Shape&                                              FOR,
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>* SplitAnc)
 {
   if (SplitAnc == NULL)
     return;
@@ -244,7 +245,7 @@ static void FUN_getAncestorFsp(TopOpeBRepBuild_Builder&        B,
 }
 
 Standard_EXPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1         = NULL;
-Standard_EXPORT bool      GLOBAL_lfrtoprocess = false;
+Standard_EXPORT bool                            GLOBAL_lfrtoprocess = false;
 
 // Standard_IMPORT extern NCollection_List<TopoDS_Shape>* GLOBAL_lfr1;
 // Standard_IMPORT NCollection_List<TopoDS_Shape>* GLOBAL_lfr1;
@@ -253,23 +254,23 @@ Standard_EXPORT bool      GLOBAL_lfrtoprocess = false;
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
-                                           const NCollection_List<TopoDS_Shape>&   LSO2,
-                                           const TopOpeBRepBuild_GTopo&  Gin,
-                                           TopOpeBRepBuild_ShellFaceSet& SFS)
+void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                   FOR,
+                                           const NCollection_List<TopoDS_Shape>& LSO2,
+                                           const TopOpeBRepBuild_GTopo&          Gin,
+                                           TopOpeBRepBuild_ShellFaceSet&         SFS)
 {
   TopAbs_State TB1, TB2;
   Gin.StatesON(TB1, TB2);
 
 #ifdef OCCT_DEBUG
-  int iF;
+  int  iF;
   bool tSPS = GtraceSPS(FOR, iF);
   if (tSPS)
     std::cout << std::endl;
 #endif
   const TopOpeBRepDS_DataStructure& BDS     = myDataStructure->DS();
-  bool                  tosplit = GToSplit(FOR, TB1);
-  bool                  tomerge = GToMerge(FOR);
+  bool                              tosplit = GToSplit(FOR, TB1);
+  bool                              tomerge = GToMerge(FOR);
 #ifdef OCCT_DEBUG
 //  int iFOR = BDS.Shape(FOR);
 #endif
@@ -286,8 +287,8 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
 
   TopoDS_Shape FF = FOR;
   FF.Orientation(TopAbs_FORWARD);
-  bool hsd = myDataStructure->HasSameDomain(FOR); // xpu280598
-  GLOBAL_lfrtoprocess  = false;
+  bool hsd            = myDataStructure->HasSameDomain(FOR); // xpu280598
+  GLOBAL_lfrtoprocess = false;
 
   if (tosplit && tomerge)
   {
@@ -295,14 +296,14 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
     // merge des faces SameDomain
 
     // on effectue le merge ssi FOR est la reference de ses faces SameDomain
-    int    iref  = myDataStructure->SameDomainReference(FOR);
+    int                 iref  = myDataStructure->SameDomainReference(FOR);
     const TopoDS_Shape& fref  = myDataStructure->Shape(iref);
-    bool    isref = FOR.IsSame(fref);
+    bool                isref = FOR.IsSame(fref);
 
     bool makemerge = isref;
     // xpu280199 PRO16958 : f10=ref(f6), GToMerge(f10)=false
     bool makemergeref = GToMerge(fref);
-    makemerge                     = makemerge || (!makemergeref && (rkFOR == 1));
+    makemerge         = makemerge || (!makemergeref && (rkFOR == 1));
 
     if (makemerge)
     {
@@ -334,7 +335,11 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
       //              . fsp = spIN/OU(fanc),
       //              . fanc hsdm is the unique ancestor face
       if (GLOBAL_SplitAnc == NULL)
-        GLOBAL_SplitAnc = (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*)new NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>();
+        GLOBAL_SplitAnc =
+          (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*)new NCollection_DataMap<
+            TopoDS_Shape,
+            int,
+            TopTools_ShapeMapHasher>();
       GLOBAL_SplitAnc->Clear();
 
       NCollection_List<TopoDS_Shape> LFSO, LFDO, LFSO1, LFDO1, LFSO2, LFDO2;
@@ -349,8 +354,8 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
 
       TopOpeBRepBuild_GTopo GM;
       TopAbs_State          TB, NTB;
-      bool      dodo;
-      int      l1, l2;
+      bool                  dodo;
+      int                   l1, l2;
 
       // WES : toutes les faces de meme orientation topologique
       LF1  = LFSO1; // NYI pointeurs
@@ -472,7 +477,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
             for (; it.More(); it.Next())
             {
               const TopoDS_Shape& f       = it.Value();
-              bool    issplit = IsSplit(f, TopAbs_IN);
+              bool                issplit = IsSplit(f, TopAbs_IN);
               if (issplit)
                 ChangeSplit(f, TopAbs_IN).Clear();
             }
@@ -480,7 +485,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&           FOR,
             for (; it.More(); it.Next())
             {
               const TopoDS_Shape& f       = it.Value();
-              bool    issplit = IsSplit(f, TopAbs_IN);
+              bool                issplit = IsSplit(f, TopAbs_IN);
               if (issplit)
                 ChangeSplit(f, TopAbs_IN).Clear();
             }

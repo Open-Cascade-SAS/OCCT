@@ -37,8 +37,8 @@ public:
 
   Standard_EXPORT Vrml_PerspectiveCamera(const gp_Vec&          aPosition,
                                          const Vrml_SFRotation& aOrientation,
-                                         const double    aFocalDistance,
-                                         const double    aHeightAngle);
+                                         const double           aFocalDistance,
+                                         const double           aHeightAngle);
 
   Standard_EXPORT void SetPosition(const gp_Vec& aPosition);
 
@@ -61,8 +61,8 @@ public:
 private:
   gp_Vec          myPosition;
   Vrml_SFRotation myOrientation;
-  double   myFocalDistance;
-  double   myHeightAngle;
+  double          myFocalDistance;
+  double          myHeightAngle;
 };
 
 #endif // _Vrml_PerspectiveCamera_HeaderFile

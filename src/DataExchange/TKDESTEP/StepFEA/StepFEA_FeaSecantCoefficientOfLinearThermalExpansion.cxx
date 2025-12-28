@@ -33,8 +33,8 @@ StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::
 
 void StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::Init(
   const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-  const StepFEA_SymmetricTensor23d&       aFeaConstants,
-  const double                     aReferenceTemperature)
+  const StepFEA_SymmetricTensor23d&            aFeaConstants,
+  const double                                 aReferenceTemperature)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

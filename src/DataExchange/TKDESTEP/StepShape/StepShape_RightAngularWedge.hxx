@@ -33,10 +33,10 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
                             const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                            const double                      aX,
-                            const double                      aY,
-                            const double                      aZ,
-                            const double                      aLtx);
+                            const double                                  aX,
+                            const double                                  aY,
+                            const double                                  aZ,
+                            const double                                  aLtx);
 
   Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition);
 
@@ -62,10 +62,10 @@ public:
 
 private:
   occ::handle<StepGeom_Axis2Placement3d> position;
-  double                     x;
-  double                     y;
-  double                     z;
-  double                     ltx;
+  double                                 x;
+  double                                 y;
+  double                                 z;
+  double                                 ltx;
 };
 
 #endif // _StepShape_RightAngularWedge_HeaderFile

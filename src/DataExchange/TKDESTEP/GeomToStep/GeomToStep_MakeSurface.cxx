@@ -37,31 +37,31 @@
 // Creation d' une Surface de prostep a partir d' une Surface de Geom
 //=============================================================================
 GeomToStep_MakeSurface::GeomToStep_MakeSurface(const occ::handle<Geom_Surface>& S,
-                                               const StepData_Factors&     theLocalFactors)
+                                               const StepData_Factors&          theLocalFactors)
 {
   done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
   {
-    occ::handle<Geom_BoundedSurface>   S1 = occ::down_cast<Geom_BoundedSurface>(S);
-    GeomToStep_MakeBoundedSurface MkBoundedS(S1, theLocalFactors);
+    occ::handle<Geom_BoundedSurface> S1 = occ::down_cast<Geom_BoundedSurface>(S);
+    GeomToStep_MakeBoundedSurface    MkBoundedS(S1, theLocalFactors);
     theSurface = MkBoundedS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
   {
-    occ::handle<Geom_ElementarySurface>   S1 = occ::down_cast<Geom_ElementarySurface>(S);
-    GeomToStep_MakeElementarySurface MkElementaryS(S1, theLocalFactors);
+    occ::handle<Geom_ElementarySurface> S1 = occ::down_cast<Geom_ElementarySurface>(S);
+    GeomToStep_MakeElementarySurface    MkElementaryS(S1, theLocalFactors);
     theSurface = MkElementaryS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SweptSurface)))
   {
-    occ::handle<Geom_SweptSurface>   S1 = occ::down_cast<Geom_SweptSurface>(S);
-    GeomToStep_MakeSweptSurface MkSwept(S1, theLocalFactors);
+    occ::handle<Geom_SweptSurface> S1 = occ::down_cast<Geom_SweptSurface>(S);
+    GeomToStep_MakeSweptSurface    MkSwept(S1, theLocalFactors);
     theSurface = MkSwept.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     occ::handle<Geom_OffsetSurface> S1 = occ::down_cast<Geom_OffsetSurface>(S);
-    GeomToStep_MakeSurface     MkBasis(S1->BasisSurface(), theLocalFactors);
+    GeomToStep_MakeSurface          MkBasis(S1->BasisSurface(), theLocalFactors);
     done = MkBasis.IsDone();
     if (!done)
       return;

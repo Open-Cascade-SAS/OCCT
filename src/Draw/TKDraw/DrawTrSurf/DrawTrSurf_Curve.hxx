@@ -31,18 +31,17 @@ class DrawTrSurf_Curve : public DrawTrSurf_Drawable
   Draw_Drawable3D_FACTORY
 public:
   //! creates a drawable curve from a curve of package Geom.
-  Standard_EXPORT DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C,
-                                   const bool    DispOrigin = true);
+  Standard_EXPORT DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C, const bool DispOrigin = true);
 
   Standard_EXPORT DrawTrSurf_Curve(const occ::handle<Geom_Curve>& C,
-                                   const Draw_Color&         aColor,
-                                   const int    Discret,
-                                   const double       Deflection,
-                                   const int    DrawMode,
-                                   const bool    DispOrigin     = true,
-                                   const bool    DispCurvRadius = false,
-                                   const double       RadiusMax      = 1.0e3,
-                                   const double       RatioOfRadius  = 0.1);
+                                   const Draw_Color&              aColor,
+                                   const int                      Discret,
+                                   const double                   Deflection,
+                                   const int                      DrawMode,
+                                   const bool                     DispOrigin     = true,
+                                   const bool                     DispCurvRadius = false,
+                                   const double                   RadiusMax      = 1.0e3,
+                                   const double                   RatioOfRadius  = 0.1);
 
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
@@ -82,11 +81,11 @@ public:
 
 protected:
   occ::handle<Geom_Curve> curv;
-  Draw_Color         look;
-  bool   disporigin;
-  bool   dispcurvradius;
-  double      radiusmax;
-  double      radiusratio;
+  Draw_Color              look;
+  bool                    disporigin;
+  bool                    dispcurvradius;
+  double                  radiusmax;
+  double                  radiusratio;
 };
 
 #endif // _DrawTrSurf_Curve_HeaderFile

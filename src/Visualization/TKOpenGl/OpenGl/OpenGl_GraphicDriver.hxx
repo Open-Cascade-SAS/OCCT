@@ -70,19 +70,18 @@ public:
   //! @param theEglContext EGL rendering context
   //! @param theEglConfig  EGL configuration
   Standard_EXPORT bool InitEglContext(Aspect_Display          theEglDisplay,
-                                                  Aspect_RenderingContext theEglContext,
-                                                  void*                   theEglConfig);
+                                      Aspect_RenderingContext theEglContext,
+                                      void*                   theEglConfig);
 
   //! Request limit of graphic resource of specific type.
-  Standard_EXPORT virtual int InquireLimit(const Graphic3d_TypeOfLimit theType) const
-    override;
+  Standard_EXPORT virtual int InquireLimit(const Graphic3d_TypeOfLimit theType) const override;
 
 public:
   Standard_EXPORT virtual occ::handle<Graphic3d_CStructure> CreateStructure(
     const occ::handle<Graphic3d_StructureManager>& theManager) override;
 
-  Standard_EXPORT virtual void RemoveStructure(occ::handle<Graphic3d_CStructure>& theCStructure)
-    override;
+  Standard_EXPORT virtual void RemoveStructure(
+    occ::handle<Graphic3d_CStructure>& theCStructure) override;
 
   Standard_EXPORT virtual occ::handle<Graphic3d_CView> CreateView(
     const occ::handle<Graphic3d_StructureManager>& theMgr) override;
@@ -94,22 +93,22 @@ public:
   //! @param[in] theSizeWindow object defining window dimensions
   //! @param[in] theContext existing native rendering context
   Standard_EXPORT virtual occ::handle<OpenGl_Window> CreateRenderWindow(
-    const occ::handle<Aspect_Window>&  theNativeWindow,
-    const occ::handle<Aspect_Window>&  theSizeWindow,
-    const Aspect_RenderingContext theContext);
+    const occ::handle<Aspect_Window>& theNativeWindow,
+    const occ::handle<Aspect_Window>& theSizeWindow,
+    const Aspect_RenderingContext     theContext);
 
 public:
   Standard_EXPORT void TextSize(const occ::handle<Graphic3d_CView>& theView,
-                                const char*         theText,
-                                const float       theHeight,
-                                float&            theWidth,
-                                float&            theAscent,
-                                float&            theDescent) const override;
+                                const char*                         theText,
+                                const float                         theHeight,
+                                float&                              theWidth,
+                                float&                              theAscent,
+                                float&                              theDescent) const override;
 
   Standard_EXPORT float DefaultTextHeight() const override;
 
   Standard_EXPORT bool ViewExists(const occ::handle<Aspect_Window>& theWindow,
-                                              occ::handle<Graphic3d_CView>& theView) override;
+                                  occ::handle<Graphic3d_CView>&     theView) override;
 
 public:
   //! Adds a layer to all views.
@@ -119,8 +118,7 @@ public:
   //! @param[in] theLayerAfter id of layer to append new layer before
   Standard_EXPORT virtual void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
-                                                 const Graphic3d_ZLayerId        theLayerAfter)
-    override;
+                                                 const Graphic3d_ZLayerId theLayerAfter) override;
 
   //! Adds a layer to all views.
   //! @param[in] theNewLayerId  id of created layer
@@ -128,8 +126,7 @@ public:
   //! @param[in] theLayerBefore id of layer to append new layer after
   Standard_EXPORT virtual void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
                                                 const Graphic3d_ZLayerSettings& theSettings,
-                                                const Graphic3d_ZLayerId        theLayerBefore)
-    override;
+                                                const Graphic3d_ZLayerId theLayerBefore) override;
 
   //! Removes Z layer. All structures displayed at the moment in layer will be displayed in
   //! default layer (the bottom-level z layer). By default, there are always default
@@ -139,8 +136,7 @@ public:
 
   //! Sets the settings for a single Z layer.
   Standard_EXPORT void SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
-                                         const Graphic3d_ZLayerSettings& theSettings)
-    override;
+                                         const Graphic3d_ZLayerSettings& theSettings) override;
 
 public:
   //! @return the visualization options
@@ -166,9 +162,8 @@ public:
 
   //! Returns information about GPU memory usage.
   //! Please read OpenGl_Context::MemoryInfo() for more description.
-  Standard_EXPORT bool
-    MemoryInfo(size_t&           theFreeBytes,
-               TCollection_AsciiString& theInfo) const override;
+  Standard_EXPORT bool MemoryInfo(size_t&                  theFreeBytes,
+                                  TCollection_AsciiString& theInfo) const override;
 
 public:
   //! Method to retrieve valid GL context.
@@ -206,8 +201,8 @@ protected:
   Aspect_RenderingContext myEglContext; //!< EGL rendering context         : EGLContext
   void*                   myEglConfig;  //!< EGL configuration             : EGLConfig
 
-  occ::handle<OpenGl_Caps>                                      myCaps;
-  NCollection_Map<occ::handle<OpenGl_View>>                     myMapOfView;
+  occ::handle<OpenGl_Caps>                    myCaps;
+  NCollection_Map<occ::handle<OpenGl_View>>   myMapOfView;
   NCollection_DataMap<int, OpenGl_Structure*> myMapOfStructure;
 
   mutable OpenGl_StateCounter myStateCounter; //!< State counter for OpenGl structures.

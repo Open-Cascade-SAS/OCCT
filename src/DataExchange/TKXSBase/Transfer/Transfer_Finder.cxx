@@ -44,8 +44,7 @@ const char* Transfer_Finder::ValueTypeName() const
 
 // Integer -> IntVal, Real -> Geom2d_CartesianPoint, CString -> HAsciiString
 
-void Transfer_Finder::SetAttribute(const char*            name,
-                                   const occ::handle<Standard_Transient>& val)
+void Transfer_Finder::SetAttribute(const char* name, const occ::handle<Standard_Transient>& val)
 {
   theattrib.Bind(name, val);
 }
@@ -57,9 +56,9 @@ bool Transfer_Finder::RemoveAttribute(const char* name)
   return theattrib.UnBind(name);
 }
 
-bool Transfer_Finder::GetAttribute(const char*       name,
-                                               const occ::handle<Standard_Type>& type,
-                                               occ::handle<Standard_Transient>&  val) const
+bool Transfer_Finder::GetAttribute(const char*                       name,
+                                   const occ::handle<Standard_Type>& type,
+                                   occ::handle<Standard_Transient>&  val) const
 {
   if (theattrib.IsEmpty())
   {
@@ -106,12 +105,11 @@ Interface_ParamType Transfer_Finder::AttributeType(const char* name) const
 void Transfer_Finder::SetIntegerAttribute(const char* name, const int val)
 {
   occ::handle<Interface_IntVal> ival = new Interface_IntVal;
-  ival->CValue()                = val;
+  ival->CValue()                     = val;
   SetAttribute(name, ival);
 }
 
-bool Transfer_Finder::GetIntegerAttribute(const char* name,
-                                                      int&      val) const
+bool Transfer_Finder::GetIntegerAttribute(const char* name, int& val) const
 {
   occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -137,8 +135,7 @@ void Transfer_Finder::SetRealAttribute(const char* name, const double val)
   SetAttribute(name, rval);
 }
 
-bool Transfer_Finder::GetRealAttribute(const char* name,
-                                                   double&         val) const
+bool Transfer_Finder::GetRealAttribute(const char* name, double& val) const
 {
   occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
@@ -164,8 +161,7 @@ void Transfer_Finder::SetStringAttribute(const char* name, const char* val)
   SetAttribute(name, hval);
 }
 
-bool Transfer_Finder::GetStringAttribute(const char* name,
-                                                     const char*&      val) const
+bool Transfer_Finder::GetStringAttribute(const char* name, const char*& val) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -200,8 +196,8 @@ void Transfer_Finder::SameAttributes(const occ::handle<Transfer_Finder>& other)
 }
 
 void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
-                                    const char*         fromname,
-                                    const bool         copied)
+                                    const char*                         fromname,
+                                    const bool                          copied)
 {
   if (other.IsNull())
     return;
@@ -210,7 +206,8 @@ void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
   if (list.IsEmpty())
     return;
 
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(list);
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
+    list);
   for (; iter.More(); iter.Next())
   {
     const TCollection_AsciiString& name = iter.Key();
@@ -225,23 +222,24 @@ void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
       occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(atr);
       if (!ival.IsNull())
       {
-        int intval = ival->Value();
-        ival                    = new Interface_IntVal;
-        ival->CValue()          = intval;
-        newatr                  = ival;
+        int intval     = ival->Value();
+        ival           = new Interface_IntVal;
+        ival->CValue() = intval;
+        newatr         = ival;
       }
       occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(atr);
       if (!rval.IsNull())
       {
         double realval = rval->X();
-        rval                  = new Geom2d_CartesianPoint(realval, 0);
-        newatr                = rval;
+        rval           = new Geom2d_CartesianPoint(realval, 0);
+        newatr         = rval;
       }
       occ::handle<TCollection_HAsciiString> hval = occ::down_cast<TCollection_HAsciiString>(atr);
       if (!hval.IsNull())
       {
-        occ::handle<TCollection_HAsciiString> strval = new TCollection_HAsciiString(hval->ToCString());
-        newatr                                  = strval;
+        occ::handle<TCollection_HAsciiString> strval =
+          new TCollection_HAsciiString(hval->ToCString());
+        newatr = strval;
       }
     }
 

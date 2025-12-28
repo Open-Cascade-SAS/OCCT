@@ -20,22 +20,17 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeDelta.hxx>
-#include <TDF_AttributeDelta.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Attribute.hxx>
-#include <NCollection_List.hxx>
-#include <TDF_Delta.hxx>
-#include <NCollection_List.hxx>
 #include <TDF_Reference.hxx>
 #include <TDocStd.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_CompoundDelta.hxx>
 #include <TDocStd_Context.hxx>
-#include <TDF_Label.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_DataMap.hxx>
@@ -48,8 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Document, CDM_Document)
 
 // List should have a RemoveLast...
 #define TDocStd_List_RemoveLast(theList)                                                           \
-  NCollection_List<occ::handle<TDF_Delta>>::Iterator it(theList);                                                         \
-  int            i, n = theList.Extent();                                             \
+  NCollection_List<occ::handle<TDF_Delta>>::Iterator it(theList);                                  \
+  int                                                i, n = theList.Extent();                      \
   for (i = 1; i < n; i++)                                                                          \
     it.Next();                                                                                     \
   theList.Remove(it);
@@ -182,7 +177,7 @@ const NCollection_Map<TDF_Label>& TDocStd_Document::GetModified() const
 //=================================================================================================
 
 void TDocStd_Document::Update(const occ::handle<CDM_Document>& /*aToDocument*/,
-                              const int aReferenceIdentifier,
+                              const int   aReferenceIdentifier,
                               void* const aModifContext)
 {
   const TDocStd_Context* CC = static_cast<TDocStd_Context*>(aModifContext);
@@ -282,8 +277,7 @@ bool TDocStd_Document::CommitTransaction()
     // deny modifications if the transaction is not opened
     if (myOnlyTransactionModification)
     {
-      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                          : false);
+      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
     }
   }
   else
@@ -327,8 +321,7 @@ bool TDocStd_Document::CommitTransaction()
     // deny or allow modifications according to transaction state
     if (myOnlyTransactionModification)
     {
-      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                          : false);
+      myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
     }
   }
   // Notify CDM_Application of the successful commit
@@ -363,8 +356,7 @@ void TDocStd_Document::AbortTransaction()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                        : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
   }
   // Notify CDM_Application of the event
   if (IsOpened())
@@ -407,8 +399,7 @@ void TDocStd_Document::OpenTransaction()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                        : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
   }
   // Notify CDM_Application of the event
   if (IsOpened())
@@ -430,8 +421,8 @@ void TDocStd_Document::SetUndoLimit(const int L)
 #endif
 
   CommitTransaction();
-  myUndoLimit        = (L > 0) ? L : 0;
-  int n = myUndos.Extent() - myUndoLimit;
+  myUndoLimit = (L > 0) ? L : 0;
+  int n       = myUndos.Extent() - myUndoLimit;
   while (n > 0)
   {
     myUndos.RemoveFirst();
@@ -440,8 +431,7 @@ void TDocStd_Document::SetUndoLimit(const int L)
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                        : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
   }
   // OpenTransaction(); dp 15/10/99
 }
@@ -538,8 +528,7 @@ bool TDocStd_Document::Undo()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                        : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
   }
 
   return undoDone;
@@ -596,8 +585,7 @@ bool TDocStd_Document::Redo()
   // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification)
   {
-    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true
-                                                                        : false);
+    myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit ? true : false);
   }
 
   return undoDone;
@@ -609,7 +597,7 @@ void TDocStd_Document::UpdateReferences(const TCollection_AsciiString& aDocEntry
 {
 
   NCollection_List<occ::handle<TDF_Attribute>> aRefList;
-  TDocStd_XLink*    xRefPtr;
+  TDocStd_XLink*                               xRefPtr;
   for (TDocStd_XLinkIterator xItr(this); xItr.More(); xItr.Next())
   {
     xRefPtr = xItr.Value();
@@ -669,12 +657,12 @@ bool TDocStd_Document::PerformDeltaCompaction()
   if (myFromUndo.IsNull())
     return false; // Redo can be Null for this operation
 
-  NCollection_List<occ::handle<TDF_Delta>>                        aList;
-  occ::handle<TDocStd_CompoundDelta>        aCompoundDelta = new TDocStd_CompoundDelta;
-  NCollection_List<occ::handle<TDF_Delta>>::Iterator          anIterator(myUndos);
-  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator;
-  NCollection_DataMap<TDF_Label, NCollection_Map<Standard_GUID>>            aMap;
-  bool                     isFound = false, isTimeSet = false;
+  NCollection_List<occ::handle<TDF_Delta>>           aList;
+  occ::handle<TDocStd_CompoundDelta>                 aCompoundDelta = new TDocStd_CompoundDelta;
+  NCollection_List<occ::handle<TDF_Delta>>::Iterator anIterator(myUndos);
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator    aDeltasIterator;
+  NCollection_DataMap<TDF_Label, NCollection_Map<Standard_GUID>> aMap;
+  bool                                                           isFound = false, isTimeSet = false;
 
   // Process Undos
 
@@ -784,7 +772,8 @@ void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundD
     return;
   NCollection_DataMap<TDF_Label, NCollection_Map<Standard_GUID>> aMap;
 
-  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator1(theDelta1->AttributeDeltas());
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator1(
+    theDelta1->AttributeDeltas());
   for (; aDeltasIterator1.More(); aDeltasIterator1.Next())
   {
     TDF_Label aLabel = aDeltasIterator1.Value()->Label();
@@ -793,13 +782,14 @@ void TDocStd_Document::AppendDeltaToTheFirst(const occ::handle<TDocStd_CompoundD
       NCollection_Map<Standard_GUID> aTmpIDMap;
       aMap.Bind(aLabel, aTmpIDMap);
     }
-    Standard_GUID anID    = aDeltasIterator1.Value()->ID();
-    NCollection_Map<Standard_GUID>&    anIDMap = aMap.ChangeFind(aLabel);
+    Standard_GUID                   anID    = aDeltasIterator1.Value()->ID();
+    NCollection_Map<Standard_GUID>& anIDMap = aMap.ChangeFind(aLabel);
     anIDMap.Add(anID);
   }
 
   theDelta1->Validity(theDelta1->BeginTime(), theDelta2->EndTime());
-  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator2(theDelta2->AttributeDeltas());
+  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator aDeltasIterator2(
+    theDelta2->AttributeDeltas());
   for (; aDeltasIterator2.More(); aDeltasIterator2.Next())
   {
     TDF_Label     aLabel = aDeltasIterator2.Value()->Label();
@@ -876,13 +866,15 @@ void TDocStd_Document::DumpJson(Standard_OStream& theOStream, int theDepth) cons
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, GetAvailableRedos())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, HasOpenCommand())
 
-  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator anUndoIt(myUndos); anUndoIt.More(); anUndoIt.Next())
+  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator anUndoIt(myUndos); anUndoIt.More();
+       anUndoIt.Next())
   {
     const occ::handle<TDF_Delta>& anUndo = anUndoIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anUndo.get())
   }
 
-  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator aRedoIt(myRedos); aRedoIt.More(); aRedoIt.Next())
+  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator aRedoIt(myRedos); aRedoIt.More();
+       aRedoIt.Next())
   {
     const occ::handle<TDF_Delta>& aRedo = aRedoIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aRedo.get())
@@ -896,7 +888,9 @@ void TDocStd_Document::DumpJson(Standard_OStream& theOStream, int theDepth) cons
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySaveTime)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsNestedTransactionMode)
 
-  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator anUndoFILOIt(myUndoFILO); anUndoFILOIt.More(); anUndoFILOIt.Next())
+  for (NCollection_List<occ::handle<TDF_Delta>>::Iterator anUndoFILOIt(myUndoFILO);
+       anUndoFILOIt.More();
+       anUndoFILOIt.Next())
   {
     const occ::handle<TDF_Delta>& anUndoFILO = anUndoFILOIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anUndoFILO.get())

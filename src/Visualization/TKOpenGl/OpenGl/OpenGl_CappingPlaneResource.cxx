@@ -56,10 +56,11 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
       myEquationMod((unsigned int)-1),
       myAspectMod((unsigned int)-1)
 {
-  occ::handle<Graphic3d_Buffer> anAttribs = new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
-  Graphic3d_Attribute      anAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC4},
-                                             {Graphic3d_TOA_NORM, Graphic3d_TOD_VEC4},
-                                             {Graphic3d_TOA_UV, Graphic3d_TOD_VEC4}};
+  occ::handle<Graphic3d_Buffer> anAttribs =
+    new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
+  Graphic3d_Attribute anAttribInfo[] = {{Graphic3d_TOA_POS, Graphic3d_TOD_VEC4},
+                                        {Graphic3d_TOA_NORM, Graphic3d_TOD_VEC4},
+                                        {Graphic3d_TOA_UV, Graphic3d_TOD_VEC4}};
   if (anAttribs->Init(12, anAttribInfo, 3))
   {
     memcpy(anAttribs->ChangeData(), THE_CAPPING_PLN_VERTS, sizeof(THE_CAPPING_PLN_VERTS));
@@ -169,8 +170,8 @@ void OpenGl_CappingPlaneResource::updateTransform(const occ::handle<OpenGl_Conte
   const NCollection_Vec3<float> T(anEq.xyz() * -anEqW);
 
   // project plane normal onto OX to find left vector
-  const float aProjLen = sqrt((float)anEq.xz().SquareModulus());
-  NCollection_Vec3<float>           aLeft;
+  const float             aProjLen = sqrt((float)anEq.xz().SquareModulus());
+  NCollection_Vec3<float> aLeft;
   if (aProjLen < ShortRealSmall())
   {
     aLeft[0] = 1.0f;

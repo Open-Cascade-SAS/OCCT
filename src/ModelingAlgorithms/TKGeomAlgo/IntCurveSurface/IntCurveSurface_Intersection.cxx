@@ -62,8 +62,7 @@ int IntCurveSurface_Intersection::NbSegments() const
 }
 
 //================================================================================
-const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(
-  const int N) const
+const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(const int N) const
 {
   if (!done)
   {
@@ -73,8 +72,7 @@ const IntCurveSurface_IntersectionPoint& IntCurveSurface_Intersection::Point(
 }
 
 //================================================================================
-const IntCurveSurface_IntersectionSegment& IntCurveSurface_Intersection::Segment(
-  const int N) const
+const IntCurveSurface_IntersectionSegment& IntCurveSurface_Intersection::Segment(const int N) const
 {
   if (!done)
   {
@@ -135,8 +133,8 @@ void IntCurveSurface_Intersection::Append(const IntCurveSurface_Intersection& Ot
 //================================================================================
 void IntCurveSurface_Intersection::Append(const IntCurveSurface_IntersectionPoint& OtherPoint)
 {
-  int                  i, ni;
-  double                     anu, anv, anw, u, v, w;
+  int                               i, ni;
+  double                            anu, anv, anw, u, v, w;
   IntCurveSurface_TransitionOnCurve TrOnCurve, anTrOnCurve;
   gp_Pnt                            P, anP;
   ni = lpnt.Length();

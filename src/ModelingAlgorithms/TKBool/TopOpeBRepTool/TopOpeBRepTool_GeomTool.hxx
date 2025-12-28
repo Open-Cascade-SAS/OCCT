@@ -41,14 +41,14 @@ public:
   //! walking points of <L>.
   Standard_EXPORT TopOpeBRepTool_GeomTool(
     const TopOpeBRepTool_OutCurveType TypeC3D = TopOpeBRepTool_BSPLINE1,
-    const bool            CompC3D = true,
-    const bool            CompPC1 = true,
-    const bool            CompPC2 = true);
+    const bool                        CompC3D = true,
+    const bool                        CompPC1 = true,
+    const bool                        CompPC2 = true);
 
   Standard_EXPORT void Define(const TopOpeBRepTool_OutCurveType TypeC3D,
-                              const bool            CompC3D,
-                              const bool            CompPC1,
-                              const bool            CompPC2);
+                              const bool                        CompC3D,
+                              const bool                        CompPC1,
+                              const bool                        CompPC2);
 
   Standard_EXPORT void Define(const TopOpeBRepTool_OutCurveType TypeC3D);
 
@@ -78,14 +78,14 @@ public:
 
 protected:
   TopOpeBRepTool_OutCurveType myTypeC3D;
-  bool            myCompC3D;
-  bool            myCompPC1;
-  bool            myCompPC2;
+  bool                        myCompC3D;
+  bool                        myCompPC1;
+  bool                        myCompPC2;
 
 private:
-  double    myTol3d;
-  double    myTol2d;
-  int myNbPntMax;
+  double myTol3d;
+  double myTol2d;
+  int    myNbPntMax;
 };
 
 #endif // _TopOpeBRepTool_GeomTool_HeaderFile

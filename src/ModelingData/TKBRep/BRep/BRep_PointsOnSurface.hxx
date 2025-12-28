@@ -35,14 +35,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointsOnSurface, BRep_PointRepresentation)
 
 protected:
-  Standard_EXPORT BRep_PointsOnSurface(const double         P,
+  Standard_EXPORT BRep_PointsOnSurface(const double                     P,
                                        const occ::handle<Geom_Surface>& S,
-                                       const TopLoc_Location&      L);
+                                       const TopLoc_Location&           L);
 
 private:
   occ::handle<Geom_Surface> mySurface;

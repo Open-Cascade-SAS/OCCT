@@ -72,7 +72,8 @@ public:
   Standard_EXPORT occ::handle<StepAP203_StartWork> StartWork() const;
 
   //! Returns Value as ApprovalPersonOrganization (or Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> ApprovalPersonOrganization() const;
+  Standard_EXPORT occ::handle<StepBasic_ApprovalPersonOrganization> ApprovalPersonOrganization()
+    const;
 
   //! Returns Value as Contract (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Contract> Contract() const;
@@ -82,7 +83,6 @@ public:
 
   //! Returns Value as Certification (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Certification> Certification() const;
-
 };
 
 #endif // _StepAP203_DateTimeItem_HeaderFile

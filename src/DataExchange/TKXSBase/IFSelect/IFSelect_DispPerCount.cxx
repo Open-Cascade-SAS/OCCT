@@ -54,8 +54,7 @@ TCollection_AsciiString IFSelect_DispPerCount::Label() const
   return lab;
 }
 
-bool IFSelect_DispPerCount::LimitedMax(const int nbent,
-                                                   int&      pcount) const
+bool IFSelect_DispPerCount::LimitedMax(const int nbent, int& pcount) const
 {
   pcount = 1 + nbent / CountValue();
   return true;

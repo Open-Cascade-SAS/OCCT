@@ -24,7 +24,6 @@
 #include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_SignatureList.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class IFSelect_Signature;
@@ -63,14 +62,13 @@ public:
   //! Map control can be set off if the input guarantees uniqueness of data
   //! <withlist> is transmitted to SignatureList (option to list
   //! entities, not only to count them).
-  Standard_EXPORT IFSelect_SignCounter(const bool withmap  = true,
-                                       const bool withlist = false);
+  Standard_EXPORT IFSelect_SignCounter(const bool withmap = true, const bool withlist = false);
 
   //! Creates a SignCounter, with a predefined Signature
   //! Other arguments as for Create without Signature.
   Standard_EXPORT IFSelect_SignCounter(const occ::handle<IFSelect_Signature>& matcher,
-                                       const bool            withmap  = true,
-                                       const bool            withlist = false);
+                                       const bool                             withmap  = true,
+                                       const bool                             withlist = false);
 
   //! Returns the Signature used to count entities. It can be null.
   Standard_EXPORT occ::handle<IFSelect_Signature> Signature() const;
@@ -84,7 +82,7 @@ public:
   //! Returns True if added, False if already in the map (and
   //! map control status set)
   Standard_EXPORT virtual bool AddEntity(const occ::handle<Standard_Transient>&       ent,
-                                                     const occ::handle<Interface_InterfaceModel>& model);
+                                         const occ::handle<Interface_InterfaceModel>& model);
 
   //! Adds an entity (already filtered by Map) with its signature.
   //! This signature can be computed with the containing model.
@@ -96,14 +94,16 @@ public:
                                        const occ::handle<Interface_InterfaceModel>& model);
 
   //! Adds a list of entities by adding each of the items
-  Standard_EXPORT void AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                               const occ::handle<Interface_InterfaceModel>&     model);
+  Standard_EXPORT void AddList(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const occ::handle<Interface_InterfaceModel>&                               model);
 
   //! Adds a list of entities in the context given by the graph
   //! Default just call basic AddList
   //! Can be redefined to get a signature computed with the graph
-  Standard_EXPORT virtual void AddWithGraph(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                                            const Interface_Graph&                      graph);
+  Standard_EXPORT virtual void AddWithGraph(
+    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+    const Interface_Graph&                                                     graph);
 
   //! Adds all the entities contained in a Model
   Standard_EXPORT void AddModel(const occ::handle<Interface_InterfaceModel>& model);
@@ -111,7 +111,7 @@ public:
   //! Adds the result determined by a Selection from a Graph
   //! Remark : does not impact at all data from SetSelection & Co
   Standard_EXPORT void AddFromSelection(const occ::handle<IFSelect_Selection>& sel,
-                                        const Interface_Graph&            G);
+                                        const Interface_Graph&                 G);
 
   //! Sets a Selection as input : this causes content to be cleared
   //! then the Selection to be ready to compute (but not immediately)
@@ -142,8 +142,7 @@ public:
   //! computed result started from the same total size of Graph and
   //! same count of selected entities : computation is not redone
   //! unless <forced> is given as True
-  Standard_EXPORT bool ComputeSelected(const Interface_Graph& G,
-                                                   const bool forced = false);
+  Standard_EXPORT bool ComputeSelected(const Interface_Graph& G, const bool forced = false);
 
   //! Determines and returns the value of the signature for an
   //! entity as an HAsciiString. This method works exactly as
@@ -159,18 +158,18 @@ public:
   //! To do this, Add is called with SignOnly Mode True during the
   //! call, the returned value is LastValue
   Standard_EXPORT const char* ComputedSign(const occ::handle<Standard_Transient>& ent,
-                                                const Interface_Graph&            G);
+                                           const Interface_Graph&                 G);
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignCounter, IFSelect_SignatureList)
 
 private:
-  bool           themapstat;
-  NCollection_Map<occ::handle<Standard_Transient>>     themap;
-  occ::handle<IFSelect_Signature> thematcher;
-  occ::handle<IFSelect_Selection> theselect;
-  int           theselmode;
-  int           thenbcomp1;
-  int           thenbcomp2;
+  bool                                             themapstat;
+  NCollection_Map<occ::handle<Standard_Transient>> themap;
+  occ::handle<IFSelect_Signature>                  thematcher;
+  occ::handle<IFSelect_Selection>                  theselect;
+  int                                              theselmode;
+  int                                              thenbcomp1;
+  int                                              thenbcomp2;
 };
 
 #endif // _IFSelect_SignCounter_HeaderFile

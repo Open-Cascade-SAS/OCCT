@@ -34,7 +34,7 @@ RWStepFEA_RWCurveElementIntervalLinearlyVarying::RWStepFEA_RWCurveElementInterva
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,
-  const int                                     num,
+  const int                                                       num,
   occ::handle<Interface_Check>&                                   ach,
   const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent) const
 {
@@ -62,12 +62,14 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 
   // Own fields of CurveElementIntervalLinearlyVarying
 
-  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>> aSections;
-  int                                           sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>
+      aSections;
+  int sub3 = 0;
   if (data->ReadSubList(num, 3, "sections", ach, sub3))
   {
-    int nb0  = data->NbParams(sub3);
-    aSections             = new NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>(1, nb0);
+    int nb0 = data->NbParams(sub3);
+    aSections =
+      new NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>(1, nb0);
     int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -89,7 +91,7 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::WriteStep(
-  StepData_StepWriter&                                       SW,
+  StepData_StepWriter&                                            SW,
   const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent) const
 {
 
@@ -114,7 +116,7 @@ void RWStepFEA_RWCurveElementIntervalLinearlyVarying::WriteStep(
 
 void RWStepFEA_RWCurveElementIntervalLinearlyVarying::Share(
   const occ::handle<StepFEA_CurveElementIntervalLinearlyVarying>& ent,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                                       iter) const
 {
 
   // Inherited fields of CurveElementInterval

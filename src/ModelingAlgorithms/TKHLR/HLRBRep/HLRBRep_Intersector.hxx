@@ -81,8 +81,7 @@ public:
 
   Standard_EXPORT const IntRes2d_IntersectionSegment& Segment(const int N) const;
 
-  Standard_EXPORT const IntCurveSurface_IntersectionSegment& CSSegment(
-    const int N) const;
+  Standard_EXPORT const IntCurveSurface_IntersectionSegment& CSSegment(const int N) const;
 
   Standard_EXPORT void Destroy();
 

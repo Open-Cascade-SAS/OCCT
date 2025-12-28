@@ -77,11 +77,7 @@ Sweep_NumShape Sweep_NumShapeTool::Shape(const int anIndex) const
   }
   else
   {
-    return Sweep_NumShape((anIndex - 1),
-                          TopAbs_VERTEX,
-                          myNumShape.Closed(),
-                          false,
-                          false);
+    return Sweep_NumShape((anIndex - 1), TopAbs_VERTEX, myNumShape.Closed(), false, false);
   }
 }
 
@@ -141,11 +137,7 @@ Sweep_NumShape Sweep_NumShapeTool::LastVertex() const
   {
     if (HasLastVertex())
     {
-      return Sweep_NumShape(NbShapes() - 1,
-                            TopAbs_VERTEX,
-                            myNumShape.Closed(),
-                            false,
-                            false);
+      return Sweep_NumShape(NbShapes() - 1, TopAbs_VERTEX, myNumShape.Closed(), false, false);
     }
     else
       throw Standard_ConstructionError("infinite Shape");

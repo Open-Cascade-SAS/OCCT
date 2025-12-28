@@ -30,7 +30,7 @@ RWStepRepr_RWCompositeShapeAspect::RWStepRepr_RWCompositeShapeAspect() {}
 
 void RWStepRepr_RWCompositeShapeAspect::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                       num,
+  const int                                         num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepRepr_CompositeShapeAspect>& ent) const
 {
@@ -74,7 +74,7 @@ void RWStepRepr_RWCompositeShapeAspect::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWCompositeShapeAspect::WriteStep(
-  StepData_StepWriter&                         SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepRepr_CompositeShapeAspect>& ent) const
 {
 

@@ -20,8 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_V3dView, V3d_View)
 //=================================================================================================
 
 ViewerTest_V3dView::ViewerTest_V3dView(const occ::handle<V3d_Viewer>& theViewer,
-                                       const V3d_TypeOfView      theType,
-                                       bool                      theIs2dMode)
+                                       const V3d_TypeOfView           theType,
+                                       bool                           theIs2dMode)
     : V3d_View(theViewer, theType),
       myIs2dMode(theIs2dMode)
 {

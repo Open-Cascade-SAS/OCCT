@@ -32,13 +32,12 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   double Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
   dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
 
-  double    Lower = BRepGProp_EdgeTool::FirstParameter(C);
-  double    Upper = BRepGProp_EdgeTool::LastParameter(C);
-  int Order =
-    std::min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
+  double Lower = BRepGProp_EdgeTool::FirstParameter(C);
+  double Upper = BRepGProp_EdgeTool::LastParameter(C);
+  int    Order = std::min(BRepGProp_EdgeTool::IntegrationOrder(C), math::GaussPointsMax());
 
-  gp_Pnt        P;  // value on the curve
-  gp_Vec        V1; // first derivative on the curve
+  gp_Pnt P;  // value on the curve
+  gp_Vec V1; // first derivative on the curve
   double ds; // curvilign abscissae
   double ur, um, u;
   double x, y, z;
@@ -52,8 +51,8 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   math::GaussWeights(Order, GaussW);
 
   // modified by NIZHNY-MKK  Thu Jun  9 12:13:21 2005.BEGIN
-  int     nbIntervals   = BRepGProp_EdgeTool::NbIntervals(C, GeomAbs_CN);
-  bool     bHasIntervals = (nbIntervals > 1);
+  int                        nbIntervals   = BRepGProp_EdgeTool::NbIntervals(C, GeomAbs_CN);
+  bool                       bHasIntervals = (nbIntervals > 1);
   NCollection_Array1<double> TI(1, nbIntervals + 1);
 
   if (bHasIntervals)
@@ -64,9 +63,9 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   {
     nbIntervals = 1;
   }
-  int nIndex = 0;
-  double    UU1    = std::min(Lower, Upper);
-  double    UU2    = std::max(Lower, Upper);
+  int    nIndex = 0;
+  double UU1    = std::min(Lower, Upper);
+  double UU2    = std::max(Lower, Upper);
 
   for (nIndex = 1; nIndex <= nbIntervals; nIndex++)
   {
@@ -81,8 +80,8 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
       Upper = UU2;
     }
 
-    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal,
-      IxzLocal, IyzLocal;
+    double dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal, IxzLocal,
+      IyzLocal;
     dimLocal = IxLocal = IyLocal = IzLocal = IxxLocal = IyyLocal = IzzLocal = IxyLocal = IxzLocal =
       IyzLocal                                                                         = 0.0;
     // modified by NIZHNY-MKK  Thu Jun  9 12:13:32 2005.END

@@ -27,23 +27,23 @@
 //=================================================================================================
 
 bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
-                                                  gp_Pln&                   aPln,
-                                                  double&            Dmax)
+                                      gp_Pln&                           aPln,
+                                      double&                           Dmax)
 {
   // szv#4:S4163:12Mar99 warning
   GProp_PGProps Pmat(Pnts);
   gp_Pnt        g = Pmat.CentreOfMass();
-  double Xg, Yg, Zg;
+  double        Xg, Yg, Zg;
   g.Coord(Xg, Yg, Zg);
 
   GProp_PrincipalProps Pp = Pmat.PrincipalProperties();
   gp_Vec               V1 = Pp.FirstAxisOfInertia();
-  double        Xv1, Yv1, Zv1;
+  double               Xv1, Yv1, Zv1;
   V1.Coord(Xv1, Yv1, Zv1);
-  gp_Vec        V2 = Pp.SecondAxisOfInertia();
+  gp_Vec V2 = Pp.SecondAxisOfInertia();
   double Xv2, Yv2, Zv2;
   V2.Coord(Xv2, Yv2, Zv2);
-  gp_Vec        V3 = Pp.ThirdAxisOfInertia();
+  gp_Vec V3 = Pp.ThirdAxisOfInertia();
   double Xv3, Yv3, Zv3;
   V3.Coord(Xv3, Yv3, Zv3);
 
@@ -78,8 +78,8 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
   }
 
   // szv#4:S4163:12Mar99 optimized
-  double    Dev1 = Dmx1 - Dmn1, Dev2 = Dmx2 - Dmn2, Dev3 = Dmx3 - Dmn3;
-  int It = (Dev1 < Dev2) ? ((Dev1 < Dev3) ? 1 : 3) : ((Dev2 < Dev3) ? 2 : 3);
+  double Dev1 = Dmx1 - Dmn1, Dev2 = Dmx2 - Dmn2, Dev3 = Dmx3 - Dmn3;
+  int    It = (Dev1 < Dev2) ? ((Dev1 < Dev3) ? 1 : 3) : ((Dev2 < Dev3) ? 2 : 3);
 
   switch (It)
   {
@@ -124,9 +124,9 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
 //=================================================================================================
 
 bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<double>>& coefs,
-                                                  gp_Trsf&                             trsf,
-                                                  const double                  unit,
-                                                  const double                  prec)
+                                      gp_Trsf&                                        trsf,
+                                      const double                                    unit,
+                                      const double                                    prec)
 {
   bool result = true;
 

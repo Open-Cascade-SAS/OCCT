@@ -101,10 +101,7 @@ public:
 
   //! Return number of initially allocated elements which can fit into this buffer,
   //! while NbElements can be overwritten to smaller value.
-  int NbMaxElements() const
-  {
-    return Stride != 0 ? int(mySize / size_t(Stride)) : 0;
-  }
+  int NbMaxElements() const { return Stride != 0 ? int(mySize / size_t(Stride)) : 0; }
 
   //! @return array of attributes definitions
   const Graphic3d_Attribute* AttributesArray() const
@@ -160,22 +157,13 @@ public:
   }
 
   //! @return data for specified attribute
-  uint8_t* ChangeData(const int theAttribIndex)
-  {
-    return myData + AttributeOffset(theAttribIndex);
-  }
+  uint8_t* ChangeData(const int theAttribIndex) { return myData + AttributeOffset(theAttribIndex); }
 
   //! Access specified element.
-  inline const uint8_t* value(const int theElem) const
-  {
-    return myData + Stride * size_t(theElem);
-  }
+  inline const uint8_t* value(const int theElem) const { return myData + Stride * size_t(theElem); }
 
   //! Access specified element.
-  inline uint8_t* changeValue(const int theElem)
-  {
-    return myData + Stride * size_t(theElem);
-  }
+  inline uint8_t* changeValue(const int theElem) { return myData + Stride * size_t(theElem); }
 
   //! Access element with specified position and type.
   template <typename Type_t>
@@ -202,8 +190,8 @@ public:
   //! @param theAttribStride stride in bytes between values of this attribute within returned data
   //! pointer
   uint8_t* ChangeAttributeData(Graphic3d_TypeOfAttribute theAttrib,
-                                     int&         theAttribIndex,
-                                     size_t&            theAttribStride)
+                               int&                      theAttribIndex,
+                               size_t&                   theAttribStride)
   {
     return (uint8_t*)AttributeData(theAttrib, theAttribIndex, theAttribStride);
   }
@@ -214,8 +202,8 @@ public:
   //! @param theAttribStride stride in bytes between values of this attribute within returned data
   //! pointer
   const uint8_t* AttributeData(Graphic3d_TypeOfAttribute theAttrib,
-                                     int&         theAttribIndex,
-                                     size_t&            theAttribStride) const
+                               int&                      theAttribIndex,
+                               size_t&                   theAttribStride) const
   {
     const uint8_t* aDataPtr = Data();
     if (IsInterleaved())
@@ -223,7 +211,7 @@ public:
       for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
       {
         const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-        const size_t        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+        const size_t               anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
         if (anAttrib.Id == theAttrib)
         {
           theAttribIndex  = anAttribIter;
@@ -240,7 +228,7 @@ public:
       for (int anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
       {
         const Graphic3d_Attribute& anAttrib       = Attribute(anAttribIter);
-        const size_t        anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
+        const size_t               anAttribStride = Graphic3d_Attribute::Stride(anAttrib.DataType);
         if (anAttrib.Id == theAttrib)
         {
           theAttribIndex  = anAttribIter;
@@ -265,9 +253,7 @@ public:
   }
 
   //! Allocates new empty array
-  bool Init(const int     theNbElems,
-            const Graphic3d_Attribute* theAttribs,
-            const int     theNbAttribs)
+  bool Init(const int theNbElems, const Graphic3d_Attribute* theAttribs, const int theNbAttribs)
   {
     release();
     int aStride = 0;
@@ -330,7 +316,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public:
   // clang-format off

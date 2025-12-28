@@ -64,8 +64,7 @@ public:
   //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const char* theUnit,
-                                     const int theModecr = 0);
+  Standard_EXPORT IGESControl_Writer(const char* theUnit, const int theModecr = 0);
 
   //! Creates a writer object with the
   //! prepared IGES model theModel in write mode.
@@ -73,7 +72,7 @@ public:
   //! - 0: Faces (default)
   //! - 1: BRep.
   Standard_EXPORT IGESControl_Writer(const occ::handle<IGESData_IGESModel>& theModel,
-                                     const int            theModecr = 0);
+                                     const int                              theModecr = 0);
 
   //! Returns the IGES model to be written in output.
   const occ::handle<IGESData_IGESModel>& Model() const { return myModel; }
@@ -86,9 +85,8 @@ public:
 
   //! Translates a Shape to IGES Entities and adds them to the model
   //! Returns True if done, False if Shape not suitable for IGES or null
-  Standard_EXPORT bool
-    AddShape(const TopoDS_Shape&          sh,
-             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool AddShape(const TopoDS_Shape&          sh,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Translates a Geometry (Surface or Curve) to IGES Entities and
   //! adds them to the model
@@ -106,16 +104,14 @@ public:
 
   //! Computes then writes the model to an OStream
   //! Returns True when done, false in case of error
-  Standard_EXPORT bool Write(Standard_OStream&      S,
-                                         const bool fnes = false);
+  Standard_EXPORT bool Write(Standard_OStream& S, const bool fnes = false);
 
   //! Prepares and writes an IGES model
   //! either to an OStream, S or to a file name,CString.
   //! Returns True if the operation was performed correctly and
   //! False if an error occurred (for instance,
   //! if the processor could not create the file).
-  Standard_EXPORT bool Write(const char* file,
-                                         const bool fnes = false);
+  Standard_EXPORT bool Write(const char* file, const bool fnes = false);
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
@@ -163,9 +159,9 @@ private:
 private:
   occ::handle<Transfer_FinderProcess> myTP;
   occ::handle<IGESData_IGESModel>     myModel;
-  IGESData_BasicEditor           myEditor;
-  int               myWriteMode;
-  bool               myIsComputed;
+  IGESData_BasicEditor                myEditor;
+  int                                 myWriteMode;
+  bool                                myIsComputed;
   // clang-format off
   XSAlgo_ShapeProcessor::ParameterMap myShapeProcParams;   //!< Parameters for shape processing.
   XSAlgo_ShapeProcessor::ProcessingFlags myShapeProcFlags; //!< Flags defining operations to be performed on shapes.

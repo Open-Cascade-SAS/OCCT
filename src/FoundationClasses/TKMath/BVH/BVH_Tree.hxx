@@ -37,9 +37,7 @@ protected:
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpNode(const int         theNodeIndex,
-                        Standard_OStream& theOStream,
-                        int  theDepth) const
+  virtual void DumpNode(const int theNodeIndex, Standard_OStream& theOStream, int theDepth) const
   {
     (void)theNodeIndex;
     (void)theOStream;
@@ -172,8 +170,7 @@ public: //! @name methods for accessing serialized tree data
   const typename BVH::ArrayType<T, N>::Type& MaxPointBuffer() const { return myMaxPointBuffer; }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream,
-                        int  theDepth = -1) const override
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myDepth)
@@ -188,7 +185,7 @@ public: //! @name methods for accessing serialized tree data
   //! Dumps the content of node into the stream
   virtual void DumpNode(const int         theNodeIndex,
                         Standard_OStream& theOStream,
-                        int  theDepth) const override
+                        int               theDepth) const override
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, BVH_TreeNode)
 

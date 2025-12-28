@@ -31,7 +31,7 @@ public:
   virtual void BindNamedShape(const TopoDS_Shape&            theShape,
                               const TCollection_AsciiString& theName,
                               const RWObj_Material*          theMaterial,
-                              const bool         theIsRootShape) = 0;
+                              const bool                     theIsRootShape) = 0;
 };
 
 //! RWObj_Reader implementation dumping OBJ file into Poly_Triangulation.
@@ -61,14 +61,10 @@ public:
 protected:
   //! Flush active sub-mesh.
   Standard_EXPORT virtual bool addMesh(const RWObj_SubMesh&      theMesh,
-                                                   const RWObj_SubMeshReason theReason)
-    override;
+                                       const RWObj_SubMeshReason theReason) override;
 
   //! Retrieve sub-mesh node position.
-  virtual gp_Pnt getNode(int theIndex) const override
-  {
-    return myNodes.Value(theIndex - 1);
-  }
+  virtual gp_Pnt getNode(int theIndex) const override { return myNodes.Value(theIndex - 1); }
 
   //! Add new node.
   virtual int addNode(const gp_Pnt& thePnt) override
@@ -78,24 +74,19 @@ protected:
   }
 
   //! Ignore normal.
-  virtual void setNodeNormal(const int theIndex,
-                             const NCollection_Vec3<float>&  theNormal) override
+  virtual void setNodeNormal(const int theIndex, const NCollection_Vec3<float>& theNormal) override
   {
     myNormals.SetValue(theIndex - 1, theNormal);
   }
 
   //! Ignore texture coordinates.
-  virtual void setNodeUV(const int theIndex,
-                         const NCollection_Vec2<float>&  theUV) override
+  virtual void setNodeUV(const int theIndex, const NCollection_Vec2<float>& theUV) override
   {
     myNodesUV.SetValue(theIndex - 1, theUV);
   }
 
   //! Add element.
-  virtual void addElement(int theN1,
-                          int theN2,
-                          int theN3,
-                          int theN4) override
+  virtual void addElement(int theN1, int theN2, int theN3, int theN4) override
   {
     myTriangles.Append(Poly_Triangle(theN1, theN2, theN3));
     if (theN4 != -1)
@@ -106,15 +97,17 @@ protected:
 
 protected:
   //! Add sub-shape into specified shape
-  Standard_EXPORT bool addSubShape(TopoDS_Shape&          theParent,
-                                               const TopoDS_Shape&    theSubShape,
-                                               const bool theToExpandCompound);
+  Standard_EXPORT bool addSubShape(TopoDS_Shape&       theParent,
+                                   const TopoDS_Shape& theSubShape,
+                                   const bool          theToExpandCompound);
 
 protected:
-  NCollection_Vector<gp_Pnt>         myNodes;     //!< nodes   of currently filled triangulation
-  NCollection_Vector<NCollection_Vec3<float>> myNormals;   //!< normals of currently filled triangulation
-  NCollection_Vector<NCollection_Vec2<float>> myNodesUV;   //!< UVs     of currently filled triangulation
-  NCollection_Vector<Poly_Triangle>  myTriangles; //!< indexes of currently filled triangulation
+  NCollection_Vector<gp_Pnt> myNodes; //!< nodes   of currently filled triangulation
+  NCollection_Vector<NCollection_Vec3<float>>
+    myNormals; //!< normals of currently filled triangulation
+  NCollection_Vector<NCollection_Vec2<float>>
+                                    myNodesUV;   //!< UVs     of currently filled triangulation
+  NCollection_Vector<Poly_Triangle> myTriangles; //!< indexes of currently filled triangulation
 
   RWObj_IShapeReceiver* myShapeReceiver;      //!< optional shape receiver
   TopoDS_Compound       myResultShape;        //!< result shape as Compound of objects
@@ -124,7 +117,7 @@ protected:
                                               // clang-format on
   TCollection_AsciiString myLastGroupName;    //!< current group name
   TCollection_AsciiString myLastFaceMaterial; //!< last face material name
-  bool        myToCreateShapes;   //!< create a single triangulation
+  bool                    myToCreateShapes;   //!< create a single triangulation
 };
 
 #endif // _RWObj_TriangulationReader_HeaderFile

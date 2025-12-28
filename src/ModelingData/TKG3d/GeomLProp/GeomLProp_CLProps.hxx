@@ -53,16 +53,16 @@ public:
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
   Standard_EXPORT GeomLProp_CLProps(const occ::handle<Geom_Curve>& C,
-                                    const int    N,
-                                    const double       Resolution);
+                                    const int                      N,
+                                    const double                   Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
   Standard_EXPORT GeomLProp_CLProps(const occ::handle<Geom_Curve>& C,
-                                    const double       U,
-                                    const int    N,
-                                    const double       Resolution);
+                                    const double                   U,
+                                    const int                      N,
+                                    const double                   Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -114,16 +114,16 @@ public:
 
 private:
   occ::handle<Geom_Curve> myCurve;
-  double      myU;
-  int   myDerOrder;
-  double      myCN;
-  double      myLinTol;
-  gp_Pnt             myPnt;
-  gp_Vec             myDerivArr[3];
-  gp_Dir             myTangent;
-  double      myCurvature;
-  LProp_Status       myTangentStatus;
-  int   mySignificantFirstDerivativeOrder;
+  double                  myU;
+  int                     myDerOrder;
+  double                  myCN;
+  double                  myLinTol;
+  gp_Pnt                  myPnt;
+  gp_Vec                  myDerivArr[3];
+  gp_Dir                  myTangent;
+  double                  myCurvature;
+  LProp_Status            myTangentStatus;
+  int                     mySignificantFirstDerivativeOrder;
 };
 
 #endif // _GeomLProp_CLProps_HeaderFile

@@ -28,7 +28,6 @@
 #include <StepShape_OrientedEdge.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepShape_OrientedEdge.hxx>
 #include <StepShape_PolyLoop.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepShape_Vertex.hxx>
@@ -54,8 +53,8 @@ TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire()
   done = false;
 }
 
-TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire(const TopoDS_Wire&                    W,
-                                                     TopoDSToStep_Tool&                    T,
+TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire(const TopoDS_Wire&                         W,
+                                                     TopoDSToStep_Tool&                         T,
                                                      const occ::handle<Transfer_FinderProcess>& FP,
                                                      const StepData_Factors& theLocalFactors)
 {
@@ -65,10 +64,10 @@ TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire(const TopoDS_Wire&         
 
 //=================================================================================================
 
-void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire,
-                                     TopoDSToStep_Tool&                    aTool,
+void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                         aWire,
+                                     TopoDSToStep_Tool&                         aTool,
                                      const occ::handle<Transfer_FinderProcess>& FP,
-                                     const StepData_Factors&               theLocalFactors)
+                                     const StepData_Factors&                    theLocalFactors)
 {
   // ----------------------------------------------------------------
   // The Wire is given in its relative orientation (i.e. in the face)
@@ -102,7 +101,7 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
     occ::handle<StepShape_VertexPoint>                   VertexPoint;
     occ::handle<StepGeom_Point>                          Point;
     occ::handle<StepShape_TopologicalRepresentationItem> Gpms;
-    TopoDS_Vertex                                   TopoDSVertex1, TopoDSVertex2;
+    TopoDS_Vertex                                        TopoDSVertex1, TopoDSVertex2;
 
     TopoDSToStep_MakeStepVertex MkVertex;
 
@@ -170,9 +169,9 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
     occ::handle<StepShape_TopologicalRepresentationItem> Gpms;
     occ::handle<StepShape_Edge>                          Epms;
     occ::handle<StepShape_OrientedEdge>                  OrientedEdge;
-    TopoDSToStep_MakeStepEdge                       MkEdge;
+    TopoDSToStep_MakeStepEdge                            MkEdge;
 
-    const TopoDS_Wire     ForwardWire = TopoDS::Wire(aWire.Oriented(TopAbs_FORWARD));
+    const TopoDS_Wire          ForwardWire = TopoDS::Wire(aWire.Oriented(TopAbs_FORWARD));
     occ::handle<ShapeFix_Wire> STW =
       new ShapeFix_Wire(ForwardWire, aTool.CurrentFace(), Precision::Confusion());
     // for toroidal like surfaces we need to use both (3d and 2d) mode to correctly reorder the
@@ -222,9 +221,9 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
         if (ie > nb)
         {
           // make vertex_loop
-          ShapeAnalysis_Edge               sae;
-          TopoDS_Vertex                    V = sae.FirstVertex(anExtWire2->Edge(1));
-          TopoDSToStep_MakeStepVertex      mkV(V, aTool, FP, theLocalFactors);
+          ShapeAnalysis_Edge                    sae;
+          TopoDS_Vertex                         V = sae.FirstVertex(anExtWire2->Edge(1));
+          TopoDSToStep_MakeStepVertex           mkV(V, aTool, FP, theLocalFactors);
           occ::handle<StepShape_VertexLoop>     vloop = new StepShape_VertexLoop;
           occ::handle<TCollection_HAsciiString> name  = new TCollection_HAsciiString("");
           vloop->Init(name, occ::down_cast<StepShape_Vertex>(mkV.Value()));
@@ -243,8 +242,9 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
       // ---------------------------------
       // --- Is the edge Degenerated ? ---
       // ---------------------------------
-      double        cf, cl;
-      occ::handle<Geom2d_Curve> theC2d = BRep_Tool::CurveOnSurface(anEdge, aTool.CurrentFace(), cf, cl);
+      double                    cf, cl;
+      occ::handle<Geom2d_Curve> theC2d =
+        BRep_Tool::CurveOnSurface(anEdge, aTool.CurrentFace(), cf, cl);
       if (BRep_Tool::Degenerated(anEdge))
       {
         occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aWire);
@@ -256,8 +256,8 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire&                    aWire
         MkEdge.Init(anEdge, aTool, FP, theLocalFactors);
         if (MkEdge.IsDone())
         {
-          OrientedEdge                           = new StepShape_OrientedEdge();
-          Epms                                   = occ::down_cast<StepShape_Edge>(MkEdge.Value());
+          OrientedEdge = new StepShape_OrientedEdge();
+          Epms         = occ::down_cast<StepShape_Edge>(MkEdge.Value());
           occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
           OrientedEdge->Init(aName, Epms, (anEdge.Orientation() == TopAbs_FORWARD));
           mySeq.Append(OrientedEdge);

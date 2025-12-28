@@ -55,13 +55,12 @@ public:
     NbBounds    = theNbBounds;
     NbMaxBounds = theNbBounds;
     Colors      = theHasColors ? reinterpret_cast<NCollection_Vec4<float>*>(myData) : NULL;
-    Bounds = reinterpret_cast<int*>(theHasColors ? (myData + aColorsSize) : myData);
+    Bounds      = reinterpret_cast<int*>(theHasColors ? (myData + aColorsSize) : myData);
     return true;
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson(Standard_OStream& theOStream,
-                        int  theDepth = -1) const override
+  virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override
   {
     OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
     OCCT_DUMP_BASE_CLASS(theOStream, theDepth, NCollection_Buffer)
@@ -74,10 +73,10 @@ public:
   }
 
 public:
-  NCollection_Vec4<float>*   Colors;      //!< pointer to facet color values
-  int* Bounds;      //!< pointer to bounds array
-  int  NbBounds;    //!< number of bounds
-  int  NbMaxBounds; //!< number of allocated bounds
+  NCollection_Vec4<float>* Colors;      //!< pointer to facet color values
+  int*                     Bounds;      //!< pointer to bounds array
+  int                      NbBounds;    //!< number of bounds
+  int                      NbMaxBounds; //!< number of allocated bounds
 };
 
 #endif // _Graphic3d_BoundBuffer_HeaderFile

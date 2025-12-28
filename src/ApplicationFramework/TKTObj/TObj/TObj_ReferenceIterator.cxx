@@ -22,9 +22,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_ReferenceIterator, TObj_LabelIterator)
 
 //=================================================================================================
 
-TObj_ReferenceIterator::TObj_ReferenceIterator(const TDF_Label&             theLabel,
+TObj_ReferenceIterator::TObj_ReferenceIterator(const TDF_Label&                  theLabel,
                                                const occ::handle<Standard_Type>& theType,
-                                               const bool       theRecursive)
+                                               const bool                        theRecursive)
     : TObj_LabelIterator(theLabel, theRecursive),
       myType(theType)
 {

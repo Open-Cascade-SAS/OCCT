@@ -24,12 +24,6 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
 #include <Geom_BSplineCurve.hxx>
 
 class gp_Vec;
@@ -94,8 +88,8 @@ public:
   //! number of elements in the parallel tables
   //! Points and Parameters are not respected.
   Standard_EXPORT GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt>>& Points,
-                                      const bool             PeriodicFlag,
-                                      const double                Tolerance);
+                                      const bool                                      PeriodicFlag,
+                                      const double                                    Tolerance);
 
   //! Initializes an algorithm for constructing a
   //! constrained BSpline curve passing through the points of the table
@@ -135,10 +129,10 @@ public:
   //! -   conditions relating to the respective
   //! number of elements in the parallel tables
   //! Points and Parameters are not respected.
-  Standard_EXPORT GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt>>&   Points,
+  Standard_EXPORT GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt>>& Points,
                                       const occ::handle<NCollection_HArray1<double>>& Parameters,
-                                      const bool               PeriodicFlag,
-                                      const double                  Tolerance);
+                                      const bool                                      PeriodicFlag,
+                                      const double                                    Tolerance);
 
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors InitialTangent and FinalTangent
@@ -146,9 +140,9 @@ public:
   //! the first and last points of the table of
   //! points through which the curve passes, as
   //! defined at the time of initialization).
-  Standard_EXPORT void Load(const gp_Vec&          InitialTangent,
-                            const gp_Vec&          FinalTangent,
-                            const bool Scale = true);
+  Standard_EXPORT void Load(const gp_Vec& InitialTangent,
+                            const gp_Vec& FinalTangent,
+                            const bool    Scale = true);
 
   //! Assigns this constrained BSpline curve to be
   //! tangential to vectors defined in the table Tangents,
@@ -159,9 +153,9 @@ public:
   //! the flag given in the parallel table
   //! TangentFlags is true: only these vectors
   //! are set as tangency constraints.
-  Standard_EXPORT void Load(const NCollection_Array1<gp_Vec>&               Tangents,
+  Standard_EXPORT void Load(const NCollection_Array1<gp_Vec>&             Tangents,
                             const occ::handle<NCollection_HArray1<bool>>& TangentFlags,
-                            const bool                  Scale = true);
+                            const bool                                    Scale = true);
 
   //! Clears all tangency constraints on this
   //! constrained BSpline curve (as initialized by the function Load).
@@ -175,7 +169,7 @@ public:
   //! Returns the computed BSpline curve.
   //! Raises StdFail_NotDone if the interpolation fails.
   Standard_EXPORT const occ::handle<Geom_BSplineCurve>& Curve() const;
-  Standard_EXPORT                                  operator occ::handle<Geom_BSplineCurve>() const;
+  Standard_EXPORT operator occ::handle<Geom_BSplineCurve>() const;
 
   //! Returns true if the constrained BSpline curve is successfully constructed.
   //! Note: in this case, the result is given by the function Curve.
@@ -188,15 +182,15 @@ private:
   //! Interpolates in a C1 periodic fashion
   Standard_EXPORT void PerformPeriodic();
 
-  double                    myTolerance;
-  occ::handle<NCollection_HArray1<gp_Pnt>>      myPoints;
-  bool                 myIsDone;
-  occ::handle<Geom_BSplineCurve>        myCurve;
-  occ::handle<NCollection_HArray1<gp_Vec>>      myTangents;
-  occ::handle<NCollection_HArray1<bool>> myTangentFlags;
-  occ::handle<NCollection_HArray1<double>>    myParameters;
-  bool                 myPeriodic;
-  bool                 myTangentRequest;
+  double                                   myTolerance;
+  occ::handle<NCollection_HArray1<gp_Pnt>> myPoints;
+  bool                                     myIsDone;
+  occ::handle<Geom_BSplineCurve>           myCurve;
+  occ::handle<NCollection_HArray1<gp_Vec>> myTangents;
+  occ::handle<NCollection_HArray1<bool>>   myTangentFlags;
+  occ::handle<NCollection_HArray1<double>> myParameters;
+  bool                                     myPeriodic;
+  bool                                     myTangentRequest;
 };
 
 #endif // _GeomAPI_Interpolate_HeaderFile

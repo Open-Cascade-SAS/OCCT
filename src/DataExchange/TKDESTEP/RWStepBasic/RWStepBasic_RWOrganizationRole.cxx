@@ -18,10 +18,11 @@
 
 RWStepBasic_RWOrganizationRole::RWStepBasic_RWOrganizationRole() {}
 
-void RWStepBasic_RWOrganizationRole::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
-                                              const int                    num,
-                                              occ::handle<Interface_Check>&                  ach,
-                                              const occ::handle<StepBasic_OrganizationRole>& ent) const
+void RWStepBasic_RWOrganizationRole::ReadStep(
+  const occ::handle<StepData_StepReaderData>&    data,
+  const int                                      num,
+  occ::handle<Interface_Check>&                  ach,
+  const occ::handle<StepBasic_OrganizationRole>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -40,8 +41,9 @@ void RWStepBasic_RWOrganizationRole::ReadStep(const occ::handle<StepData_StepRea
   ent->Init(aName);
 }
 
-void RWStepBasic_RWOrganizationRole::WriteStep(StepData_StepWriter&                      SW,
-                                               const occ::handle<StepBasic_OrganizationRole>& ent) const
+void RWStepBasic_RWOrganizationRole::WriteStep(
+  StepData_StepWriter&                           SW,
+  const occ::handle<StepBasic_OrganizationRole>& ent) const
 {
 
   // --- own field : name ---

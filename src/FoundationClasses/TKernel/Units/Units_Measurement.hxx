@@ -123,9 +123,9 @@ public:
   Standard_EXPORT void Dump() const;
 
 private:
-  double       themeasurement;
+  double                   themeasurement;
   occ::handle<Units_Token> thetoken;
-  bool    myHasToken;
+  bool                     myHasToken;
 };
 
 #endif // _Units_Measurement_HeaderFile

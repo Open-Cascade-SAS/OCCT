@@ -44,9 +44,9 @@ public:
   //! @param theResDims   dimensions of destination frame
   //! @param theResFormat pixel format (AVPixelFormat) of destination frame
   Standard_EXPORT bool Init(const NCollection_Vec2<int>& theSrcDims,
-                            int                    theSrcFormat,
+                            int                          theSrcFormat,
                             const NCollection_Vec2<int>& theResDims,
-                            int                    theResFormat);
+                            int                          theResFormat);
 
   //! Convert one frame to another.
   Standard_EXPORT bool Convert(const occ::handle<Media_Frame>& theSrc,
@@ -56,11 +56,11 @@ public:
   bool IsValid() const { return mySwsContext != NULL; }
 
 protected:
-  SwsContext*     mySwsContext; //!< conversion context
+  SwsContext*           mySwsContext; //!< conversion context
   NCollection_Vec2<int> mySrcDims;    //!< dimensions of input frame
-  int             mySrcFormat;  //!< pixel format (AVPixelFormat) of input frame
+  int                   mySrcFormat;  //!< pixel format (AVPixelFormat) of input frame
   NCollection_Vec2<int> myResDims;    //!< dimensions of destination frame
-  int             myResFormat;  //!< pixel format (AVPixelFormat) of destination frame
+  int                   myResFormat;  //!< pixel format (AVPixelFormat) of destination frame
 };
 
 #endif // _Media_Scaler_HeaderFile

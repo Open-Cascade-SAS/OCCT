@@ -145,13 +145,13 @@ public:
   }
 
   //! Return number of tracked poses array.
-  const NCollection_Array1<Aspect_TrackedDevicePose>& TrackedPoses() const { return myTrackedPoses; }
+  const NCollection_Array1<Aspect_TrackedDevicePose>& TrackedPoses() const
+  {
+    return myTrackedPoses;
+  }
 
   //! Return TRUE if device orientation is defined.
-  bool HasTrackedPose(int theDevice) const
-  {
-    return myTrackedPoses[theDevice].IsValidPose;
-  }
+  bool HasTrackedPose(int theDevice) const { return myTrackedPoses[theDevice].IsValidPose; }
 
   //! Return index of tracked device of known role, or -1 if undefined.
   virtual int NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const = 0;
@@ -160,8 +160,8 @@ public:
   //! @param[in] theDevice   device index
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int       theDevice,
-                                                     occ::handle<Image_Texture>& theTexture)
+  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int                         theDevice,
+                                                          occ::handle<Image_Texture>& theTexture)
   {
     return loadRenderModel(theDevice, true, theTexture);
   }
@@ -171,9 +171,9 @@ public:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int       theDevice,
-                                                     bool       theToApplyUnitFactor,
-                                                     occ::handle<Image_Texture>& theTexture)
+  occ::handle<Graphic3d_ArrayOfTriangles> LoadRenderModel(int  theDevice,
+                                                          bool theToApplyUnitFactor,
+                                                          occ::handle<Image_Texture>& theTexture)
   {
     return loadRenderModel(theDevice, theToApplyUnitFactor, theTexture);
   }
@@ -195,8 +195,8 @@ public:
     const occ::handle<Aspect_XRAction>& theAction) const = 0;
 
   //! Trigger vibration.
-  Standard_EXPORT void TriggerHapticVibrationAction(const occ::handle<Aspect_XRAction>&   theAction,
-                                                    const Aspect_XRHapticActionData& theParams);
+  Standard_EXPORT void TriggerHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction,
+                                                    const Aspect_XRHapticActionData&    theParams);
 
   //! Abort vibration.
   Standard_EXPORT void AbortHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction);
@@ -209,7 +209,7 @@ public:
 
   //! Return generic action for specific hand or NULL if undefined.
   const occ::handle<Aspect_XRAction>& GenericAction(Aspect_XRTrackedDeviceRole theDevice,
-                                               Aspect_XRGenericAction     theAction) const
+                                                    Aspect_XRGenericAction     theAction) const
   {
     const NCollection_Array1<occ::handle<Aspect_XRAction>>& anActions = myRoleActions[theDevice];
     return anActions[theAction];
@@ -237,13 +237,14 @@ protected:
   //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
   //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
-  virtual occ::handle<Graphic3d_ArrayOfTriangles> loadRenderModel(int theDevice,
-                                                             bool theToApplyUnitFactor,
-                                                             occ::handle<Image_Texture>& theTexture) = 0;
+  virtual occ::handle<Graphic3d_ArrayOfTriangles> loadRenderModel(
+    int                         theDevice,
+    bool                        theToApplyUnitFactor,
+    occ::handle<Image_Texture>& theTexture) = 0;
 
   //! Trigger vibration.
-  virtual void triggerHapticVibrationAction(const occ::handle<Aspect_XRAction>&   theAction,
-                                            const Aspect_XRHapticActionData& theParams) = 0;
+  virtual void triggerHapticVibrationAction(const occ::handle<Aspect_XRAction>& theAction,
+                                            const Aspect_XRHapticActionData&    theParams) = 0;
 
 protected:
   NCollection_Array1<occ::handle<Aspect_XRAction>>
@@ -258,10 +259,10 @@ protected:
   Aspect_FrustumLRBT<double>      myFrustumR;     //!< right eye projection frustum
   double                   myUnitFactor;   //!< unit scale factor defined as scale factor for m (meters)
   // clang-format on
-  double      myAspect;      //!< aspect ratio
-  double      myFieldOfView; //!< field of view
-  double      myIod;         //!< intra-ocular distance in meters
-  float myDispFreq;    //!< display frequency
+  double myAspect;      //!< aspect ratio
+  double myFieldOfView; //!< field of view
+  double myIod;         //!< intra-ocular distance in meters
+  float  myDispFreq;    //!< display frequency
 };
 
 #endif // _Aspect_XRSession_HeaderFile

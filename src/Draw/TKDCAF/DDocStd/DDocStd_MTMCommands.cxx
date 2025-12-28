@@ -67,7 +67,8 @@ static int mtmAddDocument(Draw_Interpretor& di, int n, const char** a)
   }
   if (n > 1)
   {
-    occ::handle<DDocStd_DrawDocument> aDrawDoc = occ::down_cast<DDocStd_DrawDocument>(Draw::Get(a[1]));
+    occ::handle<DDocStd_DrawDocument> aDrawDoc =
+      occ::down_cast<DDocStd_DrawDocument>(Draw::Get(a[1]));
     if (aDrawDoc.IsNull())
     {
       di << "Error   : wrong document name\n";
@@ -207,9 +208,7 @@ static int mtmNestedMode(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-static int XAttributeValue(Draw_Interpretor& di,
-                                        int  argc,
-                                        const char**      argv)
+static int XAttributeValue(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 4)
   {
@@ -231,7 +230,7 @@ static int XAttributeValue(Draw_Interpretor& di,
     return 1;
   }
 
-  int      num = Draw::Atoi(argv[3]);
+  int                   num = Draw::Atoi(argv[3]);
   TDF_AttributeIterator itr(lab, false);
   for (int i = 1; itr.More() && i < num; i++)
     itr.Next();
@@ -246,7 +245,7 @@ static int XAttributeValue(Draw_Interpretor& di,
   if (att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)))
   {
     occ::handle<TDataStd_TreeNode> TN = occ::down_cast<TDataStd_TreeNode>(att);
-    TCollection_AsciiString   ref;
+    TCollection_AsciiString        ref;
     if (TN->HasFather())
     {
       TDF_Tool::Entry(TN->Father()->Label(), ref);
@@ -269,21 +268,21 @@ static int XAttributeValue(Draw_Interpretor& di,
   }
   else if (att->IsKind(STANDARD_TYPE(TDF_Reference)))
   {
-    occ::handle<TDF_Reference>   val = occ::down_cast<TDF_Reference>(att);
-    TCollection_AsciiString ref;
+    occ::handle<TDF_Reference> val = occ::down_cast<TDF_Reference>(att);
+    TCollection_AsciiString    ref;
     TDF_Tool::Entry(val->Get(), ref);
     di << "==> " << ref.ToCString();
   }
   else if (att->IsKind(STANDARD_TYPE(TDataStd_Integer)))
   {
     occ::handle<TDataStd_Integer> val = occ::down_cast<TDataStd_Integer>(att);
-    TCollection_AsciiString  str(val->Get());
+    TCollection_AsciiString       str(val->Get());
     di << str.ToCString();
   }
   else if (att->IsKind(STANDARD_TYPE(TDataStd_Real)))
   {
-    occ::handle<TDataStd_Real>   val = occ::down_cast<TDataStd_Real>(att);
-    TCollection_AsciiString str(val->Get());
+    occ::handle<TDataStd_Real> val = occ::down_cast<TDataStd_Real>(att);
+    TCollection_AsciiString    str(val->Get());
     di << str.ToCString();
   }
   else if (att->IsKind(STANDARD_TYPE(TDataStd_Name)))
@@ -337,7 +336,7 @@ static int XAttributeValue(Draw_Interpretor& di,
   else if (att->IsKind(STANDARD_TYPE(TNaming_NamedShape)))
   {
     occ::handle<TNaming_NamedShape> val = occ::down_cast<TNaming_NamedShape>(att);
-    TopoDS_Shape               S   = val->Get();
+    TopoDS_Shape                    S   = val->Get();
     di << S.TShape()->DynamicType()->Name();
     if (!S.Location().IsIdentity())
       di << "(located)";
@@ -360,7 +359,8 @@ static int mtmRemoveDocument(Draw_Interpretor& di, int n, const char** a)
   }
   if (n > 1)
   {
-    occ::handle<DDocStd_DrawDocument> aDrawDoc = occ::down_cast<DDocStd_DrawDocument>(Draw::Get(a[1]));
+    occ::handle<DDocStd_DrawDocument> aDrawDoc =
+      occ::down_cast<DDocStd_DrawDocument>(Draw::Get(a[1]));
     if (aDrawDoc.IsNull())
     {
       di << "Error   : wrong document name\n";

@@ -43,11 +43,11 @@ public:
   //! 1 = S o B is preferred
   //! 2 = C is preferred
   //! 3 = C and S o B are equally preferred
-  Standard_EXPORT void Init(const int             aMode,
+  Standard_EXPORT void Init(const int                               aMode,
                             const occ::handle<IGESData_IGESEntity>& aSurface,
                             const occ::handle<IGESData_IGESEntity>& aCurveUV,
                             const occ::handle<IGESData_IGESEntity>& aCurve3D,
-                            const int             aPreference);
+                            const int                               aPreference);
 
   //! returns the mode in which the curve is created on the surface
   //! 0 = Unspecified
@@ -76,11 +76,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface, IGESData_IGESEntity)
 
 private:
-  int            theCreationMode;
+  int                              theCreationMode;
   occ::handle<IGESData_IGESEntity> theSurface;
   occ::handle<IGESData_IGESEntity> theCurveUV;
   occ::handle<IGESData_IGESEntity> theCurve3D;
-  int            thePreferenceMode;
+  int                              thePreferenceMode;
 };
 
 #endif // _IGESGeom_CurveOnSurface_HeaderFile

@@ -47,13 +47,12 @@ public:
   //! Creates a ParamEditor, empty, with a maximum count of params
   //! (default is 100)
   //! And a label, by default it will be "Param Editor"
-  Standard_EXPORT IFSelect_ParamEditor(const int nbmax = 100,
-                                       const char* label = "");
+  Standard_EXPORT IFSelect_ParamEditor(const int nbmax = 100, const char* label = "");
 
   //! Adds a TypedValue
   //! By default, its short name equates its complete name, it can be made explicit
   Standard_EXPORT void AddValue(const occ::handle<Interface_TypedValue>& val,
-                                const char*              shortname = "");
+                                const char*                              shortname = "");
 
   //! Adds a Constant Text, it will be Read Only
   //! By default, its long name equates its shortname
@@ -63,29 +62,26 @@ public:
 
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
-  Standard_EXPORT bool
-    Recognize(const occ::handle<IFSelect_EditForm>& form) const override;
+  Standard_EXPORT bool Recognize(const occ::handle<IFSelect_EditForm>& form) const override;
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> StringValue(
     const occ::handle<IFSelect_EditForm>& form,
-    const int           num) const override;
+    const int                             num) const override;
 
-  Standard_EXPORT bool
-    Load(const occ::handle<IFSelect_EditForm>&        form,
-         const occ::handle<Standard_Transient>&       ent,
-         const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Load(const occ::handle<IFSelect_EditForm>&        form,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
-  Standard_EXPORT bool
-    Apply(const occ::handle<IFSelect_EditForm>&        form,
-          const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Apply(const occ::handle<IFSelect_EditForm>&        form,
+                             const occ::handle<Standard_Transient>&       ent,
+                             const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a ParamEditor to work on the Static Parameters of
   //! which names are listed in <list>
   //! Null Handle if <list> is null or empty
   Standard_EXPORT static occ::handle<IFSelect_ParamEditor> StaticEditor(
     const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
-    const char*                         label = "");
+    const char*                                                                      label = "");
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_ParamEditor, IFSelect_Editor)
 

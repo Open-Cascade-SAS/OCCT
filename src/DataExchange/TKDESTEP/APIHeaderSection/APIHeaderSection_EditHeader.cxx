@@ -134,7 +134,8 @@ APIHeaderSection_EditHeader::APIHeaderSection_EditHeader()
   SetValue(3, fn_author, "author"); // 1 seul (1er de liste)
   occ::handle<Interface_TypedValue> fn_org = new Interface_TypedValue("fn_organization");
   SetValue(4, fn_org, "org"); // 1 seul (1er de liste)
-  occ::handle<Interface_TypedValue> fn_preproc = new Interface_TypedValue("fn_preprocessor_version");
+  occ::handle<Interface_TypedValue> fn_preproc =
+    new Interface_TypedValue("fn_preprocessor_version");
   SetValue(5, fn_preproc, "preproc");
   occ::handle<Interface_TypedValue> fn_orig = new Interface_TypedValue("fn_originating_system");
   SetValue(6, fn_orig, "orig");
@@ -156,8 +157,7 @@ TCollection_AsciiString APIHeaderSection_EditHeader::Label() const
   return TCollection_AsciiString("Step Header");
 }
 
-bool APIHeaderSection_EditHeader::Recognize(
-  const occ::handle<IFSelect_EditForm>& /*form*/) const
+bool APIHeaderSection_EditHeader::Recognize(const occ::handle<IFSelect_EditForm>& /*form*/) const
 {
   return true;
 } // ??
@@ -170,10 +170,9 @@ occ::handle<TCollection_HAsciiString> APIHeaderSection_EditHeader::StringValue(
   return TypedValue(num)->HStringValue();
 }
 
-bool APIHeaderSection_EditHeader::Load(
-  const occ::handle<IFSelect_EditForm>& form,
-  const occ::handle<Standard_Transient>& /*ent*/,
-  const occ::handle<Interface_InterfaceModel>& model) const
+bool APIHeaderSection_EditHeader::Load(const occ::handle<IFSelect_EditForm>& form,
+                                       const occ::handle<Standard_Transient>& /*ent*/,
+                                       const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
@@ -197,10 +196,9 @@ bool APIHeaderSection_EditHeader::Load(
   return true;
 }
 
-bool APIHeaderSection_EditHeader::Apply(
-  const occ::handle<IFSelect_EditForm>& form,
-  const occ::handle<Standard_Transient>& /*ent*/,
-  const occ::handle<Interface_InterfaceModel>& model) const
+bool APIHeaderSection_EditHeader::Apply(const occ::handle<IFSelect_EditForm>& form,
+                                        const occ::handle<Standard_Transient>& /*ent*/,
+                                        const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())

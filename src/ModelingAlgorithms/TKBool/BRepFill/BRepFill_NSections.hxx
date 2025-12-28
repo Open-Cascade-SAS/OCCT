@@ -23,9 +23,6 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Trsf.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <BRepFill_SectionLaw.hxx>
@@ -43,15 +40,15 @@ class BRepFill_NSections : public BRepFill_SectionLaw
 public:
   //! Construct
   Standard_EXPORT BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>& S,
-                                     const bool          Build = true);
+                                     const bool                                Build = true);
 
   //! Construct
   Standard_EXPORT BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>& S,
-                                     const NCollection_Sequence<gp_Trsf>&  Trsfs,
-                                     const NCollection_Sequence<double>&   P,
-                                     const double             VF,
-                                     const double             VL,
-                                     const bool          Build = true);
+                                     const NCollection_Sequence<gp_Trsf>&      Trsfs,
+                                     const NCollection_Sequence<double>&       P,
+                                     const double                              VF,
+                                     const double                              VL,
+                                     const bool                                Build = true);
 
   //! Say if the input shape is a vertex.
   Standard_EXPORT virtual bool IsVertex() const override;
@@ -62,16 +59,12 @@ public:
   //! Give the law build on a concatenated section
   Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int Index,
-                                                   const double    TolAngular) const
-    override;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int    Index,
+                                                   const double TolAngular) const override;
 
-  Standard_EXPORT virtual double VertexTol(const int Index,
-                                                  const double    Param) const
-    override;
+  Standard_EXPORT virtual double VertexTol(const int Index, const double Param) const override;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index,
-                                               const double Param) const override;
+  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index, const double Param) const override;
 
   Standard_EXPORT virtual void D0(const double Param, TopoDS_Shape& S) override;
 
@@ -80,13 +73,13 @@ public:
 private:
   Standard_EXPORT void Init(const NCollection_Sequence<double>& P, const bool B);
 
-  double                   VFirst;
-  double                   VLast;
-  NCollection_Sequence<TopoDS_Shape>        myShapes;
-  NCollection_Sequence<gp_Trsf>         myTrsfs;
-  NCollection_Sequence<double>          myParams;
+  double                                         VFirst;
+  double                                         VLast;
+  NCollection_Sequence<TopoDS_Shape>             myShapes;
+  NCollection_Sequence<gp_Trsf>                  myTrsfs;
+  NCollection_Sequence<double>                   myParams;
   occ::handle<NCollection_HArray2<TopoDS_Shape>> myEdges;
-  occ::handle<Geom_BSplineSurface>     mySurface;
+  occ::handle<Geom_BSplineSurface>               mySurface;
 };
 
 #endif // _BRepFill_NSections_HeaderFile

@@ -31,19 +31,15 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
 
 AppParCurves_Function::AppParCurves_Function(
-  const MultiLine&                                      SSP,
-  const int                                FirstPoint,
-  const int                                LastPoint,
+  const MultiLine&                                                       SSP,
+  const int                                                              FirstPoint,
+  const int                                                              LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const math_Vector&                                    Parameters,
-  const int                                Deg)
+  const math_Vector&                                                     Parameters,
+  const int                                                              Deg)
     : MyMultiLine(SSP),
       MyMultiCurve(Deg + 1),
       myParameters(Parameters.Lower(), Parameters.Upper()),
@@ -72,8 +68,8 @@ AppParCurves_Function::AppParCurves_Function(
   Afin          = LastP;
   Degre         = Deg;
   Contraintes   = false;
-  int              myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons;
 
@@ -148,10 +144,10 @@ AppParCurves_Function::AppParCurves_Function(
 
 AppParCurves_Constraint AppParCurves_Function::FirstConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                FirstPoint) const
+  const int                                                              FirstPoint) const
 {
-  int              i, myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -170,10 +166,10 @@ AppParCurves_Constraint AppParCurves_Function::FirstConstraint(
 
 AppParCurves_Constraint AppParCurves_Function::LastConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                LastPoint) const
+  const int                                                              LastPoint) const
 {
-  int              i, myindex;
-  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int                           i, myindex;
+  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -215,9 +211,9 @@ bool AppParCurves_Function::Value(const math_Vector& X, double& F)
   {
     int Npol = Degre + 1;
     //    bool Ext = true;
-    int Ci, i, j, dimen;
-    double    AA, BB, CC, AIJ, FX, FY, FZ, Fi;
-    math_Vector      PTCXCI(1, Npol), PTCYCI(1, Npol), PTCZCI(1, Npol);
+    int         Ci, i, j, dimen;
+    double      AA, BB, CC, AIJ, FX, FY, FZ, Fi;
+    math_Vector PTCXCI(1, Npol), PTCYCI(1, Npol), PTCZCI(1, Npol);
     ERR3d = ERR2d = 0.0;
 
     MyMultiCurve = MyLeastSquare.BezierValue();
@@ -323,10 +319,10 @@ void AppParCurves_Function::Perform(const math_Vector& X)
   }
   else
   {
-    int        Pi, Ci, i, k, dimen;
-    int        Npol = Degre + 1;
-    double           Scal, AA, BB, CC, DAA, DBB, DCC;
-    double           FX, FY, FZ, AIJ, DAIJ, px, py, pz, Fi;
+    int                     Pi, Ci, i, k, dimen;
+    int                     Npol = Degre + 1;
+    double                  Scal, AA, BB, CC, DAA, DBB, DCC;
+    double                  FX, FY, FZ, AIJ, DAIJ, px, py, pz, Fi;
     AppParCurves_Constraint Cons = AppParCurves_NoConstraint;
     math_Matrix             Grad_F(FirstP, LastP, 1, NbCu, 0.0);
     math_Vector             PTCXCI(1, Npol), PTCYCI(1, Npol), PTCZCI(1, Npol);
@@ -334,9 +330,9 @@ void AppParCurves_Function::Perform(const math_Vector& X)
     //    bool Ext = true;
     ERR3d = ERR2d = 0.0;
 
-    math_Matrix      PTCOX(1, Npol, 1, NbCu), PTCOY(1, Npol, 1, NbCu), PTCOZ(1, Npol, 1, NbCu);
-    math_Matrix      PTCX(1, Npol, 1, NbCu), PTCY(1, Npol, 1, NbCu), PTCZ(1, Npol, 1, NbCu);
-    int Inc;
+    math_Matrix PTCOX(1, Npol, 1, NbCu), PTCOY(1, Npol, 1, NbCu), PTCOZ(1, Npol, 1, NbCu);
+    math_Matrix PTCX(1, Npol, 1, NbCu), PTCY(1, Npol, 1, NbCu), PTCZ(1, Npol, 1, NbCu);
+    int         Inc;
 
     MyMultiCurve = MyLeastSquare.BezierValue();
 
@@ -540,10 +536,10 @@ void AppParCurves_Function::Perform(const math_Vector& X)
 
       for (Pi = FirstP; Pi <= LastP; Pi++)
       {
-        TrDAPI            = (TrDA.Col(Pi));
-        TrAPI             = (TrA.Col(Pi));
+        TrDAPI     = (TrDA.Col(Pi));
+        TrAPI      = (TrA.Col(Pi));
         double Taa = TrAPI * A.Row(Pi);
-        Scal              = 0.0;
+        Scal       = 0.0;
         for (j = 1; j <= Npol; j++)
         {
           DPTCO1(Pi, j + Inc)        = (TrDAPI * Errx(Pi) + TrAPI * Scalx(Pi))(j);
@@ -663,9 +659,7 @@ bool AppParCurves_Function::Gradient(const math_Vector& X, math_Vector& G)
   return true;
 }
 
-bool AppParCurves_Function::Values(const math_Vector& X,
-                                               double&     F,
-                                               math_Vector&       G)
+bool AppParCurves_Function::Values(const math_Vector& X, double& F, math_Vector& G)
 {
 
   Perform(X);
@@ -681,8 +675,7 @@ const AppParCurves_MultiCurve& AppParCurves_Function::CurveValue()
   return MyMultiCurve;
 }
 
-double AppParCurves_Function::Error(const int IPoint,
-                                           const int CurveIndex) const
+double AppParCurves_Function::Error(const int IPoint, const int CurveIndex) const
 {
   return std::sqrt(MyF(IPoint, CurveIndex));
 }

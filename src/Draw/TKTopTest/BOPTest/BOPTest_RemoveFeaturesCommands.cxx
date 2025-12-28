@@ -53,9 +53,7 @@ void BOPTest::RemoveFeaturesCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-int RemoveFeatures(Draw_Interpretor& theDI,
-                                int  theArgc,
-                                const char**      theArgv)
+int RemoveFeatures(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {

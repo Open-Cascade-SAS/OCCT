@@ -34,9 +34,10 @@ public:
   Standard_EXPORT StepDimTol_RunoutZoneDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepDimTol_ToleranceZone>&         theZone,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>&    theBoundaries,
-                            const occ::handle<StepDimTol_RunoutZoneOrientation>& theOrientation);
+  Standard_EXPORT void Init(
+    const occ::handle<StepDimTol_ToleranceZone>&                               theZone,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries,
+    const occ::handle<StepDimTol_RunoutZoneOrientation>&                       theOrientation);
 
   //! Returns field Orientation
   inline occ::handle<StepDimTol_RunoutZoneOrientation> Orientation() const { return myOrientation; }

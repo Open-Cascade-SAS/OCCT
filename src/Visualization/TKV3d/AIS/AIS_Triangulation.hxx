@@ -74,14 +74,14 @@ private:
   //! integer. Color attenuation is applied to the vertex colors in order to have correct visual
   //! result after glColorMaterial(GL_AMBIENT_AND_DIFFUSE). Without it, colors look unnatural and
   //! flat.
-  Standard_EXPORT NCollection_Vec4<uint8_t> attenuateColor(const int theColor,
-                                                  const double    theComponent);
+  Standard_EXPORT NCollection_Vec4<uint8_t> attenuateColor(const int    theColor,
+                                                           const double theComponent);
 
   occ::handle<Poly_Triangulation>       myTriangulation;
   occ::handle<NCollection_HArray1<int>> myColor;
-  int                 myFlagColor;
-  int                 myNbNodes;
-  int                 myNbTriangles;
+  int                                   myFlagColor;
+  int                                   myNbNodes;
+  int                                   myNbTriangles;
 };
 
 #endif // _AIS_Triangulation_HeaderFile

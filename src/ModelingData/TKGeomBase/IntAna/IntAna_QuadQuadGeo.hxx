@@ -63,20 +63,20 @@ public:
   //! if the planes are parallel.
   //! Tol is the tolerance used to determine if the planes
   //! are identical (only when they are parallel).
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&       P1,
-                                     const gp_Pln&       P2,
-                                     const double TolAng,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln& P1,
+                                     const gp_Pln& P2,
+                                     const double  TolAng,
+                                     const double  Tol);
 
   //! Intersects two planes.
   //! TolAng is the angular tolerance used to determine
   //! if the planes are parallel.
   //! Tol is the tolerance used to determine if the planes
   //! are identical (only when they are parallel).
-  Standard_EXPORT void Perform(const gp_Pln&       P1,
-                               const gp_Pln&       P2,
-                               const double TolAng,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Pln& P1,
+                               const gp_Pln& P2,
+                               const double  TolAng,
+                               const double  Tol);
 
   //! Creates the intersection between a plane and a cylinder.
   //! TolAng is the angular tolerance used to determine
@@ -87,11 +87,11 @@ public:
   //! center is less than Tol, the result will be the circle.
   //! H is the height of the cylinder <Cyl>. It is used to check
   //! whether the plane and cylinder are parallel.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&       P,
-                                     const gp_Cylinder&  C,
-                                     const double Tolang,
-                                     const double Tol,
-                                     const double H = 0);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&      P,
+                                     const gp_Cylinder& C,
+                                     const double       Tolang,
+                                     const double       Tol,
+                                     const double       H = 0);
 
   //! Intersects a plane and a cylinder.
   //! TolAng is the angular tolerance used to determine
@@ -102,11 +102,11 @@ public:
   //! center is less than Tol, the result will be the circle.
   //! H is the height of the cylinder <Cyl>. It is used to check
   //! whether the plane and cylinder are parallel.
-  Standard_EXPORT void Perform(const gp_Pln&       P,
-                               const gp_Cylinder&  C,
-                               const double Tolang,
-                               const double Tol,
-                               const double H = 0);
+  Standard_EXPORT void Perform(const gp_Pln&      P,
+                               const gp_Cylinder& C,
+                               const double       Tolang,
+                               const double       Tol,
+                               const double       H = 0);
 
   //! Creates the intersection between a plane and a sphere.
   Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln& P, const gp_Sphere& S);
@@ -121,10 +121,10 @@ public:
   //! is parallel to the plane.
   //! Tol is the tolerance used to determine if the apex
   //! of the cone is in the plane.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&       P,
-                                     const gp_Cone&      C,
-                                     const double Tolang,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&  P,
+                                     const gp_Cone& C,
+                                     const double   Tolang,
+                                     const double   Tol);
 
   //! Intersects a plane and a cone.
   //! TolAng is the angular tolerance used to determine
@@ -133,103 +133,79 @@ public:
   //! is parallel to the plane.
   //! Tol is the tolerance used to determine if the apex
   //! of the cone is in the plane.
-  Standard_EXPORT void Perform(const gp_Pln&       P,
-                               const gp_Cone&      C,
-                               const double Tolang,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Pln&  P,
+                               const gp_Cone& C,
+                               const double   Tolang,
+                               const double   Tol);
 
   //! Creates the intersection between two cylinders.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder&  Cyl1,
-                                     const gp_Cylinder&  Cyl2,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder& Cyl1,
+                                     const gp_Cylinder& Cyl2,
+                                     const double       Tol);
 
   //! Intersects two cylinders
-  Standard_EXPORT void Perform(const gp_Cylinder&  Cyl1,
-                               const gp_Cylinder&  Cyl2,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Cylinder& Cyl1, const gp_Cylinder& Cyl2, const double Tol);
 
   //! Creates the intersection between a Cylinder and a Sphere.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder&  Cyl,
-                                     const gp_Sphere&    Sph,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
+                                     const gp_Sphere&   Sph,
+                                     const double       Tol);
 
   //! Intersects a cylinder and a sphere.
-  Standard_EXPORT void Perform(const gp_Cylinder&  Cyl,
-                               const gp_Sphere&    Sph,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Cylinder& Cyl, const gp_Sphere& Sph, const double Tol);
 
   //! Creates the intersection between a Cylinder and a Cone
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder&  Cyl,
-                                     const gp_Cone&      Con,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder& Cyl, const gp_Cone& Con, const double Tol);
 
   //! Intersects a cylinder and a cone.
   Standard_EXPORT void Perform(const gp_Cylinder& Cyl, const gp_Cone& Con, const double Tol);
 
   //! Creates the intersection between two Spheres.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere&    Sph1,
-                                     const gp_Sphere&    Sph2,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere& Sph1,
+                                     const gp_Sphere& Sph2,
+                                     const double     Tol);
 
   //! Intersects a two spheres.
-  Standard_EXPORT void Perform(const gp_Sphere&    Sph1,
-                               const gp_Sphere&    Sph2,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Sphere& Sph1, const gp_Sphere& Sph2, const double Tol);
 
   //! Creates the intersection between a Sphere and a Cone.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere&    Sph,
-                                     const gp_Cone&      Con,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere& Sph, const gp_Cone& Con, const double Tol);
 
   //! Intersects a sphere and a cone.
   Standard_EXPORT void Perform(const gp_Sphere& Sph, const gp_Cone& Con, const double Tol);
 
   //! Creates the intersection between two cones.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cone&      Con1,
-                                     const gp_Cone&      Con2,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cone& Con1, const gp_Cone& Con2, const double Tol);
 
   //! Intersects two cones.
   Standard_EXPORT void Perform(const gp_Cone& Con1, const gp_Cone& Con2, const double Tol);
 
   //! Creates the intersection between plane and torus.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln&       Pln,
-                                     const gp_Torus&     Tor,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Pln& Pln, const gp_Torus& Tor, const double Tol);
 
   //! Intersects plane and torus.
   Standard_EXPORT void Perform(const gp_Pln& Pln, const gp_Torus& Tor, const double Tol);
 
   //! Creates the intersection between cylinder and torus.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder&  Cyl,
-                                     const gp_Torus&     Tor,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cylinder& Cyl, const gp_Torus& Tor, const double Tol);
 
   //! Intersects cylinder and torus.
-  Standard_EXPORT void Perform(const gp_Cylinder&  Cyl,
-                               const gp_Torus&     Tor,
-                               const double Tol);
+  Standard_EXPORT void Perform(const gp_Cylinder& Cyl, const gp_Torus& Tor, const double Tol);
 
   //! Creates the intersection between cone and torus.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cone&      Con,
-                                     const gp_Torus&     Tor,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Cone& Con, const gp_Torus& Tor, const double Tol);
 
   //! Intersects cone and torus.
   Standard_EXPORT void Perform(const gp_Cone& Con, const gp_Torus& Tor, const double Tol);
 
   //! Creates the intersection between sphere and torus.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere&    Sph,
-                                     const gp_Torus&     Tor,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Sphere& Sph, const gp_Torus& Tor, const double Tol);
 
   //! Intersects sphere and torus.
   Standard_EXPORT void Perform(const gp_Sphere& Sph, const gp_Torus& Tor, const double Tol);
 
   //! Creates the intersection between two toruses.
-  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Torus&     Tor1,
-                                     const gp_Torus&     Tor2,
-                                     const double Tol);
+  Standard_EXPORT IntAna_QuadQuadGeo(const gp_Torus& Tor1, const gp_Torus& Tor2, const double Tol);
 
   //! Intersects two toruses.
   Standard_EXPORT void Perform(const gp_Torus& Tor1, const gp_Torus& Tor2, const double Tol);
@@ -277,8 +253,8 @@ protected:
   //! Initialize the values of inner tolerances.
   Standard_EXPORT void InitTolerances();
 
-  bool  done;
-  int  nbint;
+  bool              done;
+  int               nbint;
   IntAna_ResultType typeres;
   gp_Pnt            pt1;
   gp_Pnt            pt2;
@@ -288,21 +264,20 @@ protected:
   gp_Dir            dir2;
   gp_Dir            dir3;
   gp_Dir            dir4;
-  double     param1;
-  double     param2;
-  double     param3;
-  double     param4;
-  double     param1bis;
-  double     param2bis;
-  double     myEPSILON_DISTANCE;
-  double     myEPSILON_ANGLE_CONE;
-  double     myEPSILON_MINI_CIRCLE_RADIUS;
-  double     myEPSILON_CYLINDER_DELTA_RADIUS;
-  double     myEPSILON_CYLINDER_DELTA_DISTANCE;
-  double     myEPSILON_AXES_PARA;
-  bool  myCommonGen;
+  double            param1;
+  double            param2;
+  double            param3;
+  double            param4;
+  double            param1bis;
+  double            param2bis;
+  double            myEPSILON_DISTANCE;
+  double            myEPSILON_ANGLE_CONE;
+  double            myEPSILON_MINI_CIRCLE_RADIUS;
+  double            myEPSILON_CYLINDER_DELTA_RADIUS;
+  double            myEPSILON_CYLINDER_DELTA_DISTANCE;
+  double            myEPSILON_AXES_PARA;
+  bool              myCommonGen;
   gp_Pnt            myPChar;
-
 };
 
 #include <IntAna_QuadQuadGeo.lxx>

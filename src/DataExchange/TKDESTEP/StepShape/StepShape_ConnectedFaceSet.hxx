@@ -35,12 +35,15 @@ public:
   //! Returns a ConnectedFaceSet
   Standard_EXPORT StepShape_ConnectedFaceSet();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&  aCfsFaces);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                         aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces);
 
-  Standard_EXPORT virtual void SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces);
+  Standard_EXPORT virtual void SetCfsFaces(
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aCfsFaces);
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces() const;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> CfsFaces()
+    const;
 
   Standard_EXPORT virtual occ::handle<StepShape_Face> CfsFacesValue(const int num) const;
 

@@ -37,16 +37,16 @@ public:
   //! Creates a XLib window defined by his position and size in pixels.
   //! Throws exception if window can not be created or Display do not support GLX extension.
   Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                            const char*                  theTitle,
-                            const int                  thePxLeft,
-                            const int                  thePxTop,
-                            const int                  thePxWidth,
-                            const int                  thePxHeight);
+                            const char*                                  theTitle,
+                            const int                                    thePxLeft,
+                            const int                                    thePxTop,
+                            const int                                    thePxWidth,
+                            const int                                    thePxHeight);
 
   //! Creates a wrapper over existing Window handle
   Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                            const Aspect_Drawable                   theXWin,
-                            const Aspect_FBConfig                   theFBConfig = NULL);
+                            const Aspect_Drawable                        theXWin,
+                            const Aspect_FBConfig                        theFBConfig = NULL);
 
   //! Destroys the Window and all resources attached to it
   Standard_EXPORT ~Xw_Window();
@@ -73,14 +73,10 @@ public:
   Standard_EXPORT virtual double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(int& X1,
-                                        int& Y1,
-                                        int& X2,
-                                        int& Y2) const override;
+  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(int& theWidth,
-                                    int& theHeight) const override;
+  Standard_EXPORT virtual void Size(int& theWidth, int& theHeight) const override;
 
   //! @return native Window handle
   Aspect_Drawable XWindow() const { return myXWindow; }
@@ -103,8 +99,8 @@ public:
   //! creation will be used. Sending exposure messages from non-window thread would require
   //! dedicated display connection opened specifically for this working thread to avoid race
   //! conditions, since Xlib display connection is not thread-safe by default.
-  Standard_EXPORT virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp)
-    override;
+  Standard_EXPORT virtual void InvalidateContent(
+    const occ::handle<Aspect_DisplayConnection>& theDisp) override;
 
   //! Process a single window message.
   //! @param[in][out] theListener  listener to redirect message
@@ -114,12 +110,12 @@ public:
                                               XEvent&                     theMsg);
 
 protected:
-  Aspect_Drawable  myXWindow;  //!< XLib window handle
-  Aspect_FBConfig  myFBConfig; //!< GLXFBConfig
-  int myXLeft;    //!< left   position in pixels
-  int myYTop;     //!< top    position in pixels
-  int myXRight;   //!< right  position in pixels
-  int myYBottom;  //!< bottom position in pixels
+  Aspect_Drawable myXWindow;  //!< XLib window handle
+  Aspect_FBConfig myFBConfig; //!< GLXFBConfig
+  int             myXLeft;    //!< left   position in pixels
+  int             myYTop;     //!< top    position in pixels
+  int             myXRight;   //!< right  position in pixels
+  int             myYBottom;  //!< bottom position in pixels
   // clang-format off
   bool myIsOwnWin; //!< flag to indicate own window handle (to be deallocated on destruction)
   // clang-format on

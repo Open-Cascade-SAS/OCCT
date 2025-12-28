@@ -139,16 +139,16 @@ TEST(NCollection_SparseArrayTest, IteratorFunctions)
   NCollection_SparseArray<ItemType>::ConstIterator anIt(anArray);
 
   // Check that iterator finds all values in some order
-  bool found5  = false;
-  bool found10 = false;
-  bool found20 = false;
-  bool found30 = false;
-  size_t    count   = 0;
+  bool   found5  = false;
+  bool   found10 = false;
+  bool   found20 = false;
+  bool   found30 = false;
+  size_t count   = 0;
 
   for (; anIt.More(); anIt.Next(), ++count)
   {
-    size_t index = anIt.Index();
-    ItemType      value = anIt.Value();
+    size_t   index = anIt.Index();
+    ItemType value = anIt.Value();
 
     if (index == 5 && value == 50)
       found5 = true;

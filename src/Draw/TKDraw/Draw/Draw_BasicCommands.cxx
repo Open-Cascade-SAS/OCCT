@@ -31,7 +31,6 @@
 #include <OSD_ThreadPool.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_SStream.hxx>
-#include <Standard_Macro.hxx>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -76,9 +75,7 @@ static OSD_Timer aTimer;
 
 extern bool Draw_Chrono;
 
-static int dchronom(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int dchronom(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs == 1 || (theNbArgs == 2 && (*theArgVec[1] == '0' || *theArgVec[1] == '1')))
   {
@@ -95,7 +92,7 @@ static int dchronom(Draw_Interpretor& theDI,
     return 0;
   }
 
-  const char*              aTimerName = theArgVec[1];
+  const char*                   aTimerName = theArgVec[1];
   occ::handle<Draw_Chronometer> aChronom;
   if (occ::handle<Draw_Drawable3D> aDrawable = Draw::Get(aTimerName))
   {
@@ -150,8 +147,8 @@ static int dchronom(Draw_Interpretor& theDI,
     }
     else if (anIter + 1 < theNbArgs && (anArg == "-counter" || anArg == "counter"))
     {
-      double    aSeconds = 0.0, aCPUtime = 0.0;
-      int aMinutes = 0, aHours = 0;
+      double aSeconds = 0.0, aCPUtime = 0.0;
+      int    aMinutes = 0, aHours = 0;
       aChronom->Timer().Show(aSeconds, aMinutes, aHours, aCPUtime);
       if (toShowCout)
       {
@@ -224,8 +221,8 @@ static int ifbatch(Draw_Interpretor& DI, int, const char**)
 
 //=================================================================================================
 
-extern bool Draw_Spying;
-extern std::filebuf     Draw_Spyfile;
+extern bool         Draw_Spying;
+extern std::filebuf Draw_Spyfile;
 
 static int spy(Draw_Interpretor& di, int n, const char** a)
 {
@@ -866,9 +863,9 @@ static int dperf(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 
 static int dsetsignal(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
-  OSD_SignalMode   aMode     = OSD_SignalMode_Set;
-  bool aSetFPE   = OSD::ToCatchFloatingSignals();
-  int aStackLen = OSD::SignalStackTraceLength();
+  OSD_SignalMode aMode     = OSD_SignalMode_Set;
+  bool           aSetFPE   = OSD::ToCatchFloatingSignals();
+  int            aStackLen = OSD::SignalStackTraceLength();
 
   // default for FPE signal is defined by CSF_FPE variable, if set
   OSD_Environment         aEnv("CSF_FPE");

@@ -37,14 +37,16 @@ public:
   //! Returns a BSplineSurface
   Standard_EXPORT StepGeom_BSplineSurface();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const int                          aUDegree,
-                            const int                          aVDegree,
-                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-                            const StepData_Logical                          aUClosed,
-                            const StepData_Logical                          aVClosed,
-                            const StepData_Logical                          aSelfIntersect);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const int                                    aUDegree,
+    const int                                    aVDegree,
+    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
+                                      aControlPointsList,
+    const StepGeom_BSplineSurfaceForm aSurfaceForm,
+    const StepData_Logical            aUClosed,
+    const StepData_Logical            aVClosed,
+    const StepData_Logical            aSelfIntersect);
 
   Standard_EXPORT void SetUDegree(const int aUDegree);
 
@@ -55,13 +57,14 @@ public:
   Standard_EXPORT int VDegree() const;
 
   Standard_EXPORT void SetControlPointsList(
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList);
+    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
+      aControlPointsList);
 
-  Standard_EXPORT occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> ControlPointsList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>
+                  ControlPointsList() const;
 
-  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ControlPointsListValue(
-    const int num1,
-    const int num2) const;
+  Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ControlPointsListValue(const int num1,
+                                                                              const int num2) const;
 
   Standard_EXPORT int NbControlPointsListI() const;
 
@@ -86,13 +89,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineSurface, StepGeom_BoundedSurface)
 
 private:
-  int                         uDegree;
-  int                         vDegree;
+  int                                                                    uDegree;
+  int                                                                    vDegree;
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> controlPointsList;
-  StepGeom_BSplineSurfaceForm              surfaceForm;
-  StepData_Logical                         uClosed;
-  StepData_Logical                         vClosed;
-  StepData_Logical                         selfIntersect;
+  StepGeom_BSplineSurfaceForm                                            surfaceForm;
+  StepData_Logical                                                       uClosed;
+  StepData_Logical                                                       vClosed;
+  StepData_Logical                                                       selfIntersect;
 };
 
 #endif // _StepGeom_BSplineSurface_HeaderFile

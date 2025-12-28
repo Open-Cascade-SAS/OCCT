@@ -59,7 +59,6 @@ public:
   Standard_EXPORT virtual void Blind() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Solid, BRepCheck_Result)
-
 };
 
 #endif // _BRepCheck_Solid_HeaderFile

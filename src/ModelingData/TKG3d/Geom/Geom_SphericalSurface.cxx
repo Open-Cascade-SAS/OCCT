@@ -153,10 +153,7 @@ void Geom_SphericalSurface::SetSphere(const gp_Sphere& S)
 
 //=================================================================================================
 
-void Geom_SphericalSurface::Bounds(double& U1,
-                                   double& U2,
-                                   double& V1,
-                                   double& V2) const
+void Geom_SphericalSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
 
   U1 = 0.0;
@@ -196,16 +193,16 @@ void Geom_SphericalSurface::Coefficients(double& A1,
   double T32 = T.Value(3, 2);
   double T33 = T.Value(3, 3);
   double T34 = T.Value(3, 4);
-  A1                = T11 * T11 + T21 * T21 + T31 * T31;
-  A2                = T12 * T12 + T22 * T22 + T32 * T32;
-  A3                = T13 * T13 + T23 * T23 + T33 * T33;
-  B1                = T11 * T12 + T21 * T22 + T31 * T32;
-  B2                = T11 * T13 + T21 * T23 + T31 * T33;
-  B3                = T12 * T13 + T22 * T23 + T32 * T33;
-  C1                = T11 * T14 + T21 * T24 + T31 * T34;
-  C2                = T12 * T14 + T22 * T24 + T32 * T34;
-  C3                = T13 * T14 + T23 * T24 + T33 * T34;
-  D                 = T14 * T14 + T24 * T24 + T34 * T34 - radius * radius;
+  A1         = T11 * T11 + T21 * T21 + T31 * T31;
+  A2         = T12 * T12 + T22 * T22 + T32 * T32;
+  A3         = T13 * T13 + T23 * T23 + T33 * T33;
+  B1         = T11 * T12 + T21 * T22 + T31 * T32;
+  B2         = T11 * T13 + T21 * T23 + T31 * T33;
+  B3         = T12 * T13 + T22 * T23 + T32 * T33;
+  C1         = T11 * T14 + T21 * T24 + T31 * T34;
+  C2         = T12 * T14 + T22 * T24 + T32 * T34;
+  C3         = T13 * T14 + T23 * T24 + T33 * T34;
+  D          = T14 * T14 + T24 * T24 + T34 * T34 - radius * radius;
 }
 
 //=================================================================================================
@@ -217,11 +214,7 @@ void Geom_SphericalSurface::D0(const double U, const double V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_SphericalSurface::D1(const double U,
-                               const double V,
-                               Pnt&                P,
-                               Vec&                D1U,
-                               Vec&                D1V) const
+void Geom_SphericalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
 {
   ElSLib::SphereD1(U, V, pos, radius, P, D1U, D1V);
 }
@@ -230,12 +223,12 @@ void Geom_SphericalSurface::D1(const double U,
 
 void Geom_SphericalSurface::D2(const double U,
                                const double V,
-                               Pnt&                P,
-                               Vec&                D1U,
-                               Vec&                D1V,
-                               Vec&                D2U,
-                               Vec&                D2V,
-                               Vec&                D2UV) const
+                               Pnt&         P,
+                               Vec&         D1U,
+                               Vec&         D1V,
+                               Vec&         D2U,
+                               Vec&         D2V,
+                               Vec&         D2UV) const
 {
   ElSLib::SphereD2(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -244,26 +237,23 @@ void Geom_SphericalSurface::D2(const double U,
 
 void Geom_SphericalSurface::D3(const double U,
                                const double V,
-                               Pnt&                P,
-                               Vec&                D1U,
-                               Vec&                D1V,
-                               Vec&                D2U,
-                               Vec&                D2V,
-                               Vec&                D2UV,
-                               Vec&                D3U,
-                               Vec&                D3V,
-                               Vec&                D3UUV,
-                               Vec&                D3UVV) const
+                               Pnt&         P,
+                               Vec&         D1U,
+                               Vec&         D1V,
+                               Vec&         D2U,
+                               Vec&         D2V,
+                               Vec&         D2UV,
+                               Vec&         D3U,
+                               Vec&         D3V,
+                               Vec&         D3UUV,
+                               Vec&         D3UVV) const
 {
   ElSLib::SphereD3(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-Vec Geom_SphericalSurface::DN(const double    U,
-                              const double    V,
-                              const int Nu,
-                              const int Nv) const
+Vec Geom_SphericalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
 
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");

@@ -41,7 +41,7 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   Standard_EXPORT static occ::handle<XCAFDoc_Datum> Set(
-    const TDF_Label&                        label,
+    const TDF_Label&                             label,
     const occ::handle<TCollection_HAsciiString>& aName,
     const occ::handle<TCollection_HAsciiString>& aDescription,
     const occ::handle<TCollection_HAsciiString>& anIdentification);
@@ -76,7 +76,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_Datum, TDF_Attribute)
 

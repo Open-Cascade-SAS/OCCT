@@ -46,11 +46,11 @@ public:
   //! For a Vertex : Index is the index of the vertex in
   //! the edge (1 or 2), Type is TopAbsVERTEX, all the
   //! other fields have no meanning.
-  Standard_EXPORT Sweep_NumShape(const int Index,
+  Standard_EXPORT Sweep_NumShape(const int              Index,
                                  const TopAbs_ShapeEnum Type,
-                                 const bool Closed = false,
-                                 const bool BegInf = false,
-                                 const bool EndInf = false);
+                                 const bool             Closed = false,
+                                 const bool             BegInf = false,
+                                 const bool             EndInf = false);
 
   //! Reinitialize a simple indexed edge.
   //!
@@ -64,11 +64,11 @@ public:
   //! the edge (1 or 2), Type is TopAbsVERTEX, Closed is
   //! true if it is the vertex of a closed edge, all the
   //! other fields have no meanning.
-  Standard_EXPORT void Init(const int Index,
+  Standard_EXPORT void Init(const int              Index,
                             const TopAbs_ShapeEnum Type,
-                            const bool Closed = false,
-                            const bool BegInf = false,
-                            const bool EndInf = false);
+                            const bool             Closed = false,
+                            const bool             BegInf = false,
+                            const bool             EndInf = false);
 
   int Index() const;
 
@@ -84,10 +84,10 @@ public:
 
 private:
   TopAbs_ShapeEnum myType;
-  int myIndex;
-  bool myClosed;
-  bool myBegInf;
-  bool myEndInf;
+  int              myIndex;
+  bool             myClosed;
+  bool             myBegInf;
+  bool             myEndInf;
 };
 
 #include <Sweep_NumShape.lxx>

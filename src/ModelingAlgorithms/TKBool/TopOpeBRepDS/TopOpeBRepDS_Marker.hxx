@@ -35,9 +35,7 @@ public:
 
   Standard_EXPORT void Set(const int i, const bool b);
 
-  Standard_EXPORT void Set(const bool b,
-                           const int n,
-                           void* const a);
+  Standard_EXPORT void Set(const bool b, const int n, void* const a);
 
   Standard_EXPORT bool GetI(const int i) const;
 
@@ -47,7 +45,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<bool>> myhe;
-  int                 myne;
+  int                                    myne;
 };
 
 #endif // _TopOpeBRepDS_Marker_HeaderFile

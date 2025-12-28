@@ -20,7 +20,7 @@
 RWStepShape_RWOrientedFace::RWStepShape_RWOrientedFace() {}
 
 void RWStepShape_RWOrientedFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_OrientedFace>&  ent) const
 {
@@ -58,7 +58,7 @@ void RWStepShape_RWOrientedFace::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aFaceElement, aOrientation);
 }
 
-void RWStepShape_RWOrientedFace::WriteStep(StepData_StepWriter&                  SW,
+void RWStepShape_RWOrientedFace::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepShape_OrientedFace>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepShape_RWOrientedFace::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWOrientedFace::Share(const occ::handle<StepShape_OrientedFace>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->FaceElement());

@@ -36,7 +36,8 @@ public:
 
   Standard_EXPORT STEPSelections_Counter();
 
-  Standard_EXPORT void Count(const Interface_Graph& graph, const occ::handle<Standard_Transient>& start);
+  Standard_EXPORT void Count(const Interface_Graph&                 graph,
+                             const occ::handle<Standard_Transient>& start);
 
   Standard_EXPORT void Clear();
 
@@ -69,11 +70,11 @@ private:
 
   Standard_EXPORT void AddCompositeCurve(const occ::handle<StepGeom_CompositeCurve>& ccurve);
 
-  int       myNbFaces;
-  int       myNbShells;
-  int       myNbSolids;
-  int       myNbEdges;
-  int       myNbWires;
+  int                                              myNbFaces;
+  int                                              myNbShells;
+  int                                              myNbSolids;
+  int                                              myNbEdges;
+  int                                              myNbWires;
   NCollection_Map<occ::handle<Standard_Transient>> myMapOfFaces;
   NCollection_Map<occ::handle<Standard_Transient>> myMapOfShells;
   NCollection_Map<occ::handle<Standard_Transient>> myMapOfSolids;

@@ -19,10 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
 StepBasic_Product::StepBasic_Product() {}
 
-void StepBasic_Product::Init(const occ::handle<TCollection_HAsciiString>&          aId,
-                             const occ::handle<TCollection_HAsciiString>&          aName,
-                             const occ::handle<TCollection_HAsciiString>&          aDescription,
-                             const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference)
+void StepBasic_Product::Init(
+  const occ::handle<TCollection_HAsciiString>&                                   aId,
+  const occ::handle<TCollection_HAsciiString>&                                   aName,
+  const occ::handle<TCollection_HAsciiString>&                                   aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference)
 {
   // --- classe own fields ---
   id               = aId;
@@ -67,13 +68,13 @@ void StepBasic_Product::SetFrameOfReference(
   frameOfReference = aFrameOfReference;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> StepBasic_Product::FrameOfReference() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> StepBasic_Product::
+  FrameOfReference() const
 {
   return frameOfReference;
 }
 
-occ::handle<StepBasic_ProductContext> StepBasic_Product::FrameOfReferenceValue(
-  const int num) const
+occ::handle<StepBasic_ProductContext> StepBasic_Product::FrameOfReferenceValue(const int num) const
 {
   return frameOfReference->Value(num);
 }

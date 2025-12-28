@@ -25,7 +25,7 @@ class OpenGl_StructureShadow : public OpenGl_Structure
 public:
   //! Create empty structure
   Standard_EXPORT OpenGl_StructureShadow(const occ::handle<Graphic3d_StructureManager>& theManager,
-                                         const occ::handle<OpenGl_Structure>&           theStructure);
+                                         const occ::handle<OpenGl_Structure>& theStructure);
 
 public:
   //! Raise exception on API misuse.

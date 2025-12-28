@@ -22,7 +22,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -31,10 +30,7 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
-#include <TDF_Label.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
@@ -42,14 +38,10 @@
 #include <TNaming_Tool.hxx>
 #include <TopLoc_Location.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Map.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>
@@ -139,10 +131,10 @@ static void SetLabelNameByShape(const TDF_Label L)
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape&    S,
-                                                   TDF_Label&             L,
-                                                   const bool findWithoutLoc,
-                                                   const bool findSubShape) const
+bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape& S,
+                                       TDF_Label&          L,
+                                       const bool          findWithoutLoc,
+                                       const bool          findSubShape) const
 {
 
   if (myShapeLabels.IsBound(S))
@@ -155,7 +147,7 @@ bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape&    S,
   S0.Location(loc);
   if (myShapeLabels.IsBound(S0))
   {
-    TDF_Label         L1 = myShapeLabels.Find(S0);
+    TDF_Label                       L1 = myShapeLabels.Find(S0);
     NCollection_Sequence<TDF_Label> Labels;
     if (GetUsers(L1, Labels, true))
     {
@@ -201,11 +193,11 @@ bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::Search(const TopoDS_Shape&    S,
-                                           TDF_Label&             L,
-                                           const bool findInstance,
-                                           const bool findComponent,
-                                           const bool findSubShape) const
+bool XCAFDoc_ShapeTool::Search(const TopoDS_Shape& S,
+                               TDF_Label&          L,
+                               const bool          findInstance,
+                               const bool          findComponent,
+                               const bool          findSubShape) const
 {
   // search among shapes
   bool isLocated = !S.Location().IsIdentity();
@@ -254,9 +246,9 @@ bool XCAFDoc_ShapeTool::Search(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape&    S,
-                                              TDF_Label&             L,
-                                              const bool findInstance) const
+bool XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape& S,
+                                  TDF_Label&          L,
+                                  const bool          findInstance) const
 {
   // search for null-located shape
   TopoDS_Shape S0 = S;
@@ -282,7 +274,7 @@ bool XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape&    S,
   TDF_ChildIDIterator it(Label(), TNaming_NamedShape::GetID());
   for (; it.More(); it.Next())
   {
-    TDF_Label                  aLabel = it.Value()->Label();
+    TDF_Label                       aLabel = it.Value()->Label();
     occ::handle<TNaming_NamedShape> NS;
     if (aLabel.FindAttribute(TNaming_NamedShape::GetID(), NS)
         && S0.IsSame(TNaming_Tool::GetShape(NS)))
@@ -298,8 +290,7 @@ bool XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-TDF_Label XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape&    S,
-                                       const bool findInstance) const
+TDF_Label XCAFDoc_ShapeTool::FindShape(const TopoDS_Shape& S, const bool findInstance) const
 {
   TDF_Label L;
   if (FindShape(S, L, findInstance))
@@ -445,8 +436,8 @@ void XCAFDoc_ShapeTool::MakeReference(const TDF_Label&       L,
 //=================================================================================================
 
 bool XCAFDoc_ShapeTool::SetLocation(const TDF_Label&       theShapeLabel,
-                                                const TopLoc_Location& theLoc,
-                                                TDF_Label&             theRefLabel)
+                                    const TopLoc_Location& theLoc,
+                                    TDF_Label&             theRefLabel)
 {
   if (theLoc.IsIdentity())
   {
@@ -576,7 +567,7 @@ static bool prepareAssembly(const TopoDS_Shape& theShape, TopoDS_Shape& theOUTSh
       theOUTShape.Free(true);
 
     NCollection_Sequence<TopoDS_Shape> aSubShapeSeq;
-    TopoDS_Iterator          Iterator(theShape);
+    TopoDS_Iterator                    Iterator(theShape);
     for (; Iterator.More(); Iterator.Next())
       aSubShapeSeq.Append(Iterator.Value());
     for (int i = 1; i <= aSubShapeSeq.Length(); i++)
@@ -603,9 +594,9 @@ static bool prepareAssembly(const TopoDS_Shape& theShape, TopoDS_Shape& theOUTSh
 
 //=================================================================================================
 
-TDF_Label XCAFDoc_ShapeTool::AddShape(const TopoDS_Shape&    theShape,
-                                      const bool makeAssembly,
-                                      const bool makePrepare)
+TDF_Label XCAFDoc_ShapeTool::AddShape(const TopoDS_Shape& theShape,
+                                      const bool          makeAssembly,
+                                      const bool          makePrepare)
 {
   // PTV 17.02.2003 to avoid components without location.
   TopoDS_Shape S = theShape;
@@ -626,14 +617,13 @@ TDF_Label XCAFDoc_ShapeTool::AddShape(const TopoDS_Shape&    theShape,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::RemoveShape(const TDF_Label&       L,
-                                                const bool removeCompletely) const
+bool XCAFDoc_ShapeTool::RemoveShape(const TDF_Label& L, const bool removeCompletely) const
 {
   if (!IsTopLevel(L) || !IsFree(L))
     return false;
 
   occ::handle<TDataStd_TreeNode> aNode;
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
   if (removeCompletely && L.FindAttribute(XCAFDoc::ShapeRefGUID(), aNode) && aNode->HasFather()
       && L.IsAttribute(XCAFDoc_Location::GetID()))
   {
@@ -815,11 +805,11 @@ bool XCAFDoc_ShapeTool::IsFree(const TDF_Label& L)
 // purpose  : Returns number of users (0 if shape is free)
 //=======================================================================
 
-int XCAFDoc_ShapeTool::GetUsers(const TDF_Label&       L,
-                                             NCollection_Sequence<TDF_Label>&     Labels,
-                                             const bool getsubchilds)
+int XCAFDoc_ShapeTool::GetUsers(const TDF_Label&                 L,
+                                NCollection_Sequence<TDF_Label>& Labels,
+                                const bool                       getsubchilds)
 {
-  int          NbUsers = 0;
+  int                            NbUsers = 0;
   occ::handle<TDataStd_TreeNode> Node;
 
   if (!L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node))
@@ -844,8 +834,7 @@ int XCAFDoc_ShapeTool::GetUsers(const TDF_Label&       L,
 
 //=================================================================================================
 
-int XCAFDoc_ShapeTool::NbComponents(const TDF_Label&       L,
-                                                 const bool getsubchilds)
+int XCAFDoc_ShapeTool::NbComponents(const TDF_Label& L, const bool getsubchilds)
 {
   NCollection_Sequence<TDF_Label> subLabels;
   GetComponents(L, subLabels, getsubchilds);
@@ -854,9 +843,9 @@ int XCAFDoc_ShapeTool::NbComponents(const TDF_Label&       L,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::GetComponents(const TDF_Label&       L,
-                                                  NCollection_Sequence<TDF_Label>&     Labels,
-                                                  const bool getsubchilds)
+bool XCAFDoc_ShapeTool::GetComponents(const TDF_Label&                 L,
+                                      NCollection_Sequence<TDF_Label>& Labels,
+                                      const bool                       getsubchilds)
 {
   if (!IsAssembly(L))
     return false;
@@ -888,7 +877,7 @@ TopLoc_Location XCAFDoc_ShapeTool::GetLocation(const TDF_Label& L)
     return LocationAttribute->Get();
 
   occ::handle<TNaming_NamedShape> NS;
-  TopoDS_Shape               S;
+  TopoDS_Shape                    S;
   if (L.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {
     S = TNaming_Tool::GetShape(NS);
@@ -945,9 +934,9 @@ TDF_Label XCAFDoc_ShapeTool::AddComponent(const TDF_Label&       assembly,
 
 //=================================================================================================
 
-TDF_Label XCAFDoc_ShapeTool::AddComponent(const TDF_Label&       assembly,
-                                          const TopoDS_Shape&    comp,
-                                          const bool expand)
+TDF_Label XCAFDoc_ShapeTool::AddComponent(const TDF_Label&    assembly,
+                                          const TopoDS_Shape& comp,
+                                          const bool          expand)
 {
   // get label for component`s shape
   TopoDS_Shape    S0 = comp;
@@ -1009,8 +998,7 @@ void XCAFDoc_ShapeTool::UpdateAssemblies()
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::IsSubShape(const TDF_Label&    shapeL,
-                                               const TopoDS_Shape& sub) const
+bool XCAFDoc_ShapeTool::IsSubShape(const TDF_Label& shapeL, const TopoDS_Shape& sub) const
 {
   occ::handle<XCAFDoc_ShapeMapTool> A;
   if (!shapeL.FindAttribute(XCAFDoc_ShapeMapTool::GetID(), A))
@@ -1028,8 +1016,8 @@ bool XCAFDoc_ShapeTool::IsSubShape(const TDF_Label&    shapeL,
 //=================================================================================================
 
 bool XCAFDoc_ShapeTool::FindSubShape(const TDF_Label&    shapeL,
-                                                 const TopoDS_Shape& sub,
-                                                 TDF_Label&          L) const
+                                     const TopoDS_Shape& sub,
+                                     TDF_Label&          L) const
 {
   if (sub.IsNull())
     return false;
@@ -1054,7 +1042,7 @@ bool XCAFDoc_ShapeTool::FindSubShape(const TDF_Label&    shapeL,
   TDF_ChildIterator aChldLabIt(shapeL);
   for (; aChldLabIt.More(); aChldLabIt.Next())
   {
-    TDF_Label                  aSubLabel = aChldLabIt.Value();
+    TDF_Label                       aSubLabel = aChldLabIt.Value();
     occ::handle<TNaming_NamedShape> NS;
     if (!aSubLabel.FindAttribute(TNaming_NamedShape::GetID(), NS))
       continue;
@@ -1082,16 +1070,16 @@ TDF_Label XCAFDoc_ShapeTool::AddSubShape(const TDF_Label& shapeL, const TopoDS_S
 //=================================================================================================
 
 bool XCAFDoc_ShapeTool::AddSubShape(const TDF_Label&    shapeL,
-                                                const TopoDS_Shape& sub,
-                                                TDF_Label&          addedSubShapeL) const
+                                    const TopoDS_Shape& sub,
+                                    TDF_Label&          addedSubShapeL) const
 {
   addedSubShapeL = TDF_Label();
   // Check if adding subshape is possible
   if (!IsSimpleShape(shapeL) || !IsTopLevel(shapeL))
     return false;
 
-  TopoDS_Shape     aSubShape = sub;
-  bool isDefined = true;
+  TopoDS_Shape aSubShape = sub;
+  bool         isDefined = true;
   if (!IsSubShape(shapeL, sub))
   {
     isDefined = false;
@@ -1183,10 +1171,10 @@ TDF_Label XCAFDoc_ShapeTool::BaseLabel() const
 // purpose  : recursive part of Dump()
 //=======================================================================
 
-static void DumpAssembly(Standard_OStream&      theDumpLog,
-                         const TDF_Label        L,
-                         const int level,
-                         const bool deep)
+static void DumpAssembly(Standard_OStream& theDumpLog,
+                         const TDF_Label   L,
+                         const int         level,
+                         const bool        deep)
 {
   TopoDS_Shape S;
   XCAFDoc_ShapeTool::GetShape(L, S);
@@ -1235,7 +1223,7 @@ static void DumpAssembly(Standard_OStream&      theDumpLog,
   theDumpLog << std::endl;
 
   occ::handle<TDataStd_TreeNode> Node;
-  TDF_ChildIterator         NodeIterator(L);
+  TDF_ChildIterator              NodeIterator(L);
   for (; NodeIterator.More(); NodeIterator.Next())
   {
     DumpAssembly(theDumpLog, NodeIterator.Value(), level + 1, deep);
@@ -1246,8 +1234,7 @@ static void DumpAssembly(Standard_OStream&      theDumpLog,
 
 //=================================================================================================
 
-Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream&      theDumpLog,
-                                          const bool deep) const
+Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const bool deep) const
 {
   int level = 0;
   //   NCollection_Sequence<TopoDS_Shape> SeqShapes;
@@ -1284,10 +1271,10 @@ Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog) const
 
 //=================================================================================================
 
-void XCAFDoc_ShapeTool::DumpShape(Standard_OStream&      theDumpLog,
-                                  const TDF_Label&       L,
-                                  const int level,
-                                  const bool deep)
+void XCAFDoc_ShapeTool::DumpShape(Standard_OStream& theDumpLog,
+                                  const TDF_Label&  L,
+                                  const int         level,
+                                  const bool        deep)
 {
   TopoDS_Shape S;
   if (!XCAFDoc_ShapeTool::GetShape(L, S))
@@ -1344,23 +1331,25 @@ bool XCAFDoc_ShapeTool::IsExternRef(const TDF_Label& L)
 
 //=================================================================================================
 
-void XCAFDoc_ShapeTool::SetExternRefs(const TDF_Label&                      L,
-                                      const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const
+void XCAFDoc_ShapeTool::SetExternRefs(
+  const TDF_Label&                                                   L,
+  const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const
 {
   TDF_Label ShapeLabel = L.NewChild();
   TDataStd_UAttribute::Set(ShapeLabel, XCAFDoc::ExternRefGUID());
   for (int i = 1; i <= SHAS.Length(); i++)
   {
-    TDF_Label                               tmplbl = ShapeLabel.FindChild(i, true);
+    TDF_Label                                    tmplbl = ShapeLabel.FindChild(i, true);
     const occ::handle<TCollection_HAsciiString>& str    = SHAS(i);
-    TCollection_ExtendedString              extstr(str->String());
+    TCollection_ExtendedString                   extstr(str->String());
     TDataStd_Name::Set(tmplbl, extstr);
   }
 }
 
 //=================================================================================================
 
-TDF_Label XCAFDoc_ShapeTool::SetExternRefs(const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const
+TDF_Label XCAFDoc_ShapeTool::SetExternRefs(
+  const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const
 {
   TDF_Label     ShapeLabel;
   TDF_TagSource aTag;
@@ -1369,9 +1358,9 @@ TDF_Label XCAFDoc_ShapeTool::SetExternRefs(const NCollection_Sequence<occ::handl
   TDataStd_UAttribute::Set(ShapeLabel, XCAFDoc::ExternRefGUID());
   for (int i = 1; i <= SHAS.Length(); i++)
   {
-    TDF_Label                               tmplbl = ShapeLabel.FindChild(i, true);
+    TDF_Label                                    tmplbl = ShapeLabel.FindChild(i, true);
     const occ::handle<TCollection_HAsciiString>& str    = SHAS(i);
-    TCollection_ExtendedString              extstr(str->String());
+    TCollection_ExtendedString                   extstr(str->String());
     TDataStd_Name::Set(tmplbl, extstr);
   }
   return ShapeLabel;
@@ -1379,16 +1368,18 @@ TDF_Label XCAFDoc_ShapeTool::SetExternRefs(const NCollection_Sequence<occ::handl
 
 //=================================================================================================
 
-void XCAFDoc_ShapeTool::GetExternRefs(const TDF_Label& L, NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS)
+void XCAFDoc_ShapeTool::GetExternRefs(
+  const TDF_Label&                                             L,
+  NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS)
 {
   occ::handle<TDataStd_Name> TDN;
-  TDF_Label             tmplbl;
+  TDF_Label                  tmplbl;
   for (int i = 1; i <= L.NbChildren(); i++)
   {
     tmplbl = L.FindChild(i);
     if (tmplbl.FindAttribute(TDataStd_Name::GetID(), TDN))
     {
-      TCollection_ExtendedString       extstr = TDN->Get();
+      TCollection_ExtendedString            extstr = TDN->Get();
       occ::handle<TCollection_HAsciiString> str =
         new TCollection_HAsciiString(TCollection_AsciiString(extstr));
       SHAS.Append(str);
@@ -1400,8 +1391,8 @@ void XCAFDoc_ShapeTool::GetExternRefs(const TDF_Label& L, NCollection_Sequence<o
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::GetSHUO(const TDF_Label&           SHUOLabel,
-                                            occ::handle<XCAFDoc_GraphNode>& aSHUOAttr)
+bool XCAFDoc_ShapeTool::GetSHUO(const TDF_Label&                SHUOLabel,
+                                occ::handle<XCAFDoc_GraphNode>& aSHUOAttr)
 {
   if (!SHUOLabel.FindAttribute(XCAFDoc::SHUORefGUID(), aSHUOAttr))
     return false;
@@ -1410,13 +1401,14 @@ bool XCAFDoc_ShapeTool::GetSHUO(const TDF_Label&           SHUOLabel,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::GetAllComponentSHUO(const TDF_Label&       theCompLabel,
-                                                        NCollection_Sequence<occ::handle<TDF_Attribute>>& theSHUOAttrs)
+bool XCAFDoc_ShapeTool::GetAllComponentSHUO(
+  const TDF_Label&                                  theCompLabel,
+  NCollection_Sequence<occ::handle<TDF_Attribute>>& theSHUOAttrs)
 {
   TDF_ChildIterator it(theCompLabel);
   for (; it.More(); it.Next())
   {
-    TDF_Label                 L = it.Value();
+    TDF_Label                      L = it.Value();
     occ::handle<XCAFDoc_GraphNode> aSHUOAttr;
     if (GetSHUO(L, aSHUOAttr))
       theSHUOAttrs.Append(aSHUOAttr);
@@ -1426,8 +1418,8 @@ bool XCAFDoc_ShapeTool::GetAllComponentSHUO(const TDF_Label&       theCompLabel,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>&   labels,
-                                            occ::handle<XCAFDoc_GraphNode>& MainSHUOAttr) const
+bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>& labels,
+                                occ::handle<XCAFDoc_GraphNode>&        MainSHUOAttr) const
 {
   MainSHUOAttr.Nullify();
   // check number of labels
@@ -1475,8 +1467,8 @@ bool XCAFDoc_ShapeTool::SetSHUO(const NCollection_Sequence<TDF_Label>&   labels,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::GetSHUOUpperUsage(const TDF_Label&   NextUsageL,
-                                                      NCollection_Sequence<TDF_Label>& aLabels)
+bool XCAFDoc_ShapeTool::GetSHUOUpperUsage(const TDF_Label&                 NextUsageL,
+                                          NCollection_Sequence<TDF_Label>& aLabels)
 {
   occ::handle<XCAFDoc_GraphNode> aNextSHUO;
   if (!GetSHUO(NextUsageL, aNextSHUO) || aNextSHUO->NbFathers() < 1)
@@ -1490,8 +1482,8 @@ bool XCAFDoc_ShapeTool::GetSHUOUpperUsage(const TDF_Label&   NextUsageL,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::GetSHUONextUsage(const TDF_Label&   UpperUsageL,
-                                                     NCollection_Sequence<TDF_Label>& aLabels)
+bool XCAFDoc_ShapeTool::GetSHUONextUsage(const TDF_Label&                 UpperUsageL,
+                                         NCollection_Sequence<TDF_Label>& aLabels)
 {
   occ::handle<XCAFDoc_GraphNode> aUpperSHUO;
   if (!GetSHUO(UpperUsageL, aUpperSHUO) || aUpperSHUO->NbChildren() < 1)
@@ -1557,10 +1549,10 @@ static bool IsSame(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
          && IsEqual(theShape1.Location(), theShape2.Location());
 }
 
-static bool checkForShape(const TopoDS_Shape& theShape,
-                                      const TopoDS_Shape& theCurSh,
-                                      const TDF_Label&    theUserL,
-                                      NCollection_Sequence<TDF_Label>&  theLabels)
+static bool checkForShape(const TopoDS_Shape&              theShape,
+                          const TopoDS_Shape&              theCurSh,
+                          const TDF_Label&                 theUserL,
+                          NCollection_Sequence<TDF_Label>& theLabels)
 {
   // the label of an assembly which contains this component
   TDF_Label       aSuperUserL = theUserL.Father();
@@ -1595,8 +1587,8 @@ static bool checkForShape(const TopoDS_Shape& theShape,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::FindComponent(const TopoDS_Shape& theShape,
-                                                  NCollection_Sequence<TDF_Label>&  theLabels) const
+bool XCAFDoc_ShapeTool::FindComponent(const TopoDS_Shape&              theShape,
+                                      NCollection_Sequence<TDF_Label>& theLabels) const
 {
   theLabels.Clear();
   // search for a top-level shape that corresponds to this component
@@ -1618,13 +1610,13 @@ bool XCAFDoc_ShapeTool::FindComponent(const TopoDS_Shape& theShape,
 
 //=================================================================================================
 
-static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>&     theaPrevLocMap,
-                                        const occ::handle<XCAFDoc_ShapeTool>& theSTool,
-                                        const TDF_Label&                 theSHUOlab,
-                                        TopoDS_Shape&                    theShape)
+static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& theaPrevLocMap,
+                            const occ::handle<XCAFDoc_ShapeTool>&    theSTool,
+                            const TDF_Label&                         theSHUOlab,
+                            TopoDS_Shape&                            theShape)
 {
-  occ::handle<XCAFDoc_GraphNode> SHUO;
-  NCollection_Sequence<TDF_Label>         aLabSeq;
+  occ::handle<XCAFDoc_GraphNode>  SHUO;
+  NCollection_Sequence<TDF_Label> aLabSeq;
   theSTool->GetSHUONextUsage(theSHUOlab, aLabSeq);
   if (aLabSeq.Length() >= 1)
     for (int i = 1; i <= aLabSeq.Length(); i++)
@@ -1680,7 +1672,7 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetSHUOInstance(const occ::handle<XCAFDoc_GraphN
   // get location of the assembly
   TopLoc_Location loc = XCAFDoc_ShapeTool::GetLocation(aSHUOlab.Father().Father());
   // get location of the component
-  TopLoc_Location             compLoc = XCAFDoc_ShapeTool::GetLocation(aSHUOlab.Father());
+  TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation(aSHUOlab.Father());
   NCollection_IndexedMap<TopLoc_Location> aPrevLocMap;
   // get previous set location
   if (!loc.IsIdentity())
@@ -1695,11 +1687,11 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetSHUOInstance(const occ::handle<XCAFDoc_GraphN
 
 //=================================================================================================
 
-static bool getUsersShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>&     aPrevLocMap,
-                                             const occ::handle<XCAFDoc_ShapeTool>& STool,
-                                             const TDF_Label&                 aSHUOlab,
-                                             const TDF_Label&                 theUserL,
-                                             NCollection_Sequence<TopoDS_Shape>&        theSHUOShapeSeq)
+static bool getUsersShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& aPrevLocMap,
+                                 const occ::handle<XCAFDoc_ShapeTool>&    STool,
+                                 const TDF_Label&                         aSHUOlab,
+                                 const TDF_Label&                         theUserL,
+                                 NCollection_Sequence<TopoDS_Shape>&      theSHUOShapeSeq)
 {
   NCollection_IndexedMap<TopLoc_Location> aNewPrevLocMap;
   // get location of the assembly
@@ -1712,7 +1704,7 @@ static bool getUsersShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>&     aP
   int i;
   for (i = 1; i <= aPrevLocMap.Extent(); i++)
     aNewPrevLocMap.Add(aPrevLocMap.FindKey(i));
-  TDF_Label         L = theUserL.Father();
+  TDF_Label                       L = theUserL.Father();
   NCollection_Sequence<TDF_Label> usersLab;
   ::XCAFDoc_ShapeTool::GetUsers(L, usersLab);
   if (usersLab.Length() == 0)
@@ -1739,12 +1731,12 @@ static bool getUsersShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>&     aP
 
 bool XCAFDoc_ShapeTool::GetAllSHUOInstances(
   const occ::handle<XCAFDoc_GraphNode>& theSHUO,
-  NCollection_Sequence<TopoDS_Shape>&        theSHUOShapeSeq) const
+  NCollection_Sequence<TopoDS_Shape>&   theSHUOShapeSeq) const
 {
   if (theSHUO.IsNull())
     return false;
 
-  TDF_Label                   aSHUOlab = theSHUO->Label();
+  TDF_Label                               aSHUOlab = theSHUO->Label();
   NCollection_IndexedMap<TopLoc_Location> aPrevLocMap;
   // get location of the assembly
   TopLoc_Location loc = XCAFDoc_ShapeTool::GetLocation(aSHUOlab.Father().Father());
@@ -1755,10 +1747,10 @@ bool XCAFDoc_ShapeTool::GetAllSHUOInstances(
     aPrevLocMap.Add(loc);
   aPrevLocMap.Add(compLoc);
   // get label of assembly
-  TDF_Label         L = aSHUOlab.Father().Father();
+  TDF_Label                       L = aSHUOlab.Father().Father();
   NCollection_Sequence<TDF_Label> usersLab;
   ::XCAFDoc_ShapeTool::GetUsers(L, usersLab);
-  TopoDS_Shape                     aShape;
+  TopoDS_Shape                          aShape;
   const occ::handle<XCAFDoc_ShapeTool>& STool = this;
   if (usersLab.Length() == 0)
   {
@@ -1781,10 +1773,11 @@ bool XCAFDoc_ShapeTool::GetAllSHUOInstances(
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_GraphNode> XCAFDoc_ShapeTool::SetInstanceSHUO(const TopoDS_Shape& theShape) const
+occ::handle<XCAFDoc_GraphNode> XCAFDoc_ShapeTool::SetInstanceSHUO(
+  const TopoDS_Shape& theShape) const
 {
-  occ::handle<XCAFDoc_GraphNode> SHUO;
-  NCollection_Sequence<TDF_Label>         aLabels;
+  occ::handle<XCAFDoc_GraphNode>  SHUO;
+  NCollection_Sequence<TDF_Label> aLabels;
   if (FindComponent(theShape, aLabels))
     // set shuo structure on labels of component-assembly structure
     SetSHUO(aLabels, SHUO);
@@ -1793,18 +1786,18 @@ occ::handle<XCAFDoc_GraphNode> XCAFDoc_ShapeTool::SetInstanceSHUO(const TopoDS_S
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::FindSHUO(const NCollection_Sequence<TDF_Label>&   theLabels,
-                                             occ::handle<XCAFDoc_GraphNode>& theSHUOAttr)
+bool XCAFDoc_ShapeTool::FindSHUO(const NCollection_Sequence<TDF_Label>& theLabels,
+                                 occ::handle<XCAFDoc_GraphNode>&        theSHUOAttr)
 {
   NCollection_Sequence<occ::handle<TDF_Attribute>> SHUOAttrs;
-  TDF_Label             aCompLabel = theLabels.Value(1);
+  TDF_Label                                        aCompLabel = theLabels.Value(1);
   if (!::XCAFDoc_ShapeTool::GetAllComponentSHUO(aCompLabel, SHUOAttrs))
     return false;
   // WARNING: manage that each SHUO upper_usage have only one SHUO next_usage
   for (int i = 1; i <= SHUOAttrs.Length(); i++)
   {
-    NCollection_Sequence<TDF_Label>         aCondidate;
-    occ::handle<XCAFDoc_GraphNode> anSHUO = occ::down_cast<XCAFDoc_GraphNode>(SHUOAttrs.Value(i));
+    NCollection_Sequence<TDF_Label> aCondidate;
+    occ::handle<XCAFDoc_GraphNode>  anSHUO = occ::down_cast<XCAFDoc_GraphNode>(SHUOAttrs.Value(i));
     aCondidate.Append(anSHUO->Label().Father());
     while (anSHUO->NbChildren())
     {
@@ -1843,8 +1836,8 @@ bool XCAFDoc_ShapeTool::Expand(const TDF_Label& theShapeL)
     return false;
 
   TopAbs_ShapeEnum aShapeType     = aShape.ShapeType();
-  bool isExpandedType = aShapeType == TopAbs_COMPOUND || aShapeType == TopAbs_COMPSOLID
-                                    || aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
+  bool             isExpandedType = aShapeType == TopAbs_COMPOUND || aShapeType == TopAbs_COMPSOLID
+                        || aShapeType == TopAbs_SHELL || aShapeType == TopAbs_WIRE;
   if (isExpandedType)
   {
     TopoDS_Iterator anIter(aShape);
@@ -1914,9 +1907,9 @@ void XCAFDoc_ShapeTool::makeSubShape(const TDF_Label&       theMainShapeL,
                                      const TopoDS_Shape&    theShape,
                                      const TopLoc_Location& theLoc)
 {
-  TopoDS_Iterator  anIter(theShape);
-  bool isCompoundPart = (GetShape(thePart).ShapeType() == TopAbs_COMPOUND);
-  bool isAssembly     = IsAssembly(thePart);
+  TopoDS_Iterator anIter(theShape);
+  bool            isCompoundPart = (GetShape(thePart).ShapeType() == TopAbs_COMPOUND);
+  bool            isAssembly     = IsAssembly(thePart);
 
   for (; anIter.More(); anIter.Next())
   {
@@ -1978,9 +1971,9 @@ void XCAFDoc_ShapeTool::makeSubShape(const TDF_Label&       theMainShapeL,
 
 //=================================================================================================
 
-bool XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabel,
-                                                    TopoDS_Shape&    theUpdatedShape,
-                                                    NCollection_Map<TDF_Label>&    theUpdated) const
+bool XCAFDoc_ShapeTool::updateComponent(const TDF_Label&            theItemLabel,
+                                        TopoDS_Shape&               theUpdatedShape,
+                                        NCollection_Map<TDF_Label>& theUpdated) const
 {
   if (!IsAssembly(theItemLabel))
     return false; // Do nothing for non-assemblies
@@ -2018,7 +2011,8 @@ bool XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabel,
   // compound has to be updated
   NCollection_List<TopoDS_Shape> aComponentShapes;
   //
-  for (NCollection_Sequence<TDF_Label>::Iterator aCompIt(aComponentLabs); aCompIt.More(); aCompIt.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aCompIt(aComponentLabs); aCompIt.More();
+       aCompIt.Next())
   {
     const TDF_Label& aComponentLab = aCompIt.Value();
 
@@ -2098,9 +2092,8 @@ bool XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabel,
 
 //=================================================================================================
 
-occ::handle<TDataStd_NamedData> XCAFDoc_ShapeTool::GetNamedProperties(
-  const TDF_Label&       theLabel,
-  const bool theToCreate) const
+occ::handle<TDataStd_NamedData> XCAFDoc_ShapeTool::GetNamedProperties(const TDF_Label& theLabel,
+                                                                      const bool theToCreate) const
 {
   occ::handle<TDataStd_NamedData> aNamedProperty;
   if (!theLabel.FindAttribute(TDataStd_NamedData::GetID(), aNamedProperty) && theToCreate)
@@ -2113,12 +2106,11 @@ occ::handle<TDataStd_NamedData> XCAFDoc_ShapeTool::GetNamedProperties(
 
 //=================================================================================================
 
-occ::handle<TDataStd_NamedData> XCAFDoc_ShapeTool::GetNamedProperties(
-  const TopoDS_Shape&    theShape,
-  const bool theToCreate) const
+occ::handle<TDataStd_NamedData> XCAFDoc_ShapeTool::GetNamedProperties(const TopoDS_Shape& theShape,
+                                                                      const bool theToCreate) const
 {
   occ::handle<TDataStd_NamedData> aNamedProperty;
-  TDF_Label                  aLabel;
+  TDF_Label                       aLabel;
   if (!Search(theShape, aLabel))
     return aNamedProperty;
 
@@ -2135,7 +2127,9 @@ void XCAFDoc_ShapeTool::DumpJson(Standard_OStream& theOStream, int theDepth) con
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator aShapeLabelIt(myShapeLabels); aShapeLabelIt.More();
+  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator
+         aShapeLabelIt(myShapeLabels);
+       aShapeLabelIt.More();
        aShapeLabelIt.Next())
   {
     const TopoDS_Shape& aShape = aShapeLabelIt.Key();
@@ -2146,7 +2140,9 @@ void XCAFDoc_ShapeTool::DumpJson(Standard_OStream& theOStream, int theDepth) con
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aShapeLabel)
   }
 
-  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator aSubShapeIt(mySubShapes); aSubShapeIt.More();
+  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator aSubShapeIt(
+         mySubShapes);
+       aSubShapeIt.More();
        aSubShapeIt.Next())
   {
     const TopoDS_Shape& aSubShape = aSubShapeIt.Key();
@@ -2157,7 +2153,9 @@ void XCAFDoc_ShapeTool::DumpJson(Standard_OStream& theOStream, int theDepth) con
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aSubShapeLabel)
   }
 
-  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator aSimpleShapeIt(mySimpleShapes); aSimpleShapeIt.More();
+  for (NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator
+         aSimpleShapeIt(mySimpleShapes);
+       aSimpleShapeIt.More();
        aSimpleShapeIt.Next())
   {
     const TopoDS_Shape& aSimpleShape = aSimpleShapeIt.Key();

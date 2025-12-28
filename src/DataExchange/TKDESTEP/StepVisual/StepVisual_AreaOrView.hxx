@@ -46,7 +46,6 @@ public:
 
   //! returns Value as a PresentationView (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PresentationView> PresentationView() const;
-
 };
 
 #endif // _StepVisual_AreaOrView_HeaderFile

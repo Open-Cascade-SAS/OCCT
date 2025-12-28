@@ -39,17 +39,17 @@ public:
   //! iso. The bounds of the iso are the bounds of
   //! the surface.
   Standard_EXPORT Adaptor3d_IsoCurve(const occ::handle<Adaptor3d_Surface>& S,
-                                     const GeomAbs_IsoType            Iso,
-                                     const double              Param);
+                                     const GeomAbs_IsoType                 Iso,
+                                     const double                          Param);
 
   //! Create an IsoCurve curve. Iso defines the type
   //! (isoU or isov). Param defines the value of the
   //! iso. WFirst,WLast define the bounds of the iso.
   Standard_EXPORT Adaptor3d_IsoCurve(const occ::handle<Adaptor3d_Surface>& S,
-                                     const GeomAbs_IsoType            Iso,
-                                     const double              Param,
-                                     const double              WFirst,
-                                     const double              WLast);
+                                     const GeomAbs_IsoType                 Iso,
+                                     const double                          Param,
+                                     const double                          WFirst,
+                                     const double                          WLast);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
@@ -62,9 +62,9 @@ public:
 
   //! Changes the iso on the current surface.
   Standard_EXPORT void Load(const GeomAbs_IsoType Iso,
-                            const double   Param,
-                            const double   WFirst,
-                            const double   WLast);
+                            const double          Param,
+                            const double          WFirst,
+                            const double          WLast);
 
   const occ::handle<Adaptor3d_Surface>& Surface() const { return mySurface; }
 
@@ -88,15 +88,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                               const double Last,
-                                               const double Tol) const override;
+                                                    const double Last,
+                                                    const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -120,27 +120,23 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -175,10 +171,10 @@ public:
 
 private:
   occ::handle<Adaptor3d_Surface> mySurface;
-  GeomAbs_IsoType           myIso;
-  double             myFirst;
-  double             myLast;
-  double             myParameter;
+  GeomAbs_IsoType                myIso;
+  double                         myFirst;
+  double                         myLast;
+  double                         myParameter;
 };
 
 #endif // _Adaptor3d_IsoCurve_HeaderFile

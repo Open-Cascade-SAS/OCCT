@@ -21,9 +21,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_RepositionedTessellatedGeometricSet,
 //=================================================================================================
 
 void StepVisual_RepositionedTessellatedGeometricSet::Init(
-  const occ::handle<TCollection_HAsciiString>&                       theName,
+  const occ::handle<TCollection_HAsciiString>&                                           theName,
   const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems,
-  const occ::handle<StepGeom_Axis2Placement3d>&                      theLocation)
+  const occ::handle<StepGeom_Axis2Placement3d>& theLocation)
 {
   StepVisual_TessellatedGeometricSet::Init(theName, theItems);
   myLocation = theLocation;

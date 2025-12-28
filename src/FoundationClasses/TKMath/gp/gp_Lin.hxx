@@ -102,8 +102,7 @@ public:
   //! Returns true if this line contains the point theP, that is, if the
   //! distance between point theP and this line is less than or
   //! equal to theLinearTolerance..
-  bool Contains(const gp_Pnt&       theP,
-                            const double theLinearTolerance) const noexcept
+  bool Contains(const gp_Pnt& theP, const double theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -203,8 +202,7 @@ public:
   }
 
   //! Translates a line from the point theP1 to the point theP2.
-  [[nodiscard]] constexpr gp_Lin Translated(const gp_Pnt& theP1,
-                                                 const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Lin Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
   {
     gp_Lin aL = *this;
     aL.pos.Translate(gp_Vec(theP1, theP2));

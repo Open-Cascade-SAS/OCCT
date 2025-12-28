@@ -22,7 +22,7 @@
 //=================================================================================================
 
 void Prs3d_ToolQuadric::FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
-                                  const gp_Trsf&                      theTrsf) const
+                                  const gp_Trsf&                           theTrsf) const
 {
   if (theArray.IsNull())
   {
@@ -42,8 +42,8 @@ void Prs3d_ToolQuadric::FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theAr
       for (int aV = 0; aV <= myStacksNb; ++aV)
       {
         const double aParamV = aV * aStepV;
-        const gp_Pnt        aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
-        const gp_Dir        aNormal = Normal(aParamU, aParamV).Transformed(theTrsf);
+        const gp_Pnt aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
+        const gp_Dir aNormal = Normal(aParamU, aParamV).Transformed(theTrsf);
         theArray->AddVertex(aVertex, aNormal);
 
         if (aU != 0 && aV != 0)
@@ -93,7 +93,8 @@ occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolQuadric::CreateTriangulation(
 
 //=================================================================================================
 
-occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(const gp_Trsf& theTrsf) const
+occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(
+  const gp_Trsf& theTrsf) const
 {
   occ::handle<Poly_Triangulation> aTriangulation =
     new Poly_Triangulation(VerticesNb(), TrianglesNb(), false);
@@ -108,7 +109,7 @@ occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(const
     {
       const float aParamV = aV * aStepV;
       const int   aVertId = aU * (myStacksNb + 1) + (aV + 1);
-      gp_Pnt                   aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
+      gp_Pnt      aVertex = Vertex(aParamU, aParamV).Transformed(theTrsf);
 
       aTriangulation->SetNode(aVertId, aVertex);
       if (aU != 0 && aV != 0)
@@ -128,7 +129,7 @@ occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(const
 
 void Prs3d_ToolQuadric::FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
                                   occ::handle<Poly_Triangulation>&         theTriangulation,
-                                  const gp_Trsf&                      theTrsf) const
+                                  const gp_Trsf&                           theTrsf) const
 {
   theArray         = CreateTriangulation(theTrsf);
   theTriangulation = CreatePolyTriangulation(theTrsf);

@@ -42,7 +42,8 @@ Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint(const Geom2dToIGES_Geom2dEnti
 // Tranfer2dPoint
 //=============================================================================
 
-occ::handle<IGESGeom_Point> Geom2dToIGES_Geom2dPoint::Transfer2dPoint(const occ::handle<Geom2d_Point>& P)
+occ::handle<IGESGeom_Point> Geom2dToIGES_Geom2dPoint::Transfer2dPoint(
+  const occ::handle<Geom2d_Point>& P)
 {
 
   occ::handle<IGESGeom_Point> Piges = new IGESGeom_Point;

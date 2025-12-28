@@ -31,12 +31,12 @@
   (b) = (c);                                                                                       \
   (c) = (d)
 
-bool math_BracketMinimum::LimitAndMayBeSwap(math_Function&      F,
-                                                        const double theA,
-                                                        double&      theB,
-                                                        double&      theFB,
-                                                        double&      theC,
-                                                        double&      theFC) const
+bool math_BracketMinimum::LimitAndMayBeSwap(math_Function& F,
+                                            const double   theA,
+                                            double&        theB,
+                                            double&        theFB,
+                                            double&        theC,
+                                            double&        theFC) const
 {
   theC = Limited(theC);
   if (std::abs(theB - theC) < Precision::PConfusion())
@@ -58,10 +58,10 @@ bool math_BracketMinimum::LimitAndMayBeSwap(math_Function&      F,
 void math_BracketMinimum::Perform(math_Function& F)
 {
 
-  bool OK;
-  double    ulim, u, r, q, fu, dum;
+  bool   OK;
+  double ulim, u, r, q, fu, dum;
 
-  Done                 = false;
+  Done          = false;
   double Lambda = GOLD;
   if (!myFA)
   {
@@ -182,9 +182,7 @@ void math_BracketMinimum::Perform(math_Function& F)
   Done = true;
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const double A,
-                                         const double B)
+math_BracketMinimum::math_BracketMinimum(math_Function& F, const double A, const double B)
     : Done(false),
       Ax(A),
       Bx(B),
@@ -201,10 +199,10 @@ math_BracketMinimum::math_BracketMinimum(math_Function&      F,
   Perform(F);
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const double A,
-                                         const double B,
-                                         const double FA)
+math_BracketMinimum::math_BracketMinimum(math_Function& F,
+                                         const double   A,
+                                         const double   B,
+                                         const double   FA)
     : Done(false),
       Ax(A),
       Bx(B),
@@ -221,11 +219,11 @@ math_BracketMinimum::math_BracketMinimum(math_Function&      F,
   Perform(F);
 }
 
-math_BracketMinimum::math_BracketMinimum(math_Function&      F,
-                                         const double A,
-                                         const double B,
-                                         const double FA,
-                                         const double FB)
+math_BracketMinimum::math_BracketMinimum(math_Function& F,
+                                         const double   A,
+                                         const double   B,
+                                         const double   FA,
+                                         const double   FB)
     : Done(false),
       Ax(A),
       Bx(B),
@@ -251,9 +249,7 @@ void math_BracketMinimum::Values(double& A, double& B, double& C) const
   C = Cx;
 }
 
-void math_BracketMinimum::FunctionValues(double& FA,
-                                         double& FB,
-                                         double& FC) const
+void math_BracketMinimum::FunctionValues(double& FA, double& FB, double& FC) const
 {
 
   StdFail_NotDone_Raise_if(!Done, " ");

@@ -35,7 +35,7 @@ public:
   Standard_EXPORT BRep_PolygonOnClosedSurface(const occ::handle<Poly_Polygon2D>& P1,
                                               const occ::handle<Poly_Polygon2D>& P2,
                                               const occ::handle<Geom_Surface>&   S,
-                                              const TopLoc_Location&        L);
+                                              const TopLoc_Location&             L);
 
   //! returns True.
   Standard_EXPORT virtual bool IsPolygonOnClosedSurface() const override;
@@ -49,7 +49,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 

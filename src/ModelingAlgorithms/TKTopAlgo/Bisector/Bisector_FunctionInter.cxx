@@ -73,13 +73,11 @@ bool Bisector_FunctionInter::Derivative(const double X, double& D)
 
 //=================================================================================================
 
-bool Bisector_FunctionInter::Values(const double X,
-                                                double&      F,
-                                                double&      D)
+bool Bisector_FunctionInter::Values(const double X, double& F, double& D)
 {
-  gp_Pnt2d      PC, PB1, PB2;
-  gp_Vec2d      TC, TB1, TB2;
-  double F1, F2, DF1, DF2;
+  gp_Pnt2d PC, PB1, PB2;
+  gp_Vec2d TC, TB1, TB2;
+  double   F1, F2, DF1, DF2;
 
   curve->D1(X, PC, TC);
   bisector1->D1(X, PB1, TB1);

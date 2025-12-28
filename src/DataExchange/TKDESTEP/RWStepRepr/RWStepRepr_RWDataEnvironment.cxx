@@ -24,7 +24,6 @@
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepRepr_PropertyDefinitionRepresentation.hxx>
 
 //=================================================================================================
 
@@ -33,7 +32,7 @@ RWStepRepr_RWDataEnvironment::RWStepRepr_RWDataEnvironment() {}
 //=================================================================================================
 
 void RWStepRepr_RWDataEnvironment::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepRepr_DataEnvironment>& ent) const
 {
@@ -49,12 +48,14 @@ void RWStepRepr_RWDataEnvironment::ReadStep(const occ::handle<StepData_StepReade
   occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> aElements;
-  int                                           sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>
+      aElements;
+  int sub3 = 0;
   if (data->ReadSubList(num, 3, "elements", ach, sub3))
   {
-    int nb0  = data->NbParams(sub3);
-    aElements             = new NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>(1, nb0);
+    int nb0 = data->NbParams(sub3);
+    aElements =
+      new NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>(1, nb0);
     int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -75,7 +76,7 @@ void RWStepRepr_RWDataEnvironment::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&                    SW,
+void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepRepr_DataEnvironment>& ent) const
 {
 
@@ -97,7 +98,7 @@ void RWStepRepr_RWDataEnvironment::WriteStep(StepData_StepWriter&               
 //=================================================================================================
 
 void RWStepRepr_RWDataEnvironment::Share(const occ::handle<StepRepr_DataEnvironment>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   // Own fields of DataEnvironment

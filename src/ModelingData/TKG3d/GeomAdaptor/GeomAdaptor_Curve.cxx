@@ -48,11 +48,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 #include "../Geom/Geom_OffsetCurveUtils.pxx"
 
@@ -105,17 +102,16 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
 //                    m = max multiplicity of the Knots between U1 and U2
 //=======================================================================
 
-GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const double U1,
-                                                 const double U2) const
+GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const double U1, const double U2) const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_BSplineCurve, " ");
-  const auto&                    aBSpl  = std::get<BSplineData>(myCurveData).Curve;
-  int               Nb     = aBSpl->NbKnots();
-  int               Index1 = 0;
-  int               Index2 = 0;
-  double                  newFirst, newLast;
-  const NCollection_Array1<double>&    TK = aBSpl->Knots();
-  const NCollection_Array1<int>& TM = aBSpl->Multiplicities();
+  const auto&                       aBSpl  = std::get<BSplineData>(myCurveData).Curve;
+  int                               Nb     = aBSpl->NbKnots();
+  int                               Index1 = 0;
+  int                               Index2 = 0;
+  double                            newFirst, newLast;
+  const NCollection_Array1<double>& TK = aBSpl->Knots();
+  const NCollection_Array1<int>&    TM = aBSpl->Multiplicities();
   BSplCLib::LocateParameter(aBSpl->Degree(),
                             TK,
                             TM,
@@ -195,8 +191,8 @@ void GeomAdaptor_Curve::Reset()
 //=================================================================================================
 
 void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
-                             const double       UFirst,
-                             const double       ULast)
+                             const double                   UFirst,
+                             const double                   ULast)
 {
   myFirst = UFirst;
   myLast  = ULast;
@@ -245,9 +241,9 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetCurve))
     {
-      myTypeCurve                            = GeomAbs_OffsetCurve;
+      myTypeCurve                                 = GeomAbs_OffsetCurve;
       occ::handle<Geom_OffsetCurve> anOffsetCurve = occ::down_cast<Geom_OffsetCurve>(C);
-      OffsetData               anOffsetData;
+      OffsetData                    anOffsetData;
       anOffsetData.BasisAdaptor = new GeomAdaptor_Curve(anOffsetCurve->BasisCurve());
       anOffsetData.Offset       = anOffsetCurve->Offset();
       anOffsetData.Direction    = anOffsetCurve->Direction();
@@ -360,8 +356,8 @@ int GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 
   else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
-    int myNbIntervals = 1;
-    GeomAbs_Shape    BaseS         = GeomAbs_C0;
+    int           myNbIntervals = 1;
+    GeomAbs_Shape BaseS         = GeomAbs_C0;
     switch (S)
     {
       case GeomAbs_G1:
@@ -453,8 +449,8 @@ void GeomAdaptor_Curve::Intervals(NCollection_Array1<double>& T, const GeomAbs_S
 
   else if (myTypeCurve == GeomAbs_OffsetCurve)
   {
-    int myNbIntervals = 1;
-    GeomAbs_Shape    BaseS         = GeomAbs_C0;
+    int           myNbIntervals = 1;
+    GeomAbs_Shape BaseS         = GeomAbs_C0;
     switch (S)
     {
       case GeomAbs_G1:
@@ -503,8 +499,8 @@ void GeomAdaptor_Curve::Intervals(NCollection_Array1<double>& T, const GeomAbs_S
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::Trim(const double First,
-                                                const double Last,
-                                                const double /*Tol*/) const
+                                                     const double Last,
+                                                     const double /*Tol*/) const
 {
   return occ::handle<GeomAdaptor_Curve>(new GeomAdaptor_Curve(myCurve, First, Last));
 }
@@ -543,10 +539,10 @@ void GeomAdaptor_Curve::RebuildCache(const double theParameter) const
   if (myTypeCurve == GeomAbs_BezierCurve)
   {
     // Create cache for Bezier
-    auto&                    aCache  = std::get<BezierData>(myCurveData).Cache;
+    auto&                         aCache  = std::get<BezierData>(myCurveData).Cache;
     occ::handle<Geom_BezierCurve> aBezier = occ::down_cast<Geom_BezierCurve>(myCurve);
-    int         aDeg    = aBezier->Degree();
-    NCollection_Array1<double>     aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
+    int                           aDeg    = aBezier->Degree();
+    NCollection_Array1<double>    aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
     if (aCache.IsNull())
       aCache = new BSplCLib_Cache(aDeg,
                                   aBezier->IsPeriodic(),
@@ -573,9 +569,7 @@ void GeomAdaptor_Curve::RebuildCache(const double theParameter) const
 
 //=================================================================================================
 
-bool GeomAdaptor_Curve::IsBoundary(const double theU,
-                                               int&   theSpanStart,
-                                               int&   theSpanFinish) const
+bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& theSpanFinish) const
 {
   const auto* aBSplData = std::get_if<BSplineData>(&myCurveData);
   if (aBSplData != nullptr && (theU == myFirst || theU == myLast))
@@ -626,8 +620,8 @@ void GeomAdaptor_Curve::D0(const double U, gp_Pnt& P) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int aStart = 0, aFinish = 0;
-      auto&            aBSplData = std::get<BSplineData>(myCurveData);
+      int   aStart = 0, aFinish = 0;
+      auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplData.Curve->LocalD0(U, aStart, aFinish, P);
@@ -675,8 +669,8 @@ void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int aStart = 0, aFinish = 0;
-      auto&            aBSplData = std::get<BSplineData>(myCurveData);
+      int   aStart = 0, aFinish = 0;
+      auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplData.Curve->LocalD1(U, aStart, aFinish, P, V);
@@ -725,8 +719,8 @@ void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
     }
 
     case GeomAbs_BSplineCurve: {
-      int aStart = 0, aFinish = 0;
-      auto&            aBSplData = std::get<BSplineData>(myCurveData);
+      int   aStart = 0, aFinish = 0;
+      auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplData.Curve->LocalD2(U, aStart, aFinish, P, V1, V2);
@@ -763,11 +757,7 @@ void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 
 //=================================================================================================
 
-void GeomAdaptor_Curve::D3(const double U,
-                           gp_Pnt&             P,
-                           gp_Vec&             V1,
-                           gp_Vec&             V2,
-                           gp_Vec&             V3) const
+void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
   switch (myTypeCurve)
   {
@@ -780,8 +770,8 @@ void GeomAdaptor_Curve::D3(const double U,
     }
 
     case GeomAbs_BSplineCurve: {
-      int aStart = 0, aFinish = 0;
-      auto&            aBSplData = std::get<BSplineData>(myCurveData);
+      int   aStart = 0, aFinish = 0;
+      auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplData.Curve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);

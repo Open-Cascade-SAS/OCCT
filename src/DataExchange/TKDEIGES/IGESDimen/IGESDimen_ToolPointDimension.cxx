@@ -35,7 +35,7 @@ IGESDimen_ToolPointDimension::IGESDimen_ToolPointDimension() {}
 
 void IGESDimen_ToolPointDimension::ReadOwnParams(const occ::handle<IGESDimen_PointDimension>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+                                                 IGESData_ParamReader& PR) const
 {
   occ::handle<IGESDimen_GeneralNote> tempNote;
   occ::handle<IGESDimen_LeaderArrow> leadArr;
@@ -64,7 +64,7 @@ void IGESDimen_ToolPointDimension::ReadOwnParams(const occ::handle<IGESDimen_Poi
 }
 
 void IGESDimen_ToolPointDimension::WriteOwnParams(const occ::handle<IGESDimen_PointDimension>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->LeaderArrow());
@@ -72,7 +72,7 @@ void IGESDimen_ToolPointDimension::WriteOwnParams(const occ::handle<IGESDimen_Po
 }
 
 void IGESDimen_ToolPointDimension::OwnShared(const occ::handle<IGESDimen_PointDimension>& ent,
-                                             Interface_EntityIterator&               iter) const
+                                             Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->LeaderArrow());
@@ -81,7 +81,7 @@ void IGESDimen_ToolPointDimension::OwnShared(const occ::handle<IGESDimen_PointDi
 
 void IGESDimen_ToolPointDimension::OwnCopy(const occ::handle<IGESDimen_PointDimension>& another,
                                            const occ::handle<IGESDimen_PointDimension>& ent,
-                                           Interface_CopyTool&                     TC) const
+                                           Interface_CopyTool&                          TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, tempNote, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_LeaderArrow, tempArrow, TC.Transferred(another->LeaderArrow()));
@@ -110,9 +110,9 @@ void IGESDimen_ToolPointDimension::OwnCheck(const occ::handle<IGESDimen_PointDim
 }
 
 void IGESDimen_ToolPointDimension::OwnDump(const occ::handle<IGESDimen_PointDimension>& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const int                  level) const
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int                                    level) const
 {
   S << "IGESDimen_PointDimension\n";
   int sublevel = (level <= 4) ? 0 : 1;

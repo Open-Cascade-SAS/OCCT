@@ -42,9 +42,9 @@ public:
   //! defined by the attribute manager aDrawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                     aPntAttach,
-                                  const gp_Pnt&                     aPntEnd,
-                                  const TCollection_ExtendedString& aText);
+                                  const gp_Pnt&                          aPntAttach,
+                                  const gp_Pnt&                          aPntEnd,
+                                  const TCollection_ExtendedString&      aText);
 
   //! Defines the display of texts, symbols and icons used
   //! to present 2D chamfers.
@@ -57,11 +57,10 @@ public:
   //! value of the enumeration DsgPrs_Arrowside.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                     aPntAttach,
-                                  const gp_Pnt&                     aPntEnd,
-                                  const TCollection_ExtendedString& aText,
-                                  const DsgPrs_ArrowSide            ArrowSide);
-
+                                  const gp_Pnt&                          aPntAttach,
+                                  const gp_Pnt&                          aPntEnd,
+                                  const TCollection_ExtendedString&      aText,
+                                  const DsgPrs_ArrowSide                 ArrowSide);
 };
 
 #endif // _DsgPrs_Chamf2dPresentation_HeaderFile

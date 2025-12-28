@@ -53,7 +53,6 @@ public:
   //! - Curve extension to point
   //! - Surface extension by length
   Standard_EXPORT static void ModificationCommands(Draw_Interpretor& I);
-
 };
 
 #endif // _GeomliteTest_HeaderFile

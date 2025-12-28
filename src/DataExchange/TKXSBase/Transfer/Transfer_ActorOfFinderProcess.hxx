@@ -44,17 +44,17 @@ public:
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
     const occ::handle<Transfer_Finder>&           start,
     const occ::handle<Transfer_ProcessForFinder>& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Transfer_Finder>&        start,
     const occ::handle<Transfer_FinderProcess>& TP,
-    const Message_ProgressRange&          theProgress = Message_ProgressRange());
+    const Message_ProgressRange&               theProgress = Message_ProgressRange());
 
   Standard_EXPORT virtual occ::handle<Standard_Transient> TransferTransient(
     const occ::handle<Standard_Transient>&     start,
     const occ::handle<Transfer_FinderProcess>& TP,
-    const Message_ProgressRange&          theProgress = Message_ProgressRange());
+    const Message_ProgressRange&               theProgress = Message_ProgressRange());
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.

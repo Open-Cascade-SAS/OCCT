@@ -21,8 +21,7 @@
 
 //=================================================================================================
 
-Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& C,
-                                               const double         Tol)
+Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& C, const double Tol)
     : theCurve(C)
 {
   epsX = Tol;
@@ -66,9 +65,7 @@ bool Geom2dLProp_FuncCurExt::Derivative(const double X, double& D)
 
 //=================================================================================================
 
-bool Geom2dLProp_FuncCurExt::Values(const double X,
-                                                double&      F,
-                                                double&      D)
+bool Geom2dLProp_FuncCurExt::Values(const double X, double& F, double& D)
 {
   double F2;
   double Dx = epsX / 100.;
@@ -92,10 +89,10 @@ bool Geom2dLProp_FuncCurExt::Values(const double X,
 //=============================================================================
 bool Geom2dLProp_FuncCurExt::IsMinKC(const double X) const
 {
-  gp_Pnt2d      P1;
-  gp_Vec2d      V1, V2, V3;
-  double Dx = epsX;
-  double KC, KP;
+  gp_Pnt2d P1;
+  gp_Vec2d V1, V2, V3;
+  double   Dx = epsX;
+  double   KC, KP;
 
   Geom2dLProp_Curve2dTool::D3(theCurve, X, P1, V1, V2, V3);
   double CPV1V2 = V1.Crossed(V2);

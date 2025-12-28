@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUnitAssignedContext, StepRepr_Represen
 StepRepr_GlobalUnitAssignedContext::StepRepr_GlobalUnitAssignedContext() {}
 
 void StepRepr_GlobalUnitAssignedContext::Init(
-  const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
-  const occ::handle<TCollection_HAsciiString>&     aContextType,
+  const occ::handle<TCollection_HAsciiString>&                              aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&                              aContextType,
   const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   // --- classe own fields ---
@@ -35,13 +35,13 @@ void StepRepr_GlobalUnitAssignedContext::SetUnits(
   units = aUnits;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> StepRepr_GlobalUnitAssignedContext::Units() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>
+  StepRepr_GlobalUnitAssignedContext::Units() const
 {
   return units;
 }
 
-occ::handle<StepBasic_NamedUnit> StepRepr_GlobalUnitAssignedContext::UnitsValue(
-  const int num) const
+occ::handle<StepBasic_NamedUnit> StepRepr_GlobalUnitAssignedContext::UnitsValue(const int num) const
 {
   return units->Value(num);
 }

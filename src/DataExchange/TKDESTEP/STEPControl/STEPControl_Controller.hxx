@@ -54,10 +54,10 @@ public:
   //! -2 bad model (requires a StepModel)
   //! modeshape : 1 Facetted BRep, 2 Shell, 3 Manifold Solid
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
-    const TopoDS_Shape&                     shape,
+    const TopoDS_Shape&                          shape,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,
-    const int                  modetrans = 0,
+    const int                                    modetrans = 0,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const override;
 
   //! Standard Initialisation. It creates a Controller for STEP
@@ -66,7 +66,6 @@ public:
   Standard_EXPORT static bool Init();
 
   DEFINE_STANDARD_RTTIEXT(STEPControl_Controller, XSControl_Controller)
-
 };
 
 #endif // _STEPControl_Controller_HeaderFile

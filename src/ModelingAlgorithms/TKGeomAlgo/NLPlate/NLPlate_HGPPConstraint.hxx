@@ -87,9 +87,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(NLPlate_HGPPConstraint, Standard_Transient)
 
 protected:
-  gp_XY            myUV;
-  int myActiveOrder;
-
+  gp_XY myUV;
+  int   myActiveOrder;
 };
 
 #endif // _NLPlate_HGPPConstraint_HeaderFile

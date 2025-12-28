@@ -31,9 +31,7 @@ class math_FunctionSample
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT math_FunctionSample(const double    A,
-                                      const double    B,
-                                      const int N);
+  Standard_EXPORT math_FunctionSample(const double A, const double B, const int N);
 
   //! Returns the bounds of parameters.
   Standard_EXPORT virtual void Bounds(double& A, double& B) const;
@@ -47,9 +45,9 @@ public:
   Standard_EXPORT virtual double GetParameter(const int Index) const;
 
 private:
-  double    a;
-  double    b;
-  int n;
+  double a;
+  double b;
+  int    n;
 };
 
 #endif // _math_FunctionSample_HeaderFile

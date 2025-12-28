@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepShape_TransitionalShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_TransitionalShapeRepresentation, StepShape_ShapeRepresentation)
-
 };
 
 #endif // _StepShape_TransitionalShapeRepresentation_HeaderFile

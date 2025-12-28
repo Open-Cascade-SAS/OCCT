@@ -22,7 +22,7 @@
 RWStepShape_RWPath::RWStepShape_RWPath() {}
 
 void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                 num,
+                                  const int                                   num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepShape_Path>&          ent) const
 {
@@ -41,12 +41,12 @@ void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- own field : edgeList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> aEdgeList;
-  occ::handle<StepShape_OrientedEdge>          anent2;
-  int                        nsub2;
+  occ::handle<StepShape_OrientedEdge>                                   anent2;
+  int                                                                   nsub2;
   if (data->ReadSubList(num, 2, "edge_list", ach, nsub2))
   {
-    int nb2 = data->NbParams(nsub2);
-    aEdgeList            = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb2);
+    int nb2   = data->NbParams(nsub2);
+    aEdgeList = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -65,7 +65,8 @@ void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName, aEdgeList);
 }
 
-void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const occ::handle<StepShape_Path>& ent) const
+void RWStepShape_RWPath::WriteStep(StepData_StepWriter&               SW,
+                                   const occ::handle<StepShape_Path>& ent) const
 {
 
   // --- inherited field name ---
@@ -83,7 +84,7 @@ void RWStepShape_RWPath::WriteStep(StepData_StepWriter& SW, const occ::handle<St
 }
 
 void RWStepShape_RWPath::Share(const occ::handle<StepShape_Path>& ent,
-                               Interface_EntityIterator&     iter) const
+                               Interface_EntityIterator&          iter) const
 {
 
   int nbElem1 = ent->NbEdgeList();

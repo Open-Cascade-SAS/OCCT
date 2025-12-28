@@ -40,17 +40,16 @@ public:
   Standard_EXPORT void Load(const TopoDS_Face& F);
 
   //! compute position of point <P> regarding with the face <F>.
-  Standard_EXPORT TopAbs_State Classify(const TopoDS_Face&  F,
-                                        const gp_Pnt2d&     P,
-                                        const double Tol);
+  Standard_EXPORT TopAbs_State Classify(const TopoDS_Face& F, const gp_Pnt2d& P, const double Tol);
 
   Standard_EXPORT TopAbs_State State() const;
 
 private:
   occ::handle<BRepTopAdaptor_TopolTool> myTopolTool;
   occ::handle<BRepAdaptor_Surface>      myHSurface;
-  NCollection_DataMap<TopoDS_Shape, occ::handle<BRepTopAdaptor_TopolTool>, TopTools_ShapeMapHasher>    myTopolToolMap;
-  TopAbs_State                     myState;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<BRepTopAdaptor_TopolTool>, TopTools_ShapeMapHasher>
+               myTopolToolMap;
+  TopAbs_State myState;
 };
 
 #endif // _TopOpeBRep_PointClassifier_HeaderFile

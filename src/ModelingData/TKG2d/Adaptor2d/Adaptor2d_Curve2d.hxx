@@ -68,15 +68,16 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
+                                         const GeomAbs_Shape         S) const;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> Trim(const double First,
-                                                         const double Last,
-                                                         const double Tol) const;
+                                                              const double Last,
+                                                              const double Tol) const;
 
   Standard_EXPORT virtual bool IsClosed() const;
 
@@ -100,20 +101,17 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT virtual void D2(const double U,
-                                  gp_Pnt2d&           P,
-                                  gp_Vec2d&           V1,
-                                  gp_Vec2d&           V2) const;
+  Standard_EXPORT virtual void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT virtual void D3(const double U,
-                                  gp_Pnt2d&           P,
-                                  gp_Vec2d&           V1,
-                                  gp_Vec2d&           V2,
-                                  gp_Vec2d&           V3) const;
+                                  gp_Pnt2d&    P,
+                                  gp_Vec2d&    V1,
+                                  gp_Vec2d&    V2,
+                                  gp_Vec2d&    V3) const;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.

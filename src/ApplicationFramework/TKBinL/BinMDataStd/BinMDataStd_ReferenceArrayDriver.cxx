@@ -44,10 +44,9 @@ occ::handle<TDF_Attribute> BinMDataStd_ReferenceArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_ReferenceArrayDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_ReferenceArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                             const occ::handle<TDF_Attribute>& theTarget,
+                                             BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -80,9 +79,10 @@ bool BinMDataStd_ReferenceArrayDriver::Paste(
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                             BinObjMgt_Persistent&        theTarget,
-                                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_ReferenceArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_ReferenceArray> anAtt = occ::down_cast<TDataStd_ReferenceArray>(theSource);
   int aFirstInd = anAtt->Lower(), aLastInd = anAtt->Upper(), i = aFirstInd;

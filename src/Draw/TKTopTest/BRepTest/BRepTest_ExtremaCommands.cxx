@@ -47,7 +47,7 @@ static int distance(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape S2 = DBRep::Get(name2);
   if (S1.IsNull() || S2.IsNull())
     return 1;
-  gp_Pnt        P1, P2;
+  gp_Pnt P1, P2;
   double D;
   if (!BRepExtrema_Poly::Distance(S1, S2, P1, P2, D))
     return 1;
@@ -68,8 +68,8 @@ static int distmini(Draw_Interpretor& di, int n, const char** a)
   const char * ns1 = (a[2]), *ns2 = (a[3]), *ns0 = (a[1]);
   TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
 
-  double    aDeflection = Precision::Confusion();
-  int anIndex     = 4;
+  double aDeflection = Precision::Confusion();
+  int    anIndex     = 4;
   if (n >= 5 && a[4][0] != '-')
   {
     aDeflection = Draw::Atof(a[4]);
@@ -93,7 +93,7 @@ static int distmini(Draw_Interpretor& di, int n, const char** a)
   }
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
-  BRepExtrema_DistShapeShape     dst;
+  BRepExtrema_DistShapeShape          dst;
   dst.LoadS1(S1);
   dst.LoadS2(S2);
   dst.SetDeflection(aDeflection);
@@ -323,7 +323,8 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
     TopoDS_Compound aFaceCompound1;
     aCompBuilder.MakeCompound(aFaceCompound1);
 
-    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt1(aTool.OverlapSubShapes1());
+    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt1(
+           aTool.OverlapSubShapes1());
          anIt1.More();
          anIt1.Next())
     {
@@ -339,7 +340,8 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
     TopoDS_Compound aFaceCompound2;
     aCompBuilder.MakeCompound(aFaceCompound2);
 
-    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt2(aTool.OverlapSubShapes2());
+    for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator anIt2(
+           aTool.OverlapSubShapes2());
          anIt2.More();
          anIt2.Next())
     {
@@ -363,9 +365,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
 
 //=================================================================================================
 
-static int ShapeSelfIntersection(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgs)
+static int ShapeSelfIntersection(Draw_Interpretor& theDI, int theNbArgs, const char** theArgs)
 {
   if (theNbArgs < 2 || theNbArgs > 5)
   {
@@ -380,8 +380,8 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
     return 1;
   }
 
-  double    aTolerance = 0.0;
-  bool aToProfile = false;
+  double aTolerance = 0.0;
+  bool   aToProfile = false;
 
   for (int anArgIdx = 2; anArgIdx < theNbArgs; ++anArgIdx)
   {
@@ -481,8 +481,8 @@ static int ShapeSelfIntersection(Draw_Interpretor& theDI,
 
 void BRepTest::ExtremaCommands(Draw_Interpretor& theCommands)
 {
-  static const char*      aGroup = "TOPOLOGY Extrema commands";
-  static bool isDone = false;
+  static const char* aGroup = "TOPOLOGY Extrema commands";
+  static bool        isDone = false;
   if (isDone)
   {
     return;

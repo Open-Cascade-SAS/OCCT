@@ -55,7 +55,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_OffsetDimension, PrsDim_Relation)
 
 PrsDim_OffsetDimension::PrsDim_OffsetDimension(const TopoDS_Shape&               FistShape,
                                                const TopoDS_Shape&               SecondShape,
-                                               const double               aVal,
+                                               const double                      aVal,
                                                const TCollection_ExtendedString& aText)
     : PrsDim_Relation(),
       myFAttach(0., 0., 0.),
@@ -178,14 +178,14 @@ void PrsDim_OffsetDimension::ComputeSelection(const occ::handle<SelectMgr_Select
     }
 
     // Text
-    double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+    double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
     occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                  Tcurpos.X(),
-                                                                  Tcurpos.Y(),
-                                                                  Tcurpos.Z(),
-                                                                  Tcurpos.X() + size,
-                                                                  Tcurpos.Y() + size,
-                                                                  Tcurpos.Z() + size);
+                                                                       Tcurpos.X(),
+                                                                       Tcurpos.Y(),
+                                                                       Tcurpos.Z(),
+                                                                       Tcurpos.X() + size,
+                                                                       Tcurpos.Y() + size,
+                                                                       Tcurpos.Z() + size);
     aSel->Add(box);
   }
 
@@ -226,7 +226,7 @@ void PrsDim_OffsetDimension::ComputeSelection(const occ::handle<SelectMgr_Select
 //=================================================================================================
 
 void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presentation>& aprs,
-                                                  const gp_Trsf&                    aTrsf)
+                                                  const gp_Trsf&                         aTrsf)
 {
   BRepAdaptor_Surface surf1(TopoDS::Face(myFShape));
   BRepAdaptor_Surface surf2(TopoDS::Face(mySShape));
@@ -251,8 +251,8 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presen
   double FirstUParam = surf1.FirstUParameter();
   double FirstVParam = surf1.FirstVParameter();
   double LastVParam  = surf1.LastVParameter();
-  gp_Pnt        P1First     = surf1.Value(FirstUParam, FirstVParam);
-  gp_Pnt        P1Last      = surf1.Value(FirstUParam, LastVParam);
+  gp_Pnt P1First     = surf1.Value(FirstUParam, FirstVParam);
+  gp_Pnt P1Last      = surf1.Value(FirstUParam, LastVParam);
 
   if (surf2.GetType() == GeomAbs_Cylinder)
   {
@@ -351,7 +351,7 @@ void PrsDim_OffsetDimension::ComputeTwoAxesOffset(const occ::handle<Prs3d_Presen
 //=================================================================================================
 
 void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const occ::handle<Prs3d_Presentation>& aprs,
-                                                   const gp_Trsf&                    aTrsf)
+                                                   const gp_Trsf&                         aTrsf)
 {
   gp_Dir norm1 = myDirAttach;
   gp_Pnt curpos;
@@ -472,7 +472,7 @@ void PrsDim_OffsetDimension::ComputeTwoFacesOffset(const occ::handle<Prs3d_Prese
 //=================================================================================================
 
 void PrsDim_OffsetDimension::ComputeAxeFaceOffset(const occ::handle<Prs3d_Presentation>& aprs,
-                                                  const gp_Trsf&                    aTrsf)
+                                                  const gp_Trsf&                         aTrsf)
 {
   BRepBuilderAPI_Transform transform1(myFShape, aTrsf, true);
   TopoDS_Shape             myTFShape = transform1.Shape();

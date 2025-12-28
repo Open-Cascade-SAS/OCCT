@@ -35,8 +35,7 @@ StepAP203_PersonOrganizationItem::StepAP203_PersonOrganizationItem() {}
 
 //=================================================================================================
 
-int StepAP203_PersonOrganizationItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP203_PersonOrganizationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -129,8 +128,8 @@ occ::handle<StepBasic_Contract> StepAP203_PersonOrganizationItem::Contract() con
 
 //=================================================================================================
 
-occ::handle<StepBasic_SecurityClassification> StepAP203_PersonOrganizationItem::SecurityClassification()
-  const
+occ::handle<StepBasic_SecurityClassification> StepAP203_PersonOrganizationItem::
+  SecurityClassification() const
 {
   return occ::down_cast<StepBasic_SecurityClassification>(Value());
 }

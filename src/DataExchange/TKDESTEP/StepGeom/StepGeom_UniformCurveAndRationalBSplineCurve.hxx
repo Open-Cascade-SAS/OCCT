@@ -27,8 +27,6 @@
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 class StepGeom_UniformCurve;
 class StepGeom_RationalBSplineCurve;
 class TCollection_HAsciiString;
@@ -40,22 +38,26 @@ public:
   //! Returns a UniformCurveAndRationalBSplineCurve
   Standard_EXPORT StepGeom_UniformCurveAndRationalBSplineCurve();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const int                          aDegree,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-                            const StepGeom_BSplineCurveForm                 aCurveForm,
-                            const StepData_Logical                          aClosedCurve,
-                            const StepData_Logical                          aSelfIntersect,
-                            const occ::handle<StepGeom_UniformCurve>&            aUniformCurve,
-                            const occ::handle<StepGeom_RationalBSplineCurve>&    aRationalBSplineCurve);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const int                                    aDegree,
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
+                                                      aControlPointsList,
+    const StepGeom_BSplineCurveForm                   aCurveForm,
+    const StepData_Logical                            aClosedCurve,
+    const StepData_Logical                            aSelfIntersect,
+    const occ::handle<StepGeom_UniformCurve>&         aUniformCurve,
+    const occ::handle<StepGeom_RationalBSplineCurve>& aRationalBSplineCurve);
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const int                          aDegree,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-                            const StepGeom_BSplineCurveForm                 aCurveForm,
-                            const StepData_Logical                          aClosedCurve,
-                            const StepData_Logical                          aSelfIntersect,
-                            const occ::handle<NCollection_HArray1<double>>&            aWeightsData);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const int                                    aDegree,
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
+                                                    aControlPointsList,
+    const StepGeom_BSplineCurveForm                 aCurveForm,
+    const StepData_Logical                          aClosedCurve,
+    const StepData_Logical                          aSelfIntersect,
+    const occ::handle<NCollection_HArray1<double>>& aWeightsData);
 
   Standard_EXPORT void SetUniformCurve(const occ::handle<StepGeom_UniformCurve>& aUniformCurve);
 

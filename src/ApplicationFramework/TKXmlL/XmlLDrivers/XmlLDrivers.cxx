@@ -63,9 +63,9 @@ const occ::handle<Standard_Transient>& XmlLDrivers::Factory(const Standard_GUID&
 
 TCollection_AsciiString XmlLDrivers::CreationDate()
 {
-  char nowstr[SLENGTH];
-  time_t             nowbin;
-  struct tm*         nowstruct;
+  char       nowstr[SLENGTH];
+  time_t     nowbin;
+  struct tm* nowstruct;
 
   if (time(&nowbin) == (time_t)-1)
   {

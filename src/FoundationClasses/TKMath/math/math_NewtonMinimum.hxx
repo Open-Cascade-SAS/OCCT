@@ -39,10 +39,10 @@ public:
   //! or IsConverged() returns True for 2 successives Iterations.
   //! Warning: This constructor does not perform computation.
   Standard_EXPORT math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction,
-                                     const double    theTolerance = Precision::Confusion(),
-                                     const int theNbIterations    = 40,
-                                     const double    theConvexity       = 1.0e-6,
-                                     const bool theWithSingularity = true);
+                                     const double theTolerance       = Precision::Confusion(),
+                                     const int    theNbIterations    = 40,
+                                     const double theConvexity       = 1.0e-6,
+                                     const bool   theWithSingularity = true);
 
   //! Search the solution.
   Standard_EXPORT void Perform(math_MultipleVarFunctionWithHessian& theFunction,
@@ -106,26 +106,26 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  math_Status      TheStatus;
-  math_Vector      TheLocation;
-  math_Vector      TheGradient;
-  math_Vector      TheStep;
-  math_Matrix      TheHessian;
-  double    PreviousMinimum;
-  double    TheMinimum;
-  double    MinEigenValue;
-  double    XTol;
-  double    CTol;
-  int nbiter;
-  bool NoConvexTreatement;
-  bool Convex;
-  bool myIsBoundsDefined;
-  math_Vector      myLeft;
-  math_Vector      myRight;
+  math_Status TheStatus;
+  math_Vector TheLocation;
+  math_Vector TheGradient;
+  math_Vector TheStep;
+  math_Matrix TheHessian;
+  double      PreviousMinimum;
+  double      TheMinimum;
+  double      MinEigenValue;
+  double      XTol;
+  double      CTol;
+  int         nbiter;
+  bool        NoConvexTreatement;
+  bool        Convex;
+  bool        myIsBoundsDefined;
+  math_Vector myLeft;
+  math_Vector myRight;
 
 private:
   bool Done;
-  int Itermax;
+  int  Itermax;
 };
 
 #include <math_NewtonMinimum.lxx>

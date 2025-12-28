@@ -37,21 +37,29 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const StepElement_ElementOrder          aElementDescriptor_TopologyOrder,
+    const StepElement_ElementOrder               aElementDescriptor_TopologyOrder,
     const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
-    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>& aPurpose);
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>&
+      aPurpose);
 
   //! Returns field Purpose
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>> Purpose() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
+                  Purpose() const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>& Purpose);
+    const occ::handle<NCollection_HArray1<
+      occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>&
+      Purpose);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_Curve3dElementDescriptor, StepElement_ElementDescriptor)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>> thePurpose;
+  occ::handle<NCollection_HArray1<
+    occ::handle<NCollection_HSequence<occ::handle<StepElement_CurveElementPurposeMember>>>>>
+    thePurpose;
 };
 
 #endif // _StepElement_Curve3dElementDescriptor_HeaderFile

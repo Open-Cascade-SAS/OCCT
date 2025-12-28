@@ -37,8 +37,8 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRTest_DrawablePolyEdgeTool, Draw_Drawable3D)
 //=================================================================================================
 
 HLRTest_DrawablePolyEdgeTool::HLRTest_DrawablePolyEdgeTool(const occ::handle<HLRBRep_PolyAlgo>& Alg,
-                                                           const int          ViewId,
-                                                           const bool          Debug)
+                                                           const int  ViewId,
+                                                           const bool Debug)
     : myAlgo(Alg),
       myDispRg1(false),
       myDispRgN(false),
@@ -53,15 +53,15 @@ HLRTest_DrawablePolyEdgeTool::HLRTest_DrawablePolyEdgeTool(const occ::handle<HLR
     ChronHide.Reset();
     ChronHide.Start();
   }
-  double        sta, end, dx, dy, dz;
-  float   tolsta, tolend;
+  double               sta, end, dx, dy, dz;
+  float                tolsta, tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
   myBiPntHid.Clear();
-  void*   Coordinates;
+  void*              Coordinates;
   HLRAlgo_EdgeStatus status;
   TopoDS_Shape       S;
-  bool   reg1, regn, outl, intl;
+  bool               reg1, regn, outl, intl;
 
   for (myAlgo->InitHide(); myAlgo->MoreHide(); myAlgo->NextHide())
   {
@@ -126,7 +126,7 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
         for (It.Initialize(myBiPntHid); It.More(); It.Next())
         {
           const HLRBRep_BiPoint& BP     = It.Value();
-          bool       todraw = true;
+          bool                   todraw = true;
           if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
               || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
             todraw = false;
@@ -142,7 +142,7 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
       for (It.Initialize(myBiPntVis); It.More(); It.Next())
       {
         const HLRBRep_BiPoint& BP     = It.Value();
-        bool       todraw = true;
+        bool                   todraw = true;
         if ((!myDispRg1 && BP.Rg1Line() && !BP.OutLine())
             || (!myDispRgN && BP.RgNLine() && !BP.OutLine()))
           todraw = false;
@@ -155,14 +155,14 @@ void HLRTest_DrawablePolyEdgeTool::DrawOn(Draw_Display& D) const
     }
     else
     {
-      void* Coordinates;
-      TopoDS_Shape     S;
-      bool reg1, regn, outl, intl;
+      void*        Coordinates;
+      TopoDS_Shape S;
+      bool         reg1, regn, outl, intl;
       D.SetColor(Draw_vert);
 
       for (myAlgo->InitShow(); myAlgo->MoreShow(); myAlgo->NextShow())
       {
-        Coordinates             = &myAlgo->Show(S, reg1, regn, outl, intl);
+        Coordinates = &myAlgo->Show(S, reg1, regn, outl, intl);
         bool todraw = true;
         if ((!myDispRg1 && reg1 && !outl) || (!myDispRgN && regn && !outl))
           todraw = false;

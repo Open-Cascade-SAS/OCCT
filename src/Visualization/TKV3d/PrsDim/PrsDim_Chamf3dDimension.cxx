@@ -41,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf3dDimension, PrsDim_Relation)
 //=================================================================================================
 
 PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                                 const double               aVal,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText)
     : PrsDim_Relation()
 {
@@ -57,11 +57,11 @@ PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&            
 //=================================================================================================
 
 PrsDim_Chamf3dDimension::PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                                 const double               aVal,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText,
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
-                                                 const double               anArrowSize)
+                                                 const double                      anArrowSize)
     : PrsDim_Relation()
 {
   myFShape    = aFShape;
@@ -83,15 +83,15 @@ void PrsDim_Chamf3dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
   // Calcul du centre de la face
   //----------------------------
   BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
-  double       uFirst, uLast, vFirst, vLast;
-  uFirst             = surfAlgo.FirstUParameter();
-  uLast              = surfAlgo.LastUParameter();
-  vFirst             = surfAlgo.FirstVParameter();
-  vLast              = surfAlgo.LastVParameter();
+  double              uFirst, uLast, vFirst, vLast;
+  uFirst      = surfAlgo.FirstUParameter();
+  uLast       = surfAlgo.LastUParameter();
+  vFirst      = surfAlgo.FirstVParameter();
+  vLast       = surfAlgo.LastVParameter();
   double uMoy = (uFirst + uLast) / 2;
   double vMoy = (vFirst + vLast) / 2;
-  gp_Pnt        apos;
-  gp_Vec        d1u, d1v;
+  gp_Pnt apos;
+  gp_Vec d1u, d1v;
   surfAlgo.D1(uMoy, vMoy, apos, d1u, d1v);
   myPntAttach = apos;
 
@@ -117,8 +117,8 @@ void PrsDim_Chamf3dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
   {
 
     occ::handle<Geom_Line> dimLin    = new Geom_Line(myPntAttach, myDir);
-    double     parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
-    curpos                      = ElCLib::Value(parcurpos, dimLin->Lin());
+    double                 parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
+    curpos                           = ElCLib::Value(parcurpos, dimLin->Lin());
 
     if (curpos.Distance(myPntAttach) < 5.)
     {
@@ -169,13 +169,13 @@ void PrsDim_Chamf3dDimension::ComputeSelection(const occ::handle<SelectMgr_Selec
   aSelection->Add(seg);
 
   // Text
-  double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
   occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                myPosition.X(),
-                                                                myPosition.Y(),
-                                                                myPosition.Z(),
-                                                                myPosition.X() + size,
-                                                                myPosition.Y() + size,
-                                                                myPosition.Z() + size);
+                                                                     myPosition.X(),
+                                                                     myPosition.Y(),
+                                                                     myPosition.Z(),
+                                                                     myPosition.X() + size,
+                                                                     myPosition.Y() + size,
+                                                                     myPosition.Z() + size);
   aSelection->Add(box);
 }

@@ -37,17 +37,17 @@ public:
 
   Standard_HIDDEN void ReadStep(
     const occ::handle<StepData_StepReaderData>&                           data,
-    const int                                           num,
+    const int                                                             num,
     occ::handle<Interface_Check>&                                         ach,
     const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                             SW,
+    StepData_StepWriter&                                                  SW,
     const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent) const;
 
-  Standard_HIDDEN void Share(const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent,
-                             Interface_EntityIterator& iter) const;
-
+  Standard_HIDDEN void Share(
+    const occ::handle<StepAP214_AppliedSecurityClassificationAssignment>& ent,
+    Interface_EntityIterator&                                             iter) const;
 };
 
 #endif // _RWStepAP214_RWAppliedSecurityClassificationAssignment_HeaderFile

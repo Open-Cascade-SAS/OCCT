@@ -21,7 +21,7 @@
 RWStepGeom_RWEllipse::RWStepGeom_RWEllipse() {}
 
 void RWStepGeom_RWEllipse::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                 num,
+                                    const int                                   num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepGeom_Ellipse>&        ent) const
 {
@@ -60,7 +60,7 @@ void RWStepGeom_RWEllipse::ReadStep(const occ::handle<StepData_StepReaderData>& 
   ent->Init(aName, aPosition, aSemiAxis1, aSemiAxis2);
 }
 
-void RWStepGeom_RWEllipse::WriteStep(StepData_StepWriter&            SW,
+void RWStepGeom_RWEllipse::WriteStep(StepData_StepWriter&                 SW,
                                      const occ::handle<StepGeom_Ellipse>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepGeom_RWEllipse::WriteStep(StepData_StepWriter&            SW,
 }
 
 void RWStepGeom_RWEllipse::Share(const occ::handle<StepGeom_Ellipse>& ent,
-                                 Interface_EntityIterator&       iter) const
+                                 Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->Position().Value());

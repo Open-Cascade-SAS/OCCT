@@ -109,17 +109,16 @@ public:
 protected:
   //! Auxiliary method for work with three-position
   //! (on/off/default) flags (modes) in ShapeFix.
-  static bool NeedFix(const int flag,
-                                  const bool def = true);
+  static bool NeedFix(const int flag, const bool def = true);
 
   TopoDS_Shape myShape;
 
 private:
   occ::handle<ShapeBuild_ReShape>              myContext;
   occ::handle<ShapeExtend_BasicMsgRegistrator> myMsgReg;
-  double                           myPrecision;
-  double                           myMinTol;
-  double                           myMaxTol;
+  double                                       myPrecision;
+  double                                       myMinTol;
+  double                                       myMaxTol;
 };
 
 #include <ShapeFix_Root.lxx>

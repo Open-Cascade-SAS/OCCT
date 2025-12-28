@@ -26,15 +26,9 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 #if 0
   #include <Poly_Triangulation.hxx>
@@ -80,7 +74,7 @@ BRepTools_Modifier::BRepTools_Modifier(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-BRepTools_Modifier::BRepTools_Modifier(const TopoDS_Shape&                   S,
+BRepTools_Modifier::BRepTools_Modifier(const TopoDS_Shape&                        S,
                                        const occ::handle<BRepTools_Modification>& M)
     : myShape(S),
       myDone(false),
@@ -106,7 +100,7 @@ static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MapE, MapF;
 #endif
 
 void BRepTools_Modifier::Perform(const occ::handle<BRepTools_Modification>& M,
-                                 const Message_ProgressRange&          theProgress)
+                                 const Message_ProgressRange&               theProgress)
 {
   if (myShape.IsNull())
   {
@@ -122,7 +116,8 @@ void BRepTools_Modifier::Perform(const occ::handle<BRepTools_Modification>& M,
 
   Message_ProgressScope aPS(theProgress, "Converting Shape", 2);
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMVE, aMEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aMVE, aMEF;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, aMEF);
 
@@ -232,10 +227,10 @@ void BRepTools_Modifier::Put(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
-                                             const occ::handle<BRepTools_Modification>& M,
-                                             bool&                     theNewGeom,
-                                             const Message_ProgressRange&          theProgress)
+bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
+                                 const occ::handle<BRepTools_Modification>& M,
+                                 bool&                                      theNewGeom,
+                                 const Message_ProgressRange&               theProgress)
 {
 #ifdef DEBUG_Modifier
   int iF = MapF.Contains(S) ? MapF.FindIndex(S) : 0;
@@ -248,11 +243,11 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
     theNewGeom = myHasNewGeom.Contains(S);
     return !S.IsSame(result);
   }
-  bool   rebuild = false, RevWires = false;
+  bool               rebuild = false, RevWires = false;
   TopAbs_Orientation ResOr = TopAbs_FORWARD;
   BRep_Builder       B;
-  double      tol;
-  bool   No3DCurve = false; // en fait, si on n`a pas de
+  double             tol;
+  bool               No3DCurve = false; // en fait, si on n`a pas de
   // modif geometry 3d , it is necessary to test the existence of a curve 3d.
 
   // new geometry ?
@@ -341,7 +336,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
   // rebuild sub-shapes and test new sub-shape ?
 
   bool newgeom = rebuild;
-  theNewGeom               = rebuild;
+  theNewGeom   = rebuild;
 
   TopoDS_Iterator it;
 
@@ -359,8 +354,8 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
       // always call Rebuild
       bool isSubNewGeom = false;
       bool subrebuilt   = Rebuild(it.Value(), M, isSubNewGeom, aPS.Next());
-      rebuild                       = subrebuilt || rebuild;
-      theNewGeom                    = theNewGeom || isSubNewGeom;
+      rebuild           = subrebuilt || rebuild;
+      theNewGeom        = theNewGeom || isSubNewGeom;
     }
     if (!aPS.More())
     {
@@ -397,8 +392,8 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
     {
       // pcurves
       occ::handle<Geom2d_Curve> curve2d; //,curve2d1;
-      TopoDS_Face          face = TopoDS::Face(S);
-      TopAbs_Orientation   fcor = face.Orientation();
+      TopoDS_Face               face = TopoDS::Face(S);
+      TopAbs_Orientation        fcor = face.Orientation();
       if (fcor != TopAbs_REVERSED)
         fcor = TopAbs_FORWARD;
 
@@ -448,7 +443,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
                 TopoDS_Shape resface2 = (myMap.IsBound(anOther) ? myMap(anOther) : anOther);
                 if (resface2.IsNull())
                   resface2 = anOther;
-                TopLoc_Location      anOtherLoc;
+                TopLoc_Location           anOtherLoc;
                 occ::handle<Geom_Surface> anOtherSurf =
                   BRep_Tool::Surface(TopoDS::Face(resface2), anOtherLoc);
                 if (aSurf == anOtherSurf && aLoc.IsEqual(anOtherLoc))
@@ -465,9 +460,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
             TopoDS_Edge  CurE         = TopoDS::Edge(myMap(edge));
             TopoDS_Shape aLocalResult = result;
             aLocalResult.Orientation(TopAbs_FORWARD);
-            TopoDS_Face          CurF = TopoDS::Face(aLocalResult);
+            TopoDS_Face               CurF = TopoDS::Face(aLocalResult);
             occ::handle<Geom2d_Curve> curve2d1, currcurv;
-            double        f, l;
+            double                    f, l;
             if ((!RevWires && fcor != edge.Orientation())
                 || (RevWires && fcor == edge.Orientation()))
             {
@@ -493,13 +488,13 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
             B.UpdateEdge(TopoDS::Edge(myMap(ex.Current())), curve2d, TopoDS::Face(result), 0.);
           }
 
-          TopLoc_Location    theLoc;
-          double      theF, theL;
+          TopLoc_Location         theLoc;
+          double                  theF, theL;
           occ::handle<Geom_Curve> C3D =
             BRep_Tool::Curve(TopoDS::Edge(myMap(ex.Current())), theLoc, theF, theL);
           if (C3D.IsNull())
           { // Update vertices
-            double   param;
+            double          param;
             TopExp_Explorer ex2(edge, TopAbs_VERTEX);
             while (ex2.More())
             {
@@ -548,7 +543,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
         }
         if (aNewPonT)
         {
-          TopLoc_Location            aLocation;
+          TopLoc_Location                 aLocation;
           occ::handle<Poly_Triangulation> aNewFaceTria =
             BRep_Tool::Triangulation(TopoDS::Face(myMap(face)), aLocation);
           TopoDS_Edge aNewEdge = TopoDS::Edge(myMap(edge));
@@ -569,7 +564,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
     else if (ts == TopAbs_EDGE && !No3DCurve)
     {
       // Vertices
-      double      param;
+      double             param;
       const TopoDS_Edge& edge = TopoDS::Edge(S);
       TopAbs_Orientation edor = edge.Orientation();
       if (edor != TopAbs_REVERSED)
@@ -621,8 +616,11 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                   S,
   return rebuild;
 }
 
-void BRepTools_Modifier::CreateNewVertices(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMVE,
-                                           const occ::handle<BRepTools_Modification>&            M)
+void BRepTools_Modifier::CreateNewVertices(
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMVE,
+  const occ::handle<BRepTools_Modification>&                 M)
 {
   double       aToler;
   BRep_Builder aBB;
@@ -631,7 +629,7 @@ void BRepTools_Modifier::CreateNewVertices(const NCollection_IndexedDataMap<Topo
   {
     // fill MyMap only with vertices with NewPoint == true
     const TopoDS_Vertex& aV     = TopoDS::Vertex(theMVE.FindKey(i));
-    bool     IsNewP = M->NewPoint(aV, aPnt, aToler);
+    bool                 IsNewP = M->NewPoint(aV, aPnt, aToler);
     if (IsNewP)
     {
       TopoDS_Vertex aNewV;
@@ -645,17 +643,20 @@ void BRepTools_Modifier::CreateNewVertices(const NCollection_IndexedDataMap<Topo
   }
 }
 
-void BRepTools_Modifier::FillNewCurveInfo(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
-                                          const occ::handle<BRepTools_Modification>&            M)
+void BRepTools_Modifier::FillNewCurveInfo(
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMEF,
+  const occ::handle<BRepTools_Modification>&                 M)
 {
-  occ::handle<Geom_Curve>               aCurve;
+  occ::handle<Geom_Curve>          aCurve;
   TopLoc_Location                  aLocation;
   BRepTools_Modifier::NewCurveInfo aNCinfo;
   double                           aToler;
   for (int i = 1; i <= theMEF.Extent(); i++)
   {
     const TopoDS_Edge& anE      = TopoDS::Edge(theMEF.FindKey(i));
-    bool   IsNewCur = M->NewCurve(anE, aCurve, aLocation, aToler);
+    bool               IsNewCur = M->NewCurve(anE, aCurve, aLocation, aToler);
     if (IsNewCur)
     {
       aNCinfo.myCurve = aCurve;
@@ -674,12 +675,12 @@ void BRepTools_Modifier::FillNewSurfaceInfo(const occ::handle<BRepTools_Modifica
   BRepTools_Modifier::NewSurfaceInfo aNSinfo;
   for (int i = 1; i <= aMF.Extent(); i++)
   {
-    const TopoDS_Face&   aF = TopoDS::Face(aMF(i));
-    bool     RevFace;
-    bool     RevWires;
+    const TopoDS_Face&        aF = TopoDS::Face(aMF(i));
+    bool                      RevFace;
+    bool                      RevWires;
     occ::handle<Geom_Surface> aSurface;
-    TopLoc_Location      aLocation;
-    double               aToler1;
+    TopLoc_Location           aLocation;
+    double                    aToler1;
     bool IsNewSur = M->NewSurface(aF, aSurface, aLocation, aToler1, RevWires, RevFace);
     if (IsNewSur)
     {
@@ -694,8 +695,8 @@ void BRepTools_Modifier::FillNewSurfaceInfo(const occ::handle<BRepTools_Modifica
     else
     {
       // check if subshapes will be modified
-      bool notRebuilded = true;
-      TopExp_Explorer  exE(aF, TopAbs_EDGE);
+      bool            notRebuilded = true;
+      TopExp_Explorer exE(aF, TopAbs_EDGE);
       while (exE.More() && notRebuilded)
       {
         const TopoDS_Edge& anEE = TopoDS::Edge(exE.Current());
@@ -727,9 +728,13 @@ void BRepTools_Modifier::FillNewSurfaceInfo(const occ::handle<BRepTools_Modifica
 }
 
 void BRepTools_Modifier::CreateOtherVertices(
-  const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMVE,
-  const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
-  const occ::handle<BRepTools_Modification>&            M)
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMVE,
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>& theMEF,
+  const occ::handle<BRepTools_Modification>&                 M)
 {
   double aToler;
   // The following logic in some ways repeats the logic from the Rebuild() method.
@@ -745,8 +750,8 @@ void BRepTools_Modifier::CreateOtherVertices(
     TopoDS_Vertex        aNewV = TopoDS::Vertex(myMap(aV));
     if (aNewV.IsNull())
     {
-      const NCollection_List<TopoDS_Shape>&        aLEdges   = theMVE(i);
-      bool                   toReplace = false;
+      const NCollection_List<TopoDS_Shape>&    aLEdges   = theMVE(i);
+      bool                                     toReplace = false;
       NCollection_List<TopoDS_Shape>::Iterator it(aLEdges);
       for (; it.More() && !toReplace; it.Next())
       {
@@ -756,7 +761,7 @@ void BRepTools_Modifier::CreateOtherVertices(
 
         if (!toReplace)
         {
-          const NCollection_List<TopoDS_Shape>&        aLFaces = theMEF.FindFromKey(anE);
+          const NCollection_List<TopoDS_Shape>&    aLFaces = theMEF.FindFromKey(anE);
           NCollection_List<TopoDS_Shape>::Iterator it2(aLFaces);
           for (; it2.More(); it2.Next())
           {

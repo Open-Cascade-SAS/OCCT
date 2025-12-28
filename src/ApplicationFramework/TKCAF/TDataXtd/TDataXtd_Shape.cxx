@@ -31,7 +31,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
 bool TDataXtd_Shape::Find(const TDF_Label& current, occ::handle<TDataXtd_Shape>& S)
 {
-  TDF_Label              L = current;
+  TDF_Label                   L = current;
   occ::handle<TDataXtd_Shape> SA;
   if (L.IsNull())
     return false;

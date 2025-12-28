@@ -46,9 +46,9 @@ public:
   //! between the points of the bisector and <Cu> is smaller
   //! than <DistMax>.
   Standard_EXPORT Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
-                                   const gp_Pnt2d&             P,
-                                   const double         Side,
-                                   const double         DistMax = 500);
+                                   const gp_Pnt2d&                  P,
+                                   const double                     Side,
+                                   const double                     DistMax = 500);
 
   //! Constructs the bisector between the point <P> and
   //! the curve <Cu> Trimmed by <UMin> and <UMax>
@@ -57,10 +57,10 @@ public:
   //! Warning: the bisector is supposed all over defined between
   //! <UMin> and <UMax>.
   Standard_EXPORT Bisector_BisecPC(const occ::handle<Geom2d_Curve>& Cu,
-                                   const gp_Pnt2d&             P,
-                                   const double         Side,
-                                   const double         UMin,
-                                   const double         UMax);
+                                   const gp_Pnt2d&                  P,
+                                   const double                     Side,
+                                   const double                     UMin,
+                                   const double                     UMax);
 
   //! Construct the bisector between the point <P> and
   //! the curve <Cu>.
@@ -70,9 +70,9 @@ public:
   //! between the points of the bisector and <Cu> is smaller
   //! than <DistMax>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu,
-                               const gp_Pnt2d&             P,
-                               const double         Side,
-                               const double         DistMax = 500);
+                               const gp_Pnt2d&                  P,
+                               const double                     Side,
+                               const double                     DistMax = 500);
 
   //! Returns True if the bisector is extended at start.
   Standard_EXPORT bool IsExtendAtStart() const override;
@@ -138,22 +138,17 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
 
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
-  Standard_EXPORT void Dump(const int Deep   = 0,
-                            const int Offset = 0) const;
+  Standard_EXPORT void Dump(const int Deep = 0, const int Offset = 0) const;
 
   //! Returns the parameter on the curve1 of the projection
   //! of the point of parameter U on <me>.
@@ -171,18 +166,18 @@ public:
   DEFINE_STANDARD_RTTIEXT(Bisector_BisecPC, Bisector_Curve)
 
 private:
-  Standard_EXPORT void Values(const double    U,
-                              const int N,
-                              gp_Pnt2d&              P,
-                              gp_Vec2d&              V1,
-                              gp_Vec2d&              V2,
-                              gp_Vec2d&              V3) const;
+  Standard_EXPORT void Values(const double U,
+                              const int    N,
+                              gp_Pnt2d&    P,
+                              gp_Vec2d&    V1,
+                              gp_Vec2d&    V2,
+                              gp_Vec2d&    V3) const;
 
   Standard_EXPORT void Extension(const double U,
-                                 gp_Pnt2d&           P,
-                                 gp_Vec2d&           V1,
-                                 gp_Vec2d&           V2,
-                                 gp_Vec2d&           V3) const;
+                                 gp_Pnt2d&    P,
+                                 gp_Vec2d&    V1,
+                                 gp_Vec2d&    V2,
+                                 gp_Vec2d&    V3) const;
 
   //! Computes the interval where the bisector is defined.
   Standard_EXPORT void ComputeIntervals();
@@ -191,37 +186,37 @@ private:
 
   Standard_EXPORT double SearchBound(const double U1, const double U2) const;
 
-  Standard_EXPORT void Init(const occ::handle<Geom2d_Curve>&   Curve,
-                            const gp_Pnt2d&               Point,
-                            const double           Sign,
+  Standard_EXPORT void Init(const occ::handle<Geom2d_Curve>&    Curve,
+                            const gp_Pnt2d&                     Point,
+                            const double                        Sign,
                             const NCollection_Sequence<double>& StartIntervals,
                             const NCollection_Sequence<double>& EndIntervals,
-                            const int        BisInterval,
-                            const int        CurrentInterval,
-                            const double           ShiftParameter,
-                            const double           DistMax,
-                            const bool        IsEmpty,
-                            const bool        IsConvex,
-                            const bool        ExtensionStart,
-                            const bool        ExtensionEnd,
-                            const gp_Pnt2d&               PointStartBis,
-                            const gp_Pnt2d&               PointEndBis);
+                            const int                           BisInterval,
+                            const int                           CurrentInterval,
+                            const double                        ShiftParameter,
+                            const double                        DistMax,
+                            const bool                          IsEmpty,
+                            const bool                          IsConvex,
+                            const bool                          ExtensionStart,
+                            const bool                          ExtensionEnd,
+                            const gp_Pnt2d&                     PointStartBis,
+                            const gp_Pnt2d&                     PointEndBis);
 
-  occ::handle<Geom2d_Curve>   curve;
-  gp_Pnt2d               point;
-  double          sign;
+  occ::handle<Geom2d_Curve>    curve;
+  gp_Pnt2d                     point;
+  double                       sign;
   NCollection_Sequence<double> startIntervals;
   NCollection_Sequence<double> endIntervals;
-  int       bisInterval;
-  int       currentInterval;
-  double          shiftParameter;
-  double          distMax;
-  bool       isEmpty;
-  bool       isConvex;
-  bool       extensionStart;
-  bool       extensionEnd;
-  gp_Pnt2d               pointStartBis;
-  gp_Pnt2d               pointEndBis;
+  int                          bisInterval;
+  int                          currentInterval;
+  double                       shiftParameter;
+  double                       distMax;
+  bool                         isEmpty;
+  bool                         isConvex;
+  bool                         extensionStart;
+  bool                         extensionEnd;
+  gp_Pnt2d                     pointStartBis;
+  gp_Pnt2d                     pointEndBis;
 };
 
 #endif // _Bisector_BisecPC_HeaderFile

@@ -46,7 +46,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_GeneralPropertyAssociation::Name
 
 //=================================================================================================
 
-void StepBasic_GeneralPropertyAssociation::SetName(const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_GeneralPropertyAssociation::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }
@@ -83,7 +84,8 @@ void StepBasic_GeneralPropertyAssociation::SetGeneralProperty(
 
 //=================================================================================================
 
-occ::handle<StepRepr_PropertyDefinition> StepBasic_GeneralPropertyAssociation::PropertyDefinition() const
+occ::handle<StepRepr_PropertyDefinition> StepBasic_GeneralPropertyAssociation::PropertyDefinition()
+  const
 {
   return thePropertyDefinition;
 }

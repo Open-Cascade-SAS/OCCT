@@ -41,7 +41,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakePlane(
     const occ::handle<Geom_Plane>& P,
-    const StepData_Factors&   theLocalFactors = StepData_Factors());
+    const StepData_Factors&        theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Plane>& Value() const;
 

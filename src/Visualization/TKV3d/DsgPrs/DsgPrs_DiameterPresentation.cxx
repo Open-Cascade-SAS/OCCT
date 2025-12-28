@@ -36,25 +36,25 @@
 //==========================================================================
 void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const TCollection_ExtendedString& aText,
-                                      const gp_Pnt&                     AttachmentPoint,
-                                      const gp_Circ&                    aCircle,
-                                      const DsgPrs_ArrowSide            ArrowPrs,
-                                      const bool            IsDiamSymbol)
+                                      const TCollection_ExtendedString&      aText,
+                                      const gp_Pnt&                          AttachmentPoint,
+                                      const gp_Circ&                         aCircle,
+                                      const DsgPrs_ArrowSide                 ArrowPrs,
+                                      const bool                             IsDiamSymbol)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   double parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
-  gp_Pnt        ptoncirc = ElCLib::Value(parat, aCircle);
+  gp_Pnt ptoncirc = ElCLib::Value(parat, aCircle);
 
   // sideline
   gp_Pnt center = aCircle.Location();
   gp_Vec vecrap(ptoncirc, center);
 
-  double    dist    = center.Distance(AttachmentPoint);
-  double    aRadius = aCircle.Radius();
-  bool inside  = (dist < aRadius);
+  double dist    = center.Distance(AttachmentPoint);
+  double aRadius = aCircle.Radius();
+  bool   inside  = (dist < aRadius);
 
   gp_Pnt pt1 = AttachmentPoint;
   if (inside)
@@ -93,9 +93,7 @@ void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   DsgPrs::ComputeSymbol(aPresentation, LA, ptoncirc, ptoncirc2, arrdir, arrdir2, ArrowPrs);
 }
 
-static bool DsgPrs_InDomain(const double fpar,
-                                        const double lpar,
-                                        const double para)
+static bool DsgPrs_InDomain(const double fpar, const double lpar, const double para)
 {
   if (fpar >= 0.)
   {
@@ -129,13 +127,13 @@ static bool DsgPrs_InDomain(const double fpar,
 
 void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const TCollection_ExtendedString& aText,
-                                      const gp_Pnt&                     AttachmentPoint,
-                                      const gp_Circ&                    aCircle,
-                                      const double               uFirst,
-                                      const double               uLast,
-                                      const DsgPrs_ArrowSide            ArrowPrs, // ArrowSide
-                                      const bool            IsDiamSymbol)
+                                      const TCollection_ExtendedString&      aText,
+                                      const gp_Pnt&                          AttachmentPoint,
+                                      const gp_Circ&                         aCircle,
+                                      const double                           uFirst,
+                                      const double                           uLast,
+                                      const DsgPrs_ArrowSide                 ArrowPrs, // ArrowSide
+                                      const bool                             IsDiamSymbol)
 {
   double fpara = uFirst;
   double lpara = uLast;
@@ -148,8 +146,8 @@ void DsgPrs_DiameterPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   double parEndOfArrow = ElCLib::Parameter(aCircle, AttachmentPoint);
-  gp_Pnt        EndOfArrow;
-  gp_Pnt        DrawPosition = AttachmentPoint; // point of attachment
+  gp_Pnt EndOfArrow;
+  gp_Pnt DrawPosition = AttachmentPoint; // point of attachment
 
   gp_Pnt Center      = aCircle.Location();
   gp_Pnt FirstPoint  = ElCLib::Value(uFirst, aCircle);

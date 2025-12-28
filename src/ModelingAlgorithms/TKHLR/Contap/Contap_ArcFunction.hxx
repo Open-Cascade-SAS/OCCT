@@ -22,7 +22,6 @@
 #include <Contap_TFunction.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <math_FunctionWithDerivative.hxx>
@@ -48,12 +47,9 @@ public:
 
   Standard_EXPORT bool Value(const double X, double& F) override;
 
-  Standard_EXPORT bool Derivative(const double X,
-                                              double&      D) override;
+  Standard_EXPORT bool Derivative(const double X, double& D) override;
 
-  Standard_EXPORT bool Values(const double X,
-                                          double&      F,
-                                          double&      D) override;
+  Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
   Standard_EXPORT int NbSamples() const;
 
@@ -73,14 +69,14 @@ public:
 private:
   occ::handle<Adaptor2d_Curve2d> myArc;
   occ::handle<Adaptor3d_Surface> mySurf;
-  double             myMean;
-  Contap_TFunction          myType;
-  gp_Dir                    myDir;
-  double             myCosAng;
-  gp_Pnt                    myEye;
-  gp_Pnt                    solpt;
-  NCollection_Sequence<gp_Pnt>      seqpt;
-  IntSurf_Quadric           myQuad;
+  double                         myMean;
+  Contap_TFunction               myType;
+  gp_Dir                         myDir;
+  double                         myCosAng;
+  gp_Pnt                         myEye;
+  gp_Pnt                         solpt;
+  NCollection_Sequence<gp_Pnt>   seqpt;
+  IntSurf_Quadric                myQuad;
 };
 
 #include <Contap_ArcFunction.lxx>

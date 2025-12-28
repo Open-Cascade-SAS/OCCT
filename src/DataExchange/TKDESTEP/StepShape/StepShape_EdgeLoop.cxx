@@ -19,8 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_EdgeLoop, StepShape_Loop)
 
 StepShape_EdgeLoop::StepShape_EdgeLoop() {}
 
-void StepShape_EdgeLoop::Init(const occ::handle<TCollection_HAsciiString>&        aName,
-                              const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
+void StepShape_EdgeLoop::Init(
+  const occ::handle<TCollection_HAsciiString>&                                 aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   // --- class inherited fields ---
   StepRepr_RepresentationItem::Init(aName);
@@ -28,12 +29,14 @@ void StepShape_EdgeLoop::Init(const occ::handle<TCollection_HAsciiString>&      
   edgeList = aEdgeList;
 }
 
-void StepShape_EdgeLoop::SetEdgeList(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
+void StepShape_EdgeLoop::SetEdgeList(
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
 {
   edgeList = aEdgeList;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_EdgeLoop::EdgeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> StepShape_EdgeLoop::EdgeList()
+  const
 {
   return edgeList;
 }

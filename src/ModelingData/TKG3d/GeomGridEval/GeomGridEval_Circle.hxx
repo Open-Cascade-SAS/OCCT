@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for circle grid points.
 //!
@@ -92,8 +91,9 @@ public:
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing),
   //!         or empty array if geometry is null or no parameters
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
   occ::handle<Geom_Circle> myGeom;

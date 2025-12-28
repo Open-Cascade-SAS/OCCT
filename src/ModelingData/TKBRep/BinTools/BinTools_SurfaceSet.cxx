@@ -38,8 +38,6 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
 #include <Message_ProgressScope.hxx>
 
 #define PLANE 1
@@ -107,7 +105,8 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_CylindricalSurface>& S)
+static BinTools_OStream& operator<<(BinTools_OStream&                           OS,
+                                    const occ::handle<Geom_CylindricalSurface>& S)
 {
   OS << (uint8_t)CYLINDER;
   gp_Cylinder P = S->Cylinder();
@@ -142,7 +141,8 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_SphericalSurface>& S)
+static BinTools_OStream& operator<<(BinTools_OStream&                         OS,
+                                    const occ::handle<Geom_SphericalSurface>& S)
 {
   OS << (uint8_t)SPHERE;
   gp_Sphere P = S->Sphere();
@@ -159,7 +159,8 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_ToroidalSurface>& S)
+static BinTools_OStream& operator<<(BinTools_OStream&                        OS,
+                                    const occ::handle<Geom_ToroidalSurface>& S)
 {
   OS << (uint8_t)TORUS;
   gp_Torus P = S->Torus();
@@ -177,7 +178,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream&                            OS,
+static BinTools_OStream& operator<<(BinTools_OStream&                                 OS,
                                     const occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
 {
   OS << (uint8_t)LINEAREXTRUSION;
@@ -191,7 +192,8 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_SurfaceOfRevolution>& S)
+static BinTools_OStream& operator<<(BinTools_OStream&                            OS,
+                                    const occ::handle<Geom_SurfaceOfRevolution>& S)
 {
   OS << (uint8_t)REVOLUTION;
   OS << S->Location();
@@ -293,7 +295,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 // purpose  :
 //=======================================================================
 
-static BinTools_OStream& operator<<(BinTools_OStream&                             OS,
+static BinTools_OStream& operator<<(BinTools_OStream&                                  OS,
                                     const occ::handle<Geom_RectangularTrimmedSurface>& S)
 {
   OS << (uint8_t)RECTANGULAR;
@@ -388,7 +390,7 @@ void BinTools_SurfaceSet::WriteSurface(const occ::handle<Geom_Surface>& S, BinTo
 void BinTools_SurfaceSet::Write(Standard_OStream& OS, const Message_ProgressRange& theRange) const
 {
 
-  int      i, nbsurf = myMap.Extent();
+  int                   i, nbsurf = myMap.Extent();
   Message_ProgressScope aPS(theRange, "Writing surfaces", nbsurf);
   OS << "Surfaces " << nbsurf << "\n";
   BinTools_OStream aStream(OS);
@@ -456,7 +458,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Plane
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_CylindricalSurface>& S)
 {
-  gp_Ax3        A;
+  gp_Ax3 A;
   double R = 0.;
   IS >> A;
   BinTools::GetReal(IS, R);
@@ -471,7 +473,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Cylin
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ConicalSurface>& S)
 {
-  gp_Ax3        A;
+  gp_Ax3 A;
   double R = 0., Ang = 0.;
   IS >> A;
   BinTools::GetReal(IS, R);
@@ -487,7 +489,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Conic
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SphericalSurface>& S)
 {
-  gp_Ax3        A;
+  gp_Ax3 A;
   double R = 0.;
   IS >> A;
   BinTools::GetReal(IS, R);
@@ -502,7 +504,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Spher
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ToroidalSurface>& S)
 {
-  gp_Ax3        A;
+  gp_Ax3 A;
   double R1 = 0., R2 = 0.;
   IS >> A;
   BinTools::GetReal(IS, R1);
@@ -516,9 +518,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Toroi
 // purpose  :
 //=======================================================================
 
-static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
+static Standard_IStream& operator>>(Standard_IStream&                           IS,
+                                    occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
 {
-  gp_Dir             D(gp_Dir::D::X);
+  gp_Dir                  D(gp_Dir::D::X);
   occ::handle<Geom_Curve> C;
   IS >> D;
   BinTools_CurveSet::ReadCurve(IS, C);
@@ -533,8 +536,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Surfa
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SurfaceOfRevolution>& S)
 {
-  gp_Pnt             P(0., 0., 0.);
-  gp_Dir             D(gp_Dir::D::X);
+  gp_Pnt                  P(0., 0., 0.);
+  gp_Dir                  D(gp_Dir::D::X);
   occ::handle<Geom_Curve> C;
   IS >> P >> D;
   BinTools_CurveSet::ReadCurve(IS, C);
@@ -564,7 +567,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   vdegree = (int)aVal;
   //  std::cout << "\ttudegree  = " << udegree << ", vdegree = " << vdegree << std::endl;
 
-  NCollection_Array2<gp_Pnt>   poles(1, udegree + 1, 1, vdegree + 1);
+  NCollection_Array2<gp_Pnt> poles(1, udegree + 1, 1, vdegree + 1);
   NCollection_Array2<double> weights(1, udegree + 1, 1, vdegree + 1);
 
   int i, j;
@@ -594,14 +597,13 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSplineSurface>& S)
 {
-  bool urational = false, vrational = false,
-                   uperiodic = false, vperiodic = false;
+  bool urational = false, vrational = false, uperiodic = false, vperiodic = false;
   BinTools::GetBool(IS, urational);
   BinTools::GetBool(IS, vrational);
   BinTools::GetBool(IS, uperiodic);
   BinTools::GetBool(IS, vperiodic);
 
-  int udegree = 0, vdegree = 0, nbupoles = 0, nbvpoles = 0, nbuknots = 0, nbvknots = 0;
+  int      udegree = 0, vdegree = 0, nbupoles = 0, nbvpoles = 0, nbuknots = 0, nbvknots = 0;
   char16_t aVal = '\0';
   BinTools::GetExtChar(IS, aVal);
   udegree = (int)aVal;
@@ -612,7 +614,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   BinTools::GetInteger(IS, nbuknots);
   BinTools::GetInteger(IS, nbvknots);
 
-  NCollection_Array2<gp_Pnt>   poles(1, nbupoles, 1, nbvpoles);
+  NCollection_Array2<gp_Pnt> poles(1, nbupoles, 1, nbvpoles);
   NCollection_Array2<double> weights(1, nbupoles, 1, nbvpoles);
 
   int i, j;
@@ -626,16 +628,16 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
     }
   }
 
-  NCollection_Array1<double>    uknots(1, nbuknots);
-  NCollection_Array1<int> umults(1, nbuknots);
+  NCollection_Array1<double> uknots(1, nbuknots);
+  NCollection_Array1<int>    umults(1, nbuknots);
   for (i = 1; i <= nbuknots; i++)
   {
     BinTools::GetReal(IS, uknots(i));
     BinTools::GetInteger(IS, umults(i));
   }
 
-  NCollection_Array1<double>    vknots(1, nbvknots);
-  NCollection_Array1<int> vmults(1, nbvknots);
+  NCollection_Array1<double> vknots(1, nbvknots);
+  NCollection_Array1<int>    vmults(1, nbvknots);
   for (i = 1; i <= nbvknots; i++)
   {
     BinTools::GetReal(IS, vknots(i));
@@ -671,7 +673,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
 // purpose  :
 //=======================================================================
 
-static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_RectangularTrimmedSurface>& S)
+static Standard_IStream& operator>>(Standard_IStream&                            IS,
+                                    occ::handle<Geom_RectangularTrimmedSurface>& S)
 {
   double U1 = 0., U2 = 0., V1 = 0., V2 = 0.;
   BinTools::GetReal(IS, U1);
@@ -701,7 +704,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
 
 //=================================================================================================
 
-Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS, occ::handle<Geom_Surface>& S)
+Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS,
+                                                   occ::handle<Geom_Surface>& S)
 {
   try
   {
@@ -823,7 +827,7 @@ void BinTools_SurfaceSet::Read(Standard_IStream& IS, const Message_ProgressRange
   }
 
   occ::handle<Geom_Surface> S;
-  int     i, nbsurf;
+  int                       i, nbsurf;
   IS >> nbsurf;
   Message_ProgressScope aPS(theRange, "Reading surfaces", nbsurf);
   IS.get(); // remove <lf>

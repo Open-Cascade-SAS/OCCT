@@ -24,8 +24,7 @@ StepVisual_PathOrCompositeCurve::StepVisual_PathOrCompositeCurve() {}
 
 //=================================================================================================
 
-int StepVisual_PathOrCompositeCurve::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepVisual_PathOrCompositeCurve::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

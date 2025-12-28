@@ -58,8 +58,8 @@ static bool NeedsConvertion(const TopoDS_Wire& theWire)
   return false;
 }
 
-TopoDS_Face BRepOffsetAPI_MakeOffset::ConvertFace(const TopoDS_Face&  theFace,
-                                                  const double theAngleTolerance)
+TopoDS_Face BRepOffsetAPI_MakeOffset::ConvertFace(const TopoDS_Face& theFace,
+                                                  const double       theAngleTolerance)
 {
   TopAbs_Orientation anOr  = theFace.Orientation();
   TopoDS_Face        aFace = theFace;
@@ -100,7 +100,7 @@ BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset()
 
 BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset(const TopoDS_Face&     Spine,
                                                    const GeomAbs_JoinType Join,
-                                                   const bool IsOpenResult)
+                                                   const bool             IsOpenResult)
 {
   Init(Spine, Join, IsOpenResult);
 }
@@ -109,7 +109,7 @@ BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset(const TopoDS_Face&     Spine,
 
 void BRepOffsetAPI_MakeOffset::Init(const TopoDS_Face&     Spine,
                                     const GeomAbs_JoinType Join,
-                                    const bool IsOpenResult)
+                                    const bool             IsOpenResult)
 {
   myFace          = Spine;
   myIsInitialized = true;
@@ -127,7 +127,7 @@ void BRepOffsetAPI_MakeOffset::Init(const TopoDS_Face&     Spine,
 
 BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset(const TopoDS_Wire&     Spine,
                                                    const GeomAbs_JoinType Join,
-                                                   const bool IsOpenResult)
+                                                   const bool             IsOpenResult)
 {
   myWires.Append(Spine);
   myIsInitialized = true;
@@ -138,8 +138,7 @@ BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset(const TopoDS_Wire&     Spine,
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakeOffset::Init(const GeomAbs_JoinType Join,
-                                    const bool IsOpenResult)
+void BRepOffsetAPI_MakeOffset::Init(const GeomAbs_JoinType Join, const bool IsOpenResult)
 {
   myJoin         = Join;
   myIsOpenResult = IsOpenResult;
@@ -168,18 +167,18 @@ void BRepOffsetAPI_MakeOffset::AddWire(const TopoDS_Wire& Spine)
 
 //=================================================================================================
 
-static void BuildDomains(TopoDS_Face&               myFace,
-                         NCollection_List<TopoDS_Shape>&      WorkWires,
+static void BuildDomains(TopoDS_Face&                           myFace,
+                         NCollection_List<TopoDS_Shape>&        WorkWires,
                          NCollection_List<BRepFill_OffsetWire>& myAlgos,
-                         GeomAbs_JoinType           myJoin,
-                         bool           myIsOpenResult,
-                         bool           isPositive,
-                         bool&          isWasReversed)
+                         GeomAbs_JoinType                       myJoin,
+                         bool                                   myIsOpenResult,
+                         bool                                   isPositive,
+                         bool&                                  isWasReversed)
 {
-  BRepAlgo_FaceRestrictor FR;
-  TopoDS_Vertex           VF, VL;
-  NCollection_List<TopoDS_Shape>    LOW;
-  BRep_Builder            B;
+  BRepAlgo_FaceRestrictor        FR;
+  TopoDS_Vertex                  VF, VL;
+  NCollection_List<TopoDS_Shape> LOW;
+  BRep_Builder                   B;
 
   if (myFace.IsNull())
   {
@@ -197,7 +196,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
     if ((aWire1.Orientation() == aWire2.Orientation() && isPositive)
         || (aWire1.Orientation() == TopAbs::Complement(aWire2.Orientation()) && !isPositive))
     {
-      NCollection_List<TopoDS_Shape>               LWires;
+      NCollection_List<TopoDS_Shape>           LWires;
       NCollection_List<TopoDS_Shape>::Iterator itl;
       for (itl.Initialize(WorkWires); itl.More(); itl.Next())
       {
@@ -282,7 +281,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
   {
     TopoDS_Face&        F = TopoDS::Face(itF.ChangeValue());
     BRepAdaptor_Surface S(F, 0);
-    double       Tol = BRep_Tool::Tolerance(F);
+    double              Tol = BRep_Tool::Tolerance(F);
 
     BRepTopAdaptor_FClass2d CL(F, Precision::Confusion());
 
@@ -298,8 +297,8 @@ static void BuildDomains(TopoDS_Face&               myFace,
       gp_Pnt2d        PV;
       gp_Pnt          P3d = BRep_Tool::Pnt(V);
       Extrema_ExtPS   ExtPS(P3d, S, Tol, Tol);
-      double   Dist2Min = Precision::Infinite();
-      double   Found    = false;
+      double          Dist2Min = Precision::Infinite();
+      double          Found    = false;
       for (int ie = 1; ie <= ExtPS.NbExt(); ie++)
       {
         double X, Y;
@@ -346,8 +345,8 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
       double aTol = 0.1;
       if (myFace.IsNull())
       {
-        TopoDS_Face                        aFace;
-        bool                   OnlyPlane = true;
+        TopoDS_Face                              aFace;
+        bool                                     OnlyPlane = true;
         NCollection_List<TopoDS_Shape>::Iterator anItl(myWires);
         for (; anItl.More(); anItl.Next())
         {
@@ -381,25 +380,19 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
       }
     }
 
-    int                        i = 1;
+    int                                             i = 1;
     NCollection_List<BRepFill_OffsetWire>::Iterator itOW;
-    TopoDS_Compound                         Res;
-    BRep_Builder                            B;
+    TopoDS_Compound                                 Res;
+    BRep_Builder                                    B;
     B.MakeCompound(Res);
-    myLastIsLeft                   = (Offset <= 0);
+    myLastIsLeft       = (Offset <= 0);
     bool isWasReversed = false;
     if (Offset <= 0.)
     {
       if (myLeft.IsEmpty())
       {
         //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 Begin
-        BuildDomains(myFace,
-                     myWires,
-                     myLeft,
-                     myJoin,
-                     myIsOpenResult,
-                     false,
-                     isWasReversed);
+        BuildDomains(myFace, myWires, myLeft, myJoin, myIsOpenResult, false, isWasReversed);
         //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 End
       }
 
@@ -422,13 +415,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
       if (myRight.IsEmpty())
       {
         //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:28 2001 Begin
-        BuildDomains(myFace,
-                     myWires,
-                     myRight,
-                     myJoin,
-                     myIsOpenResult,
-                     true,
-                     isWasReversed);
+        BuildDomains(myFace, myWires, myRight, myJoin, myIsOpenResult, true, isWasReversed);
         //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:35 2001 End
       }
 
@@ -483,7 +470,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffset::Generated(const 
 {
   myGenerated.Clear();
   NCollection_List<BRepFill_OffsetWire>::Iterator itOW;
-  NCollection_List<BRepFill_OffsetWire>*              Algos;
+  NCollection_List<BRepFill_OffsetWire>*          Algos;
   Algos = &myLeft;
   if (!myLastIsLeft)
   {
@@ -491,7 +478,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffset::Generated(const 
   }
   for (itOW.Initialize(*Algos); itOW.More(); itOW.Next())
   {
-    BRepFill_OffsetWire& OW = itOW.ChangeValue();
+    BRepFill_OffsetWire&           OW = itOW.ChangeValue();
     NCollection_List<TopoDS_Shape> L;
     L = OW.GeneratedShapes(S.Oriented(TopAbs_FORWARD));
     myGenerated.Append(L);

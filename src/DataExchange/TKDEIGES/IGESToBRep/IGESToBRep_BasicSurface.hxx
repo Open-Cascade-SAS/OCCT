@@ -58,12 +58,12 @@ public:
   Standard_EXPORT IGESToBRep_BasicSurface(const IGESToBRep_CurveAndSurface& CS);
 
   //! Creates a tool BasicSurface ready to run.
-  Standard_EXPORT IGESToBRep_BasicSurface(const double    eps,
-                                          const double    epsGeom,
-                                          const double    epsCoeff,
-                                          const bool mode,
-                                          const bool modeapprox,
-                                          const bool optimized);
+  Standard_EXPORT IGESToBRep_BasicSurface(const double eps,
+                                          const double epsGeom,
+                                          const double epsCoeff,
+                                          const bool   mode,
+                                          const bool   modeapprox,
+                                          const bool   optimized);
 
   //! Returns Surface from Geom if the last transfer has succeeded.
   Standard_EXPORT occ::handle<Geom_Surface> TransferBasicSurface(

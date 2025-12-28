@@ -43,47 +43,43 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X,
-                                                 math_Vector&       F) override;
+  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) override;
 
   //! returns the values <D> of the derivatives for the
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Derivatives(const math_Vector& X,
-                                                       math_Matrix&       D) override;
+  Standard_EXPORT virtual bool Derivatives(const math_Vector& X, math_Matrix& D) override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
   Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                                  math_Vector&       F,
-                                                  math_Matrix&       D) override;
+                                      math_Vector&       F,
+                                      math_Matrix&       D) override;
 
   //! returns the values <F> of the T derivatives for
   //! the parameter Param.
   Standard_EXPORT bool DerivT(const occ::handle<Adaptor3d_Curve>& C,
-                                          const double            Param,
-                                          const double            W,
-                                          const gp_Vec&                  dN,
-                                          const double            teta,
-                                          math_Vector&                   F);
+                              const double                        Param,
+                              const double                        W,
+                              const gp_Vec&                       dN,
+                              const double                        teta,
+                              math_Vector&                        F);
 
   //! returns the values <F> of the T2 derivatives for
   //! the parameter Param.
   Standard_EXPORT bool Deriv2T(const occ::handle<Adaptor3d_Curve>& C,
-                                           const double            Param,
-                                           const double            W,
-                                           const gp_Vec&                  d2N,
-                                           const double            teta,
-                                           math_Vector&                   F);
+                               const double                        Param,
+                               const double                        W,
+                               const gp_Vec&                       d2N,
+                               const double                        teta,
+                               math_Vector&                        F);
 
   //! returns the values <D> of the TX derivatives for
   //! the parameter Param.
-  Standard_EXPORT bool DerivTX(const gp_Vec&       dN,
-                                           const double teta,
-                                           math_Matrix&        D);
+  Standard_EXPORT bool DerivTX(const gp_Vec& dN, const double teta, math_Matrix& D);
 
   //! returns the values <T> of the X2 derivatives for
   //! the parameter Param.

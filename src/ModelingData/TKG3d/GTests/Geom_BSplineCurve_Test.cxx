@@ -14,10 +14,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 

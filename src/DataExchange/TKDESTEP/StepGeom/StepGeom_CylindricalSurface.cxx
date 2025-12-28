@@ -21,7 +21,7 @@ StepGeom_CylindricalSurface::StepGeom_CylindricalSurface() {}
 
 void StepGeom_CylindricalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                        const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                                       const double                      aRadius)
+                                       const double                                  aRadius)
 {
   // --- classe own fields ---
   radius = aRadius;

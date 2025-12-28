@@ -40,7 +40,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_SecurityClassification::Name() c
   return name;
 }
 
-void StepBasic_SecurityClassification::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
+void StepBasic_SecurityClassification::SetPurpose(
+  const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   purpose = aPurpose;
 }

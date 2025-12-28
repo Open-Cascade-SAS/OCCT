@@ -45,16 +45,16 @@ IGESGeom_ToolBoundedSurface::IGESGeom_ToolBoundedSurface() {}
 
 void IGESGeom_ToolBoundedSurface::ReadOwnParams(const occ::handle<IGESGeom_BoundedSurface>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader&                  PR) const
+                                                IGESData_ParamReader& PR) const
 {
   // MGE 31/07/98
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                   num, i;
-  int                   tempType;
-  occ::handle<IGESData_IGESEntity>        tempSurface;
+  int                                                              num, i;
+  int                                                              tempType;
+  occ::handle<IGESData_IGESEntity>                                 tempSurface;
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>> tempBounds;
-  IGESData_Status                    aStatus;
+  IGESData_Status                                                  aStatus;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadInteger(PR.Current(), tempType))
@@ -91,8 +91,8 @@ void IGESGeom_ToolBoundedSurface::ReadOwnParams(const occ::handle<IGESGeom_Bound
   */
 
   // szv#4:S4163:12Mar99 optimized
-  // if (st && num > 0)  tempBounds = new NCollection_HArray1<occ::handle<IGESGeom_Boundary>>(1, num);
-  // if (st && num <= 0)  PR.SendFail(Msg167);
+  // if (st && num > 0)  tempBounds = new NCollection_HArray1<occ::handle<IGESGeom_Boundary>>(1,
+  // num); if (st && num <= 0)  PR.SendFail(Msg167);
   if (PR.ReadInteger(PR.Current(), num) && (num > 0))
   {
     tempBounds = new NCollection_HArray1<occ::handle<IGESGeom_Boundary>>(1, num);
@@ -147,7 +147,7 @@ void IGESGeom_ToolBoundedSurface::ReadOwnParams(const occ::handle<IGESGeom_Bound
 //=================================================================================================
 
 void IGESGeom_ToolBoundedSurface::WriteOwnParams(const occ::handle<IGESGeom_BoundedSurface>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int i, num;
   IW.Send(ent->RepresentationType());
@@ -160,7 +160,7 @@ void IGESGeom_ToolBoundedSurface::WriteOwnParams(const occ::handle<IGESGeom_Boun
 //=================================================================================================
 
 void IGESGeom_ToolBoundedSurface::OwnShared(const occ::handle<IGESGeom_BoundedSurface>& ent,
-                                            Interface_EntityIterator&              iter) const
+                                            Interface_EntityIterator&                   iter) const
 {
   int i, num;
   iter.GetOneItem(ent->Surface());
@@ -172,7 +172,7 @@ void IGESGeom_ToolBoundedSurface::OwnShared(const occ::handle<IGESGeom_BoundedSu
 
 void IGESGeom_ToolBoundedSurface::OwnCopy(const occ::handle<IGESGeom_BoundedSurface>& another,
                                           const occ::handle<IGESGeom_BoundedSurface>& ent,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&                         TC) const
 {
   int i, num;
 
@@ -228,9 +228,9 @@ void IGESGeom_ToolBoundedSurface::OwnCheck(const occ::handle<IGESGeom_BoundedSur
 //=================================================================================================
 
 void IGESGeom_ToolBoundedSurface::OwnDump(const occ::handle<IGESGeom_BoundedSurface>& ent,
-                                          const IGESData_IGESDumper&             dumper,
-                                          Standard_OStream&                      S,
-                                          const int                 level) const
+                                          const IGESData_IGESDumper&                  dumper,
+                                          Standard_OStream&                           S,
+                                          const int                                   level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
   S << "IGESGeom_BoundedSurface\n"

@@ -25,10 +25,7 @@
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <StepGeom_BSplineCurve.hxx>
-#include <Standard_Integer.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
 #include <Standard_Real.hxx>
@@ -41,15 +38,17 @@ public:
   //! Returns a BSplineCurveWithKnots
   Standard_EXPORT StepGeom_BSplineCurveWithKnots();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const int                          aDegree,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-                            const StepGeom_BSplineCurveForm                 aCurveForm,
-                            const StepData_Logical                          aClosedCurve,
-                            const StepData_Logical                          aSelfIntersect,
-                            const occ::handle<NCollection_HArray1<int>>&         aKnotMultiplicities,
-                            const occ::handle<NCollection_HArray1<double>>&            aKnots,
-                            const StepGeom_KnotType                         aKnotSpec);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const int                                    aDegree,
+    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
+                                                    aControlPointsList,
+    const StepGeom_BSplineCurveForm                 aCurveForm,
+    const StepData_Logical                          aClosedCurve,
+    const StepData_Logical                          aSelfIntersect,
+    const occ::handle<NCollection_HArray1<int>>&    aKnotMultiplicities,
+    const occ::handle<NCollection_HArray1<double>>& aKnots,
+    const StepGeom_KnotType                         aKnotSpec);
 
   Standard_EXPORT void SetKnotMultiplicities(
     const occ::handle<NCollection_HArray1<int>>& aKnotMultiplicities);
@@ -75,9 +74,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots, StepGeom_BSplineCurve)
 
 private:
-  occ::handle<NCollection_HArray1<int>> knotMultiplicities;
-  occ::handle<NCollection_HArray1<double>>    knots;
-  StepGeom_KnotType                knotSpec;
+  occ::handle<NCollection_HArray1<int>>    knotMultiplicities;
+  occ::handle<NCollection_HArray1<double>> knots;
+  StepGeom_KnotType                        knotSpec;
 };
 
 #endif // _StepGeom_BSplineCurveWithKnots_HeaderFile

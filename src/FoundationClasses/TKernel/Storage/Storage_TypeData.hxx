@@ -24,10 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Storage_Error.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
@@ -43,8 +40,7 @@ public:
   Standard_EXPORT int NumberOfTypes() const;
 
   //! add a type to the list
-  Standard_EXPORT void AddType(const TCollection_AsciiString& aName,
-                               const int         aTypeNum);
+  Standard_EXPORT void AddType(const TCollection_AsciiString& aName, const int aTypeNum);
 
   //! returns the name of the type with number <aTypeNum>
   Standard_EXPORT TCollection_AsciiString Type(const int aTypeNum) const;
@@ -73,9 +69,9 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  NCollection_IndexedDataMap<TCollection_AsciiString, int>           myPt;
-  Storage_Error           myErrorStatus;
-  TCollection_AsciiString myErrorStatusExt;
+  NCollection_IndexedDataMap<TCollection_AsciiString, int> myPt;
+  Storage_Error                                            myErrorStatus;
+  TCollection_AsciiString                                  myErrorStatusExt;
 };
 
 #endif // _Storage_TypeData_HeaderFile

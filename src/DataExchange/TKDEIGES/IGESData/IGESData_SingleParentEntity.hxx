@@ -39,7 +39,6 @@ public:
   Standard_EXPORT virtual occ::handle<IGESData_IGESEntity> Child(const int num) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_SingleParentEntity, IGESData_IGESEntity)
-
 };
 
 #endif // _IGESData_SingleParentEntity_HeaderFile

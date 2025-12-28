@@ -26,16 +26,16 @@ StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::
 }
 
 void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
-  const occ::handle<StepGeom_QuasiUniformSurface>&     aQuasiUniformSurface,
-  const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface)
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<StepGeom_QuasiUniformSurface>&    aQuasiUniformSurface,
+  const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface)
 {
   // --- classe own fields ---
   quasiUniformSurface    = aQuasiUniformSurface;
@@ -52,15 +52,15 @@ void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
-  const occ::handle<NCollection_HArray2<double>>&            aWeightsData)
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray2<double>>&                               aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -133,15 +133,14 @@ void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::SetWeightsData(
   rationalBSplineSurface->SetWeightsData(aWeightsData);
 }
 
-occ::handle<NCollection_HArray2<double>> StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::WeightsData()
-  const
+occ::handle<NCollection_HArray2<double>> StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::
+  WeightsData() const
 {
   return rationalBSplineSurface->WeightsData();
 }
 
-double StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::WeightsDataValue(
-  const int num1,
-  const int num2) const
+double StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::WeightsDataValue(const int num1,
+                                                                               const int num2) const
 {
   return rationalBSplineSurface->WeightsDataValue(num1, num2);
 }

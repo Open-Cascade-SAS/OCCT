@@ -31,7 +31,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_CartesianTransformationOperator2d,
                           StepGeom_CartesianTransformationOperator)
-
 };
 
 #endif // _StepGeom_CartesianTransformationOperator2d_HeaderFile

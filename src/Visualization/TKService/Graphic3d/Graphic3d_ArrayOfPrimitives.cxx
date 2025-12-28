@@ -47,9 +47,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ArrayOfPolygons, Graphic3d_ArrayOfPrimitive
 
 occ::handle<Graphic3d_ArrayOfPrimitives> Graphic3d_ArrayOfPrimitives::CreateArray(
   Graphic3d_TypeOfPrimitiveArray theType,
-  int               theMaxVertexs,
-  int               theMaxBounds,
-  int               theMaxEdges,
+  int                            theMaxVertexs,
+  int                            theMaxBounds,
+  int                            theMaxEdges,
   Graphic3d_ArrayFlags           theArrayFlags)
 {
   switch (theType)
@@ -93,9 +93,9 @@ occ::handle<Graphic3d_ArrayOfPrimitives> Graphic3d_ArrayOfPrimitives::CreateArra
 //=================================================================================================
 
 void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
-                                       int               theMaxVertexs,
-                                       int               theMaxBounds,
-                                       int               theMaxEdges,
+                                       int                            theMaxVertexs,
+                                       int                            theMaxBounds,
+                                       int                            theMaxEdges,
                                        Graphic3d_ArrayFlags           theArrayOptions)
 {
   myType     = theType;
@@ -154,7 +154,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
   }
 
   Graphic3d_Attribute anAttribs[4];
-  int    aNbAttribs = 0;
+  int                 aNbAttribs = 0;
   anAttribs[aNbAttribs].Id       = Graphic3d_TOA_POS;
   anAttribs[aNbAttribs].DataType = Graphic3d_TOD_VEC3;
   ++aNbAttribs;
@@ -234,10 +234,10 @@ int Graphic3d_ArrayOfPrimitives::AddBound(const int theEdgeNumber)
 
 //=================================================================================================
 
-int Graphic3d_ArrayOfPrimitives::AddBound(const int theEdgeNumber,
-                                                       const double    theR,
-                                                       const double    theG,
-                                                       const double    theB)
+int Graphic3d_ArrayOfPrimitives::AddBound(const int    theEdgeNumber,
+                                          const double theR,
+                                          const double theG,
+                                          const double theB)
 {
   Standard_OutOfRange_Raise_if(myBounds.IsNull() || myBounds->NbBounds >= myBounds->NbMaxBounds,
                                "TOO many BOUND");
@@ -263,8 +263,7 @@ int Graphic3d_ArrayOfPrimitives::AddEdge(const int theVertexIndex)
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(int theVertexLower,
-                                                        int theVertexUpper)
+void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(int theVertexLower, int theVertexUpper)
 {
   if (myType != Graphic3d_TOPA_TRIANGLES)
   {
@@ -288,8 +287,8 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges(int theVertexLower,
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(int theVertexLower,
-                                                      int theVertexUpper,
+void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(int  theVertexLower,
+                                                      int  theVertexUpper,
                                                       bool theToClose)
 {
   if (myType != Graphic3d_TOPA_TRIANGLES)
@@ -309,8 +308,8 @@ void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges(int theVertexLower,
 
 //=================================================================================================
 
-void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(int theVertexLower,
-                                                   int theVertexUpper,
+void Graphic3d_ArrayOfPrimitives::AddPolylineEdges(int  theVertexLower,
+                                                   int  theVertexUpper,
                                                    bool theToClose)
 {
   if (myType != Graphic3d_TOPA_SEGMENTS)

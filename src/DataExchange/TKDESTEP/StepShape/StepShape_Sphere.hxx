@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepShape_Sphere();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const double                     aRadius,
+                            const double                                 aRadius,
                             const occ::handle<StepGeom_Point>&           aCentre);
 
   Standard_EXPORT void SetRadius(const double aRadius);
@@ -46,7 +46,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepShape_Sphere, StepGeom_GeometricRepresentationItem)
 
 private:
-  double          radius;
+  double                      radius;
   occ::handle<StepGeom_Point> centre;
 };
 

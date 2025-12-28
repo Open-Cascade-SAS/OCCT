@@ -134,14 +134,13 @@ public:
   //! @param theTypeString string identifier
   //! @param theType detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool ShapeTypeFromString(const char*  theTypeString,
-                                                              TopAbs_ShapeEnum& theType);
+  Standard_EXPORT static bool ShapeTypeFromString(const char*       theTypeString,
+                                                  TopAbs_ShapeEnum& theType);
 
   //! Returns the string name for a given shape orientation.
   //! @param theOrientation shape orientation
   //! @return string identifier from the list FORWARD, REVERSED, INTERNAL, EXTERNAL
-  Standard_EXPORT static const char* ShapeOrientationToString(
-    TopAbs_Orientation theOrientation);
+  Standard_EXPORT static const char* ShapeOrientationToString(TopAbs_Orientation theOrientation);
 
   //! Returns the shape orientation from the given string identifier (using case-insensitive
   //! comparison).
@@ -159,9 +158,8 @@ public:
   //! @param theOrientationString string identifier
   //! @param theOrientation detected shape orientation
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool ShapeOrientationFromString(
-    const char* theOrientationString,
-    TopAbs_Orientation&    theOrientation);
+  Standard_EXPORT static bool ShapeOrientationFromString(const char*         theOrientationString,
+                                                         TopAbs_Orientation& theOrientation);
 };
 
 #endif // _TopAbs_HeaderFile

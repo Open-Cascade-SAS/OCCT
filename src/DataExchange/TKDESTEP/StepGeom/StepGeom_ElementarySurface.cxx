@@ -28,7 +28,8 @@ void StepGeom_ElementarySurface::Init(const occ::handle<TCollection_HAsciiString
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_ElementarySurface::SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
+void StepGeom_ElementarySurface::SetPosition(
+  const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   position = aPosition;
 }

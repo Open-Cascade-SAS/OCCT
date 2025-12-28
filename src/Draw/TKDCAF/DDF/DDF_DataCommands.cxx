@@ -67,7 +67,7 @@ static int MakeDF(Draw_Interpretor& di, int n, const char** a)
   }
 
   occ::handle<TDF_Data> NewDF = new TDF_Data();
-  NewDDF                 = new DDF_Data(NewDF);
+  NewDDF                      = new DDF_Data(NewDF);
   Draw::Set(a[1], NewDDF);
   // DeltaDS.Nullify();
   return 0;
@@ -117,8 +117,8 @@ static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
 
   occ::handle<TDF_Data> DF1;
   occ::handle<TDF_Data> DF2;
-  const char* Entry1;
-  const char* Entry2;
+  const char*           Entry1;
+  const char*           Entry2;
 
   if (!DDF::GetDF(a[1], DF1))
     return 1;
@@ -290,14 +290,15 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
 
     occ::handle<TDF_DataSet> ds1  = new TDF_DataSet();
     occ::handle<TDF_DataSet> ds2  = new TDF_DataSet();
-    bool    Shar = false;
+    bool                     Shar = false;
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next())
     {
       itr.Value()->References(ds1);
       //      std::cout<<"\tSource Attribute dynamic type =
       //      "<<itr.Value()->DynamicType()<<std::endl;
       const NCollection_Map<occ::handle<TDF_Attribute>>& attMap = ds1->Attributes(); // attMap
-      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More(); attMItr.Next())
+      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More();
+           attMItr.Next())
       {
         const occ::handle<TDF_Attribute>& sAtt = attMItr.Key();
         //	std::cout<<"\t\tSource references attribute dynamic type =
@@ -308,7 +309,9 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
           //	  std::cout<<"\t\t\tTARGET attribute dynamic type =
           //"<<itr2.Value()->DynamicType()<<std::endl;
           const NCollection_Map<occ::handle<TDF_Attribute>>& attMap2 = ds2->Attributes(); // attMap
-          for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr2(attMap2); attMItr2.More(); attMItr2.Next())
+          for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr2(attMap2);
+               attMItr2.More();
+               attMItr2.Next())
           {
             const occ::handle<TDF_Attribute>& tAtt = attMItr2.Key();
             //	    std::cout<<"\t\t\t\tTarget reference attribute dynamic type =
@@ -371,10 +374,11 @@ static int DDF_CheckLabel(Draw_Interpretor& di, int n, const char** a)
       // std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<std::endl;
       di << "\tSource Attribute dynamic type = " << itr.Value()->DynamicType()->Name() << "\n";
       const NCollection_Map<occ::handle<TDF_Attribute>>& attMap = ds1->Attributes(); // attMap
-      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More(); attMItr.Next())
+      for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More();
+           attMItr.Next())
       {
         const occ::handle<TDF_Attribute>& sAtt = attMItr.Key();
-        TCollection_AsciiString      entry;
+        TCollection_AsciiString           entry;
         TDF_Tool::Entry(sAtt->Label(), entry);
         // std::cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel =
         // "<<entry<<std::endl;
@@ -394,9 +398,7 @@ static int DDF_CheckLabel(Draw_Interpretor& di, int n, const char** a)
 // function : DDF_SetAccessByEntry
 // purpose  : SetAccessByEntry DOC 1|0
 //=======================================================================
-static int DDF_SetAccessByEntry(Draw_Interpretor& di,
-                                             int  nb,
-                                             const char**      a)
+static int DDF_SetAccessByEntry(Draw_Interpretor& di, int nb, const char** a)
 {
   int aRet = 0;
   if (nb != 3)

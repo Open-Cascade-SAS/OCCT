@@ -111,7 +111,8 @@ public:
     const occ::handle<ShapeAnalysis_TransferParameters>& TransferParam);
 
   //! Sets tool for splitting edge
-  Standard_EXPORT void SetEdgeDivideTool(const occ::handle<ShapeUpgrade_EdgeDivide>& edgeDivideTool);
+  Standard_EXPORT void SetEdgeDivideTool(
+    const occ::handle<ShapeUpgrade_EdgeDivide>& edgeDivideTool);
 
   //! returns tool for splitting edges
   Standard_EXPORT virtual occ::handle<ShapeUpgrade_EdgeDivide> GetEdgeDivideTool() const;
@@ -141,10 +142,10 @@ protected:
   //! Returns the tool for splitting pcurves.
   Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve2d> GetSplitCurve2dTool() const;
 
-  TopoDS_Face      myFace;
-  TopoDS_Wire      myWire;
-  int myStatus;
-  int myEdgeMode;
+  TopoDS_Face myFace;
+  TopoDS_Wire myWire;
+  int         myStatus;
+  int         myEdgeMode;
 
 private:
   occ::handle<ShapeUpgrade_SplitCurve3d>        mySplitCurve3dTool;

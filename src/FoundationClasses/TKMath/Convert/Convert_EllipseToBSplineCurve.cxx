@@ -25,9 +25,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 // Attention :
 // To avoid use of persistent tables in the fields
@@ -56,7 +53,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 
   int ii;
 
-  double                 R, r, value;
+  double                                   R, r, value;
   occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R = E.MajorRadius();
@@ -125,8 +122,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 
 Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   const gp_Elips2d&                  E,
-  const double                UFirst,
-  const double                ULast,
+  const double                       UFirst,
+  const double                       ULast,
   const Convert_ParameterisationType Parameterisation)
     : Convert_ConicToBSplineCurve(0, 0, 0)
 {
@@ -136,8 +133,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 #endif
   Standard_DomainError_Raise_if((delta > (2 * M_PI + Tol)) || (delta <= 0.0e0),
                                 "Convert_EllipseToBSplineCurve");
-  int              ii;
-  double                 R, r, value;
+  int                                      ii;
+  double                                   R, r, value;
   occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
 
   R = E.MajorRadius();

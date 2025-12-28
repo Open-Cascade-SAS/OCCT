@@ -39,10 +39,10 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
     const occ::handle<StepVisual_CoordinatesList>& theTessellatedEdge_Coordinates,
-    const bool                    theHasTessellatedEdge_GeometricLink,
-    const StepVisual_EdgeOrCurve&             theTessellatedEdge_GeometricLink,
+    const bool                                     theHasTessellatedEdge_GeometricLink,
+    const StepVisual_EdgeOrCurve&                  theTessellatedEdge_GeometricLink,
     const occ::handle<NCollection_HArray1<int>>&   theTessellatedEdge_LineStrip,
-    const StepData_Logical                    theSmooth,
+    const StepData_Logical                         theSmooth,
     const occ::handle<StepVisual_TessellatedFace>& theFace1,
     const occ::handle<StepVisual_TessellatedFace>& theFace2,
     const occ::handle<NCollection_HArray1<int>>&   theLineStripFace1,
@@ -70,7 +70,8 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> LineStripFace1() const;
 
   //! Sets field LineStripFace1
-  Standard_EXPORT void SetLineStripFace1(const occ::handle<NCollection_HArray1<int>>& theLineStripFace1);
+  Standard_EXPORT void SetLineStripFace1(
+    const occ::handle<NCollection_HArray1<int>>& theLineStripFace1);
 
   //! Returns number of LineStripFace1
   Standard_EXPORT int NbLineStripFace1() const;
@@ -82,7 +83,8 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> LineStripFace2() const;
 
   //! Sets field LineStripFace2
-  Standard_EXPORT void SetLineStripFace2(const occ::handle<NCollection_HArray1<int>>& theLineStripFace2);
+  Standard_EXPORT void SetLineStripFace2(
+    const occ::handle<NCollection_HArray1<int>>& theLineStripFace2);
 
   //! Returns number of LineStripFace2
   Standard_EXPORT int NbLineStripFace2() const;
@@ -93,7 +95,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedConnectingEdge, StepVisual_TessellatedEdge)
 
 private:
-  StepData_Logical                   mySmooth;
+  StepData_Logical                        mySmooth;
   occ::handle<StepVisual_TessellatedFace> myFace1;
   occ::handle<StepVisual_TessellatedFace> myFace2;
   occ::handle<NCollection_HArray1<int>>   myLineStripFace1;

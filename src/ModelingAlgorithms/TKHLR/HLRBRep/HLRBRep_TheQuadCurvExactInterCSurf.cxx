@@ -69,11 +69,9 @@ double HLRBRep_TheQuadCurvExactInterCSurf::Root(const int Index) const
 
 //==================================================================================================
 
-void HLRBRep_TheQuadCurvExactInterCSurf::Intervals(const int Index,
-                                                   double&         a,
-                                                   double&         b) const
+void HLRBRep_TheQuadCurvExactInterCSurf::Intervals(const int Index, double& a, double& b) const
 {
   int Index2 = Index + Index - 1;
-  a                       = intv(Index2);
-  b                       = intv(Index2 + 1);
+  a          = intv(Index2);
+  b          = intv(Index2 + 1);
 }

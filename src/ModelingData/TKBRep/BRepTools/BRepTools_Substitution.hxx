@@ -24,8 +24,6 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! A tool to substitute subshapes by other shapes.
@@ -56,7 +54,7 @@ public:
   //! if an item of <NewShapes> is oriented FORWARD.
   //! it will be oriented as <OldShape> in its ancestors.
   //! else it will be reversed.
-  Standard_EXPORT void Substitute(const TopoDS_Shape&         OldShape,
+  Standard_EXPORT void Substitute(const TopoDS_Shape&                   OldShape,
                                   const NCollection_List<TopoDS_Shape>& NewShapes);
 
   //! Build NewShape from <S> if its subshapes has modified.

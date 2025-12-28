@@ -58,9 +58,7 @@ Geom2d_Circle::Geom2d_Circle(const gp_Circ2d& C)
 
 //=================================================================================================
 
-Geom2d_Circle::Geom2d_Circle(const Ax2d&            A,
-                             const double    Radius,
-                             const bool Sense)
+Geom2d_Circle::Geom2d_Circle(const Ax2d& A, const double Radius, const bool Sense)
     : radius(Radius)
 {
 

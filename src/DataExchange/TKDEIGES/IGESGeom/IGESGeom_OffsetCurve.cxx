@@ -27,17 +27,17 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_OffsetCurve, IGESData_IGESEntity)
 IGESGeom_OffsetCurve::IGESGeom_OffsetCurve() {}
 
 void IGESGeom_OffsetCurve::Init(const occ::handle<IGESData_IGESEntity>& aBaseCurve,
-                                const int             anOffsetType,
+                                const int                               anOffsetType,
                                 const occ::handle<IGESData_IGESEntity>& aFunction,
-                                const int             aFunctionCoord,
-                                const int             aTaperedOffsetType,
-                                const double                offDistance1,
-                                const double                anArcLength1,
-                                const double                offDistance2,
-                                const double                anArcLength2,
-                                const gp_XYZ&                      aNormalVec,
-                                const double                anOffsetParam,
-                                const double                anotherOffsetParam)
+                                const int                               aFunctionCoord,
+                                const int                               aTaperedOffsetType,
+                                const double                            offDistance1,
+                                const double                            anArcLength1,
+                                const double                            offDistance2,
+                                const double                            anArcLength2,
+                                const gp_XYZ&                           aNormalVec,
+                                const double                            anOffsetParam,
+                                const double                            anotherOffsetParam)
 {
   theBaseCurve         = aBaseCurve;
   theOffsetType        = anOffsetType;

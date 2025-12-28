@@ -31,7 +31,7 @@ public:
   //! Returns a SiUnitAndMassUnit
   Standard_EXPORT StepBasic_SiUnitAndMassUnit();
 
-  Standard_EXPORT void Init(const bool     hasAprefix,
+  Standard_EXPORT void Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 

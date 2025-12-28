@@ -45,10 +45,7 @@ public:
     const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   //! Returns KOI_Object
-  virtual AIS_KindOfInteractive Type() const override
-  {
-    return AIS_KindOfInteractive_Object;
-  }
+  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Object; }
 
   //! Returns 0
   virtual int Signature() const override { return 0; }
@@ -119,20 +116,21 @@ protected:
   //! Computes the presentation according to a point of view.
   Standard_EXPORT virtual void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
                                           const occ::handle<TopLoc_Datum3D>&     theTrsf,
-                                          const occ::handle<Prs3d_Presentation>& thePrs)
-    override;
+                                          const occ::handle<Prs3d_Presentation>& thePrs) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference sub shapes selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT void computeSubShapeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                                const int             theMode);
+  Standard_EXPORT void computeSubShapeSelection(
+    const occ::handle<SelectMgr_Selection>& theSelection,
+    const int                               theMode);
 
   Standard_EXPORT void updateShape(const bool WithLocation = true);
 
@@ -141,7 +139,7 @@ protected:
 
 protected:
   occ::handle<AIS_InteractiveObject> myReference;
-  TopoDS_Shape                  myShape;
+  TopoDS_Shape                       myShape;
 };
 
 #endif // _AIS_ConnectedInteractive_HeaderFile

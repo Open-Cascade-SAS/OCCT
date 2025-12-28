@@ -111,13 +111,12 @@ public:
   double TangentialTolerance() const { return myCurve.TangentialTolerance(); }
 
 protected:
-  occ::handle<NCollection_BaseAllocator> myAllocator;
-  IntTools_Curve                    myCurve;
-  NCollection_List<occ::handle<BOPDS_PaveBlock>>             myPaveBlocks;
-  NCollection_List<int>             myTechnoVertices;
-  Bnd_Box                           myBox;
-  double                     myTolerance;
-
+  occ::handle<NCollection_BaseAllocator>         myAllocator;
+  IntTools_Curve                                 myCurve;
+  NCollection_List<occ::handle<BOPDS_PaveBlock>> myPaveBlocks;
+  NCollection_List<int>                          myTechnoVertices;
+  Bnd_Box                                        myBox;
+  double                                         myTolerance;
 };
 
 #include <BOPDS_Curve.lxx>

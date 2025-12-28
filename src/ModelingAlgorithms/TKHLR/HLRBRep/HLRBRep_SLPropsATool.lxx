@@ -21,8 +21,8 @@
 //=================================================================================================
 
 inline void HLRBRep_SLPropsATool::Value(const HLRBRep_SurfacePtr A,
-                                        const double      U,
-                                        const double      V,
+                                        const double             U,
+                                        const double             V,
                                         gp_Pnt&                  P)
 {
   P = ((HLRBRep_Surface*)A)->Value(U, V);
@@ -31,8 +31,8 @@ inline void HLRBRep_SLPropsATool::Value(const HLRBRep_SurfacePtr A,
 //=================================================================================================
 
 inline void HLRBRep_SLPropsATool::D1(const HLRBRep_SurfacePtr A,
-                                     const double      U,
-                                     const double      V,
+                                     const double             U,
+                                     const double             V,
                                      gp_Pnt&                  P,
                                      gp_Vec&                  D1U,
                                      gp_Vec&                  D1V)
@@ -43,8 +43,8 @@ inline void HLRBRep_SLPropsATool::D1(const HLRBRep_SurfacePtr A,
 //=================================================================================================
 
 inline void HLRBRep_SLPropsATool::D2(const HLRBRep_SurfacePtr A,
-                                     const double      U,
-                                     const double      V,
+                                     const double             U,
+                                     const double             V,
                                      gp_Pnt&                  P,
                                      gp_Vec&                  D1U,
                                      gp_Vec&                  D1V,
@@ -58,10 +58,10 @@ inline void HLRBRep_SLPropsATool::D2(const HLRBRep_SurfacePtr A,
 //=================================================================================================
 
 inline gp_Vec HLRBRep_SLPropsATool::DN(const HLRBRep_SurfacePtr A,
-                                       const double      U,
-                                       const double      V,
-                                       const int   Nu,
-                                       const int   Nv)
+                                       const double             U,
+                                       const double             V,
+                                       const int                Nu,
+                                       const int                Nv)
 {
   return ((HLRBRep_Surface*)A)->DN(U, V, Nu, Nv);
 }

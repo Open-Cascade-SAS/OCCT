@@ -40,11 +40,11 @@ const Standard_GUID& TDataStd_IntegerArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_IntegerArray> SetAttr(const TDF_Label&       label,
-                                             const int lower,
-                                             const int upper,
-                                             const bool isDelta,
-                                             const Standard_GUID&   theGuid)
+static occ::handle<TDataStd_IntegerArray> SetAttr(const TDF_Label&     label,
+                                                  const int            lower,
+                                                  const int            upper,
+                                                  const bool           isDelta,
+                                                  const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_IntegerArray> A;
   if (!label.FindAttribute(theGuid, A))
@@ -84,10 +84,10 @@ void TDataStd_IntegerArray::Init(const int lower, const int upper)
 // purpose  : isDelta applicable only for new attributes
 //=======================================================================
 
-occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&       label,
-                                                         const int lower,
-                                                         const int upper,
-                                                         const bool isDelta)
+occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label& label,
+                                                              const int        lower,
+                                                              const int        upper,
+                                                              const bool       isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
@@ -98,11 +98,11 @@ occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&  
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 
-occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&       label,
-                                                         const Standard_GUID&   theGuid,
-                                                         const int lower,
-                                                         const int upper,
-                                                         const bool isDelta)
+occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&     label,
+                                                              const Standard_GUID& theGuid,
+                                                              const int            lower,
+                                                              const int            upper,
+                                                              const bool           isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
@@ -164,12 +164,12 @@ int TDataStd_IntegerArray::Length(void) const
 //=======================================================================
 
 void TDataStd_IntegerArray::ChangeArray(const occ::handle<NCollection_HArray1<int>>& newArray,
-                                        const bool                  isCheckItems)
+                                        const bool                                   isCheckItems)
 {
-  int aLower    = newArray->Lower();
-  int anUpper   = newArray->Upper();
+  int  aLower    = newArray->Lower();
+  int  anUpper   = newArray->Upper();
   bool aDimEqual = false;
-  int i;
+  int  i;
 
   if (Lower() == aLower && Upper() == anUpper)
   {
@@ -235,7 +235,7 @@ occ::handle<TDF_Attribute> TDataStd_IntegerArray::NewEmpty() const
 
 void TDataStd_IntegerArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  int              i, lower, upper;
+  int                                i, lower, upper;
   occ::handle<TDataStd_IntegerArray> anArray = occ::down_cast<TDataStd_IntegerArray>(With);
   if (!anArray->myValue.IsNull())
   {

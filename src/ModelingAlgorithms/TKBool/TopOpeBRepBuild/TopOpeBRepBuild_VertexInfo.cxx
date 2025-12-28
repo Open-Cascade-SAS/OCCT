@@ -176,7 +176,7 @@ const TopoDS_Edge& TopOpeBRepBuild_VertexInfo::CurrentOut()
   int i, aNbOut;
   aNbOut = myLocalEdgesOut.Extent();
 
-  NCollection_IndexedMap<TopoDS_Shape> aMapPassed;
+  NCollection_IndexedMap<TopoDS_Shape>     aMapPassed;
   NCollection_List<TopoDS_Shape>::Iterator anIt(myEdgesPassed);
   for (; anIt.More(); anIt.Next())
   {

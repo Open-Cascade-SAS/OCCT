@@ -43,9 +43,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX - 4.0;
     theD = 2.0 * theX;
@@ -69,9 +67,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
@@ -95,9 +91,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -122,9 +116,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = 2.0 * theX - 4.0;
     theD = 2.0;
@@ -148,9 +140,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     (void)theX;
     theF = 0.0;
@@ -175,9 +165,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX + 1.0;
     theD = 2.0 * theX;
@@ -203,9 +191,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     Value(theX, theF);
     Derivative(theX, theD);
@@ -234,8 +220,8 @@ TEST(MathFunctionRootsTest, QuadraticTwoRoots)
   if (aRoot1 > aRoot2)
   {
     double aTemp = aRoot1;
-    aRoot1              = aRoot2;
-    aRoot2              = aTemp;
+    aRoot1       = aRoot2;
+    aRoot2       = aTemp;
   }
 
   EXPECT_NEAR(aRoot1, -2.0, 1.0e-8) << "First root should be -2";

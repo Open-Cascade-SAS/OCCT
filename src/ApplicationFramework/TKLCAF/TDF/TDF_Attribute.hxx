@@ -179,8 +179,8 @@ public:
   //! one. The method returns True if found, False
   //! otherwise. A removed attribute cannot be found using
   //! this method.
-  Standard_EXPORT bool FindAttribute(const Standard_GUID&   anID,
-                                                 occ::handle<TDF_Attribute>& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&        anID,
+                                     occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
@@ -208,8 +208,7 @@ public:
   //! method is compatible with Transaction & Delta
   //! mechanisms. Be careful that if <me> will have a
   //! null label after this call
-  Standard_EXPORT void ForgetAllAttributes(
-    const bool clearChildren = true) const;
+  Standard_EXPORT void ForgetAllAttributes(const bool clearChildren = true) const;
 
   //! Something to do after adding an Attribute to a label.
   Standard_EXPORT virtual void AfterAddition();
@@ -233,8 +232,7 @@ public:
   //! further (false). If <forceIt> is set to true, the
   //! method MUST perform and return true. Does nothing
   //! by default and returns true.
-  Standard_EXPORT virtual bool AfterRetrieval(
-    const bool forceIt = false);
+  Standard_EXPORT virtual bool AfterRetrieval(const bool forceIt = false);
 
   //! Something to do before applying <anAttDelta>. The
   //! returned status says if AfterUndo has been
@@ -242,9 +240,8 @@ public:
   //! called once again further (false). If <forceIt> is
   //! set to true, the method MUST perform and return
   //! true. Does nothing by default and returns true.
-  Standard_EXPORT virtual bool BeforeUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false);
+  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                          const bool                             forceIt = false);
 
   //! Something to do after applying <anAttDelta>. The
   //! returned status says if AfterUndo has been
@@ -252,9 +249,8 @@ public:
   //! called once again further (false). If <forceIt> is
   //! set to true, the method MUST perform and return
   //! true. Does nothing by default and returns true.
-  Standard_EXPORT virtual bool AfterUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false);
+  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                         const bool                             forceIt = false);
 
   //! A callback.
   //! By default does nothing.
@@ -306,7 +302,8 @@ public:
     const occ::handle<TDF_Attribute>& anOldAttribute) const;
 
   //! Applies a DeltaOnModification to <me>.
-  Standard_EXPORT virtual void DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& aDelta);
+  Standard_EXPORT virtual void DeltaOnModification(
+    const occ::handle<TDF_DeltaOnModification>& aDelta);
 
   //! Makes a DeltaOnRemoval on <me> because <me> has
   //! disappeared from the DS.
@@ -329,8 +326,9 @@ public:
   //! It is possible to use <aRelocationTable> to
   //! get/set the relocation value of a source
   //! attribute.
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
-                                     const occ::handle<TDF_RelocationTable>& aRelocationTable) const = 0;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       intoAttribute,
+    const occ::handle<TDF_RelocationTable>& aRelocationTable) const = 0;
 
   //! Adds the first level referenced attributes and labels
   //! to <aDataSet>.
@@ -352,9 +350,10 @@ public:
   //! map, first put add it to the map and then dump it.
   //! Use the map rank instead of dumping each attribute
   //! field.
-  Standard_EXPORT virtual void ExtendedDump(Standard_OStream&        anOS,
-                                            const TDF_IDFilter&      aFilter,
-                                            NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const;
+  Standard_EXPORT virtual void ExtendedDump(
+    Standard_OStream&                                   anOS,
+    const TDF_IDFilter&                                 aFilter,
+    NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const;
 
   //! Forgets the attribute. <aTransaction> is the
   //! current transaction in which the forget is done. A
@@ -371,8 +370,7 @@ public:
   Standard_EXPORT void Forget(const int aTransaction);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   friend class TDF_Data;
   friend class TDF_Label;
@@ -399,10 +397,10 @@ private:
   //! Removes the last backup attribute, if it exists.
   Standard_EXPORT void RemoveBackup();
 
-  TDF_LabelNodePtr      myLabelNode;
-  int      myTransaction;
-  int      mySavedTransaction;
-  int      myFlags;
+  TDF_LabelNodePtr           myLabelNode;
+  int                        myTransaction;
+  int                        mySavedTransaction;
+  int                        myFlags;
   occ::handle<TDF_Attribute> myNext;
   occ::handle<TDF_Attribute> myBackup;
 };

@@ -21,16 +21,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Handle.hxx>
 #include <TDF_Attribute.hxx>
 #include <NCollection_Map.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_CString.hxx>
 #include <TDF_Label.hxx>
-#include <NCollection_List.hxx>
-#include <TDF_Label.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
@@ -58,8 +53,7 @@ public:
   //! Returns the number of attributes of the tree,
   //! selected by a<Filter>, including those of
   //! <aLabel>.
-  Standard_EXPORT static int NbAttributes(const TDF_Label&    aLabel,
-                                                       const TDF_IDFilter& aFilter);
+  Standard_EXPORT static int NbAttributes(const TDF_Label& aLabel, const TDF_IDFilter& aFilter);
 
   //! Returns true if <aLabel> and its descendants
   //! reference only attributes or labels attached to
@@ -69,14 +63,14 @@ public:
   //! Returns true if <aLabel> and its descendants
   //! reference only attributes or labels attached to
   //! themselves and kept by <aFilter>.
-  Standard_EXPORT static bool IsSelfContained(const TDF_Label&    aLabel,
-                                                          const TDF_IDFilter& aFilter);
+  Standard_EXPORT static bool IsSelfContained(const TDF_Label& aLabel, const TDF_IDFilter& aFilter);
 
   //! Returns in <theAtts> the attributes having out
   //! references.
   //!
   //! Caution: <theAtts> is not cleared before use!
-  Standard_EXPORT static void OutReferers(const TDF_Label& theLabel, NCollection_Map<occ::handle<TDF_Attribute>>& theAtts);
+  Standard_EXPORT static void OutReferers(const TDF_Label&                             theLabel,
+                                          NCollection_Map<occ::handle<TDF_Attribute>>& theAtts);
 
   //! Returns in <atts> the attributes having out
   //! references and kept by <aFilterForReferers>.
@@ -85,11 +79,12 @@ public:
   Standard_EXPORT static void OutReferers(const TDF_Label&    aLabel,
                                           const TDF_IDFilter& aFilterForReferers,
                                           const TDF_IDFilter& aFilterForReferences,
-                                          NCollection_Map<occ::handle<TDF_Attribute>>&   atts);
+                                          NCollection_Map<occ::handle<TDF_Attribute>>& atts);
 
   //! Returns in <atts> the referenced attributes.
   //! Caution: <atts> is not cleared before use!
-  Standard_EXPORT static void OutReferences(const TDF_Label& aLabel, NCollection_Map<occ::handle<TDF_Attribute>>& atts);
+  Standard_EXPORT static void OutReferences(const TDF_Label&                             aLabel,
+                                            NCollection_Map<occ::handle<TDF_Attribute>>& atts);
 
   //! Returns in <atts> the referenced attributes and kept by <aFilterForReferences>.
   //! It considers only the referrers kept by <aFilterForReferers>.
@@ -97,7 +92,7 @@ public:
   Standard_EXPORT static void OutReferences(const TDF_Label&    aLabel,
                                             const TDF_IDFilter& aFilterForReferers,
                                             const TDF_IDFilter& aFilterForReferences,
-                                            NCollection_Map<occ::handle<TDF_Attribute>>&   atts);
+                                            NCollection_Map<occ::handle<TDF_Attribute>>& atts);
 
   //! Returns the label having the same sub-entry as
   //! <aLabel> but located as descendant as <toRoot>
@@ -109,11 +104,11 @@ public:
   //! fromRoot = 0:3:24
   //! toRoot = 0:5
   //! returned label = 0:5:7:2:7
-  Standard_EXPORT static void RelocateLabel(const TDF_Label&       aSourceLabel,
-                                            const TDF_Label&       fromRoot,
-                                            const TDF_Label&       toRoot,
-                                            TDF_Label&             aTargetLabel,
-                                            const bool create = false);
+  Standard_EXPORT static void RelocateLabel(const TDF_Label& aSourceLabel,
+                                            const TDF_Label& fromRoot,
+                                            const TDF_Label& toRoot,
+                                            TDF_Label&       aTargetLabel,
+                                            const bool       create = false);
 
   //! Returns the entry for the label aLabel in the form
   //! of the ASCII character string anEntry containing
@@ -132,39 +127,39 @@ public:
   //! Returns the label expressed by <anEntry>; creates
   //! the label if it does not exist and if <create> is
   //! true.
-  Standard_EXPORT static void Label(const occ::handle<TDF_Data>&        aDF,
+  Standard_EXPORT static void Label(const occ::handle<TDF_Data>&   aDF,
                                     const TCollection_AsciiString& anEntry,
                                     TDF_Label&                     aLabel,
-                                    const bool         create = false);
+                                    const bool                     create = false);
 
   //! Returns the label expressed by <anEntry>; creates
   //! the label if it does not exist and if <create> is
   //! true.
   Standard_EXPORT static void Label(const occ::handle<TDF_Data>& aDF,
-                                    const char*  anEntry,
-                                    TDF_Label&              aLabel,
-                                    const bool  create = false);
+                                    const char*                  anEntry,
+                                    TDF_Label&                   aLabel,
+                                    const bool                   create = false);
 
   //! Returns the label expressed by <anEntry>; creates
   //! the label if it does not exist and if <create> is
   //! true.
-  Standard_EXPORT static void Label(const occ::handle<TDF_Data>&      aDF,
+  Standard_EXPORT static void Label(const occ::handle<TDF_Data>& aDF,
                                     const NCollection_List<int>& aTagList,
                                     TDF_Label&                   aLabel,
-                                    const bool       create = false);
+                                    const bool                   create = false);
 
   //! Adds the labels of <aLabelList> to <aLabelMap> if
   //! they are unbound, or increases their reference
   //! counters. At the end of the process, <aLabelList>
   //! contains only the ADDED labels.
-  Standard_EXPORT static void CountLabels(NCollection_List<TDF_Label>&       aLabelList,
+  Standard_EXPORT static void CountLabels(NCollection_List<TDF_Label>&         aLabelList,
                                           NCollection_DataMap<TDF_Label, int>& aLabelMap);
 
   //! Decreases the reference counters of the labels of
   //! <aLabelList> to <aLabelMap>, and removes labels
   //! with null counter. At the end of the process,
   //! <aLabelList> contains only the SUPPRESSED labels.
-  Standard_EXPORT static void DeductLabels(NCollection_List<TDF_Label>&       aLabelList,
+  Standard_EXPORT static void DeductLabels(NCollection_List<TDF_Label>&         aLabelList,
                                            NCollection_DataMap<TDF_Label, int>& aLabelMap);
 
   //! Dumps <aDF> and its labels and their attributes.
@@ -173,9 +168,9 @@ public:
   //! Dumps <aDF> and its labels and their attributes,
   //! if their IDs are kept by <aFilter>. Dumps also the
   //! attributes content.
-  Standard_EXPORT static void ExtendedDeepDump(Standard_OStream&       anOS,
+  Standard_EXPORT static void ExtendedDeepDump(Standard_OStream&            anOS,
                                                const occ::handle<TDF_Data>& aDF,
-                                               const TDF_IDFilter&     aFilter);
+                                               const TDF_IDFilter&          aFilter);
 
   //! Dumps <aLabel>, its children and their attributes.
   Standard_EXPORT static void DeepDump(Standard_OStream& anOS, const TDF_Label& aLabel);
@@ -186,7 +181,6 @@ public:
   Standard_EXPORT static void ExtendedDeepDump(Standard_OStream&   anOS,
                                                const TDF_Label&    aLabel,
                                                const TDF_IDFilter& aFilter);
-
 };
 
 #endif // _TDF_Tool_HeaderFile

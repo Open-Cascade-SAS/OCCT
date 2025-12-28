@@ -135,8 +135,8 @@ public:
   //! taking into account the kind of space
   //! (2d or 3d)
   TopoDS_Shape CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
-                               const bool            visible,
-                               const bool            In3d);
+                               const bool                        visible,
+                               const bool                        In3d);
 
   //! For specified shape
   //! returns compound of resulting edges
@@ -145,30 +145,30 @@ public:
   //! (2d or 3d)
   TopoDS_Shape CompoundOfEdges(const TopoDS_Shape&               S,
                                const HLRBRep_TypeOfResultingEdge type,
-                               const bool            visible,
-                               const bool            In3d);
+                               const bool                        visible,
+                               const bool                        In3d);
 
 private:
-  Standard_EXPORT TopoDS_Shape InternalCompound(const int typ,
-                                                const bool visible,
-                                                const TopoDS_Shape&    S,
-                                                const bool In3d = false);
+  Standard_EXPORT TopoDS_Shape InternalCompound(const int           typ,
+                                                const bool          visible,
+                                                const TopoDS_Shape& S,
+                                                const bool          In3d = false);
 
-  Standard_EXPORT void DrawFace(const bool visible,
-                                const int typ,
-                                const int iface,
-                                occ::handle<HLRBRep_Data>&  DS,
-                                TopoDS_Shape&          Result,
-                                bool&      added,
-                                const bool In3d = false) const;
+  Standard_EXPORT void DrawFace(const bool                 visible,
+                                const int                  typ,
+                                const int                  iface,
+                                occ::handle<HLRBRep_Data>& DS,
+                                TopoDS_Shape&              Result,
+                                bool&                      added,
+                                const bool                 In3d = false) const;
 
-  Standard_EXPORT void DrawEdge(const bool visible,
-                                const bool inFace,
-                                const int typ,
-                                HLRBRep_EdgeData&      ed,
-                                TopoDS_Shape&          Result,
-                                bool&      added,
-                                const bool In3d = false) const;
+  Standard_EXPORT void DrawEdge(const bool        visible,
+                                const bool        inFace,
+                                const int         typ,
+                                HLRBRep_EdgeData& ed,
+                                TopoDS_Shape&     Result,
+                                bool&             added,
+                                const bool        In3d = false) const;
 
   occ::handle<HLRBRep_Algo> myAlgo;
 };

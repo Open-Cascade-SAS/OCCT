@@ -28,8 +28,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SimpleBound, GeomFill_Boundary)
 //=================================================================================================
 
 GeomFill_SimpleBound::GeomFill_SimpleBound(const occ::handle<Adaptor3d_Curve>& Curve,
-                                           const double            Tol3d,
-                                           const double            Tolang)
+                                           const double                        Tol3d,
+                                           const double                        Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myC3d(Curve)
 {
@@ -58,13 +58,13 @@ void GeomFill_SimpleBound::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 
 //=================================================================================================
 
-void GeomFill_SimpleBound::Reparametrize(const double    First,
-                                         const double    Last,
-                                         const bool HasDF,
-                                         const bool HasDL,
-                                         const double    DF,
-                                         const double    DL,
-                                         const bool Rev)
+void GeomFill_SimpleBound::Reparametrize(const double First,
+                                         const double Last,
+                                         const bool   HasDF,
+                                         const bool   HasDL,
+                                         const double DF,
+                                         const double DL,
+                                         const bool   Rev)
 {
   occ::handle<Law_BSpline> curve =
     Law::Reparametrize(*myC3d, First, Last, HasDF, HasDL, DF, DL, Rev, 30);

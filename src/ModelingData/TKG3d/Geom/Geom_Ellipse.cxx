@@ -57,9 +57,7 @@ Geom_Ellipse::Geom_Ellipse(const gp_Elips& E)
 
 //=================================================================================================
 
-Geom_Ellipse::Geom_Ellipse(const Ax2&          A,
-                           const double MajorRadius,
-                           const double MinorRadius)
+Geom_Ellipse::Geom_Ellipse(const Ax2& A, const double MajorRadius, const double MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {

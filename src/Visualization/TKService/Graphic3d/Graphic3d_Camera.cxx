@@ -560,7 +560,7 @@ static NCollection_Vec4<double> safePointCast(const gp_Pnt& thePnt)
   double aLim = 1e15f;
 
   // have to deal with values greater then max float
-  gp_Pnt              aSafePoint = thePnt;
+  gp_Pnt       aSafePoint = thePnt;
   const double aBigFloat  = aLim * 0.1f;
   if (std::abs(aSafePoint.X()) > aLim)
     aSafePoint.SetX(aSafePoint.X() >= 0 ? aBigFloat : -aBigFloat);
@@ -988,8 +988,8 @@ void Graphic3d_Camera::computeProjection(NCollection_Mat4<Elem_t>& theProjM,
 
   if (myTile.IsValid())
   {
-    const Elem_t          aDXFull  = Elem_t(2) * aDXHalf;
-    const Elem_t          aDYFull  = Elem_t(2) * aDYHalf;
+    const Elem_t                aDXFull  = Elem_t(2) * aDXHalf;
+    const Elem_t                aDYFull  = Elem_t(2) * aDYHalf;
     const NCollection_Vec2<int> anOffset = myTile.OffsetLowerLeft();
     anLRBT.Left =
       -aDXHalf
@@ -1277,9 +1277,9 @@ void Graphic3d_Camera::LookOrientation(const NCollection_Vec3<Elem_t>& theEye,
 
 //=================================================================================================
 
-bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
-                                 const double theResolution,
-                                 const bool          theToEnlargeIfLine)
+bool Graphic3d_Camera::FitMinMax(const Bnd_Box& theBox,
+                                 const double   theResolution,
+                                 const bool     theToEnlargeIfLine)
 {
   // Check bounding box for validness
   if (theBox.IsVoid())
@@ -1347,9 +1347,9 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
 
   // 1. Determine normalized projection asymmetry (if any).
   double anAssymX = std::tan((aCamSide).Angle(aFrustumPlane[1].Axis().Direction()))
-                           - std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
+                    - std::tan((-aCamSide).Angle(aFrustumPlane[2].Axis().Direction()));
   double anAssymY = std::tan((aCamUp).Angle(aFrustumPlane[3].Axis().Direction()))
-                           - std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction()));
+                    - std::tan((-aCamUp).Angle(aFrustumPlane[4].Axis().Direction()));
 
   // 2. Determine how far should be the frustum planes placed from center
   //    of bounding box, in order to match the bounding box closely.
@@ -1406,9 +1406,9 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
   double anAssymYv      = anAssymY * aViewSizeYv * 0.5;
   double anOffsetXv     = (aFitDistance[2] - aFitDistance[1]) * 0.5 + anAssymXv;
   double anOffsetYv     = (aFitDistance[4] - aFitDistance[3]) * 0.5 + anAssymYv;
-  gp_Vec        aTranslateSide = gp_Vec(aCamSide) * anOffsetXv;
-  gp_Vec        aTranslateUp   = gp_Vec(aCamUp) * anOffsetYv;
-  gp_Pnt        aCamNewCenter  = aBndCenter.Translated(aTranslateSide).Translated(aTranslateUp);
+  gp_Vec aTranslateSide = gp_Vec(aCamSide) * anOffsetXv;
+  gp_Vec aTranslateUp   = gp_Vec(aCamUp) * anOffsetYv;
+  gp_Pnt aCamNewCenter  = aBndCenter.Translated(aTranslateSide).Translated(aTranslateUp);
 
   gp_Trsf aCenterTrsf;
   aCenterTrsf.SetTranslation(Center(), aCamNewCenter);
@@ -1443,11 +1443,11 @@ bool Graphic3d_Camera::FitMinMax(const Bnd_Box&      theBox,
 
 //=================================================================================================
 
-bool Graphic3d_Camera::ZFitAll(const double theScaleFactor,
-                               const Bnd_Box&      theMinMax,
-                               const Bnd_Box&      theGraphicBB,
-                               double&      theZNear,
-                               double&      theZFar) const
+bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
+                               const Bnd_Box& theMinMax,
+                               const Bnd_Box& theGraphicBB,
+                               double&        theZNear,
+                               double&        theZFar) const
 {
   Standard_ASSERT_RAISE(theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
 
@@ -1508,7 +1508,7 @@ bool Graphic3d_Camera::ZFitAll(const double theScaleFactor,
   const gp_XYZ& anAxialScale = myAxialScale;
 
   // Get minimum and maximum distances to the eye plane.
-  int                       aCounter = 0;
+  int                                    aCounter = 0;
   NCollection_Sequence<gp_Pnt>::Iterator aPntIt(aPntsToMeasure);
   for (; aPntIt.More(); aPntIt.Next())
   {
@@ -1532,8 +1532,8 @@ bool Graphic3d_Camera::ZFitAll(const double theScaleFactor,
     // be absent).
     double& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphMinDist;
     double& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphMaxDist;
-    aChangeMinDist                = std::min(aDistance, aChangeMinDist);
-    aChangeMaxDist                = std::max(aDistance, aChangeMaxDist);
+    aChangeMinDist         = std::min(aDistance, aChangeMinDist);
+    aChangeMaxDist         = std::max(aDistance, aChangeMaxDist);
     aCounter++;
   }
 
@@ -1606,10 +1606,9 @@ bool Graphic3d_Camera::ZFitAll(const double theScaleFactor,
     // resolution of presentation of non primary ("infinite") application graphical objects in favor
     // of better perspective projection of the small applicative objects measured with "theMinMax"
     // values.
-    double aZRange =
-      isFiniteMinMax ? aModelMaxDist - aModelMinDist : aGraphMaxDist - aGraphMinDist;
-    double aZMin     = isFiniteMinMax ? aModelMinDist : aGraphMinDist;
-    double aZ        = aZMin < 0 ? aZRange / 2.0 : aZRange / 2.0 + aZMin;
+    double aZRange = isFiniteMinMax ? aModelMaxDist - aModelMinDist : aGraphMaxDist - aGraphMinDist;
+    double aZMin   = isFiniteMinMax ? aModelMinDist : aGraphMinDist;
+    double aZ      = aZMin < 0 ? aZRange / 2.0 : aZRange / 2.0 + aZMin;
     double aZNearMin = aZ * 5.97E-4;
     if (aZNear < aZNearMin)
     {
@@ -1647,7 +1646,7 @@ bool Graphic3d_Camera::ZFitAll(const double theScaleFactor,
 
 void Graphic3d_Camera::Interpolate(const occ::handle<Graphic3d_Camera>& theStart,
                                    const occ::handle<Graphic3d_Camera>& theEnd,
-                                   const double                    theT,
+                                   const double                         theT,
                                    occ::handle<Graphic3d_Camera>&       theCamera)
 {
   if (std::abs(theT - 1.0) < Precision::Confusion())
@@ -1686,7 +1685,7 @@ void Graphic3d_Camera::Interpolate(const occ::handle<Graphic3d_Camera>& theStart
       NCollection_Lerp<gp_XYZ>::Interpolate(theStart->Center().XYZ(), theEnd->Center().XYZ(), theT);
     gp_XYZ anEye =
       NCollection_Lerp<gp_XYZ>::Interpolate(theStart->Eye().XYZ(), theEnd->Eye().XYZ(), theT);
-    gp_XYZ        anAnchor = aCenter;
+    gp_XYZ anAnchor = aCenter;
     double aKc      = 0.0;
 
     const double aDeltaCenter = theStart->Center().Distance(theEnd->Center());
@@ -1707,7 +1706,7 @@ void Graphic3d_Camera::Interpolate(const occ::handle<Graphic3d_Camera>& theStart
       anAnchor = NCollection_Lerp<gp_XYZ>::Interpolate(anAnchorStart, anAnchorEnd, theT);
     }
 
-    const gp_Vec        aDirEyeToCenter     = theCamera->Direction();
+    const gp_Vec aDirEyeToCenter     = theCamera->Direction();
     const double aDistEyeCenterStart = theStart->Eye().Distance(theStart->Center());
     const double aDistEyeCenterEnd   = theEnd->Eye().Distance(theEnd->Center());
     const double aDistEyeCenter =
@@ -1731,7 +1730,7 @@ void Graphic3d_Camera::Interpolate(const occ::handle<Graphic3d_Camera>& theStart
 //=================================================================================================
 
 void Graphic3d_Camera::FrustumPoints(NCollection_Array1<NCollection_Vec3<double>>& thePoints,
-                                     const NCollection_Mat4<double>&               theModelWorld) const
+                                     const NCollection_Mat4<double>& theModelWorld) const
 {
   if (thePoints.Length() != FrustumVerticesNB)
   {

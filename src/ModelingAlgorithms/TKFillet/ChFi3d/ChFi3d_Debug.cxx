@@ -265,8 +265,8 @@ Standard_EXPORT void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time)
 #ifdef DRAW
 static int NbSD = 0;
 #endif
-void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
-                          const occ::handle<ChFiDS_SurfData>&    Data)
+void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure&   DStr,
+                          const occ::handle<ChFiDS_SurfData>& Data)
 {
   // trace of the surface defined by the chamfer or the fillet
   //  corresponding to SurfData
@@ -313,8 +313,8 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
     pp2 = Data->InterferenceOnS1().PCurveOnSurf()->Value(Data->InterferenceOnS1().LastParameter());
     pp3 = Data->InterferenceOnS2().PCurveOnSurf()->Value(Data->InterferenceOnS2().LastParameter());
     pp4 = Data->InterferenceOnS2().PCurveOnSurf()->Value(Data->InterferenceOnS2().FirstParameter());
-    gp_Dir2d            d1(gp_Vec2d(pp1, pp4));
-    gp_Dir2d            d2(gp_Vec2d(pp2, pp3));
+    gp_Dir2d                 d1(gp_Vec2d(pp1, pp4));
+    gp_Dir2d                 d2(gp_Vec2d(pp2, pp3));
     occ::handle<Geom2d_Line> l1 = new Geom2d_Line(pp1, d1);
     occ::handle<Geom2d_Line> l2 = new Geom2d_Line(pp2, d2);
 
@@ -343,8 +343,8 @@ void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
     gp_Vec Vwire = vv1 ^ vv2;
 
     surf->D1(pp1.X(), pp1.Y(), pw1, vv1, vv2);
-    gp_Vec           Vsurf = vv1 ^ vv2;
-    bool rev   = Vsurf.Dot(Vwire) <= 0.;
+    gp_Vec Vsurf = vv1 ^ vv2;
+    bool   rev   = Vsurf.Dot(Vwire) <= 0.;
 
     E1.Orientation(TopAbs_FORWARD);
     E2.Orientation(TopAbs_FORWARD);

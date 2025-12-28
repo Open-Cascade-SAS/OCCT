@@ -36,7 +36,7 @@
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                      const gp_Pnt2d&             Point2,
                                      const gp_Pnt2d&             Point3,
-                                     const double         Tolerance)
+                                     const double                Tolerance)
     :
 
       cirsol(1, 2),
@@ -57,10 +57,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
       pararg3(1, 2)
 {
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -72,9 +72,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
   //   Processing.                                                          +
   //=========================================================================
 
-  gp_Circ2d            C1 = Qualified1.Qualified();
-  double        R1 = C1.Radius();
-  gp_Pnt2d             center1(C1.Location());
+  gp_Circ2d                  C1 = Qualified1.Qualified();
+  double                     R1 = C1.Radius();
+  gp_Pnt2d                   center1(C1.Location());
   NCollection_Array1<double> Radius(1, 2);
 
   if (Point2.IsEqual(Point3, Precision::Confusion()))
@@ -91,10 +91,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
     int nbsolution2 = Bis2.NbSolutions();
     for (int i = 1; i <= nbsolution2; i++)
     {
-      occ::handle<GccInt_Bisec>     Sol2 = Bis2.ThisSolution(i);
-      GccInt_IType             typ2 = Sol2->ArcType();
-      gp_Lin2d                 Sol1(Bis1.ThisSolution());
-      IntAna2d_AnaIntersection Intp;
+      occ::handle<GccInt_Bisec> Sol2 = Bis2.ThisSolution(i);
+      GccInt_IType              typ2 = Sol2->ArcType();
+      gp_Lin2d                  Sol1(Bis1.ThisSolution());
+      IntAna2d_AnaIntersection  Intp;
       if (typ2 == GccInt_Cir)
       {
         Intp.Perform(Sol1, Sol2->Circle());
@@ -118,13 +118,13 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         {
           for (int j = 1; j <= Intp.NbPoints(); j++)
           {
-            gp_Pnt2d         Center(Intp.Point(j).Value());
-            double    dist1  = Center.Distance(center1);
-            double    dist2  = Center.Distance(Point2);
-            double    dist3  = Center.Distance(Point3);
-            int nbsol1 = 0;
+            gp_Pnt2d Center(Intp.Point(j).Value());
+            double   dist1  = Center.Distance(center1);
+            double   dist2  = Center.Distance(Point2);
+            double   dist3  = Center.Distance(Point3);
+            int      nbsol1 = 0;
             //	     int nbsol2 = 0;
-            int nbsol3 = 0;
+            int  nbsol3 = 0;
             bool ok     = false;
             if (Qualified1.IsEnclosed())
             {

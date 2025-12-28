@@ -56,19 +56,19 @@ public:
   //! MinorRadius.
   //! The status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax2d&         MajorAxis,
-                                    const double    MajorRadius,
-                                    const double    MinorRadius,
-                                    const bool Sense = true);
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
+                                    const double   MajorRadius,
+                                    const double   MinorRadius,
+                                    const bool     Sense = true);
 
   //! Axis is the local coordinate system of the ellipse.
   //! It is not forbidden to create an ellipse with MajorRadius =
   //! MinorRadius.
   //! The status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax22d&     Axis,
-                                    const double MajorRadius,
-                                    const double MinorRadius);
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax22d& Axis,
+                                    const double    MajorRadius,
+                                    const double    MinorRadius);
 
   //! Make an Ellipse centered on the point Center, where
   //! -   the major axis of the ellipse is defined by Center and S1,

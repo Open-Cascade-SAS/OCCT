@@ -50,8 +50,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 
 IFSelect_BasicDumper::IFSelect_BasicDumper() {}
 
-bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&             file,
-                                                const occ::handle<Standard_Transient>& item) const
+bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&                  file,
+                                    const occ::handle<Standard_Transient>& item) const
 {
   occ::handle<Standard_Type> type = item->DynamicType();
   if (type == STANDARD_TYPE(IFSelect_SelectModelRoots))
@@ -120,9 +120,9 @@ bool IFSelect_BasicDumper::WriteOwn(IFSelect_SessionFile&             file,
   return false;
 }
 
-bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&          file,
-                                               const TCollection_AsciiString& type,
-                                               occ::handle<Standard_Transient>&    item) const
+bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&            file,
+                                   const TCollection_AsciiString&   type,
+                                   occ::handle<Standard_Transient>& item) const
 {
   if (type.IsEqual("IFSelect_SelectModelRoots"))
   {
@@ -241,7 +241,7 @@ bool IFSelect_BasicDumper::ReadOwn(IFSelect_SessionFile&          file,
 
   if (type.IsEqual("IFSelect_TransformStandard"))
   {
-    bool               copyoption;
+    bool                           copyoption;
     const TCollection_AsciiString& copyname = file.ParamValue(1);
     if (copyname.Length() < FIRSTCHAR)
       return false;

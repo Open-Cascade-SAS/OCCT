@@ -29,7 +29,7 @@ RWStepRepr_RWAllAroundShapeAspect::RWStepRepr_RWAllAroundShapeAspect() {}
 
 void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                       num,
+  const int                                         num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepRepr_AllAroundShapeAspect>& ent) const
 {
@@ -73,7 +73,7 @@ void RWStepRepr_RWAllAroundShapeAspect::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWAllAroundShapeAspect::WriteStep(
-  StepData_StepWriter&                         SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepRepr_AllAroundShapeAspect>& ent) const
 {
 

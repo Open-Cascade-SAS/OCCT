@@ -17,7 +17,8 @@
 #include <XSControl_Vars.hxx>
 #include <XSControl_WorkSession.hxx>
 
-occ::handle<XSControl_WorkSession> XSControl::Session(const occ::handle<IFSelect_SessionPilot>& pilot)
+occ::handle<XSControl_WorkSession> XSControl::Session(
+  const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   return occ::down_cast<XSControl_WorkSession>(pilot->Session());
 }

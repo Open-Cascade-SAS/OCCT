@@ -41,9 +41,9 @@ public:
   //! - hasScale      : Indicates the presence of scale factor
   //! - aScale        : Used to store the scale factor
   Standard_EXPORT void Init(const occ::handle<IGESBasic_SubfigureDef>& aSubfigureDef,
-                            const gp_XYZ&                         aTranslation,
-                            const bool                hasScale,
-                            const double                   aScale);
+                            const gp_XYZ&                              aTranslation,
+                            const bool                                 hasScale,
+                            const double                               aScale);
 
   //! returns the subfigure definition entity
   Standard_EXPORT occ::handle<IGESBasic_SubfigureDef> Subfigure() const;
@@ -66,9 +66,9 @@ public:
 
 private:
   occ::handle<IGESBasic_SubfigureDef> theSubfigureDef;
-  gp_XYZ                         theTranslation;
-  double                  theScaleFactor;
-  bool               hasScaleFactor;
+  gp_XYZ                              theTranslation;
+  double                              theScaleFactor;
+  bool                                hasScaleFactor;
 };
 
 #endif // _IGESBasic_SingularSubfigure_HeaderFile

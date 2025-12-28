@@ -23,11 +23,11 @@
 
 //=================================================================================================
 
-Prs3d_ToolCylinder::Prs3d_ToolCylinder(const double    theBottomRad,
-                                       const double    theTopRad,
-                                       const double    theHeight,
-                                       const int theNbSlices,
-                                       const int theNbStacks)
+Prs3d_ToolCylinder::Prs3d_ToolCylinder(const double theBottomRad,
+                                       const double theTopRad,
+                                       const double theHeight,
+                                       const int    theNbSlices,
+                                       const int    theNbStacks)
     : myBottomRadius(theBottomRad),
       myTopRadius(theTopRad),
       myHeight(theHeight)
@@ -55,12 +55,12 @@ gp_Dir Prs3d_ToolCylinder::Normal(const double theU, const double) const
 
 //=================================================================================================
 
-occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolCylinder::Create(const double    theBottomRad,
-                                                              const double    theTopRad,
-                                                              const double    theHeight,
-                                                              const int theNbSlices,
-                                                              const int theNbStacks,
-                                                              const gp_Trsf&         theTrsf)
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_ToolCylinder::Create(const double   theBottomRad,
+                                                                   const double   theTopRad,
+                                                                   const double   theHeight,
+                                                                   const int      theNbSlices,
+                                                                   const int      theNbStacks,
+                                                                   const gp_Trsf& theTrsf)
 {
   occ::handle<Graphic3d_ArrayOfTriangles> anArray;
   Prs3d_ToolCylinder aTool(theBottomRad, theTopRad, theHeight, theNbSlices, theNbStacks);

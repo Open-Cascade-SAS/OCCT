@@ -27,7 +27,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
@@ -35,7 +34,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_EvolvedSection, GeomFill_SectionLaw)
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
   #include <Geom_BSplineCurve.hxx>
-static int NumSec = 0;
+static int  NumSec = 0;
 static bool Affich = 0;
 #endif
 
@@ -70,12 +69,12 @@ GeomFill_EvolvedSection::GeomFill_EvolvedSection(const occ::handle<Geom_Curve>& 
 //=======================================================
 // Purpose :D0
 //=======================================================
-bool GeomFill_EvolvedSection::D0(const double   U,
-                                             NCollection_Array1<gp_Pnt>&   Poles,
-                                             NCollection_Array1<double>& Weights)
+bool GeomFill_EvolvedSection::D0(const double                U,
+                                 NCollection_Array1<gp_Pnt>& Poles,
+                                 NCollection_Array1<double>& Weights)
 {
-  double    val;
-  int ii, L = Poles.Length();
+  double val;
+  int    ii, L = Poles.Length();
   val = TLaw->Value(U);
   myCurve->Poles(Poles);
   for (ii = 1; ii <= L; ii++)
@@ -90,14 +89,14 @@ bool GeomFill_EvolvedSection::D0(const double   U,
 //=======================================================
 // Purpose :D1
 //=======================================================
-bool GeomFill_EvolvedSection::D1(const double   U,
-                                             NCollection_Array1<gp_Pnt>&   Poles,
-                                             NCollection_Array1<gp_Vec>&   DPoles,
-                                             NCollection_Array1<double>& Weights,
-                                             NCollection_Array1<double>& DWeights)
+bool GeomFill_EvolvedSection::D1(const double                U,
+                                 NCollection_Array1<gp_Pnt>& Poles,
+                                 NCollection_Array1<gp_Vec>& DPoles,
+                                 NCollection_Array1<double>& Weights,
+                                 NCollection_Array1<double>& DWeights)
 {
-  double    val, dval;
-  int ii, L = Poles.Length();
+  double val, dval;
+  int    ii, L = Poles.Length();
   TLaw->D1(U, val, dval);
 
   myCurve->Poles(Poles);
@@ -116,16 +115,16 @@ bool GeomFill_EvolvedSection::D1(const double   U,
 //=======================================================
 // Purpose :D2
 //=======================================================
-bool GeomFill_EvolvedSection::D2(const double   U,
-                                             NCollection_Array1<gp_Pnt>&   Poles,
-                                             NCollection_Array1<gp_Vec>&   DPoles,
-                                             NCollection_Array1<gp_Vec>&   D2Poles,
-                                             NCollection_Array1<double>& Weights,
-                                             NCollection_Array1<double>& DWeights,
-                                             NCollection_Array1<double>& D2Weights)
+bool GeomFill_EvolvedSection::D2(const double                U,
+                                 NCollection_Array1<gp_Pnt>& Poles,
+                                 NCollection_Array1<gp_Vec>& DPoles,
+                                 NCollection_Array1<gp_Vec>& D2Poles,
+                                 NCollection_Array1<double>& Weights,
+                                 NCollection_Array1<double>& DWeights,
+                                 NCollection_Array1<double>& D2Weights)
 {
-  double    val, dval, d2val;
-  int ii, L = Poles.Length();
+  double val, dval, d2val;
+  int    ii, L = Poles.Length();
   TLaw->D2(U, val, dval, d2val);
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -180,9 +179,7 @@ occ::handle<Geom_BSplineSurface> GeomFill_EvolvedSection::BSplineSurface() const
 //=======================================================
 // Purpose :SectionShape
 //=======================================================
-void GeomFill_EvolvedSection::SectionShape(int& NbPoles,
-                                           int& NbKnots,
-                                           int& Degree) const
+void GeomFill_EvolvedSection::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   NbPoles = myCurve->NbPoles();
   NbKnots = myCurve->NbKnots();
@@ -289,9 +286,9 @@ void GeomFill_EvolvedSection::GetTolerance(const double BoundTol,
 //=======================================================
 gp_Pnt GeomFill_EvolvedSection::BarycentreOfSurf() const
 {
-  double    U = mySection->FirstParameter(), Delta, b;
-  int ii;
-  gp_Pnt           P, Bary;
+  double U = mySection->FirstParameter(), Delta, b;
+  int    ii;
+  gp_Pnt P, Bary;
 
   Delta = (myCurve->LastParameter() - U) / 20;
   Bary.SetCoord(0., 0., 0.);
@@ -313,8 +310,8 @@ gp_Pnt GeomFill_EvolvedSection::BarycentreOfSurf() const
 
 double GeomFill_EvolvedSection::MaximalSection() const
 {
-  double     L, val, max, U, Delta;
-  int  ii;
+  double            L, val, max, U, Delta;
+  int               ii;
   GeomAdaptor_Curve AC(mySection);
   L = GCPnts_AbscissaPoint::Length(AC);
 
@@ -344,7 +341,7 @@ bool GeomFill_EvolvedSection::IsConstant(double& Error) const
 {
   //  double isconst = false;
   bool isconst = false;
-  Error                    = 0.;
+  Error        = 0.;
   return isconst;
 }
 

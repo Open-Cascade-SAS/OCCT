@@ -37,18 +37,17 @@ public:
   Standard_EXPORT virtual const occ::handle<Standard_Type>& SourceType() const override;
 
   //! persistent -> transient (retrieve)
-  Standard_EXPORT bool
-    Paste(const BinObjMgt_Persistent&  Source,
-          const occ::handle<TDF_Attribute>& Target,
-          BinObjMgt_RRelocationTable&  RelocTable) const override;
+  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
   //! transient -> persistent (store)
-  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
-                             BinObjMgt_Persistent&        Target,
-                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const override;
+  Standard_EXPORT void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver, BinMDF_ADriver)
-
 };
 
 #endif // _BinMDataStd_GenericExtStringDriver_HeaderFile

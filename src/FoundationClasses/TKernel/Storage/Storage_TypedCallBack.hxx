@@ -31,7 +31,7 @@ class Storage_TypedCallBack : public Standard_Transient
 public:
   Standard_EXPORT Storage_TypedCallBack();
 
-  Standard_EXPORT Storage_TypedCallBack(const TCollection_AsciiString&  aTypeName,
+  Standard_EXPORT Storage_TypedCallBack(const TCollection_AsciiString&       aTypeName,
                                         const occ::handle<Storage_CallBack>& aCallBack);
 
   Standard_EXPORT void SetType(const TCollection_AsciiString& aType);
@@ -49,9 +49,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(Storage_TypedCallBack, Standard_Transient)
 
 private:
-  TCollection_AsciiString  myType;
+  TCollection_AsciiString       myType;
   occ::handle<Storage_CallBack> myCallBack;
-  int         myIndex;
+  int                           myIndex;
 };
 
 #endif // _Storage_TypedCallBack_HeaderFile

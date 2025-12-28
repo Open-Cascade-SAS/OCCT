@@ -69,7 +69,7 @@ void BRepToIGES_BREntity::Init()
 
 void BRepToIGES_BREntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
-  TheModel                 = model;
+  TheModel          = model;
   double unitfactor = TheModel->GlobalSection().UnitValue();
   if (unitfactor != 1.)
     TheUnitFactor = unitfactor;
@@ -208,8 +208,7 @@ void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const char* ames
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start,
-                                  const char*            amess)
+void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start, const char* amess)
 {
   occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddFail(Mapper, amess);
@@ -218,7 +217,7 @@ void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start,
 //=================================================================================================
 
 void BRepToIGES_BREntity::AddWarning(const occ::handle<Standard_Transient>& start,
-                                     const char*            amess)
+                                     const char*                            amess)
 {
   occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddWarning(Mapper, amess);
@@ -252,7 +251,7 @@ occ::handle<Standard_Transient> BRepToIGES_BREntity::GetShapeResult(const TopoDS
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::SetShapeResult(const TopoDS_Shape&               start,
+void BRepToIGES_BREntity::SetShapeResult(const TopoDS_Shape&                    start,
                                          const occ::handle<Standard_Transient>& result)
 {
   occ::handle<TransferBRep_ShapeMapper>         Mapper = new TransferBRep_ShapeMapper(start);

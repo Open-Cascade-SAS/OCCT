@@ -44,10 +44,9 @@ occ::handle<TDF_Attribute> BinMDataStd_IntegerArrayDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_IntegerArrayDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataStd_IntegerArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                           const occ::handle<TDF_Attribute>& theTarget,
+                                           BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -88,15 +87,16 @@ bool BinMDataStd_IntegerArrayDriver::Paste(
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                           BinObjMgt_Persistent&        theTarget,
-                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_IntegerArrayDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
-  occ::handle<TDataStd_IntegerArray>  anAtt        = occ::down_cast<TDataStd_IntegerArray>(theSource);
-  const NCollection_Array1<int>& aSourceArray = anAtt->Array()->Array1();
-  const int         aFirstInd    = aSourceArray.Lower();
-  const int         aLastInd     = aSourceArray.Upper();
-  const int         aLength      = aLastInd - aFirstInd + 1;
+  occ::handle<TDataStd_IntegerArray> anAtt = occ::down_cast<TDataStd_IntegerArray>(theSource);
+  const NCollection_Array1<int>&     aSourceArray = anAtt->Array()->Array1();
+  const int                          aFirstInd    = aSourceArray.Lower();
+  const int                          aLastInd     = aSourceArray.Upper();
+  const int                          aLength      = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
   int* aPtr = (int*)&aSourceArray(aFirstInd);
   theTarget.PutIntArray(aPtr, aLength);

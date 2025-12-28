@@ -85,9 +85,9 @@ public:
 private:
   occ::handle<Adaptor3d_Surface> surf;
   occ::handle<Adaptor3d_Curve>   curv;
-  gp_Pnt                    point;
-  double             ray;
-  int          choix;
+  gp_Pnt                         point;
+  double                         ray;
+  int                            choix;
 };
 
 #endif // _BRepBlend_SurfPointConstRadInv_HeaderFile

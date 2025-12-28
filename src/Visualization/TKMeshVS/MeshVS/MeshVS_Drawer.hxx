@@ -20,21 +20,10 @@
 
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <Quantity_Color.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
 class Quantity_Color;
 class Graphic3d_MaterialAspect;
 class TCollection_AsciiString;
@@ -58,29 +47,21 @@ public:
 
   Standard_EXPORT void SetColor(const int Key, const Quantity_Color& Value);
 
-  Standard_EXPORT void SetMaterial(const int          Key,
-                                   const Graphic3d_MaterialAspect& Value);
+  Standard_EXPORT void SetMaterial(const int Key, const Graphic3d_MaterialAspect& Value);
 
-  Standard_EXPORT void SetAsciiString(const int         Key,
-                                      const TCollection_AsciiString& Value);
+  Standard_EXPORT void SetAsciiString(const int Key, const TCollection_AsciiString& Value);
 
-  Standard_EXPORT bool GetInteger(const int Key,
-                                              int&      Value) const;
+  Standard_EXPORT bool GetInteger(const int Key, int& Value) const;
 
-  Standard_EXPORT bool GetDouble(const int Key,
-                                             double&         Value) const;
+  Standard_EXPORT bool GetDouble(const int Key, double& Value) const;
 
-  Standard_EXPORT bool GetBoolean(const int Key,
-                                              bool&      Value) const;
+  Standard_EXPORT bool GetBoolean(const int Key, bool& Value) const;
 
-  Standard_EXPORT bool GetColor(const int Key,
-                                            Quantity_Color&        Value) const;
+  Standard_EXPORT bool GetColor(const int Key, Quantity_Color& Value) const;
 
-  Standard_EXPORT bool GetMaterial(const int    Key,
-                                               Graphic3d_MaterialAspect& Value) const;
+  Standard_EXPORT bool GetMaterial(const int Key, Graphic3d_MaterialAspect& Value) const;
 
-  Standard_EXPORT bool GetAsciiString(const int   Key,
-                                                  TCollection_AsciiString& Value) const;
+  Standard_EXPORT bool GetAsciiString(const int Key, TCollection_AsciiString& Value) const;
 
   Standard_EXPORT bool RemoveInteger(const int Key);
 
@@ -97,12 +78,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(MeshVS_Drawer, Standard_Transient)
 
 private:
-  NCollection_DataMap<int, int>    myIntegers;
-  NCollection_DataMap<int, bool>     myBooleans;
-  NCollection_DataMap<int, double>       myDoubles;
-  NCollection_DataMap<int, Quantity_Color>       myColors;
-  NCollection_DataMap<int, Graphic3d_MaterialAspect>    myMaterials;
-  NCollection_DataMap<int, TCollection_AsciiString> myAsciiString;
+  NCollection_DataMap<int, int>                      myIntegers;
+  NCollection_DataMap<int, bool>                     myBooleans;
+  NCollection_DataMap<int, double>                   myDoubles;
+  NCollection_DataMap<int, Quantity_Color>           myColors;
+  NCollection_DataMap<int, Graphic3d_MaterialAspect> myMaterials;
+  NCollection_DataMap<int, TCollection_AsciiString>  myAsciiString;
 };
 
 #endif // _MeshVS_Drawer_HeaderFile

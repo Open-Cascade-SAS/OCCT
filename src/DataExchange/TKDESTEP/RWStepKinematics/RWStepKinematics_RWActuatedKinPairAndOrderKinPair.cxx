@@ -51,7 +51,7 @@ RWStepKinematics_RWActuatedKinPairAndOrderKinPair::
 
 void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   const occ::handle<StepData_StepReaderData>&                       theData,
-  const int                                       num0,
+  const int                                                         num0,
   occ::handle<Interface_Check>&                                     theArch,
   const occ::handle<StepKinematics_ActuatedKinPairAndOrderKinPair>& theEnt) const
 {
@@ -63,7 +63,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   occ::handle<StepKinematics_ActuatedKinematicPair> anActuatedKinematicPair =
     new StepKinematics_ActuatedKinematicPair;
   StepKinematics_ActuatedDirection aTX   = StepKinematics_adNotActuated;
-  bool                 hasTX = true;
+  bool                             hasTX = true;
   if (theData->IsParamDefined(theNum, 1))
   {
     if (theData->ParamType(theNum, 1) == Interface_ParamEnum)
@@ -89,7 +89,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aTY   = StepKinematics_adNotActuated;
-  bool                 hasTY = true;
+  bool                             hasTY = true;
   if (theData->IsParamDefined(theNum, 2))
   {
     if (theData->ParamType(theNum, 2) == Interface_ParamEnum)
@@ -115,7 +115,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aTZ   = StepKinematics_adNotActuated;
-  bool                 hasTZ = true;
+  bool                             hasTZ = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     if (theData->ParamType(theNum, 3) == Interface_ParamEnum)
@@ -141,7 +141,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRX   = StepKinematics_adNotActuated;
-  bool                 hasRX = true;
+  bool                             hasRX = true;
   if (theData->IsParamDefined(theNum, 4))
   {
     if (theData->ParamType(theNum, 4) == Interface_ParamEnum)
@@ -167,7 +167,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRY   = StepKinematics_adNotActuated;
-  bool                 hasRY = true;
+  bool                             hasRY = true;
   if (theData->IsParamDefined(theNum, 5))
   {
     if (theData->ParamType(theNum, 5) == Interface_ParamEnum)
@@ -193,7 +193,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRZ   = StepKinematics_adNotActuated;
-  bool                 hasRZ = true;
+  bool                             hasRZ = true;
   if (theData->IsParamDefined(theNum, 6))
   {
     if (theData->ParamType(theNum, 6) == Interface_ParamEnum)
@@ -234,7 +234,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                         aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 2))
   {
     theData->ReadString(theNum,
@@ -278,8 +278,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                       aKinematicPair_Joint);
 
   // Select pair supertype
-  theNum                                              = theData->NextForComplex(theNum);
-  const char*                     aPairSuperType = theData->CType(theNum);
+  theNum                                                   = theData->NextForComplex(theNum);
+  const char*                               aPairSuperType = theData->CType(theNum);
   occ::handle<StepKinematics_KinematicPair> aKinematicPair;
   if (!strcmp(aPairSuperType, "LOW_ORDER_KINEMATIC_PAIR"))
   {
@@ -339,7 +339,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                          aItemDefinedTransformation_TransformItem1,
                          aItemDefinedTransformation_TransformItem2,
                          aKinematicPair_Joint);
-    theNum                     = theData->NextForComplex(theNum);
+    theNum                = theData->NextForComplex(theNum);
     const char* aPairtype = theData->CType(theNum);
     if (!strcmp(aPairtype, "REVOLUTE_PAIR"))
     {
@@ -351,8 +351,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
         {
           // Own fields of revolute_pair_with_range
           aKinematicPair = new StepKinematics_RevolutePairWithRange;
-          double    aLowerLimitActualRotation;
-          bool hasLowerLimitActualRotation = true;
+          double aLowerLimitActualRotation;
+          bool   hasLowerLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -367,8 +367,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation   = 0;
           }
 
-          double    aUpperLimitActualRotation;
-          bool hasUpperLimitActualRotation = true;
+          double aUpperLimitActualRotation;
+          bool   hasUpperLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -436,8 +436,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           // Own fields of cylindrical_pair_with_range
           aKinematicPair = new StepKinematics_CylindricalPairWithRange;
 
-          double    aLowerLimitActualTranslation;
-          bool hasLowerLimitActualTranslation = true;
+          double aLowerLimitActualTranslation;
+          bool   hasLowerLimitActualTranslation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -452,8 +452,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualTranslation   = 0;
           }
 
-          double    aUpperLimitActualTranslation;
-          bool hasUpperLimitActualTranslation = true;
+          double aUpperLimitActualTranslation;
+          bool   hasUpperLimitActualTranslation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -468,8 +468,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitActualTranslation   = 0;
           }
 
-          double    aLowerLimitActualRotation;
-          bool hasLowerLimitActualRotation = true;
+          double aLowerLimitActualRotation;
+          bool   hasLowerLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum,
@@ -484,8 +484,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation   = 0;
           }
 
-          double    aUpperLimitActualRotation;
-          bool hasUpperLimitActualRotation = true;
+          double aUpperLimitActualRotation;
+          bool   hasUpperLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum,
@@ -557,8 +557,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           // Own fields of spherical_pair_with_range
           aKinematicPair = new StepKinematics_SphericalPairWithRange;
 
-          double    aLowerLimitYaw;
-          bool hasLowerLimitYaw = true;
+          double aLowerLimitYaw;
+          bool   hasLowerLimitYaw = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum, 1, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -569,8 +569,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitYaw   = 0;
           }
 
-          double    aUpperLimitYaw;
-          bool hasUpperLimitYaw = true;
+          double aUpperLimitYaw;
+          bool   hasUpperLimitYaw = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum, 2, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -581,8 +581,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitYaw   = 0;
           }
 
-          double    aLowerLimitPitch;
-          bool hasLowerLimitPitch = true;
+          double aLowerLimitPitch;
+          bool   hasLowerLimitPitch = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum, 3, "lower_limit_pitch", theArch, aLowerLimitPitch);
@@ -593,8 +593,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitPitch   = 0;
           }
 
-          double    aUpperLimitPitch;
-          bool hasUpperLimitPitch = true;
+          double aUpperLimitPitch;
+          bool   hasUpperLimitPitch = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum, 4, "upper_limit_pitch", theArch, aUpperLimitPitch);
@@ -605,8 +605,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitPitch   = 0;
           }
 
-          double    aLowerLimitRoll;
-          bool hasLowerLimitRoll = true;
+          double aLowerLimitRoll;
+          bool   hasLowerLimitRoll = true;
           if (theData->IsParamDefined(theNum, 5))
           {
             theData->ReadReal(theNum, 5, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -617,8 +617,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitRoll   = 0;
           }
 
-          double    aUpperLimitRoll;
-          bool hasUpperLimitRoll = true;
+          double aUpperLimitRoll;
+          bool   hasUpperLimitRoll = true;
           if (theData->IsParamDefined(theNum, 6))
           {
             theData->ReadReal(theNum, 6, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -691,8 +691,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           // Own fields of spherical_pair_with_pin_and_range
           aKinematicPair = new StepKinematics_SphericalPairWithPinAndRange;
 
-          double    aLowerLimitYaw;
-          bool hasLowerLimitYaw = true;
+          double aLowerLimitYaw;
+          bool   hasLowerLimitYaw = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum, 1, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -703,8 +703,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitYaw   = 0;
           }
 
-          double    aUpperLimitYaw;
-          bool hasUpperLimitYaw = true;
+          double aUpperLimitYaw;
+          bool   hasUpperLimitYaw = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum, 2, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -715,8 +715,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitYaw   = 0;
           }
 
-          double    aLowerLimitRoll;
-          bool hasLowerLimitRoll = true;
+          double aLowerLimitRoll;
+          bool   hasLowerLimitRoll = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum, 3, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -727,8 +727,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitRoll   = 0;
           }
 
-          double    aUpperLimitRoll;
-          bool hasUpperLimitRoll = true;
+          double aUpperLimitRoll;
+          bool   hasUpperLimitRoll = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum, 4, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -798,8 +798,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           aKinematicPair = new StepKinematics_PrismaticPairWithRange;
           // Own fields of prismatic_pair_with_range
 
-          double    aLowerLimitActualTranslation;
-          bool hasLowerLimitActualTranslation = true;
+          double aLowerLimitActualTranslation;
+          bool   hasLowerLimitActualTranslation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -814,8 +814,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualTranslation   = 0;
           }
 
-          double    aUpperLimitActualTranslation;
-          bool hasUpperLimitActualTranslation = true;
+          double aUpperLimitActualTranslation;
+          bool   hasUpperLimitActualTranslation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -877,8 +877,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
       // Own fields of universal_pair
 
       aKinematicPair = new StepKinematics_UniversalPair;
-      double    aInputSkewAngle;
-      bool hasInputSkewAngle = true;
+      double aInputSkewAngle;
+      bool   hasInputSkewAngle = true;
       if (theData->IsParamDefined(theNum, 1))
       {
         theData->ReadReal(theNum, 1, "input_skew_angle", theArch, aInputSkewAngle);
@@ -895,8 +895,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
         {
           // Own fields of universal_pair_with_range
 
-          double    aLowerLimitFirstRotation;
-          bool hasLowerLimitFirstRotation = true;
+          double aLowerLimitFirstRotation;
+          bool   hasLowerLimitFirstRotation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -911,8 +911,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitFirstRotation   = 0;
           }
 
-          double    aUpperLimitFirstRotation;
-          bool hasUpperLimitFirstRotation = true;
+          double aUpperLimitFirstRotation;
+          bool   hasUpperLimitFirstRotation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -927,8 +927,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitFirstRotation   = 0;
           }
 
-          double    aLowerLimitSecondRotation;
-          bool hasLowerLimitSecondRotation = true;
+          double aLowerLimitSecondRotation;
+          bool   hasLowerLimitSecondRotation = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum,
@@ -943,8 +943,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitSecondRotation   = 0;
           }
 
-          double    aUpperLimitSecondRotation;
-          bool hasUpperLimitSecondRotation = true;
+          double aUpperLimitSecondRotation;
+          bool   hasUpperLimitSecondRotation = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum,
@@ -1021,8 +1021,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           // Own fields of universal_pair_with_range
 
           aKinematicPair = new StepKinematics_PlanarPairWithRange;
-          double    aLowerLimitActualRotation;
-          bool hasLowerLimitActualRotation = true;
+          double aLowerLimitActualRotation;
+          bool   hasLowerLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -1037,8 +1037,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation   = 0;
           }
 
-          double    aUpperLimitActualRotation;
-          bool hasUpperLimitActualRotation = true;
+          double aUpperLimitActualRotation;
+          bool   hasUpperLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -1053,8 +1053,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitActualRotation   = 0;
           }
 
-          double    aLowerLimitActualTranslationX;
-          bool hasLowerLimitActualTranslationX = true;
+          double aLowerLimitActualTranslationX;
+          bool   hasLowerLimitActualTranslationX = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum,
@@ -1069,8 +1069,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualTranslationX   = 0;
           }
 
-          double    aUpperLimitActualTranslationX;
-          bool hasUpperLimitActualTranslationX = true;
+          double aUpperLimitActualTranslationX;
+          bool   hasUpperLimitActualTranslationX = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum,
@@ -1085,8 +1085,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitActualTranslationX   = 0;
           }
 
-          double    aLowerLimitActualTranslationY;
-          bool hasLowerLimitActualTranslationY = true;
+          double aLowerLimitActualTranslationY;
+          bool   hasLowerLimitActualTranslationY = true;
           if (theData->IsParamDefined(theNum, 5))
           {
             theData->ReadReal(theNum,
@@ -1101,8 +1101,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualTranslationY   = 0;
           }
 
-          double    aUpperLimitActualTranslationY;
-          bool hasUpperLimitActualTranslationY = true;
+          double aUpperLimitActualTranslationY;
+          bool   hasUpperLimitActualTranslationY = true;
           if (theData->IsParamDefined(theNum, 6))
           {
             theData->ReadReal(theNum,
@@ -1170,7 +1170,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
   else if (!strcmp(aPairSuperType, "LOW_ORDER_KINEMATIC_PAIR_WITH_MOTION_COUPLING"))
   {
-    theNum                     = theData->NextForComplex(theNum);
+    theNum                = theData->NextForComplex(theNum);
     const char* aPairtype = theData->CType(theNum);
     if (!strcmp(aPairtype, "GEAR_PAIR"))
     {
@@ -1208,8 +1208,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
 
           aKinematicPair = new StepKinematics_GearPairWithRange;
 
-          double    aLowerLimitActualRotation1;
-          bool hasLowerLimitActualRotation1 = true;
+          double aLowerLimitActualRotation1;
+          bool   hasLowerLimitActualRotation1 = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -1224,8 +1224,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation1   = 0;
           }
 
-          double    aUpperLimitActualRotation1;
-          bool hasUpperLimitActualRotation1 = true;
+          double aUpperLimitActualRotation1;
+          bool   hasUpperLimitActualRotation1 = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -1300,8 +1300,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
 
           aKinematicPair = new StepKinematics_RackAndPinionPairWithRange;
 
-          double    aLowerLimitRackDisplacement;
-          bool hasLowerLimitRackDisplacement = true;
+          double aLowerLimitRackDisplacement;
+          bool   hasLowerLimitRackDisplacement = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -1316,8 +1316,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitRackDisplacement   = 0;
           }
 
-          double    aUpperLimitRackDisplacement;
-          bool hasUpperLimitRackDisplacement = true;
+          double aUpperLimitRackDisplacement;
+          bool   hasUpperLimitRackDisplacement = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -1379,8 +1379,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
           // Own fields of ScrewPairWithRange
 
           aKinematicPair = new StepKinematics_ScrewPairWithRange;
-          double    aLowerLimitActualRotation;
-          bool hasLowerLimitActualRotation = true;
+          double aLowerLimitActualRotation;
+          bool   hasLowerLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 1))
           {
             theData->ReadReal(theNum,
@@ -1395,8 +1395,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation   = 0;
           }
 
-          double    aUpperLimitActualRotation;
-          bool hasUpperLimitActualRotation = true;
+          double aUpperLimitActualRotation;
+          bool   hasUpperLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum,
@@ -1447,7 +1447,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
   }
   else // "HIGH_ORDER_KINEMATIC_PAIR"
   {
-    theNum                     = theData->NextForComplex(theNum);
+    theNum                = theData->NextForComplex(theNum);
     const char* aPairtype = theData->CType(theNum);
     if (!strcmp(aPairtype, "POINT_ON_PLANAR_CURVE_PAIR"))
     {
@@ -1489,8 +1489,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                               STANDARD_TYPE(StepGeom_TrimmedCurve),
                               aRangeOnPairCurve);
 
-          double    aLowerLimitYaw;
-          bool hasLowerLimitYaw = true;
+          double aLowerLimitYaw;
+          bool   hasLowerLimitYaw = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum, 2, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -1501,8 +1501,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitYaw   = 0;
           }
 
-          double    aUpperLimitYaw;
-          bool hasUpperLimitYaw = true;
+          double aUpperLimitYaw;
+          bool   hasUpperLimitYaw = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum, 3, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -1513,8 +1513,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitYaw   = 0;
           }
 
-          double    aLowerLimitPitch;
-          bool hasLowerLimitPitch = true;
+          double aLowerLimitPitch;
+          bool   hasLowerLimitPitch = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum, 4, "lower_limit_pitch", theArch, aLowerLimitPitch);
@@ -1525,8 +1525,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitPitch   = 0;
           }
 
-          double    aUpperLimitPitch;
-          bool hasUpperLimitPitch = true;
+          double aUpperLimitPitch;
+          bool   hasUpperLimitPitch = true;
           if (theData->IsParamDefined(theNum, 5))
           {
             theData->ReadReal(theNum, 5, "upper_limit_pitch", theArch, aUpperLimitPitch);
@@ -1537,8 +1537,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitPitch   = 0;
           }
 
-          double    aLowerLimitRoll;
-          bool hasLowerLimitRoll = true;
+          double aLowerLimitRoll;
+          bool   hasLowerLimitRoll = true;
           if (theData->IsParamDefined(theNum, 6))
           {
             theData->ReadReal(theNum, 6, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -1549,8 +1549,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitRoll   = 0;
           }
 
-          double    aUpperLimitRoll;
-          bool hasUpperLimitRoll = true;
+          double aUpperLimitRoll;
+          bool   hasUpperLimitRoll = true;
           if (theData->IsParamDefined(theNum, 7))
           {
             theData->ReadReal(theNum, 7, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -1633,8 +1633,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                               STANDARD_TYPE(StepGeom_RectangularTrimmedSurface),
                               aRangeOnPairSurface);
 
-          double    aLowerLimitYaw;
-          bool hasLowerLimitYaw = true;
+          double aLowerLimitYaw;
+          bool   hasLowerLimitYaw = true;
           if (theData->IsParamDefined(theNum, 2))
           {
             theData->ReadReal(theNum, 2, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -1645,8 +1645,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitYaw   = 0;
           }
 
-          double    aUpperLimitYaw;
-          bool hasUpperLimitYaw = true;
+          double aUpperLimitYaw;
+          bool   hasUpperLimitYaw = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum, 3, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -1657,8 +1657,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitYaw   = 0;
           }
 
-          double    aLowerLimitPitch;
-          bool hasLowerLimitPitch = true;
+          double aLowerLimitPitch;
+          bool   hasLowerLimitPitch = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum, 4, "lower_limit_pitch", theArch, aLowerLimitPitch);
@@ -1669,8 +1669,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitPitch   = 0;
           }
 
-          double    aUpperLimitPitch;
-          bool hasUpperLimitPitch = true;
+          double aUpperLimitPitch;
+          bool   hasUpperLimitPitch = true;
           if (theData->IsParamDefined(theNum, 5))
           {
             theData->ReadReal(theNum, 5, "upper_limit_pitch", theArch, aUpperLimitPitch);
@@ -1681,8 +1681,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aUpperLimitPitch   = 0;
           }
 
-          double    aLowerLimitRoll;
-          bool hasLowerLimitRoll = true;
+          double aLowerLimitRoll;
+          bool   hasLowerLimitRoll = true;
           if (theData->IsParamDefined(theNum, 6))
           {
             theData->ReadReal(theNum, 6, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -1693,8 +1693,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitRoll   = 0;
           }
 
-          double    aUpperLimitRoll;
-          bool hasUpperLimitRoll = true;
+          double aUpperLimitRoll;
+          bool   hasUpperLimitRoll = true;
           if (theData->IsParamDefined(theNum, 7))
           {
             theData->ReadReal(theNum, 7, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -1881,8 +1881,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
                               STANDARD_TYPE(StepGeom_RectangularTrimmedSurface),
                               aRangeOnSurface2);
 
-          double    aLowerLimitActualRotation;
-          bool hasLowerLimitActualRotation = true;
+          double aLowerLimitActualRotation;
+          bool   hasLowerLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 3))
           {
             theData->ReadReal(theNum,
@@ -1897,8 +1897,8 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
             aLowerLimitActualRotation   = 0;
           }
 
-          double    aUpperLimitActualRotation;
-          bool hasUpperLimitActualRotation = true;
+          double aUpperLimitActualRotation;
+          bool   hasUpperLimitActualRotation = true;
           if (theData->IsParamDefined(theNum, 4))
           {
             theData->ReadReal(theNum,
@@ -1994,7 +1994,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
-  StepData_StepWriter&                                         theSW,
+  StepData_StepWriter&                                              theSW,
   const occ::handle<StepKinematics_ActuatedKinPairAndOrderKinPair>& theEnt) const
 {
   // --- Instance of plex component BoundedCurve ---
@@ -2201,8 +2201,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
             STANDARD_TYPE(StepKinematics_CylindricalPairWithRange)))
       {
         occ::handle<StepKinematics_CylindricalPairWithRange> aCylindricalPairWithRange =
-          occ::down_cast<StepKinematics_CylindricalPairWithRange>(
-            theEnt->GetOrderKinematicPair());
+          occ::down_cast<StepKinematics_CylindricalPairWithRange>(theEnt->GetOrderKinematicPair());
         // Own fields of CylindricalPairWithRange
 
         if (aCylindricalPairWithRange->HasLowerLimitActualTranslation())
@@ -2534,9 +2533,10 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
       if (theEnt->GetOrderKinematicPair()->IsKind(
             STANDARD_TYPE(StepKinematics_PointOnPlanarCurvePairWithRange)))
       {
-        occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange> aPointOnPlanarCurvePairWithRange =
-          occ::down_cast<StepKinematics_PointOnPlanarCurvePairWithRange>(
-            theEnt->GetOrderKinematicPair());
+        occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>
+          aPointOnPlanarCurvePairWithRange =
+            occ::down_cast<StepKinematics_PointOnPlanarCurvePairWithRange>(
+              theEnt->GetOrderKinematicPair());
         // Own fields of PointOnPlanarCurvePairWithRange
 
         theSW.Send(aPointOnPlanarCurvePairWithRange->RangeOnPairCurve());
@@ -2723,7 +2723,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep(
 
 void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::Share(
   const occ::handle<StepKinematics_ActuatedKinPairAndOrderKinPair>& theEnt,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                                         iter) const
 {
   iter.AddItem(theEnt->GetOrderKinematicPair());
   iter.AddItem(theEnt->GetOrderKinematicPair()->Joint());

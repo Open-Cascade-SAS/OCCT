@@ -48,9 +48,9 @@ LDOMString::LDOMString(const LDOMBasicString& anOther, const occ::handle<LDOM_Me
       [[fallthrough]];
     case LDOM_AsciiDocClear:
     case LDOM_AsciiDoc: {
-      const char*      aString = anOther.GetString();
-      int aLen    = (int)(strlen(aString) + 1);
-      myVal.ptr                = ((LDOM_MemManager*)myPtrDoc)->Allocate(aLen);
+      const char* aString = anOther.GetString();
+      int         aLen    = (int)(strlen(aString) + 1);
+      myVal.ptr           = ((LDOM_MemManager*)myPtrDoc)->Allocate(aLen);
       memcpy(myVal.ptr, aString, aLen);
     }
     break;

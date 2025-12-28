@@ -57,7 +57,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Computes the point of parameter U on the curve.
   Standard_EXPORT gp_Pnt Value(const double U) const override;
@@ -79,26 +79,22 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -111,7 +107,7 @@ public:
 
 private:
   occ::handle<Adaptor3d_Curve> myHCurve;
-  double           ratio;
+  double                       ratio;
 };
 
 #endif // _GeomFill_SnglrFunc_HeaderFile

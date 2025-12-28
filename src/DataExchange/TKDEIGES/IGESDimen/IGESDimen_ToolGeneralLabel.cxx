@@ -27,7 +27,6 @@
 #include <IGESDimen_LeaderArrow.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDimen_ToolGeneralLabel.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
@@ -40,12 +39,12 @@ IGESDimen_ToolGeneralLabel::IGESDimen_ToolGeneralLabel() {}
 
 void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_GeneralLabel>&  ent,
                                                const occ::handle<IGESData_IGESReaderData>& IR,
-                                               IGESData_ParamReader&                  PR) const
+                                               IGESData_ParamReader&                       PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  occ::handle<IGESDimen_GeneralNote>          note;
-  int                       nbval;
+  occ::handle<IGESDimen_GeneralNote>                                   note;
+  int                                                                  nbval;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders;
 
   PR.ReadEntity(IR,
@@ -79,7 +78,7 @@ void IGESDimen_ToolGeneralLabel::ReadOwnParams(const occ::handle<IGESDimen_Gener
 }
 
 void IGESDimen_ToolGeneralLabel::WriteOwnParams(const occ::handle<IGESDimen_GeneralLabel>& ent,
-                                                IGESData_IGESWriter&                  IW) const
+                                                IGESData_IGESWriter&                       IW) const
 {
   int upper = ent->NbLeaders();
   IW.Send(ent->Note());
@@ -89,7 +88,7 @@ void IGESDimen_ToolGeneralLabel::WriteOwnParams(const occ::handle<IGESDimen_Gene
 }
 
 void IGESDimen_ToolGeneralLabel::OwnShared(const occ::handle<IGESDimen_GeneralLabel>& ent,
-                                           Interface_EntityIterator&             iter) const
+                                           Interface_EntityIterator&                  iter) const
 {
   int upper = ent->NbLeaders();
   iter.GetOneItem(ent->Note());
@@ -99,12 +98,13 @@ void IGESDimen_ToolGeneralLabel::OwnShared(const occ::handle<IGESDimen_GeneralLa
 
 void IGESDimen_ToolGeneralLabel::OwnCopy(const occ::handle<IGESDimen_GeneralLabel>& another,
                                          const occ::handle<IGESDimen_GeneralLabel>& ent,
-                                         Interface_CopyTool&                   TC) const
+                                         Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   int nbval = another->NbLeaders();
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders = new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> leaders =
+    new NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>(1, nbval);
   for (int i = 1; i <= nbval; i++)
   {
     DeclareAndCast(IGESDimen_LeaderArrow, new_ent, TC.Transferred(another->Leader(i)));
@@ -132,9 +132,9 @@ void IGESDimen_ToolGeneralLabel::OwnCheck(const occ::handle<IGESDimen_GeneralLab
 }
 
 void IGESDimen_ToolGeneralLabel::OwnDump(const occ::handle<IGESDimen_GeneralLabel>& ent,
-                                         const IGESData_IGESDumper&            dumper,
-                                         Standard_OStream&                     S,
-                                         const int                level) const
+                                         const IGESData_IGESDumper&                 dumper,
+                                         Standard_OStream&                          S,
+                                         const int                                  level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

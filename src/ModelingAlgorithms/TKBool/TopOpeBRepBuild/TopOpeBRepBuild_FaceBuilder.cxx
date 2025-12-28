@@ -33,19 +33,10 @@
 #include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 // #include <BRepAdaptor_Curve2d.hxx>
 #undef RM_HANGING
@@ -55,7 +46,6 @@
 // tests (1cto 021 W4,X4). Therefore I leaved this code not active.
 #ifdef RM_HANGING
   #include <Standard_Integer.hxx>
-  #include <NCollection_List.hxx>
 #endif
 
 #ifdef OCCT_DEBUG
@@ -76,7 +66,7 @@ TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder() {}
 
 TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdgeSet& WES,
                                                          const TopoDS_Shape&          F,
-                                                         const bool       ForceClass)
+                                                         const bool                   ForceClass)
 {
   InitFaceBuilder(WES, F, ForceClass);
 }
@@ -85,7 +75,7 @@ TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdg
 
 void TopOpeBRepBuild_FaceBuilder::InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& WES,
                                                   const TopoDS_Shape&          F,
-                                                  const bool       ForceClass)
+                                                  const bool                   ForceClass)
 {
   myFace = TopoDS::Face(F);
   MakeLoops(WES);
@@ -96,10 +86,13 @@ void TopOpeBRepBuild_FaceBuilder::InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& W
 }
 
 //---------------------------------------------------------------
-void FUN_DetectVerticesOn1Edge(const TopoDS_Shape& W, NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E)
+void FUN_DetectVerticesOn1Edge(
+  const TopoDS_Shape&                                                              W,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E)
 {
   // Fills the map <mapVon1edge>,with vertices of <W> of 3d connexity 1.
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapVedges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapVedges;
   TopExp::MapShapesAndAncestors(W, TopAbs_VERTEX, TopAbs_EDGE, mapVedges);
   int nV = mapVedges.Extent();
 
@@ -128,8 +121,9 @@ void FUN_DetectVerticesOn1Edge(const TopoDS_Shape& W, NCollection_IndexedDataMap
 #define UNCLOSEDW 2
 #define CLOSEDW 10
 
-int FUN_AnalyzemapVon1E(const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
-                                     NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       mapVV)
+int FUN_AnalyzemapVon1E(
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       mapVV)
 {
 #ifdef DRAW
   bool trc = TopOpeBRepBuild_GettracePURGE();
@@ -147,8 +141,8 @@ int FUN_AnalyzemapVon1E(const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Sh
   else if (nV == 1)
   {
     const TopoDS_Shape& E       = mapVon1E.FindFromIndex(1);
-    bool    Eclosed = BRep_Tool::IsClosed(E);
-    bool    dgE     = BRep_Tool::Degenerated(TopoDS::Edge(E));
+    bool                Eclosed = BRep_Tool::IsClosed(E);
+    bool                dgE     = BRep_Tool::Degenerated(TopoDS::Edge(E));
     if (dgE)
       res = ISVERTEX;
     else if (Eclosed)
@@ -170,7 +164,7 @@ int FUN_AnalyzemapVon1E(const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Sh
       {
         const TopoDS_Vertex& vj   = TopoDS::Vertex(mapVon1E.FindKey(j));
         gp_Pnt               pj   = BRep_Tool::Pnt(vj);
-        bool     same = pi.IsEqual(pj, tol);
+        bool                 same = pi.IsEqual(pj, tol);
         if (same)
         {
           mapVV.Add(vi, vj);
@@ -198,13 +192,14 @@ int FUN_AnalyzemapVon1E(const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Sh
 } // FUN_AnalyzemapVon1E
 
 #ifdef DRAW
-void FUN_AnalyzemapVon1EDRAW(const int                     res,
-                             const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
-                             const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVV,
-                             const TopoDS_Shape&                        W,
-                             const int                     iiwi,
-                             NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       mapVon1EdgeDRAW,
-                             NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       mapVVsameGDRAW)
+void FUN_AnalyzemapVon1EDRAW(
+  const int                                                                              res,
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1E,
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVV,
+  const TopoDS_Shape&                                                                    W,
+  const int                                                                              iiwi,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1EdgeDRAW,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVsameGDRAW)
 {
   bool trc = TopOpeBRepBuild_GettracePURGE();
   if (!trc)
@@ -271,8 +266,9 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
   // * Else,if it is unclosed,we delete it (or it`s hanging edges).
 
 #ifdef DRAW
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> mapVon1EdgeDRAW, mapVVsameGDRAW;
-  bool                    trc = TopOpeBRepBuild_GettracePURGE();
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> mapVon1EdgeDRAW,
+    mapVVsameGDRAW;
+  bool trc = TopOpeBRepBuild_GettracePURGE();
   if (trc)
     std::cout << std::endl << "* DetectUnclosedWire :" << std::endl << std::endl;
   int iiwi = 0; // DEB
@@ -306,7 +302,7 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
       FUN_DetectVerticesOn1Edge(W, mapVon1E);
 
       NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> mapVV;
-      int                    res = FUN_AnalyzemapVon1E(mapVon1E, mapVV);
+      int res = FUN_AnalyzemapVon1E(mapVon1E, mapVV);
 #ifdef DRAW
       FUN_AnalyzemapVon1EDRAW(res, mapVon1E, mapVV, W, iiwi, mapVon1EdgeDRAW, mapVVsameGDRAW);
 #endif
@@ -335,7 +331,10 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
       {
 #ifdef RM_HANGING
         // MSV Oct 4, 2001: remove hanging edges
-        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapVE;
+        NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>
+          mapVE;
         TopExp::MapShapesAndAncestors(W, TopAbs_VERTEX, TopAbs_EDGE, mapVE);
         int nV = mapVon1E.Extent();
         for (int i = 1; i <= nV; i++)
@@ -348,14 +347,14 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
             const NCollection_List<TopoDS_Shape>& LE = mapVE.FindFromKey(V);
 
             // get not yet processed edge, count the number of such edges
-            int                   nEdges = 0;
-            TopoDS_Edge                        Edge;
-            NCollection_List<int>              LOI;
+            int                                      nEdges = 0;
+            TopoDS_Edge                              Edge;
+            NCollection_List<int>                    LOI;
             NCollection_List<TopoDS_Shape>::Iterator itE(LE);
             for (; itE.More() && nEdges <= 1; itE.Next())
             {
               const TopoDS_Edge& E = TopoDS::Edge(itE.Value());
-              int   I = myBlockBuilder.Element(E);
+              int                I = myBlockBuilder.Element(E);
               if (!BRep_Tool::IsClosed(E) && myBlockBuilder.ElementIsValid(I))
               {
                 TopoDS_Vertex Vf, Vl;
@@ -407,7 +406,8 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
 
 void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(
   const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVVref,
-  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapVon1Edge)
+  const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+    mapVon1Edge)
 {
   // prequesitory : edges described by <mapVon1Edge> are not closed,not degenerated
 #ifdef OCCT_DEBUG
@@ -426,8 +426,8 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(
     if (V.IsSame(Vref))
       continue;
 
-    TopoDS_Edge   E      = TopoDS::Edge(mapVon1Edge.FindFromKey(V));
-    double paronE = BRep_Tool::Parameter(V, E);
+    TopoDS_Edge E      = TopoDS::Edge(mapVon1Edge.FindFromKey(V));
+    double      paronE = BRep_Tool::Parameter(V, E);
 
     BRep_Builder BB;
     E.Free(true);
@@ -443,7 +443,8 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(
 
 //=================================================================================================
 
-void TopOpeBRepBuild_FaceBuilder::DetectPseudoInternalEdge(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapE)
+void TopOpeBRepBuild_FaceBuilder::DetectPseudoInternalEdge(
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapE)
 {
   TopoDS_Compound cmp;
   BRep_Builder    BB;
@@ -463,7 +464,8 @@ void TopOpeBRepBuild_FaceBuilder::DetectPseudoInternalEdge(NCollection_IndexedMa
     } // MoreWire
   } // MoreFace
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapVOE;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapVOE;
   TopExp::MapShapesAndAncestors(cmp, TopAbs_VERTEX, TopAbs_EDGE, mapVOE);
   int nv = mapVOE.Extent();
 
@@ -471,17 +473,17 @@ void TopOpeBRepBuild_FaceBuilder::DetectPseudoInternalEdge(NCollection_IndexedMa
   for (int i = 1; i <= nv; i++)
   {
     const NCollection_List<TopoDS_Shape>& le = mapVOE.FindFromIndex(i);
-    int            ne = le.Extent();
+    int                                   ne = le.Extent();
     if (ne == 2)
     {
       NCollection_List<TopoDS_Shape>::Iterator ile(le);
-      const TopoDS_Shape&                e1 = ile.Value();
+      const TopoDS_Shape&                      e1 = ile.Value();
       ile.Next();
       const TopoDS_Shape& e2    = ile.Value();
-      bool    same  = e1.IsSame(e2);
+      bool                same  = e1.IsSame(e2);
       TopAbs_Orientation  o1    = e1.Orientation();
       TopAbs_Orientation  o2    = e2.Orientation();
-      bool    o1co2 = (o1 == TopAbs::Complement(o2));
+      bool                o1co2 = (o1 == TopAbs::Complement(o2));
 
       if (same && o1co2)
       {
@@ -555,7 +557,7 @@ void TopOpeBRepBuild_FaceBuilder::NextWire()
 bool TopOpeBRepBuild_FaceBuilder::IsOldWire() const
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = myFaceAreaBuilder.Loop();
-  bool                    b = L->IsShape();
+  bool                                     b = L->IsShape();
   return b;
 }
 
@@ -564,7 +566,7 @@ bool TopOpeBRepBuild_FaceBuilder::IsOldWire() const
 const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::OldWire() const
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = myFaceAreaBuilder.Loop();
-  const TopoDS_Shape&                 B = L->Shape();
+  const TopoDS_Shape&                      B = L->Shape();
   return B;
 }
 
@@ -579,7 +581,7 @@ void TopOpeBRepBuild_FaceBuilder::FindNextValidElement()
   while (myBlockIterator.More())
   {
     const int i = myBlockIterator.Value();
-    found                    = myBlockBuilder.ElementIsValid(i);
+    found       = myBlockBuilder.ElementIsValid(i);
     if (found)
       break;
     else
@@ -628,7 +630,7 @@ const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::Edge() const
     throw Standard_Failure("OutOfRange");
 
   const int i       = myBlockIterator.Value();
-  bool       isvalid = myBlockBuilder.ElementIsValid(i);
+  bool      isvalid = myBlockBuilder.ElementIsValid(i);
   if (!isvalid)
     throw Standard_Failure("Edge not Valid");
 
@@ -652,11 +654,10 @@ int TopOpeBRepBuild_FaceBuilder::EdgeConnexity(const TopoDS_Shape& /*E*/) const
 
 //=================================================================================================
 
-int TopOpeBRepBuild_FaceBuilder::AddEdgeWire(const TopoDS_Shape& E,
-                                                          TopoDS_Shape&       W) const
+int TopOpeBRepBuild_FaceBuilder::AddEdgeWire(const TopoDS_Shape& E, TopoDS_Shape& W) const
 {
-  int nadd = 0;
-  BRep_Builder     BB;
+  int          nadd = 0;
+  BRep_Builder BB;
   BB.Add(W, E);
   nadd++;
   //  int nmosi = EdgeConnexity(E);
@@ -674,8 +675,8 @@ int TopOpeBRepBuild_FaceBuilder::AddEdgeWire(const TopoDS_Shape& E,
 
 void TopOpeBRepBuild_FaceBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
 {
-  TopOpeBRepBuild_BlockBuilder& BB = myBlockBuilder;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&   LL = myLoopSet.ChangeListOfLoop();
+  TopOpeBRepBuild_BlockBuilder&                        BB = myBlockBuilder;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LL = myLoopSet.ChangeListOfLoop();
 
   // Build blocks on elements of SS
   BB.MakeBlock(SS);
@@ -688,7 +689,7 @@ void TopOpeBRepBuild_FaceBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
   LL.Clear();
   for (SS.InitShapes(); SS.MoreShapes(); SS.NextShape())
   {
-    const TopoDS_Shape&          S         = SS.Shape();
+    const TopoDS_Shape&               S         = SS.Shape();
     occ::handle<TopOpeBRepBuild_Loop> ShapeLoop = new TopOpeBRepBuild_Loop(S);
     LL.Append(ShapeLoop);
   }
@@ -696,8 +697,8 @@ void TopOpeBRepBuild_FaceBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
   // Add blocks of BB as block loops
   for (BB.InitBlock(); BB.MoreBlock(); BB.NextBlock())
   {
-    TopOpeBRepBuild_BlockIterator BI        = BB.BlockIterator();
-    occ::handle<TopOpeBRepBuild_Loop>  BlockLoop = new TopOpeBRepBuild_Loop(BI);
+    TopOpeBRepBuild_BlockIterator     BI        = BB.BlockIterator();
+    occ::handle<TopOpeBRepBuild_Loop> BlockLoop = new TopOpeBRepBuild_Loop(BI);
     LL.Append(BlockLoop);
   }
 }

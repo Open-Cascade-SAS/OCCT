@@ -22,7 +22,7 @@ struct Aspect_ScrollDelta
 {
 
   NCollection_Vec2<int> Point; //!< scale position
-  double         Delta; //!< delta in pixels
+  double                Delta; //!< delta in pixels
   Aspect_VKeyFlags      Flags; //!< key flags
 
   //! Return true if action has point defined.
@@ -41,7 +41,7 @@ struct Aspect_ScrollDelta
 
   //! Constructor.
   Aspect_ScrollDelta(const NCollection_Vec2<int>& thePnt,
-                     double                theValue,
+                     double                       theValue,
                      Aspect_VKeyFlags             theFlags = Aspect_VKeyFlags_NONE)
       : Point(thePnt),
         Delta(theValue),

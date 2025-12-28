@@ -18,21 +18,11 @@
 
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-#include <TopoDS_Shape.hxx>
-
-#include <NCollection_List.hxx>
-
-#include <TopTools_ShapeMapHasher.hxx>
-
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 
 #include <TopExp_Explorer.hxx>
 
@@ -57,9 +47,6 @@
 #include <Geom_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <ElCLib.hxx>
 #include <Precision.hxx>
 
@@ -67,13 +54,17 @@
 extern bool TopOpeBRepBuild_GettraceFUFA();
 #endif
 
-static void GroupShape(NCollection_List<TopoDS_Shape>&,
-                       bool,
-                       NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
+static void GroupShape(
+  NCollection_List<TopoDS_Shape>&,
+  bool,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
 
-static void GroupEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
+static void GroupEdge(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
 
-static void MakeEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
+static void MakeEdge(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&);
 
 static bool SameSupport(const TopoDS_Edge&, const TopoDS_Edge&);
 
@@ -81,7 +72,7 @@ static bool SameSupport(const TopoDS_Edge&, const TopoDS_Edge&);
 
 void TopOpeBRepBuild_FuseFace::Init(const NCollection_List<TopoDS_Shape>& LIF,
                                     const NCollection_List<TopoDS_Shape>& LRF,
-                                    const int      CXM)
+                                    const int                             CXM)
 {
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepBuild_GettraceFUFA();
@@ -169,12 +160,14 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
     return;
   }
 
-  NCollection_List<TopoDS_Shape>::Iterator                  it2, it3, it4;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itt1, itt2, itt3;
-  TopAbs_Orientation                                  ori1;
+  NCollection_List<TopoDS_Shape>::Iterator it2, it3, it4;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itt1,
+    itt2, itt3;
+  TopAbs_Orientation ori1;
 
-  bool     Ori3dReversed = false;
-  bool     Ori3dForward  = false;
+  bool                           Ori3dReversed = false;
+  bool                           Ori3dForward  = false;
   NCollection_List<TopoDS_Shape> mylist;
   for (it2.Initialize(myLRF); it2.More(); it2.Next())
   {
@@ -222,7 +215,8 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   // listes de faces avec edges communes.
   bool Keep_Edge;
   Keep_Edge = false;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapFacLFac;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapFacLFac;
   GroupShape(mylist, Keep_Edge, mapFacLFac);
   if (mapFacLFac.IsEmpty())
   {
@@ -253,8 +247,8 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
   for (itt1.Initialize(mapFacLFac); itt1.More(); itt1.Next())
   {
-    const TopoDS_Shape&         fac    = itt1.Key();
-    TopoDS_Face                 facref = TopoDS::Face(fac);
+    const TopoDS_Shape&                   fac    = itt1.Key();
+    TopoDS_Face                           facref = TopoDS::Face(fac);
     const NCollection_List<TopoDS_Shape>& LFac   = mapFacLFac.Find(fac);
 
     int n11 = LFac.Extent();
@@ -274,7 +268,8 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
       } // LFac
       //  listes des wires avec edges communes.
       Keep_Edge = false;
-      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapWirLWir;
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        mapWirLWir;
       GroupShape(LWir, Keep_Edge, mapWirLWir);
       if (mapWirLWir.IsEmpty())
       {
@@ -292,7 +287,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
       NCollection_List<TopoDS_Shape> myFaceLIE, myFaceLEE, myFaceLME, myFaceLW;
       for (itt2.Initialize(mapWirLWir); itt2.More(); itt2.Next())
       {
-        const TopoDS_Shape&         wir   = itt2.Key();
+        const TopoDS_Shape&                   wir   = itt2.Key();
         const NCollection_List<TopoDS_Shape>& LWir1 = mapWirLWir.Find(wir);
 
         int n22 = LWir1.Extent();
@@ -313,7 +308,8 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
           } // LWir1
           //    listes des edges avec edges communes.
           Keep_Edge = true;
-          NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapEdgLEdg;
+          NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+            mapEdgLEdg;
           GroupShape(LEdg, Keep_Edge, mapEdgLEdg);
           if (mapEdgLEdg.IsEmpty())
           {
@@ -333,12 +329,12 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
           NCollection_List<TopoDS_Shape> myWireLE;
           for (itt3.Initialize(mapEdgLEdg); itt3.More(); itt3.Next())
           {
-            const TopoDS_Shape&         edg         = itt3.Key();
+            const TopoDS_Shape&                   edg         = itt3.Key();
             const NCollection_List<TopoDS_Shape>& LEdg1       = mapEdgLEdg.Find(edg);
-            bool            OriReversed = false;
-            bool            OriForward  = false;
-            bool            OriInternal = false;
-            bool            OriExternal = false;
+            bool                                  OriReversed = false;
+            bool                                  OriForward  = false;
+            bool                                  OriInternal = false;
+            bool                                  OriExternal = false;
             for (it4.Initialize(LEdg1); it4.More(); it4.Next())
             {
               const TopoDS_Shape& edg1 = it4.Value();
@@ -457,9 +453,9 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
             myFaceLW.Append(W);
 
-            TopExp_Explorer     exp;
+            TopExp_Explorer                                        exp;
             NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
-            int    nb = 0;
+            int                                                    nb = 0;
             for (exp.Init(W, TopAbs_EDGE); exp.More(); exp.Next())
             {
               const TopoDS_Shape& edg3 = exp.Current();
@@ -598,10 +594,12 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
   if (trc)
     std::cout << "TopOpeBRepBuild_FuseFace::PerformEdge()" << std::endl;
 #endif
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapVerLEdg, mapTampon;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapVerLEdg, mapTampon;
 
-  NCollection_List<TopoDS_Shape>::Iterator                  it1;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itt1;
+  NCollection_List<TopoDS_Shape>::Iterator it1;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itt1;
   //  TopAbs_Orientation ori,ori1;
 
   // Niveau 1
@@ -649,9 +647,9 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
 
   for (itt1.Initialize(mapTampon); itt1.More(); itt1.Next())
   {
-    const TopoDS_Shape&         ver     = itt1.Key();
+    const TopoDS_Shape&                   ver     = itt1.Key();
     const NCollection_List<TopoDS_Shape>& LmapEdg = mapTampon.Find(ver);
-    int            number  = LmapEdg.Extent();
+    int                                   number  = LmapEdg.Extent();
     if (number == 2)
     {
       it1.Initialize(LmapEdg);
@@ -666,7 +664,8 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
   }
 
   // On regroupe ensemble tous les edges consecutifs et SameSupport
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapEdgLEdg;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapEdgLEdg;
   GroupEdge(mapVerLEdg, mapEdgLEdg);
 
   // On construit les edges somme des edges consecutifs et SameSupport
@@ -695,8 +694,8 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 #endif
 
   NCollection_List<TopoDS_Shape>::Iterator it1, it2;
-  TopAbs_Orientation                 ori;
-  NCollection_List<TopoDS_Shape>               myLFFnew;
+  TopAbs_Orientation                       ori;
+  NCollection_List<TopoDS_Shape>           myLFFnew;
 
   // Niveau 1
   // loop over the face lists for each face in LRF
@@ -706,13 +705,13 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
     const TopoDS_Shape& fac = it1.Value();
 
     NCollection_List<TopoDS_Shape> myFaceLW;
-    TopExp_Explorer      expw;
+    TopExp_Explorer                expw;
     for (expw.Init(fac, TopAbs_WIRE); expw.More(); expw.Next())
     {
       const TopoDS_Shape& wir = expw.Current();
 
       NCollection_List<TopoDS_Shape> myWireLE;
-      TopExp_Explorer      expe;
+      TopExp_Explorer                expe;
       for (expe.Init(wir, TopAbs_EDGE); expe.More(); expe.Next())
       {
         const TopoDS_Shape& edg = expe.Current();
@@ -774,9 +773,9 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
       return;
     }
     it2.Initialize(myFaceLW);
-    const TopoDS_Wire&     wir       = TopoDS::Wire(it2.Value());
-    const bool OnlyPlane = false;
-    BRepLib_MakeFace       MF(wir, OnlyPlane);
+    const TopoDS_Wire& wir       = TopoDS::Wire(it2.Value());
+    const bool         OnlyPlane = false;
+    BRepLib_MakeFace   MF(wir, OnlyPlane);
 
     it2.Next();
     for (; it2.More(); it2.Next())
@@ -843,21 +842,24 @@ void TopOpeBRepBuild_FuseFace::ClearVertex()
 
 //=================================================================================================
 
-static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
-                       bool                    Keep_Edge,
-                       NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mymapShLSh)
+static void GroupShape(
+  NCollection_List<TopoDS_Shape>& mylist,
+  bool                            Keep_Edge,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    mymapShLSh)
 {
   NCollection_List<TopoDS_Shape>::Iterator it, it1, it2;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapEdgLSh, mapShLSh;
-  NCollection_List<TopoDS_Shape>               LmapSh4;
-  TopAbs_Orientation                 ori;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 mapEdgLSh, mapShLSh;
+  NCollection_List<TopoDS_Shape> LmapSh4;
+  TopAbs_Orientation             ori;
 
   // construction du tableau C=locmapEdgLSh : egde1 - shap1 shap2 shap3
   // construction du tableau   locmapShLSh  : shap1 - shap1 shap2 shap3
   LmapSh4.Clear();
   for (it.Initialize(mylist); it.More(); it.Next())
   {
-    const TopoDS_Shape&  shap1 = it.Value();
+    const TopoDS_Shape&            shap1 = it.Value();
     NCollection_List<TopoDS_Shape> LmapSh;
     LmapSh.Append(shap1);
 
@@ -868,7 +870,7 @@ static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
     {
       const TopoDS_Shape& edg1 = expe.Current();
       //    verification si Edge a prendre en compte
-      ori                      = edg1.Orientation();
+      ori          = edg1.Orientation();
       bool Edge_OK = true;
       if (ori == TopAbs_INTERNAL || ori == TopAbs_EXTERNAL)
       {
@@ -917,7 +919,7 @@ static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
 
               for (it2.Initialize(Lmap1); it2.More(); it2.Next())
               {
-                const TopoDS_Shape&   shap = it2.Value();
+                const TopoDS_Shape&             shap = it2.Value();
                 NCollection_List<TopoDS_Shape>& Lmap = mapShLSh.ChangeFind(shap);
                 NCollection_List<TopoDS_Shape>  Lmap3;
                 Lmap3.Assign(Lmap2);
@@ -925,7 +927,7 @@ static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
               }
               for (it2.Initialize(Lmap2); it2.More(); it2.Next())
               {
-                const TopoDS_Shape&   shap = it2.Value();
+                const TopoDS_Shape&             shap = it2.Value();
                 NCollection_List<TopoDS_Shape>& Lmap = mapShLSh.ChangeFind(shap);
                 NCollection_List<TopoDS_Shape>  Lmap3;
                 Lmap3.Assign(Lmap1);
@@ -941,7 +943,8 @@ static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
   // nettoyage du tableau mapShLSh : shap1 : shap1 shap2 shap3
   mymapShLSh.Clear();
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itt;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itt;
   if (!Keep_Edge)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
@@ -969,18 +972,23 @@ static void GroupShape(NCollection_List<TopoDS_Shape>&               mylist,
 
 //=================================================================================================
 
-static void GroupEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mymapVerLEdg,
-                      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mymapEdgLEdg)
+static void GroupEdge(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    mymapVerLEdg,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    mymapEdgLEdg)
 {
-  NCollection_List<TopoDS_Shape>::Iterator                  it1, it2;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itt;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>                  mapEdgLEdg;
+  NCollection_List<TopoDS_Shape>::Iterator it1, it2;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator itt;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapEdgLEdg;
 
   // construction du tableau C=locmapEdgLSh : egde1 - shap1 shap2 shap3
   // construction du tableau   locmapShLSh  : shap1 - shap1 shap2 shap3
   for (itt.Initialize(mymapVerLEdg); itt.More(); itt.Next())
   {
-    const TopoDS_Shape&  ver1 = itt.Key();
+    const TopoDS_Shape&            ver1 = itt.Key();
     NCollection_List<TopoDS_Shape> LmapEdg;
     LmapEdg = mymapVerLEdg.Find(ver1);
 
@@ -989,8 +997,8 @@ static void GroupEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_
     it1.Next();
     const TopoDS_Edge& edg2 = TopoDS::Edge(it1.Value());
 
-    bool Edge1Add, Edge2Add;
-    TopoDS_Edge      edgold, edgnew;
+    bool        Edge1Add, Edge2Add;
+    TopoDS_Edge edgold, edgnew;
     if (mapEdgLEdg.IsBound(edg1))
     {
       Edge1Add = false;
@@ -1035,7 +1043,7 @@ static void GroupEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_
 
       for (it2.Initialize(LmapEdg1); it2.More(); it2.Next())
       {
-        const TopoDS_Shape&   edg22    = it2.Value();
+        const TopoDS_Shape&             edg22    = it2.Value();
         NCollection_List<TopoDS_Shape>& LmapEdg2 = mapEdgLEdg.ChangeFind(edgnew);
         LmapEdg2.Append(edg22);
         NCollection_List<TopoDS_Shape>& LmapEdg3 = mapEdgLEdg.ChangeFind(edg22);
@@ -1067,28 +1075,32 @@ static void GroupEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_
 
 //=================================================================================================
 
-static void MakeEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mymapEdgLEdg)
+static void MakeEdge(
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    mymapEdgLEdg)
 {
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepBuild_GettraceFUFA();
 #endif
 
-  NCollection_List<TopoDS_Shape>::Iterator                  it;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itt1;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator     itt2;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>                  mapEdgLEdg;
+  NCollection_List<TopoDS_Shape>::Iterator it;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
+    Iterator                                                                itt1;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator itt2;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    mapEdgLEdg;
 
   // construction du tableau C=locmapEdgLSh : egde1 - shap1 shap2 shap3
   // construction du tableau   locmapShLSh  : shap1 - shap1 shap2 shap3
   for (itt1.Initialize(mymapEdgLEdg); itt1.More(); itt1.Next())
   {
-    const TopoDS_Shape&  edg1 = itt1.Key();
+    const TopoDS_Shape&            edg1 = itt1.Key();
     NCollection_List<TopoDS_Shape> LmapEdg;
     LmapEdg = mymapEdgLEdg.Find(edg1);
     NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> mapVerInt;
 
-    int VertexExtrem;
-    TopoDS_Vertex    V1, V2;
+    int           VertexExtrem;
+    TopoDS_Vertex V1, V2;
     for (it.Initialize(LmapEdg); it.More(); it.Next())
     {
       const TopoDS_Edge& edg2 = TopoDS::Edge(it.Value());
@@ -1143,9 +1155,9 @@ static void MakeEdge(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_S
     const TopoDS_Shape& verl = ver2.Oriented(TopAbs_FORWARD);
 
     occ::handle<Geom_Curve> curv;
-    const TopoDS_Edge& edg = TopoDS::Edge(edg1);
-    TopLoc_Location    loc;
-    double      first, last;
+    const TopoDS_Edge&      edg = TopoDS::Edge(edg1);
+    TopLoc_Location         loc;
+    double                  first, last;
     curv = BRep_Tool::Curve(edg, loc, first, last);
 
     BRepLib_MakeEdge   ME(curv, TopoDS::Vertex(verf), TopoDS::Vertex(verl));
@@ -1181,21 +1193,21 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
   }
 
   occ::handle<Geom_Curve>    C1, C2;
-  TopLoc_Location       loc;
-  double         f1, l1, f2, l2;
+  TopLoc_Location            loc;
+  double                     f1, l1, f2, l2;
   occ::handle<Standard_Type> typC1, typC2;
 
   C1 = BRep_Tool::Curve(E1, loc, f1, l1);
   if (!loc.IsIdentity())
   {
     occ::handle<Geom_Geometry> GG1 = C1->Transformed(loc.Transformation());
-    C1                        = occ::down_cast<Geom_Curve>(GG1);
+    C1                             = occ::down_cast<Geom_Curve>(GG1);
   }
   C2 = BRep_Tool::Curve(E2, loc, f2, l2);
   if (!loc.IsIdentity())
   {
     occ::handle<Geom_Geometry> GG2 = C2->Transformed(loc.Transformation());
-    C2                        = occ::down_cast<Geom_Curve>(GG2);
+    C2                             = occ::down_cast<Geom_Curve>(GG2);
   }
 
   typC1 = C1->DynamicType();

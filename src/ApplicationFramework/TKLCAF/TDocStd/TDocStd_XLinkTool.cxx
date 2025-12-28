@@ -72,17 +72,17 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
     anOldNode->Remove();
   }
 
-  myRT                   = new TDF_RelocationTable(true);
-  myDS                   = new TDF_DataSet;
+  myRT                        = new TDF_RelocationTable(true);
+  myDS                        = new TDF_DataSet;
   occ::handle<TDF_DataSet> DS = new TDF_DataSet();
-  TDF_ClosureMode     mode(true); // descendant plus reference
+  TDF_ClosureMode          mode(true); // descendant plus reference
   myDS->AddLabel(source);
   myRT->SetRelocation(source, target);
   TDF_IDFilter filter(false); // on prend tout
   TDF_ClosureTool::Closure(myDS, filter, mode);
   TDF_CopyTool::Copy(myDS, myRT);
-  // NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> M; // removed to avoid dependence with TNaming
-  // TNaming::ChangeShapes(target,M);// should be used as postfix after Copy
+  // NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> M; // removed to avoid
+  // dependence with TNaming TNaming::ChangeShapes(target,M);// should be used as postfix after Copy
 
   if (!aNode.IsNull())
   {
@@ -130,7 +130,7 @@ void TDocStd_XLinkTool::CopyWithLink(const TDF_Label& target, const TDF_Label& s
     TDF_Tool::Entry(source, xlabelentry);
     occ::handle<TDocStd_Document> aSourceD  = TDocStd_Document::Get(source);
     occ::handle<TDocStd_Document> aTargetD  = TDocStd_Document::Get(target);
-    int         aDocEntry = 0;
+    int                           aDocEntry = 0;
     if (aSourceD != aTargetD)
       aDocEntry = aTargetD->CreateReference(aSourceD);
     xdocentry = aDocEntry;

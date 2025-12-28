@@ -128,9 +128,10 @@ public:
 
 public:
   //! Create a persistent object for a shape
-  Standard_EXPORT static occ::handle<HShape> Translate(const TopoDS_Shape&               theShape,
-                                                  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
-                                                  ShapePersistent_TriangleMode theTriangleMode);
+  Standard_EXPORT static occ::handle<HShape> Translate(
+    const TopoDS_Shape& theShape,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
+    ShapePersistent_TriangleMode theTriangleMode);
 };
 
 template <>

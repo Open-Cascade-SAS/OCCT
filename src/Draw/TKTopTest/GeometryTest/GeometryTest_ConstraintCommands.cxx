@@ -50,18 +50,10 @@
 #include <NCollection_HArray1.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineCurve2d.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <gp_Vec.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GC_MakeArcOfCircle.hxx>
@@ -71,9 +63,7 @@ Standard_IMPORT Draw_Viewer dout;
 #endif
 Standard_IMPORT Draw_Color DrawTrSurf_CurveColor(const Draw_Color);
 
-static int solutions(Draw_Interpretor&        di,
-                                  Geom2dGcc_Circ2d2TanRad& ct3,
-                                  const char*              name)
+static int solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d2TanRad& ct3, const char* name)
 {
   char solname[200];
 
@@ -125,9 +115,7 @@ static int solutions(Draw_Interpretor& di, Geom2dGcc_Circ2d3Tan& ct3, const char
 
 //=================================================================================================
 
-static int solutions(Draw_Interpretor&       theDI,
-                                  Geom2dGcc_Circ2dTanCen& theCt2,
-                                  const char*             theName)
+static int solutions(Draw_Interpretor& theDI, Geom2dGcc_Circ2dTanCen& theCt2, const char* theName)
 {
   char solname[200];
 
@@ -154,9 +142,7 @@ static int solutions(Draw_Interpretor&       theDI,
 
 //=================================================================================================
 
-static int Cirtang(Draw_Interpretor& theDI,
-                                int  theNArgs,
-                                const char**      theArgVals)
+static int Cirtang(Draw_Interpretor& theDI, int theNArgs, const char** theArgVals)
 {
   if (theNArgs < 3)
   {
@@ -165,10 +151,10 @@ static int Cirtang(Draw_Interpretor& theDI,
     return 1;
   }
 
-  double        aTol = Precision::Confusion();
+  double                    aTol = Precision::Confusion();
   occ::handle<Geom2d_Curve> aC[3];
-  gp_Pnt2d             aP[3];
-  double        aRadius = -1.0;
+  gp_Pnt2d                  aP[3];
+  double                    aRadius = -1.0;
 
   int aNbCurves = 0, aNbPnts = 0;
 
@@ -363,7 +349,7 @@ static int lintang(Draw_Interpretor& di, int n, const char** a)
       di << "Second argument must be a line";
       return 1;
     }
-    double         ang = Draw::Atof(a[4]) * (M_PI / 180.0);
+    double                ang = Draw::Atof(a[4]) * (M_PI / 180.0);
     Geom2dGcc_Lin2dTanObl ct3(Geom2dGcc::Unqualified(C1),
                               L->Lin2d(),
                               Precision::Angular(),
@@ -429,13 +415,13 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
       return 0;
     if (id < 0)
       return 0;
-    gp_Pnt           P;
-    gp_Pnt2d         P2d;
-    bool newcurve;
+    gp_Pnt   P;
+    gp_Pnt2d P2d;
+    bool     newcurve;
 
     if (dout.Is3D(id))
     {
-      occ::handle<Draw_Marker3D>       mark;
+      occ::handle<Draw_Marker3D>               mark;
       occ::handle<NCollection_HArray1<gp_Pnt>> Points = new NCollection_HArray1<gp_Pnt>(1, 1);
       P.SetCoord((double)XX / zoom, (double)YY / zoom, 0.0);
       Points->SetValue(1, P);
@@ -469,7 +455,7 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
           anInterpolator.Perform();
           if (anInterpolator.IsDone())
           {
-            C                                  = anInterpolator.Curve();
+            C                                       = anInterpolator.Curve();
             occ::handle<DrawTrSurf_BSplineCurve> DC = new DrawTrSurf_BSplineCurve(C);
             DC->ClearPoles();
             DC->ClearKnots();
@@ -495,11 +481,12 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
     }
     else
     {
-      occ::handle<Draw_Marker2D>         mark;
+      occ::handle<Draw_Marker2D>                 mark;
       occ::handle<NCollection_HArray1<gp_Pnt2d>> Points = new NCollection_HArray1<gp_Pnt2d>(1, 1);
       P2d.SetCoord((double)XX / zoom, (double)YY / zoom);
       Points->SetValue(1, P2d);
-      occ::handle<NCollection_HArray1<gp_Pnt2d>> ThePoints = new NCollection_HArray1<gp_Pnt2d>(1, 2);
+      occ::handle<NCollection_HArray1<gp_Pnt2d>> ThePoints =
+        new NCollection_HArray1<gp_Pnt2d>(1, 2);
       ThePoints->SetValue(1, P2d);
       mark = new Draw_Marker2D(P2d, Draw_X, Draw_vert);
       dout << mark;
@@ -565,8 +552,8 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
     std::ifstream iFile(nomfic, std::ios::in);
     if (!iFile)
       return 1;
-    int nbp, i;
-    double    x, y, z;
+    int    nbp, i;
+    double x, y, z;
     iFile >> nbp;
     constexpr size_t aBufferSize = 3;
     char             dimen[aBufferSize];
@@ -590,7 +577,8 @@ static int interpol(Draw_Interpretor& di, int n, const char** a)
     }
     else if (!strcmp(dimen, "2d"))
     {
-      occ::handle<NCollection_HArray1<gp_Pnt2d>> PointPtr = new NCollection_HArray1<gp_Pnt2d>(1, nbp);
+      occ::handle<NCollection_HArray1<gp_Pnt2d>> PointPtr =
+        new NCollection_HArray1<gp_Pnt2d>(1, nbp);
       for (i = 1; i <= nbp; i++)
       {
         iFile >> x >> y;
@@ -624,9 +612,9 @@ static int tanginterpol(Draw_Interpretor& di, int n, const char** a)
     tolerance;
   //    parameter ;
 
-  bool periodic_flag = false;
-  gp_Pnt           a_point;
-  gp_Vec           a_vector;
+  bool   periodic_flag = false;
+  gp_Pnt a_point;
+  gp_Vec a_vector;
   tolerance = 1.0e-5;
 
   occ::handle<Geom_BSplineCurve> NewCurvePtr;
@@ -647,7 +635,8 @@ static int tanginterpol(Draw_Interpretor& di, int n, const char** a)
   {
     return 1;
   }
-  occ::handle<NCollection_HArray1<gp_Pnt>> PointsArrayPtr = new NCollection_HArray1<gp_Pnt>(1, num_parameters);
+  occ::handle<NCollection_HArray1<gp_Pnt>> PointsArrayPtr =
+    new NCollection_HArray1<gp_Pnt>(1, num_parameters);
 
   num_tangents = ((n - num_read) / 3) - num_parameters;
   num_tangents = std::max(0, num_tangents);
@@ -669,7 +658,7 @@ static int tanginterpol(Draw_Interpretor& di, int n, const char** a)
 
   if (num_tangents > 0)
   {
-    NCollection_Array1<gp_Vec>               TangentsArray(1, num_parameters);
+    NCollection_Array1<gp_Vec>             TangentsArray(1, num_parameters);
     occ::handle<NCollection_HArray1<bool>> TangentFlagsPtr =
       new NCollection_HArray1<bool>(1, num_parameters);
 
@@ -737,7 +726,7 @@ static int gcarc(Draw_Interpretor& di, int n, const char** a)
             if (n > 6)
             {
               DrawTrSurf::GetPoint(a[6], P4);
-              gp_Vec             V1 = gp_Vec(P2, P3);
+              gp_Vec                  V1 = gp_Vec(P2, P3);
               occ::handle<Geom_Curve> thearc(GC_MakeArcOfCircle(P1, V1, P4).Value());
               DrawTrSurf::Set(a[1], thearc);
               return 1;

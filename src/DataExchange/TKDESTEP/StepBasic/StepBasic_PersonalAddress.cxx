@@ -18,32 +18,33 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_PersonalAddress, StepBasic_Address)
 
 StepBasic_PersonalAddress::StepBasic_PersonalAddress() {}
 
-void StepBasic_PersonalAddress::Init(const bool                  hasAinternalLocation,
-                                     const occ::handle<TCollection_HAsciiString>& aInternalLocation,
-                                     const bool                  hasAstreetNumber,
-                                     const occ::handle<TCollection_HAsciiString>& aStreetNumber,
-                                     const bool                  hasAstreet,
-                                     const occ::handle<TCollection_HAsciiString>& aStreet,
-                                     const bool                  hasApostalBox,
-                                     const occ::handle<TCollection_HAsciiString>& aPostalBox,
-                                     const bool                  hasAtown,
-                                     const occ::handle<TCollection_HAsciiString>& aTown,
-                                     const bool                  hasAregion,
-                                     const occ::handle<TCollection_HAsciiString>& aRegion,
-                                     const bool                  hasApostalCode,
-                                     const occ::handle<TCollection_HAsciiString>& aPostalCode,
-                                     const bool                  hasAcountry,
-                                     const occ::handle<TCollection_HAsciiString>& aCountry,
-                                     const bool                  hasAfacsimileNumber,
-                                     const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
-                                     const bool                  hasAtelephoneNumber,
-                                     const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
-                                     const bool hasAelectronicMailAddress,
-                                     const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
-                                     const bool                  hasAtelexNumber,
-                                     const occ::handle<TCollection_HAsciiString>& aTelexNumber,
-                                     const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople,
-                                     const occ::handle<TCollection_HAsciiString>&  aDescription)
+void StepBasic_PersonalAddress::Init(
+  const bool                                                             hasAinternalLocation,
+  const occ::handle<TCollection_HAsciiString>&                           aInternalLocation,
+  const bool                                                             hasAstreetNumber,
+  const occ::handle<TCollection_HAsciiString>&                           aStreetNumber,
+  const bool                                                             hasAstreet,
+  const occ::handle<TCollection_HAsciiString>&                           aStreet,
+  const bool                                                             hasApostalBox,
+  const occ::handle<TCollection_HAsciiString>&                           aPostalBox,
+  const bool                                                             hasAtown,
+  const occ::handle<TCollection_HAsciiString>&                           aTown,
+  const bool                                                             hasAregion,
+  const occ::handle<TCollection_HAsciiString>&                           aRegion,
+  const bool                                                             hasApostalCode,
+  const occ::handle<TCollection_HAsciiString>&                           aPostalCode,
+  const bool                                                             hasAcountry,
+  const occ::handle<TCollection_HAsciiString>&                           aCountry,
+  const bool                                                             hasAfacsimileNumber,
+  const occ::handle<TCollection_HAsciiString>&                           aFacsimileNumber,
+  const bool                                                             hasAtelephoneNumber,
+  const occ::handle<TCollection_HAsciiString>&                           aTelephoneNumber,
+  const bool                                                             hasAelectronicMailAddress,
+  const occ::handle<TCollection_HAsciiString>&                           aElectronicMailAddress,
+  const bool                                                             hasAtelexNumber,
+  const occ::handle<TCollection_HAsciiString>&                           aTelexNumber,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople,
+  const occ::handle<TCollection_HAsciiString>&                           aDescription)
 {
   // --- classe own fields ---
   people      = aPeople;
@@ -75,12 +76,14 @@ void StepBasic_PersonalAddress::Init(const bool                  hasAinternalLoc
                           aTelexNumber);
 }
 
-void StepBasic_PersonalAddress::SetPeople(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople)
+void StepBasic_PersonalAddress::SetPeople(
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>>& aPeople)
 {
   people = aPeople;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>> StepBasic_PersonalAddress::People() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Person>>> StepBasic_PersonalAddress::People()
+  const
 {
   return people;
 }
@@ -97,7 +100,8 @@ int StepBasic_PersonalAddress::NbPeople() const
   return people->Length();
 }
 
-void StepBasic_PersonalAddress::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_PersonalAddress::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }

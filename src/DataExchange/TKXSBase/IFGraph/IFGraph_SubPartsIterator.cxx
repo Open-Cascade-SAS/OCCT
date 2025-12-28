@@ -25,8 +25,7 @@
 // SubPartsIterator allows grouping entities into several sub-parts
 // To each sub-part is attached a Status : the 1st has 1, the 2nd has 2, etc...
 // (consequence, the sub-parts are necessarily disjoint)
-IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(const Interface_Graph& agraph,
-                                                   const bool whole)
+IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(const Interface_Graph& agraph, const bool whole)
     : thegraph(agraph)
 {
   if (whole)
@@ -40,9 +39,9 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(const Interface_Graph& agraph
 IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(IFGraph_SubPartsIterator& other)
     : thegraph(other.Graph())
 {
-  int nb = thegraph.Size();
-  theparts            = new NCollection_HSequence<int>();
-  thepart             = 0;
+  int nb   = thegraph.Size();
+  theparts = new NCollection_HSequence<int>();
+  thepart  = 0;
   for (other.Start(); other.More(); other.Next())
   {
     thepart++;
@@ -65,8 +64,8 @@ void IFGraph_SubPartsIterator::GetParts(IFGraph_SubPartsIterator& other)
     throw Interface_InterfaceError("SubPartsIterator : GetParts");
   //  We ADD the Parts from other, without losing our own
   //  (same principle as the constructor above)
-  int nb = thegraph.Size();
-  thepart             = theparts->Length();
+  int nb  = thegraph.Size();
+  thepart = theparts->Length();
   for (other.Start(); other.More(); other.Next())
   {
     thepart++;
@@ -122,7 +121,7 @@ void IFGraph_SubPartsIterator::SetPartNum(const int num)
 }
 
 void IFGraph_SubPartsIterator::GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                             const bool            shared)
+                                             const bool                             shared)
 {
   thegraph.GetFromEntity(ent, shared, thepart, thepart, false);
 }
@@ -153,8 +152,8 @@ Interface_GraphContent IFGraph_SubPartsIterator::Loaded() const
 
 Interface_Graph IFGraph_SubPartsIterator::LoadedGraph() const
 {
-  Interface_Graph  G(Model());
-  int nb = thegraph.Size();
+  Interface_Graph G(Model());
+  int             nb = thegraph.Size();
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == 0)
@@ -176,8 +175,7 @@ bool IFGraph_SubPartsIterator::IsInPart(const occ::handle<Standard_Transient>& e
   return (thegraph.Status(num) != 0);
 }
 
-int IFGraph_SubPartsIterator::EntityPartNum(
-  const occ::handle<Standard_Transient>& ent) const
+int IFGraph_SubPartsIterator::EntityPartNum(const occ::handle<Standard_Transient>& ent) const
 {
   int num = thegraph.EntityNumber(ent);
   if (!thegraph.IsPresent(num))
@@ -272,8 +270,8 @@ Interface_EntityIterator IFGraph_SubPartsIterator::Entities() const
   if (thecurr < 1 || thecurr > theparts->Length())
     throw Standard_NoSuchObject("IFGraph_SubPartsIterator : Entities");
   Interface_EntityIterator iter;
-  int         nb     = thegraph.Size();
-  int         nument = thefirsts->Value(thecurr);
+  int                      nb     = thegraph.Size();
+  int                      nument = thefirsts->Value(thecurr);
   if (nument == 0)
     return iter;
   if (theparts->Value(thecurr) == 1)

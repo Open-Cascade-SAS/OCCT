@@ -24,7 +24,6 @@
 #include <IntTools_CommonPrt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntTools_Range.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class Geom_Curve;
 class Bnd_Box;
@@ -46,12 +45,12 @@ public:
   IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
 
   //! Constructor
-  IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
-                    const double aT11,
-                    const double aT12,
-                    const TopoDS_Edge&  theEdge2,
-                    const double aT21,
-                    const double aT22);
+  IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
+                    const double       aT11,
+                    const double       aT12,
+                    const TopoDS_Edge& theEdge2,
+                    const double       aT21,
+                    const double       aT22);
 
   //! Sets the first edge
   void SetEdge1(const TopoDS_Edge& theEdge);
@@ -111,46 +110,46 @@ protected:
   //! Intermediate function
   Standard_EXPORT void FindSolutions(NCollection_Sequence<IntTools_Range>& theRanges1,
                                      NCollection_Sequence<IntTools_Range>& theRanges2,
-                                     bool&          bSplit2);
+                                     bool&                                 bSplit2);
 
   //! Looking for the exact intersection ranges
-  Standard_EXPORT void FindSolutions(const IntTools_Range&      theR1,
-                                     const Bnd_Box&             theBox1,
-                                     const IntTools_Range&      theR2,
-                                     const Bnd_Box&             theBox2,
+  Standard_EXPORT void FindSolutions(const IntTools_Range&                 theR1,
+                                     const Bnd_Box&                        theBox1,
+                                     const IntTools_Range&                 theR2,
+                                     const Bnd_Box&                        theBox2,
                                      NCollection_Sequence<IntTools_Range>& theRanges1,
                                      NCollection_Sequence<IntTools_Range>& theRanges2);
 
   //! Merges found solutions
   Standard_EXPORT void MergeSolutions(const NCollection_Sequence<IntTools_Range>& theRanges1,
                                       const NCollection_Sequence<IntTools_Range>& theRanges2,
-                                      const bool           bSplit2);
+                                      const bool                                  bSplit2);
 
   //! Looking for the range of the edge which is in the box
   Standard_EXPORT static bool FindParameters(const BRepAdaptor_Curve& theBAC,
-                                                         const double      aT1,
-                                                         const double      aT2,
-                                                         const double      theTol,
-                                                         const double      theRes,
-                                                         const double      thePTol,
-                                                         const double      theResCoeff,
-                                                         const Bnd_Box&           theCBox,
-                                                         double&           aTB1,
-                                                         double&           aTB2);
+                                             const double             aT1,
+                                             const double             aT2,
+                                             const double             theTol,
+                                             const double             theRes,
+                                             const double             thePTol,
+                                             const double             theResCoeff,
+                                             const Bnd_Box&           theCBox,
+                                             double&                  aTB1,
+                                             double&                  aTB2);
 
   //! Checks if edges coincide on the ranges
   Standard_EXPORT int CheckCoincidence(const double aT11,
-                                                    const double aT12,
-                                                    const double aT21,
-                                                    const double aT22,
-                                                    const double theCriteria,
-                                                    const double theCurveRes1);
+                                       const double aT12,
+                                       const double aT21,
+                                       const double aT22,
+                                       const double theCriteria,
+                                       const double theCurveRes1);
 
   //! Adds common part of the given type to myCommonParts
-  Standard_EXPORT void AddSolution(const double    aT11,
-                                   const double    aT12,
-                                   const double    aT21,
-                                   const double    aT22,
+  Standard_EXPORT void AddSolution(const double           aT11,
+                                   const double           aT12,
+                                   const double           aT21,
+                                   const double           aT22,
                                    const TopAbs_ShapeEnum theType);
 
   //! Looking for the minimal distance between edges on the ranges
@@ -164,33 +163,33 @@ protected:
   //! Checks is there an intersection between edges on the given ranges
   //! (for nearly conicident edges)
   Standard_EXPORT bool IsIntersection(const double aT11,
-                                                  const double aT12,
-                                                  const double aT21,
-                                                  const double aT22);
+                                      const double aT12,
+                                      const double aT21,
+                                      const double aT22);
 
   //! Checks if the edges are coincident really.
   Standard_EXPORT bool IsCoincident();
 
-  TopoDS_Edge                   myEdge1;
-  TopoDS_Edge                   myEdge2;
-  occ::handle<Geom_Curve>            myGeom1;
-  occ::handle<Geom_Curve>            myGeom2;
-  BRepAdaptor_Curve             myCurve1;
-  BRepAdaptor_Curve             myCurve2;
-  double                 myTol1;
-  double                 myTol2;
-  double                 myTol;
-  double                 myFuzzyValue;
-  double                 myRes1;
-  double                 myRes2;
-  double                 myResCoeff1;
-  double                 myResCoeff2;
-  double                 myPTol1;
-  double                 myPTol2;
-  IntTools_Range                myRange1;
-  IntTools_Range                myRange2;
-  bool              mySwap;
-  int              myErrorStatus;
+  TopoDS_Edge                              myEdge1;
+  TopoDS_Edge                              myEdge2;
+  occ::handle<Geom_Curve>                  myGeom1;
+  occ::handle<Geom_Curve>                  myGeom2;
+  BRepAdaptor_Curve                        myCurve1;
+  BRepAdaptor_Curve                        myCurve2;
+  double                                   myTol1;
+  double                                   myTol2;
+  double                                   myTol;
+  double                                   myFuzzyValue;
+  double                                   myRes1;
+  double                                   myRes2;
+  double                                   myResCoeff1;
+  double                                   myResCoeff2;
+  double                                   myPTol1;
+  double                                   myPTol2;
+  IntTools_Range                           myRange1;
+  IntTools_Range                           myRange2;
+  bool                                     mySwap;
+  int                                      myErrorStatus;
   NCollection_Sequence<IntTools_CommonPrt> myCommonParts;
 
   //! Allows avoiding use Edge-Edge intersection
@@ -200,7 +199,6 @@ protected:
   //! be avoided (otherwise, the performance of
   //! Boolean algorithm will be slower).
   bool myQuickCoincidenceCheck;
-
 };
 
 #include <IntTools_EdgeEdge.lxx>

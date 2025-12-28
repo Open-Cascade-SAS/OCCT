@@ -24,8 +24,6 @@
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
 
@@ -39,16 +37,19 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
-    const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
-    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&  aNodeList);
+    const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                       aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& aNodeList);
 
   //! Returns field NodeList
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> NodeList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>
+                  NodeList() const;
 
   //! Set field NodeList
-  Standard_EXPORT void SetNodeList(const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& NodeList);
+  Standard_EXPORT void SetNodeList(
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& NodeList);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_ElementRepresentation, StepRepr_Representation)
 

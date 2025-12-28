@@ -91,9 +91,9 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       }
 
       NCollection_Vec4<double> aDir(myShadowLight->Direction().X(),
-                           myShadowLight->Direction().Y(),
-                           myShadowLight->Direction().Z(),
-                           0.0);
+                                    myShadowLight->Direction().Y(),
+                                    myShadowLight->Direction().Z(),
+                                    0.0);
       if (myShadowLight->IsHeadlight())
       {
         NCollection_Mat4<double> anOrientInv;
@@ -137,9 +137,9 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       }
 
       NCollection_Vec4<double> aDir(myShadowLight->Direction().X(),
-                           myShadowLight->Direction().Y(),
-                           myShadowLight->Direction().Z(),
-                           0.0);
+                                    myShadowLight->Direction().Y(),
+                                    myShadowLight->Direction().Z(),
+                                    0.0);
       if (myShadowLight->IsHeadlight())
       {
         NCollection_Mat4<double> anOrientInv;
@@ -151,8 +151,8 @@ bool OpenGl_ShadowMap::UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ
       myShadowCamera->SetProjectionType(Graphic3d_Camera::Projection_Perspective);
 
       const gp_Pnt& aLightPos = myShadowLight->Position();
-      double aDistance(aMinMaxBox.Distance(Bnd_Box(aLightPos, aLightPos))
-                              + aMinMaxBox.CornerMin().Distance(aMinMaxBox.CornerMax()));
+      double        aDistance(aMinMaxBox.Distance(Bnd_Box(aLightPos, aLightPos))
+                       + aMinMaxBox.CornerMin().Distance(aMinMaxBox.CornerMax()));
       myShadowCamera->SetDistance(aDistance);
       myShadowCamera->MoveEyeTo(aLightPos);
       myShadowCamera->SetDirectionFromEye(myShadowLight->Direction());

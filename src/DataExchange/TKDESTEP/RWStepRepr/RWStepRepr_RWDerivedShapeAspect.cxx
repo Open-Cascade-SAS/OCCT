@@ -28,10 +28,11 @@ RWStepRepr_RWDerivedShapeAspect::RWStepRepr_RWDerivedShapeAspect() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWDerivedShapeAspect::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepRepr_DerivedShapeAspect>& ent) const
+void RWStepRepr_RWDerivedShapeAspect::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepRepr_DerivedShapeAspect>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "derived_shape_aspect"))
@@ -73,7 +74,7 @@ void RWStepRepr_RWDerivedShapeAspect::ReadStep(const occ::handle<StepData_StepRe
 //=================================================================================================
 
 void RWStepRepr_RWDerivedShapeAspect::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepRepr_DerivedShapeAspect>& ent) const
 {
 
@@ -91,7 +92,7 @@ void RWStepRepr_RWDerivedShapeAspect::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWDerivedShapeAspect::Share(const occ::handle<StepRepr_DerivedShapeAspect>& ent,
-                                            Interface_EntityIterator&                  iter) const
+                                            Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ShapeAspect

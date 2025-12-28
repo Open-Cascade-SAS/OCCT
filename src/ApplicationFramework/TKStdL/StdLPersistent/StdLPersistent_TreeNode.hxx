@@ -44,10 +44,10 @@ private:
   struct dynamic : public Standard_Transient
   {
     occ::handle<StdLPersistent_TreeNode> First;
-    Standard_GUID                   TreeID;
+    Standard_GUID                        TreeID;
   };
 
-  Handle(dynamic)                 myDynamicData;
+  Handle(dynamic)                      myDynamicData;
   occ::handle<StdLPersistent_TreeNode> myNext;
 };
 

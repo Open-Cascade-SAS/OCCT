@@ -40,8 +40,7 @@ public:
   //! Recognizes a kind of RepresentationOrRepresentationReference select type
   //! -- 1 -> Representation
   //! -- 2 -> RepresentationReference
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Representation (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;

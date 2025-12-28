@@ -27,8 +27,7 @@
 
 StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem() {}
 
-int StepAP214_AutoDesignGroupedItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_AutoDesignGroupedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -63,8 +62,8 @@ occ::handle<StepShape_AdvancedBrepShapeRepresentation> StepAP214_AutoDesignGroup
   return GetCasted(StepShape_AdvancedBrepShapeRepresentation, Value());
 }
 
-occ::handle<StepShape_CsgShapeRepresentation> StepAP214_AutoDesignGroupedItem::CsgShapeRepresentation()
-  const
+occ::handle<StepShape_CsgShapeRepresentation> StepAP214_AutoDesignGroupedItem::
+  CsgShapeRepresentation() const
 {
   return GetCasted(StepShape_CsgShapeRepresentation, Value());
 }
@@ -75,14 +74,14 @@ occ::handle<StepShape_FacetedBrepShapeRepresentation> StepAP214_AutoDesignGroupe
   return GetCasted(StepShape_FacetedBrepShapeRepresentation, Value());
 }
 
-occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation> StepAP214_AutoDesignGroupedItem::
-  GeometricallyBoundedSurfaceShapeRepresentation() const
+occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>
+  StepAP214_AutoDesignGroupedItem::GeometricallyBoundedSurfaceShapeRepresentation() const
 {
   return GetCasted(StepShape_GeometricallyBoundedSurfaceShapeRepresentation, Value());
 }
 
-occ::handle<StepShape_GeometricallyBoundedWireframeShapeRepresentation> StepAP214_AutoDesignGroupedItem::
-  GeometricallyBoundedWireframeShapeRepresentation() const
+occ::handle<StepShape_GeometricallyBoundedWireframeShapeRepresentation>
+  StepAP214_AutoDesignGroupedItem::GeometricallyBoundedWireframeShapeRepresentation() const
 {
   return GetCasted(StepShape_GeometricallyBoundedWireframeShapeRepresentation, Value());
 }
@@ -108,7 +107,8 @@ occ::handle<StepRepr_ShapeAspect> StepAP214_AutoDesignGroupedItem::ShapeAspect()
   return GetCasted(StepRepr_ShapeAspect, Value());
 }
 
-occ::handle<StepShape_ShapeRepresentation> StepAP214_AutoDesignGroupedItem::ShapeRepresentation() const
+occ::handle<StepShape_ShapeRepresentation> StepAP214_AutoDesignGroupedItem::ShapeRepresentation()
+  const
 {
   return GetCasted(StepShape_ShapeRepresentation, Value());
 }

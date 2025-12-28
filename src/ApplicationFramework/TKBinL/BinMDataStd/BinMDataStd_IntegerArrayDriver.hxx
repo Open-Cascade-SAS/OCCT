@@ -32,22 +32,21 @@ class BinMDataStd_IntegerArrayDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMDataStd_IntegerArrayDriver(const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT BinMDataStd_IntegerArrayDriver(
+    const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  Source,
-                                                 const occ::handle<TDF_Attribute>& Target,
-                                                 BinObjMgt_RRelocationTable&  RelocTable) const
-    override;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       Source,
+                                     const occ::handle<TDF_Attribute>& Target,
+                                     BinObjMgt_RRelocationTable&       RelocTable) const override;
 
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& Source,
-                                     BinObjMgt_Persistent&        Target,
-                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const
-    override;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&                        Source,
+    BinObjMgt_Persistent&                                    Target,
+    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver, BinMDF_ADriver)
-
 };
 
 #endif // _BinMDataStd_IntegerArrayDriver_HeaderFile

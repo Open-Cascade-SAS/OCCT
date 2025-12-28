@@ -39,8 +39,6 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <Message_ProgressScope.hxx>
 
 #define LINE 1
@@ -313,7 +311,7 @@ void BinTools_Curve2dSet::WriteCurve2d(const occ::handle<Geom2d_Curve>& C, BinTo
 
 void BinTools_Curve2dSet::Write(Standard_OStream& OS, const Message_ProgressRange& theRange) const
 {
-  int      i, aNbCurves = myMap.Extent();
+  int                   i, aNbCurves = myMap.Extent();
   Message_ProgressScope aPS(theRange, "Writing 2D curves", aNbCurves);
   OS << "Curve2ds " << aNbCurves << "\n";
   BinTools_OStream aStream(OS);
@@ -360,9 +358,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Lin
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Circle>& C)
 {
-  gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
-  double R = 0.;
+  gp_Pnt2d P(0., 0.);
+  gp_Dir2d AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
+  double   R = 0.;
   IS >> P >> AX >> AY;
   BinTools::GetReal(IS, R);
   C = new Geom2d_Circle(gp_Ax22d(P, AX, AY), R);
@@ -373,9 +371,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Cir
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Ellipse>& E)
 {
-  gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
-  double R1 = 0., R2 = 0.;
+  gp_Pnt2d P(0., 0.);
+  gp_Dir2d AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
+  double   R1 = 0., R2 = 0.;
   IS >> P >> AX >> AY;
   BinTools::GetReal(IS, R1);
   BinTools::GetReal(IS, R2);
@@ -387,9 +385,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Ell
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Parabola>& C)
 {
-  gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
-  double R1 = 0.;
+  gp_Pnt2d P(0., 0.);
+  gp_Dir2d AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
+  double   R1 = 0.;
   IS >> P >> AX >> AY;
   BinTools::GetReal(IS, R1);
   C = new Geom2d_Parabola(gp_Ax22d(P, AX, AY), R1);
@@ -400,9 +398,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Par
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Hyperbola>& H)
 {
-  gp_Pnt2d      P(0., 0.);
-  gp_Dir2d      AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
-  double R1 = 0., R2 = 0.;
+  gp_Pnt2d P(0., 0.);
+  gp_Dir2d AX(gp_Dir2d::D::X), AY(gp_Dir2d::D::X);
+  double   R1 = 0., R2 = 0.;
   IS >> P >> AX >> AY;
   BinTools::GetReal(IS, R1);
   BinTools::GetReal(IS, R2);
@@ -425,7 +423,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Bez
   degree = (int)aVal;
 
   NCollection_Array1<gp_Pnt2d> poles(1, degree + 1);
-  NCollection_Array1<double> weights(1, degree + 1);
+  NCollection_Array1<double>   weights(1, degree + 1);
 
   for (i = 1; i <= degree + 1; i++)
   {
@@ -462,7 +460,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   BinTools::GetInteger(IS, nbknots);
 
   NCollection_Array1<gp_Pnt2d> poles(1, nbpoles);
-  NCollection_Array1<double> weights(1, nbpoles);
+  NCollection_Array1<double>   weights(1, nbpoles);
 
   for (i = 1; i <= nbpoles; i++)
   {
@@ -471,8 +469,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
       BinTools::GetReal(IS, weights(i));
   }
 
-  NCollection_Array1<double>    knots(1, nbknots);
-  NCollection_Array1<int> mults(1, nbknots);
+  NCollection_Array1<double> knots(1, nbknots);
+  NCollection_Array1<int>    mults(1, nbknots);
 
   for (i = 1; i <= nbknots; i++)
   {
@@ -515,7 +513,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Off
 
 //=================================================================================================
 
-Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS, occ::handle<Geom2d_Curve>& C)
+Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream&          IS,
+                                                   occ::handle<Geom2d_Curve>& C)
 {
   try
   {
@@ -624,7 +623,7 @@ void BinTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRange
   }
 
   occ::handle<Geom2d_Curve> C;
-  int     i, aNbCurves;
+  int                       i, aNbCurves;
   IS >> aNbCurves;
   Message_ProgressScope aPS(theRange, "Reading curves 2d", aNbCurves);
   IS.get(); // remove <lf>

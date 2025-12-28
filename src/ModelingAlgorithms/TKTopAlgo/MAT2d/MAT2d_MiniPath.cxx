@@ -22,13 +22,11 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_Array2.hxx>
-#include <MAT2d_Connexion.hxx>
 #include <MAT2d_MiniPath.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 
 //=================================================================================================
 
@@ -44,13 +42,14 @@ MAT2d_MiniPath::MAT2d_MiniPath()
 //           le chemin part de la ligne <IndStart>.
 //           <Sense> = True les lignes sont orientes dans le sens trigo.
 //============================================================================
-void MAT2d_MiniPath::Perform(const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-                             const int                    IndStart,
-                             const bool                    Sense)
+void MAT2d_MiniPath::Perform(
+  const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+  const int                                                                       IndStart,
+  const bool                                                                      Sense)
 {
 
-  int        i, j;
-  int        NbLines = Figure.Length();
+  int                                              i, j;
+  int                                              NbLines = Figure.Length();
   NCollection_Array2<occ::handle<MAT2d_Connexion>> Connexion(1, NbLines, 1, NbLines);
 
   indStart     = IndStart;
@@ -73,9 +72,9 @@ void MAT2d_MiniPath::Perform(const NCollection_Sequence<NCollection_Sequence<occ
 
   NCollection_Sequence<int> Set1;
   NCollection_Sequence<int> Set2;
-  double             DistS1S2;
-  int          IndiceLine1, IndiceLine2;
-  int          ISuiv = 0, MinOnSet1 = 0, MinOnSet2 = 0;
+  double                    DistS1S2;
+  int                       IndiceLine1, IndiceLine2;
+  int                       ISuiv = 0, MinOnSet1 = 0, MinOnSet2 = 0;
   //---------------------------------------------------------------------------
   // - 0 Set1 est initialise avec la ligne de depart.
   //     Set2 contient toutes les autres.
@@ -150,9 +149,9 @@ void MAT2d_MiniPath::Append(const occ::handle<MAT2d_Connexion>& C)
     return;
   }
 
-  NCollection_Sequence<occ::handle<MAT2d_Connexion>>& Seq          = theConnexions(C->IndexFirstLine());
-  int           IndexAfter   = 0;
-  int           NbConnexions = Seq.Length();
+  NCollection_Sequence<occ::handle<MAT2d_Connexion>>& Seq = theConnexions(C->IndexFirstLine());
+  int                                                 IndexAfter   = 0;
+  int                                                 NbConnexions = Seq.Length();
 
   for (int i = 1; i <= NbConnexions; i++)
   {
@@ -227,8 +226,8 @@ occ::handle<MAT2d_Connexion> MAT2d_MiniPath::Father(const int ILine)
 //============================================================================
 void MAT2d_MiniPath::RunOnConnexions()
 {
-  int                 i;
-  occ::handle<MAT2d_Connexion>          C;
+  int                                                       i;
+  occ::handle<MAT2d_Connexion>                              C;
   const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& SC = theConnexions(indStart);
 
   thePath.Clear();
@@ -244,8 +243,8 @@ void MAT2d_MiniPath::RunOnConnexions()
 
 //=================================================================================================
 
-void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>>&     CResult,
-                               const occ::handle<MAT2d_Connexion>& CRef)
+void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>>& CResult,
+                               const occ::handle<MAT2d_Connexion>&                 CRef)
 {
   int i;
   int Index = CRef->IndexSecondLine();
@@ -254,8 +253,8 @@ void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>
     return;
 
   const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& SC  = theConnexions(Index);
-  occ::handle<MAT2d_Connexion>          CRR = CRef->Reverse();
-  occ::handle<MAT2d_Connexion>          C;
+  occ::handle<MAT2d_Connexion>                              CRR = CRef->Reverse();
+  occ::handle<MAT2d_Connexion>                              C;
 
   for (i = 1; i <= SC.Length(); i++)
   {
@@ -291,17 +290,17 @@ void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>
 //============================================================================
 occ::handle<MAT2d_Connexion> MAT2d_MiniPath::MinimumL1L2(
   const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-  const int                    IL1,
-  const int                    IL2) const
+  const int                                                                       IL1,
+  const int                                                                       IL2) const
 {
-  Extrema_POnCurv2d             PointOnCurv1, PointOnCurv2;
-  int              IC1, IC2, IMinC1 = 0, IMinC2 = 0, i;
-  double                 DistL1L2_2, DistP1P2_2;
-  double                 ParameterOnC1 = 0., ParameterOnC2 = 0.;
+  Extrema_POnCurv2d                                  PointOnCurv1, PointOnCurv2;
+  int                                                IC1, IC2, IMinC1 = 0, IMinC2 = 0, i;
+  double                                             DistL1L2_2, DistP1P2_2;
+  double                                             ParameterOnC1 = 0., ParameterOnC2 = 0.;
   NCollection_Sequence<occ::handle<Geom2d_Geometry>> L1, L2;
-  gp_Pnt2d                      Point1, Point2, P1, P2;
-  occ::handle<Geom2d_Curve>          Item1;
-  occ::handle<Geom2d_Curve>          Item2;
+  gp_Pnt2d                                           Point1, Point2, P1, P2;
+  occ::handle<Geom2d_Curve>                          Item1;
+  occ::handle<Geom2d_Curve>                          Item2;
 
   L1 = Figure.Value(IL1);
   L2 = Figure.Value(IL2);

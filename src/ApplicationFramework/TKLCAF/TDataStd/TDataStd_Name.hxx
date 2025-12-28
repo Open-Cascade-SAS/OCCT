@@ -56,13 +56,13 @@ public:
   //! Name methods
   //! ============
   Standard_EXPORT static occ::handle<TDataStd_Name> Set(const TDF_Label&                  label,
-                                                   const TCollection_ExtendedString& string);
+                                                        const TCollection_ExtendedString& string);
 
   //! Finds, or creates, a Name attribute with explicit user defined <guid> and sets <string>.
   //! The Name attribute is returned.
   Standard_EXPORT static occ::handle<TDataStd_Name> Set(const TDF_Label&                  label,
-                                                   const Standard_GUID&              guid,
-                                                   const TCollection_ExtendedString& string);
+                                                        const Standard_GUID&              guid,
+                                                        const TCollection_ExtendedString& string);
 
   Standard_EXPORT TDataStd_Name();
 

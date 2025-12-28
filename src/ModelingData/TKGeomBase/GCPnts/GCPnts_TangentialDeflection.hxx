@@ -19,8 +19,6 @@
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
-#include <gp_Pnt.hxx>
 #include <math_Function.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <Adaptor3d_Curve.hxx>
@@ -77,11 +75,11 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection(const Adaptor3d_Curve& theC,
-                                              const double    theAngularDeflection,
-                                              const double    theCurvatureDeflection,
-                                              const int theMinimumOfPoints = 2,
-                                              const double    theUTol            = 1.0e-9,
-                                              const double    theMinLen          = 1.0e-7);
+                                              const double           theAngularDeflection,
+                                              const double           theCurvatureDeflection,
+                                              const int              theMinimumOfPoints = 2,
+                                              const double           theUTol            = 1.0e-9,
+                                              const double           theMinLen          = 1.0e-7);
 
   //! Constructor for 3D curve with restricted range.
   //! @param[in] theC  3d curve
@@ -93,13 +91,13 @@ public:
   //! @param theUTo  l[in]  tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection(const Adaptor3d_Curve& theC,
-                                              const double    theFirstParameter,
-                                              const double    theLastParameter,
-                                              const double    theAngularDeflection,
-                                              const double    theCurvatureDeflection,
-                                              const int theMinimumOfPoints = 2,
-                                              const double    theUTol            = 1.0e-9,
-                                              const double    theMinLen          = 1.0e-7);
+                                              const double           theFirstParameter,
+                                              const double           theLastParameter,
+                                              const double           theAngularDeflection,
+                                              const double           theCurvatureDeflection,
+                                              const int              theMinimumOfPoints = 2,
+                                              const double           theUTol            = 1.0e-9,
+                                              const double           theMinLen          = 1.0e-7);
 
   //! Constructor for 2D curve.
   //! @param[in] theC  2d curve
@@ -109,11 +107,11 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection(const Adaptor2d_Curve2d& theC,
-                                              const double      theAngularDeflection,
-                                              const double      theCurvatureDeflection,
-                                              const int   theMinimumOfPoints = 2,
-                                              const double      theUTol            = 1.0e-9,
-                                              const double      theMinLen          = 1.0e-7);
+                                              const double             theAngularDeflection,
+                                              const double             theCurvatureDeflection,
+                                              const int                theMinimumOfPoints = 2,
+                                              const double             theUTol            = 1.0e-9,
+                                              const double             theMinLen          = 1.0e-7);
 
   //! Constructor for 2D curve with restricted range.
   //! @param[in] theC  2d curve
@@ -125,13 +123,13 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection(const Adaptor2d_Curve2d& theC,
-                                              const double      theFirstParameter,
-                                              const double      theLastParameter,
-                                              const double      theAngularDeflection,
-                                              const double      theCurvatureDeflection,
-                                              const int   theMinimumOfPoints = 2,
-                                              const double      theUTol            = 1.0e-9,
-                                              const double      theMinLen          = 1.0e-7);
+                                              const double             theFirstParameter,
+                                              const double             theLastParameter,
+                                              const double             theAngularDeflection,
+                                              const double             theCurvatureDeflection,
+                                              const int                theMinimumOfPoints = 2,
+                                              const double             theUTol            = 1.0e-9,
+                                              const double             theMinLen          = 1.0e-7);
 
   //! Initialize algorithm for 3D curve.
   //! @param[in] theC  3d curve
@@ -141,11 +139,11 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double    theAngularDeflection,
-                                  const double    theCurvatureDeflection,
-                                  const int theMinimumOfPoints = 2,
-                                  const double    theUTol            = 1.0e-9,
-                                  const double    theMinLen          = 1.0e-7);
+                                  const double           theAngularDeflection,
+                                  const double           theCurvatureDeflection,
+                                  const int              theMinimumOfPoints = 2,
+                                  const double           theUTol            = 1.0e-9,
+                                  const double           theMinLen          = 1.0e-7);
 
   //! Initialize algorithm for 3D curve with restricted range.
   //! @param[in] theC  3d curve
@@ -157,13 +155,13 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double    theFirstParameter,
-                                  const double    theLastParameter,
-                                  const double    theAngularDeflection,
-                                  const double    theCurvatureDeflection,
-                                  const int theMinimumOfPoints = 2,
-                                  const double    theUTol            = 1.0e-9,
-                                  const double    theMinLen          = 1.0e-7);
+                                  const double           theFirstParameter,
+                                  const double           theLastParameter,
+                                  const double           theAngularDeflection,
+                                  const double           theCurvatureDeflection,
+                                  const int              theMinimumOfPoints = 2,
+                                  const double           theUTol            = 1.0e-9,
+                                  const double           theMinLen          = 1.0e-7);
 
   //! Initialize algorithm for 2D curve.
   //! @param[in] theC  2d curve
@@ -173,11 +171,11 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double      theAngularDeflection,
-                                  const double      theCurvatureDeflection,
-                                  const int   theMinimumOfPoints = 2,
-                                  const double      theUTol            = 1.0e-9,
-                                  const double      theMinLen          = 1.0e-7);
+                                  const double             theAngularDeflection,
+                                  const double             theCurvatureDeflection,
+                                  const int                theMinimumOfPoints = 2,
+                                  const double             theUTol            = 1.0e-9,
+                                  const double             theMinLen          = 1.0e-7);
 
   //! Initialize algorithm for 2D curve with restricted range.
   //! @param[in] theC  2d curve
@@ -189,20 +187,20 @@ public:
   //! @param[in] theUTol    tolerance in curve parametric scope
   //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double      theFirstParameter,
-                                  const double      theLastParameter,
-                                  const double      theAngularDeflection,
-                                  const double      theCurvatureDeflection,
-                                  const int   theMinimumOfPoints = 2,
-                                  const double      theUTol            = 1.0e-9,
-                                  const double      theMinLen          = 1.0e-7);
+                                  const double             theFirstParameter,
+                                  const double             theLastParameter,
+                                  const double             theAngularDeflection,
+                                  const double             theCurvatureDeflection,
+                                  const int                theMinimumOfPoints = 2,
+                                  const double             theUTol            = 1.0e-9,
+                                  const double             theMinLen          = 1.0e-7);
 
   //! Add point to already calculated points (or replace existing)
   //! Returns index of new added point
   //! or founded with parametric tolerance (replaced if theIsReplace is true)
-  Standard_EXPORT int AddPoint(const gp_Pnt&          thePnt,
-                                            const double    theParam,
-                                            const bool theIsReplace = true);
+  Standard_EXPORT int AddPoint(const gp_Pnt& thePnt,
+                               const double  theParam,
+                               const bool    theIsReplace = true);
 
   int NbPoints() const { return myParameters.Length(); }
 
@@ -212,18 +210,18 @@ public:
 
   //! Computes angular step for the arc using the given parameters.
   Standard_EXPORT static double ArcAngularStep(const double theRadius,
-                                                      const double theLinearDeflection,
-                                                      const double theAngularDeflection,
-                                                      const double theMinLength);
+                                               const double theLinearDeflection,
+                                               const double theAngularDeflection,
+                                               const double theMinLength);
 
 private:
   template <class TheCurve>
-  void initialize(const TheCurve&        theC,
+  void initialize(const TheCurve& theC,
                   const double    theFirstParameter,
                   const double    theLastParameter,
                   const double    theAngularDeflection,
                   const double    theCurvatureDeflection,
-                  const int theMinimumOfPoints,
+                  const int       theMinimumOfPoints,
                   const double    theUTol,
                   const double    theMinLen);
 
@@ -239,29 +237,29 @@ private:
   void PerformCurve(const TheCurve& theC);
 
   template <class TheCurve>
-  void EvaluateDu(const TheCurve&     theC,
-                  const double theU,
-                  gp_Pnt&             theP,
-                  double&      theDu,
-                  bool&   theNotDone) const;
+  void EvaluateDu(const TheCurve& theC,
+                  const double    theU,
+                  gp_Pnt&         theP,
+                  double&         theDu,
+                  bool&           theNotDone) const;
 
   //! Estimation of maximal deflection for interval [theU1, theU2]
   template <class TheCurve>
-  void EstimDefl(const TheCurve&     theC,
-                 const double theU1,
-                 const double theU2,
-                 double&      theMaxDefl,
-                 double&      theUMax);
+  void EstimDefl(const TheCurve& theC,
+                 const double    theU1,
+                 const double    theU2,
+                 double&         theMaxDefl,
+                 double&         theUMax);
 
 private:
-  double          myAngularDeflection;
-  double          myCurvatureDeflection;
-  double          myUTol;
-  int       myMinNbPnts;
-  double          myMinLen;
-  double          myLastU;
-  double          myFirstu;
-  NCollection_Sequence<gp_Pnt>   myPoints;
+  double                       myAngularDeflection;
+  double                       myCurvatureDeflection;
+  double                       myUTol;
+  int                          myMinNbPnts;
+  double                       myMinLen;
+  double                       myLastU;
+  double                       myFirstu;
+  NCollection_Sequence<gp_Pnt> myPoints;
   NCollection_Sequence<double> myParameters;
 };
 

@@ -395,9 +395,7 @@ bool StepFile_ReadData::GetArgDescription(Interface_ParamType* theType, char** t
 
 //=================================================================================================
 
-void StepFile_ReadData::GetFileNbR(int* theNbHead,
-                                   int* theNbRec,
-                                   int* theNbPage)
+void StepFile_ReadData::GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage)
 {
   myCurRec   = myFirstRec;
   *theNbHead = myNbHead;
@@ -407,9 +405,7 @@ void StepFile_ReadData::GetFileNbR(int* theNbHead,
 
 //=================================================================================================
 
-bool StepFile_ReadData::GetRecordDescription(char** theIdent,
-                                                         char** theType,
-                                                         int*   theNbArg)
+bool StepFile_ReadData::GetRecordDescription(char** theIdent, char** theType, int* theNbArg)
 {
   if (myCurRec == nullptr)
     return false;

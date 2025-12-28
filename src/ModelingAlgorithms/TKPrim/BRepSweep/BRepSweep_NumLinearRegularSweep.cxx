@@ -25,7 +25,6 @@
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=======================================================================
@@ -153,7 +152,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape(const TopoDS_Shape&   aGenS,
         Or      = It.Orientation();
         if (HasShape(subGenS, aDirS))
         {
-          newShape                  = Shape(subGenS, aDirS);
+          newShape     = Shape(subGenS, aDirS);
           int iNewGenS = myGenShapeTool.Index(subGenS);
           int iNewDirS = iDirS;
           if (GGDShapeIsToAdd(myShapes(iGenS, iDirS), newShape, aGenS, subGenS, aDirS))
@@ -205,10 +204,10 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape(const TopoDS_Shape&   aGenS,
     else if (myDirShapeTool.Type(aDirS) == TopAbs_EDGE)
     {
       // Ici on construit les murs du Shape.
-      TopAbs_ShapeEnum         aGenSType = myGenShapeTool.Type(aGenS);
-      TopoDS_Shape             newWire, newShell;
+      TopAbs_ShapeEnum                   aGenSType = myGenShapeTool.Type(aGenS);
+      TopoDS_Shape                       newWire, newShell;
       NCollection_Sequence<TopoDS_Shape> WireSeq;
-      bool         sepwires = false;
+      bool                               sepwires = false;
       switch (aGenSType)
       {
         case TopAbs_VERTEX:
@@ -255,7 +254,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape(const TopoDS_Shape&   aGenS,
         subGenS = It.Value();
         if (HasShape(subGenS, aDirS))
         {
-          newShape                  = Shape(subGenS, aDirS);
+          newShape     = Shape(subGenS, aDirS);
           int iNewGenS = myGenShapeTool.Index(subGenS);
           int iNewDirS = iDirS;
           if (GGDShapeIsToAdd(myShapes(iGenS, iDirS), newShape, aGenS, subGenS, aDirS))
@@ -330,7 +329,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape(const TopoDS_Shape&   aGenS,
         subDirS = Kt.Value();
         if (HasShape(aGenS, subDirS))
         {
-          newShape                  = Shape(aGenS, subDirS);
+          newShape     = Shape(aGenS, subDirS);
           int iNewGenS = iGenS;
           int iNewDirS = myDirShapeTool.Index(subDirS);
           if (GDDShapeIsToAdd(myShapes(iGenS, iDirS), newShape, aGenS, aDirS, subDirS))
@@ -439,8 +438,8 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape(const TopoDS_Shape&   aGenS,
         {
           int iNewGenS = iGenS;
           int iNewDirS = myDirShapeTool.Index(subDirS);
-          Or                        = Kt.Orientation();
-          newShape                  = Shape(aGenS, subDirS);
+          Or           = Kt.Orientation();
+          newShape     = Shape(aGenS, subDirS);
           myBuilder.Add(myShapes(iGenS, iDirS), newShape, Or);
           myUsedShapes(iNewGenS, iNewDirS) = true;
         }
@@ -545,7 +544,7 @@ bool BRepSweep_NumLinearRegularSweep::IsUsed(const TopoDS_Shape& aGenS) const
   {
     return false;
   }
-  int j;
+  int  j;
   bool isBuilt = false;
   bool isUsed  = false;
   for (j = 2; j <= myBuiltShapes.UpperCol(); ++j)

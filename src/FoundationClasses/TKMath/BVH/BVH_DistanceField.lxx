@@ -20,8 +20,7 @@
 //=================================================================================================
 
 template <class T, int N>
-BVH_DistanceField<T, N>::BVH_DistanceField(const int theMaximumSize,
-                                           const bool theComputeSign)
+BVH_DistanceField<T, N>::BVH_DistanceField(const int theMaximumSize, const bool theComputeSign)
     : myDimensionX(0),
       myDimensionY(0),
       myDimensionZ(0),
@@ -184,8 +183,8 @@ public:
 public:
   //! Defines the rules for node rejection
   virtual bool RejectNode(const BVH_VecNt& theCMin,
-                                      const BVH_VecNt& theCMax,
-                                      T&               theMetric) const override
+                          const BVH_VecNt& theCMax,
+                          T&               theMetric) const override
   {
     theMetric = DistanceToBox<T, N>(this->myObject, theCMin, theCMax);
     return theMetric > this->myDistance;
@@ -259,7 +258,7 @@ public:
 template <class T, int N>
 T SquareDistanceToObject(BVH_Object<T, N>*                      theObject,
                          const typename VectorType<T, N>::Type& thePnt,
-                         bool&                      theIsOutside)
+                         bool&                                  theIsOutside)
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
@@ -306,7 +305,7 @@ public:
   // Accepting the element
   virtual bool Accept(const int theIndex, const T&) override
   {
-    bool isOutside = true;
+    bool    isOutside = true;
     const T aDistance = SquareDistanceToObject(this->myBVHSet->Objects()(theIndex).operator->(),
                                                this->myObject,
                                                isOutside);
@@ -329,7 +328,7 @@ public:
 template <class T, int N>
 T SquareDistanceToGeomerty(BVH_Geometry<T, N>&                    theGeometry,
                            const typename VectorType<T, N>::Type& thePnt,
-                           bool&                      theIsOutside)
+                           bool&                                  theIsOutside)
 {
   Standard_STATIC_ASSERT(N == 3 || N == 4);
 
@@ -382,9 +381,9 @@ public:
 // purpose  : Performs building of distance field for the given Z slices
 // =======================================================================
 template <class T, int N>
-void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>&    theGeometry,
-                                          const int theStartSlice,
-                                          const int theFinalSlice)
+void BVH_DistanceField<T, N>::BuildSlices(BVH_Geometry<T, N>& theGeometry,
+                                          const int           theStartSlice,
+                                          const int           theFinalSlice)
 {
   for (int aZ = theStartSlice; aZ < theFinalSlice; ++aZ)
   {

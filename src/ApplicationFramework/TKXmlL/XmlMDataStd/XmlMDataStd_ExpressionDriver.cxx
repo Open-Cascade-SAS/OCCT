@@ -18,7 +18,6 @@
 #include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_Attribute.hxx>
 #include <NCollection_List.hxx>
 #include <XmlMDataStd_ExpressionDriver.hxx>
 #include <XmlObjMgt.hxx>
@@ -46,15 +45,14 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExpressionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ExpressionDriver::Paste(
-  const XmlObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  XmlObjMgt_RRelocationTable&  theRelocTable) const
+bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<TDataStd_Expression> aC     = occ::down_cast<TDataStd_Expression>(theTarget);
-  const XmlObjMgt_Element&    anElem = theSource;
+  const XmlObjMgt_Element&         anElem = theSource;
 
-  int           aNb;
+  int                        aNb;
   TCollection_ExtendedString aMsgString;
 
   // expression
@@ -109,13 +107,13 @@ bool XmlMDataStd_ExpressionDriver::Paste(
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         XmlObjMgt_Persistent&        theTarget,
-                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
+                                         XmlObjMgt_Persistent&             theTarget,
+                                         XmlObjMgt_SRelocationTable&       theRelocTable) const
 {
   occ::handle<TDataStd_Expression> aC     = occ::down_cast<TDataStd_Expression>(theSource);
-  XmlObjMgt_Element&          anElem = theTarget;
+  XmlObjMgt_Element&               anElem = theTarget;
 
-  int      aNb;
+  int                        aNb;
   occ::handle<TDF_Attribute> TV;
 
   // expression
@@ -125,7 +123,7 @@ void XmlMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSo
   int nbvar = aC->GetVariables().Extent();
   if (nbvar >= 1)
   {
-    TCollection_AsciiString         aGsStr;
+    TCollection_AsciiString                                aGsStr;
     NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
     for (it.Initialize(aC->GetVariables()); it.More(); it.Next())
     {

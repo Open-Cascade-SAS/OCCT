@@ -20,7 +20,7 @@
 RWStepBasic_RWPerson::RWStepBasic_RWPerson() {}
 
 void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                 num,
+                                    const int                                   num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepBasic_Person>&        ent) const
 {
@@ -39,7 +39,7 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- own field : lastName ---
 
   occ::handle<TCollection_HAsciiString> aLastName;
-  bool                 hasAlastName = true;
+  bool                                  hasAlastName = true;
   if (data->IsParamDefined(num, 2))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -54,7 +54,7 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- own field : firstName ---
 
   occ::handle<TCollection_HAsciiString> aFirstName;
-  bool                 hasAfirstName = true;
+  bool                                  hasAfirstName = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -69,15 +69,15 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- own field : middleNames ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aMiddleNames;
-  bool                        hasAmiddleNames = true;
+  bool                                                                    hasAmiddleNames = true;
   if (data->IsParamDefined(num, 4))
   {
     occ::handle<TCollection_HAsciiString> aMiddleNamesItem;
-    int                 nsub4;
+    int                                   nsub4;
     if (data->ReadSubList(num, 4, "middle_names", ach, nsub4))
     {
-      int nb4 = data->NbParams(nsub4);
-      aMiddleNames         = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb4);
+      int nb4      = data->NbParams(nsub4);
+      aMiddleNames = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb4);
       for (int i4 = 1; i4 <= nb4; i4++)
       {
         // szv#4:S4163:12Mar99 `bool stat4 =` not needed
@@ -95,15 +95,15 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- own field : prefixTitles ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aPrefixTitles;
-  bool                        hasAprefixTitles = true;
+  bool                                                                    hasAprefixTitles = true;
   if (data->IsParamDefined(num, 5))
   {
     occ::handle<TCollection_HAsciiString> aPrefixTitlesItem;
-    int                 nsub5;
+    int                                   nsub5;
     if (data->ReadSubList(num, 5, "prefix_titles", ach, nsub5))
     {
-      int nb5 = data->NbParams(nsub5);
-      aPrefixTitles        = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb5);
+      int nb5       = data->NbParams(nsub5);
+      aPrefixTitles = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb5);
       for (int i5 = 1; i5 <= nb5; i5++)
       {
         // szv#4:S4163:12Mar99 `bool stat5 =` not needed
@@ -121,15 +121,15 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- own field : suffixTitles ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aSuffixTitles;
-  bool                        hasAsuffixTitles = true;
+  bool                                                                    hasAsuffixTitles = true;
   if (data->IsParamDefined(num, 6))
   {
     occ::handle<TCollection_HAsciiString> aSuffixTitlesItem;
-    int                 nsub6;
+    int                                   nsub6;
     if (data->ReadSubList(num, 6, "suffix_titles", ach, nsub6))
     {
-      int nb6 = data->NbParams(nsub6);
-      aSuffixTitles        = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb6);
+      int nb6       = data->NbParams(nsub6);
+      aSuffixTitles = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb6);
       for (int i6 = 1; i6 <= nb6; i6++)
       {
         // szv#4:S4163:12Mar99 `bool stat6 =` not needed
@@ -159,7 +159,7 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
             aSuffixTitles);
 }
 
-void RWStepBasic_RWPerson::WriteStep(StepData_StepWriter&            SW,
+void RWStepBasic_RWPerson::WriteStep(StepData_StepWriter&                 SW,
                                      const occ::handle<StepBasic_Person>& ent) const
 {
 

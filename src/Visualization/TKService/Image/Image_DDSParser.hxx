@@ -32,9 +32,9 @@ public:
   //! @return loaded face or NULL if file cannot be read or not valid DDS file
   Standard_EXPORT static occ::handle<Image_CompressedPixMap> Load(
     const occ::handle<Image_SupportedFormats>& theSupported,
-    const TCollection_AsciiString&        theFile,
-    const int                theFaceIndex,
-    const int64_t                         theFileOffset = 0);
+    const TCollection_AsciiString&             theFile,
+    const int                                  theFaceIndex,
+    const int64_t                              theFileOffset = 0);
 
   //! Load the face from DDS file.
   //! @param[in] theSupported  list of supported image formats
@@ -46,7 +46,7 @@ public:
   Standard_EXPORT static occ::handle<Image_CompressedPixMap> Load(
     const occ::handle<Image_SupportedFormats>& theSupported,
     const occ::handle<NCollection_Buffer>&     theBuffer,
-    const int                theFaceIndex);
+    const int                                  theFaceIndex);
 
 private:
   struct DDSPixelFormat;

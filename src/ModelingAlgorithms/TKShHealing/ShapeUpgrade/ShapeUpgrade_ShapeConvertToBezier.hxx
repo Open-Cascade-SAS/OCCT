@@ -105,13 +105,11 @@ public:
   bool GetBSplineMode() const;
 
   //! Performs converting and computes the resulting shape
-  Standard_EXPORT virtual bool Perform(
-    const bool newContext = true) override;
+  Standard_EXPORT virtual bool Perform(const bool newContext = true) override;
 
 protected:
   //! Returns the tool for dividing faces.
-  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const
-    override;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
 
   Standard_EXPORT virtual Message_Msg GetFaceMsg() const override;
 
@@ -131,7 +129,7 @@ private:
   bool myRevolutionMode;
   bool myExtrusionMode;
   bool myBSplineMode;
-  int myLevel;
+  int  myLevel;
 };
 
 #include <ShapeUpgrade_ShapeConvertToBezier.lxx>

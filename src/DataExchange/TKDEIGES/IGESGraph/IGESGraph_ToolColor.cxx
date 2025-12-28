@@ -37,7 +37,7 @@ void IGESGraph_ToolColor::ReadOwnParams(const occ::handle<IGESGraph_Color>& ent,
                                         const occ::handle<IGESData_IGESReaderData>& /*IR*/,
                                         IGESData_ParamReader& PR) const
 {
-  double                    tempRed, tempGreen, tempBlue;
+  double                                tempRed, tempGreen, tempBlue;
   occ::handle<TCollection_HAsciiString> tempColorName;
 
   PR.ReadReal(PR.Current(), "RED as % Of Full Intensity", tempRed);
@@ -55,7 +55,7 @@ void IGESGraph_ToolColor::ReadOwnParams(const occ::handle<IGESGraph_Color>& ent,
 }
 
 void IGESGraph_ToolColor::WriteOwnParams(const occ::handle<IGESGraph_Color>& ent,
-                                         IGESData_IGESWriter&           IW) const
+                                         IGESData_IGESWriter&                IW) const
 {
   double Red, Green, Blue;
   ent->RGBIntensity(Red, Green, Blue);
@@ -78,7 +78,7 @@ void IGESGraph_ToolColor::OwnCopy(const occ::handle<IGESGraph_Color>& another,
                                   const occ::handle<IGESGraph_Color>& ent,
                                   Interface_CopyTool& /*TC*/) const
 {
-  double                    tempRed, tempGreen, tempBlue;
+  double                                tempRed, tempGreen, tempBlue;
   occ::handle<TCollection_HAsciiString> tempColorName;
   another->RGBIntensity(tempRed, tempGreen, tempBlue);
   if (another->HasColorName())
@@ -87,7 +87,8 @@ void IGESGraph_ToolColor::OwnCopy(const occ::handle<IGESGraph_Color>& another,
   ent->Init(tempRed, tempGreen, tempBlue, tempColorName);
 }
 
-IGESData_DirChecker IGESGraph_ToolColor::DirChecker(const occ::handle<IGESGraph_Color>& /*ent*/) const
+IGESData_DirChecker IGESGraph_ToolColor::DirChecker(
+  const occ::handle<IGESGraph_Color>& /*ent*/) const
 {
   IGESData_DirChecker DC(314, 0);
   DC.Structure(IGESData_DefVoid);

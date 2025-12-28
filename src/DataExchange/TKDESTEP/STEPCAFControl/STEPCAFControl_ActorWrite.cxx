@@ -52,7 +52,7 @@ void STEPCAFControl_ActorWrite::RegisterAssembly(const TopoDS_Shape& S)
 //=================================================================================================
 
 bool STEPCAFControl_ActorWrite::IsAssembly(const occ::handle<StepData_StepModel>& theModel,
-                                                       TopoDS_Shape&                     S) const
+                                           TopoDS_Shape&                          S) const
 {
   if (myStdMode)
     return STEPControl_ActorWrite::IsAssembly(theModel, S);

@@ -47,14 +47,14 @@ public:
   //! Creates an OffsetCurve curve.
   //! The Offset is set to Offset.
   Standard_EXPORT Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d>& C,
-                                        const double              Offset);
+                                        const double                          Offset);
 
   //! Create an Offset curve.
   //! WFirst,WLast define the bounds of the Offset curve.
   Standard_EXPORT Adaptor2d_OffsetCurve(const occ::handle<Adaptor2d_Curve2d>& C,
-                                        const double              Offset,
-                                        const double              WFirst,
-                                        const double              WLast);
+                                        const double                          Offset,
+                                        const double                          WFirst,
+                                        const double                          WLast);
 
   //! Shallow copy of adaptor.
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
@@ -66,9 +66,7 @@ public:
   Standard_EXPORT void Load(const double Offset);
 
   //! Changes the Offset Curve on the current Curve.
-  Standard_EXPORT void Load(const double Offset,
-                            const double WFirst,
-                            const double WLast);
+  Standard_EXPORT void Load(const double Offset, const double WFirst, const double WLast);
 
   const occ::handle<Adaptor2d_Curve2d>& Curve() const { return myCurve; }
 
@@ -91,15 +89,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape   S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double First,
-                                                 const double Last,
-                                                 const double Tol) const override;
+                                                      const double Last,
+                                                      const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -123,28 +121,24 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const override;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double    U,
-                              const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -181,9 +175,9 @@ public:
 
 private:
   occ::handle<Adaptor2d_Curve2d> myCurve;
-  double             myOffset;
-  double             myFirst;
-  double             myLast;
+  double                         myOffset;
+  double                         myFirst;
+  double                         myLast;
 };
 
 #endif // _Adaptor2d_OffsetCurve_HeaderFile

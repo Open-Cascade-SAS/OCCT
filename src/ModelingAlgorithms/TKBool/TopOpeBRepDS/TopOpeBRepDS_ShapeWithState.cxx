@@ -28,7 +28,8 @@ TopOpeBRepDS_ShapeWithState::TopOpeBRepDS_ShapeWithState()
 
 //=================================================================================================
 
-const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ShapeWithState::Part(const TopAbs_State aState) const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ShapeWithState::Part(
+  const TopAbs_State aState) const
 {
   static NCollection_List<TopoDS_Shape> myEmptyListOfShape;
   switch (aState)
@@ -67,7 +68,7 @@ void TopOpeBRepDS_ShapeWithState::AddPart(const TopoDS_Shape& aShape, const TopA
 //=================================================================================================
 
 void TopOpeBRepDS_ShapeWithState::AddParts(const NCollection_List<TopoDS_Shape>& aListOfShape,
-                                           const TopAbs_State          aState)
+                                           const TopAbs_State                    aState)
 {
   NCollection_List<TopoDS_Shape>::Iterator anIt(aListOfShape);
 

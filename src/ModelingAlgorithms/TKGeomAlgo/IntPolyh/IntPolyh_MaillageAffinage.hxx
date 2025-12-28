@@ -39,22 +39,22 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT IntPolyh_MaillageAffinage(const occ::handle<Adaptor3d_Surface>& S1,
-                                            const int           NbSU1,
-                                            const int           NbSV1,
+                                            const int                             NbSU1,
+                                            const int                             NbSV1,
                                             const occ::handle<Adaptor3d_Surface>& S2,
-                                            const int           NbSU2,
-                                            const int           NbSV2,
-                                            const int           PRINT);
+                                            const int                             NbSU2,
+                                            const int                             NbSV2,
+                                            const int                             PRINT);
 
   Standard_EXPORT IntPolyh_MaillageAffinage(const occ::handle<Adaptor3d_Surface>& S1,
                                             const occ::handle<Adaptor3d_Surface>& S2,
-                                            const int           PRINT);
+                                            const int                             PRINT);
 
   //! Makes the sampling of the surface -
   //! Fills the arrays with the parametric values of the sampling points (triangulation nodes).
-  Standard_EXPORT void MakeSampling(const int SurfID,
-                                    NCollection_Array1<double>&  theUPars,
-                                    NCollection_Array1<double>&  theVPars);
+  Standard_EXPORT void MakeSampling(const int                   SurfID,
+                                    NCollection_Array1<double>& theUPars,
+                                    NCollection_Array1<double>& theVPars);
 
   //! Computes points on one surface and fills an array of points;
   //! standard (default) method
@@ -67,16 +67,15 @@ public:
   //! direction) is defined by isShiftFwd flag.
   //! Compute points on one surface and fill an array of points;
   //! advanced method
-  Standard_EXPORT void FillArrayOfPnt(const int SurfID,
-                                      const bool isShiftFwd);
+  Standard_EXPORT void FillArrayOfPnt(const int SurfID, const bool isShiftFwd);
 
   //! Compute points on one surface and fill an array of points;
   //! If given, <theDeflTol> is the deflection tolerance of the given sampling.
   //! standard (default) method
-  Standard_EXPORT void FillArrayOfPnt(const int      SurfID,
+  Standard_EXPORT void FillArrayOfPnt(const int                         SurfID,
                                       const NCollection_Array1<double>& Upars,
                                       const NCollection_Array1<double>& Vpars,
-                                      const double*        theDeflTol = NULL);
+                                      const double*                     theDeflTol = NULL);
 
   //! isShiftFwd flag is added. The purpose is to define shift
   //! of points along normal to the surface in this point. The
@@ -86,19 +85,19 @@ public:
   //! Compute points on one surface and fill an array of points;
   //! If given, <theDeflTol> is the deflection tolerance of the given sampling.
   //! advanced method
-  Standard_EXPORT void FillArrayOfPnt(const int      SurfID,
-                                      const bool      isShiftFwd,
+  Standard_EXPORT void FillArrayOfPnt(const int                         SurfID,
+                                      const bool                        isShiftFwd,
                                       const NCollection_Array1<double>& Upars,
                                       const NCollection_Array1<double>& Vpars,
-                                      const double*        theDeflTol = NULL);
+                                      const double*                     theDeflTol = NULL);
 
   //! Fills the array of points for the surface taking into account the shift
-  Standard_EXPORT void FillArrayOfPnt(const int             SurfID,
-                                      const bool             isShiftFwd,
+  Standard_EXPORT void FillArrayOfPnt(const int                          SurfID,
+                                      const bool                         isShiftFwd,
                                       const IntPolyh_ArrayOfPointNormal& thePoints,
-                                      const NCollection_Array1<double>&        theUPars,
-                                      const NCollection_Array1<double>&        theVPars,
-                                      const double                theDeflTol);
+                                      const NCollection_Array1<double>&  theUPars,
+                                      const NCollection_Array1<double>&  theVPars,
+                                      const double                       theDeflTol);
 
   //! Looks for the common box of the surfaces and marks the points
   //! of the surfaces inside that common box for possible intersection
@@ -109,12 +108,12 @@ public:
   //! the two surfaces that are inside.
   Standard_EXPORT void CommonBox(const Bnd_Box& B1,
                                  const Bnd_Box& B2,
-                                 double& xMin,
-                                 double& yMin,
-                                 double& zMin,
-                                 double& xMax,
-                                 double& yMax,
-                                 double& zMax);
+                                 double&        xMin,
+                                 double&        yMin,
+                                 double&        zMin,
+                                 double&        xMax,
+                                 double&        yMax,
+                                 double&        zMax);
 
   //! Compute edges from the array of points
   Standard_EXPORT void FillArrayOfEdges(const int SurfID);
@@ -144,45 +143,45 @@ public:
   //! This function checks if two triangles are in contact or not,
   //! return 1 if yes, return 0 if not.
   Standard_EXPORT int TriContact(const IntPolyh_Point& P1,
-                                              const IntPolyh_Point& P2,
-                                              const IntPolyh_Point& P3,
-                                              const IntPolyh_Point& Q1,
-                                              const IntPolyh_Point& Q2,
-                                              const IntPolyh_Point& Q3,
-                                              double&        Angle) const;
+                                 const IntPolyh_Point& P2,
+                                 const IntPolyh_Point& P3,
+                                 const IntPolyh_Point& Q1,
+                                 const IntPolyh_Point& Q2,
+                                 const IntPolyh_Point& Q3,
+                                 double&               Angle) const;
 
-  Standard_EXPORT int TriangleEdgeContact(const int   TriSurfID,
-                                                       const int   EdgeIndice,
-                                                       const IntPolyh_Triangle& Tri1,
-                                                       const IntPolyh_Triangle& Tri2,
-                                                       const IntPolyh_Point&    P1,
-                                                       const IntPolyh_Point&    P2,
-                                                       const IntPolyh_Point&    P3,
-                                                       const IntPolyh_Point&    C1,
-                                                       const IntPolyh_Point&    C2,
-                                                       const IntPolyh_Point&    C3,
-                                                       const IntPolyh_Point&    Pe1,
-                                                       const IntPolyh_Point&    Pe2,
-                                                       const IntPolyh_Point&    E,
-                                                       const IntPolyh_Point&    N,
-                                                       IntPolyh_StartPoint&     SP1,
-                                                       IntPolyh_StartPoint&     SP2) const;
+  Standard_EXPORT int TriangleEdgeContact(const int                TriSurfID,
+                                          const int                EdgeIndice,
+                                          const IntPolyh_Triangle& Tri1,
+                                          const IntPolyh_Triangle& Tri2,
+                                          const IntPolyh_Point&    P1,
+                                          const IntPolyh_Point&    P2,
+                                          const IntPolyh_Point&    P3,
+                                          const IntPolyh_Point&    C1,
+                                          const IntPolyh_Point&    C2,
+                                          const IntPolyh_Point&    C3,
+                                          const IntPolyh_Point&    Pe1,
+                                          const IntPolyh_Point&    Pe2,
+                                          const IntPolyh_Point&    E,
+                                          const IntPolyh_Point&    N,
+                                          IntPolyh_StartPoint&     SP1,
+                                          IntPolyh_StartPoint&     SP2) const;
 
   //! From two triangles compute intersection points.
   //! If we found more than two intersection points
   //! that means that those triangles are coplanar
-  Standard_EXPORT int StartingPointsResearch(const int T1,
-                                                          const int T2,
-                                                          IntPolyh_StartPoint&   SP1,
-                                                          IntPolyh_StartPoint&   SP2) const;
+  Standard_EXPORT int StartingPointsResearch(const int            T1,
+                                             const int            T2,
+                                             IntPolyh_StartPoint& SP1,
+                                             IntPolyh_StartPoint& SP2) const;
 
   //! from two triangles and an intersection point I
   //! search the other point (if it exists).
   //! This function is used by StartPointChain
-  Standard_EXPORT int NextStartingPointsResearch(const int     T1,
-                                                              const int     T2,
-                                                              const IntPolyh_StartPoint& SPInit,
-                                                              IntPolyh_StartPoint& SPNext) const;
+  Standard_EXPORT int NextStartingPointsResearch(const int                  T1,
+                                                 const int                  T2,
+                                                 const IntPolyh_StartPoint& SPInit,
+                                                 IntPolyh_StartPoint&       SPNext) const;
 
   //! Analyse each couple of triangles from the two -- array of triangles,
   //! to see if they are in contact, and compute the incidence.
@@ -194,24 +193,21 @@ public:
   //! put the point in the ArrayOfTangentZones if
   //! chaining it, is not possible.
   Standard_EXPORT int StartPointsChain(IntPolyh_ArrayOfSectionLines& TSectionLines,
-                                                    IntPolyh_ArrayOfTangentZones& TTangentZones);
+                                       IntPolyh_ArrayOfTangentZones& TTangentZones);
 
   //! Mainly used by StartPointsChain(), this function
   //! try to compute the next StartPoint.
-  Standard_EXPORT int
-    GetNextChainStartPoint(const IntPolyh_StartPoint&    SPInit,
-                           IntPolyh_StartPoint&          SPNext,
-                           IntPolyh_SectionLine&         MySectionLine,
-                           IntPolyh_ArrayOfTangentZones& TTangentZones,
-                           const bool        Prepend = false);
+  Standard_EXPORT int GetNextChainStartPoint(const IntPolyh_StartPoint&    SPInit,
+                                             IntPolyh_StartPoint&          SPNext,
+                                             IntPolyh_SectionLine&         MySectionLine,
+                                             IntPolyh_ArrayOfTangentZones& TTangentZones,
+                                             const bool                    Prepend = false);
 
-  Standard_EXPORT const IntPolyh_ArrayOfPoints& GetArrayOfPoints(
-    const int SurfID) const;
+  Standard_EXPORT const IntPolyh_ArrayOfPoints& GetArrayOfPoints(const int SurfID) const;
 
   Standard_EXPORT const IntPolyh_ArrayOfEdges& GetArrayOfEdges(const int SurfID) const;
 
-  Standard_EXPORT const IntPolyh_ArrayOfTriangles& GetArrayOfTriangles(
-    const int SurfID) const;
+  Standard_EXPORT const IntPolyh_ArrayOfTriangles& GetArrayOfTriangles(const int SurfID) const;
 
   Standard_EXPORT int GetFinTE(const int SurfID) const;
 
@@ -235,16 +231,16 @@ public:
 private:
   occ::handle<Adaptor3d_Surface> MaSurface1;
   occ::handle<Adaptor3d_Surface> MaSurface2;
-  Bnd_Box                   MyBox1;
-  Bnd_Box                   MyBox2;
-  int          NbSamplesU1;
-  int          NbSamplesU2;
-  int          NbSamplesV1;
-  int          NbSamplesV2;
-  double             FlecheMax1;
-  double             FlecheMax2;
-  double             FlecheMin1;
-  double             FlecheMin2;
+  Bnd_Box                        MyBox1;
+  Bnd_Box                        MyBox2;
+  int                            NbSamplesU1;
+  int                            NbSamplesU2;
+  int                            NbSamplesV1;
+  int                            NbSamplesV2;
+  double                         FlecheMax1;
+  double                         FlecheMax2;
+  double                         FlecheMin1;
+  double                         FlecheMin2;
   // For the arrays of Points, Edges and Triangles we need instant access to the items.
   // Moreover, we might add new items during refinement process in case the deflection
   // is too big, thus the vectors should be used.

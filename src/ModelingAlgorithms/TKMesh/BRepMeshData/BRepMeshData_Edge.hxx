@@ -27,7 +27,7 @@ public:
   DEFINE_INC_ALLOC
 
   //! Constructor.
-  Standard_EXPORT BRepMeshData_Edge(const TopoDS_Edge&                      theEdge,
+  Standard_EXPORT BRepMeshData_Edge(const TopoDS_Edge&                           theEdge,
                                     const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Destructor.
@@ -57,7 +57,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Edge, IMeshData_Edge)
 
 private:
-  occ::handle<NCollection_IncAllocator>        myAllocator;
+  occ::handle<NCollection_IncAllocator>   myAllocator;
   IMeshData::VectorOfIPCurveHandles       myPCurves;
   IMeshData::DMapOfIFacePtrsListOfInteger myPCurvesMap;
 };

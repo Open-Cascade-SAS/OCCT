@@ -25,8 +25,6 @@
 #include <IFSelect_Selection.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <IFSelect_Selection.hxx>
-#include <NCollection_Sequence.hxx>
 class IFSelect_Selection;
 
 //! Defines an Iterator on a list of Selections
@@ -64,7 +62,7 @@ public:
   Standard_EXPORT const occ::handle<IFSelect_Selection>& Value() const;
 
 private:
-  int                 thecurr;
+  int                                                                 thecurr;
   occ::handle<NCollection_HSequence<occ::handle<IFSelect_Selection>>> thelist;
 };
 

@@ -24,9 +24,6 @@
 #include <StepDimTol_DatumReferenceElement.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepDimTol_DatumReferenceModifier.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
@@ -38,7 +35,7 @@ RWStepDimTol_RWDatumReferenceElement::RWStepDimTol_RWDatumReferenceElement() {}
 
 void RWStepDimTol_RWDatumReferenceElement::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                          num,
+  const int                                            num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepDimTol_DatumReferenceElement>& ent) const
 {
@@ -75,7 +72,7 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
   // Inherited fields from GeneralDatumReference
 
   StepDimTol_DatumOrCommonDatum aBase;
-  occ::handle<StepDimTol_Datum>      aDatum;
+  occ::handle<StepDimTol_Datum> aDatum;
   Interface_ParamType           aType = data->ParamType(num, 5);
   if (aType == Interface_ParamIdent)
   {
@@ -90,8 +87,8 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
   else
   {
     occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> anItems;
-    occ::handle<StepDimTol_DatumReferenceElement>          anEnt;
-    int                                  nbSub;
+    occ::handle<StepDimTol_DatumReferenceElement>                                   anEnt;
+    int                                                                             nbSub;
     if (data->ReadSubList(num, 5, "general_datum_reference.base", ach, nbSub))
     {
       aType = data->ParamType(nbSub, 1);
@@ -104,7 +101,8 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
         }
       }
       int nbElements = data->NbParams(nbSub);
-      anItems                     = new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>(1, nbElements);
+      anItems =
+        new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>(1, nbElements);
       for (int i = 1; i <= nbElements; i++)
       {
         if (data->ReadEntity(nbSub,
@@ -119,14 +117,14 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
     aBase.SetValue(anItems);
   }
 
-  int nbSub;
+  int  nbSub;
   bool hasModifiers =
     data->ReadSubList(num, 6, "general_datum_reference.modifiers", ach, nbSub, true);
   occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> aModifiers;
   if (hasModifiers)
   {
     StepDimTol_DatumReferenceModifier anEnt;
-    int                  nbElements = data->NbParams(nbSub);
+    int                               nbElements = data->NbParams(nbSub);
     aModifiers = new NCollection_HArray1<StepDimTol_DatumReferenceModifier>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
@@ -146,7 +144,7 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
       {
         occ::handle<StepData_SelectMember> aMember;
         data->ReadMember(nbSub, i, "simple_datum_reference_modifier", ach, aMember);
-        const char*                                      anEnumText = aMember->EnumText();
+        const char*                                                anEnumText = aMember->EnumText();
         occ::handle<StepDimTol_SimpleDatumReferenceModifierMember> aSDRM =
           new StepDimTol_SimpleDatumReferenceModifierMember();
         aSDRM->SetEnumText(0, anEnumText);
@@ -169,7 +167,7 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWDatumReferenceElement::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepDimTol_DatumReferenceElement>& ent) const
 {
 
@@ -191,7 +189,8 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep(
   }
   else if (aBaseType == 2)
   {
-    occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> anArray = (ent->Base()).CommonDatumList();
+    occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> anArray =
+      (ent->Base()).CommonDatumList();
     int i, nb = (anArray.IsNull() ? 0 : anArray->Length());
     SW.OpenTypedSub("COMMON_DATUM_LIST");
     for (i = 1; i <= nb; i++)
@@ -206,7 +205,7 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep(
     for (i = 1; i <= nb; i++)
     {
       StepDimTol_DatumReferenceModifier aModifier = ent->ModifiersValue(i);
-      int                  aType     = aModifier.CaseNum(aModifier.Value());
+      int                               aType     = aModifier.CaseNum(aModifier.Value());
       switch (aType)
       {
         case 1:
@@ -229,7 +228,7 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep(
 
 void RWStepDimTol_RWDatumReferenceElement::Share(
   const occ::handle<StepDimTol_DatumReferenceElement>& ent,
-  Interface_EntityIterator&                       iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   // Inherited fields of ShapeAspect
@@ -244,7 +243,8 @@ void RWStepDimTol_RWDatumReferenceElement::Share(
   }
   else if (aBaseType == 2)
   {
-    occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> anArray = ent->Base().CommonDatumList();
+    occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> anArray =
+      ent->Base().CommonDatumList();
     int i, nb = (anArray.IsNull() ? 0 : anArray->Length());
     for (i = 1; i <= nb; i++)
       iter.AddItem(anArray->Value(i));

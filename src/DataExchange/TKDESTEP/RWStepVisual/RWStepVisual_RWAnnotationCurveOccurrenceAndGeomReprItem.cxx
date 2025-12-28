@@ -31,7 +31,7 @@ RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::
 
 void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                             data,
-  const int                                             num0,
+  const int                                                               num0,
   occ::handle<Interface_Check>&                                           ach,
   const occ::handle<StepVisual_AnnotationCurveOccurrenceAndGeomReprItem>& ent) const
 {
@@ -44,12 +44,12 @@ void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep(
   data->NamedForComplex("STYLED_ITEM", "STYITM", num0, num, ach);
   // Inherited field : styles
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
-  occ::handle<StepVisual_PresentationStyleAssignment>          anEnt;
-  int                                        nsub;
+  occ::handle<StepVisual_PresentationStyleAssignment>                                   anEnt;
+  int                                                                                   nsub;
   if (data->ReadSubList(num, 1, "styles", ach, nsub))
   {
-    int nb = data->NbParams(nsub);
-    aStyles             = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb);
+    int nb  = data->NbParams(nsub);
+    aStyles = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub,
@@ -73,7 +73,7 @@ void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::WriteStep(
-  StepData_StepWriter&                                               SW,
+  StepData_StepWriter&                                                    SW,
   const occ::handle<StepVisual_AnnotationCurveOccurrenceAndGeomReprItem>& ent) const
 {
   SW.StartEntity("ANNOTATION_CURVE_OCCURRENCE");
@@ -100,7 +100,7 @@ void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::WriteStep(
 
 void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::Share(
   const occ::handle<StepVisual_AnnotationCurveOccurrenceAndGeomReprItem>& ent,
-  Interface_EntityIterator&                                          iter) const
+  Interface_EntityIterator&                                               iter) const
 {
 
   int nbElem = ent->NbStyles();

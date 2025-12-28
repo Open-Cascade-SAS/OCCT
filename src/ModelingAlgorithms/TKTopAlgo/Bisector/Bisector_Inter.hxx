@@ -46,9 +46,9 @@ public:
                                  const IntRes2d_Domain& D1,
                                  const Bisector_Bisec&  C2,
                                  const IntRes2d_Domain& D2,
-                                 const double    TolConf,
-                                 const double    Tol,
-                                 const bool ComunElement);
+                                 const double           TolConf,
+                                 const double           Tol,
+                                 const bool             ComunElement);
 
   //! Intersection between 2 curves.
   //! C1 separates the element A and B.
@@ -60,32 +60,32 @@ public:
                                const IntRes2d_Domain& D1,
                                const Bisector_Bisec&  C2,
                                const IntRes2d_Domain& D2,
-                               const double    TolConf,
-                               const double    Tol,
-                               const bool ComunElement);
+                               const double           TolConf,
+                               const double           Tol,
+                               const bool             ComunElement);
 
 private:
   //! Intersection between 2 curves.
   Standard_EXPORT void SinglePerform(const occ::handle<Geom2d_Curve>& C1,
-                                     const IntRes2d_Domain&      D1,
+                                     const IntRes2d_Domain&           D1,
                                      const occ::handle<Geom2d_Curve>& C2,
-                                     const IntRes2d_Domain&      D2,
-                                     const double         TolConf,
-                                     const double         Tol,
-                                     const bool      ComunElement);
+                                     const IntRes2d_Domain&           D2,
+                                     const double                     TolConf,
+                                     const double                     Tol,
+                                     const bool                       ComunElement);
 
   Standard_EXPORT void NeighbourPerform(const occ::handle<Bisector_BisecCC>& C1,
-                                        const IntRes2d_Domain&          D1,
+                                        const IntRes2d_Domain&               D1,
                                         const occ::handle<Bisector_BisecCC>& C2,
-                                        const IntRes2d_Domain&          D2,
-                                        const double             Tol);
+                                        const IntRes2d_Domain&               D2,
+                                        const double                         Tol);
 
   Standard_EXPORT void TestBound(const occ::handle<Geom2d_Line>&  C1,
-                                 const IntRes2d_Domain&      D1,
+                                 const IntRes2d_Domain&           D1,
                                  const occ::handle<Geom2d_Curve>& C2,
-                                 const IntRes2d_Domain&      D2,
-                                 const double         Tol,
-                                 const bool      Reverse);
+                                 const IntRes2d_Domain&           D2,
+                                 const double                     Tol,
+                                 const bool                       Reverse);
 };
 
 #endif // _Bisector_Inter_HeaderFile

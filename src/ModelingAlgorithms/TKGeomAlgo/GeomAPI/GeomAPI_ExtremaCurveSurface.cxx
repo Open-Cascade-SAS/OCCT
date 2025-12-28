@@ -45,12 +45,12 @@ GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface(const occ::handle<Geom_
 
 GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface(const occ::handle<Geom_Curve>&   Curve,
                                                          const occ::handle<Geom_Surface>& Surface,
-                                                         const double         Wmin,
-                                                         const double         Wmax,
-                                                         const double         Umin,
-                                                         const double         Umax,
-                                                         const double         Vmin,
-                                                         const double         Vmax)
+                                                         const double                     Wmin,
+                                                         const double                     Wmax,
+                                                         const double                     Umin,
+                                                         const double                     Umax,
+                                                         const double                     Vmin,
+                                                         const double                     Vmax)
 {
   Init(Curve, Surface, Wmin, Wmax, Umin, Umax, Vmin, Vmax);
 }
@@ -92,12 +92,12 @@ void GeomAPI_ExtremaCurveSurface::Init(const occ::handle<Geom_Curve>&   Curve,
 
 void GeomAPI_ExtremaCurveSurface::Init(const occ::handle<Geom_Curve>&   Curve,
                                        const occ::handle<Geom_Surface>& Surface,
-                                       const double         Wmin,
-                                       const double         Wmax,
-                                       const double         Umin,
-                                       const double         Umax,
-                                       const double         Vmin,
-                                       const double         Vmax)
+                                       const double                     Wmin,
+                                       const double                     Wmax,
+                                       const double                     Umin,
+                                       const double                     Umax,
+                                       const double                     Vmin,
+                                       const double                     Vmax)
 {
   GeomAdaptor_Curve   TheCurve(Curve, Wmin, Wmax);
   GeomAdaptor_Surface TheSurface(Surface, Umin, Umax, Vmin, Vmax);
@@ -154,10 +154,7 @@ void GeomAPI_ExtremaCurveSurface::Points(const int Index, gp_Pnt& P1, gp_Pnt& P2
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveSurface::Parameters(const int Index,
-                                             double&         W,
-                                             double&         U,
-                                             double&         V) const
+void GeomAPI_ExtremaCurveSurface::Parameters(const int Index, double& W, double& U, double& V) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Parameters");
@@ -191,9 +188,7 @@ void GeomAPI_ExtremaCurveSurface::NearestPoints(gp_Pnt& PC, gp_Pnt& PS) const
 
 //=================================================================================================
 
-void GeomAPI_ExtremaCurveSurface::LowerDistanceParameters(double& W,
-                                                          double& U,
-                                                          double& V) const
+void GeomAPI_ExtremaCurveSurface::LowerDistanceParameters(double& W, double& U, double& V) const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "GeomAPI_ExtremaCurveSurface::LowerDistanceParameters");
 

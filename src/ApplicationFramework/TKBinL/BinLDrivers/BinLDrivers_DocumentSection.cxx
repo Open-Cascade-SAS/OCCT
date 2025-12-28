@@ -29,7 +29,7 @@ BinLDrivers_DocumentSection::BinLDrivers_DocumentSection()
 //=================================================================================================
 
 BinLDrivers_DocumentSection::BinLDrivers_DocumentSection(const TCollection_AsciiString& theName,
-                                                         const bool         isPostRead)
+                                                         const bool                     isPostRead)
     : myName(theName),
       myIsPostRead(isPostRead)
 {
@@ -88,13 +88,11 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
 
   if (myName.IsEmpty() == false)
   {
-    int*   aBufSz     = reinterpret_cast<int*>(&aBuf[0]);
+    int*         aBufSz     = reinterpret_cast<int*>(&aBuf[0]);
     const size_t aBufSzSize = sizeof(aBuf) / sizeof(int);
-    aBufSz[aBufSzSize - 1]         = 0;
+    aBufSz[aBufSzSize - 1]  = 0;
 
-    strncpy(&aBuf[sizeof(int)],
-            myName.ToCString(),
-            sizeof(aBuf) - sizeof(int) - 1);
+    strncpy(&aBuf[sizeof(int)], myName.ToCString(), sizeof(aBuf) - sizeof(int) - 1);
 
     // Calculate the length of the buffer: size_t + string.
     // If the length is not multiple of size_t, it is properly increased
@@ -173,14 +171,13 @@ void BinLDrivers_DocumentSection::Write(Standard_OStream&           theStream,
 
 //=================================================================================================
 
-bool BinLDrivers_DocumentSection::ReadTOC(
-  BinLDrivers_DocumentSection& theSection,
-  Standard_IStream&            theStream,
-  const TDocStd_FormatVersion  theDocFormatVersion)
+bool BinLDrivers_DocumentSection::ReadTOC(BinLDrivers_DocumentSection& theSection,
+                                          Standard_IStream&            theStream,
+                                          const TDocStd_FormatVersion  theDocFormatVersion)
 {
   static const int THE_BUF_SIZE = 512;
   char             aBuf[THE_BUF_SIZE];
-  int aNameBufferSize;
+  int              aNameBufferSize;
   theStream.read((char*)&aNameBufferSize, sizeof(int));
   if (theStream.eof() || aNameBufferSize > THE_BUF_SIZE)
     return false;

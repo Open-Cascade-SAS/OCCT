@@ -82,7 +82,7 @@ public:
   }
 
 private:
-  RWStl_Reader*                                           myReader;
+  RWStl_Reader*                 myReader;
   NCollection_DataMap<int, int> myNodeIndexMap;
 };
 
@@ -131,7 +131,7 @@ RWStl_Reader::RWStl_Reader()
 bool RWStl_Reader::Read(const char* theFile, const Message_ProgressRange& theProgress)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream =
+  std::shared_ptr<std::istream>      aStream =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
@@ -279,9 +279,9 @@ static bool ReadVertex(const char* theStr, double& theX, double& theY, double& t
 //=================================================================================================
 
 bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
-                                         Standard_ReadLineBuffer&     theBuffer,
-                                         const std::streampos         theUntilPos,
-                                         const Message_ProgressRange& theProgress)
+                             Standard_ReadLineBuffer&     theBuffer,
+                             const std::streampos         theUntilPos,
+                             const Message_ProgressRange& theProgress)
 {
   // use method seekpos() to get true 64-bit offset to enable
   // handling of large files (VS 2010 64-bit)
@@ -311,9 +311,8 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
   SAVE_TL()      // for GCC only, set C locale globally
 
   // report progress every 1 MiB of read data
-  const int              aStepB = 1024 * 1024;
-  const int aNbSteps =
-    1 + int((GETPOS(theUntilPos) - aStartPos) / aStepB);
+  const int             aStepB   = 1024 * 1024;
+  const int             aNbSteps = 1 + int((GETPOS(theUntilPos) - aStartPos) / aStepB);
   Message_ProgressScope aPS(theProgress, "Reading text STL file", aNbSteps);
   int64_t               aProgressPos = aStartPos + aStepB;
   int                   aNbLine      = 1;
@@ -352,8 +351,8 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
       return false;
     }
 
-    gp_XYZ           aVertex[3];
-    bool isEOF = false;
+    gp_XYZ aVertex[3];
+    bool   isEOF = false;
     for (int i = 0; i < 3; i++)
     {
       aLine = theBuffer.ReadLine(theStream, aLineLen);
@@ -398,8 +397,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
 
 //=================================================================================================
 
-bool RWStl_Reader::ReadBinary(Standard_IStream&            theStream,
-                                          const Message_ProgressRange& theProgress)
+bool RWStl_Reader::ReadBinary(Standard_IStream& theStream, const Message_ProgressRange& theProgress)
 {
   /*
     // the size of the file (minus the header size)
@@ -432,17 +430,17 @@ bool RWStl_Reader::ReadBinary(Standard_IStream&            theStream,
   // don't trust the number of triangles which is coded in the file
   // sometimes it is wrong, and with this technique we don't need to swap endians for integer
   Message_ProgressScope aPS(theProgress, "Reading binary STL file", aNbFacets);
-  int      aNbRead = 0;
+  int                   aNbRead = 0;
 
   // allocate buffer for 80 triangles
   const int THE_CHUNK_NBFACETS = 80;
   char      aBuffer[THE_STL_SIZEOF_FACET * THE_CHUNK_NBFACETS];
 
   // normal + 3 nodes + 2 extra bytes
-  const size_t     aVec3Size        = sizeof(float) * 3;
-  const size_t     aFaceDataLen     = aVec3Size * 4 + 2;
-  const char*      aBufferPtr       = aBuffer;
-  int aNbFacesInBuffer = 0;
+  const size_t aVec3Size        = sizeof(float) * 3;
+  const size_t aFaceDataLen     = aVec3Size * 4 + 2;
+  const char*  aBufferPtr       = aBuffer;
+  int          aNbFacesInBuffer = 0;
   for (int aNbFacetRead = 0; aNbFacetRead < aNbFacets && aPS.More();
        ++aNbFacetRead, ++aNbRead, --aNbFacesInBuffer, aBufferPtr += aFaceDataLen, aPS.Next())
   {

@@ -89,9 +89,7 @@ public:
 
   //! Assigns <theValue> to the coefficient of row theRow, column theCol of this matrix.
   //! Raises OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 2
-  void SetValue(const int theRow,
-                const int theCol,
-                const double    theValue)
+  void SetValue(const int theRow, const int theCol, const double theValue)
   {
     Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 2, " ");
     myMat[theRow - 1][theCol - 1] = theValue;
@@ -123,8 +121,7 @@ public:
     return myMat[theRow - 1][theCol - 1];
   }
 
-  const double& operator()(const int theRow,
-                                  const int theCol) const
+  const double& operator()(const int theRow, const int theCol) const
   {
     return Value(theRow, theCol);
   }
@@ -138,10 +135,7 @@ public:
     return myMat[theRow - 1][theCol - 1];
   }
 
-  double& operator()(const int theRow, const int theCol)
-  {
-    return ChangeValue(theRow, theCol);
-  }
+  double& operator()(const int theRow, const int theCol) { return ChangeValue(theRow, theCol); }
 
   //! Returns true if this matrix is singular (and therefore, cannot be inverted).
   //! The Gauss LU decomposition is used to invert the matrix
@@ -331,28 +325,24 @@ inline constexpr gp_Mat2d gp_Mat2d::Divided(const double theScalar) const
 
 inline constexpr void gp_Mat2d::Multiply(const gp_Mat2d& theOther) noexcept
 {
-  const double aT00 =
-    myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0];
-  const double aT10 =
-    myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0];
-  myMat[0][1] = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1];
-  myMat[1][1] = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1];
-  myMat[0][0] = aT00;
-  myMat[1][0] = aT10;
+  const double aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0];
+  const double aT10 = myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0];
+  myMat[0][1]       = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1];
+  myMat[1][1]       = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1];
+  myMat[0][0]       = aT00;
+  myMat[1][0]       = aT10;
 }
 
 //=================================================================================================
 
 inline constexpr void gp_Mat2d::PreMultiply(const gp_Mat2d& theOther) noexcept
 {
-  const double aT00 =
-    theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0];
-  myMat[1][0] = theOther.myMat[1][0] * myMat[0][0] + theOther.myMat[1][1] * myMat[1][0];
-  const double aT01 =
-    theOther.myMat[0][0] * myMat[0][1] + theOther.myMat[0][1] * myMat[1][1];
-  myMat[1][1] = theOther.myMat[1][0] * myMat[0][1] + theOther.myMat[1][1] * myMat[1][1];
-  myMat[0][0] = aT00;
-  myMat[0][1] = aT01;
+  const double aT00 = theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0];
+  myMat[1][0]       = theOther.myMat[1][0] * myMat[0][0] + theOther.myMat[1][1] * myMat[1][0];
+  const double aT01 = theOther.myMat[0][0] * myMat[0][1] + theOther.myMat[0][1] * myMat[1][1];
+  myMat[1][1]       = theOther.myMat[1][0] * myMat[0][1] + theOther.myMat[1][1] * myMat[1][1];
+  myMat[0][0]       = aT00;
+  myMat[0][1]       = aT01;
 }
 
 //=================================================================================================
@@ -404,8 +394,8 @@ inline constexpr gp_Mat2d gp_Mat2d::Subtracted(const gp_Mat2d& theOther) const n
 inline constexpr void gp_Mat2d::Transpose() noexcept
 {
   const double aTemp = myMat[0][1];
-  myMat[0][1]               = myMat[1][0];
-  myMat[1][0]               = aTemp;
+  myMat[0][1]        = myMat[1][0];
+  myMat[1][0]        = aTemp;
 }
 
 //=================================================================================================
@@ -424,8 +414,7 @@ inline constexpr gp_Mat2d gp_Mat2d::Transposed() const noexcept
 // function : operator*
 // purpose :
 //=======================================================================
-inline constexpr gp_Mat2d operator*(const double theScalar,
-                                    const gp_Mat2d&     theMat2D) noexcept
+inline constexpr gp_Mat2d operator*(const double theScalar, const gp_Mat2d& theMat2D) noexcept
 {
   return theMat2D.Multiplied(theScalar);
 }

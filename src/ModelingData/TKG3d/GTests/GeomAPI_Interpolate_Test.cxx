@@ -18,7 +18,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
@@ -29,7 +28,7 @@ TEST(GeomAPI_Interpolate_Test, BUC60902_TangentPreservation)
 {
   // Create 5 points along a sine wave
   occ::handle<NCollection_HArray1<gp_Pnt>> aPnts = new NCollection_HArray1<gp_Pnt>(1, 5);
-  gp_Pnt                      aP(0., 0., 0.);
+  gp_Pnt                                   aP(0., 0., 0.);
   for (int i = 1; i <= 5; i++)
   {
     aP.SetX((i - 1) * 1.57);

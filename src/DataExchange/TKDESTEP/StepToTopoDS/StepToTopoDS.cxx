@@ -157,7 +157,8 @@ const char* StepToTopoDS::DecodeGeometricToolError(const StepToTopoDS_GeometricT
       break;
     }
     case StepToTopoDS_GeometricToolHasNoPCurve: {
-      mess = static_cast<const char*>(" SurfaceCurve does not contain a PCurve lying on the BasisSurface");
+      mess = static_cast<const char*>(
+        " SurfaceCurve does not contain a PCurve lying on the BasisSurface");
       break;
     }
     case StepToTopoDS_GeometricToolWrong3dParameters: {

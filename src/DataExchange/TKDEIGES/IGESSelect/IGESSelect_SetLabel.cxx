@@ -23,15 +23,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_SetLabel, IGESSelect_ModelModifier)
 
-IGESSelect_SetLabel::IGESSelect_SetLabel(const int mode,
-                                         const bool enforce)
+IGESSelect_SetLabel::IGESSelect_SetLabel(const int mode, const bool enforce)
     : IGESSelect_ModelModifier(false),
       themode(mode),
       theforce(enforce)
 {
 }
 
-void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&            ctx,
+void IGESSelect_SetLabel::Performing(IFSelect_ContextModif&                 ctx,
                                      const occ::handle<IGESData_IGESModel>& target,
                                      Interface_CopyTool& /*TC*/) const
 {

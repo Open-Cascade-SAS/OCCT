@@ -108,8 +108,8 @@ int Interface_Check::NbFails() const
 
 //=================================================================================================
 
-const occ::handle<TCollection_HAsciiString>& Interface_Check::Fail(const int num,
-                                                              const bool final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::Fail(const int  num,
+                                                                   const bool final) const
 {
   if (thefails.IsNull())
     throw Standard_OutOfRange();
@@ -118,15 +118,15 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::Fail(const int num
 
 //=================================================================================================
 
-const char* Interface_Check::CFail(const int num,
-                                        const bool final) const
+const char* Interface_Check::CFail(const int num, const bool final) const
 {
   return Fail(num, final)->ToCString();
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Check::Fails(const bool final) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Check::Fails(
+  const bool final) const
 {
   if (thefails.IsNull())
     return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
@@ -206,8 +206,8 @@ int Interface_Check::NbWarnings() const
 
 //=================================================================================================
 
-const occ::handle<TCollection_HAsciiString>& Interface_Check::Warning(const int num,
-                                                                 const bool final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::Warning(const int  num,
+                                                                      const bool final) const
 {
   if (thewarns.IsNull())
     throw Standard_OutOfRange();
@@ -216,8 +216,7 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::Warning(const int 
 
 //=================================================================================================
 
-const char* Interface_Check::CWarning(const int num,
-                                           const bool final) const
+const char* Interface_Check::CWarning(const int num, const bool final) const
 {
   return Warning(num, final)->ToCString();
 }
@@ -260,8 +259,8 @@ int Interface_Check::NbInfoMsgs() const
 
 //=================================================================================================
 
-const occ::handle<TCollection_HAsciiString>& Interface_Check::InfoMsg(const int num,
-                                                                 const bool final) const
+const occ::handle<TCollection_HAsciiString>& Interface_Check::InfoMsg(const int  num,
+                                                                      const bool final) const
 {
   if (theinfos.IsNull())
     throw Standard_OutOfRange();
@@ -270,8 +269,7 @@ const occ::handle<TCollection_HAsciiString>& Interface_Check::InfoMsg(const int 
 
 //=================================================================================================
 
-const char* Interface_Check::CInfoMsg(const int num,
-                                           const bool final) const
+const char* Interface_Check::CInfoMsg(const int num, const bool final) const
 {
   return InfoMsg(num, final)->ToCString();
 }
@@ -328,8 +326,8 @@ bool Interface_Check::Complies(const Interface_CheckStatus status) const
 //=================================================================================================
 
 bool Interface_Check::Complies(const occ::handle<TCollection_HAsciiString>& mess,
-                                           const int                  incl,
-                                           const Interface_CheckStatus             status) const
+                               const int                                    incl,
+                               const Interface_CheckStatus                  status) const
 {
   if (mess.IsNull())
     return false;
@@ -437,19 +435,19 @@ void Interface_Check::ClearInfoMsgs()
 //=================================================================================================
 
 bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
-                                         const int                  incl,
-                                         const Interface_CheckStatus             status)
+                             const int                                    incl,
+                             const Interface_CheckStatus                  status)
 {
   if (mess.IsNull())
     return false;
   bool res = false;
-  int lng = mess->Length();
+  int  lng = mess->Length();
   if (status == Interface_CheckWarning || status == Interface_CheckAny)
   {
     int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      bool                 rem  = false;
+      bool                                  rem  = false;
       occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
         rem = mess->IsSameString(ames);
@@ -470,7 +468,7 @@ bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
     int i, nb = NbWarnings();
     for (i = nb; i > 0; i--)
     {
-      bool                 rem  = false;
+      bool                                  rem  = false;
       occ::handle<TCollection_HAsciiString> ames = Warning(i);
       if (incl == 0)
         rem = mess->IsSameString(ames);
@@ -626,8 +624,7 @@ void Interface_Check::GetMessages(const occ::handle<Interface_Check>& other)
 
 //=================================================================================================
 
-void Interface_Check::GetAsWarning(const occ::handle<Interface_Check>& other,
-                                   const bool         failsonly)
+void Interface_Check::GetAsWarning(const occ::handle<Interface_Check>& other, const bool failsonly)
 {
   int nb, i;
   if ((nb = other->NbFails()) != 0)
@@ -656,9 +653,7 @@ void Interface_Check::GetAsWarning(const occ::handle<Interface_Check>& other,
 
 //=================================================================================================
 
-void Interface_Check::Print(Standard_OStream&      S,
-                            const int level,
-                            const int final) const
+void Interface_Check::Print(Standard_OStream& S, const int level, const int final) const
 {
   int j, nb = NbFails();
 

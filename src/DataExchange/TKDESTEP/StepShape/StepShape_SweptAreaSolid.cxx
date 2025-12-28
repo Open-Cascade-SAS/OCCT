@@ -28,7 +28,8 @@ void StepShape_SweptAreaSolid::Init(const occ::handle<TCollection_HAsciiString>&
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_SweptAreaSolid::SetSweptArea(const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea)
+void StepShape_SweptAreaSolid::SetSweptArea(
+  const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea)
 {
   sweptArea = aSweptArea;
 }

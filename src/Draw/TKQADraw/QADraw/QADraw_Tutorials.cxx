@@ -60,10 +60,10 @@ public:
 public:
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                    theMode) override;
+                       const int                                      theMode) override;
 
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int             theMode) override;
+                                const int                               theMode) override;
 
   virtual bool AcceptDisplayMode(const int theMode) const override
   {
@@ -72,7 +72,7 @@ public:
 
 protected:
   occ::handle<AIS_Animation> myAnim;
-  gp_Pnt                myDragPntFrom;
+  gp_Pnt                     myDragPntFrom;
 };
 
 MyAisObject::MyAisObject()
@@ -87,7 +87,7 @@ MyAisObject::MyAisObject()
 
 void MyAisObject::Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                           const occ::handle<Prs3d_Presentation>&         thePrs,
-                          const int                    theMode)
+                          const int                                      theMode)
 {
   (void)thePrsMgr;
   const double aRadius = 100.0, aHeight = 100.0;
@@ -173,16 +173,16 @@ public:
 
   virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                 const occ::handle<Prs3d_Drawer>&               theStyle,
-                                const int                    theMode) override;
+                                const int                                      theMode) override;
   virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                         const int                    theMode) override;
+                         const int                                      theMode) override;
 
   virtual bool IsForcedHilight() const override { return true; }
 
   virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                Aspect_VKeyMouse       theButton,
-                                Aspect_VKeyFlags       theModifiers,
-                                bool                   theIsDoubleClick) override;
+                                Aspect_VKeyMouse             theButton,
+                                Aspect_VKeyFlags             theModifiers,
+                                bool                         theIsDoubleClick) override;
 
   virtual void SetLocation(const TopLoc_Location& theLocation) override
   {
@@ -199,7 +199,7 @@ protected:
 
 void MyAisOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                   const occ::handle<Prs3d_Drawer>&               theStyle,
-                                  const int                    theMode)
+                                  const int                                      theMode)
 {
   (void)theMode;
   MyAisObject* anObj = dynamic_cast<MyAisObject*>(mySelectable);
@@ -211,7 +211,7 @@ void MyAisOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>&
   if (thePrsMgr->IsImmediateModeOn())
   {
     occ::handle<StdSelect_ViewerSelector3d> aSelector = anObj->InteractiveContext()->MainSelector();
-    SelectMgr_SortCriterion            aPickPnt;
+    SelectMgr_SortCriterion                 aPickPnt;
     for (int aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
       if (aSelector->Picked(aPickIter) == this)
@@ -253,7 +253,7 @@ void MyAisOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>&
 }
 
 void MyAisOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                           const int                    theMode)
+                           const int                                      theMode)
 {
   (void)thePrsMgr;
   (void)theMode;
@@ -264,9 +264,9 @@ void MyAisOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrs
 }
 
 bool MyAisOwner::HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                  Aspect_VKeyMouse       theButton,
-                                  Aspect_VKeyFlags       theModifiers,
-                                  bool                   theIsDoubleClick)
+                                  Aspect_VKeyMouse             theButton,
+                                  Aspect_VKeyFlags             theModifiers,
+                                  bool                         theIsDoubleClick)
 {
   (void)thePoint;
   (void)theButton;
@@ -290,7 +290,7 @@ bool MyAisOwner::HandleMouseClick(const NCollection_Vec2<int>& thePoint,
 
     gp_Trsf aTrsfTo;
     aTrsfTo.SetRotation(gp_Ax1(gp::Origin(), gp::DX()), isFirst ? M_PI * 0.5 : -M_PI * 0.5);
-    gp_Trsf                     aTrsfFrom = anObj->LocalTransformation();
+    gp_Trsf                          aTrsfFrom = anObj->LocalTransformation();
     occ::handle<AIS_AnimationObject> anAnim =
       new AIS_AnimationObject("MyAnim", anObj->InteractiveContext(), anObj, aTrsfFrom, aTrsfTo);
     anAnim->SetOwnDuration(2.0);
@@ -304,7 +304,7 @@ bool MyAisOwner::HandleMouseClick(const NCollection_Vec2<int>& thePoint,
 }
 
 void MyAisObject::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                   const int             theMode)
+                                   const int                               theMode)
 {
   if (theMode != 0)
   {
@@ -320,7 +320,8 @@ void MyAisObject::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
 
   occ::handle<Graphic3d_ArrayOfTriangles> aTris =
     Prs3d_ToolCylinder::Create(aRadius, aRadius, aHeight, 25, 25, gp_Trsf());
-  occ::handle<Select3D_SensitivePrimitiveArray> aSensTri = new Select3D_SensitivePrimitiveArray(anOwner);
+  occ::handle<Select3D_SensitivePrimitiveArray> aSensTri =
+    new Select3D_SensitivePrimitiveArray(anOwner);
   aSensTri->InitTriangulation(aTris->Attributes(), aTris->Indices(), TopLoc_Location());
   theSel->Add(aSensTri);
 
@@ -333,9 +334,7 @@ void MyAisObject::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
 
 //=================================================================================================
 
-static int QATutorialAisObject(Draw_Interpretor& theDi,
-                                            int  theNbArgs,
-                                            const char**      theArgVec)
+static int QATutorialAisObject(Draw_Interpretor& theDi, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 2)
   {

@@ -270,7 +270,7 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     else if (theAtt->ID() == XCAFDoc::MaterialRefGUID())
       type = "Material Link";
     occ::handle<TDataStd_TreeNode> TN = occ::down_cast<TDataStd_TreeNode>(theAtt);
-    TCollection_AsciiString   ref;
+    TCollection_AsciiString        ref;
     if (TN->HasFather())
     {
       TDF_Tool::Entry(TN->Father()->Label(), ref);
@@ -295,8 +295,8 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   }
   else if (theAtt->IsKind(STANDARD_TYPE(TDF_Reference)))
   {
-    occ::handle<TDF_Reference>   val = occ::down_cast<TDF_Reference>(theAtt);
-    TCollection_AsciiString ref;
+    occ::handle<TDF_Reference> val = occ::down_cast<TDF_Reference>(theAtt);
+    TCollection_AsciiString    ref;
     TDF_Tool::Entry(val->Get(), ref);
     anInfo += TCollection_AsciiString("==> ") + ref;
   }
@@ -308,32 +308,32 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_Integer)))
   {
     occ::handle<TDataStd_Integer> val = occ::down_cast<TDataStd_Integer>(theAtt);
-    anInfo                       = TCollection_AsciiString(val->Get());
+    anInfo                            = TCollection_AsciiString(val->Get());
   }
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_Real)))
   {
     occ::handle<TDataStd_Real> val = occ::down_cast<TDataStd_Real>(theAtt);
-    anInfo                    = TCollection_AsciiString(val->Get());
+    anInfo                         = TCollection_AsciiString(val->Get());
   }
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_Name)))
   {
     occ::handle<TDataStd_Name> val = occ::down_cast<TDataStd_Name>(theAtt);
-    anInfo                    = TCollection_AsciiString(val->Get(), '?');
+    anInfo                         = TCollection_AsciiString(val->Get(), '?');
   }
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_Comment)))
   {
     occ::handle<TDataStd_Comment> val = occ::down_cast<TDataStd_Comment>(theAtt);
-    anInfo                       = TCollection_AsciiString(val->Get(), '?');
+    anInfo                            = TCollection_AsciiString(val->Get(), '?');
   }
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_AsciiString)))
   {
     occ::handle<TDataStd_AsciiString> val = occ::down_cast<TDataStd_AsciiString>(theAtt);
-    anInfo                           = TCollection_AsciiString(val->Get(), '?');
+    anInfo                                = TCollection_AsciiString(val->Get(), '?');
   }
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_LengthUnit)))
   {
     occ::handle<XCAFDoc_LengthUnit> aVal = occ::down_cast<XCAFDoc_LengthUnit>(theAtt);
-    anInfo                          = TCollection_AsciiString(aVal->GetUnitValue());
+    anInfo                               = TCollection_AsciiString(aVal->GetUnitValue());
     anInfo += " ";
     anInfo += aVal->GetUnitName();
   }
@@ -370,7 +370,7 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(TNaming_NamedShape)))
   {
     occ::handle<TNaming_NamedShape> val = occ::down_cast<TNaming_NamedShape>(theAtt);
-    TopoDS_Shape               S   = val->Get();
+    TopoDS_Shape                    S   = val->Get();
     if (!S.IsNull())
       anInfo = S.TShape()->DynamicType()->Name();
     else
@@ -392,13 +392,13 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_Area)))
   {
     occ::handle<XCAFDoc_Area> val = occ::down_cast<XCAFDoc_Area>(theAtt);
-    anInfo                   = TCollection_AsciiString(val->Get());
+    anInfo                        = TCollection_AsciiString(val->Get());
   }
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_Centroid)))
   {
     occ::handle<XCAFDoc_Centroid> val        = occ::down_cast<XCAFDoc_Centroid>(theAtt);
-    gp_Pnt                   myCentroid = val->Get();
-    anInfo                              = "(";
+    gp_Pnt                        myCentroid = val->Get();
+    anInfo                                   = "(";
     anInfo += TCollection_AsciiString(myCentroid.X());
     anInfo += TCollection_AsciiString(" , ");
     anInfo += TCollection_AsciiString(TCollection_AsciiString(myCentroid.Y()));
@@ -416,8 +416,8 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_Color)))
   {
     occ::handle<XCAFDoc_Color> val = occ::down_cast<XCAFDoc_Color>(theAtt);
-    Quantity_ColorRGBA    C   = val->GetColorRGBA();
-    char                  string[260];
+    Quantity_ColorRGBA         C   = val->GetColorRGBA();
+    char                       string[260];
     Sprintf(string,
             "%s (%g, %g, %g, %g)",
             C.GetRGB().StringName(C.GetRGB().Name()),
@@ -429,8 +429,8 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   }
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_DimTol)))
   {
-    occ::handle<XCAFDoc_DimTol>        val  = occ::down_cast<XCAFDoc_DimTol>(theAtt);
-    int              kind = val->GetKind();
+    occ::handle<XCAFDoc_DimTol>              val  = occ::down_cast<XCAFDoc_DimTol>(theAtt);
+    int                                      kind = val->GetKind();
     occ::handle<NCollection_HArray1<double>> HAR  = val->GetVal();
     if (kind < 20)
     { // dimension
@@ -519,8 +519,8 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_Material)))
   {
     occ::handle<XCAFDoc_Material> val     = occ::down_cast<XCAFDoc_Material>(theAtt);
-    double            dens    = val->GetDensity();
-    const char*         dimdens = "g/cu sm";
+    double                        dens    = val->GetDensity();
+    const char*                   dimdens = "g/cu sm";
     if (dens == 0)
       anInfo = val->GetName()->ToCString();
     else
@@ -579,8 +579,8 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
       return TCollection_AsciiString();
 
     occ::handle<XCAFDoc_GraphNode> DETGN = occ::down_cast<XCAFDoc_GraphNode>(theAtt);
-    TCollection_AsciiString   ref;
-    int          ii = 1;
+    TCollection_AsciiString        ref;
+    int                            ii = 1;
     if (DETGN->NbFathers() != 0)
     {
 

@@ -41,22 +41,16 @@ public:
   //! - green      : Green color intensity (range 0.0 to 100.0)
   //! - blue       : Blue  color intensity (range 0.0 to 100.0)
   //! - aColorName : Name of the color (optional)
-  Standard_EXPORT void Init(const double                     red,
-                            const double                     green,
-                            const double                     blue,
+  Standard_EXPORT void Init(const double                                 red,
+                            const double                                 green,
+                            const double                                 blue,
                             const occ::handle<TCollection_HAsciiString>& aColorName);
 
-  Standard_EXPORT void RGBIntensity(double& Red,
-                                    double& Green,
-                                    double& Blue) const;
+  Standard_EXPORT void RGBIntensity(double& Red, double& Green, double& Blue) const;
 
-  Standard_EXPORT void CMYIntensity(double& Cyan,
-                                    double& Magenta,
-                                    double& Yellow) const;
+  Standard_EXPORT void CMYIntensity(double& Cyan, double& Magenta, double& Yellow) const;
 
-  Standard_EXPORT void HLSPercentage(double& Hue,
-                                     double& Lightness,
-                                     double& Saturation) const;
+  Standard_EXPORT void HLSPercentage(double& Hue, double& Lightness, double& Saturation) const;
 
   //! returns True if optional character string is assigned,
   //! False otherwise.
@@ -69,9 +63,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_Color, IGESData_ColorEntity)
 
 private:
-  double                    theRed;
-  double                    theGreen;
-  double                    theBlue;
+  double                                theRed;
+  double                                theGreen;
+  double                                theBlue;
   occ::handle<TCollection_HAsciiString> theColorName;
 };
 

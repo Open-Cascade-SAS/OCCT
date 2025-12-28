@@ -22,7 +22,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 class BOPTools_Set
@@ -58,11 +57,11 @@ protected:
   Standard_EXPORT void Clear();
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_List<TopoDS_Shape>              myShapes;
-  TopoDS_Shape                      myShape;
-  int                  myNbShapes;
-  size_t                            mySum;
-  int                  myUpper;
+  NCollection_List<TopoDS_Shape>         myShapes;
+  TopoDS_Shape                           myShape;
+  int                                    myNbShapes;
+  size_t                                 mySum;
+  int                                    myUpper;
 };
 
 namespace std

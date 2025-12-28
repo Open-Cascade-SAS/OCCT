@@ -37,13 +37,11 @@
 #include <TopOpeBRepDS_BuildTool.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopOpeBRepDS_CurveIterator.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRepDS_Filter.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepDS_Reducer.hxx>
 #include <TopOpeBRepDS_SurfaceIterator.hxx>
@@ -140,8 +138,8 @@ void TopOpeBRepBuild_Builder::Perform(const occ::handle<TopOpeBRepDS_HDataStruct
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::Perform(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                      const TopoDS_Shape&                        S1,
-                                      const TopoDS_Shape&                        S2)
+                                      const TopoDS_Shape&                             S1,
+                                      const TopoDS_Shape&                             S2)
 {
   Perform(HDS);
   myShape1  = S1;
@@ -153,14 +151,14 @@ void TopOpeBRepBuild_Builder::Perform(const occ::handle<TopOpeBRepDS_HDataStruct
 
 void TopOpeBRepBuild_Builder::AddIntersectionEdges(TopoDS_Shape&             aFace,
                                                    const TopAbs_State        ToBuild1,
-                                                   const bool    RevOri1,
+                                                   const bool                RevOri1,
                                                    TopOpeBRepBuild_ShapeSet& WES) const
 {
   TopoDS_Shape               anEdge;
   TopOpeBRepDS_CurveIterator FCurves = myDataStructure->FaceCurves(aFace);
   for (; FCurves.More(); FCurves.Next())
   {
-    int            iC    = FCurves.Current();
+    int                                   iC    = FCurves.Current();
     const NCollection_List<TopoDS_Shape>& LnewE = NewEdges(iC);
     for (NCollection_List<TopoDS_Shape>::Iterator Iti(LnewE); Iti.More(); Iti.Next())
     {
@@ -192,7 +190,10 @@ void TopOpeBRepBuild_Builder::Clear()
   }
 
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-  for (NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator it(mySplitOUT); it.More();
+  for (NCollection_DataMap<TopoDS_Shape,
+                           TopOpeBRepDS_ListOfShapeOn1State,
+                           TopTools_ShapeMapHasher>::Iterator it(mySplitOUT);
+       it.More();
        it.Next())
   {
     const TopoDS_Shape& e = it.Key();
@@ -203,7 +204,10 @@ void TopOpeBRepBuild_Builder::Clear()
         mySplitOUT.ChangeFind(e).Clear();
     }
   }
-  for (NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator it(mySplitIN); it.More();
+  for (NCollection_DataMap<TopoDS_Shape,
+                           TopOpeBRepDS_ListOfShapeOn1State,
+                           TopTools_ShapeMapHasher>::Iterator it(mySplitIN);
+       it.More();
        it.Next())
   {
     const TopoDS_Shape& e = it.Key();
@@ -214,7 +218,10 @@ void TopOpeBRepBuild_Builder::Clear()
         mySplitIN.ChangeFind(e).Clear();
     }
   }
-  for (NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator it(mySplitON); it.More();
+  for (NCollection_DataMap<TopoDS_Shape,
+                           TopOpeBRepDS_ListOfShapeOn1State,
+                           TopTools_ShapeMapHasher>::Iterator it(mySplitON);
+       it.More();
        it.Next())
   {
     const TopoDS_Shape& e = it.Key();
@@ -292,8 +299,7 @@ TopoDS_Shape& TopOpeBRepBuild_Builder::ChangeNewVertex(const int I)
 
 //=================================================================================================
 
-bool TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,
-                                                  const TopAbs_State  ToBuild) const
+bool TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S, const TopAbs_State ToBuild) const
 {
   bool issplit = IsSplit(S, ToBuild);
   bool hasgeom = myDataStructure->HasGeometry(S);
@@ -301,7 +307,7 @@ bool TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,
   bool tosplit = (!issplit) && (hasgeom || hassame);
 
 #ifdef OCCT_DEBUG
-  int iS;
+  int  iS;
   bool tSPS = GtraceSPS(S, iS);
   if (tSPS)
   {
@@ -315,11 +321,12 @@ bool TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape&    S,
-                                        const TopAbs_State     ToBuild,
-                                        const bool Bval)
+void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape& S,
+                                        const TopAbs_State  ToBuild,
+                                        const bool          Bval)
 {
-  NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p = NULL;
+  NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
+    NULL;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
@@ -336,7 +343,7 @@ void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape&    S,
   losos.Split(Bval);
 
 #ifdef OCCT_DEBUG
-  int iS;
+  int  iS;
   bool tSPS = GtraceSPS(S, iS);
   if (tSPS)
   {
@@ -352,11 +359,12 @@ void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape&    S,
 
 //=================================================================================================
 
-bool TopOpeBRepBuild_Builder::IsSplit(const TopoDS_Shape& S,
-                                                  const TopAbs_State  ToBuild) const
+bool TopOpeBRepBuild_Builder::IsSplit(const TopoDS_Shape& S, const TopAbs_State ToBuild) const
 {
-  bool                                      res = false;
-  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p   = NULL;
+  bool                                                res = false;
+  const NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepDS_ListOfShapeOn1State,
+                            TopTools_ShapeMapHasher>* p   = NULL;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
@@ -379,10 +387,13 @@ bool TopOpeBRepBuild_Builder::IsSplit(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(const TopoDS_Shape& S,
-                                                            const TopAbs_State  ToBuild) const
+const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(
+  const TopoDS_Shape& S,
+  const TopAbs_State  ToBuild) const
 {
-  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p = NULL;
+  const NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepDS_ListOfShapeOn1State,
+                            TopTools_ShapeMapHasher>* p = NULL;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
@@ -395,7 +406,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(const Topo
   if ((*p).IsBound(S))
   {
     const TopOpeBRepDS_ListOfShapeOn1State& losos = (*p).Find(S);
-    const NCollection_List<TopoDS_Shape>&             L     = losos.ListOnState();
+    const NCollection_List<TopoDS_Shape>&   L     = losos.ListOnState();
     return L;
   }
   return myEmptyShapeList;
@@ -404,10 +415,10 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Splits(const Topo
 //=================================================================================================
 
 NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoDS_Shape& S,
-                                                           const TopAbs_State  ToBuild)
+                                                                     const TopAbs_State  ToBuild)
 {
 #ifdef OCCT_DEBUG
-  int iS;
+  int  iS;
   bool tSPS = GtraceSPS(S, iS);
   if (tSPS)
   {
@@ -419,7 +430,8 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoD
   }
 #endif
 
-  NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p = NULL;
+  NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>* p =
+    NULL;
   if (ToBuild == TopAbs_OUT)
     p = &mySplitOUT;
   else if (ToBuild == TopAbs_IN)
@@ -432,7 +444,7 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoD
   if (!(*p).IsBound(S))
     (*p).Bind(S, thelist1);
   TopOpeBRepDS_ListOfShapeOn1State& losos = (*p).ChangeFind(S);
-  NCollection_List<TopoDS_Shape>&             L     = losos.ChangeListOnState();
+  NCollection_List<TopoDS_Shape>&   L     = losos.ChangeListOnState();
   return L;
 } // ChangeSplit
 
@@ -442,7 +454,7 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeSplit(const TopoD
 //           if S is found IN any shape of LS, return IN
 //           else return OUT
 //=======================================================================
-TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&         S,
+TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&                   S,
                                                     const NCollection_List<TopoDS_Shape>& LS)
 {
   TopAbs_State state = TopAbs_UNKNOWN;
@@ -450,7 +462,7 @@ TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&         
   // take the edges of myEdgeAvoid as shape to avoid
   // during face classification
   const NCollection_List<TopoDS_Shape>* PLOS = &myEmptyShapeList;
-  TopAbs_ShapeEnum            tS   = S.ShapeType();
+  TopAbs_ShapeEnum                      tS   = S.ShapeType();
   if (tS == TopAbs_FACE)
     PLOS = &myEdgeAvoid;
   // NYI : idem with myFaceAvoid if (tS == TopAbs_SOLID)
@@ -477,9 +489,9 @@ TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape&         
 //           - if LS2 is empty
 //           - if (pos2 == ToBuild1)
 //=======================================================================
-bool TopOpeBRepBuild_Builder::KeepShape(const TopoDS_Shape&         S1,
-                                                    const NCollection_List<TopoDS_Shape>& LS2,
-                                                    const TopAbs_State          ToBuild1)
+bool TopOpeBRepBuild_Builder::KeepShape(const TopoDS_Shape&                   S1,
+                                        const NCollection_List<TopoDS_Shape>& LS2,
+                                        const TopAbs_State                    ToBuild1)
 {
   bool keep = true;
   if (!LS2.IsEmpty())
@@ -540,8 +552,7 @@ TopAbs_ShapeEnum TopOpeBRepBuild_Builder::TopType(const TopoDS_Shape& S)
 // function : Reverse
 // purpose  : compute orientation reversibility according to build states
 //=======================================================================
-bool TopOpeBRepBuild_Builder::Reverse(const TopAbs_State ToBuild1,
-                                                  const TopAbs_State ToBuild2)
+bool TopOpeBRepBuild_Builder::Reverse(const TopAbs_State ToBuild1, const TopAbs_State ToBuild2)
 {
   bool rev;
   if (ToBuild1 == TopAbs_IN && ToBuild2 == TopAbs_IN)
@@ -555,8 +566,7 @@ bool TopOpeBRepBuild_Builder::Reverse(const TopAbs_State ToBuild1,
 // function : Orient
 // purpose  : reverse the orientation
 //=======================================================================
-TopAbs_Orientation TopOpeBRepBuild_Builder::Orient(const TopAbs_Orientation Ori,
-                                                   const bool   Reverse)
+TopAbs_Orientation TopOpeBRepBuild_Builder::Orient(const TopAbs_Orientation Ori, const bool Reverse)
 {
   return !Reverse ? Ori : TopAbs::Complement(Ori);
 }
@@ -632,8 +642,9 @@ void TopOpeBRepBuild_Builder::FindSameDomain(NCollection_List<TopoDS_Shape>& L1,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::FindSameDomainSameOrientation(NCollection_List<TopoDS_Shape>& L1,
-                                                            NCollection_List<TopoDS_Shape>& L2) const
+void TopOpeBRepBuild_Builder::FindSameDomainSameOrientation(
+  NCollection_List<TopoDS_Shape>& L1,
+  NCollection_List<TopoDS_Shape>& L2) const
 {
   FindSameDomain(L1, L2);
   NCollection_List<TopoDS_Shape>::Iterator it(L1);
@@ -696,13 +707,13 @@ void TopOpeBRepBuild_Builder::ClearMaps()
 //=================================================================================================
 
 void TopOpeBRepBuild_Builder::FindSameRank(const NCollection_List<TopoDS_Shape>& L1,
-                                           const int      rank,
+                                           const int                             rank,
                                            NCollection_List<TopoDS_Shape>&       L2) const
 {
   for (NCollection_List<TopoDS_Shape>::Iterator it1(L1); it1.More(); it1.Next())
   {
     const TopoDS_Shape& s = it1.Value();
-    int    r = ShapeRank(s);
+    int                 r = ShapeRank(s);
     if (r == rank && !Contains(s, L2))
     {
       L2.Append(s);
@@ -716,14 +727,13 @@ int TopOpeBRepBuild_Builder::ShapeRank(const TopoDS_Shape& s) const
 {
   bool isof1   = IsShapeOf(s, 1);
   bool isof2   = IsShapeOf(s, 2);
-  int ancetre = (isof1 || isof2) ? ((isof1) ? 1 : 2) : 0;
+  int  ancetre = (isof1 || isof2) ? ((isof1) ? 1 : 2) : 0;
   return ancetre;
 }
 
 //=================================================================================================
 
-bool TopOpeBRepBuild_Builder::IsShapeOf(const TopoDS_Shape&    s,
-                                                    const int i) const
+bool TopOpeBRepBuild_Builder::IsShapeOf(const TopoDS_Shape& s, const int i) const
 {
   bool b = false;
   if (i == 1)
@@ -737,13 +747,13 @@ bool TopOpeBRepBuild_Builder::IsShapeOf(const TopoDS_Shape&    s,
 // function : Contains
 // purpose  : returns True if S is in the list L.
 //=======================================================================
-bool TopOpeBRepBuild_Builder::Contains(const TopoDS_Shape&         S,
-                                                   const NCollection_List<TopoDS_Shape>& L)
+bool TopOpeBRepBuild_Builder::Contains(const TopoDS_Shape&                   S,
+                                       const NCollection_List<TopoDS_Shape>& L)
 {
   for (NCollection_List<TopoDS_Shape>::Iterator it(L); it.More(); it.Next())
   {
     const TopoDS_Shape& SL     = it.Value();
-    bool    issame = SL.IsSame(S);
+    bool                issame = SL.IsSame(S);
     if (issame)
       return true;
   }
@@ -784,8 +794,8 @@ bool TopOpeBRepBuild_Builder::Opefus() const
 
 //=================================================================================================
 
-const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& TopOpeBRepBuild_Builder::MSplit(
-  const TopAbs_State s) const
+const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>&
+  TopOpeBRepBuild_Builder::MSplit(const TopAbs_State s) const
 {
   if (s == TopAbs_IN)
     return mySplitIN;
@@ -798,8 +808,8 @@ const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopToo
 
 //=================================================================================================
 
-NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& TopOpeBRepBuild_Builder::ChangeMSplit(
-  const TopAbs_State s)
+NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>&
+  TopOpeBRepBuild_Builder::ChangeMSplit(const TopAbs_State s)
 {
   if (s == TopAbs_IN)
     return mySplitIN;
@@ -841,7 +851,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   bool tosplit = ToSplit(Eoriented, ToBuild1);
 
 #ifdef OCCT_DEBUG
-  int iEdge;
+  int  iEdge;
   bool tSPS = GtraceSPS(Eoriented, iEdge);
   if (tSPS)
   {
@@ -903,7 +913,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   FillVertexSet(EPIT, ToBuild1, PVS);
 
   TopOpeBRepBuild_PaveClassifier VCL(Eforward);
-  bool               equalpar = PVS.HasEqualParameters();
+  bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
     VCL.SetFirstParameter(PVS.EqualParameters());
 
@@ -976,7 +986,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
   myBuildTool.Orientation(Eforward, TopAbs_FORWARD);
 
 #ifdef OCCT_DEBUG
-  int iEdge;
+  int  iEdge;
   bool tSPS = GtraceSPS(Eoriented, iEdge);
   if (tSPS)
   {
@@ -996,7 +1006,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
   FillVertexSet(EPIT, ToBuild1, PVS);
 
   TopOpeBRepBuild_PaveClassifier VCL(Eforward);
-  bool               equalpar = PVS.HasEqualParameters();
+  bool                           equalpar = PVS.HasEqualParameters();
   if (equalpar)
     VCL.SetFirstParameter(PVS.EqualParameters());
 
@@ -1096,7 +1106,7 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
 
 #ifdef OCCT_DEBUG
   bool tSPF  = TopOpeBRepBuild_GettraceSPF();
-  int iFace = myDataStructure->Shape(Foriented);
+  int  iFace = myDataStructure->Shape(Foriented);
   if (tSPF)
   {
     std::cout << std::endl;
@@ -1132,7 +1142,7 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
   AddIntersectionEdges(Fforward, ToBuild1, RevOri1, WES);
 
 #ifdef OCCT_DEBUG
-  int iF;
+  int  iF;
   bool tSPS = GtraceSPS(Fforward, iF);
   if (tSPS)
     WES.DumpSS();
@@ -1255,10 +1265,10 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   }
 #endif
 
-  TopAbs_State                       tob1     = ToBuild1;
-  TopAbs_State                       tob2     = ToBuild2;
-  TopAbs_State                       tob1comp = (ToBuild1 == TopAbs_IN) ? TopAbs_OUT : TopAbs_IN;
-  TopAbs_State                       tob2comp = (ToBuild2 == TopAbs_IN) ? TopAbs_OUT : TopAbs_IN;
+  TopAbs_State tob1     = ToBuild1;
+  TopAbs_State tob2     = ToBuild2;
+  TopAbs_State tob1comp = (ToBuild1 == TopAbs_IN) ? TopAbs_OUT : TopAbs_IN;
+  TopAbs_State tob2comp = (ToBuild2 == TopAbs_IN) ? TopAbs_OUT : TopAbs_IN;
   NCollection_List<TopoDS_Shape>::Iterator itLF;
 
   // --------------------------------------------------------------------
@@ -1482,7 +1492,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
     TopOpeBRepDS_SurfaceIterator SSurfaces = myDataStructure->SolidSurfaces(S1forward);
     for (; SSurfaces.More(); SSurfaces.Next())
     {
-      int            iS    = SSurfaces.Current();
+      int                                   iS    = SSurfaces.Current();
       const NCollection_List<TopoDS_Shape>& LnewF = NewFaces(iS);
       for (NCollection_List<TopoDS_Shape>::Iterator Iti(LnewF); Iti.More(); Iti.Next())
       {
@@ -1559,7 +1569,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
                                           const TopAbs_State            ToBuild1,
                                           const TopAbs_State            ToBuild2,
                                           TopOpeBRepBuild_ShapeSet&     aSet,
-                                          const bool        RevOri)
+                                          const bool                    RevOri)
 {
   TopoDS_Shape       aShape;
   TopAbs_Orientation newori;
@@ -1584,7 +1594,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
 
     if (IsSplit(aShape, ToBuild1))
     {
-      TopoDS_Shape                       newShape;
+      TopoDS_Shape                             newShape;
       NCollection_List<TopoDS_Shape>::Iterator It;
       //----------------------- IFV
       bool IsLSon = false;
@@ -1651,7 +1661,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
         if (!myListOfFace.IsEmpty())
         { // 2d pur
           bool keep = KeepShape(aShape, myListOfFace, ToBuild1);
-          add                   = keep;
+          add       = keep;
         }
         else
         { // 3d
@@ -1664,15 +1674,15 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
             sol = myShape1;
           if (!sol.IsNull())
           {
-            double      first, last;
+            double                  first, last;
             occ::handle<Geom_Curve> C3D;
             C3D = BRep_Tool::Curve(TopoDS::Edge(aShape), first, last);
             if (!C3D.IsNull())
             {
-              double               tt    = 0.127956477;
-              double               par   = (1 - tt) * first + tt * last;
+              double                      tt    = 0.127956477;
+              double                      par   = (1 - tt) * first + tt * last;
               gp_Pnt                      P3D   = C3D->Value(par);
-              double               tol3d = Precision::Confusion();
+              double                      tol3d = Precision::Confusion();
               BRepClass3d_SolidClassifier SCL(sol, P3D, tol3d);
               TopAbs_State                state = SCL.State();
               add                               = (state == ToBuild1);
@@ -1702,14 +1712,14 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape&         S1,
-                                        const TopAbs_State          ToBuild1,
+void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape&                   S1,
+                                        const TopAbs_State                    ToBuild1,
                                         const NCollection_List<TopoDS_Shape>& LS2,
-                                        const TopAbs_State          ToBuild2,
-                                        TopOpeBRepBuild_ShapeSet&   aSet,
-                                        const bool      In_RevOri)
+                                        const TopAbs_State                    ToBuild2,
+                                        TopOpeBRepBuild_ShapeSet&             aSet,
+                                        const bool                            In_RevOri)
 {
-  bool RevOri = In_RevOri;
+  bool             RevOri = In_RevOri;
   TopAbs_ShapeEnum t      = S1.ShapeType();
   TopAbs_ShapeEnum t1 = TopAbs_COMPOUND, t11 = TopAbs_COMPOUND;
 
@@ -1777,12 +1787,12 @@ void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape&         S1,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape&          F1,
-                                       const TopAbs_State           ToBuild1,
-                                       const NCollection_List<TopoDS_Shape>&  LF2,
-                                       const TopAbs_State           ToBuild2,
-                                       TopOpeBRepBuild_WireEdgeSet& WES,
-                                       const bool       RevOri)
+void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape&                   F1,
+                                       const TopAbs_State                    ToBuild1,
+                                       const NCollection_List<TopoDS_Shape>& LF2,
+                                       const TopAbs_State                    ToBuild2,
+                                       TopOpeBRepBuild_WireEdgeSet&          WES,
+                                       const bool                            RevOri)
 {
 #ifdef OCCT_DEBUG
   bool tSPF = TopOpeBRepBuild_GettraceSPF();
@@ -1805,12 +1815,12 @@ void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape&          F1,
 // function : FillSolid
 // purpose  : load shells and faces from the solid in the ShellFaceSet <aSet>
 //=======================================================================
-void TopOpeBRepBuild_Builder::FillSolid(const TopoDS_Shape&         S1,
-                                        const TopAbs_State          ToBuild1,
+void TopOpeBRepBuild_Builder::FillSolid(const TopoDS_Shape&                   S1,
+                                        const TopAbs_State                    ToBuild1,
                                         const NCollection_List<TopoDS_Shape>& LS2,
-                                        const TopAbs_State          ToBuild2,
-                                        TopOpeBRepBuild_ShapeSet&   aSet,
-                                        const bool      RevOri)
+                                        const TopAbs_State                    ToBuild2,
+                                        TopOpeBRepBuild_ShapeSet&             aSet,
+                                        const bool                            RevOri)
 {
   FillShape(S1, ToBuild1, LS2, ToBuild2, aSet, RevOri);
 } // FillSolid
@@ -1836,7 +1846,7 @@ void TopOpeBRepBuild_Builder::FillVertexSetOnValue(const TopOpeBRepDS_PointItera
   TopoDS_Shape V;
 
   // ind = index of new point or existing vertex
-  int ind     = IT.Current();
+  int  ind     = IT.Current();
   bool ispoint = IT.IsPoint();
   //**!
   // if (ispoint) V = NewVertex(ind);
@@ -1845,7 +1855,7 @@ void TopOpeBRepBuild_Builder::FillVertexSetOnValue(const TopOpeBRepDS_PointItera
   //**!
   else
     V = myDataStructure->Shape(ind);
-  double      par = IT.Parameter();
+  double             par = IT.Parameter();
   TopAbs_Orientation ori = IT.Orientation(ToBuild);
 
   bool keep = true;
@@ -1860,8 +1870,8 @@ void TopOpeBRepBuild_Builder::FillVertexSetOnValue(const TopOpeBRepDS_PointItera
 
 #ifdef OCCT_DEBUG
   const TopoDS_Edge& EDEB = PVS.Edge();
-  int   iE;
-  bool   tSPS = GtraceSPS(EDEB, iE);
+  int                iE;
+  bool               tSPS = GtraceSPS(EDEB, iE);
   if (tSPS)
   {
     if (keep)

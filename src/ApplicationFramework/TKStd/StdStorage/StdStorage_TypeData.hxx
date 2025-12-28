@@ -21,11 +21,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Storage_Error.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class Storage_BaseDriver;
@@ -55,8 +52,7 @@ public:
   Standard_EXPORT int NumberOfTypes() const;
 
   //! Add a type to the list in case of reading data
-  Standard_EXPORT void AddType(const TCollection_AsciiString& aTypeName,
-                               const int         aTypeNum);
+  Standard_EXPORT void AddType(const TCollection_AsciiString& aTypeName, const int aTypeNum);
 
   //! Add a type of the persistent object in case of writing data
   Standard_EXPORT int AddType(const occ::handle<StdObjMgt_Persistent>& aPObj);
@@ -68,8 +64,7 @@ public:
   Standard_EXPORT int Type(const TCollection_AsciiString& aTypeName) const;
 
   //! Returns a persistent object instantiator of <aTypeName>
-  Standard_EXPORT StdObjMgt_Persistent::Instantiator Instantiator(
-    const int aTypeNum) const;
+  Standard_EXPORT StdObjMgt_Persistent::Instantiator Instantiator(const int aTypeNum) const;
 
   //! Checks if <aName> is a registered type
   Standard_EXPORT bool IsType(const TCollection_AsciiString& aName) const;
@@ -96,11 +91,11 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  int             myTypeId;
-  StdObjMgt_MapOfInstantiators myMapOfPInst;
-  NCollection_IndexedDataMap<TCollection_AsciiString, int>        myPt;
-  Storage_Error                myErrorStatus;
-  TCollection_AsciiString      myErrorStatusExt;
+  int                                                      myTypeId;
+  StdObjMgt_MapOfInstantiators                             myMapOfPInst;
+  NCollection_IndexedDataMap<TCollection_AsciiString, int> myPt;
+  Storage_Error                                            myErrorStatus;
+  TCollection_AsciiString                                  myErrorStatusExt;
 };
 
 #endif // _StdStorage_TypeData_HeaderFile

@@ -28,7 +28,7 @@ void StepKinematics_PointOnPlanarCurvePairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
   const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve,
-  const StepKinematics_SpatialRotation&       theInputOrientation)
+  const StepKinematics_SpatialRotation&            theInputOrientation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -39,7 +39,8 @@ void StepKinematics_PointOnPlanarCurvePairValue::Init(
 
 //=================================================================================================
 
-occ::handle<StepGeom_PointOnCurve> StepKinematics_PointOnPlanarCurvePairValue::ActualPointOnCurve() const
+occ::handle<StepGeom_PointOnCurve> StepKinematics_PointOnPlanarCurvePairValue::ActualPointOnCurve()
+  const
 {
   return myActualPointOnCurve;
 }

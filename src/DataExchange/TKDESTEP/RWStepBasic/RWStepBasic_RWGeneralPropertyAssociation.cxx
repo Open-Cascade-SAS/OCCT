@@ -27,7 +27,7 @@ RWStepBasic_RWGeneralPropertyAssociation::RWStepBasic_RWGeneralPropertyAssociati
 
 void RWStepBasic_RWGeneralPropertyAssociation::ReadStep(
   const occ::handle<StepData_StepReaderData>&              theData,
-  const int                              theNum,
+  const int                                                theNum,
   occ::handle<Interface_Check>&                            theAch,
   const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt) const
 {
@@ -64,7 +64,7 @@ void RWStepBasic_RWGeneralPropertyAssociation::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWGeneralPropertyAssociation::WriteStep(
-  StepData_StepWriter&                                theSW,
+  StepData_StepWriter&                                     theSW,
   const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt) const
 {
   theSW.Send(theEnt->Name());
@@ -80,7 +80,7 @@ void RWStepBasic_RWGeneralPropertyAssociation::WriteStep(
 
 void RWStepBasic_RWGeneralPropertyAssociation::Share(
   const occ::handle<StepBasic_GeneralPropertyAssociation>& theEnt,
-  Interface_EntityIterator&                           theIter) const
+  Interface_EntityIterator&                                theIter) const
 {
   theIter.AddItem(theEnt->GeneralProperty());
 

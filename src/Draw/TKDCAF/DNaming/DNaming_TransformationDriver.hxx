@@ -52,15 +52,14 @@ public:
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const
-    override;
+  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const override;
 
   DEFINE_STANDARD_RTTIEXT(DNaming_TransformationDriver, TFunction_Driver)
 
 private:
-  Standard_EXPORT void LoadNamingDS(const TDF_Label&                  theResultLabel,
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&                       theResultLabel,
                                     const occ::handle<TNaming_NamedShape>& theSourceNS,
-                                    const gp_Trsf&                    theTrsf) const;
+                                    const gp_Trsf&                         theTrsf) const;
 };
 
 #endif // _DNaming_TransformationDriver_HeaderFile

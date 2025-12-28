@@ -43,7 +43,7 @@ void Poly_CoherentNode::SetNormal(const gp_XYZ& theVector)
 
 //=================================================================================================
 
-void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&             theTri,
+void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&                  theTri,
                                     const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   if (myTriangles == NULL)
@@ -54,9 +54,8 @@ void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&             the
 
 //=================================================================================================
 
-bool Poly_CoherentNode::RemoveTriangle(
-  const Poly_CoherentTriangle&             theTri,
-  const occ::handle<NCollection_BaseAllocator>& theAlloc)
+bool Poly_CoherentNode::RemoveTriangle(const Poly_CoherentTriangle&                  theTri,
+                                       const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   bool aResult(false);
   if (&myTriangles->GetTriangle() == &theTri)

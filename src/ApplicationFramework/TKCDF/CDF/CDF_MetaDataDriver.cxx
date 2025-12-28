@@ -31,7 +31,7 @@ CDF_MetaDataDriver::CDF_MetaDataDriver() {}
 //=================================================================================================
 
 bool CDF_MetaDataDriver::HasVersion(const TCollection_ExtendedString&,
-                                                const TCollection_ExtendedString&)
+                                    const TCollection_ExtendedString&)
 {
   return true;
 }
@@ -47,7 +47,8 @@ bool CDF_MetaDataDriver::HasVersionCapability()
 
 //=================================================================================================
 
-void CDF_MetaDataDriver::CreateDependsOn(const occ::handle<CDM_MetaData>&, const occ::handle<CDM_MetaData>&)
+void CDF_MetaDataDriver::CreateDependsOn(const occ::handle<CDM_MetaData>&,
+                                         const occ::handle<CDM_MetaData>&)
 {
 }
 
@@ -71,7 +72,7 @@ occ::handle<PCDM_ReferenceIterator> CDF_MetaDataDriver::ReferenceIterator(
 //=================================================================================================
 
 bool CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder,
-                                          const TCollection_ExtendedString& aName)
+                              const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString aVersion;
   return Find(aFolder, aName, aVersion);
@@ -80,7 +81,7 @@ bool CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder,
 //=================================================================================================
 
 occ::handle<CDM_MetaData> CDF_MetaDataDriver::MetaData(const TCollection_ExtendedString& aFolder,
-                                                  const TCollection_ExtendedString& aName)
+                                                       const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString aVersion;
   return MetaData(aFolder, aName, aVersion);
@@ -88,7 +89,8 @@ occ::handle<CDM_MetaData> CDF_MetaDataDriver::MetaData(const TCollection_Extende
 
 //=================================================================================================
 
-occ::handle<CDM_MetaData> CDF_MetaDataDriver::LastVersion(const occ::handle<CDM_MetaData>& aMetaData)
+occ::handle<CDM_MetaData> CDF_MetaDataDriver::LastVersion(
+  const occ::handle<CDM_MetaData>& aMetaData)
 {
   return aMetaData;
 }

@@ -98,7 +98,7 @@ void BinDrivers_DocumentRetrievalDriver::Clear()
 
 void BinDrivers_DocumentRetrievalDriver::EnableQuickPartReading(
   const occ::handle<Message_Messenger>& theMessageDriver,
-  bool                 theValue)
+  bool                                  theValue)
 {
   if (myDrivers.IsNull())
     myDrivers = AttributeDrivers(theMessageDriver);

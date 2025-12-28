@@ -27,7 +27,7 @@ RWStepAP214_RWAutoDesignNominalDateAssignment::RWStepAP214_RWAutoDesignNominalDa
 
 void RWStepAP214_RWAutoDesignNominalDateAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                   num,
+  const int                                                     num,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepAP214_AutoDesignNominalDateAssignment>& ent) const
 {
@@ -50,12 +50,12 @@ void RWStepAP214_RWAutoDesignNominalDateAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_AutoDesignDatedItem>> aItems;
-  StepAP214_AutoDesignDatedItem                  aItemsItem;
-  int                               nsub3;
+  StepAP214_AutoDesignDatedItem                                   aItemsItem;
+  int                                                             nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aItems               = new NCollection_HArray1<StepAP214_AutoDesignDatedItem>(1, nb3);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignDatedItem>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
@@ -70,7 +70,7 @@ void RWStepAP214_RWAutoDesignNominalDateAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignNominalDateAssignment::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                          SW,
   const occ::handle<StepAP214_AutoDesignNominalDateAssignment>& ent) const
 {
 
@@ -94,7 +94,7 @@ void RWStepAP214_RWAutoDesignNominalDateAssignment::WriteStep(
 
 void RWStepAP214_RWAutoDesignNominalDateAssignment::Share(
   const occ::handle<StepAP214_AutoDesignNominalDateAssignment>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                                     iter) const
 {
 
   iter.GetOneItem(ent->AssignedDate());

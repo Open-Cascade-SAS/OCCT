@@ -45,11 +45,11 @@ public:
   Standard_EXPORT void SetWidthFactorThreshold(const double theThreshold = -1.0);
 
   //! Remove small solids from the given shape
-  Standard_EXPORT TopoDS_Shape Remove(const TopoDS_Shape&               theShape,
+  Standard_EXPORT TopoDS_Shape Remove(const TopoDS_Shape&                    theShape,
                                       const occ::handle<ShapeBuild_ReShape>& theContext) const;
 
   //! Merge small solids in the given shape to adjacent non-small ones
-  Standard_EXPORT TopoDS_Shape Merge(const TopoDS_Shape&               theShape,
+  Standard_EXPORT TopoDS_Shape Merge(const TopoDS_Shape&                    theShape,
                                      const occ::handle<ShapeBuild_ReShape>& theContext) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeFix_FixSmallSolid, ShapeFix_Root)
@@ -63,9 +63,9 @@ private:
 
   Standard_EXPORT bool IsUsedVolumeThreshold() const;
 
-  int myFixMode;
-  double    myVolumeThreshold;
-  double    myWidthFactorThreshold;
+  int    myFixMode;
+  double myVolumeThreshold;
+  double myWidthFactorThreshold;
 };
 
 #endif // _ShapeFix_FixSmallSolid_HeaderFile

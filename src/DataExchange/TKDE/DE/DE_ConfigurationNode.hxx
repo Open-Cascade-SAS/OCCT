@@ -57,7 +57,8 @@ public:
 
   //! Copies values of all fields
   //! @param[in] theConfigurationNode object to copy
-  Standard_EXPORT DE_ConfigurationNode(const occ::handle<DE_ConfigurationNode>& theConfigurationNode);
+  Standard_EXPORT DE_ConfigurationNode(
+    const occ::handle<DE_ConfigurationNode>& theConfigurationNode);
 
   //! Updates values according the resource file
   //! @param[in] theResourcePath file path to resource
@@ -90,8 +91,7 @@ public:
   //! @param[in] theToImport flag to updates for import. true-import, false-export
   //! @param[in] theToKeep flag to save update result
   //! @return true, if node can be used
-  Standard_EXPORT virtual bool UpdateLoad(const bool theToImport,
-                                          const bool theToKeep);
+  Standard_EXPORT virtual bool UpdateLoad(const bool theToImport, const bool theToKeep);
 
 public:
   //! Checks for import support.
@@ -144,7 +144,8 @@ public:
   //!
   //! The main goal - real-time loading plug-in activation.
   //! OpenSource components don't need to have activation process.
-  Standard_EXPORT virtual void CustomActivation(const NCollection_List<TCollection_AsciiString>&) {};
+  Standard_EXPORT virtual void CustomActivation(const NCollection_List<TCollection_AsciiString>&) {
+  };
 
 public:
   //!< Internal parameters for transfer process

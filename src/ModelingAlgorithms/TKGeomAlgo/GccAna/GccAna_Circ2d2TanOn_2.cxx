@@ -30,7 +30,7 @@
 GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
                                          const GccEnt_QualifiedLin& Qualified2,
                                          const gp_Lin2d&            OnLine,
-                                         const double        Tolerance)
+                                         const double               Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -58,8 +58,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
     return;
   }
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
 
   // calculation of bisectrices of L1 and L2
   gp_Lin2d          L1(Qualified1.Qualified());
@@ -89,9 +89,9 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
             // at maximum 1 point of intersection !
             for (int l = 1; l <= Intp.NbPoints(); l++)
             {
-              gp_Pnt2d      pt(Intp.Point(l).Value());
-              gp_Ax2d       axe(pt, dirx);
-              double Radius = L1.Distance(pt);
+              gp_Pnt2d pt(Intp.Point(l).Value());
+              gp_Ax2d  axe(pt, dirx);
+              double   Radius = L1.Distance(pt);
               if (!L1.Contains(pt, Tol) && Radius < 1.0 / Tol && NbrSol < 2)
               {
                 // acceptable solution : the radius is correct
@@ -110,21 +110,21 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const GccEnt_QualifiedLin& Qualified1,
   for (int i = 1; i <= NbrSol; i++)
   {
 
-    gp_Pnt2d         pbid(cirsol(i).Location());
-    double    Radius = cirsol(i).Radius();
-    bool ok     = false;
+    gp_Pnt2d pbid(cirsol(i).Location());
+    double   Radius = cirsol(i).Radius();
+    bool     ok     = false;
 
     // solution Outside or Enclosed / L1
-    gp_Dir2d      dc1(originL1.XY() - pbid.XY());
-    double sign1 = dc1.Dot(gp_Dir2d(-L1.Direction().Y(), L1.Direction().X()));
+    gp_Dir2d dc1(originL1.XY() - pbid.XY());
+    double   sign1 = dc1.Dot(gp_Dir2d(-L1.Direction().Y(), L1.Direction().X()));
     if (sign1 > 0.0)
       ok = (Qualified1.IsUnqualified() || Qualified1.IsOutside());
     else
       ok = (Qualified1.IsUnqualified() || Qualified1.IsEnclosed());
 
     // solution Outside or Enclosed / L2
-    gp_Dir2d      dc2(originL2.XY() - pbid.XY());
-    double sign2 = dc2.Dot(gp_Dir2d(-L2.Direction().Y(), L2.Direction().X()));
+    gp_Dir2d dc2(originL2.XY() - pbid.XY());
+    double   sign2 = dc2.Dot(gp_Dir2d(-L2.Direction().Y(), L2.Direction().X()));
     if (sign2 > 0.0)
       ok = ok && (Qualified2.IsUnqualified() || Qualified2.IsOutside());
     else

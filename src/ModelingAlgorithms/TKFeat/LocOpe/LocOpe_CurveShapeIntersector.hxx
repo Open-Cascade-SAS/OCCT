@@ -76,10 +76,10 @@ public:
   //! point corresponding to the point. (IndFrom <= IndTo).
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeAfter(const double From,
-                                                 TopAbs_Orientation& Or,
-                                                 int&   IndFrom,
-                                                 int&   IndTo) const;
+  Standard_EXPORT bool LocalizeAfter(const double        From,
+                                     TopAbs_Orientation& Or,
+                                     int&                IndFrom,
+                                     int&                IndTo) const;
 
   //! Searches the first intersection point located
   //! before the parameter <From>, which orientation is
@@ -90,10 +90,10 @@ public:
   //! point corresponding to the point (IndFrom <= IndTo).
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeBefore(const double From,
-                                                  TopAbs_Orientation& Or,
-                                                  int&   IndFrom,
-                                                  int&   IndTo) const;
+  Standard_EXPORT bool LocalizeBefore(const double        From,
+                                      TopAbs_Orientation& Or,
+                                      int&                IndFrom,
+                                      int&                IndTo) const;
 
   //! Searches the first intersection point located
   //! after the index <FromInd> (>= FromInd + 1), which
@@ -105,10 +105,10 @@ public:
   //! (IndFrom <= IndTo).
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeAfter(const int FromInd,
-                                                 TopAbs_Orientation&    Or,
-                                                 int&      IndFrom,
-                                                 int&      IndTo) const;
+  Standard_EXPORT bool LocalizeAfter(const int           FromInd,
+                                     TopAbs_Orientation& Or,
+                                     int&                IndFrom,
+                                     int&                IndTo) const;
 
   //! Searches the first intersection point located
   //! before the index <FromInd> ( <= FromInd -1), which
@@ -120,13 +120,13 @@ public:
   //! (IndFrom <= IndTo).
   //!
   //! Otherwise, returns <false>.
-  Standard_EXPORT bool LocalizeBefore(const int FromInd,
-                                                  TopAbs_Orientation&    Or,
-                                                  int&      IndFrom,
-                                                  int&      IndTo) const;
+  Standard_EXPORT bool LocalizeBefore(const int           FromInd,
+                                      TopAbs_Orientation& Or,
+                                      int&                IndFrom,
+                                      int&                IndTo) const;
 
 private:
-  bool         myDone;
+  bool                                 myDone;
   NCollection_Sequence<LocOpe_PntFace> myPoints;
 };
 

@@ -26,17 +26,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <math_Vector.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 class GeomInt_TheMultiLineOfWLApprox;
 class GeomInt_TheMultiLineToolOfWLApprox;
 class GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox;
@@ -67,14 +59,14 @@ public:
   //! default.
   Standard_EXPORT GeomInt_TheComputeLineOfWLApprox(
     const GeomInt_TheMultiLineOfWLApprox& Line,
-    const int                degreemin       = 4,
-    const int                degreemax       = 8,
-    const double                   Tolerance3d     = 1.0e-3,
-    const double                   Tolerance2d     = 1.0e-6,
-    const int                NbIterations    = 5,
-    const bool                cutting         = true,
+    const int                             degreemin       = 4,
+    const int                             degreemax       = 8,
+    const double                          Tolerance3d     = 1.0e-3,
+    const double                          Tolerance2d     = 1.0e-6,
+    const int                             NbIterations    = 5,
+    const bool                            cutting         = true,
     const Approx_ParametrizationType      parametrization = Approx_ChordLength,
-    const bool                Squares         = false);
+    const bool                            Squares         = false);
 
   //! The MultiLine <Line> will be approximated until tolerances
   //! will be reached.
@@ -84,48 +76,48 @@ public:
   //! no iteration at all.
   Standard_EXPORT GeomInt_TheComputeLineOfWLApprox(const GeomInt_TheMultiLineOfWLApprox& Line,
                                                    const math_Vector&                    Parameters,
-                                                   const int degreemin    = 4,
-                                                   const int degreemax    = 8,
-                                                   const double    Tolerance3d  = 1.0e-03,
-                                                   const double    Tolerance2d  = 1.0e-06,
-                                                   const int NbIterations = 5,
-                                                   const bool cutting = true,
-                                                   const bool Squares = false);
+                                                   const int    degreemin    = 4,
+                                                   const int    degreemax    = 8,
+                                                   const double Tolerance3d  = 1.0e-03,
+                                                   const double Tolerance2d  = 1.0e-06,
+                                                   const int    NbIterations = 5,
+                                                   const bool   cutting      = true,
+                                                   const bool   Squares      = false);
 
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT GeomInt_TheComputeLineOfWLApprox(const math_Vector&     Parameters,
-                                                   const int degreemin    = 4,
-                                                   const int degreemax    = 8,
-                                                   const double    Tolerance3d  = 1.0e-03,
-                                                   const double    Tolerance2d  = 1.0e-06,
-                                                   const int NbIterations = 5,
-                                                   const bool cutting = true,
-                                                   const bool Squares = false);
+  Standard_EXPORT GeomInt_TheComputeLineOfWLApprox(const math_Vector& Parameters,
+                                                   const int          degreemin    = 4,
+                                                   const int          degreemax    = 8,
+                                                   const double       Tolerance3d  = 1.0e-03,
+                                                   const double       Tolerance2d  = 1.0e-06,
+                                                   const int          NbIterations = 5,
+                                                   const bool         cutting      = true,
+                                                   const bool         Squares      = false);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT GeomInt_TheComputeLineOfWLApprox(
-    const int           degreemin       = 4,
-    const int           degreemax       = 8,
-    const double              Tolerance3d     = 1.0e-03,
-    const double              Tolerance2d     = 1.0e-06,
-    const int           NbIterations    = 5,
-    const bool           cutting         = true,
+    const int                        degreemin       = 4,
+    const int                        degreemax       = 8,
+    const double                     Tolerance3d     = 1.0e-03,
+    const double                     Tolerance2d     = 1.0e-06,
+    const int                        NbIterations    = 5,
+    const bool                       cutting         = true,
     const Approx_ParametrizationType parametrization = Approx_ChordLength,
-    const bool           Squares         = false);
+    const bool                       Squares         = false);
 
   //! Constructs an interpolation of the MultiLine <Line>
   //! The result will be a C2 curve of degree 3.
   Standard_EXPORT void Interpol(const GeomInt_TheMultiLineOfWLApprox& Line);
 
   //! Initializes the fields of the algorithm.
-  Standard_EXPORT void Init(const int           degreemin       = 4,
-                            const int           degreemax       = 8,
-                            const double              Tolerance3d     = 1.0e-03,
-                            const double              Tolerance2d     = 1.0e-06,
-                            const int           NbIterations    = 5,
-                            const bool           cutting         = true,
+  Standard_EXPORT void Init(const int                        degreemin       = 4,
+                            const int                        degreemax       = 8,
+                            const double                     Tolerance3d     = 1.0e-03,
+                            const double                     Tolerance2d     = 1.0e-06,
+                            const int                        NbIterations    = 5,
+                            const bool                       cutting         = true,
                             const Approx_ParametrizationType parametrization = Approx_ChordLength,
-                            const bool           Squares         = false);
+                            const bool                       Squares         = false);
 
   //! runs the algorithm after having initialized the fields.
   Standard_EXPORT void Perform(const GeomInt_TheMultiLineOfWLApprox& Line);
@@ -141,16 +133,14 @@ public:
 
   //! The approximation will be done with the
   //! set of knots <Knots> and the multiplicities <Mults>.
-  Standard_EXPORT void SetKnotsAndMultiplicities(const NCollection_Array1<double>&    Knots,
-                                                 const NCollection_Array1<int>& Mults);
+  Standard_EXPORT void SetKnotsAndMultiplicities(const NCollection_Array1<double>& Knots,
+                                                 const NCollection_Array1<int>&    Mults);
 
   //! changes the degrees of the approximation.
-  Standard_EXPORT void SetDegrees(const int degreemin,
-                                  const int degreemax);
+  Standard_EXPORT void SetDegrees(const int degreemin, const int degreemax);
 
   //! Changes the tolerances of the approximation.
-  Standard_EXPORT void SetTolerances(const double Tolerance3d,
-                                     const double Tolerance2d);
+  Standard_EXPORT void SetTolerances(const double Tolerance3d, const double Tolerance2d);
 
   //! sets the continuity of the spline.
   //! if C = 2, the spline will be C2.
@@ -190,78 +180,78 @@ public:
 private:
   //! is internally used in the algorithm.
   Standard_EXPORT bool Compute(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                           const int                fpt,
-                                           const int                lpt,
-                                           math_Vector&                          Para,
-                                           const NCollection_Array1<double>&           Knots,
-                                           NCollection_Array1<int>&              Mults);
+                               const int                             fpt,
+                               const int                             lpt,
+                               math_Vector&                          Para,
+                               const NCollection_Array1<double>&     Knots,
+                               NCollection_Array1<int>&              Mults);
 
   //! is internally used in the algorithm.
   Standard_EXPORT bool ComputeCurve(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                                const int                firspt,
-                                                const int                lastpt);
+                                    const int                             firspt,
+                                    const int                             lastpt);
 
   //! computes new parameters between firstP and lastP.
   Standard_EXPORT void Parameters(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                  const int                firstP,
-                                  const int                LastP,
+                                  const int                             firstP,
+                                  const int                             LastP,
                                   math_Vector&                          TheParameters) const;
 
   Standard_EXPORT double SearchFirstLambda(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                                  const math_Vector&                    Para,
-                                                  const NCollection_Array1<double>&           Knots,
-                                                  const math_Vector&                    V,
-                                                  const int index) const;
+                                           const math_Vector&                    Para,
+                                           const NCollection_Array1<double>&     Knots,
+                                           const math_Vector&                    V,
+                                           const int                             index) const;
 
   Standard_EXPORT double SearchLastLambda(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                                 const math_Vector&                    Para,
-                                                 const NCollection_Array1<double>&           Knots,
-                                                 const math_Vector&                    V,
-                                                 const int                index) const;
+                                          const math_Vector&                    Para,
+                                          const NCollection_Array1<double>&     Knots,
+                                          const math_Vector&                    V,
+                                          const int                             index) const;
 
   Standard_EXPORT void TangencyVector(const GeomInt_TheMultiLineOfWLApprox& Line,
                                       const AppParCurves_MultiCurve&        C,
-                                      const double                   U,
+                                      const double                          U,
                                       math_Vector&                          V) const;
 
   Standard_EXPORT void FirstTangencyVector(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                           const int                index,
+                                           const int                             index,
                                            math_Vector&                          V) const;
 
   Standard_EXPORT void LastTangencyVector(const GeomInt_TheMultiLineOfWLApprox& Line,
-                                          const int                index,
+                                          const int                             index,
                                           math_Vector&                          V) const;
 
   Standard_EXPORT void FindRealConstraints(const GeomInt_TheMultiLineOfWLApprox& Line);
 
-  AppParCurves_MultiBSpCurve                     TheMultiBSpCurve;
-  bool                               alldone;
-  bool                               tolreached;
-  Approx_ParametrizationType                     Par;
-  occ::handle<NCollection_HArray1<double>>                  myParameters;
-  occ::handle<NCollection_HArray1<double>>                  myfirstParam;
-  occ::handle<NCollection_HArray1<double>>                  myknots;
-  occ::handle<NCollection_HArray1<int>>               mymults;
-  bool                               myhasknots;
-  bool                               myhasmults;
+  AppParCurves_MultiBSpCurve                                      TheMultiBSpCurve;
+  bool                                                            alldone;
+  bool                                                            tolreached;
+  Approx_ParametrizationType                                      Par;
+  occ::handle<NCollection_HArray1<double>>                        myParameters;
+  occ::handle<NCollection_HArray1<double>>                        myfirstParam;
+  occ::handle<NCollection_HArray1<double>>                        myknots;
+  occ::handle<NCollection_HArray1<int>>                           mymults;
+  bool                                                            myhasknots;
+  bool                                                            myhasmults;
   occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> myConstraints;
-  int                               mydegremin;
-  int                               mydegremax;
-  double                                  mytol3d;
-  double                                  mytol2d;
-  double                                  currenttol3d;
-  double                                  currenttol2d;
-  bool                               mycut;
-  bool                               mysquares;
-  int                               myitermax;
-  AppParCurves_Constraint                        myfirstC;
-  AppParCurves_Constraint                        mylastC;
-  AppParCurves_Constraint                        realfirstC;
-  AppParCurves_Constraint                        reallastC;
-  int                               mycont;
-  double                                  mylambda1;
-  double                                  mylambda2;
-  bool                               myPeriodic;
+  int                                                             mydegremin;
+  int                                                             mydegremax;
+  double                                                          mytol3d;
+  double                                                          mytol2d;
+  double                                                          currenttol3d;
+  double                                                          currenttol2d;
+  bool                                                            mycut;
+  bool                                                            mysquares;
+  int                                                             myitermax;
+  AppParCurves_Constraint                                         myfirstC;
+  AppParCurves_Constraint                                         mylastC;
+  AppParCurves_Constraint                                         realfirstC;
+  AppParCurves_Constraint                                         reallastC;
+  int                                                             mycont;
+  double                                                          mylambda1;
+  double                                                          mylambda2;
+  bool                                                            myPeriodic;
 };
 
 #endif // _GeomInt_TheComputeLineOfWLApprox_HeaderFile

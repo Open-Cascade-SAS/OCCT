@@ -27,9 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_TypedValue, MoniTool_TypedValue)
 //   OSD_Path apath;
 //   return apath.IsValid (TCollection_AsciiString(val->ToCString()));
 // }
-Interface_TypedValue::Interface_TypedValue(const char*    name,
+Interface_TypedValue::Interface_TypedValue(const char*               name,
                                            const Interface_ParamType type,
-                                           const char*    init)
+                                           const char*               init)
     : MoniTool_TypedValue(name, Interface_TypedValue::ParamTypeToValueType(type), init)
 {
 }

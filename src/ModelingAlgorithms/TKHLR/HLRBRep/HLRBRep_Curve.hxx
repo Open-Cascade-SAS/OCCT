@@ -25,10 +25,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Integer.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 class TopoDS_Edge;
@@ -148,10 +144,10 @@ public:
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&           P,
-                          gp_Vec2d&           V1,
-                          gp_Vec2d&           V2,
-                          gp_Vec2d&           V3) const;
+                          gp_Pnt2d&    P,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2,
+                          gp_Vec2d&    V3) const;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -188,13 +184,14 @@ public:
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt2d>& TP) const;
 
   Standard_EXPORT void Poles(const occ::handle<Geom_BSplineCurve>& aCurve,
-                             NCollection_Array1<gp_Pnt2d>&            TP) const;
+                             NCollection_Array1<gp_Pnt2d>&         TP) const;
 
-  Standard_EXPORT void PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP, NCollection_Array1<double>& TW) const;
+  Standard_EXPORT void PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
+                                       NCollection_Array1<double>&   TW) const;
 
   Standard_EXPORT void PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve,
-                                       NCollection_Array1<gp_Pnt2d>&            TP,
-                                       NCollection_Array1<double>&            TW) const;
+                                       NCollection_Array1<gp_Pnt2d>&         TP,
+                                       NCollection_Array1<double>&           TW) const;
 
   int NbKnots() const;
 
@@ -206,11 +203,11 @@ private:
   BRepAdaptor_Curve        myCurve;
   GeomAbs_CurveType        myType;
   const HLRAlgo_Projector* myProj;
-  double            myOX;
-  double            myOZ;
-  double            myVX;
-  double            myVZ;
-  double            myOF;
+  double                   myOX;
+  double                   myOZ;
+  double                   myVX;
+  double                   myVZ;
+  double                   myOF;
 };
 
 #include <HLRBRep_Curve.lxx>

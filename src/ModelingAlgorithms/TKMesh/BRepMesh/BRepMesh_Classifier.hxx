@@ -48,10 +48,10 @@ public:
   //! @param theUmax Upper U boundary of the face in parametric space.
   //! @param theVmin Lower V boundary of the face in parametric space.
   //! @param theVmax Upper V boundary of the face in parametric space.
-  Standard_EXPORT void RegisterWire(const NCollection_Sequence<const gp_Pnt2d*>&   theWire,
-                                    const std::pair<double, double>& theTolUV,
-                                    const std::pair<double, double>& theRangeU,
-                                    const std::pair<double, double>& theRangeV);
+  Standard_EXPORT void RegisterWire(const NCollection_Sequence<const gp_Pnt2d*>& theWire,
+                                    const std::pair<double, double>&             theTolUV,
+                                    const std::pair<double, double>&             theRangeU,
+                                    const std::pair<double, double>&             theRangeV);
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
 

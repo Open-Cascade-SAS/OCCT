@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
 
 //=================================================================================================
 
-IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&         theShape,
+IVtkOCC_Shape::IVtkOCC_Shape(const TopoDS_Shape&              theShape,
                              const occ::handle<Prs3d_Drawer>& theDrawerLink)
     : myTopoDSShape(theShape),
       myOCCTDrawer(new Prs3d_Drawer())
@@ -47,8 +47,7 @@ IVtkOCC_Shape::~IVtkOCC_Shape() {}
 
 IVtk_IdType IVtkOCC_Shape::GetSubShapeId(const TopoDS_Shape& theSubShape) const
 {
-  int anIndex =
-    theSubShape.IsSame(myTopoDSShape) ? -1 : mySubShapeIds.FindIndex(theSubShape);
+  int anIndex = theSubShape.IsSame(myTopoDSShape) ? -1 : mySubShapeIds.FindIndex(theSubShape);
   if (anIndex == 0) // Not found in the map
   {
     return (IVtk_IdType)-1;

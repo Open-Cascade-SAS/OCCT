@@ -40,9 +40,7 @@ Poly_CoherentTriangle::Poly_CoherentTriangle()
 
 //=================================================================================================
 
-Poly_CoherentTriangle::Poly_CoherentTriangle(const int iNode0,
-                                             const int iNode1,
-                                             const int iNode2)
+Poly_CoherentTriangle::Poly_CoherentTriangle(const int iNode0, const int iNode1, const int iNode2)
     : myNConnections(0)
 {
   myNodes[0]            = iNode0;
@@ -61,10 +59,9 @@ Poly_CoherentTriangle::Poly_CoherentTriangle(const int iNode0,
 
 //=================================================================================================
 
-bool Poly_CoherentTriangle::SetConnection(const int iConn,
-                                                      Poly_CoherentTriangle& theTr)
+bool Poly_CoherentTriangle::SetConnection(const int iConn, Poly_CoherentTriangle& theTr)
 {
-  bool              aResult(false);
+  bool             aResult(false);
   static const int II[] = {2, 0, 1, 2, 0};
 
   if (theTr.Node(0) == myNodes[II[iConn + 2]])

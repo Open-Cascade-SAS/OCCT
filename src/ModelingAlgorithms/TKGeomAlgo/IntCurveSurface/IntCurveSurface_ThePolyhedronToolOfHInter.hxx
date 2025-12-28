@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
-#include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
@@ -48,8 +47,7 @@ public:
   }
 
   //! Give the tolerance of the polygon.
-  static double DeflectionOverEstimation(
-    const IntCurveSurface_ThePolyhedronOfHInter& thePolyh)
+  static double DeflectionOverEstimation(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh)
   {
     return thePolyh.DeflectionOverEstimation();
   }
@@ -63,17 +61,16 @@ public:
   //! Give the indices of the 3 points of the triangle of
   //! address Index in the PolyhedronTool.
   static void Triangle(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
-                       const int                       Index,
-                       int&                            P1,
-                       int&                            P2,
-                       int&                            P3)
+                       const int                                    Index,
+                       int&                                         P1,
+                       int&                                         P2,
+                       int&                                         P3)
   {
     thePolyh.Triangle(Index, P1, P2, P3);
   }
 
   //! Give the point of index i in the polyhedral surface.
-  static const gp_Pnt& Point(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
-                             const int                       Index)
+  static const gp_Pnt& Point(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh, const int Index)
   {
     return thePolyh.Point(Index);
   }
@@ -85,11 +82,11 @@ public:
   //! the value of the triangle in the other side of Pivot
   //! on the free edge. Used to turn around a vertex.
   static int TriConnex(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
-                                    const int                       Triang,
-                                    const int                       Pivot,
-                                    const int                       Pedge,
-                                    int&                            TriCon,
-                                    int&                            OtherP)
+                       const int                                    Triang,
+                       const int                                    Pivot,
+                       const int                                    Pedge,
+                       int&                                         TriCon,
+                       int&                                         OtherP)
   {
     return thePolyh.TriConnex(Triang, Pivot, Pedge, TriCon, OtherP);
   }
@@ -99,8 +96,8 @@ public:
   //! necessary to take into account the boundary deflection for
   //! this edge.
   static bool IsOnBound(const IntCurveSurface_ThePolyhedronOfHInter& thePolyh,
-                                    const int                       Index1,
-                                    const int                       Index2)
+                        const int                                    Index1,
+                        const int                                    Index2)
   {
     return thePolyh.IsOnBound(Index1, Index2);
   }

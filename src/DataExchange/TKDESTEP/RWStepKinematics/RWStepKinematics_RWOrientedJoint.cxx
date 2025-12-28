@@ -32,7 +32,7 @@ RWStepKinematics_RWOrientedJoint::RWStepKinematics_RWOrientedJoint() {}
 
 void RWStepKinematics_RWOrientedJoint::ReadStep(
   const occ::handle<StepData_StepReaderData>&      theData,
-  const int                      theNum,
+  const int                                        theNum,
   occ::handle<Interface_Check>&                    theArch,
   const occ::handle<StepKinematics_OrientedJoint>& theEnt) const
 {
@@ -83,7 +83,7 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWOrientedJoint::WriteStep(
-  StepData_StepWriter&                        theSW,
+  StepData_StepWriter&                             theSW,
   const occ::handle<StepKinematics_OrientedJoint>& theEnt) const
 {
 
@@ -106,8 +106,9 @@ void RWStepKinematics_RWOrientedJoint::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWOrientedJoint::Share(const occ::handle<StepKinematics_OrientedJoint>& theEnt,
-                                             Interface_EntityIterator&                   iter) const
+void RWStepKinematics_RWOrientedJoint::Share(
+  const occ::handle<StepKinematics_OrientedJoint>& theEnt,
+  Interface_EntityIterator&                        iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -156,9 +156,7 @@ double Extrema_ExtElSS::SquareDistance(const int N) const
   return mySqDist->Value(N);
 }
 
-void Extrema_ExtElSS::Points(const int N,
-                             Extrema_POnSurf&       P1,
-                             Extrema_POnSurf&       P2) const
+void Extrema_ExtElSS::Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const
 {
   if (N < 1 || N > NbExt())
   {

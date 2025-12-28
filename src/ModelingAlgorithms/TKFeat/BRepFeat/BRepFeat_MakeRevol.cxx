@@ -37,7 +37,6 @@
 #include <LocOpe_Revol.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
@@ -51,27 +50,30 @@ extern bool BRepFeat_GettraceFEAT();
 
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_Revol&,
-                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
-                   TopoDS_Shape&,                       // myFShape
-                   TopoDS_Shape&);                      // myLShape
+                   NCollection_DataMap<TopoDS_Shape,
+                                       NCollection_List<TopoDS_Shape>,
+                                       TopTools_ShapeMapHasher>&, // myMap
+                   TopoDS_Shape&,                                 // myFShape
+                   TopoDS_Shape&);                                // myLShape
 
-static void VerifGluedFaces(const TopoDS_Face&            theSkface,
-                            const TopoDS_Shape&           thePbase,
-                            occ::handle<Geom_Curve>&           theBCurve,
-                            NCollection_Sequence<occ::handle<Geom_Curve>>&     theCurves,
-                            LocOpe_Revol&                 theRevol,
-                            NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap);
+static void VerifGluedFaces(
+  const TopoDS_Face&                                                        theSkface,
+  const TopoDS_Shape&                                                       thePbase,
+  occ::handle<Geom_Curve>&                                                  theBCurve,
+  NCollection_Sequence<occ::handle<Geom_Curve>>&                            theCurves,
+  LocOpe_Revol&                                                             theRevol,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap);
 
 static bool ToFuse(const TopoDS_Face&, const TopoDS_Face&);
 
 //=================================================================================================
 
-void BRepFeat_MakeRevol::Init(const TopoDS_Shape&    Sbase,
-                              const TopoDS_Shape&    Pbase,
-                              const TopoDS_Face&     Skface,
-                              const gp_Ax1&          Axis,
-                              const int Mode,
-                              const bool Modify)
+void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
+                              const TopoDS_Shape& Pbase,
+                              const TopoDS_Face&  Skface,
+                              const gp_Ax1&       Axis,
+                              const int           Mode,
+                              const bool          Modify)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEAT();
@@ -209,10 +211,10 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
   myGluedF.Clear();
   myPerfSelection = BRepFeat_NoSelection;
   PerfSelectionValid();
-  bool RevolComp = (2 * M_PI - std::abs(Angle) <= Precision::Angular());
-  LocOpe_Revol     theRevol;
-  double    angledec = 0.;
-  TopExp_Explorer  exp;
+  bool            RevolComp = (2 * M_PI - std::abs(Angle) <= Precision::Angular());
+  LocOpe_Revol    theRevol;
+  double          angledec = 0.;
+  TopExp_Explorer exp;
   if (RevolComp)
   {
     /*
@@ -282,7 +284,8 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
       const TopoDS_Face& ff = TopoDS::Face(anExp.Current());
       if (ToFuse(ff, FFace))
       {
-        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> sl;
+        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+          sl;
         if (!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace))
           break;
       }
@@ -336,8 +339,8 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   if (trc)
     std::cout << "BRepFeat_MakeRevol::Perform(Until)" << std::endl;
 #endif
-  double    Angle       = 0.;
-  bool TourComplet = false;
+  double Angle       = 0.;
+  bool   TourComplet = false;
 
   if (Until.IsNull())
   {
@@ -358,7 +361,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil             = Until;
+  mySUntil = Until;
   bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
@@ -508,10 +511,10 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     throw Standard_ConstructionError();
   }
 
-  mySFrom               = From;
+  mySFrom   = From;
   bool Trff = TransformShapeFU(0);
   ShapeFromValid();
-  mySUntil              = Until;
+  mySUntil  = Until;
   bool Trfu = TransformShapeFU(1);
   ShapeUntilValid();
 
@@ -552,7 +555,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     ASI2.Perform(scur);
     TopAbs_Orientation OrU, OrF;
     TopoDS_Face        FFrom, FUntil;
-    double      PrF, PrU;
+    double             PrF, PrU;
     if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
     {
       OrU    = ASI1.Point(1, 1).Orientation();
@@ -568,9 +571,9 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     if (ASI2.IsDone() && ASI2.NbPoints(1) >= 1)
     {
       double pr1 = ASI2.Point(1, 1).Parameter();
-      pr1               = ElCLib::InPeriod(pr1, PrU - 2 * M_PI, PrU);
+      pr1        = ElCLib::InPeriod(pr1, PrU - 2 * M_PI, PrU);
       double pr2 = ASI2.Point(1, ASI2.NbPoints(1)).Parameter();
-      pr2               = ElCLib::InPeriod(pr2, PrU - 2 * M_PI, PrU);
+      pr2        = ElCLib::InPeriod(pr2, PrU - 2 * M_PI, PrU);
       // OrF = OrU;
       OrF   = TopAbs::Reverse(OrU);
       FFrom = ASI2.Point(1, 1).Face();
@@ -682,7 +685,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until, const doub
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil             = Until;
+  mySUntil = Until;
   bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
@@ -800,14 +803,15 @@ occ::handle<Geom_Curve> BRepFeat_MakeRevol::BarycCurve()
 //           if yes -> OK otherwise -> case without gluing
 //=======================================================================
 
-static void VerifGluedFaces(const TopoDS_Face&            theSkface,
-                            const TopoDS_Shape&           thePbase,
-                            occ::handle<Geom_Curve>&           theBCurve,
-                            NCollection_Sequence<occ::handle<Geom_Curve>>&     theCurves,
-                            LocOpe_Revol&                 theRevol,
-                            NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
+static void VerifGluedFaces(
+  const TopoDS_Face&                                                        theSkface,
+  const TopoDS_Shape&                                                       thePbase,
+  occ::handle<Geom_Curve>&                                                  theBCurve,
+  NCollection_Sequence<occ::handle<Geom_Curve>>&                            theCurves,
+  LocOpe_Revol&                                                             theRevol,
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
 {
-  bool    GluedFaces = true;
+  bool                GluedFaces = true;
   const TopoDS_Shape& VraiRevol  = theRevol.Shape();
 
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
@@ -868,11 +872,13 @@ static void VerifGluedFaces(const TopoDS_Face&            theSkface,
 // purpose  : management of descendants
 //=======================================================================
 
-static void MajMap(const TopoDS_Shape&                 theB,
-                   const LocOpe_Revol&                 theP,
-                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
-                   TopoDS_Shape&                       theFShape, // myFShape
-                   TopoDS_Shape&                       theLShape)                       // myLShape
+static void MajMap(
+  const TopoDS_Shape& theB,
+  const LocOpe_Revol& theP,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                theMap,    // myMap
+  TopoDS_Shape& theFShape, // myFShape
+  TopoDS_Shape& theLShape) // myLShape
 {
   TopExp_Explorer exp(theP.FirstShape(), TopAbs_WIRE);
   if (exp.More())
@@ -921,11 +927,11 @@ bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
     return false;
   }
 
-  occ::handle<Geom_Surface>    S1, S2;
-  TopLoc_Location         loc1, loc2;
-  occ::handle<Standard_Type>   typS1, typS2;
-  constexpr double tollin = Precision::Confusion();
-  constexpr double tolang = Precision::Angular();
+  occ::handle<Geom_Surface>  S1, S2;
+  TopLoc_Location            loc1, loc2;
+  occ::handle<Standard_Type> typS1, typS2;
+  constexpr double           tollin = Precision::Confusion();
+  constexpr double           tolang = Precision::Angular();
 
   S1 = BRep_Tool::Surface(F1, loc1);
   S2 = BRep_Tool::Surface(F2, loc2);

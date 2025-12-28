@@ -31,7 +31,7 @@ ShapeExtend_MsgRegistrator::ShapeExtend_MsgRegistrator()
 //=================================================================================================
 
 void ShapeExtend_MsgRegistrator::Send(const occ::handle<Standard_Transient>& object,
-                                      const Message_Msg&                message,
+                                      const Message_Msg&                     message,
                                       const Message_Gravity)
 {
   if (object.IsNull())

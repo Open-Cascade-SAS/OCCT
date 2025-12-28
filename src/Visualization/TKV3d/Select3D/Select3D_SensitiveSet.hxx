@@ -37,7 +37,8 @@ public:
 
   //! Assign new BVH builder to be used by default for new sensitive sets (assigning is NOT
   //! thread-safe!).
-  Standard_EXPORT static void SetDefaultBVHBuilder(const occ::handle<Select3D_BVHBuilder3d>& theBuilder);
+  Standard_EXPORT static void SetDefaultBVHBuilder(
+    const occ::handle<Select3D_BVHBuilder3d>& theBuilder);
 
 public:
   //! Creates new empty sensitive set and its content
@@ -51,8 +52,7 @@ public:
   virtual Select3D_BndBox3d Box(const int theIdx) const = 0;
 
   //! Returns geometry center of sensitive entity index theIdx along the given axis theAxis
-  virtual double Center(const int theIdx,
-                               const int theAxis) const = 0;
+  virtual double Center(const int theIdx, const int theAxis) const = 0;
 
   //! Swaps items with indexes theIdx1 and theIdx2
   virtual void Swap(const int theIdx1, const int theIdx2) = 0;
@@ -60,7 +60,7 @@ public:
   //! Checks whether one or more entities of the set overlap current selecting volume.
   //! Implements the traverse of BVH tree built for the set
   virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                   SelectBasics_PickResult& thePickResult) override
+                       SelectBasics_PickResult&             thePickResult) override
   {
     return matches(theMgr, thePickResult, false);
   }
@@ -100,7 +100,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 protected:
   //! Checks whether one or more entities of the set overlap current selecting volume.
@@ -113,8 +113,8 @@ protected:
   //!        volume ::elementIsInside(); this is useful for entities allowing local selection of
   //!        sub-elements using single Owner object.
   Standard_EXPORT bool matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                           SelectBasics_PickResult&             thePickResult,
-                                           bool theToCheckAllInside);
+                               SelectBasics_PickResult&             thePickResult,
+                               bool                                 theToCheckAllInside);
 
   //! Checks whether the entity with index theIdx (partially) overlaps the current selecting volume.
   //! @param[out] thePickResult  picking result, should update minimum depth
@@ -125,9 +125,9 @@ protected:
   //!                             in this case algorithm might skip checking the element and just
   //!                             register it as detected
   virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                           SelectBasics_SelectingVolumeManager& theMgr,
-                                           int                     theElemIdx,
-                                           bool theIsFullInside) = 0;
+                               SelectBasics_SelectingVolumeManager& theMgr,
+                               int                                  theElemIdx,
+                               bool                                 theIsFullInside) = 0;
 
   //! Checks whether the entity with index theIdx is (fully) inside the current selecting volume
   //! @param[in] theMgr  selection manager
@@ -137,8 +137,8 @@ protected:
   //!                             in this case algorithm might skip checking the element and just
   //!                             register it as detected
   virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                           int                     theElemIdx,
-                                           bool theIsFullInside) = 0;
+                               int                                  theElemIdx,
+                               bool                                 theIsFullInside) = 0;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
@@ -155,12 +155,12 @@ protected:
   //! @return FALSE if some element is outside the selection volume (if IsOverlapAllowed is FALSE);
   //! TRUE otherwise
   Standard_EXPORT bool processElements(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   int         theFirstElem,
-                                                   int         theLastElem,
-                                                   bool         theIsFullInside,
-                                                   bool         theToCheckAllInside,
-                                                   SelectBasics_PickResult& thePickResult,
-                                                   int&        theMatchesNb);
+                                       int                                  theFirstElem,
+                                       int                                  theLastElem,
+                                       bool                                 theIsFullInside,
+                                       bool                                 theToCheckAllInside,
+                                       SelectBasics_PickResult&             thePickResult,
+                                       int&                                 theMatchesNb);
 
 protected:
   //! The purpose of this class is to provide a link between BVH_PrimitiveSet
@@ -198,15 +198,13 @@ protected:
     using BVH_PrimitiveSet3d::Box;
 
     //! Returns center of sensitive with index theIdx in the set along the given axis theAxis
-    virtual double Center(const int theIdx,
-                                 const int theAxis) const override
+    virtual double Center(const int theIdx, const int theAxis) const override
     {
       return mySensitiveSet->Center(theIdx, theAxis);
     }
 
     //! Swaps items with indexes theIdx1 and theIdx2 in the set
-    virtual void Swap(const int theIdx1,
-                      const int theIdx2) override
+    virtual void Swap(const int theIdx1, const int theIdx2) override
     {
       mySensitiveSet->Swap(theIdx1, theIdx2);
     }
@@ -226,8 +224,8 @@ protected:
   };
 
 protected:
-  BvhPrimitiveSet  myContent;     //!< A link between sensitive entity and BVH_PrimitiveSet
-  int myDetectedIdx; //!< Index of detected primitive in BVH sorted primitive array
+  BvhPrimitiveSet myContent;     //!< A link between sensitive entity and BVH_PrimitiveSet
+  int             myDetectedIdx; //!< Index of detected primitive in BVH sorted primitive array
 };
 
 #endif // _Select3D_SensitiveSet_Header

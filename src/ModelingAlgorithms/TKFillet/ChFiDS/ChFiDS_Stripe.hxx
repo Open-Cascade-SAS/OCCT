@@ -107,13 +107,9 @@ public:
 
   void ChangeIndexLastPointOnS2(const int Index);
 
-  Standard_EXPORT void Parameters(const bool First,
-                                  double&         Pdeb,
-                                  double&         Pfin) const;
+  Standard_EXPORT void Parameters(const bool First, double& Pdeb, double& Pfin) const;
 
-  Standard_EXPORT void SetParameters(const bool First,
-                                     const double    Pdeb,
-                                     const double    Pfin);
+  Standard_EXPORT void SetParameters(const bool First, const double Pdeb, const double Pfin);
 
   Standard_EXPORT int Curve(const bool First) const;
 
@@ -131,12 +127,9 @@ public:
 
   Standard_EXPORT void SetOrientation(const TopAbs_Orientation Or, const bool First);
 
-  Standard_EXPORT int IndexPoint(const bool First,
-                                              const int OnS) const;
+  Standard_EXPORT int IndexPoint(const bool First, const int OnS) const;
 
-  Standard_EXPORT void SetIndexPoint(const int Index,
-                                     const bool First,
-                                     const int OnS);
+  Standard_EXPORT void SetIndexPoint(const int Index, const bool First, const int OnS);
 
   Standard_EXPORT int SolidIndex() const;
 
@@ -151,28 +144,28 @@ public:
   DEFINE_STANDARD_RTTIEXT(ChFiDS_Stripe, Standard_Transient)
 
 private:
-  double        pardeb1;
-  double        parfin1;
-  double        pardeb2;
-  double        parfin2;
-  occ::handle<ChFiDS_Spine> mySpine;
+  double                                                           pardeb1;
+  double                                                           parfin1;
+  double                                                           pardeb2;
+  double                                                           parfin2;
+  occ::handle<ChFiDS_Spine>                                        mySpine;
   occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> myHdata;
-  occ::handle<Geom2d_Curve> pcrv1;
-  occ::handle<Geom2d_Curve> pcrv2;
-  int     myChoix;
-  int     indexOfSolid;
-  int     indexOfcurve1;
-  int     indexOfcurve2;
-  int     indexfirstPOnS1;
-  int     indexlastPOnS1;
-  int     indexfirstPOnS2;
-  int     indexlastPOnS2;
-  int     begfilled;
-  int     endfilled;
-  TopAbs_Orientation   myOr1;
-  TopAbs_Orientation   myOr2;
-  TopAbs_Orientation   orcurv1;
-  TopAbs_Orientation   orcurv2;
+  occ::handle<Geom2d_Curve>                                        pcrv1;
+  occ::handle<Geom2d_Curve>                                        pcrv2;
+  int                                                              myChoix;
+  int                                                              indexOfSolid;
+  int                                                              indexOfcurve1;
+  int                                                              indexOfcurve2;
+  int                                                              indexfirstPOnS1;
+  int                                                              indexlastPOnS1;
+  int                                                              indexfirstPOnS2;
+  int                                                              indexlastPOnS2;
+  int                                                              begfilled;
+  int                                                              endfilled;
+  TopAbs_Orientation                                               myOr1;
+  TopAbs_Orientation                                               myOr2;
+  TopAbs_Orientation                                               orcurv1;
+  TopAbs_Orientation                                               orcurv2;
 };
 
 #include <ChFiDS_Stripe.lxx>

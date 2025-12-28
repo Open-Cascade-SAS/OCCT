@@ -33,7 +33,7 @@ RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::
 
 void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,
-  const int                                          num,
+  const int                                                            num,
   occ::handle<Interface_Check>&                                        ach,
   const occ::handle<StepFEA_ArbitraryVolume3dElementCoordinateSystem>& ent) const
 {
@@ -63,7 +63,7 @@ void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::WriteStep(
-  StepData_StepWriter&                                            SW,
+  StepData_StepWriter&                                                 SW,
   const occ::handle<StepFEA_ArbitraryVolume3dElementCoordinateSystem>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::WriteStep(
 
 void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::Share(
   const occ::handle<StepFEA_ArbitraryVolume3dElementCoordinateSystem>& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                            iter) const
 {
 
   // Inherited fields of RepresentationItem

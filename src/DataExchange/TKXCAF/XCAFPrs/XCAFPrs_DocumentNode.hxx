@@ -31,7 +31,7 @@ struct XCAFPrs_DocumentNode
   TopLoc_Location         Location;   //!< node global transformation
   TopLoc_Location         LocalTrsf;  //!< node transformation relative to parent
   TDF_ChildIterator       ChildIter;  //!< child iterator
-  bool        IsAssembly; //!< flag indicating that this label is assembly
+  bool                    IsAssembly; //!< flag indicating that this label is assembly
 
   XCAFPrs_DocumentNode()
       : IsAssembly(false)

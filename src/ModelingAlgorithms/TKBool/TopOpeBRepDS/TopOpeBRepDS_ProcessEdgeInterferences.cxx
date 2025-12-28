@@ -37,8 +37,8 @@ Standard_EXPORT bool FUN_vertexofedge
   // FUN_vertexofedge :  True si le vertex V est un vertex de E
   (const TopoDS_Shape& V, const TopoDS_Shape& E)
 {
-  bool isv = false;
-  TopExp_Explorer  ex;
+  bool            isv = false;
+  TopExp_Explorer ex;
   for (ex.Init(E, TopAbs_VERTEX); ex.More(); ex.Next())
     //  for (TopExp_Explorer ex(E,TopAbs_VERTEX); ex.More(); ex.Next())
     if (ex.Current().IsSame(V))
@@ -52,12 +52,12 @@ Standard_EXPORT bool FUN_vertexofedge
 //------------------------------------------------------
 static bool FUN_keepEinterference
   //------------------------------------------------------
-  (const TopOpeBRepDS_DataStructure&        DS,
+  (const TopOpeBRepDS_DataStructure&             DS,
    const occ::handle<TopOpeBRepDS_Interference>& I,
-   const TopoDS_Shape&                      E)
+   const TopoDS_Shape&                           E)
 {
   TopOpeBRepDS_Kind GT1, ST1;
-  int  G1, S1;
+  int               G1, S1;
   FDS_data(I, GT1, G1, ST1, S1);
 
   bool res = true;
@@ -65,14 +65,14 @@ static bool FUN_keepEinterference
   {
     // EVI I rejetee si son arete-support est E accedant I
     bool k1 = !::FUN_interfhassupport(DS, I, E);
-    res                 = k1;
+    res     = k1;
 
     // EVI rejetee si transition ON EDGE before ou after
     const TopOpeBRepDS_Transition& T    = I->Transition();
     TopAbs_ShapeEnum               shab = T.ShapeBefore(), shaa = T.ShapeAfter();
     TopAbs_State                   stab = T.Before(), staa = T.After();
-    bool               k2 = !(((shab == TopAbs_EDGE) && (stab == TopAbs_ON))
-                            || ((shaa == TopAbs_EDGE) && (staa == TopAbs_ON)));
+    bool                           k2 = !(((shab == TopAbs_EDGE) && (stab == TopAbs_ON))
+                || ((shaa == TopAbs_EDGE) && (staa == TopAbs_ON)));
     res                               = res && k2;
 
     const TopoDS_Shape& VG = DS.Shape(I->Geometry());
@@ -129,13 +129,13 @@ static bool FUN_keepEinterference
 //------------------------------------------------------
 Standard_EXPORT int FUN_unkeepEinterferences
   //------------------------------------------------------
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
-   const TopOpeBRepDS_DataStructure& BDS,
-   const int            SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   const TopOpeBRepDS_DataStructure&                         BDS,
+   const int                                                 SIX)
 {
 
   const TopoDS_Shape& E = BDS.Shape(SIX);
-  bool    isEd;
+  bool                isEd;
   isEd = BRep_Tool::Degenerated(TopoDS::Edge(E));
 
   if (isEd)
@@ -147,7 +147,7 @@ Standard_EXPORT int FUN_unkeepEinterferences
   while (it1.More())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1 = it1.ChangeValue();
-    bool                   k1 = ::FUN_keepEinterference(BDS, I1, E);
+    bool                                    k1 = ::FUN_keepEinterference(BDS, I1, E);
     if (!k1)
     {
       LI.Remove(it1);
@@ -166,8 +166,9 @@ Standard_EXPORT int FUN_unkeepEinterferences
 //------------------------------------------------------
 Standard_EXPORT void FUN_changeFOUT
 //------------------------------------------------------
-(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LF,const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LE,const
-TopOpeBRepDS_DataStructure& BDS,const int SIX)
+(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LF,const
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LE,const TopOpeBRepDS_DataStructure&
+BDS,const int SIX)
 {
   const TopoDS_Shape& E = BDS.Shape(SIX);
 
@@ -242,9 +243,9 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
   // unkeepEsymetric  : pour pallier au fonctionnement limite du TopTrans_CurveTransition
   // qui ne peut pas gerer correctement deux fois la meme arete (FORWARD,REVERSED)
   // incidentes en un vertex. (cas d'un shell fait de deux faces partageant une arete.)
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
-   const TopOpeBRepDS_DataStructure& BDS,
-   const int            SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   const TopOpeBRepDS_DataStructure&                         BDS,
+   const int                                                 SIX)
 {
   const TopoDS_Shape& E = BDS.Shape(SIX);
 
@@ -261,13 +262,13 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
   it1.Initialize(LI);
   while (it1.More())
   {
-    bool                   it1toremove = false;
+    bool                                    it1toremove = false;
     occ::handle<TopOpeBRepDS_Interference>& I1          = it1.ChangeValue();
-    TopOpeBRepDS_Kind                  GT1, ST1;
-    int                   G1, S1;
+    TopOpeBRepDS_Kind                       GT1, ST1;
+    int                                     G1, S1;
     FDS_data(I1, GT1, G1, ST1, S1);
     TopAbs_ShapeEnum tsb1, tsa1;
-    int isb1, isa1;
+    int              isb1, isa1;
     ::FDS_Tdata(I1, tsb1, isb1, tsa1, isa1);
     const TopOpeBRepDS_Transition T1 = I1->Transition();
 
@@ -276,16 +277,16 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
     while (it2.More())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
-      TopOpeBRepDS_Kind                        GT2, ST2;
-      int                         G2, S2;
+      TopOpeBRepDS_Kind                             GT2, ST2;
+      int                                           G2, S2;
       FDS_data(I2, GT2, G2, ST2, S2);
       TopAbs_ShapeEnum tsb2, tsa2;
-      int isb2, isa2;
+      int              isb2, isa2;
       ::FDS_Tdata(I2, tsb2, isb2, tsa2, isa2);
       const TopOpeBRepDS_Transition T2    = I2->Transition(); // + 03-03-97
-      bool              idGS  = (GT2 == GT1 && G2 == G1 && ST2 == ST1 && S2 == S1);
-      bool              idiba = (isb1 == isb2 && isa1 == isa2);
-      bool              cond  = idGS;
+      bool                          idGS  = (GT2 == GT1 && G2 == G1 && ST2 == ST1 && S2 == S1);
+      bool                          idiba = (isb1 == isb2 && isa1 == isa2);
+      bool                          cond  = idGS;
       cond                                = cond && idiba; // ++971219
 
       if (cond)
@@ -340,11 +341,11 @@ Standard_EXPORT void FUN_orderFFsamedomain
   // L1/ = interfs dont la transition est definie / face samedomain
   // L2/ = les autres interfs
   // L = L1 + L2;
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
-   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   const occ::handle<TopOpeBRepDS_HDataStructure>&           HDS,
    const int)
 {
-  TopOpeBRepDS_DataStructure&     BDS = HDS->ChangeDS();
+  TopOpeBRepDS_DataStructure&                              BDS = HDS->ChangeDS();
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> LIffsd, LIother;
   //  BDS.Shape(SIX);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1;
@@ -353,11 +354,11 @@ Standard_EXPORT void FUN_orderFFsamedomain
   while (it1.More())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1 = it1.ChangeValue();
-    TopOpeBRepDS_Kind                  GT1, ST1;
-    int                   G1, S1;
+    TopOpeBRepDS_Kind                       GT1, ST1;
+    int                                     G1, S1;
     FDS_data(I1, GT1, G1, ST1, S1);
     TopAbs_ShapeEnum tsb1, tsa1;
-    int isb1, isa1;
+    int              isb1, isa1;
     FDS_Tdata(I1, tsb1, isb1, tsa1, isa1);
     //    I1->Transition();
 
@@ -367,8 +368,8 @@ Standard_EXPORT void FUN_orderFFsamedomain
       // T1 states are defined on FACEs
       const TopoDS_Shape& fb    = BDS.Shape(isb1);
       const TopoDS_Shape& fa    = BDS.Shape(isa1);
-      bool    ffsd1 = HDS->HasSameDomain(fb);
-      bool    ffsd2 = HDS->HasSameDomain(fa);
+      bool                ffsd1 = HDS->HasSameDomain(fb);
+      bool                ffsd2 = HDS->HasSameDomain(fa);
       ffsd                      = ffsd1 && ffsd2;
     }
 
@@ -398,17 +399,17 @@ Standard_EXPORT void FUN_orderSTATETRANSonG
    const int)
 {
   //  TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>               L1, L2;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>           L1, L2;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1;
 
   it1.Initialize(LI);
   while (it1.More())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1 = it1.ChangeValue();
-    TopOpeBRepDS_Kind                  GT1, ST1;
-    int                   G1, S1;
-    TopAbs_ShapeEnum                   tsb1, tsa1;
-    int                   isb1, isa1;
+    TopOpeBRepDS_Kind                       GT1, ST1;
+    int                                     G1, S1;
+    TopAbs_ShapeEnum                        tsb1, tsa1;
+    int                                     isb1, isa1;
     FDS_Idata(I1, tsb1, isb1, tsa1, isa1, GT1, G1, ST1, S1);
     const TopOpeBRepDS_Transition& T1    = I1->Transition();
     TopAbs_State                   stab1 = T1.Before();
@@ -435,17 +436,17 @@ Standard_EXPORT void FUN_orderSTATETRANS
   // L1/ = interfs dont la transition a des etats egaux
   // L2/ = les autres interfs
   // L = L1 + L2;
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
-   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-   const int                     SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   const occ::handle<TopOpeBRepDS_HDataStructure>&           HDS,
+   const int                                                 SIX)
 {
   TopOpeBRepDS_TKI tki;
   tki.FillOnGeometry(LI);
   tki.Init();
   for (; tki.More(); tki.Next())
   {
-    TopOpeBRepDS_Kind                K;
-    int                 G;
+    TopOpeBRepDS_Kind                                         K;
+    int                                                       G;
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K, G);
     ::FUN_orderSTATETRANSonG(loi, HDS, SIX);
   }
@@ -454,8 +455,8 @@ Standard_EXPORT void FUN_orderSTATETRANS
   tki.Init();
   for (; tki.More(); tki.Next())
   {
-    TopOpeBRepDS_Kind                K;
-    int                 G;
+    TopOpeBRepDS_Kind                                         K;
+    int                                                       G;
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K, G);
     LI.Append(loi);
   }
@@ -464,13 +465,15 @@ Standard_EXPORT void FUN_orderSTATETRANS
 //------------------------------------------------------
 Standard_EXPORT void FUN_resolveEUNKNOWN
   //------------------------------------------------------
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI, TopOpeBRepDS_DataStructure& BDS, const int SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+   TopOpeBRepDS_DataStructure&                               BDS,
+   const int                                                 SIX)
 {
-  const TopoDS_Shape&                           E = BDS.Shape(SIX);
+  const TopoDS_Shape&                                                E = BDS.Shape(SIX);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it1;
 
   const TopoDS_Edge& EE = TopoDS::Edge(E);
-  double      fE, lE;
+  double             fE, lE;
   BRep_Tool::Range(EE, fE, lE);
 
   // process interferences of LI with UNKNOWN transition
@@ -478,18 +481,18 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
   for (it1.Initialize(LI); it1.More(); it1.Next())
   {
     occ::handle<TopOpeBRepDS_Interference>& I1    = it1.ChangeValue();
-    const TopOpeBRepDS_Transition&     T1    = I1->Transition();
-    bool                   isunk = T1.IsUnknown();
+    const TopOpeBRepDS_Transition&          T1    = I1->Transition();
+    bool                                    isunk = T1.IsUnknown();
     if (!isunk)
       continue;
 
     TopOpeBRepDS_Kind GT1, ST1;
-    int  G1, S1;
+    int               G1, S1;
     TopAbs_ShapeEnum  tsb1, tsa1;
-    int  isb1, isa1;
+    int               isb1, isa1;
     FDS_Idata(I1, tsb1, isb1, tsa1, isa1, GT1, G1, ST1, S1);
     bool idt  = (tsb1 == TopAbs_FACE && tsa1 == TopAbs_FACE && GT1 == TopOpeBRepDS_POINT
-                            && ST1 == TopOpeBRepDS_FACE);
+                && ST1 == TopOpeBRepDS_FACE);
     bool idi  = (isb1 == S1 && isa1 == S1);
     bool etgf = idt && idi; // edge tangent a une face en 1 point
     if (!etgf)
@@ -499,7 +502,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     if (cpi.IsNull())
       continue;
 
-    double      bid;
+    double                  bid;
     occ::handle<Geom_Curve> CE = BRep_Tool::Curve(EE, bid, bid);
     if (CE.IsNull())
       continue; // NYI : get points from 2d curve
@@ -509,7 +512,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     double parb   = (1 - ttb) * fE + ttb * parcpi;
     double tta    = 0.2;
     double para   = (1 - tta) * parcpi + tta * lE;
-    gp_Pnt        Pb;
+    gp_Pnt Pb;
     CE->D0(parb, Pb);
     gp_Pnt Pa;
     CE->D0(para, Pa);
@@ -537,9 +540,9 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                     const int                     EIX,
-                                     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI)
+Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructure>&           HDS,
+                                     const int                                                 EIX,
+                                     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI)
 // ----------------------------------------------------------------------
 {
   // recall  : (I1,I2) / I1=(T(F),G,S=edge), I2=(T(F),G,S=F) describes a 3d interference
@@ -553,8 +556,8 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
 
   TopOpeBRepDS_DataStructure& BDS  = HDS->ChangeDS();
   const TopoDS_Edge&          SE   = TopoDS::Edge(BDS.Shape(EIX));
-  int            rkSE = BDS.AncestorRank(SE);
-  bool            isse = BDS.IsSectionEdge(SE);
+  int                         rkSE = BDS.AncestorRank(SE);
+  bool                        isse = BDS.IsSectionEdge(SE);
   if (!isse)
     return;
 
@@ -567,7 +570,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
     for (NCollection_List<TopoDS_Shape>::Iterator itsdm(fsdm); itsdm.More(); itsdm.Next())
     {
       const TopoDS_Shape& sdmf  = itsdm.Value();
-      int    sdmrk = BDS.AncestorRank(sdmf);
+      int                 sdmrk = BDS.AncestorRank(sdmf);
       if (sdmrk == rkSE)
         continue;
       fsdmFancSE.Add(sdmf);
@@ -583,9 +586,9 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
   for (tki.Init(); tki.More(); tki.Next())
   {
 
-    TopOpeBRepDS_Kind                             Kcur;
-    int                              Gcur;
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&              loi = tki.ChangeValue(Kcur, Gcur);
+    TopOpeBRepDS_Kind                                         Kcur;
+    int                                                       Gcur;
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(Kcur, Gcur);
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loi);
     //    for (; it.More(); it.Next()){
     //      const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
@@ -607,11 +610,11 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
     for (; it.More(); it.Next())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-      TopOpeBRepDS_Kind                        GT, ST;
-      int                         G, S;
+      TopOpeBRepDS_Kind                             GT, ST;
+      int                                           G, S;
       FDS_data(I, GT, G, ST, S);
       TopAbs_ShapeEnum tsb, tsa;
-      int isb, isa;
+      int              isb, isa;
       FDS_Tdata(I, tsb, isb, tsa, isa);
 
       if (tsb != TopAbs_FACE)
@@ -626,7 +629,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructu
       }
 
       const TopoDS_Shape& f       = BDS.Shape(isb);
-      bool    isbound = fsdmFancSE.Contains(f);
+      bool                isbound = fsdmFancSE.Contains(f);
       if (isbound)
         LIface.Append(I);
       else

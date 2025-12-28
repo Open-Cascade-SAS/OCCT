@@ -63,7 +63,7 @@ public:
   //! time; else, Check computed for Entity (Verify integrity), can
   //! use a Graph as required to control context
   Standard_EXPORT void FillCheck(const occ::handle<Standard_Transient>& ent,
-                                 const Interface_ShareTool&        sh,
+                                 const Interface_ShareTool&             sh,
                                  occ::handle<Interface_Check>&          ach);
 
   //! Utility method which Prints the content of a Check
@@ -117,8 +117,8 @@ public:
 
 private:
   occ::handle<Interface_GTool> thegtool;
-  Interface_ShareTool     theshare;
-  int        thestat;
+  Interface_ShareTool          theshare;
+  int                          thestat;
 };
 
 #endif // _Interface_CheckTool_HeaderFile

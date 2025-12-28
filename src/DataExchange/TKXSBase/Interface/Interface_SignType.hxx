@@ -52,7 +52,6 @@ public:
   Standard_EXPORT static const char* ClassName(const char* typnam);
 
   DEFINE_STANDARD_RTTIEXT(Interface_SignType, MoniTool_SignText)
-
 };
 
 #endif // _Interface_SignType_HeaderFile

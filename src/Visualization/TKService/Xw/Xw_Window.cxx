@@ -33,11 +33,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 //=================================================================================================
 
 Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                     const char*                  theTitle,
-                     const int                  thePxLeft,
-                     const int                  thePxTop,
-                     const int                  thePxWidth,
-                     const int                  thePxHeight)
+                     const char*                                  theTitle,
+                     const int                                    thePxLeft,
+                     const int                                    thePxTop,
+                     const int                                    thePxWidth,
+                     const int                                    thePxHeight)
     : Aspect_Window(),
       myXWindow(0),
       myFBConfig(NULL),
@@ -124,8 +124,8 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
 //=================================================================================================
 
 Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                     const Aspect_Drawable                   theXWin,
-                     const Aspect_FBConfig                   theFBConfig)
+                     const Aspect_Drawable                        theXWin,
+                     const Aspect_FBConfig                        theFBConfig)
     : Aspect_Window(),
       myXWindow(theXWin),
       myFBConfig(theFBConfig),
@@ -253,7 +253,7 @@ Aspect_TypeOfResize Xw_Window::DoResize()
     return Aspect_TOR_UNKNOWN;
   }
 
-  int    aMask = 0;
+  int                 aMask = 0;
   Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
 
   if (std::abs(aWinAttr.x - myXLeft) > 2)
@@ -329,10 +329,7 @@ double Xw_Window::Ratio() const
 
 //=================================================================================================
 
-void Xw_Window::Position(int& theX1,
-                         int& theY1,
-                         int& theX2,
-                         int& theY2) const
+void Xw_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
 {
   if (IsVirtual() || myXWindow == 0)
   {
@@ -411,7 +408,7 @@ void Xw_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>& t
 
 #if defined(HAVE_XLIB)
   const occ::handle<Aspect_DisplayConnection>& aDisp  = !theDisp.IsNull() ? theDisp : myDisplay;
-  Display*                                aDispX = aDisp->GetDisplay();
+  Display*                                     aDispX = aDisp->GetDisplay();
 
   XEvent anEvent;
   memset(&anEvent, 0, sizeof(anEvent));
@@ -661,8 +658,8 @@ bool Xw_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
     case ButtonPress:
     case ButtonRelease: {
       const NCollection_Vec2<int> aPos(theMsg.xbutton.x, theMsg.xbutton.y);
-      Aspect_VKeyFlags      aFlags  = Aspect_VKeyFlags_NONE;
-      Aspect_VKeyMouse      aButton = Aspect_VKeyMouse_NONE;
+      Aspect_VKeyFlags            aFlags  = Aspect_VKeyFlags_NONE;
+      Aspect_VKeyMouse            aButton = Aspect_VKeyMouse_NONE;
       if (theMsg.xbutton.button == Button1)
       {
         aButton = Aspect_VKeyMouse_LeftButton;
@@ -728,9 +725,9 @@ bool Xw_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
         }
       }
 
-      NCollection_Vec2<int>  aPos(theMsg.xmotion.x, theMsg.xmotion.y);
-      Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
-      Aspect_VKeyFlags aFlags   = Aspect_VKeyFlags_NONE;
+      NCollection_Vec2<int> aPos(theMsg.xmotion.x, theMsg.xmotion.y);
+      Aspect_VKeyMouse      aButtons = Aspect_VKeyMouse_NONE;
+      Aspect_VKeyFlags      aFlags   = Aspect_VKeyFlags_NONE;
       if ((theMsg.xmotion.state & Button1Mask) != 0)
       {
         aButtons |= Aspect_VKeyMouse_LeftButton;

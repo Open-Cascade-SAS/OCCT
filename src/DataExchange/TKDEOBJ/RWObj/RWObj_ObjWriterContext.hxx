@@ -24,7 +24,6 @@
 
 #include <NCollection_Mat4.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
 //! Auxiliary low-level tool writing OBJ file.
@@ -56,10 +55,12 @@ public:
   void SetTexCoords(const bool theHasTexCoords) { myHasTexCoords = theHasTexCoords; }
 
   //! Write the header.
-  Standard_EXPORT bool WriteHeader(const int                      theNbNodes,
-                                   const int                      theNbElems,
-                                   const TCollection_AsciiString&              theMatLib,
-                                   const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo);
+  Standard_EXPORT bool WriteHeader(
+    const int                      theNbNodes,
+    const int                      theNbElems,
+    const TCollection_AsciiString& theMatLib,
+    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&
+      theFileInfo);
 
   //! Return active material or empty string if not set.
   const TCollection_AsciiString& ActiveMaterial() const { return myActiveMaterial; }
@@ -95,9 +96,9 @@ private:
   FILE*                   myFile;
   TCollection_AsciiString myName;
   TCollection_AsciiString myActiveMaterial;
-  NCollection_Vec4<int>         myElemPosFirst;
-  NCollection_Vec4<int>         myElemNormFirst;
-  NCollection_Vec4<int>         myElemUVFirst;
+  NCollection_Vec4<int>   myElemPosFirst;
+  NCollection_Vec4<int>   myElemNormFirst;
+  NCollection_Vec4<int>   myElemUVFirst;
   bool                    myHasNormals;
   bool                    myHasTexCoords;
 };

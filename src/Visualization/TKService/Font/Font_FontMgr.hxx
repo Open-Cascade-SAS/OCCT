@@ -81,7 +81,8 @@ public:
   }
 
   //! Returns sequence of available fonts names
-  Standard_EXPORT void GetAvailableFontsNames(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontsNames) const;
+  Standard_EXPORT void GetAvailableFontsNames(
+    NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontsNames) const;
 
   //! Returns font that match given parameters.
   //! If theFontName is empty string returned font can have any FontName.
@@ -89,12 +90,13 @@ public:
   //! If theFontSize is "-1" returned font can have any FontSize.
   Standard_EXPORT occ::handle<Font_SystemFont> GetFont(
     const occ::handle<TCollection_HAsciiString>& theFontName,
-    const Font_FontAspect                   theFontAspect,
-    const int                  theFontSize) const;
+    const Font_FontAspect                        theFontAspect,
+    const int                                    theFontSize) const;
 
   //! Returns font that match given name or NULL if such font family is NOT registered.
   //! Note that unlike FindFont(), this method ignores font aliases and does not look for fall-back.
-  Standard_EXPORT occ::handle<Font_SystemFont> GetFont(const TCollection_AsciiString& theFontName) const;
+  Standard_EXPORT occ::handle<Font_SystemFont> GetFont(
+    const TCollection_AsciiString& theFontName) const;
 
   //! Tries to find font by given parameters.
   //! If the specified font is not found tries to use font names mapping.
@@ -108,15 +110,14 @@ public:
   //!                                  can be modified if specified font alias refers to another
   //!                                  style (compatibility with obsolete aliases)
   //! @param[in] theDoFailMsg          put error message on failure into default messenger
-  Standard_EXPORT occ::handle<Font_SystemFont> FindFont(
-    const TCollection_AsciiString& theFontName,
-    Font_StrictLevel               theStrictLevel,
-    Font_FontAspect&               theFontAspect,
-    bool               theDoFailMsg = true) const;
+  Standard_EXPORT occ::handle<Font_SystemFont> FindFont(const TCollection_AsciiString& theFontName,
+                                                        Font_StrictLevel theStrictLevel,
+                                                        Font_FontAspect& theFontAspect,
+                                                        bool             theDoFailMsg = true) const;
 
   //! Tries to find font by given parameters.
   occ::handle<Font_SystemFont> FindFont(const TCollection_AsciiString& theFontName,
-                                   Font_FontAspect&               theFontAspect) const
+                                        Font_FontAspect&               theFontAspect) const
   {
     return FindFont(theFontName, Font_StrictLevel_Any, theFontAspect);
   }
@@ -125,13 +126,13 @@ public:
   //! Returns NULL in case when fallback font is not found in the system.
   //! @param[in] theSubset      Unicode subset
   //! @param[in] theFontAspect  font aspect to find
-  Standard_EXPORT occ::handle<Font_SystemFont> FindFallbackFont(Font_UnicodeSubset theSubset,
-                                                           Font_FontAspect    theFontAspect) const;
+  Standard_EXPORT occ::handle<Font_SystemFont> FindFallbackFont(
+    Font_UnicodeSubset theSubset,
+    Font_FontAspect    theFontAspect) const;
 
   //! Read font file and retrieve information from it (the list of font faces).
-  Standard_EXPORT bool
-    CheckFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
-              const TCollection_AsciiString&                 theFontPath) const;
+  Standard_EXPORT bool CheckFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
+                                 const TCollection_AsciiString& theFontPath) const;
 
   //! Read font file and retrieve information from it.
   Standard_EXPORT occ::handle<Font_SystemFont> CheckFont(const char* theFontPath) const;
@@ -140,11 +141,11 @@ public:
   //! If there is existing entity with the same name and properties but different path
   //! then font will be overridden or ignored depending on theToOverride flag.
   Standard_EXPORT bool RegisterFont(const occ::handle<Font_SystemFont>& theFont,
-                                                const bool         theToOverride);
+                                    const bool                          theToOverride);
 
   //! Register new fonts.
   bool RegisterFonts(const NCollection_Sequence<occ::handle<Font_SystemFont>>& theFonts,
-                                 const bool                               theToOverride)
+                     const bool                                                theToOverride)
   {
     bool isRegistered = false;
     for (NCollection_Sequence<occ::handle<Font_SystemFont>>::Iterator aFontIter(theFonts);
@@ -173,13 +174,15 @@ public:
 
   //! Return font names with defined aliases.
   //! @param[out] theAliases  alias names
-  Standard_EXPORT void GetAllAliases(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theAliases) const;
+  Standard_EXPORT void GetAllAliases(
+    NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theAliases) const;
 
   //! Return aliases to specified font name.
   //! @param[out] theFontNames  font names associated with alias name
   //! @param[in] theAliasName   alias name
-  Standard_EXPORT void GetFontAliases(NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontNames,
-                                      const TCollection_AsciiString&  theAliasName) const;
+  Standard_EXPORT void GetFontAliases(
+    NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& theFontNames,
+    const TCollection_AsciiString&                               theAliasName) const;
 
   //! Register font alias.
   //!
@@ -276,16 +279,16 @@ private:
   typedef NCollection_Shared<NCollection_Sequence<Font_FontAlias>> Font_FontAliasSequence;
 
   //! Register font alias.
-  void addFontAlias(const TCollection_AsciiString&        theAliasName,
+  void addFontAlias(const TCollection_AsciiString&             theAliasName,
                     const occ::handle<Font_FontAliasSequence>& theAliases,
-                    Font_FontAspect                       theAspect = Font_FontAspect_UNDEFINED);
+                    Font_FontAspect theAspect = Font_FontAspect_UNDEFINED);
 
 private:
-  Font_FontMap                                                                 myFontMap;
+  Font_FontMap                                                                      myFontMap;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Font_FontAliasSequence>> myFontAliases;
   occ::handle<Font_FontAliasSequence>                                               myFallbackAlias;
-  bool                                                             myToTraceAliases;
-  bool                                                             myToPrintErrors;
+  bool myToTraceAliases;
+  bool myToPrintErrors;
 };
 
 #endif // _Font_FontMgr_HeaderFile

@@ -16,7 +16,6 @@
 
 #include <Message_Alert.hxx>
 #include <Message_Gravity.hxx>
-#include <Message_Alert.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
 
@@ -29,21 +28,22 @@ public:
   Message_CompositeAlerts() {}
 
   //! Returns list of collected alerts with specified gravity
-  Standard_EXPORT const NCollection_List<occ::handle<Message_Alert>>& Alerts(const Message_Gravity theGravity) const;
+  Standard_EXPORT const NCollection_List<occ::handle<Message_Alert>>& Alerts(
+    const Message_Gravity theGravity) const;
 
   //! Add alert with specified gravity. If the alert supports merge it will be merged.
   //! @param theGravity an alert gravity
   //! @param theAlert an alert to be added as a child alert
   //! @return true if the alert is added or merged
-  Standard_EXPORT bool AddAlert(Message_Gravity              theGravity,
-                                            const occ::handle<Message_Alert>& theAlert);
+  Standard_EXPORT bool AddAlert(Message_Gravity                   theGravity,
+                                const occ::handle<Message_Alert>& theAlert);
 
   //! Removes alert with specified gravity.
   //! @param theGravity an alert gravity
   //! @param theAlert an alert to be removed from the children
   //! @return true if the alert is removed
-  Standard_EXPORT bool RemoveAlert(Message_Gravity              theGravity,
-                                               const occ::handle<Message_Alert>& theAlert);
+  Standard_EXPORT bool RemoveAlert(Message_Gravity                   theGravity,
+                                   const occ::handle<Message_Alert>& theAlert);
 
   //! Returns true if the alert belong the list of the child alerts.
   //! @param theAlert an alert to be checked as a child alert
@@ -55,7 +55,7 @@ public:
   //! @param theGravity an alert gravity
   //! @return true if the alert is found in a container of children
   Standard_EXPORT bool HasAlert(const occ::handle<Standard_Type>& theType,
-                                            Message_Gravity              theGravity);
+                                Message_Gravity                   theGravity);
 
   //! Clears all collected alerts
   Standard_EXPORT void Clear();

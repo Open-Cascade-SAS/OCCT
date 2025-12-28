@@ -21,7 +21,7 @@
 RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType() {}
 
 void RWStepBasic_RWDocumentType::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepBasic_DocumentType>&  ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWDocumentType::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aId);
 }
 
-void RWStepBasic_RWDocumentType::WriteStep(StepData_StepWriter&                  SW,
+void RWStepBasic_RWDocumentType::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepBasic_DocumentType>& ent) const
 {
 

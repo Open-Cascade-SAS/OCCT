@@ -24,9 +24,7 @@
 #include <HLRBRep_TypeDef.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 #include <Intf_Polygon2d.hxx>
 class Standard_OutOfRange;
@@ -42,9 +40,9 @@ public:
 
   //! Compute a polygon on the domain of the curve.
   Standard_EXPORT HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter(const HLRBRep_CurvePtr& Curve,
-                                                                   const int  NbPnt,
+                                                                   const int               NbPnt,
                                                                    const IntRes2d_Domain&  Domain,
-                                                                   const double     Tol);
+                                                                   const double            Tol);
 
   //! The current polygon is modified if most
   //! of the points of the polygon are
@@ -67,8 +65,8 @@ public:
 
   //! Returns the points of the segment <Index> in the Polygon.
   Standard_EXPORT virtual void Segment(const int theIndex,
-                                       gp_Pnt2d&              theBegin,
-                                       gp_Pnt2d&              theEnd) const override;
+                                       gp_Pnt2d& theBegin,
+                                       gp_Pnt2d& theEnd) const override;
 
   //! Returns the parameter (On the curve)
   //! of the first point of the Polygon
@@ -82,28 +80,27 @@ public:
 
   //! Give an approximation of the parameter on the curve
   //! according to the discretization of the Curve.
-  Standard_EXPORT double ApproxParamOnCurve(const int Index,
-                                                   const double    ParamOnLine) const;
+  Standard_EXPORT double ApproxParamOnCurve(const int Index, const double ParamOnLine) const;
 
   int CalculRegion(const double x,
-                                const double y,
-                                const double x1,
-                                const double x2,
-                                const double y1,
-                                const double y2) const;
+                   const double y,
+                   const double x1,
+                   const double x2,
+                   const double y1,
+                   const double y2) const;
 
   Standard_EXPORT void Dump() const;
 
 private:
-  double           TheDeflection;
-  int        NbPntIn;
-  int        TheMaxNbPoints;
-  NCollection_Array1<gp_Pnt2d>    ThePnts;
-  NCollection_Array1<double>    TheParams;
-  NCollection_Array1<int> TheIndex;
-  bool        ClosedPolygon;
-  double           Binf;
-  double           Bsup;
+  double                       TheDeflection;
+  int                          NbPntIn;
+  int                          TheMaxNbPoints;
+  NCollection_Array1<gp_Pnt2d> ThePnts;
+  NCollection_Array1<double>   TheParams;
+  NCollection_Array1<int>      TheIndex;
+  bool                         ClosedPolygon;
+  double                       Binf;
+  double                       Bsup;
 };
 
 #define TheCurve HLRBRep_CurvePtr

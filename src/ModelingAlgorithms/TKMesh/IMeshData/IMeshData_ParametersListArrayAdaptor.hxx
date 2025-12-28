@@ -40,10 +40,7 @@ public:
   int Upper() const { return myParameters->ParametersNb() - 1; }
 
   //! Returns value of the given index.
-  double Value(const int theIndex) const
-  {
-    return myParameters->GetParameter(theIndex);
-  }
+  double Value(const int theIndex) const { return myParameters->GetParameter(theIndex); }
 
 private:
   IMeshData_ParametersListArrayAdaptor(

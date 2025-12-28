@@ -61,26 +61,26 @@ public:
 
   //! returns Value as a AdvancedBrepShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_AdvancedBrepShapeRepresentation>
-    AdvancedBrepShapeRepresentation() const;
+                  AdvancedBrepShapeRepresentation() const;
 
   //! returns Value as a CsgShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_CsgShapeRepresentation> CsgShapeRepresentation() const;
 
   //! returns Value as a FacetedBrepShapeRepresentation (Null if another type)
-  Standard_EXPORT occ::handle<StepShape_FacetedBrepShapeRepresentation> FacetedBrepShapeRepresentation()
-    const;
+  Standard_EXPORT occ::handle<StepShape_FacetedBrepShapeRepresentation>
+                  FacetedBrepShapeRepresentation() const;
 
   //! returns Value as a GeometricallyBoundedSurfaceShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_GeometricallyBoundedSurfaceShapeRepresentation>
-    GeometricallyBoundedSurfaceShapeRepresentation() const;
+                  GeometricallyBoundedSurfaceShapeRepresentation() const;
 
   //! returns Value as a GeometricallyBoundedWireframeShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_GeometricallyBoundedWireframeShapeRepresentation>
-    GeometricallyBoundedWireframeShapeRepresentation() const;
+                  GeometricallyBoundedWireframeShapeRepresentation() const;
 
   //! returns Value as a ManifoldSurfaceShapeRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepShape_ManifoldSurfaceShapeRepresentation>
-    ManifoldSurfaceShapeRepresentation() const;
+                  ManifoldSurfaceShapeRepresentation() const;
 
   //! returns Value as a Representation (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_Representation> Representation() const;
@@ -96,7 +96,6 @@ public:
 
   //! returns Value as a TemplateInstance (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_TemplateInstance> TemplateInstance() const;
-
 };
 
 #endif // _StepAP214_AutoDesignGroupedItem_HeaderFile

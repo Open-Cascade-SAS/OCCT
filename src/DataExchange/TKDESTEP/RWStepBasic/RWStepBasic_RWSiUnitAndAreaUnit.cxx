@@ -25,10 +25,11 @@
 
 RWStepBasic_RWSiUnitAndAreaUnit::RWStepBasic_RWSiUnitAndAreaUnit() {}
 
-void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                               const int                     num0,
-                                               occ::handle<Interface_Check>&                   ach,
-                                               const occ::handle<StepBasic_SiUnitAndAreaUnit>& ent) const
+void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(
+  const occ::handle<StepData_StepReaderData>&     data,
+  const int                                       num0,
+  occ::handle<Interface_Check>&                   ach,
+  const occ::handle<StepBasic_SiUnitAndAreaUnit>& ent) const
 {
   int num = 0;
   data->NamedForComplex("AREA_UNIT", "ARUNT", num0, num, ach);
@@ -51,13 +52,13 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const occ::handle<StepData_StepRe
     return;
 
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  bool   hasAprefix = false;
+  bool               hasAprefix = false;
   if (data->IsParamDefined(num, 1))
   {
     if (data->ParamType(num, 1) == Interface_ParamEnum)
     {
       const char* text = data->ParamCValue(num, 1);
-      hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
+      hasAprefix       = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
         ach->AddFail("Enumeration si_prefix has not an allowed value");
@@ -92,7 +93,7 @@ void RWStepBasic_RWSiUnitAndAreaUnit::ReadStep(const occ::handle<StepData_StepRe
 }
 
 void RWStepBasic_RWSiUnitAndAreaUnit::WriteStep(
-  StepData_StepWriter&                       SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepBasic_SiUnitAndAreaUnit>& ent) const
 {
   SW.StartEntity("AREA_UNIT");

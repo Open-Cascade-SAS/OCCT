@@ -43,7 +43,8 @@ public:
 
   //! Give the array of boxes. The box <n> corresponding
   //! to the triangle <n>.
-  static const occ::handle<NCollection_HArray1<Bnd_Box>>& ComponentsBounding(const IntPatch_Polyhedron& thePolyh);
+  static const occ::handle<NCollection_HArray1<Bnd_Box>>& ComponentsBounding(
+    const IntPatch_Polyhedron& thePolyh);
 
   //! Give the tolerance of the polygon.
   static double DeflectionOverEstimation(const IntPatch_Polyhedron& thePolyh);
@@ -54,10 +55,10 @@ public:
   //! Give the indices of the 3 points of the triangle of
   //! address Index in the Polyhedron.
   static void Triangle(const IntPatch_Polyhedron& thePolyh,
-                       const int     Index,
-                       int&          P1,
-                       int&          P2,
-                       int&          P3);
+                       const int                  Index,
+                       int&                       P1,
+                       int&                       P2,
+                       int&                       P3);
 
   //! Give the point of index i in the polyhedral surface.
   static const gp_Pnt& Point(const IntPatch_Polyhedron& thePolyh, const int Index);
@@ -69,12 +70,11 @@ public:
   //! the value of the triangle in the other side of Pivot
   //! on the free edge. Used to turn around a vertex.
   static int TriConnex(const IntPatch_Polyhedron& thePolyh,
-                                    const int     Triang,
-                                    const int     Pivot,
-                                    const int     Pedge,
-                                    int&          TriCon,
-                                    int&          OtherP);
-
+                       const int                  Triang,
+                       const int                  Pivot,
+                       const int                  Pedge,
+                       int&                       TriCon,
+                       int&                       OtherP);
 };
 
 #include <IntPatch_PolyhedronTool.lxx>

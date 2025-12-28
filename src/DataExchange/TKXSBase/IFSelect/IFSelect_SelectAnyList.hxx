@@ -102,17 +102,16 @@ public:
   //! Returns the list of selected entities (list of entities
   //! complying with rank criterium)
   //! Error if the input list has more than one Item
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Puts into <res>, the sub-entities of the list, from n1 to
   //! n2 included. Remark that adequation with Entity's type and
   //! length of list has already been made at this stage
   //! Called by RootResult
-  Standard_EXPORT virtual void FillResult(const int            n1,
-                                          const int            n2,
+  Standard_EXPORT virtual void FillResult(const int                              n1,
+                                          const int                              n2,
                                           const occ::handle<Standard_Transient>& ent,
-                                          Interface_EntityIterator&         res) const = 0;
+                                          Interface_EntityIterator&              res) const = 0;
 
   //! Returns a text defining the criterium : "Components of List "
   //! then Specific List Label, then, following cases :

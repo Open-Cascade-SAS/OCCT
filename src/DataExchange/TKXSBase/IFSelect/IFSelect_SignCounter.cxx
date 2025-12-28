@@ -23,8 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignCounter, IFSelect_SignatureList)
 
-IFSelect_SignCounter::IFSelect_SignCounter(const bool withmap,
-                                           const bool withlist)
+IFSelect_SignCounter::IFSelect_SignCounter(const bool withmap, const bool withlist)
     : IFSelect_SignatureList(withlist)
 {
   themapstat = withmap;
@@ -32,8 +31,8 @@ IFSelect_SignCounter::IFSelect_SignCounter(const bool withmap,
 }
 
 IFSelect_SignCounter::IFSelect_SignCounter(const occ::handle<IFSelect_Signature>& matcher,
-                                           const bool            withmap,
-                                           const bool            withlist)
+                                           const bool                             withmap,
+                                           const bool                             withlist)
     : IFSelect_SignatureList(withlist),
       thematcher(matcher)
 {
@@ -54,7 +53,7 @@ void IFSelect_SignCounter::SetMap(const bool withmap)
 }
 
 bool IFSelect_SignCounter::AddEntity(const occ::handle<Standard_Transient>&       ent,
-                                                 const occ::handle<Interface_InterfaceModel>& model)
+                                     const occ::handle<Interface_InterfaceModel>& model)
 {
   if (themapstat && !ent.IsNull())
   {
@@ -77,8 +76,9 @@ void IFSelect_SignCounter::AddSign(const occ::handle<Standard_Transient>&       
     Add(ent, thematcher->Value(ent, model));
 }
 
-void IFSelect_SignCounter::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                                   const occ::handle<Interface_InterfaceModel>&     model)
+void IFSelect_SignCounter::AddList(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const occ::handle<Interface_InterfaceModel>&                               model)
 {
   if (list.IsNull())
     return;
@@ -87,8 +87,9 @@ void IFSelect_SignCounter::AddList(const occ::handle<NCollection_HSequence<occ::
     AddEntity(list->Value(i), model);
 }
 
-void IFSelect_SignCounter::AddWithGraph(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-                                        const Interface_Graph&                      graph)
+void IFSelect_SignCounter::AddWithGraph(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+  const Interface_Graph&                                                     graph)
 {
   AddList(list, graph.Model());
 }
@@ -108,7 +109,7 @@ void IFSelect_SignCounter::AddModel(const occ::handle<Interface_InterfaceModel>&
 }
 
 void IFSelect_SignCounter::AddFromSelection(const occ::handle<IFSelect_Selection>& sel,
-                                            const Interface_Graph&            G)
+                                            const Interface_Graph&                 G)
 {
   Interface_EntityIterator iter = sel->RootResult(G);
   AddWithGraph(iter.Content(), G);
@@ -143,15 +144,14 @@ int IFSelect_SignCounter::SelMode() const
   return theselmode;
 }
 
-bool IFSelect_SignCounter::ComputeSelected(const Interface_Graph& G,
-                                                       const bool forced)
+bool IFSelect_SignCounter::ComputeSelected(const Interface_Graph& G, const bool forced)
 {
   if (theselmode < 2 || theselect.IsNull())
     return false;
-  bool         afaire = forced;
+  bool                     afaire = forced;
   Interface_EntityIterator iter   = theselect->RootResult(G);
-  int         nb1    = G.Size();
-  int         nb2    = iter.NbEntities();
+  int                      nb1    = G.Size();
+  int                      nb2    = iter.NbEntities();
   if (!afaire)
     afaire = (nb1 != thenbcomp1 || nb2 != thenbcomp2);
   thenbcomp1 = nb1;
@@ -173,13 +173,14 @@ occ::handle<TCollection_HAsciiString> IFSelect_SignCounter::Sign(
 }
 
 const char* IFSelect_SignCounter::ComputedSign(const occ::handle<Standard_Transient>& ent,
-                                                    const Interface_Graph&            G)
+                                               const Interface_Graph&                 G)
 {
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
+    new NCollection_HSequence<occ::handle<Standard_Transient>>();
   list->Append(ent);
   ModeSignOnly() = true;
   AddWithGraph(list, G);
   const char* val = LastValue();
-  ModeSignOnly()       = false;
+  ModeSignOnly()  = false;
   return val;
 }

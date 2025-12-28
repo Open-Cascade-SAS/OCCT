@@ -23,7 +23,7 @@ RWStepGeom_RWRectangularCompositeSurface::RWStepGeom_RWRectangularCompositeSurfa
 
 void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                              num,
+  const int                                                num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepGeom_RectangularCompositeSurface>& ent) const
 {
@@ -42,13 +42,13 @@ void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
   // --- own field : segments ---
 
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> aSegments;
-  occ::handle<StepGeom_SurfacePatch>          anent2;
-  int                       nsub2;
+  occ::handle<StepGeom_SurfacePatch>                                   anent2;
+  int                                                                  nsub2;
   if (data->ReadSubList(num, 2, "segments", ach, nsub2))
   {
-    int nbi2 = data->NbParams(nsub2);
-    int nbj2 = data->NbParams(data->ParamNumber(nsub2, 1));
-    aSegments             = new NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>(1, nbi2, 1, nbj2);
+    int nbi2  = data->NbParams(nsub2);
+    int nbj2  = data->NbParams(data->ParamNumber(nsub2, 1));
+    aSegments = new NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>(1, nbi2, 1, nbj2);
     for (int i2 = 1; i2 <= nbi2; i2++)
     {
       int nsi2;
@@ -75,7 +75,7 @@ void RWStepGeom_RWRectangularCompositeSurface::ReadStep(
 }
 
 void RWStepGeom_RWRectangularCompositeSurface::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepGeom_RectangularCompositeSurface>& ent) const
 {
 
@@ -102,7 +102,7 @@ void RWStepGeom_RWRectangularCompositeSurface::WriteStep(
 
 void RWStepGeom_RWRectangularCompositeSurface::Share(
   const occ::handle<StepGeom_RectangularCompositeSurface>& ent,
-  Interface_EntityIterator&                           iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   int nbiElem1 = ent->NbSegmentsI();

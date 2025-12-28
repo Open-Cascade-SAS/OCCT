@@ -28,7 +28,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 class TopOpeBRepTool_mkTondgE
@@ -39,9 +38,9 @@ public:
   Standard_EXPORT TopOpeBRepTool_mkTondgE();
 
   Standard_EXPORT bool Initialize(const TopoDS_Edge& dgE,
-                                              const TopoDS_Face& F,
-                                              const gp_Pnt2d&    uvi,
-                                              const TopoDS_Face& Fi);
+                                  const TopoDS_Face& F,
+                                  const gp_Pnt2d&    uvi,
+                                  const TopoDS_Face& Fi);
 
   Standard_EXPORT bool SetclE(const TopoDS_Edge& clE);
 
@@ -51,27 +50,22 @@ public:
 
   Standard_EXPORT int GetAllRest(NCollection_List<TopoDS_Shape>& lEi);
 
-  Standard_EXPORT bool MkTonE(int& mkT,
-                                          double&    par1,
-                                          double&    par2);
+  Standard_EXPORT bool MkTonE(int& mkT, double& par1, double& par2);
 
-  Standard_EXPORT bool MkTonE(const TopoDS_Edge& Ei,
-                                          int&  mkT,
-                                          double&     par1,
-                                          double&     par2);
+  Standard_EXPORT bool MkTonE(const TopoDS_Edge& Ei, int& mkT, double& par1, double& par2);
 
 private:
-  TopoDS_Edge                 mydgE;
-  TopoDS_Face                 myF;
-  TopoDS_Edge                 myclE;
-  gp_Dir                      mydirINcle;
-  TopoDS_Face                 myFi;
-  gp_Pnt2d                    myuvi;
-  bool            isT2d;
+  TopoDS_Edge                                                        mydgE;
+  TopoDS_Face                                                        myF;
+  TopoDS_Edge                                                        myclE;
+  gp_Dir                                                             mydirINcle;
+  TopoDS_Face                                                        myFi;
+  gp_Pnt2d                                                           myuvi;
+  bool                                                               isT2d;
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> myEpari;
-  bool            hasRest;
-  gp_Dir                      myngf;
-  gp_Dir                      myngfi;
+  bool                                                               hasRest;
+  gp_Dir                                                             myngf;
+  gp_Dir                                                             myngfi;
 };
 
 #endif // _TopOpeBRepTool_mkTondgE_HeaderFile

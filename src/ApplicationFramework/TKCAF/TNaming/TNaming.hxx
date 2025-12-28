@@ -24,10 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_GUID.hxx>
@@ -108,9 +105,10 @@ public:
 
   //! Subtituter les shapes sur les structures de source
   //! vers cible
-  Standard_EXPORT static void Substitute(const TDF_Label&              labelsource,
-                                         const TDF_Label&              labelcible,
-                                         NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
+  Standard_EXPORT static void Substitute(
+    const TDF_Label&                                                          labelsource,
+    const TDF_Label&                                                          labelcible,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
 
   //! Mise a jour des shapes du label et de ses fils en
   //! tenant compte des substitutions decrite par
@@ -119,18 +117,21 @@ public:
   //! Warning: le remplacement du shape est fait dans tous
   //! les attributs qui le contiennent meme si ceux
   //! ci ne sont pas associees a des sous-labels de <Label>.
-  Standard_EXPORT static void Update(const TDF_Label&              label,
-                                     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
+  Standard_EXPORT static void Update(
+    const TDF_Label&                                                          label,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& mapOldNew);
 
   //! Application de la Location sur les shapes du label
   //! et de ses sous labels.
   Standard_EXPORT static void Displace(const TDF_Label&       label,
                                        const TopLoc_Location& aLocation,
-                                       const bool WithOld = true);
+                                       const bool             WithOld = true);
 
   //! Remplace les shapes du label et des sous-labels
   //! par des copies.
-  Standard_EXPORT static void ChangeShapes(const TDF_Label& label, NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& M);
+  Standard_EXPORT static void ChangeShapes(
+    const TDF_Label&                                                          label,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& M);
 
   //! Application de la transformation sur les shapes du
   //! label et de ses sous labels.
@@ -143,8 +144,8 @@ public:
   //! on the label <L> (and sub-labels if necessary)
   //! (TNaming_GENERATED is set)
   Standard_EXPORT static void Replicate(const occ::handle<TNaming_NamedShape>& NS,
-                                        const gp_Trsf&                    T,
-                                        const TDF_Label&                  L);
+                                        const gp_Trsf&                         T,
+                                        const TDF_Label&                       L);
 
   //! Replicates the shape with the transformation <T>
   //! on the label <L> (and sub-labels if necessary)
@@ -154,7 +155,8 @@ public:
                                         const TDF_Label&    L);
 
   //! Builds shape from map content
-  Standard_EXPORT static TopoDS_Shape MakeShape(const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
+  Standard_EXPORT static TopoDS_Shape MakeShape(
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
 
   //! Find unique context of shape <S>
   Standard_EXPORT static TopoDS_Shape FindUniqueContext(const TopoDS_Shape& S,
@@ -163,24 +165,23 @@ public:
   //! Find unique context of shape <S>,which is pure concatenation
   //! of atomic shapes (Compound). The result is concatenation of
   //! single contexts
-  Standard_EXPORT static TopoDS_Shape FindUniqueContextSet(const TopoDS_Shape&              S,
-                                                           const TopoDS_Shape&              Context,
-                                                           occ::handle<NCollection_HArray1<TopoDS_Shape>>& Arr);
+  Standard_EXPORT static TopoDS_Shape FindUniqueContextSet(
+    const TopoDS_Shape&                             S,
+    const TopoDS_Shape&                             Context,
+    occ::handle<NCollection_HArray1<TopoDS_Shape>>& Arr);
 
   //! Substitutes shape in source structure
   Standard_EXPORT static bool SubstituteSShape(const TDF_Label&    accesslabel,
-                                                           const TopoDS_Shape& From,
-                                                           TopoDS_Shape&       To);
+                                               const TopoDS_Shape& From,
+                                               TopoDS_Shape&       To);
 
   //! Returns True if outer wire is found and the found wire in <theWire>.
-  Standard_EXPORT static bool OuterWire(const TopoDS_Face& theFace,
-                                                    TopoDS_Wire&       theWire);
+  Standard_EXPORT static bool OuterWire(const TopoDS_Face& theFace, TopoDS_Wire& theWire);
 
   //! Returns True if outer Shell is found and the found shell in <theShell>.
   //! Print of TNaming enumeration
   //! =============================
-  Standard_EXPORT static bool OuterShell(const TopoDS_Solid& theSolid,
-                                                     TopoDS_Shell&       theShell);
+  Standard_EXPORT static bool OuterShell(const TopoDS_Solid& theSolid, TopoDS_Shell& theShell);
 
   //! Appends to <anIDList> the list of the attributes
   //! IDs of this package.

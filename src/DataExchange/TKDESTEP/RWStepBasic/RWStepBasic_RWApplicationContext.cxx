@@ -20,7 +20,7 @@ RWStepBasic_RWApplicationContext::RWStepBasic_RWApplicationContext() {}
 
 void RWStepBasic_RWApplicationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                      num,
+  const int                                        num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepBasic_ApplicationContext>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWApplicationContext::ReadStep(
 }
 
 void RWStepBasic_RWApplicationContext::WriteStep(
-  StepData_StepWriter&                        SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepBasic_ApplicationContext>& ent) const
 {
 

@@ -23,7 +23,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <IGESData_UndefinedEntity.hxx>
-#include <Standard_Integer.hxx>
 #include <Interface_ParamType.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
@@ -62,10 +61,10 @@ public:
   //! Returns data of a Parameter : its type, and the entity if it
   //! designates en entity ("ent") or its literal value else ("str")
   //! Returned value (Boolean) : True if it is an Entity, False else
-  Standard_EXPORT bool ParamData(const int            num,
-                                             Interface_ParamType&              ptype,
-                                             occ::handle<IGESData_IGESEntity>&      ent,
-                                             occ::handle<TCollection_HAsciiString>& val) const;
+  Standard_EXPORT bool ParamData(const int                              num,
+                                 Interface_ParamType&                   ptype,
+                                 occ::handle<IGESData_IGESEntity>&      ent,
+                                 occ::handle<TCollection_HAsciiString>& val) const;
 
   //! Returns the ParamType of a Param, given its rank
   //! Error if num is not between 1 and NbParams
@@ -95,7 +94,7 @@ public:
   Standard_EXPORT occ::handle<NCollection_HSequence<int>> NegativePointers() const;
 
   //! Adds a literal Parameter to the list (as such)
-  Standard_EXPORT void AddLiteral(const Interface_ParamType               ptype,
+  Standard_EXPORT void AddLiteral(const Interface_ParamType                    ptype,
                                   const occ::handle<TCollection_HAsciiString>& val);
 
   //! Adds a literal Parameter to the list (builds an HAsciiString)
@@ -106,9 +105,9 @@ public:
   //! If <negative> is given True, this will command Sending to File
   //! (see IGESWriter) to produce a "Negative Pointer"
   //! (Default is False)
-  Standard_EXPORT void AddEntity(const Interface_ParamType          ptype,
+  Standard_EXPORT void AddEntity(const Interface_ParamType               ptype,
                                  const occ::handle<IGESData_IGESEntity>& ent,
-                                 const bool             negative = false);
+                                 const bool                              negative = false);
 
   //! Adds a set of Entities, given as a HArray1OfIGESEntity
   //! Causes creation of : an Integer Parameter which gives count
@@ -116,7 +115,8 @@ public:
   //! Error if an Entity is not an IGESEntity
   //! All these Entities will be interpreted as "Positive Pointers"
   //! by IGESWriter
-  Standard_EXPORT void AddEntities(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& ents);
+  Standard_EXPORT void AddEntities(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& ents);
 
   //! Adds a list of Ranks of Parameters to be noted as Negative
   //! Pointers (this will be taken into account for Parameters

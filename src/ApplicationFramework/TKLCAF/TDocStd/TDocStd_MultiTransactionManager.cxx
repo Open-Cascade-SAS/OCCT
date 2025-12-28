@@ -59,7 +59,7 @@ void TDocStd_MultiTransactionManager::Undo()
   if (myUndos.IsEmpty())
     return;
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myUndos.First()->GetDocuments();
-  int                  i;
+  int                                                        i;
   for (i = docs.Length(); i > 0; i--)
   {
     occ::handle<TDocStd_Document> doc = docs.Value(i);
@@ -79,7 +79,7 @@ void TDocStd_MultiTransactionManager::Redo()
   if (myRedos.IsEmpty())
     return;
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myRedos.First()->GetDocuments();
-  int                  i;
+  int                                                        i;
   for (i = docs.Length(); i > 0; i--)
   {
     occ::handle<TDocStd_Document> doc = docs.Value(i);
@@ -135,8 +135,8 @@ void TDocStd_MultiTransactionManager::AbortCommand()
 bool TDocStd_MultiTransactionManager::CommitCommand()
 {
   occ::handle<TDocStd_ApplicationDelta> aDelta     = new TDocStd_ApplicationDelta;
-  bool                 isCommited = false;
-  int                 i;
+  bool                                  isCommited = false;
+  int                                   i;
   for (i = myDocuments.Length(); i > 0; i--)
   {
     isCommited = false;
@@ -165,8 +165,7 @@ bool TDocStd_MultiTransactionManager::CommitCommand()
 
 //=================================================================================================
 
-bool TDocStd_MultiTransactionManager::CommitCommand(
-  const TCollection_ExtendedString& theName)
+bool TDocStd_MultiTransactionManager::CommitCommand(const TCollection_ExtendedString& theName)
 {
   bool isCommited = CommitCommand();
   if (isCommited && myUndos.Length())
@@ -233,7 +232,7 @@ void TDocStd_MultiTransactionManager::RemoveLastUndo()
   if (myUndos.Length() == 0)
     return;
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myUndos.Last()->GetDocuments();
-  int                  i;
+  int                                                        i;
   for (i = 1; i <= docs.Length(); i++)
   {
     docs.Value(i)->RemoveFirstUndo();
@@ -283,8 +282,8 @@ void TDocStd_MultiTransactionManager::RemoveDocument(const occ::handle<TDocStd_D
   }
   for (i = myUndos.Length(); i > 0; i--)
   {
-    occ::handle<TDocStd_ApplicationDelta> delta = myUndos.Value(i);
-    NCollection_Sequence<occ::handle<TDocStd_Document>>&      docs  = delta->GetDocuments();
+    occ::handle<TDocStd_ApplicationDelta>                delta = myUndos.Value(i);
+    NCollection_Sequence<occ::handle<TDocStd_Document>>& docs  = delta->GetDocuments();
     for (int j = docs.Length(); j > 0; j--)
     {
       if (docs.Value(j) == theDoc)
@@ -297,8 +296,8 @@ void TDocStd_MultiTransactionManager::RemoveDocument(const occ::handle<TDocStd_D
   }
   for (i = myRedos.Length(); i > 0; i--)
   {
-    occ::handle<TDocStd_ApplicationDelta> delta = myRedos.Value(i);
-    NCollection_Sequence<occ::handle<TDocStd_Document>>&      docs  = delta->GetDocuments();
+    occ::handle<TDocStd_ApplicationDelta>                delta = myRedos.Value(i);
+    NCollection_Sequence<occ::handle<TDocStd_Document>>& docs  = delta->GetDocuments();
     for (int j = docs.Length(); j > 0; j--)
     {
       if (docs.Value(j) == theDoc)

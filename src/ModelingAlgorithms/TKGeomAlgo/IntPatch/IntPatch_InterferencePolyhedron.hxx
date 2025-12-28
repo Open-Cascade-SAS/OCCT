@@ -63,30 +63,30 @@ private:
 
   //! Computes the intersection between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
-  Standard_EXPORT void Intersect(const int     TriF,
+  Standard_EXPORT void Intersect(const int                  TriF,
                                  const IntPatch_Polyhedron& Obje1,
-                                 const int     TriS,
+                                 const int                  TriS,
                                  const IntPatch_Polyhedron& Obje2);
 
   //! Computes the zone of tangence between the facet <Tri1> of
   //! <FirstPol> and the facet <Tri2> of <SecondPol>.
   Standard_EXPORT bool TangentZoneValue(Intf_TangentZone&          TheTZ,
-                                                    const IntPatch_Polyhedron& Obje1,
-                                                    const int     Tri1,
-                                                    const IntPatch_Polyhedron& Obje2,
-                                                    const int     Tri2) const;
+                                        const IntPatch_Polyhedron& Obje1,
+                                        const int                  Tri1,
+                                        const IntPatch_Polyhedron& Obje2,
+                                        const int                  Tri2) const;
 
   Standard_EXPORT void CoupleCharacteristics(const IntPatch_Polyhedron& FirstPol,
                                              const IntPatch_Polyhedron& SeconPol);
 
-  int OI[3];
-  int TI[3];
-  double    dpOpT[3][3];
-  double    dpOeT[3][3];
-  double    deOpT[3][3];
-  gp_XYZ           voo[3];
-  gp_XYZ           vtt[3];
-  double    Incidence;
+  int    OI[3];
+  int    TI[3];
+  double dpOpT[3][3];
+  double dpOeT[3][3];
+  double deOpT[3][3];
+  gp_XYZ voo[3];
+  gp_XYZ vtt[3];
+  double Incidence;
 };
 
 #endif // _IntPatch_InterferencePolyhedron_HeaderFile

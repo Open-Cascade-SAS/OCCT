@@ -31,7 +31,7 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
   if (!myMesh.IsNull())
   {
     const int aNbNodes = myMesh->NbNodes();
-    myNodeCoords                    = new NCollection_HArray2<double>(1, aNbNodes, 1, 3);
+    myNodeCoords       = new NCollection_HArray2<double>(1, aNbNodes, 1, 3);
     std::cout << "Nodes : " << aNbNodes << std::endl;
 
     for (int i = 1; i <= aNbNodes; i++)
@@ -45,8 +45,8 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
     }
 
     const int aNbTris = myMesh->NbTriangles();
-    myElemNormals                  = new NCollection_HArray2<double>(1, aNbTris, 1, 3);
-    myElemNodes                    = new NCollection_HArray2<int>(1, aNbTris, 1, 3);
+    myElemNormals     = new NCollection_HArray2<double>(1, aNbTris, 1, 3);
+    myElemNodes       = new NCollection_HArray2<int>(1, aNbTris, 1, 3);
 
     std::cout << "Elements : " << aNbTris << std::endl;
 
@@ -87,11 +87,11 @@ XSDRAWSTL_DataSource::XSDRAWSTL_DataSource(const occ::handle<Poly_Triangulation>
 
 //=================================================================================================
 
-bool XSDRAWSTL_DataSource::GetGeom(const int ID,
-                                               const bool IsElement,
-                                               NCollection_Array1<double>&  Coords,
-                                               int&      NbNodes,
-                                               MeshVS_EntityType&     Type) const
+bool XSDRAWSTL_DataSource::GetGeom(const int                   ID,
+                                   const bool                  IsElement,
+                                   NCollection_Array1<double>& Coords,
+                                   int&                        NbNodes,
+                                   MeshVS_EntityType&          Type) const
 {
   if (myMesh.IsNull())
     return false;
@@ -132,8 +132,8 @@ bool XSDRAWSTL_DataSource::GetGeom(const int ID,
 //=================================================================================================
 
 bool XSDRAWSTL_DataSource::GetGeomType(const int,
-                                                   const bool IsElement,
-                                                   MeshVS_EntityType&     Type) const
+                                       const bool         IsElement,
+                                       MeshVS_EntityType& Type) const
 {
   if (IsElement)
   {
@@ -156,19 +156,19 @@ void* XSDRAWSTL_DataSource::GetAddr(const int, const bool) const
 
 //=================================================================================================
 
-bool XSDRAWSTL_DataSource::GetNodesByElement(const int   ID,
-                                                         NCollection_Array1<int>& theNodeIDs,
-                                                         int& /*theNbNodes*/) const
+bool XSDRAWSTL_DataSource::GetNodesByElement(const int                ID,
+                                             NCollection_Array1<int>& theNodeIDs,
+                                             int& /*theNbNodes*/) const
 {
   if (myMesh.IsNull())
     return false;
 
   if (ID >= 1 && ID <= myElements.Extent() && theNodeIDs.Length() >= 3)
   {
-    int aLow = theNodeIDs.Lower();
-    theNodeIDs(aLow)      = myElemNodes->Value(ID, 1);
-    theNodeIDs(aLow + 1)  = myElemNodes->Value(ID, 2);
-    theNodeIDs(aLow + 2)  = myElemNodes->Value(ID, 3);
+    int aLow             = theNodeIDs.Lower();
+    theNodeIDs(aLow)     = myElemNodes->Value(ID, 1);
+    theNodeIDs(aLow + 1) = myElemNodes->Value(ID, 2);
+    theNodeIDs(aLow + 2) = myElemNodes->Value(ID, 3);
     return true;
   }
   return false;
@@ -191,10 +191,10 @@ const TColStd_PackedMapOfInteger& XSDRAWSTL_DataSource::GetAllElements() const
 //=================================================================================================
 
 bool XSDRAWSTL_DataSource::GetNormal(const int Id,
-                                                 const int Max,
-                                                 double&         nx,
-                                                 double&         ny,
-                                                 double&         nz) const
+                                     const int Max,
+                                     double&   nx,
+                                     double&   ny,
+                                     double&   nz) const
 {
   if (myMesh.IsNull())
     return false;

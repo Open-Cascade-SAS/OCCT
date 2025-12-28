@@ -59,10 +59,10 @@ Geom2d_Ellipse::Geom2d_Ellipse(const gp_Elips2d& E)
 
 //=================================================================================================
 
-Geom2d_Ellipse::Geom2d_Ellipse(const Ax2d&            MajorAxis,
-                               const double    MajorRadius,
-                               const double    MinorRadius,
-                               const bool Sense)
+Geom2d_Ellipse::Geom2d_Ellipse(const Ax2d&  MajorAxis,
+                               const double MajorRadius,
+                               const double MinorRadius,
+                               const bool   Sense)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {
@@ -76,9 +76,9 @@ Geom2d_Ellipse::Geom2d_Ellipse(const Ax2d&            MajorAxis,
 
 //=================================================================================================
 
-Geom2d_Ellipse::Geom2d_Ellipse(const gp_Ax22d&     Axis,
-                               const double MajorRadius,
-                               const double MinorRadius)
+Geom2d_Ellipse::Geom2d_Ellipse(const gp_Ax22d& Axis,
+                               const double    MajorRadius,
+                               const double    MinorRadius)
     : majorRadius(MajorRadius),
       minorRadius(MinorRadius)
 {

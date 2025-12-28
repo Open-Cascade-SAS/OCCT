@@ -29,7 +29,7 @@ public:
   struct TextureSlot
   {
     occ::handle<OpenGl_Texture> Texture;
-    Graphic3d_TextureUnit  Unit;
+    Graphic3d_TextureUnit       Unit;
 
     operator const occ::handle<OpenGl_Texture>&() const { return Texture; }
 
@@ -167,7 +167,7 @@ public:
 
 protected:
   NCollection_Array1<TextureSlot> myTextures;
-  int                myTextureSetBits;
+  int                             myTextureSetBits;
 };
 
 #endif //_OpenGl_TextureSet_Header

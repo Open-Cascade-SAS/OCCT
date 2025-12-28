@@ -53,23 +53,23 @@ public:
   Standard_EXPORT static void Axe(const TopoDS_Shape& Spine,
                                   const TopoDS_Wire&  Profile,
                                   gp_Ax3&             AxeProf,
-                                  bool&   ProfOnSpine,
-                                  const double Tol);
+                                  bool&               ProfOnSpine,
+                                  const double        Tol);
 
   //! Compute ACR on a wire
   Standard_EXPORT static void ComputeACR(const TopoDS_Wire& wire, NCollection_Array1<double>& ACR);
 
   //! Insert ACR on a wire
-  Standard_EXPORT static TopoDS_Wire InsertACR(const TopoDS_Wire&          wire,
+  Standard_EXPORT static TopoDS_Wire InsertACR(const TopoDS_Wire&                wire,
                                                const NCollection_Array1<double>& ACRcuts,
-                                               const double         prec);
+                                               const double                      prec);
 
 private:
   //! Computes origins and orientation on a closed wire
-  Standard_EXPORT static void SearchOrigin(TopoDS_Wire&        W,
-                                           const gp_Pnt&       P,
-                                           const gp_Vec&       V,
-                                           const double Tol);
+  Standard_EXPORT static void SearchOrigin(TopoDS_Wire&  W,
+                                           const gp_Pnt& P,
+                                           const gp_Vec& V,
+                                           const double  Tol);
 
 private:
   friend class BRepFill_PipeShell;

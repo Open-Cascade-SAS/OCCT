@@ -41,10 +41,10 @@ public:
   //! - R2     : radius of circular disc
   //! - aPoint : center point coordinates (default (0,0,0))
   //! - anAxis : unit vector in axis direction (default (0,0,1))
-  Standard_EXPORT void Init(const double R1,
-                            const double R2,
-                            const gp_XYZ&       aPoint,
-                            const gp_XYZ&       anAxisdir);
+  Standard_EXPORT void Init(const double  R1,
+                            const double  R2,
+                            const gp_XYZ& aPoint,
+                            const gp_XYZ& anAxisdir);
 
   //! returns the distance from the center of torus to the center of
   //! the disc to be revolved
@@ -70,8 +70,8 @@ public:
 private:
   double theR1;
   double theR2;
-  gp_XYZ        thePoint;
-  gp_XYZ        theAxis;
+  gp_XYZ thePoint;
+  gp_XYZ theAxis;
 };
 
 #endif // _IGESSolid_Torus_HeaderFile

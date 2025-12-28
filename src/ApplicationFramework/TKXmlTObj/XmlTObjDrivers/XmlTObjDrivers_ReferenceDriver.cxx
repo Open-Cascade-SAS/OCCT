@@ -59,10 +59,9 @@ occ::handle<TDF_Attribute> XmlTObjDrivers_ReferenceDriver::NewEmpty() const
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-bool XmlTObjDrivers_ReferenceDriver::Paste(
-  const XmlObjMgt_Persistent&  Source,
-  const occ::handle<TDF_Attribute>& Target,
-  XmlObjMgt_RRelocationTable& /*RelocTable*/) const
+bool XmlTObjDrivers_ReferenceDriver::Paste(const XmlObjMgt_Persistent&       Source,
+                                           const occ::handle<TDF_Attribute>& Target,
+                                           XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = Source;
 
@@ -99,7 +98,7 @@ bool XmlTObjDrivers_ReferenceDriver::Paste(
 //=======================================================================
 
 void XmlTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& Source,
-                                           XmlObjMgt_Persistent&        Target,
+                                           XmlObjMgt_Persistent&             Target,
                                            XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
   occ::handle<TObj_TReference> aSource = occ::down_cast<TObj_TReference>(Source);
@@ -124,7 +123,7 @@ void XmlTObjDrivers_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& Sou
   if (aLabel.Root() == aMasterLabel.Root())
     return;
 
-  occ::handle<TObj_Model>      aModel = aLObject->GetModel();
+  occ::handle<TObj_Model> aModel = aLObject->GetModel();
   TCollection_AsciiString aModelName(aModel->GetModelName()->String());
   Target.Element().setAttribute(::ReferredModelEntry(), aModelName.ToCString());
 }

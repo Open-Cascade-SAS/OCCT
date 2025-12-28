@@ -45,7 +45,6 @@ public:
   virtual void Dump() const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
-
 };
 
 #include <Units_UnitsLexicon.lxx>

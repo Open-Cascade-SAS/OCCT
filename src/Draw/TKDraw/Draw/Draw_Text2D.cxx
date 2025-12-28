@@ -34,11 +34,11 @@ Draw_Text2D::Draw_Text2D(const gp_Pnt2d& p, const char* T, const Draw_Color& col
 
 //=================================================================================================
 
-Draw_Text2D::Draw_Text2D(const gp_Pnt2d&        p,
-                         const char* T,
-                         const Draw_Color&      col,
-                         const int moveX,
-                         const int moveY)
+Draw_Text2D::Draw_Text2D(const gp_Pnt2d&   p,
+                         const char*       T,
+                         const Draw_Color& col,
+                         const int         moveX,
+                         const int         moveY)
     : myPoint(p),
       myColor(col),
       myText(T),

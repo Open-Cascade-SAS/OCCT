@@ -138,7 +138,7 @@ bool TDataXtd_Geometry::Line(const occ::handle<TNaming_NamedShape>& NS, gp_Lin& 
   if (shape.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Edge& edge = TopoDS::Edge(shape);
-    double      first, last;
+    double             first, last;
     // TopLoc_Location loc;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
     if (!curve.IsNull())
@@ -178,7 +178,7 @@ bool TDataXtd_Geometry::Circle(const occ::handle<TNaming_NamedShape>& NS, gp_Cir
   if (shape.ShapeType() == TopAbs_EDGE)
   {
     const TopoDS_Edge& edge = TopoDS::Edge(shape);
-    double      first, last;
+    double             first, last;
     // TopLoc_Location loc;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
     if (!curve.IsNull())
@@ -217,8 +217,8 @@ bool TDataXtd_Geometry::Ellipse(const occ::handle<TNaming_NamedShape>& NS, gp_El
     return false;
   if (shape.ShapeType() == TopAbs_EDGE)
   {
-    const TopoDS_Edge& edge = TopoDS::Edge(shape);
-    double      first, last;
+    const TopoDS_Edge&      edge = TopoDS::Edge(shape);
+    double                  first, last;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
     if (!curve.IsNull())
     {
@@ -256,7 +256,7 @@ bool TDataXtd_Geometry::Plane(const occ::handle<TNaming_NamedShape>& NS, gp_Pln&
     return false;
   if (shape.ShapeType() == TopAbs_FACE)
   {
-    const TopoDS_Face&   face    = TopoDS::Face(shape);
+    const TopoDS_Face&        face    = TopoDS::Face(shape);
     occ::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
     if (!surface.IsNull())
     {
@@ -294,7 +294,7 @@ bool TDataXtd_Geometry::Cylinder(const occ::handle<TNaming_NamedShape>& NS, gp_C
     return false;
   if (shape.ShapeType() == TopAbs_FACE)
   {
-    const TopoDS_Face&   face    = TopoDS::Face(shape);
+    const TopoDS_Face&        face    = TopoDS::Face(shape);
     occ::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
     if (!surface.IsNull())
     {
@@ -337,7 +337,7 @@ TDataXtd_GeometryEnum TDataXtd_Geometry::Type(const occ::handle<TNaming_NamedSha
     }
     case TopAbs_EDGE: {
       const TopoDS_Edge& edge = TopoDS::Edge(shape);
-      double      first, last;
+      double             first, last;
       // TopLoc_Location loc;
       occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
       if (!curve.IsNull())
@@ -368,7 +368,7 @@ TDataXtd_GeometryEnum TDataXtd_Geometry::Type(const occ::handle<TNaming_NamedSha
       break;
     }
     case TopAbs_FACE: {
-      const TopoDS_Face&   face    = TopoDS::Face(shape);
+      const TopoDS_Face&        face    = TopoDS::Face(shape);
       occ::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
       if (!surface.IsNull())
       {

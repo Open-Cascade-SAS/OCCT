@@ -25,11 +25,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -38,7 +35,7 @@ RWStepFEA_RWFeaModel3d::RWStepFEA_RWFeaModel3d() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaModel3d::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepFEA_FeaModel3d>&      ent) const
 {
@@ -52,11 +49,12 @@ void RWStepFEA_RWFeaModel3d::ReadStep(const occ::handle<StepData_StepReaderData>
   data->ReadString(num, 1, "representation.name", ach, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                             sub2 = 0;
+  int                                                                        sub2 = 0;
   if (data->ReadSubList(num, 2, "representation.items", ach, sub2))
   {
-    int nb0  = data->NbParams(sub2);
-    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int nb0 = data->NbParams(sub2);
+    aRepresentation_Items =
+      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -85,12 +83,12 @@ void RWStepFEA_RWFeaModel3d::ReadStep(const occ::handle<StepData_StepReaderData>
   data->ReadString(num, 4, "fea_model.creating_software", ach, aFeaModel_CreatingSoftware);
 
   occ::handle<NCollection_HArray1<TCollection_AsciiString>> aFeaModel_IntendedAnalysisCode;
-  int                     sub5 = 0;
+  int                                                       sub5 = 0;
   if (data->ReadSubList(num, 5, "fea_model.intended_analysis_code", ach, sub5))
   {
-    int nb0           = data->NbParams(sub5);
+    int nb0                        = data->NbParams(sub5);
     aFeaModel_IntendedAnalysisCode = new NCollection_HArray1<TCollection_AsciiString>(1, nb0);
-    int num2          = sub5;
+    int num2                       = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<TCollection_HAsciiString> anIt0;
@@ -117,7 +115,7 @@ void RWStepFEA_RWFeaModel3d::ReadStep(const occ::handle<StepData_StepReaderData>
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&              SW,
+void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepFEA_FeaModel3d>& ent) const
 {
 
@@ -128,7 +126,8 @@ void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&              SW,
   SW.OpenSub();
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 =
+      ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -156,14 +155,15 @@ void RWStepFEA_RWFeaModel3d::WriteStep(StepData_StepWriter&              SW,
 //=================================================================================================
 
 void RWStepFEA_RWFeaModel3d::Share(const occ::handle<StepFEA_FeaModel3d>& ent,
-                                   Interface_EntityIterator&         iter) const
+                                   Interface_EntityIterator&              iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 =
+      ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

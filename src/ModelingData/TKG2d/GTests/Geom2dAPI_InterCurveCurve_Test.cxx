@@ -41,7 +41,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC24889_IntersectionParameterWithinLimits)
     new Geom2d_TrimmedCurve(aCircle2, 3.30359060633978, 4.71238898038469);
 
   // Perform intersection
-  constexpr double   aTol = Precision::Confusion();
+  constexpr double          aTol = Precision::Confusion();
   Geom2dAPI_InterCurveCurve aIntTool(aTrim1, aTrim2, aTol);
 
   ASSERT_GT(aIntTool.NbPoints(), 0) << "Intersection should find at least one point";

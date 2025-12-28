@@ -22,13 +22,13 @@
 
 HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
                                          const occ::handle<Standard_Transient>&   SData,
-                                         const int              nbIso,
-                                         const int              V1,
-                                         const int              V2,
-                                         const int              E1,
-                                         const int              E2,
-                                         const int              F1,
-                                         const int              F2)
+                                         const int                                nbIso,
+                                         const int                                V1,
+                                         const int                                V2,
+                                         const int                                E1,
+                                         const int                                E2,
+                                         const int                                F1,
+                                         const int                                F2)
     : myShape(S),
       myShapeData(SData),
       myNbIso(nbIso),
@@ -44,13 +44,13 @@ HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>
 //=================================================================================================
 
 HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>& S,
-                                         const int              nbIso,
-                                         const int              V1,
-                                         const int              V2,
-                                         const int              E1,
-                                         const int              E2,
-                                         const int              F1,
-                                         const int              F2)
+                                         const int                                nbIso,
+                                         const int                                V1,
+                                         const int                                V2,
+                                         const int                                E1,
+                                         const int                                E2,
+                                         const int                                F1,
+                                         const int                                F2)
     : myShape(S),
       myNbIso(nbIso),
       myVertStart(V1),
@@ -64,9 +64,7 @@ HLRBRep_ShapeBounds::HLRBRep_ShapeBounds(const occ::handle<HLRTopoBRep_OutLiner>
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Translate(const int NV,
-                                    const int NE,
-                                    const int NF)
+void HLRBRep_ShapeBounds::Translate(const int NV, const int NE, const int NF)
 {
   myVertStart += NV;
   myVertEnd += NV;
@@ -78,9 +76,7 @@ void HLRBRep_ShapeBounds::Translate(const int NV,
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Sizes(int& NV,
-                                int& NE,
-                                int& NF) const
+void HLRBRep_ShapeBounds::Sizes(int& NV, int& NE, int& NF) const
 {
   NV = myVertEnd + 1 - myVertStart;
   NE = myEdgeEnd + 1 - myEdgeStart;
@@ -89,12 +85,7 @@ void HLRBRep_ShapeBounds::Sizes(int& NV,
 
 //=================================================================================================
 
-void HLRBRep_ShapeBounds::Bounds(int& V1,
-                                 int& V2,
-                                 int& E1,
-                                 int& E2,
-                                 int& F1,
-                                 int& F2) const
+void HLRBRep_ShapeBounds::Bounds(int& V1, int& V2, int& E1, int& E2, int& F1, int& F2) const
 {
   V1 = myVertStart;
   V2 = myVertEnd;

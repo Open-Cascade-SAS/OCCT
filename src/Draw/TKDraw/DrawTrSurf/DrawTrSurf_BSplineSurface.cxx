@@ -51,17 +51,17 @@ DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const occ::handle<Geom_BSpl
 }
 
 DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const occ::handle<Geom_BSplineSurface>& S,
-                                                     const Draw_Color&                  BoundsColor,
-                                                     const Draw_Color&                  IsosColor,
-                                                     const Draw_Color&                  PolesColor,
-                                                     const Draw_Color&                  KnotsColor,
-                                                     const Draw_MarkerShape             KnotsShape,
-                                                     const int             KnotsSize,
+                                                     const Draw_Color&      BoundsColor,
+                                                     const Draw_Color&      IsosColor,
+                                                     const Draw_Color&      PolesColor,
+                                                     const Draw_Color&      KnotsColor,
+                                                     const Draw_MarkerShape KnotsShape,
+                                                     const int              KnotsSize,
                                                      const bool             ShowPoles,
                                                      const bool             ShowKnots,
-                                                     const int             Discret,
-                                                     const double                Deflection,
-                                                     const int             DrawMode)
+                                                     const int              Discret,
+                                                     const double           Deflection,
+                                                     const int              DrawMode)
     : DrawTrSurf_Surface(S,
                          S->NbUKnots() - 2,
                          S->NbVKnots() - 2,
@@ -81,19 +81,19 @@ DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const occ::handle<Geom_BSpl
 }
 
 DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const occ::handle<Geom_BSplineSurface>& S,
-                                                     const int             NbUIsos,
-                                                     const int             NbVIsos,
-                                                     const Draw_Color&                  BoundsColor,
-                                                     const Draw_Color&                  IsosColor,
-                                                     const Draw_Color&                  PolesColor,
-                                                     const Draw_Color&                  KnotsColor,
-                                                     const Draw_MarkerShape             KnotsShape,
-                                                     const int             KnotsSize,
+                                                     const int              NbUIsos,
+                                                     const int              NbVIsos,
+                                                     const Draw_Color&      BoundsColor,
+                                                     const Draw_Color&      IsosColor,
+                                                     const Draw_Color&      PolesColor,
+                                                     const Draw_Color&      KnotsColor,
+                                                     const Draw_MarkerShape KnotsShape,
+                                                     const int              KnotsSize,
                                                      const bool             ShowPoles,
                                                      const bool             ShowKnots,
-                                                     const int             Discret,
-                                                     const double                Deflection,
-                                                     const int             DrawMode)
+                                                     const int              Discret,
+                                                     const double           Deflection,
+                                                     const int              DrawMode)
     : DrawTrSurf_Surface(S,
                          std::abs(NbUIsos),
                          std::abs(NbVIsos),
@@ -115,7 +115,7 @@ DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface(const occ::handle<Geom_BSpl
 void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 {
   occ::handle<Geom_BSplineSurface> S = occ::down_cast<Geom_BSplineSurface>(surf);
-  int            i, j;
+  int                              i, j;
 
   double Ua, Ub, Va, Vb;
   S->Bounds(Ua, Ub, Va, Vb);
@@ -155,7 +155,7 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
   if (knotsIsos)
   {
-    int            first, last;
+    int                              first, last;
     occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface();
     HS->Load(surf);
 
@@ -180,8 +180,8 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
   if (drawKnots)
   {
-    int     first, last;
-    int     NbUKnots = S->NbUKnots();
+    int                        first, last;
+    int                        NbUKnots = S->NbUKnots();
     NCollection_Array1<double> SUKnots(1, NbUKnots);
     S->UKnots(SUKnots);
     dis.SetColor(knotsLook);
@@ -191,7 +191,7 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
     {
       dis.DrawMarker(S->Value(SUKnots(i), Va), knotsForm, knotsDim);
     }
-    int     NbVKnots = S->NbVKnots();
+    int                        NbVKnots = S->NbVKnots();
     NCollection_Array1<double> SVKnots(1, NbVKnots);
     S->VKnots(SVKnots);
     dis.SetColor(knotsLook);
@@ -206,10 +206,10 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
 void DrawTrSurf_BSplineSurface::ShowKnotsIsos()
 {
-  knotsIsos                     = true;
+  knotsIsos                          = true;
   occ::handle<Geom_BSplineSurface> S = occ::down_cast<Geom_BSplineSurface>(surf);
-  nbUIsos                       = S->NbUKnots() - 2;
-  nbVIsos                       = S->NbVKnots() - 2;
+  nbUIsos                            = S->NbUKnots() - 2;
+  nbVIsos                            = S->NbVKnots() - 2;
 }
 
 void DrawTrSurf_BSplineSurface::ClearIsos()
@@ -226,16 +226,16 @@ void DrawTrSurf_BSplineSurface::ShowIsos(const int Nu, const int Nv)
   nbVIsos   = std::abs(Nv);
 }
 
-void DrawTrSurf_BSplineSurface::FindPole(const double X,
-                                         const double Y,
+void DrawTrSurf_BSplineSurface::FindPole(const double        X,
+                                         const double        Y,
                                          const Draw_Display& D,
-                                         const double XPrec,
-                                         int&   UIndex,
-                                         int&   VIndex) const
+                                         const double        XPrec,
+                                         int&                UIndex,
+                                         int&                VIndex) const
 {
   occ::handle<Geom_BSplineSurface> bs = occ::down_cast<Geom_BSplineSurface>(surf);
-  gp_Pnt2d                    p1(X / D.Zoom(), Y / D.Zoom());
-  double               Prec = XPrec / D.Zoom();
+  gp_Pnt2d                         p1(X / D.Zoom(), Y / D.Zoom());
+  double                           Prec = XPrec / D.Zoom();
   UIndex++;
   VIndex++;
   int NbUPoles = bs->NbUPoles();
@@ -256,17 +256,17 @@ void DrawTrSurf_BSplineSurface::FindPole(const double X,
   UIndex = VIndex = 0;
 }
 
-void DrawTrSurf_BSplineSurface::FindUKnot(const double X,
-                                          const double Y,
+void DrawTrSurf_BSplineSurface::FindUKnot(const double        X,
+                                          const double        Y,
                                           const Draw_Display& D,
-                                          const double Prec,
-                                          int&   UIndex) const
+                                          const double        Prec,
+                                          int&                UIndex) const
 {
   occ::handle<Geom_BSplineSurface> bs = occ::down_cast<Geom_BSplineSurface>(surf);
-  gp_Pnt2d                    p1(X, Y);
+  gp_Pnt2d                         p1(X, Y);
   UIndex++;
-  int NbUKnots = bs->NbUKnots();
-  double    U1, U2, V1, V2;
+  int    NbUKnots = bs->NbUKnots();
+  double U1, U2, V1, V2;
   surf->Bounds(U1, U2, V1, V2);
   while (UIndex <= NbUKnots)
   {
@@ -279,17 +279,17 @@ void DrawTrSurf_BSplineSurface::FindUKnot(const double X,
   UIndex = 0;
 }
 
-void DrawTrSurf_BSplineSurface::FindVKnot(const double X,
-                                          const double Y,
+void DrawTrSurf_BSplineSurface::FindVKnot(const double        X,
+                                          const double        Y,
                                           const Draw_Display& D,
-                                          const double Prec,
-                                          int&   VIndex) const
+                                          const double        Prec,
+                                          int&                VIndex) const
 {
   occ::handle<Geom_BSplineSurface> bs = occ::down_cast<Geom_BSplineSurface>(surf);
-  gp_Pnt2d                    p1(X, Y);
+  gp_Pnt2d                         p1(X, Y);
   VIndex++;
-  int NbVKnots = bs->NbVKnots();
-  double    U1, U2, V1, V2;
+  int    NbVKnots = bs->NbVKnots();
+  double U1, U2, V1, V2;
   surf->Bounds(U1, U2, V1, V2);
   while (VIndex <= NbVKnots)
   {
@@ -346,7 +346,7 @@ occ::handle<Draw_Drawable3D> DrawTrSurf_BSplineSurface::Copy() const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_BSplineSurface::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params&    aParams = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&         aParams = DrawTrSurf::Parameters();
   occ::handle<Geom_BSplineSurface> aGeomSurface =
     occ::down_cast<Geom_BSplineSurface>(GeomTools_SurfaceSet::ReadSurface(theStream));
   occ::handle<DrawTrSurf_BSplineSurface> aDrawSurface;

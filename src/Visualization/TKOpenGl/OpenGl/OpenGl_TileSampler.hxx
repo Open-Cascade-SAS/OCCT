@@ -60,8 +60,9 @@ public:
   //! Number of tiles within offsets texture.
   NCollection_Vec2<int> NbOffsetTiles(bool theAdaptive) const
   {
-    return theAdaptive ? NCollection_Vec2<int>((int)myOffsetsShrunk.SizeX, (int)myOffsetsShrunk.SizeY)
-                       : NCollection_Vec2<int>((int)myOffsets.SizeX, (int)myOffsets.SizeY);
+    return theAdaptive
+             ? NCollection_Vec2<int>((int)myOffsetsShrunk.SizeX, (int)myOffsetsShrunk.SizeY)
+             : NCollection_Vec2<int>((int)myOffsets.SizeX, (int)myOffsets.SizeY);
   }
 
   //! Maximum number of tiles within offsets texture.
@@ -95,7 +96,7 @@ public:
 
   //! Specifies size of ray-tracing viewport and recomputes tile size.
   Standard_EXPORT void SetSize(const Graphic3d_RenderingParams& theParams,
-                               const NCollection_Vec2<int>&           theSize);
+                               const NCollection_Vec2<int>&     theSize);
 
   //! Fetches current error estimation from the GPU and
   //! builds 2D discrete distribution for tile sampling.
@@ -108,7 +109,7 @@ public:
   //! Uploads tile samples to the given OpenGL texture.
   bool UploadSamples(const occ::handle<OpenGl_Context>& theContext,
                      const occ::handle<OpenGl_Texture>& theSamplesTexture,
-                     const bool                    theAdaptive)
+                     const bool                         theAdaptive)
   {
     return upload(theContext, theSamplesTexture, occ::handle<OpenGl_Texture>(), theAdaptive);
   }
@@ -116,7 +117,7 @@ public:
   //! Uploads offsets of sampled tiles to the given OpenGL texture.
   bool UploadOffsets(const occ::handle<OpenGl_Context>& theContext,
                      const occ::handle<OpenGl_Texture>& theOffsetsTexture,
-                     const bool                    theAdaptive)
+                     const bool                         theAdaptive)
   {
     return upload(theContext, occ::handle<OpenGl_Texture>(), theOffsetsTexture, theAdaptive);
   }
@@ -137,7 +138,7 @@ protected:
   Standard_EXPORT bool upload(const occ::handle<OpenGl_Context>& theContext,
                               const occ::handle<OpenGl_Texture>& theSamplesTexture,
                               const occ::handle<OpenGl_Texture>& theOffsetsTexture,
-                              const bool                    theAdaptive);
+                              const bool                         theAdaptive);
 
   //! Auxiliary method for dumping 2D image map into stream (e.g. for debugging).
   Standard_EXPORT void dumpMap(std::ostream&                     theStream,
@@ -157,7 +158,7 @@ protected:
   unsigned int                           myLastSample;    //!< Index of generated sample
   float                                  myScaleFactor;   //!< scale factor for quantization of visual error (float) into signed integer
   // clang-format on
-  int             myTileSize; //!< tile size
+  int                   myTileSize; //!< tile size
   NCollection_Vec2<int> myViewSize; //!< ray-tracing viewport
 };
 

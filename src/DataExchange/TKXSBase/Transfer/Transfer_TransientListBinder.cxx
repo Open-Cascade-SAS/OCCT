@@ -64,14 +64,15 @@ void Transfer_TransientListBinder::AddResult(const occ::handle<Standard_Transien
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_TransientListBinder::Result() const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_TransientListBinder::
+  Result() const
 {
   return theres;
 }
 
 //=================================================================================================
 
-void Transfer_TransientListBinder::SetResult(const int            num,
+void Transfer_TransientListBinder::SetResult(const int                              num,
                                              const occ::handle<Standard_Transient>& Transient)
 {
   theres->SetValue(num, Transient);
@@ -86,8 +87,7 @@ int Transfer_TransientListBinder::NbTransients() const
 
 //=================================================================================================
 
-const occ::handle<Standard_Transient>& Transfer_TransientListBinder::Transient(
-  const int num) const
+const occ::handle<Standard_Transient>& Transfer_TransientListBinder::Transient(const int num) const
 {
   return theres->Value(num);
 }

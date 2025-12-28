@@ -44,7 +44,7 @@ public:
   //! @param[in] theStyle The style of the shape.
   Standard_EXPORT RWMesh_VertexIterator(const TDF_Label&       theLabel,
                                         const TopLoc_Location& theLocation,
-                                        const bool theToMapColors = false,
+                                        const bool             theToMapColors = false,
                                         const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.

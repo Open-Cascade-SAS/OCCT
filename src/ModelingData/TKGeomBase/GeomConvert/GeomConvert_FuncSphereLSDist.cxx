@@ -38,7 +38,7 @@ int GeomConvert_FuncSphereLSDist::NbVariables() const
 
 bool GeomConvert_FuncSphereLSDist::Value(const math_Vector& X, double& F)
 {
-  gp_XYZ        aLoc(X(1), X(2), X(3));
+  gp_XYZ aLoc(X(1), X(2), X(3));
   double anR2 = X(4) * X(4);
 
   F = 0.;
@@ -57,14 +57,14 @@ bool GeomConvert_FuncSphereLSDist::Value(const math_Vector& X, double& F)
 bool GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X, math_Vector& G)
 
 {
-  gp_XYZ        aLoc(X(1), X(2), X(3));
+  gp_XYZ aLoc(X(1), X(2), X(3));
   double anR = X(4), anR2 = anR * anR;
 
   G.Init(0.);
   int i;
   for (i = myPoints->Lower(); i <= myPoints->Upper(); ++i)
   {
-    gp_XYZ        dLoc = myPoints->Value(i) - aLoc;
+    gp_XYZ dLoc = myPoints->Value(i) - aLoc;
     double d    = dLoc.SquareModulus() - anR2;
     G(1) += d * dLoc.X();
     G(2) += d * dLoc.Y();
@@ -79,11 +79,9 @@ bool GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X, math_Vector& G
 
 //=================================================================================================
 
-bool GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,
-                                                      double&     F,
-                                                      math_Vector&       G)
+bool GeomConvert_FuncSphereLSDist::Values(const math_Vector& X, double& F, math_Vector& G)
 {
-  gp_XYZ        aLoc(X(1), X(2), X(3));
+  gp_XYZ aLoc(X(1), X(2), X(3));
   double anR = X(4), anR2 = anR * anR;
 
   G.Init(0.);
@@ -91,7 +89,7 @@ bool GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,
   int i;
   for (i = myPoints->Lower(); i <= myPoints->Upper(); ++i)
   {
-    gp_XYZ        dLoc = myPoints->Value(i) - aLoc;
+    gp_XYZ dLoc = myPoints->Value(i) - aLoc;
     double d    = dLoc.SquareModulus() - anR2;
     G(1) += d * dLoc.X();
     G(2) += d * dLoc.Y();

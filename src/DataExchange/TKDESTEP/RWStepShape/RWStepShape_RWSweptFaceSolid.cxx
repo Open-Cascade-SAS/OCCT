@@ -21,7 +21,7 @@
 RWStepShape_RWSweptFaceSolid::RWStepShape_RWSweptFaceSolid() {}
 
 void RWStepShape_RWSweptFaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepShape_SweptFaceSolid>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepShape_RWSweptFaceSolid::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aSweptFace);
 }
 
-void RWStepShape_RWSweptFaceSolid::WriteStep(StepData_StepWriter&                    SW,
+void RWStepShape_RWSweptFaceSolid::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepShape_SweptFaceSolid>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepShape_RWSweptFaceSolid::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWSweptFaceSolid::Share(const occ::handle<StepShape_SweptFaceSolid>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->SweptFace());

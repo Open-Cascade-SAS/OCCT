@@ -20,8 +20,6 @@
 
 #include <AdvApp2Var_Network.hxx>
 #include <AdvApp2Var_Patch.hxx>
-#include <AdvApp2Var_Patch.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -30,9 +28,10 @@ AdvApp2Var_Network::AdvApp2Var_Network() {}
 
 //=================================================================================================
 
-AdvApp2Var_Network::AdvApp2Var_Network(const NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>& Net,
-                                       const NCollection_Sequence<double>&     TheU,
-                                       const NCollection_Sequence<double>&     TheV)
+AdvApp2Var_Network::AdvApp2Var_Network(
+  const NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>& Net,
+  const NCollection_Sequence<double>&                        TheU,
+  const NCollection_Sequence<double>&                        TheV)
 {
   myNet         = Net;
   myUParameters = TheU;
@@ -47,7 +46,8 @@ AdvApp2Var_Network::AdvApp2Var_Network(const NCollection_Sequence<occ::handle<Ad
 bool AdvApp2Var_Network::FirstNotApprox(int& theIndex) const
 {
   int anIndex = 1;
-  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatchIter(myNet); aPatchIter.More();
+  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatchIter(myNet);
+       aPatchIter.More();
        aPatchIter.Next(), ++anIndex)
   {
     const occ::handle<AdvApp2Var_Patch>& aPatch = aPatchIter.Value();
@@ -79,18 +79,18 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
   for (j = 1; j < myVParameters.Length(); j++)
   {
     //    modification des patches concernes par la decoupe
-    int                indice = (myUParameters.Length() - 1) * (j - 1) + i - 1;
+    int                                  indice = (myUParameters.Length() - 1) * (j - 1) + i - 1;
     const occ::handle<AdvApp2Var_Patch>& aPat   = myNet.Value(indice);
     aPat->ChangeDomain(aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
     aPat->ResetApprox();
 
     //    insertion des nouveaux patches
     occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(CuttingValue,
-                                                            myUParameters.Value(i + 1),
-                                                            myVParameters.Value(j),
-                                                            myVParameters.Value(j + 1),
-                                                            aPat->UOrder(),
-                                                            aPat->VOrder());
+                                                                 myUParameters.Value(i + 1),
+                                                                 myVParameters.Value(j),
+                                                                 myVParameters.Value(j + 1),
+                                                                 aPat->UOrder(),
+                                                                 aPat->VOrder());
     aNewPat->ResetApprox();
     myNet.InsertAfter(indice, aNewPat);
   }
@@ -105,7 +105,7 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
 {
 
   //  insertion du nouveau parametre de decoupe
-  int         j = 1;
+  int                           j = 1;
   occ::handle<AdvApp2Var_Patch> Pat;
   while (myVParameters.Value(j) < CuttingValue)
   {
@@ -117,7 +117,7 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   for (int i = 1; i < myUParameters.Length(); i++)
   {
     const int indice = (myUParameters.Length() - 1) * (j - 2) + i;
-    Pat                           = myNet.Value(indice);
+    Pat              = myNet.Value(indice);
     Pat->ChangeDomain(Pat->U0(), Pat->U1(), Pat->V0(), CuttingValue);
     Pat->ResetApprox();
   }
@@ -125,13 +125,13 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   //  insertion des nouveaux patches
   for (int i = 1; i < myUParameters.Length(); i++)
   {
-    const int   indice  = (myUParameters.Length() - 1) * (j - 1) + i - 1;
+    const int                     indice  = (myUParameters.Length() - 1) * (j - 1) + i - 1;
     occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(myUParameters.Value(i),
-                                                            myUParameters.Value(i + 1),
-                                                            CuttingValue,
-                                                            myVParameters.Value(j + 1),
-                                                            Pat->UOrder(),
-                                                            Pat->VOrder());
+                                                                 myUParameters.Value(i + 1),
+                                                                 CuttingValue,
+                                                                 myVParameters.Value(j + 1),
+                                                                 Pat->UOrder(),
+                                                                 Pat->VOrder());
     aNewPat->ResetApprox();
     myNet.InsertAfter(indice, aNewPat);
   }
@@ -142,23 +142,24 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
 // purpose  : same numbers of coefficients for all patches
 //=======================================================================
 
-void AdvApp2Var_Network::SameDegree(const int iu,
-                                    const int iv,
-                                    int&      ncfu,
-                                    int&      ncfv)
+void AdvApp2Var_Network::SameDegree(const int iu, const int iv, int& ncfu, int& ncfv)
 {
   //  calcul des coeff. max avec init selon l'ordre de continuite
   ncfu = 2 * iu + 2;
   ncfv = 2 * iv + 2;
-  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet); aPatIter.More(); aPatIter.Next())
+  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet);
+       aPatIter.More();
+       aPatIter.Next())
   {
     const occ::handle<AdvApp2Var_Patch>& aPat = aPatIter.Value();
-    ncfu                                 = std::max(ncfu, aPat->NbCoeffInU());
-    ncfv                                 = std::max(ncfv, aPat->NbCoeffInV());
+    ncfu                                      = std::max(ncfu, aPat->NbCoeffInU());
+    ncfv                                      = std::max(ncfv, aPat->NbCoeffInV());
   }
 
   //  augmentation des nombres de coeff.
-  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet); aPatIter.More(); aPatIter.Next())
+  for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet);
+       aPatIter.More();
+       aPatIter.Next())
   {
     const occ::handle<AdvApp2Var_Patch>& aPat = aPatIter.Value();
     aPat->ChangeNbCoeff(ncfu, ncfv);

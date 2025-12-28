@@ -114,7 +114,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
   char                    aLine[256] = {};
   TCollection_AsciiString aMatName;
   RWObj_Material          aMat;
-  const int  aNbMatOld = myMaterials->Extent();
+  const int               aNbMatOld = myMaterials->Extent();
   bool                    hasAspect = false;
   for (; ::feof(myFile) == 0 && ::fgets(aLine, 255, myFile) != NULL;)
   {
@@ -162,7 +162,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     else if (::memcmp(aPos, "Ka", 2) == 0 && IsSpace(aPos[2]))
     {
       aPos += 3;
-      char*          aNext = NULL;
+      char*                   aNext = NULL;
       NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;
@@ -175,7 +175,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     else if (::memcmp(aPos, "Kd", 2) == 0 && IsSpace(aPos[2]))
     {
       aPos += 3;
-      char*          aNext = NULL;
+      char*                   aNext = NULL;
       NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;
@@ -188,7 +188,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     else if (::memcmp(aPos, "Ks", 2) == 0 && IsSpace(aPos[2]))
     {
       aPos += 3;
-      char*          aNext = NULL;
+      char*                   aNext = NULL;
       NCollection_Vec3<float> aColor;
       RWObj_Tools::ReadVec3(aPos, aNext, aColor);
       aPos = aNext;

@@ -37,16 +37,10 @@
 #include <HelixGeom_BuilderHelixCoil.hxx>
 #include <HelixGeom_HelixCurve.hxx>
 #include <HelixGeom_Tools.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepTest.hxx>
 
@@ -128,8 +122,8 @@ int setaxis(Draw_Interpretor& di, int n, const char** a)
     di << "        " << "Xx Xy Xz - X direction" << "\n";
     return 1;
   }
-  double    xx[9];
-  int i;
+  double xx[9];
+  int    i;
   for (i = 0; i < 9; ++i)
   {
     xx[i] = Draw::Atof(a[i + 1]);
@@ -162,7 +156,7 @@ int comphelix(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -181,10 +175,10 @@ int comphelix(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  NCollection_Array1<double>    aDiams(1, aNb + 1);
-  NCollection_Array1<double>    aHeights(1, aNb);
-  NCollection_Array1<double>    aPitches(1, aNb);
-  NCollection_Array1<bool> bIsPitches(1, aNb);
+  NCollection_Array1<double> aDiams(1, aNb + 1);
+  NCollection_Array1<double> aHeights(1, aNb);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<bool>   bIsPitches(1, aNb);
 
   ic = 3;
   for (i = 1; i <= aNb + 1; ++i)
@@ -238,7 +232,7 @@ int helix(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -257,10 +251,10 @@ int helix(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  NCollection_Array1<double>    aDiams(1, 1);
-  NCollection_Array1<double>    aHeights(1, aNb);
-  NCollection_Array1<double>    aPitches(1, aNb);
-  NCollection_Array1<bool> bIsPitches(1, aNb);
+  NCollection_Array1<double> aDiams(1, 1);
+  NCollection_Array1<double> aHeights(1, aNb);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<bool>   bIsPitches(1, aNb);
 
   ic        = 3;
   aDiams(1) = Draw::Atof(a[ic]);
@@ -311,7 +305,7 @@ int spiral(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -330,10 +324,10 @@ int spiral(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  NCollection_Array1<double>    aDiams(1, 2);
-  NCollection_Array1<double>    aHeights(1, aNb);
-  NCollection_Array1<double>    aPitches(1, aNb);
-  NCollection_Array1<bool> bIsPitches(1, aNb);
+  NCollection_Array1<double> aDiams(1, 2);
+  NCollection_Array1<double> aHeights(1, aNb);
+  NCollection_Array1<double> aPitches(1, aNb);
+  NCollection_Array1<bool>   bIsPitches(1, aNb);
 
   ic = 3;
   for (i = 1; i <= 2; ++i)
@@ -383,7 +377,7 @@ int comphelix2(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -446,7 +440,7 @@ int helix2(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);
@@ -504,7 +498,7 @@ int spiral2(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int       i, aNb, ic;
+  int                    i, aNb, ic;
   HelixBRep_BuilderHelix aBH;
   //
   aNb = Draw::Atoi(a[2]);

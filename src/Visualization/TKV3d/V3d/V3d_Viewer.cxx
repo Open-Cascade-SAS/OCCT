@@ -67,7 +67,8 @@ occ::handle<V3d_View> V3d_Viewer::CreateView()
 
 void V3d_Viewer::SetViewOn()
 {
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews);
+       aDefViewIter.More();
        aDefViewIter.Next())
   {
     SetViewOn(aDefViewIter.Value());
@@ -78,7 +79,8 @@ void V3d_Viewer::SetViewOn()
 
 void V3d_Viewer::SetViewOff()
 {
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews);
+       aDefViewIter.More();
        aDefViewIter.Next())
   {
     SetViewOff(aDefViewIter.Value());
@@ -97,7 +99,8 @@ void V3d_Viewer::SetViewOn(const occ::handle<V3d_View>& theView)
 
   myActiveViews.Append(theView);
   aViewImpl->Activate();
-  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anActiveLightIter(myActiveLights); anActiveLightIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anActiveLightIter(myActiveLights);
+       anActiveLightIter.More();
        anActiveLightIter.Next())
   {
     theView->SetLightOn(anActiveLightIter.Value());
@@ -174,7 +177,8 @@ void V3d_Viewer::RedrawImmediate() const
 
 void V3d_Viewer::Invalidate() const
 {
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews); aDefViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter(myDefinedViews);
+       aDefViewIter.More();
        aDefViewIter.Next())
   {
     aDefViewIter.Value()->Invalidate();
@@ -230,7 +234,8 @@ void V3d_Viewer::AddView(const occ::handle<V3d_View>& theView)
 
 void V3d_Viewer::DelView(const V3d_View* theView)
 {
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(myActiveViews); aViewIter.More(); aViewIter.Next())
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(myActiveViews); aViewIter.More();
+       aViewIter.Next())
   {
     if (aViewIter.Value() == theView)
     {
@@ -238,7 +243,9 @@ void V3d_Viewer::DelView(const V3d_View* theView)
       break;
     }
   }
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(myDefinedViews); aViewIter.More(); aViewIter.Next())
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(myDefinedViews);
+       aViewIter.More();
+       aViewIter.Next())
   {
     if (aViewIter.Value() == theView)
     {
@@ -251,8 +258,8 @@ void V3d_Viewer::DelView(const V3d_View* theView)
 //=================================================================================================
 
 bool V3d_Viewer::InsertLayerBefore(Graphic3d_ZLayerId&             theNewLayerId,
-                                               const Graphic3d_ZLayerSettings& theSettings,
-                                               const Graphic3d_ZLayerId        theLayerAfter)
+                                   const Graphic3d_ZLayerSettings& theSettings,
+                                   const Graphic3d_ZLayerId        theLayerAfter)
 {
   if (myZLayerGenId.Next(theNewLayerId))
   {
@@ -266,8 +273,8 @@ bool V3d_Viewer::InsertLayerBefore(Graphic3d_ZLayerId&             theNewLayerId
 //=================================================================================================
 
 bool V3d_Viewer::InsertLayerAfter(Graphic3d_ZLayerId&             theNewLayerId,
-                                              const Graphic3d_ZLayerSettings& theSettings,
-                                              const Graphic3d_ZLayerId        theLayerBefore)
+                                  const Graphic3d_ZLayerSettings& theSettings,
+                                  const Graphic3d_ZLayerId        theLayerBefore)
 {
   if (myZLayerGenId.Next(theNewLayerId))
   {
@@ -322,7 +329,8 @@ const Graphic3d_ZLayerSettings& V3d_Viewer::ZLayerSettings(
 
 void V3d_Viewer::UpdateLights()
 {
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->UpdateLights();
@@ -338,7 +346,8 @@ void V3d_Viewer::SetLightOn(const occ::handle<V3d_Light>& theLight)
     myActiveLights.Append(theLight);
   }
 
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetLightOn(theLight);
@@ -350,7 +359,8 @@ void V3d_Viewer::SetLightOn(const occ::handle<V3d_Light>& theLight)
 void V3d_Viewer::SetLightOff(const occ::handle<V3d_Light>& theLight)
 {
   myActiveLights.Remove(theLight);
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetLightOff(theLight);
@@ -361,13 +371,15 @@ void V3d_Viewer::SetLightOff(const occ::handle<V3d_Light>& theLight)
 
 void V3d_Viewer::SetLightOn()
 {
-  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator aDefLightIter(myDefinedLights); aDefLightIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator aDefLightIter(myDefinedLights);
+       aDefLightIter.More();
        aDefLightIter.Next())
   {
     if (!myActiveLights.Contains(aDefLightIter.Value()))
     {
       myActiveLights.Append(aDefLightIter.Value());
-      for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+      for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+           anActiveViewIter.More();
            anActiveViewIter.Next())
       {
         anActiveViewIter.Value()->SetLightOn(aDefLightIter.Value());
@@ -380,10 +392,12 @@ void V3d_Viewer::SetLightOn()
 
 void V3d_Viewer::SetLightOff()
 {
-  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anActiveLightIter(myActiveLights); anActiveLightIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anActiveLightIter(myActiveLights);
+       anActiveLightIter.More();
        anActiveLightIter.Next())
   {
-    for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+    for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+         anActiveViewIter.More();
          anActiveViewIter.Next())
     {
       anActiveViewIter.Value()->SetLightOff(anActiveLightIter.Value());
@@ -427,7 +441,8 @@ void V3d_Viewer::SetDefaultLights()
     DelLight(aLight);
   }
 
-  occ::handle<V3d_DirectionalLight> aDirLight = new V3d_DirectionalLight(V3d_Zneg, Quantity_NOC_WHITE);
+  occ::handle<V3d_DirectionalLight> aDirLight =
+    new V3d_DirectionalLight(V3d_Zneg, Quantity_NOC_WHITE);
   aDirLight->SetName("headlight");
   aDirLight->SetHeadlight(true);
   occ::handle<V3d_AmbientLight> anAmbLight = new V3d_AmbientLight(Quantity_NOC_WHITE);
@@ -442,10 +457,11 @@ void V3d_Viewer::SetDefaultLights()
 
 void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& thePlane)
 {
-  myPrivilegedPlane         = thePlane;
+  myPrivilegedPlane              = thePlane;
   occ::handle<Aspect_Grid> aGrid = Grid(true);
   aGrid->SetDrawMode(aGrid->DrawMode()); // aGrid->UpdateDisplay();
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGrid(myPrivilegedPlane, aGrid);
@@ -459,8 +475,7 @@ void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& thePlane)
 
 //=================================================================================================
 
-void V3d_Viewer::DisplayPrivilegedPlane(const bool theOnOff,
-                                        const double    theSize)
+void V3d_Viewer::DisplayPrivilegedPlane(const bool theOnOff, const double theSize)
 {
   myDisplayPlane       = theOnOff;
   myDisplayPlaneLength = theSize;
@@ -573,7 +588,7 @@ void V3d_Viewer::ActivateGrid(const Aspect_GridType theType, const Aspect_GridDr
     anOldGrid->Erase();
   }
 
-  myGridType                = theType;
+  myGridType                     = theType;
   occ::handle<Aspect_Grid> aGrid = Grid(true);
   aGrid->SetDrawMode(theMode);
   if (theMode != Aspect_GDM_None)
@@ -581,7 +596,8 @@ void V3d_Viewer::ActivateGrid(const Aspect_GridType theType, const Aspect_GridDr
     aGrid->Display();
   }
   aGrid->Activate();
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGrid(myPrivilegedPlane, aGrid);
@@ -602,7 +618,8 @@ void V3d_Viewer::DeactivateGrid()
   aGrid->Deactivate();
 
   myGridType = Aspect_GT_Rectangular;
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGridActivity(false);
@@ -647,7 +664,8 @@ void V3d_Viewer::SetRectangularGridValues(const double theXOrigin,
 {
   Grid(Aspect_GT_Rectangular, true);
   myRGrid->SetGridValues(theXOrigin, theYOrigin, theXStep, theYStep, theRotationAngle);
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGrid(myPrivilegedPlane, myRGrid);
@@ -656,11 +674,11 @@ void V3d_Viewer::SetRectangularGridValues(const double theXOrigin,
 
 //=================================================================================================
 
-void V3d_Viewer::CircularGridValues(double&    theXOrigin,
-                                    double&    theYOrigin,
-                                    double&    theRadiusStep,
-                                    int& theDivisionNumber,
-                                    double&    theRotationAngle)
+void V3d_Viewer::CircularGridValues(double& theXOrigin,
+                                    double& theYOrigin,
+                                    double& theRadiusStep,
+                                    int&    theDivisionNumber,
+                                    double& theRotationAngle)
 {
   Grid(Aspect_GT_Circular, true);
   theXOrigin        = myCGrid->XOrigin();
@@ -672,11 +690,11 @@ void V3d_Viewer::CircularGridValues(double&    theXOrigin,
 
 //=================================================================================================
 
-void V3d_Viewer::SetCircularGridValues(const double    theXOrigin,
-                                       const double    theYOrigin,
-                                       const double    theRadiusStep,
-                                       const int theDivisionNumber,
-                                       const double    theRotationAngle)
+void V3d_Viewer::SetCircularGridValues(const double theXOrigin,
+                                       const double theYOrigin,
+                                       const double theRadiusStep,
+                                       const int    theDivisionNumber,
+                                       const double theRotationAngle)
 {
   Grid(Aspect_GT_Circular, true);
   myCGrid->SetGridValues(theXOrigin,
@@ -684,7 +702,8 @@ void V3d_Viewer::SetCircularGridValues(const double    theXOrigin,
                          theRadiusStep,
                          theDivisionNumber,
                          theRotationAngle);
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews); anActiveViewIter.More();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anActiveViewIter(myActiveViews);
+       anActiveViewIter.More();
        anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGrid(myPrivilegedPlane, myCGrid);
@@ -693,9 +712,7 @@ void V3d_Viewer::SetCircularGridValues(const double    theXOrigin,
 
 //=================================================================================================
 
-void V3d_Viewer::RectangularGridGraphicValues(double& theXSize,
-                                              double& theYSize,
-                                              double& theOffSet)
+void V3d_Viewer::RectangularGridGraphicValues(double& theXSize, double& theYSize, double& theOffSet)
 {
   Grid(Aspect_GT_Rectangular, true);
   myRGrid->GraphicValues(theXSize, theYSize, theOffSet);
@@ -721,8 +738,7 @@ void V3d_Viewer::CircularGridGraphicValues(double& theRadius, double& theOffSet)
 
 //=================================================================================================
 
-void V3d_Viewer::SetCircularGridGraphicValues(const double theRadius,
-                                              const double theOffSet)
+void V3d_Viewer::SetCircularGridGraphicValues(const double theRadius, const double theOffSet)
 {
   Grid(Aspect_GT_Circular, true);
   myCGrid->SetGraphicValues(theRadius, theOffSet);
@@ -762,7 +778,8 @@ void V3d_Viewer::SetGridEcho(const occ::handle<Graphic3d_AspectMarker3d>& theMar
 
 //=================================================================================================
 
-void V3d_Viewer::ShowGridEcho(const occ::handle<V3d_View>& theView, const Graphic3d_Vertex& theVertex)
+void V3d_Viewer::ShowGridEcho(const occ::handle<V3d_View>& theView,
+                              const Graphic3d_Vertex&      theVertex)
 {
   if (!myGridEcho)
   {
@@ -830,25 +847,31 @@ void V3d_Viewer::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myStructureManager.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myZLayerGenId)
 
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anIter(myDefinedViews); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anIter(myDefinedViews); anIter.More();
+       anIter.Next())
   {
     const occ::handle<V3d_View>& aDefinedView = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aDefinedView.get())
   }
 
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator anIter(myActiveViews); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator anIter(myActiveViews); anIter.More();
+       anIter.Next())
   {
     const occ::handle<V3d_View>& anActiveView = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anActiveView.get())
   }
 
-  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anIter(myDefinedLights); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anIter(myDefinedLights);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<Graphic3d_CLight>& aDefinedLight = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aDefinedLight.get())
   }
 
-  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anIter(myActiveLights); anIter.More(); anIter.Next())
+  for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator anIter(myActiveLights);
+       anIter.More();
+       anIter.Next())
   {
     const occ::handle<Graphic3d_CLight>& anActiveLight = anIter.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anActiveLight.get())

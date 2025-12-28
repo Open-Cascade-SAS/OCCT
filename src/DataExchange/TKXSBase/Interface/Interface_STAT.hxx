@@ -25,11 +25,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 
@@ -107,13 +102,13 @@ public:
 
   //! Returns fields in once, without copying them, used for copy
   //! when starting
-  Standard_EXPORT void Internals(occ::handle<TCollection_HAsciiString>&       tit,
-                                 double&                          total,
+  Standard_EXPORT void Internals(occ::handle<TCollection_HAsciiString>&                       tit,
+                                 double&                                                      total,
                                  occ::handle<NCollection_HSequence<TCollection_AsciiString>>& phn,
-                                 occ::handle<NCollection_HSequence<double>>&        phw,
-                                 occ::handle<NCollection_HSequence<int>>&     phdeb,
-                                 occ::handle<NCollection_HSequence<int>>&     phfin,
-                                 occ::handle<NCollection_HSequence<double>>&        stw) const;
+                                 occ::handle<NCollection_HSequence<double>>&                  phw,
+                                 occ::handle<NCollection_HSequence<int>>&                     phdeb,
+                                 occ::handle<NCollection_HSequence<int>>&                     phfin,
+                                 occ::handle<NCollection_HSequence<double>>& stw) const;
 
   //! Adds a new phase to the description.
   //! The first one after Create replaces the default unique one
@@ -126,18 +121,16 @@ public:
 
   //! Returns global description (cumulated weights of all phases,
   //! count of phases,1 for default, and title)
-  Standard_EXPORT void Description(int& nbphases,
-                                   double&    total,
-                                   const char*& title) const;
+  Standard_EXPORT void Description(int& nbphases, double& total, const char*& title) const;
 
   //! Returns description of a phase, given its rank
   //! (n0 for first step, count of steps, default gives one;
   //! weight, name)
-  Standard_EXPORT void Phase(const int num,
-                             int&      n0step,
-                             int&      nbstep,
-                             double&         weight,
-                             const char*&      name) const;
+  Standard_EXPORT void Phase(const int    num,
+                             int&         n0step,
+                             int&         nbstep,
+                             double&      weight,
+                             const char*& name) const;
 
   //! Returns weight of a Step, related to the cumul given for the
   //! phase.
@@ -157,8 +150,7 @@ public:
   //! count items.
   //! <items> gives the total count of items
   //! Hence, NextItem is available to directly count
-  Standard_EXPORT static void StartCount(const int items,
-                                         const char* title = "");
+  Standard_EXPORT static void StartCount(const int items, const char* title = "");
 
   //! Commands to resume the preceding phase and start a new one
   //! <items> and <cycles> as for Start, but for this new phase
@@ -166,14 +158,12 @@ public:
   //! If <cycles> is more than one, the first Cycle must then be
   //! started by NextCycle (NextStep/NextItem are ignored).
   //! If it is one, NextItem/NextStep can then be called
-  Standard_EXPORT static void NextPhase(const int items,
-                                        const int cycles = 1);
+  Standard_EXPORT static void NextPhase(const int items, const int cycles = 1);
 
   //! Changes the parameters of the phase to start
   //! To be used before first counting (i.e. just after NextPhase)
   //! Can be used by an operator which has to reajust counts on run
-  Standard_EXPORT static void SetPhase(const int items,
-                                       const int cycles = 1);
+  Standard_EXPORT static void SetPhase(const int items, const int cycles = 1);
 
   //! Commands to resume the preceding cycle and start a new one,
   //! with a count of items
@@ -209,13 +199,13 @@ public:
   Standard_EXPORT static int Percent(const bool phase = false);
 
 private:
-  occ::handle<TCollection_HAsciiString>       thetitle;
-  double                          thetotal;
+  occ::handle<TCollection_HAsciiString>                       thetitle;
+  double                                                      thetotal;
   occ::handle<NCollection_HSequence<TCollection_AsciiString>> thephnam;
-  occ::handle<NCollection_HSequence<double>>        thephw;
-  occ::handle<NCollection_HSequence<int>>     thephdeb;
-  occ::handle<NCollection_HSequence<int>>     thephfin;
-  occ::handle<NCollection_HSequence<double>>        thestw;
+  occ::handle<NCollection_HSequence<double>>                  thephw;
+  occ::handle<NCollection_HSequence<int>>                     thephdeb;
+  occ::handle<NCollection_HSequence<int>>                     thephfin;
+  occ::handle<NCollection_HSequence<double>>                  thestw;
 };
 
 #endif // _Interface_STAT_HeaderFile

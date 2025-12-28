@@ -72,7 +72,7 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    bool                     myRational;
+    bool                                 myRational;
     Handle(ShapePersistent_HArray1::Pnt) myPoles;
     Handle(StdLPersistent_HArray1::Real) myWeights;
   };
@@ -114,9 +114,9 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
     virtual occ::handle<Geom_Curve> Import() const;
 
   private:
-    bool                        myRational;
-    bool                        myPeriodic;
-    int                        mySpineDegree;
+    bool                                    myRational;
+    bool                                    myPeriodic;
+    int                                     mySpineDegree;
     Handle(ShapePersistent_HArray1::Pnt)    myPoles;
     Handle(StdLPersistent_HArray1::Real)    myWeights;
     Handle(StdLPersistent_HArray1::Real)    myKnots;
@@ -155,8 +155,8 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
   private:
     occ::handle<Curve> myBasisCurve;
-    double myFirstU;
-    double myLastU;
+    double             myFirstU;
+    double             myLastU;
   };
 
   class pOffset : public pBase
@@ -190,8 +190,8 @@ class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 
   private:
     occ::handle<Curve> myBasisCurve;
-    gp_Dir        myOffsetDirection;
-    double myOffsetValue;
+    gp_Dir             myOffsetDirection;
+    double             myOffsetValue;
   };
 
 public:
@@ -212,40 +212,58 @@ public:
 
 public:
   //! Create a persistent object for a line
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Line>&          theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Line>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a circle
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Circle>&        theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Circle>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a ellipse
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Ellipse>&       theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Ellipse>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a hyperbola
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Hyperbola>&     theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Hyperbola>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a parabola
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_Parabola>&      theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_Parabola>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a Bezier curve
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_BezierCurve>&   theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_BezierCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a BSpline curve
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_BSplineCurve>&  theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_BSplineCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for a trimmed curve
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_TrimmedCurve>&  theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_TrimmedCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
   //! Create a persistent object for an offset curve
-  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom_OffsetCurve>&   theCurve,
-                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(
+    const occ::handle<Geom_OffsetCurve>& theCurve,
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
+      theMap);
 };
 
 //=======================================================================
 // Line
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::
-  PName() const;
+const char* ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::PName()
+  const;
 
 template <>
 void ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_Ax1>::Write(
@@ -255,8 +273,7 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom::Curve, Geom_Line, gp_A
 // Conic
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName()
-  const;
+const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Curve, gp_Ax2>::PName() const;
 
 //=======================================================================
 // Circle

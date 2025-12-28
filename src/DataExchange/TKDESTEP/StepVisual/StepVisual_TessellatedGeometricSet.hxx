@@ -31,10 +31,13 @@ public:
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedGeometricSet();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                       theName,
-                            const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>& theItems);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& theName,
+    const NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>&
+      theItems);
 
-  Standard_EXPORT NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> Items() const;
+  Standard_EXPORT NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>
+                  Items() const;
 
 private:
   NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> myItems;

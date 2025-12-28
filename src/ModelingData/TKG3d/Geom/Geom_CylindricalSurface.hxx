@@ -114,8 +114,8 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies V by T.ScaleFactor()
-  Standard_EXPORT virtual void TransformParameters(double& U,
-                                                   double& V,
+  Standard_EXPORT virtual void TransformParameters(double&        U,
+                                                   double&        V,
                                                    const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
@@ -132,16 +132,12 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method returns a scale centered on the U axis with T.ScaleFactor
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    override;
+  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! The CylindricalSurface is infinite in the V direction so
   //! V1 = Realfirst, V2 = RealLast from package Standard.
   //! U1 = 0 and U2 = 2*PI.
-  Standard_EXPORT void Bounds(double& U1,
-                              double& U2,
-                              double& V1,
-                              double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
   //! Returns the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinate system :
@@ -191,51 +187,49 @@ public:
   //! where Loc is the origin of the placement plane (XAxis, YAxis)
   //! XDir is the direction of the XAxis and YDir the direction of
   //! the YAxis.
-  Standard_EXPORT void D0(const double U,
-                          const double V,
-                          gp_Pnt&             P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Computes the current point and the first derivatives in the
   //! directions U and V.
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const override;
 
   //! Computes the current point, the first and the second derivatives
   //! in the directions U and V.
   Standard_EXPORT void D2(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV) const override;
 
   //! Computes the current point, the first, the second and the
   //! third derivatives in the directions U and V.
   Standard_EXPORT void D3(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV,
-                          gp_Vec&             D3U,
-                          gp_Vec&             D3V,
-                          gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV,
+                          gp_Vec&      D3U,
+                          gp_Vec&      D3V,
+                          gp_Vec&      D3UUV,
+                          gp_Vec&      D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction u and Nv
   //! in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U,
+                            const double V,
+                            const int    Nu,
+                            const int    Nv) const override;
 
   //! Applies the transformation T to this cylinder.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -245,7 +239,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_CylindricalSurface, Geom_ElementarySurface)
 

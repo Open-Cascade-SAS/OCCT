@@ -62,7 +62,7 @@ public:
 
 private:
   TCollection_AsciiString myname;
-  int        mystart, mystop;
+  int                     mystart, mystop;
 };
 #endif
 #endif

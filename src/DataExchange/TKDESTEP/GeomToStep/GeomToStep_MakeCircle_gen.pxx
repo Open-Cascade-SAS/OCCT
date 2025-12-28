@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 occ::handle<StepGeom_Circle>           CStep = new StepGeom_Circle;
-StepGeom_Axis2Placement           Ax2;
+StepGeom_Axis2Placement                Ax2;
 occ::handle<StepGeom_Axis2Placement3d> Ax2Step;
-double                     Rayon;
+double                                 Rayon;
 
 GeomToStep_MakeAxis2Placement3d MkAxis2(C.Position(), theLocalFactors);
 Ax2Step = MkAxis2.Value();

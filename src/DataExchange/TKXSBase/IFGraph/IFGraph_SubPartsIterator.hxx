@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Standard_Transient;
@@ -52,8 +51,7 @@ public:
   //! whole True  : works on the entire Model
   //! whole False : empty, ready to be filled
   //! SubPartIterator is set to load entities
-  Standard_EXPORT IFGraph_SubPartsIterator(const Interface_Graph& agraph,
-                                           const bool whole);
+  Standard_EXPORT IFGraph_SubPartsIterator(const Interface_Graph& agraph, const bool whole);
 
   //! Creates a SubPartIterator from another one and gets its Data
   //! Note that only non-empty sub-parts are taken into account
@@ -89,8 +87,7 @@ public:
   //! Adds an Entity : into load status if in Load mode, to the
   //! current part if there is one. If shared is True, adds
   //! also its shared ones (shared at all levels)
-  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                     const bool            shared);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent, const bool shared);
 
   //! Adds a list of Entities (into Load mode or to a Part),
   //! given as an Iterator
@@ -159,8 +156,8 @@ private:
 
   occ::handle<NCollection_HSequence<int>> theparts;
   occ::handle<NCollection_HSequence<int>> thefirsts;
-  int                   thepart;
-  int                   thecurr;
+  int                                     thepart;
+  int                                     thecurr;
 };
 
 #endif // _IFGraph_SubPartsIterator_HeaderFile

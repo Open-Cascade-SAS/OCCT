@@ -43,12 +43,12 @@ public:
   Standard_EXPORT IGESToBRep_CurveAndSurface();
 
   //! Creates a tool CurveAndSurface ready to run.
-  Standard_EXPORT IGESToBRep_CurveAndSurface(const double    eps,
-                                             const double    epsGeom,
-                                             const double    epsCoeff,
-                                             const bool mode,
-                                             const bool modeapprox,
-                                             const bool optimized);
+  Standard_EXPORT IGESToBRep_CurveAndSurface(const double eps,
+                                             const double epsGeom,
+                                             const double epsCoeff,
+                                             const bool   mode,
+                                             const bool   modeapprox,
+                                             const bool   optimized);
 
   //! Initializes the field of the tool CurveAndSurface with
   //! default creating values.
@@ -153,7 +153,7 @@ public:
   //! member return a NullEntity.
   Standard_EXPORT TopoDS_Shape
     TransferGeometry(const occ::handle<IGESData_IGESEntity>& start,
-                     const Message_ProgressRange&       theProgress = Message_ProgressRange());
+                     const Message_ProgressRange&            theProgress = Message_ProgressRange());
 
   //! Records a new Fail message
   void SendFail(const occ::handle<IGESData_IGESEntity>& start, const Message_Msg& amsg);
@@ -175,7 +175,7 @@ public:
 
   //! set in "myMap" the result of the transfer of the IGESEntity "start".
   Standard_EXPORT void SetShapeResult(const occ::handle<IGESData_IGESEntity>& start,
-                                      const TopoDS_Shape&                result);
+                                      const TopoDS_Shape&                     result);
 
   //! Returns the number of shapes results contained in "myMap" for the
   //! IGESEntity start (type VertexList or EdgeList).
@@ -184,12 +184,12 @@ public:
   //! Returns the numth result of the IGESEntity start (type VertexList or
   //! EdgeList) in "myMap". (if NbShapeResult is not null).
   Standard_EXPORT TopoDS_Shape GetShapeResult(const occ::handle<IGESData_IGESEntity>& start,
-                                              const int             num) const;
+                                              const int                               num) const;
 
   //! set in "myMap" the result of the transfer of the entity of the
   //! IGESEntity start (type VertexList or EdgeList).
   Standard_EXPORT void AddShapeResult(const occ::handle<IGESData_IGESEntity>& start,
-                                      const TopoDS_Shape&                result);
+                                      const TopoDS_Shape&                     result);
 
   Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& theSurface);
 
@@ -198,20 +198,20 @@ public:
   Standard_EXPORT double GetUVResolution();
 
 private:
-  double                     myEps;
-  double                     myEpsCoeff;
-  double                     myEpsGeom;
-  double                     myMinTol;
-  double                     myMaxTol;
-  bool                  myModeIsTopo;
-  bool                  myModeApprox;
-  bool                  myContIsOpti;
-  double                     myUnitFactor;
-  int                  mySurfaceCurve;
-  int                  myContinuity;
+  double                                 myEps;
+  double                                 myEpsCoeff;
+  double                                 myEpsGeom;
+  double                                 myMinTol;
+  double                                 myMaxTol;
+  bool                                   myModeIsTopo;
+  bool                                   myModeApprox;
+  bool                                   myContIsOpti;
+  double                                 myUnitFactor;
+  int                                    mySurfaceCurve;
+  int                                    myContinuity;
   occ::handle<Geom_Surface>              mySurface;
-  double                     myUVResolution;
-  bool                  myIsResolCom;
+  double                                 myUVResolution;
+  bool                                   myIsResolCom;
   occ::handle<IGESData_IGESModel>        myModel;
   occ::handle<Transfer_TransientProcess> myTP;
 };

@@ -109,10 +109,7 @@ public:
   Standard_EXPORT virtual double Ratio() const = 0;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(int& X1,
-                                        int& Y1,
-                                        int& X2,
-                                        int& Y2) const = 0;
+  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const = 0;
 
   //! Returns The Window SIZE in PIXEL
   Standard_EXPORT virtual void Size(int& Width, int& Height) const = 0;
@@ -137,20 +134,25 @@ public:
   //! Optional display argument should be passed when called from non-GUI thread
   //! on platforms implementing thread-unsafe connections to display.
   //! NULL can be passed instead otherwise.
-  virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp) { (void)theDisp; }
+  virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp)
+  {
+    (void)theDisp;
+  }
 
 public:
   //! Return device pixel ratio (logical to backing store scale factor).
   virtual double DevicePixelRatio() const { return 1.0; }
 
   //! Convert point from logical units into backing store units.
-  virtual NCollection_Vec2<double> ConvertPointToBacking(const NCollection_Vec2<double>& thePnt) const
+  virtual NCollection_Vec2<double> ConvertPointToBacking(
+    const NCollection_Vec2<double>& thePnt) const
   {
     return thePnt * DevicePixelRatio();
   }
 
   //! Convert point from backing store units to logical units.
-  virtual NCollection_Vec2<double> ConvertPointFromBacking(const NCollection_Vec2<double>& thePnt) const
+  virtual NCollection_Vec2<double> ConvertPointFromBacking(
+    const NCollection_Vec2<double>& thePnt) const
   {
     return thePnt / DevicePixelRatio();
   }
@@ -165,10 +167,10 @@ protected:
 
 protected:
   occ::handle<Aspect_DisplayConnection> myDisplay; //!< Display connection
-  Aspect_Background                MyBackground;
-  Aspect_GradientBackground        MyGradientBackground;
-  Aspect_FillMethod                MyBackgroundFillMethod;
-  bool                 MyIsVirtual;
+  Aspect_Background                     MyBackground;
+  Aspect_GradientBackground             MyGradientBackground;
+  Aspect_FillMethod                     MyBackgroundFillMethod;
+  bool                                  MyIsVirtual;
 };
 
 #endif // _Aspect_Window_HeaderFile

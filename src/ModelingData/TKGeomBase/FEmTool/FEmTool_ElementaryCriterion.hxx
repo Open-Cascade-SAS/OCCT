@@ -24,9 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 class math_Matrix;
 
@@ -54,9 +51,7 @@ public:
   //! J(E) which are crossed derivatives in dimensions <Dim1>
   //! and <Dim2>.
   //! If DependenceTable(Dimension1,Dimension2) is False
-  Standard_EXPORT virtual void Hessian(const int Dim1,
-                                       const int Dim2,
-                                       math_Matrix&           H) = 0;
+  Standard_EXPORT virtual void Hessian(const int Dim1, const int Dim2, math_Matrix& H) = 0;
 
   //! To Compute the coefficients in the dimension <dim>
   //! of the J(E)'s Gradient where E is the current Element
@@ -66,9 +61,8 @@ public:
 
 protected:
   occ::handle<NCollection_HArray2<double>> myCoeff;
-  double                 myFirst;
-  double                 myLast;
-
+  double                                   myFirst;
+  double                                   myLast;
 };
 
 #endif // _FEmTool_ElementaryCriterion_HeaderFile

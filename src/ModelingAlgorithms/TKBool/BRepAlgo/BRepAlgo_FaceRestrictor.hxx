@@ -44,9 +44,9 @@ public:
   //! faces built.
   //! <Proj> is used to update pcurves on edges if necessary.
   //! See Add().
-  Standard_EXPORT void Init(const TopoDS_Face&     F,
-                            const bool Proj               = false,
-                            const bool ControlOrientation = false);
+  Standard_EXPORT void Init(const TopoDS_Face& F,
+                            const bool         Proj               = false,
+                            const bool         ControlOrientation = false);
 
   //! Add the wire <W> to the set of wires.
   //!
@@ -79,14 +79,16 @@ private:
   //! Evaluate all the faces limited by the set of Wires.
   Standard_EXPORT void PerformWithCorrection();
 
-  bool                   myDone;
-  bool                   modeProj;
-  TopoDS_Face                        myFace;
-  NCollection_List<TopoDS_Shape>               wires;
-  NCollection_List<TopoDS_Shape>               faces;
-  bool                   myCorrection;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> keyIsIn;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> keyContains;
+  bool                           myDone;
+  bool                           modeProj;
+  TopoDS_Face                    myFace;
+  NCollection_List<TopoDS_Shape> wires;
+  NCollection_List<TopoDS_Shape> faces;
+  bool                           myCorrection;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    keyIsIn;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    keyContains;
 };
 
 #endif // _BRepAlgo_FaceRestrictor_HeaderFile

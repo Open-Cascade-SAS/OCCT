@@ -37,19 +37,20 @@ public:
   //! Returns a Direction
   Standard_EXPORT StepGeom_Direction();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const occ::handle<NCollection_HArray1<double>>&    theDirectionRatios);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    theName,
+                            const occ::handle<NCollection_HArray1<double>>& theDirectionRatios);
 
   Standard_EXPORT void Init3D(const occ::handle<TCollection_HAsciiString>& theName,
-                              const double                     theDirectionRatios1,
-                              const double                     theDirectionRatios2,
-                              const double                     theDirectionRatios3);
+                              const double                                 theDirectionRatios1,
+                              const double                                 theDirectionRatios2,
+                              const double                                 theDirectionRatios3);
 
   Standard_EXPORT void Init2D(const occ::handle<TCollection_HAsciiString>& theName,
-                              const double                     theDirectionRatios1,
-                              const double                     theDirectionRatios2);
+                              const double                                 theDirectionRatios1,
+                              const double                                 theDirectionRatios2);
 
-  Standard_EXPORT void SetDirectionRatios(const occ::handle<NCollection_HArray1<double>>& theDirectionRatios);
+  Standard_EXPORT void SetDirectionRatios(
+    const occ::handle<NCollection_HArray1<double>>& theDirectionRatios);
 
   Standard_EXPORT void SetDirectionRatios(const std::array<double, 3>& theDirectionRatios);
 
@@ -64,7 +65,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_Direction, StepGeom_GeometricRepresentationItem)
 
 private:
-  int             myNbCoord;
+  int                   myNbCoord;
   std::array<double, 3> myCoords;
 };
 

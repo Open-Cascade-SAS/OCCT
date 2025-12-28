@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for ellipse grid points.
 //!
@@ -86,8 +85,9 @@ public:
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
   occ::handle<Geom_Ellipse> myGeom;

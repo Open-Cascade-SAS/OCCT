@@ -167,11 +167,9 @@ public:
   gp_Pnt PickedPoint(const int theRank) const { return PickedData(theRank).Point; }
 
   //! Remove picked entities associated with specified object.
-  Standard_EXPORT bool
-    RemovePicked(const occ::handle<SelectMgr_SelectableObject>& theObject);
+  Standard_EXPORT bool RemovePicked(const occ::handle<SelectMgr_SelectableObject>& theObject);
 
-  Standard_EXPORT bool
-    Contains(const occ::handle<SelectMgr_SelectableObject>& theObject) const;
+  Standard_EXPORT bool Contains(const occ::handle<SelectMgr_SelectableObject>& theObject) const;
 
   //! Returns the default builder used to construct BVH of entity set.
   const occ::handle<Select3D_BVHBuilder3d> EntitySetBuilder() { return myEntitySetBuilder; }
@@ -186,24 +184,22 @@ public:
   //! Returns true if aSelectableObject is referenced inside
   //! this selector; returns false if the object is not present
   //! in this selector.
-  Standard_EXPORT bool
-    Modes(const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
-          NCollection_List<int>&                    theModeList,
-          const SelectMgr_StateOfSelection          theWantedState = SelectMgr_SOS_Any) const;
+  Standard_EXPORT bool Modes(
+    const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
+    NCollection_List<int>&                         theModeList,
+    const SelectMgr_StateOfSelection               theWantedState = SelectMgr_SOS_Any) const;
 
   //! Returns true if the selectable object
   //! aSelectableObject having the selection mode aMode
   //! is active in this selector.
-  Standard_EXPORT bool
-    IsActive(const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
-             const int                    theMode) const;
+  Standard_EXPORT bool IsActive(const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
+                                const int                                      theMode) const;
 
   //! Returns true if the selectable object
   //! aSelectableObject having the selection mode aMode
   //! is in this selector.
-  Standard_EXPORT bool
-    IsInside(const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
-             const int                    theMode) const;
+  Standard_EXPORT bool IsInside(const occ::handle<SelectMgr_SelectableObject>& theSelectableObject,
+                                const int                                      theMode) const;
 
   //! Returns the selection status Status of the selection aSelection.
   Standard_EXPORT SelectMgr_StateOfSelection
@@ -217,22 +213,27 @@ public:
     NCollection_List<occ::handle<SelectMgr_EntityOwner>>& theOwners) const;
 
   //! Adds new object to the map of selectable objects
-  Standard_EXPORT void AddSelectableObject(const occ::handle<SelectMgr_SelectableObject>& theObject);
+  Standard_EXPORT void AddSelectableObject(
+    const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Adds new selection to the object and builds its BVH tree
-  Standard_EXPORT void AddSelectionToObject(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                            const occ::handle<SelectMgr_Selection>&        theSelection);
+  Standard_EXPORT void AddSelectionToObject(
+    const occ::handle<SelectMgr_SelectableObject>& theObject,
+    const occ::handle<SelectMgr_Selection>&        theSelection);
 
   //! Moves existing object from set of not transform persistence objects
   //! to set of transform persistence objects (or vice versa).
-  Standard_EXPORT void MoveSelectableObject(const occ::handle<SelectMgr_SelectableObject>& theObject);
+  Standard_EXPORT void MoveSelectableObject(
+    const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Removes selectable object from map of selectable ones
-  Standard_EXPORT void RemoveSelectableObject(const occ::handle<SelectMgr_SelectableObject>& theObject);
+  Standard_EXPORT void RemoveSelectableObject(
+    const occ::handle<SelectMgr_SelectableObject>& theObject);
 
   //! Removes selection of the object and marks its BVH tree for rebuild
-  Standard_EXPORT void RemoveSelectionOfObject(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                               const occ::handle<SelectMgr_Selection>& theSelection);
+  Standard_EXPORT void RemoveSelectionOfObject(
+    const occ::handle<SelectMgr_SelectableObject>& theObject,
+    const occ::handle<SelectMgr_Selection>&        theSelection);
 
   //! Marks BVH of selectable objects for rebuild. Parameter theIsForce set as true
   //! guarantees that 1st level BVH for the viewer selector will be rebuilt during this call
@@ -241,8 +242,9 @@ public:
   //! Marks BVH of sensitive entities of particular selectable object for rebuild. Parameter
   //! theIsForce set as true guarantees that 2nd level BVH for the object given will be
   //! rebuilt during this call
-  Standard_EXPORT void RebuildSensitivesTree(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                             const bool theIsForce = false);
+  Standard_EXPORT void RebuildSensitivesTree(
+    const occ::handle<SelectMgr_SelectableObject>& theObject,
+    const bool                                     theIsForce = false);
 
   //! Returns instance of selecting volume manager of the viewer selector
   SelectMgr_SelectingVolumeManager& GetManager() { return mySelectingVolumeMgr; }
@@ -261,22 +263,22 @@ public:
 public:
   //! Picks the sensitive entity at the pixel coordinates of
   //! the mouse <theXPix> and <theYPix>. The selector looks for touched areas and owners.
-  Standard_EXPORT void Pick(const int  theXPix,
-                            const int  theYPix,
+  Standard_EXPORT void Pick(const int                    theXPix,
+                            const int                    theYPix,
                             const occ::handle<V3d_View>& theView);
 
   //! Picks the sensitive entity according to the minimum
   //! and maximum pixel values <theXPMin>, <theYPMin>, <theXPMax>
   //! and <theYPMax> defining a 2D area for selection in the 3D view aView.
-  Standard_EXPORT void Pick(const int  theXPMin,
-                            const int  theYPMin,
-                            const int  theXPMax,
-                            const int  theYPMax,
+  Standard_EXPORT void Pick(const int                    theXPMin,
+                            const int                    theYPMin,
+                            const int                    theXPMax,
+                            const int                    theYPMax,
                             const occ::handle<V3d_View>& theView);
 
   //! pick action - input pixel values for polyline selection for selection.
   Standard_EXPORT void Pick(const NCollection_Array1<gp_Pnt2d>& thePolyline,
-                            const occ::handle<V3d_View>&     theView);
+                            const occ::handle<V3d_View>&        theView);
 
   //! Picks the sensitive entity according to the input axis.
   //! This is geometric intersection 3D objects by axis
@@ -291,9 +293,9 @@ public:
   //! @param theType        type of image to define
   //! @param thePickedIndex index of picked entity (1 means topmost)
   Standard_EXPORT bool ToPixMap(Image_PixMap&                        theImage,
-                                            const occ::handle<V3d_View>&              theView,
-                                            const StdSelect_TypeOfSelectionImage theType,
-                                            const int thePickedIndex = 1);
+                                const occ::handle<V3d_View>&         theView,
+                                const StdSelect_TypeOfSelectionImage theType,
+                                const int                            thePickedIndex = 1);
 
 public:
   //! Displays sensitives in view <theView>.
@@ -302,7 +304,7 @@ public:
   Standard_EXPORT void ClearSensitive(const occ::handle<V3d_View>& theView);
 
   Standard_EXPORT void DisplaySensitive(const occ::handle<SelectMgr_Selection>& theSel,
-                                        const gp_Trsf&                     theTrsf,
+                                        const gp_Trsf&                          theTrsf,
                                         const occ::handle<V3d_View>&            theView,
                                         const bool theToClearOthers = true);
 
@@ -311,8 +313,7 @@ public:
 
 public:
   //! Enables/disables building BVH for sensitives in separate threads
-  Standard_EXPORT void SetToPrebuildBVH(bool theToPrebuild,
-                                        int theThreadsNum = -1);
+  Standard_EXPORT void SetToPrebuildBVH(bool theToPrebuild, int theThreadsNum = -1);
 
   //! Queues a sensitive entity to build its BVH
   Standard_EXPORT void QueueBVHBuild(const occ::handle<Select3D_SensitiveEntity>& theEntity);
@@ -338,17 +339,17 @@ protected:
   //! @param[in] theWinSize  viewport (window) dimensions for evaluating
   //!        object's transformation persistence.
   Standard_EXPORT void traverseObject(const occ::handle<SelectMgr_SelectableObject>& theObject,
-                                      const SelectMgr_SelectingVolumeManager&   theMgr,
+                                      const SelectMgr_SelectingVolumeManager&        theMgr,
                                       const occ::handle<Graphic3d_Camera>&           theCamera,
-                                      const NCollection_Mat4<double>&                    theProjectionMat,
-                                      const NCollection_Mat4<double>&                    theWorldViewMat,
-                                      const NCollection_Vec2<int>&                    theWinSize);
+                                      const NCollection_Mat4<double>& theProjectionMat,
+                                      const NCollection_Mat4<double>& theWorldViewMat,
+                                      const NCollection_Vec2<int>&    theWinSize);
 
   //! Internal function that checks if a particular sensitive
   //! entity theEntity overlaps current selecting volume precisely
   Standard_EXPORT void checkOverlap(const occ::handle<Select3D_SensitiveEntity>& theEntity,
-                                    const gp_GTrsf&                         theInversedTrsf,
-                                    SelectMgr_SelectingVolumeManager&       theMgr);
+                                    const gp_GTrsf&                              theInversedTrsf,
+                                    SelectMgr_SelectingVolumeManager&            theMgr);
 
   //! Update z-layers order map.
   Standard_EXPORT void updateZLayers(const occ::handle<V3d_View>& theView);
@@ -370,42 +371,44 @@ private:
 
   //! Internal function that checks if a current selecting frustum needs to be scaled and
   //! transformed for the entity and performs necessary calculations.
-  void computeFrustum(const occ::handle<Select3D_SensitiveEntity>& theEnt,
-                      const SelectMgr_SelectingVolumeManager& theMgrGlobal,
-                      const SelectMgr_SelectingVolumeManager& theMgrObject,
-                      const gp_GTrsf&                         theInvTrsf,
-                      NCollection_DataMap<int, SelectMgr_SelectingVolumeManager>&                 theCachedMgrs,
-                      SelectMgr_SelectingVolumeManager&       theResMgr);
+  void computeFrustum(const occ::handle<Select3D_SensitiveEntity>&                theEnt,
+                      const SelectMgr_SelectingVolumeManager&                     theMgrGlobal,
+                      const SelectMgr_SelectingVolumeManager&                     theMgrObject,
+                      const gp_GTrsf&                                             theInvTrsf,
+                      NCollection_DataMap<int, SelectMgr_SelectingVolumeManager>& theCachedMgrs,
+                      SelectMgr_SelectingVolumeManager&                           theResMgr);
 
 private:
   //! Compute 3d position for detected entity.
-  void updatePoint3d(SelectMgr_SortCriterion&                theCriterion,
-                     const SelectBasics_PickResult&          thePickResult,
+  void updatePoint3d(SelectMgr_SortCriterion&                     theCriterion,
+                     const SelectBasics_PickResult&               thePickResult,
                      const occ::handle<Select3D_SensitiveEntity>& theEntity,
-                     const gp_GTrsf&                         theInversedTrsf,
-                     const SelectMgr_SelectingVolumeManager& theMgr) const;
+                     const gp_GTrsf&                              theInversedTrsf,
+                     const SelectMgr_SelectingVolumeManager&      theMgr) const;
 
 protected:
-  double                                             myDepthTolerance;
-  SelectMgr_TypeOfDepthTolerance                            myDepthTolType;
-  bool                                          myToPreferClosest;
-  NCollection_IndexedDataMap<occ::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion>                  mystored;
-  SelectMgr_SelectingVolumeManager                          mySelectingVolumeMgr;
-  mutable SelectMgr_SelectableObjectSet                     mySelectableObjects;
-  SelectMgr_ToleranceMap                                    myTolerances;
+  double                         myDepthTolerance;
+  SelectMgr_TypeOfDepthTolerance myDepthTolType;
+  bool                           myToPreferClosest;
+  NCollection_IndexedDataMap<occ::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> mystored;
+  SelectMgr_SelectingVolumeManager             mySelectingVolumeMgr;
+  mutable SelectMgr_SelectableObjectSet        mySelectableObjects;
+  SelectMgr_ToleranceMap                       myTolerances;
   NCollection_DataMap<Graphic3d_ZLayerId, int> myZLayerOrderMap;
-  occ::handle<Select3D_BVHBuilder3d>                             myEntitySetBuilder;
-  gp_Pnt                                                    myCameraEye;
-  gp_Dir                                                    myCameraDir;
-  double                                             myCameraScale;
+  occ::handle<Select3D_BVHBuilder3d>           myEntitySetBuilder;
+  gp_Pnt                                       myCameraEye;
+  gp_Dir                                       myCameraDir;
+  double                                       myCameraScale;
 
-  bool                myToPrebuildBVH;
+  bool                                 myToPrebuildBVH;
   occ::handle<SelectMgr_BVHThreadPool> myBVHThreadPool;
 
   mutable NCollection_Array1<int> myIndexes;
-  mutable bool        myIsSorted;
-  bool                myIsLeftChildQueuedFirst;
-  NCollection_DataMap<occ::handle<SelectMgr_SelectableObject>, occ::handle<SelectMgr_SensitiveEntitySet>> myMapOfObjectSensitives;
+  mutable bool                    myIsSorted;
+  bool                            myIsLeftChildQueuedFirst;
+  NCollection_DataMap<occ::handle<SelectMgr_SelectableObject>,
+                      occ::handle<SelectMgr_SensitiveEntitySet>>
+    myMapOfObjectSensitives;
 
   NCollection_Sequence<occ::handle<Graphic3d_Structure>> myStructs; //!< list of debug presentations
 };

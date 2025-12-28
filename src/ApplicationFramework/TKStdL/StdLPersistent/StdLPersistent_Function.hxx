@@ -51,8 +51,8 @@ public:
   }
 
 private:
-  Standard_GUID    myDriverGUID;
-  int myFailure;
+  Standard_GUID myDriverGUID;
+  int           myFailure;
 };
 
 #endif

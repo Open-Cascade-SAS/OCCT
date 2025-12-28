@@ -52,7 +52,7 @@ void DrawDim_PlanarRadius::DrawOn(Draw_Display& dis) const
 {
   if (myCircle.ShapeType() == TopAbs_EDGE)
   {
-    double      f, l;
+    double                  f, l;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(TopoDS::Edge(myCircle), f, l);
     if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
     {

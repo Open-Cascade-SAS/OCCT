@@ -77,9 +77,9 @@ public:
   //! Level List which contains this value
   //! Attaches all these entities to value given by NewNumber, or
   //! the first value of the Level List
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&               TC) const override;
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which begins by
   //! "Changes Level Lists containing <old>", or

@@ -24,9 +24,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot, Approx_SweepFunction)
 
 BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
-                                             Blend_AppFunction&      Func,
-                                             const double     Tol3d,
-                                             const double     Tol2d)
+                                             Blend_AppFunction&           Func,
+                                             const double                 Tol3d,
+                                             const double                 Tol2d)
     : myLine(Line),
       myFunc(&Func),
       myTolerance(1, Func.NbVariables()),
@@ -56,7 +56,7 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
   if (Func.IsRational())
   {
     double Xmax = -1.e100, Xmin = 1.e100, Ymax = -1.e100, Ymin = 1.e100, Zmax = -1.e100,
-                  Zmin = 1.e100;
+           Zmin = 1.e100;
     Blend_Point P;
     for (ii = 1; ii <= myLine->NbPoints(); ii++)
     {
@@ -83,13 +83,13 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
 //           false is raised.
 //================================================================================
 bool BRepBlend_AppFuncRoot::D0(const double Param,
-                                           const double /*First*/,
-                                           const double /*Last*/,
-                                           NCollection_Array1<gp_Pnt>&   Poles,
-                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                           NCollection_Array1<double>& Weigths)
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>&   Weigths)
 {
-  bool   Ok   = true;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Ok                      = SearchPoint(*Func, Param, myPnt);
 
@@ -104,16 +104,16 @@ bool BRepBlend_AppFuncRoot::D0(const double Param,
 //           for v = Param, if the calculation fails false is raised.
 //================================================================================
 bool BRepBlend_AppFuncRoot::D1(const double Param,
-                                           const double /*First*/,
-                                           const double /*Last*/,
-                                           NCollection_Array1<gp_Pnt>&   Poles,
-                                           NCollection_Array1<gp_Vec>&   DPoles,
-                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                           NCollection_Array1<double>& Weigths,
-                                           NCollection_Array1<double>& DWeigths)
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths)
 {
-  bool   Ok   = true;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
   Ok = SearchPoint(*Func, Param, myPnt);
@@ -133,19 +133,19 @@ bool BRepBlend_AppFuncRoot::D1(const double Param,
 //           For v = Param, if the calculation fails false is raised.
 //===========================================================================
 bool BRepBlend_AppFuncRoot::D2(const double Param,
-                                           const double /*First*/,
-                                           const double /*Last*/,
-                                           NCollection_Array1<gp_Pnt>&   Poles,
-                                           NCollection_Array1<gp_Vec>&   DPoles,
-                                           NCollection_Array1<gp_Vec>&   D2Poles,
-                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                           NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                           NCollection_Array1<double>& Weigths,
-                                           NCollection_Array1<double>& DWeigths,
-                                           NCollection_Array1<double>& D2Weigths)
+                               const double /*First*/,
+                               const double /*Last*/,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths)
 {
-  bool   Ok   = true;
+  bool               Ok   = true;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
   Ok = SearchPoint(*Func, Param, myPnt);
@@ -168,17 +168,15 @@ bool BRepBlend_AppFuncRoot::D2(const double Param,
 int BRepBlend_AppFuncRoot::Nb2dCurves() const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  int   i, j, k, nbpol2d;
+  int                i, j, k, nbpol2d;
   (*Func).GetShape(i, j, k, nbpol2d);
   return nbpol2d;
 }
 
-void BRepBlend_AppFuncRoot::SectionShape(int& NbPoles,
-                                         int& NbKnots,
-                                         int& Degree) const
+void BRepBlend_AppFuncRoot::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  int   ii;
+  int                ii;
   (*Func).GetShape(NbPoles, NbKnots, Degree, ii);
 }
 
@@ -218,21 +216,21 @@ void BRepBlend_AppFuncRoot::SetInterval(const double First, const double Last)
   Func->Set(First, Last);
 }
 
-void BRepBlend_AppFuncRoot::Resolution(const int Index,
-                                       const double    Tol,
-                                       double&         TolU,
-                                       double&         TolV) const
+void BRepBlend_AppFuncRoot::Resolution(const int    Index,
+                                       const double Tol,
+                                       double&      TolU,
+                                       double&      TolV) const
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Func->Resolution(Index, Tol, TolU, TolV);
 }
 
-void BRepBlend_AppFuncRoot::GetTolerance(const double   BoundTol,
-                                         const double   SurfTol,
-                                         const double   AngleTol,
+void BRepBlend_AppFuncRoot::GetTolerance(const double                BoundTol,
+                                         const double                SurfTol,
+                                         const double                AngleTol,
                                          NCollection_Array1<double>& Tol3d) const
 {
-  int   ii;
+  int                ii;
   math_Vector        V3d(1, Tol3d.Length()), V1d(1, Tol3d.Length());
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
 
@@ -244,7 +242,7 @@ void BRepBlend_AppFuncRoot::GetTolerance(const double   BoundTol,
 void BRepBlend_AppFuncRoot::SetTolerance(const double Tol3d, const double Tol2d)
 {
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
-  int   ii, dim = Func->NbVariables();
+  int                ii, dim = Func->NbVariables();
   Func->GetTolerance(myTolerance, Tol3d);
   for (ii = 1; ii <= dim; ii++)
   {
@@ -288,15 +286,15 @@ void BRepBlend_AppFuncRoot::GetMinimalWeight(NCollection_Array1<double>& Weigths
 //
 //================================================================================
 
-bool BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
-                                                    const double Param,
-                                                    Blend_Point&        Pnt)
+bool BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
+                                        const double       Param,
+                                        Blend_Point&       Pnt)
 {
   bool Trouve;
-  int dim = Func.NbVariables();
+  int  dim = Func.NbVariables();
   // (1) Find a point of init
-  int I1 = 1, I2 = myLine->NbPoints(), Index;
-  double    t1, t2;
+  int    I1 = 1, I2 = myLine->NbPoints(), Index;
+  double t1, t2;
 
   //  (1.a) It is checked if it is inside
   if (Param < myLine->Point(I1).Parameter())
@@ -377,13 +375,13 @@ bool BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction&  Func,
 //           True is raised and ParamIndex corresponds to line of Point.
 //           Complexity of this algorithm is log(n)/log(2)
 //================================================================================
-bool BRepBlend_AppFuncRoot::SearchLocation(const double    Param,
-                                                       const int FirstIndex,
-                                                       const int LastIndex,
-                                                       int&      ParamIndex) const
+bool BRepBlend_AppFuncRoot::SearchLocation(const double Param,
+                                           const int    FirstIndex,
+                                           const int    LastIndex,
+                                           int&         ParamIndex) const
 {
-  int Ideb = FirstIndex, Ifin = LastIndex, Idemi;
-  double    Valeur;
+  int    Ideb = FirstIndex, Ifin = LastIndex, Idemi;
+  double Valeur;
 
   Valeur = myLine->Point(Ideb).Parameter();
   if (Param == Valeur)

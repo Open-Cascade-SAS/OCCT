@@ -45,8 +45,8 @@ public:
   Standard_EXPORT occ::handle<StepVisual_PreDefinedTextFont> PreDefinedTextFont() const;
 
   //! returns Value as a ExternallyDefinedTextFont (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedTextFont> ExternallyDefinedTextFont() const;
-
+  Standard_EXPORT occ::handle<StepVisual_ExternallyDefinedTextFont> ExternallyDefinedTextFont()
+    const;
 };
 
 #endif // _StepVisual_FontSelect_HeaderFile

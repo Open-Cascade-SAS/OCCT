@@ -211,8 +211,8 @@ int TDataXtd_PatternStd::NbTrsfs() const
 
 void TDataXtd_PatternStd::ComputeTrsfs(NCollection_Array1<gp_Trsf>& Trsfs) const
 {
-  int nb = 0;
-  gp_Trsf          trsf;
+  int     nb = 0;
+  gp_Trsf trsf;
 
   if (mySignature < 5)
   {

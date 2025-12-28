@@ -30,7 +30,6 @@ public:
   Standard_EXPORT StepBasic_SolidAngleUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SolidAngleUnit, StepBasic_NamedUnit)
-
 };
 
 #endif // _StepBasic_SolidAngleUnit_HeaderFile

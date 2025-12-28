@@ -35,7 +35,8 @@ public:
                             const occ::handle<StepBasic_ApplicationContext>& aFrameOfReference,
                             const occ::handle<TCollection_HAsciiString>&     aDisciplineType);
 
-  Standard_EXPORT void SetDisciplineType(const occ::handle<TCollection_HAsciiString>& aDisciplineType);
+  Standard_EXPORT void SetDisciplineType(
+    const occ::handle<TCollection_HAsciiString>& aDisciplineType);
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> DisciplineType() const;
 

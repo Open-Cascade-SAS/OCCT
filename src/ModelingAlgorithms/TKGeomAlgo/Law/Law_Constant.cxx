@@ -33,9 +33,7 @@ Law_Constant::Law_Constant()
 
 //=================================================================================================
 
-void Law_Constant::Set(const double Radius,
-                       const double PFirst,
-                       const double PLast)
+void Law_Constant::Set(const double Radius, const double PFirst, const double PLast)
 {
   radius = Radius;
   first  = PFirst;
@@ -93,9 +91,9 @@ void Law_Constant::D2(const double, double& F, double& D, double& D2)
 //=================================================================================================
 
 occ::handle<Law_Function> Law_Constant::Trim(const double PFirst,
-                                        const double PLast,
-                                        //				      const double Tol) const
-                                        const double) const
+                                             const double PLast,
+                                             //				      const double Tol) const
+                                             const double) const
 {
   occ::handle<Law_Constant> l = new (Law_Constant)();
   l->Set(radius, PFirst, PLast);

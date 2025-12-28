@@ -38,8 +38,8 @@
 //=========================================================================
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualified1,
                                              const gp_Circ2d&           OnCirc,
-                                             const double        Radius,
-                                             const double        Tolerance)
+                                             const double               Radius,
+                                             const double               Tolerance)
     :
 
       //=========================================================================
@@ -57,10 +57,10 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
 {
 
   TheSame1.Init(0);
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
@@ -71,14 +71,14 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
   //  Initialisation of various variables.                                 +
   //=========================================================================
 
-  int nbsol = 0;
-  int sign  = 0;
-  gp_Lin2d         L1    = Qualified1.Qualified();
-  gp_Pnt2d         origin1(L1.Location());
-  gp_Dir2d         dir1(L1.Direction());
-  gp_Dir2d         normL1(-dir1.Y(), dir1.X());
-  double    dist1 = L1.Distance(OnCirc.Location()) - OnCirc.Radius();
-  double    dist2 = L1.Distance(OnCirc.Location()) + OnCirc.Radius();
+  int      nbsol = 0;
+  int      sign  = 0;
+  gp_Lin2d L1    = Qualified1.Qualified();
+  gp_Pnt2d origin1(L1.Location());
+  gp_Dir2d dir1(L1.Direction());
+  gp_Dir2d normL1(-dir1.Y(), dir1.X());
+  double   dist1 = L1.Distance(OnCirc.Location()) - OnCirc.Radius();
+  double   dist2 = L1.Distance(OnCirc.Location()) + OnCirc.Radius();
 
   //=========================================================================
   //  Processing.                                                           +

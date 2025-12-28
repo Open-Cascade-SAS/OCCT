@@ -23,7 +23,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
@@ -75,13 +74,10 @@ public:
   Standard_EXPORT bool Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculate Fi'(U,V).
-  Standard_EXPORT bool Derivatives(const math_Vector& UV,
-                                               math_Matrix&       DF) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& UV, math_Matrix& DF) override;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT bool Values(const math_Vector& UV,
-                                          math_Vector&       F,
-                                          math_Matrix&       DF) override;
+  Standard_EXPORT bool Values(const math_Vector& UV, math_Vector& F, math_Matrix& DF) override;
 
   //! Save the found extremum.
   Standard_EXPORT virtual int GetStateNumber() override;
@@ -96,14 +92,14 @@ public:
   Standard_EXPORT const Extrema_POnSurf& Point(const int N) const;
 
 private:
-  gp_Pnt                    myP;
-  const Adaptor3d_Surface*  myS;
-  double             myU;
-  double             myV;
-  gp_Pnt                    myPs;
-  NCollection_Sequence<double>    mySqDist;
+  gp_Pnt                                myP;
+  const Adaptor3d_Surface*              myS;
+  double                                myU;
+  double                                myV;
+  gp_Pnt                                myPs;
+  NCollection_Sequence<double>          mySqDist;
   NCollection_Sequence<Extrema_POnSurf> myPoint;
-  bool          myPinit;
-  bool          mySinit;
+  bool                                  myPinit;
+  bool                                  mySinit;
 };
 #endif // _Extrema_FunctPSNorm_HeaderFile

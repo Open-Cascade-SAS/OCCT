@@ -26,7 +26,8 @@ BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider()
 
 //=================================================================================================
 
-BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider(const occ::handle<NCollection_BaseAllocator>& theAllocator)
+BOPAlgo_ToolsProvider::BOPAlgo_ToolsProvider(
+  const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Builder(theAllocator),
       myTools(myAllocator),
       myMapTools(100, myAllocator)

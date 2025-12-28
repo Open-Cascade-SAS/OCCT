@@ -24,12 +24,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GluedShape, LocOpe_GeneratedShape)
@@ -87,13 +84,14 @@ void LocOpe_GluedShape::MapEdgeAndVertices()
 
   // Edges et faces generes
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    theMapEF;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, theMapEF);
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                mapdone;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator   itm(myMap);
-  NCollection_List<TopoDS_Shape>::Iterator itl;
-  TopExp_Explorer                    exp, exp2, exp3;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>           mapdone;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm(myMap);
+  NCollection_List<TopoDS_Shape>::Iterator                         itl;
+  TopExp_Explorer                                                  exp, exp2, exp3;
 
   for (; itm.More(); itm.Next())
   {

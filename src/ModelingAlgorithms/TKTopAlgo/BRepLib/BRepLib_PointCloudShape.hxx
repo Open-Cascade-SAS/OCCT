@@ -18,9 +18,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Quantity_Color.hxx>
 #include <Precision.hxx>
 
@@ -37,7 +34,7 @@ public:
 
   //! Constructor initialized by shape
   Standard_EXPORT BRepLib_PointCloudShape(const TopoDS_Shape& theShape = TopoDS_Shape(),
-                                          const double theTol   = Precision::Confusion());
+                                          const double        theTol   = Precision::Confusion());
 
   //! Virtual destructor
   Standard_EXPORT virtual ~BRepLib_PointCloudShape();
@@ -108,12 +105,12 @@ protected:
                                         const TopoDS_Shape& theFace) = 0;
 
 protected:
-  TopoDS_Shape                   myShape;
-  double                  myDist;
-  double                  myTol;
-  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>    myFaceArea;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myFacePoints;
-  int               myNbPoints;
+  TopoDS_Shape                                                       myShape;
+  double                                                             myDist;
+  double                                                             myTol;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> myFaceArea;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>    myFacePoints;
+  int                                                                myNbPoints;
 };
 
 #endif // _BRepLib_PointCloudShape_HeaderFile

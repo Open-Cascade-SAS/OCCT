@@ -24,9 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 class Law_BSpline;
 
 //! For a B-spline curve the discontinuities are localised at the
@@ -58,7 +55,7 @@ public:
   //!
   //! Raised if ContinuityRange is not greater or equal zero.
   Standard_EXPORT Law_BSplineKnotSplitting(const occ::handle<Law_BSpline>& BasisLaw,
-                                           const int     ContinuityRange);
+                                           const int                       ContinuityRange);
 
   //! Returns the number of knots corresponding to the splitting.
   Standard_EXPORT int NbSplits() const;

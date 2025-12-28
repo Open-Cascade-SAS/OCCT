@@ -50,7 +50,7 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
   // Bug OCC31189: Test consistency of messages output using stream buffer interface
   // Verify that messages sent via stream buffers and directly to messenger don't intermix
 
-  std::ostringstream               anOutput;
+  std::ostringstream                    anOutput;
   occ::handle<TestMessagePrinter>       aPrinter = new TestMessagePrinter(anOutput);
   const occ::handle<Message_Messenger>& aMsgMgr  = ::Message::DefaultMessenger();
 
@@ -120,7 +120,7 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
 TEST(Message_Messenger_Test, StreamBufferBasicUsage)
 {
   // Test basic stream buffer functionality
-  std::ostringstream               anOutput;
+  std::ostringstream                    anOutput;
   occ::handle<TestMessagePrinter>       aPrinter = new TestMessagePrinter(anOutput);
   const occ::handle<Message_Messenger>& aMsgMgr  = Message::DefaultMessenger();
 

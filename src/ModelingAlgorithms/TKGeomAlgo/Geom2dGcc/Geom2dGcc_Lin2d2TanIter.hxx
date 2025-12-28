@@ -47,8 +47,8 @@ public:
   //! Param2 is used for the initial guess on the curve.
   Standard_EXPORT Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualified1,
                                           const gp_Pnt2d&         ThePoint,
-                                          const double     Param1,
-                                          const double     Tolang);
+                                          const double            Param1,
+                                          const double            Tolang);
 
   //! This class implements the algorithms used to create 2d
   //! line tangent to a circle and to a curve.
@@ -59,8 +59,8 @@ public:
   //! EnclosedCirc
   Standard_EXPORT Geom2dGcc_Lin2d2TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                           const Geom2dGcc_QCurve&     Qualified2,
-                                          const double         Param2,
-                                          const double         Tolang);
+                                          const double                Param2,
+                                          const double                Tolang);
 
   //! This class implements the algorithms used to create 2d
   //! line tangent to two curves.
@@ -70,9 +70,9 @@ public:
   //! Param2 is used for the initial guess on the second curve.
   Standard_EXPORT Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualified1,
                                           const Geom2dGcc_QCurve& Qualified2,
-                                          const double     Param1,
-                                          const double     Param2,
-                                          const double     Tolang);
+                                          const double            Param1,
+                                          const double            Param2,
+                                          const double            Tolang);
 
   //! This methode returns true when there is a solution
   //! and false in the other cases.
@@ -89,25 +89,21 @@ public:
   //! the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on
   //! the argument curv.
-  Standard_EXPORT void Tangency1(double& ParSol,
-                                 double& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
-  Standard_EXPORT void Tangency2(double& ParSol,
-                                 double& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency2(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
 private:
-  bool WellDone;
-  gp_Lin2d         linsol;
-  GccEnt_Position  qualifier1;
-  GccEnt_Position  qualifier2;
-  gp_Pnt2d         pnttg1sol;
-  gp_Pnt2d         pnttg2sol;
-  double    par1sol;
-  double    par2sol;
-  double    pararg1;
-  double    pararg2;
+  bool            WellDone;
+  gp_Lin2d        linsol;
+  GccEnt_Position qualifier1;
+  GccEnt_Position qualifier2;
+  gp_Pnt2d        pnttg1sol;
+  gp_Pnt2d        pnttg2sol;
+  double          par1sol;
+  double          par2sol;
+  double          pararg1;
+  double          pararg2;
 };
 
 #endif // _Geom2dGcc_Lin2d2TanIter_HeaderFile

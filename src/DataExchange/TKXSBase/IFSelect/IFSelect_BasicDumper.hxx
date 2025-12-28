@@ -37,19 +37,16 @@ public:
 
   //! Write the Own Parameters of Types defined in package IFSelect
   //! Returns True if <item> has been processed, False else
-  Standard_EXPORT bool
-    WriteOwn(IFSelect_SessionFile&             file,
-             const occ::handle<Standard_Transient>& item) const override;
+  Standard_EXPORT bool WriteOwn(IFSelect_SessionFile&                  file,
+                                const occ::handle<Standard_Transient>& item) const override;
 
   //! Recognizes and Read Own Parameters for Types of package
   //! IFSelect. Returns True if done and <item> created, False else
-  Standard_EXPORT bool
-    ReadOwn(IFSelect_SessionFile&          file,
-            const TCollection_AsciiString& type,
-            occ::handle<Standard_Transient>&    item) const override;
+  Standard_EXPORT bool ReadOwn(IFSelect_SessionFile&            file,
+                               const TCollection_AsciiString&   type,
+                               occ::handle<Standard_Transient>& item) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
-
 };
 
 #endif // _IFSelect_BasicDumper_HeaderFile

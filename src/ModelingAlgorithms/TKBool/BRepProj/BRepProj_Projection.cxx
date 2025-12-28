@@ -121,8 +121,9 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     return;
 
   // get edges of the result
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> anEdges = new NCollection_HSequence<TopoDS_Shape>;
-  TopExp_Explorer                   exp(aSectionTool.Shape(), TopAbs_EDGE);
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> anEdges =
+    new NCollection_HSequence<TopoDS_Shape>;
+  TopExp_Explorer exp(aSectionTool.Shape(), TopAbs_EDGE);
   for (; exp.More(); exp.Next())
     anEdges->Append(exp.Current());
 
@@ -131,10 +132,7 @@ void BRepProj_Projection::BuildSection(const TopoDS_Shape& theShape, const TopoD
     return;
 
   // connect edges to wires using ShapeAnalysis functionality
-  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges,
-                                                Precision::Confusion(),
-                                                true,
-                                                mySection);
+  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(anEdges, Precision::Confusion(), true, mySection);
   myIsDone = (!mySection.IsNull() && mySection->Length() > 0);
 
   // collect all resulting wires to compound
@@ -168,16 +166,16 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
 
   // compute the "length" of the cylindrical surface to build
   double mdis = DistanceIn(Wire, Shape);
-  gp_Vec        Vsup(D.XYZ() * 2 * mdis);
-  gp_Vec        Vinf(D.XYZ() * -mdis);
+  gp_Vec Vsup(D.XYZ() * 2 * mdis);
+  gp_Vec Vinf(D.XYZ() * -mdis);
 
   // move the base of the cylindrical surface by translating it by -mdis
   gp_Trsf T;
   T.SetTranslation(Vinf);
   // Note: it is necessary to create copy of wire to avoid adding new pcurves into it
   occ::handle<BRepTools_TrsfModification> Trsf = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier                 Modif(Wire, Trsf);
-  const TopoDS_Shape&                WireBase = Modif.ModifiedShape(Wire);
+  BRepTools_Modifier                      Modif(Wire, Trsf);
+  const TopoDS_Shape&                     WireBase = Modif.ModifiedShape(Wire);
 
   // Creation of a cylindrical surface
   BRepSweep_Prism CylSurf(WireBase, Vsup, false);
@@ -230,8 +228,8 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   gp_Trsf T;
   T.SetScale(P, Scale);
   occ::handle<BRepTools_TrsfModification> Tsca = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier                 ModifScale(aWire, Tsca);
-  TopoDS_Shape                       ShapeGen1 = ModifScale.ModifiedShape(aWire);
+  BRepTools_Modifier                      ModifScale(aWire, Tsca);
+  TopoDS_Shape                            ShapeGen1 = ModifScale.ModifiedShape(aWire);
 
   TopoDS_Vertex aVertex = BRepLib_MakeVertex(P);
   TopoDS_Edge   DegEdge;

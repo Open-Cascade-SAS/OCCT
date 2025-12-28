@@ -21,10 +21,10 @@ StepShape_RightAngularWedge::StepShape_RightAngularWedge() {}
 
 void StepShape_RightAngularWedge::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                        const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                                       const double                      aX,
-                                       const double                      aY,
-                                       const double                      aZ,
-                                       const double                      aLtx)
+                                       const double                                  aX,
+                                       const double                                  aY,
+                                       const double                                  aZ,
+                                       const double                                  aLtx)
 {
   // --- classe own fields ---
   position = aPosition;
@@ -36,7 +36,8 @@ void StepShape_RightAngularWedge::Init(const occ::handle<TCollection_HAsciiStrin
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_RightAngularWedge::SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
+void StepShape_RightAngularWedge::SetPosition(
+  const occ::handle<StepGeom_Axis2Placement3d>& aPosition)
 {
   position = aPosition;
 }

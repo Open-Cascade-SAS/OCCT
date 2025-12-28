@@ -32,20 +32,22 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation,
+    const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>&
+      theRepresentationRelation,
     const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>&
       theRepresentedProductRelation);
 
   //! Returns field RepresentationRelation
   Standard_EXPORT occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>
-    RepresentationRelation() const;
+                  RepresentationRelation() const;
   //! Sets field RepresentationRelation
   Standard_EXPORT void SetRepresentationRelation(
-    const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>& theRepresentationRelation);
+    const occ::handle<StepKinematics_KinematicLinkRepresentationAssociation>&
+      theRepresentationRelation);
 
   //! Returns field RepresentedProductRelation
   Standard_EXPORT occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>
-    RepresentedProductRelation() const;
+                  RepresentedProductRelation() const;
   //! Sets field RepresentedProductRelation
   Standard_EXPORT void SetRepresentedProductRelation(
     const occ::handle<StepKinematics_ProductDefinitionRelationshipKinematics>&

@@ -22,14 +22,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_PointLine, IntPatch_Line)
 
-IntPatch_PointLine::IntPatch_PointLine(const bool  Tang,
+IntPatch_PointLine::IntPatch_PointLine(const bool              Tang,
                                        const IntSurf_TypeTrans Trans1,
                                        const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2)
 {
 }
 
-IntPatch_PointLine::IntPatch_PointLine(const bool  Tang,
+IntPatch_PointLine::IntPatch_PointLine(const bool              Tang,
                                        const IntSurf_Situation Situ1,
                                        const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2)
@@ -47,10 +47,9 @@ IntPatch_PointLine::IntPatch_PointLine(const bool Tang)
 //        ATTENTION!!!
 //            Returns negative value if computation is not possible
 //=======================================================================
-double IntPatch_PointLine::CurvatureRadiusOfIntersLine(
-  const occ::handle<Adaptor3d_Surface>& theS1,
-  const occ::handle<Adaptor3d_Surface>& theS2,
-  const IntSurf_PntOn2S&           theUVPoint)
+double IntPatch_PointLine::CurvatureRadiusOfIntersLine(const occ::handle<Adaptor3d_Surface>& theS1,
+                                                       const occ::handle<Adaptor3d_Surface>& theS2,
+                                                       const IntSurf_PntOn2S& theUVPoint)
 {
   constexpr double aSmallValue   = 1.0 / Precision::Infinite();
   constexpr double aSqSmallValue = aSmallValue * aSmallValue;
@@ -119,7 +118,7 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(
 
   const gp_Vec aN1(aDU1.Crossed(aDV1)), aN2(aDU2.Crossed(aDV2));
   // Tangent vector to the intersection curve
-  const gp_Vec        aCTan(aN1.Crossed(aN2));
+  const gp_Vec aCTan(aN1.Crossed(aN2));
   const double aSqMagnFDer = aCTan.SquareMagnitude();
 
   if (aSqMagnFDer < 1.0e-8)
@@ -136,7 +135,7 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(
     // This algorithm is described in NonSingularProcessing() function
     // in ApproxInt_ImpPrmSvSurfaces.gxx file
     double aSqNMagn = aN1.SquareMagnitude();
-    gp_Vec        aTgU(aCTan.Crossed(aDU1)), aTgV(aCTan.Crossed(aDV1));
+    gp_Vec aTgU(aCTan.Crossed(aDU1)), aTgV(aCTan.Crossed(aDV1));
     double aDeltaU = aTgV.SquareMagnitude() / aSqNMagn;
     double aDeltaV = aTgU.SquareMagnitude() / aSqNMagn;
 
@@ -174,12 +173,12 @@ double IntPatch_PointLine::CurvatureRadiusOfIntersLine(
   }
 
   const double aF1 = aDuS1 * aDuS1 * aDUU1.Dot(aN1) + 2.0 * aDuS1 * aDvS1 * aDUV1.Dot(aN1)
-                            + aDvS1 * aDvS1 * aDVV1.Dot(aN1);
+                     + aDvS1 * aDvS1 * aDVV1.Dot(aN1);
   const double aF2 = aDuS2 * aDuS2 * aDUU2.Dot(aN2) + 2.0 * aDuS2 * aDvS2 * aDUV2.Dot(aN2)
-                            + aDvS2 * aDvS2 * aDVV2.Dot(aN2);
+                     + aDvS2 * aDvS2 * aDVV2.Dot(aN2);
 
   // Principal normal to the intersection curve
-  const gp_Vec        aCNorm((aF1 * aC - aF2 * aB) / aDetSyst * aN1
+  const gp_Vec aCNorm((aF1 * aC - aF2 * aB) / aDetSyst * aN1
                       + (aA * aF2 - aF1 * aB) / aDetSyst * aN2);
   const double aSqMagnSDer = aCNorm.CrossSquareMagnitude(aCTan);
 

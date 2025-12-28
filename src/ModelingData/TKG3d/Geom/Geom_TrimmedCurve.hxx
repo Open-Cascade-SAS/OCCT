@@ -77,10 +77,10 @@ public:
   //! bounds of C, or
   //! - U1 is equal to U2.
   Standard_EXPORT Geom_TrimmedCurve(const occ::handle<Geom_Curve>& C,
-                                    const double       U1,
-                                    const double       U2,
-                                    const bool    Sense             = true,
-                                    const bool    theAdjustPeriodic = true);
+                                    const double                   U1,
+                                    const double                   U2,
+                                    const bool                     Sense             = true,
+                                    const bool                     theAdjustPeriodic = true);
 
   //! Changes the orientation of this trimmed curve.
   //! As a result:
@@ -120,10 +120,10 @@ public:
   //! - the basis curve is not periodic, and either U1 or U2
   //! are outside the bounds of the basis curve, or
   //! - U1 is equal to U2.
-  Standard_EXPORT void SetTrim(const double    U1,
-                               const double    U2,
-                               const bool Sense             = true,
-                               const bool theAdjustPeriodic = true);
+  Standard_EXPORT void SetTrim(const double U1,
+                               const double U2,
+                               const bool   Sense             = true,
+                               const bool   theAdjustPeriodic = true);
 
   //! Returns the basis curve.
   //! Warning
@@ -197,24 +197,20 @@ public:
   Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT void D2(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   //! Raised if the continuity of the curve is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&             P,
-                          gp_Vec&             V1,
-                          gp_Vec&             V2,
-                          gp_Vec&             V3) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   //! N is the order of derivation.
   //! Raised if the continuity of the curve is not CN.
   //! Raised if N < 1.
   //! geometric transformations
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
 
   //! Applies the transformation T to this trimmed curve.
   //! Warning The basis curve is also modified.
@@ -230,9 +226,8 @@ public:
   //! me->Value(U).Transformed(T)
   //!
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double TransformedParameter(const double U,
-                                                             const gp_Trsf&      T) const
-    override;
+  Standard_EXPORT virtual double TransformedParameter(const double   U,
+                                                      const gp_Trsf& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -245,22 +240,21 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const
-    override;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this trimmed curve.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_TrimmedCurve, Geom_BoundedCurve)
 
 private:
   occ::handle<Geom_Curve> basisCurve;
-  double      uTrim1;
-  double      uTrim2;
+  double                  uTrim1;
+  double                  uTrim2;
 };
 
 #endif // _Geom_TrimmedCurve_HeaderFile

@@ -22,7 +22,7 @@ RWStepVisual_RWFillAreaStyleColour::RWStepVisual_RWFillAreaStyleColour() {}
 
 void RWStepVisual_RWFillAreaStyleColour::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                        num,
+  const int                                          num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepVisual_FillAreaStyleColour>& ent) const
 {
@@ -50,7 +50,7 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
 }
 
 void RWStepVisual_RWFillAreaStyleColour::WriteStep(
-  StepData_StepWriter&                          SW,
+  StepData_StepWriter&                               SW,
   const occ::handle<StepVisual_FillAreaStyleColour>& ent) const
 {
 
@@ -63,8 +63,9 @@ void RWStepVisual_RWFillAreaStyleColour::WriteStep(
   SW.Send(ent->FillColour());
 }
 
-void RWStepVisual_RWFillAreaStyleColour::Share(const occ::handle<StepVisual_FillAreaStyleColour>& ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepVisual_RWFillAreaStyleColour::Share(
+  const occ::handle<StepVisual_FillAreaStyleColour>& ent,
+  Interface_EntityIterator&                          iter) const
 {
 
   iter.GetOneItem(ent->FillColour());

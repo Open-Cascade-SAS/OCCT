@@ -33,19 +33,20 @@ BRepPrim_FaceBuilder::BRepPrim_FaceBuilder() {}
 
 //=================================================================================================
 
-BRepPrim_FaceBuilder::BRepPrim_FaceBuilder(const BRep_Builder& B, const occ::handle<Geom_Surface>& S)
+BRepPrim_FaceBuilder::BRepPrim_FaceBuilder(const BRep_Builder&              B,
+                                           const occ::handle<Geom_Surface>& S)
 {
   Init(B, S);
 }
 
 //=================================================================================================
 
-BRepPrim_FaceBuilder::BRepPrim_FaceBuilder(const BRep_Builder&         B,
+BRepPrim_FaceBuilder::BRepPrim_FaceBuilder(const BRep_Builder&              B,
                                            const occ::handle<Geom_Surface>& S,
-                                           const double         UMin,
-                                           const double         UMax,
-                                           const double         VMin,
-                                           const double         VMax)
+                                           const double                     UMin,
+                                           const double                     UMax,
+                                           const double                     VMin,
+                                           const double                     VMax)
 {
   Init(B, S, UMin, UMax, VMin, VMax);
 }
@@ -61,12 +62,12 @@ void BRepPrim_FaceBuilder::Init(const BRep_Builder& B, const occ::handle<Geom_Su
 
 //=================================================================================================
 
-void BRepPrim_FaceBuilder::Init(const BRep_Builder&         B,
+void BRepPrim_FaceBuilder::Init(const BRep_Builder&              B,
                                 const occ::handle<Geom_Surface>& S,
-                                const double         UMin,
-                                const double         UMax,
-                                const double         VMin,
-                                const double         VMax)
+                                const double                     UMin,
+                                const double                     UMax,
+                                const double                     VMin,
+                                const double                     VMax)
 {
   // Check the values
   double USMin, USMax, VSMin, VSMax;

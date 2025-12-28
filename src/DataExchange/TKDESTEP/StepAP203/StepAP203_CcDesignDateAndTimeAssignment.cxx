@@ -29,8 +29,8 @@ StepAP203_CcDesignDateAndTimeAssignment::StepAP203_CcDesignDateAndTimeAssignment
 //=================================================================================================
 
 void StepAP203_CcDesignDateAndTimeAssignment::Init(
-  const occ::handle<StepBasic_DateAndTime>&           aDateAndTimeAssignment_AssignedDateAndTime,
-  const occ::handle<StepBasic_DateTimeRole>&          aDateAndTimeAssignment_Role,
+  const occ::handle<StepBasic_DateAndTime>&  aDateAndTimeAssignment_AssignedDateAndTime,
+  const occ::handle<StepBasic_DateTimeRole>& aDateAndTimeAssignment_Role,
   const occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>>& aItems)
 {
   StepBasic_DateAndTimeAssignment::Init(aDateAndTimeAssignment_AssignedDateAndTime,
@@ -41,7 +41,8 @@ void StepAP203_CcDesignDateAndTimeAssignment::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> StepAP203_CcDesignDateAndTimeAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> StepAP203_CcDesignDateAndTimeAssignment::
+  Items() const
 {
   return theItems;
 }

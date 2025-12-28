@@ -39,14 +39,13 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_CentroidDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_CentroidDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_CentroidDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                       const occ::handle<TDF_Attribute>& theTarget,
+                                       BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Centroid> anAtt = occ::down_cast<XCAFDoc_Centroid>(theTarget);
-  double            x, y, z;
-  bool         isOk = theSource >> x >> y >> z;
+  double                        x, y, z;
+  bool                          isOk = theSource >> x >> y >> z;
   if (isOk)
   {
     gp_Pnt aPnt(x, y, z);
@@ -57,11 +56,12 @@ bool BinMXCAFDoc_CentroidDriver::Paste(
 
 //=================================================================================================
 
-void BinMXCAFDoc_CentroidDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       BinObjMgt_Persistent&        theTarget,
-                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
+void BinMXCAFDoc_CentroidDriver::Paste(
+  const occ::handle<TDF_Attribute>& theSource,
+  BinObjMgt_Persistent&             theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Centroid> anAtt = occ::down_cast<XCAFDoc_Centroid>(theSource);
-  gp_Pnt                   aPnt  = anAtt->Get();
+  gp_Pnt                        aPnt  = anAtt->Get();
   theTarget << aPnt.X() << aPnt.Y() << aPnt.Z();
 }

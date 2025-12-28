@@ -42,9 +42,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = (theX - 2.0) * (theX - 2.0) - 1.0;
     theD = 2.0 * (theX - 2.0);
@@ -69,9 +67,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX - theX - 2.0;
     theD = 3.0 * theX * theX - 1.0;
@@ -95,9 +91,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -121,9 +115,7 @@ public:
     return true;
   }
 
-  bool Values(const double theX,
-                          double&      theF,
-                          double&      theD) override
+  bool Values(const double theX, double& theF, double& theD) override
   {
     theF = theX * theX * theX;
     theD = 3.0 * theX * theX;

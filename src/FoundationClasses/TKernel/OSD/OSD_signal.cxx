@@ -22,8 +22,8 @@
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
-static OSD_SignalMode   OSD_WasSetSignal           = OSD_SignalMode_AsIs;
-static int OSD_SignalStackTraceLength = 0;
+static OSD_SignalMode OSD_WasSetSignal           = OSD_SignalMode_AsIs;
+static int            OSD_SignalStackTraceLength = 0;
 
 //=================================================================================================
 
@@ -100,7 +100,7 @@ static BOOL WINAPI _osd_ctrl_break_handler(DWORD);
 
   #if !defined(OCCT_UWP) && !defined(__MINGW32__) && !defined(__CYGWIN32__)
 static bool fDbgLoaded;
-static LONG             _osd_debug(void);
+static LONG _osd_debug(void);
   #endif
 
   #define _OSD_FPX (_EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW)
@@ -790,9 +790,7 @@ typedef void (*SIG_PFV)(int);
   //==== SIGSEGV is handled by "SegvHandler()"
   //============================================================================
   #ifdef SA_SIGINFO
-static void Handler(const int theSignal,
-                    siginfo_t* /*theSigInfo*/,
-                    void* const /*theContext*/)
+static void Handler(const int theSignal, siginfo_t* /*theSigInfo*/, void* const /*theContext*/)
   #else
 static void Handler(const int theSignal)
   #endif
@@ -918,9 +916,7 @@ static void Handler(const int theSignal)
   //============================================================================
   #ifdef SA_SIGINFO
 
-static void SegvHandler(const int              theSignal,
-                        siginfo_t*             theSigInfo,
-                        void* const theContext)
+static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const theContext)
 {
   (void)theSignal;
   (void)theContext;
@@ -960,9 +956,7 @@ static void SegvHandler(const int              theSignal,
 // Not ACTIVE ? SA_SIGINFO is defined on SUN, OSF, SGI and HP (and Linux) !
 // pour version 09.07
 
-static void SegvHandler(const int              theSignal,
-                        siginfo_t*             theSigInfo,
-                        void* const theContext)
+static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const theContext)
 {
   if (theContext != NULL)
   {

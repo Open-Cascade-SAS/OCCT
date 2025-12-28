@@ -49,10 +49,9 @@ public:
   //!
   //! If <alsofree> is True free edges are considered.
   //! Free edges can be queried but are not bad
-  Standard_EXPORT bool
-    CheckOrientedShells(const TopoDS_Shape&    shape,
-                        const bool alsofree           = false,
-                        const bool checkinternaledges = false);
+  Standard_EXPORT bool CheckOrientedShells(const TopoDS_Shape& shape,
+                                           const bool          alsofree           = false,
+                                           const bool          checkinternaledges = false);
 
   //! Tells if a shape is loaded (only shells are checked)
   Standard_EXPORT bool IsLoaded(const TopoDS_Shape& shape) const;
@@ -85,7 +84,7 @@ private:
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShells;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myBad;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myFree;
-  bool           myConex;
+  bool                                                          myConex;
 };
 
 #endif // _ShapeAnalysis_Shell_HeaderFile

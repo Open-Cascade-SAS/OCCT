@@ -37,15 +37,15 @@ public:
   Standard_HIDDEN RWStepGeom_RWCircle();
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                const int                 num,
+                                const int                                   num,
                                 occ::handle<Interface_Check>&               ach,
                                 const occ::handle<StepGeom_Circle>&         ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter& SW, const occ::handle<StepGeom_Circle>& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
+                                 const occ::handle<StepGeom_Circle>& ent) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepGeom_Circle>& ent,
-                             Interface_EntityIterator&      iter) const;
-
+                             Interface_EntityIterator&           iter) const;
 };
 
 #endif // _RWStepGeom_RWCircle_HeaderFile

@@ -22,8 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_PCurve, IMeshData_PCurve)
 
 //=================================================================================================
 
-BRepMeshData_PCurve::BRepMeshData_PCurve(const IMeshData::IFacePtr&              theDFace,
-                                         const TopAbs_Orientation                theOrientation,
+BRepMeshData_PCurve::BRepMeshData_PCurve(const IMeshData::IFacePtr& theDFace,
+                                         const TopAbs_Orientation   theOrientation,
                                          const occ::handle<NCollection_IncAllocator>& theAllocator)
     : IMeshData_PCurve(theDFace, theOrientation),
       myPoints2d(NCollection_OccAllocator<gp_Pnt2d>(theAllocator)),
@@ -38,8 +38,8 @@ BRepMeshData_PCurve::~BRepMeshData_PCurve() {}
 
 //=================================================================================================
 
-void BRepMeshData_PCurve::InsertPoint(const int thePosition,
-                                      const gp_Pnt2d&        thePoint,
+void BRepMeshData_PCurve::InsertPoint(const int       thePosition,
+                                      const gp_Pnt2d& thePoint,
                                       const double    theParamOnPCurve)
 {
   myPoints2d.insert(myPoints2d.begin() + thePosition, thePoint);
@@ -60,8 +60,7 @@ void BRepMeshData_PCurve::AddPoint(const gp_Pnt2d& thePoint, const double thePar
 
 gp_Pnt2d& BRepMeshData_PCurve::GetPoint(const int theIndex)
 {
-  Standard_OutOfRange_Raise_if(theIndex < 0
-                                 || theIndex >= static_cast<int>(myPoints2d.size()),
+  Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex >= static_cast<int>(myPoints2d.size()),
                                "BRepMeshData_PCurve::GetPoint");
   return myPoints2d[theIndex];
 }
@@ -70,8 +69,7 @@ gp_Pnt2d& BRepMeshData_PCurve::GetPoint(const int theIndex)
 
 int& BRepMeshData_PCurve::GetIndex(const int theIndex)
 {
-  Standard_OutOfRange_Raise_if(theIndex < 0
-                                 || theIndex >= static_cast<int>(myIndices.size()),
+  Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex >= static_cast<int>(myIndices.size()),
                                "BRepMeshData_PCurve::GetIndex");
   return myIndices[theIndex];
 }

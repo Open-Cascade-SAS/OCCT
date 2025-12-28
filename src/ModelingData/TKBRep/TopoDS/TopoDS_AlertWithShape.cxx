@@ -38,6 +38,6 @@ bool TopoDS_AlertWithShape::SupportsMerge() const
 bool TopoDS_AlertWithShape::Merge(const occ::handle<Message_Alert>& /*theTarget*/)
 {
   return false;
-  //  occ::handle<TopoDS_AlertWithShape> aTarget = Handle(TopoDS_AlertWithShape)::DownCast (theTarget);
-  //  return aTarget->GetShape() == myShape;
+  //  occ::handle<TopoDS_AlertWithShape> aTarget = Handle(TopoDS_AlertWithShape)::DownCast
+  //  (theTarget); return aTarget->GetShape() == myShape;
 }

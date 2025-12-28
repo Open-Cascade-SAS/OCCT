@@ -69,7 +69,7 @@ static int Ascendants(Draw_Interpretor& di, int n, const char** a)
 
   // TNaming_OldShapeIterator it (S, T, US);
   TNaming_OldShapeIterator it(S, T, ND->Root());
-  int         i = 0;
+  int                      i = 0;
   TCollection_AsciiString  entry;
   for (; it.More(); it.Next())
   {
@@ -91,7 +91,7 @@ static int Descendants(Draw_Interpretor& di, int n, const char** a)
   if (n < 3)
     return 1;
 
-  char             name[100];
+  char                  name[100];
   occ::handle<TDF_Data> ND;
   //  occ::handle<TNaming_UsedShapes> US;
   if (!DDF::GetDF(a[1], ND))
@@ -110,7 +110,7 @@ static int Descendants(Draw_Interpretor& di, int n, const char** a)
     T = ND->Transaction();
 
   TNaming_NewShapeIterator it(S, T, ND->Root());
-  int         i = 0;
+  int                      i = 0;
   TCollection_AsciiString  entry;
   for (; it.More(); it.Next())
   {
@@ -145,7 +145,7 @@ static int Getentry(Draw_Interpretor& di, int n, const char** a)
     // di << 0;
     return 0;
   }
-  int        aStatus = 0;
+  int                     aStatus = 0;
   TCollection_AsciiString Name    = DNaming::GetEntry(S, ND, aStatus);
   if (aStatus == 0)
   {
@@ -207,8 +207,8 @@ static int Currentshape(Draw_Interpretor&, int n, const char** a)
   if (!DDF::GetDF(a[1], ND))
     return 1;
 
-  const char* LabelName = a[2];
-  TopoDS_Shape     S         = DNaming::CurrentShape(LabelName, ND);
+  const char*  LabelName = a[2];
+  TopoDS_Shape S         = DNaming::CurrentShape(LabelName, ND);
   if (!S.IsNull())
   {
     if (n == 4)
@@ -237,7 +237,7 @@ static int Initialshape(Draw_Interpretor& di, int n, const char** a)
     return 1;
 
   NCollection_List<TDF_Label> Labels;
-  TopoDS_Shape  S = TNaming_Tool::InitialShape(NS, ND->Root(), Labels);
+  TopoDS_Shape                S = TNaming_Tool::InitialShape(NS, ND->Root(), Labels);
   if (!S.IsNull())
   {
     DBRep::Set(a[3], S);
@@ -327,14 +327,14 @@ static int Exploreshape(Draw_Interpretor& di, int n, const char** a)
 
 static int Generatedshape(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TopoDS_Shape               S;
+  TopoDS_Shape                    S;
   occ::handle<TNaming_NamedShape> A;
   if (nb >= 4)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
       return 1;
-    TopoDS_Shape               Gen = DBRep::Get(arg[2]);
+    TopoDS_Shape                    Gen = DBRep::Get(arg[2]);
     occ::handle<TNaming_NamedShape> Generation;
     if (!DDF::Find(DF, arg[3], TNaming_NamedShape::GetID(), Generation))
       return 1;
@@ -356,7 +356,7 @@ static int Generatedshape(Draw_Interpretor& di, int nb, const char** arg)
 
 static int Getshape(Draw_Interpretor& di, int nb, const char** arg)
 {
-  TopoDS_Shape               s;
+  TopoDS_Shape                    s;
   occ::handle<TNaming_NamedShape> A;
   if (nb >= 3)
   {
@@ -383,9 +383,9 @@ static int Getshape(Draw_Interpretor& di, int nb, const char** arg)
 
 static int Collect(Draw_Interpretor& di, int nb, const char** arg)
 {
-  NCollection_Map<occ::handle<TNaming_NamedShape>>    MNS;
-  occ::handle<TNaming_NamedShape> A;
-  bool           OnlyModif = 1;
+  NCollection_Map<occ::handle<TNaming_NamedShape>> MNS;
+  occ::handle<TNaming_NamedShape>                  A;
+  bool                                             OnlyModif = 1;
 
   if (nb >= 3)
   {
@@ -434,14 +434,14 @@ static int Getcreationentry(Draw_Interpretor& di, int n, const char** a)
   }
 
   NCollection_List<TDF_Label> Labels;
-  TopoDS_Shape  S = TNaming_Tool::InitialShape(SS, ND->Root(), Labels);
+  TopoDS_Shape                S = TNaming_Tool::InitialShape(SS, ND->Root(), Labels);
 
   if (S.IsNull())
   {
     di << "E_NoName";
     return 0;
   }
-  int        aStatus = 0;
+  int                     aStatus = 0;
   TCollection_AsciiString Name    = DNaming::GetEntry(S, ND, aStatus);
   if (aStatus == 0)
   {
@@ -463,9 +463,7 @@ static int Getcreationentry(Draw_Interpretor& di, int n, const char** a)
 // purpose  : "ImportShape Doc  entry Shape Name"
 //=======================================================================
 
-static int DNaming_ImportShape(Draw_Interpretor& di,
-                                            int  nb,
-                                            const char**      a)
+static int DNaming_ImportShape(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb >= 4)
   {
@@ -501,7 +499,7 @@ static int CheckIter(Draw_Interpretor& di, int nb, const char** arg)
   if (nb > 3)
   {
     occ::handle<TDF_Data> aDF;
-    bool aNew(true);
+    bool                  aNew(true);
     if (!DDF::GetDF(arg[1], aDF))
       return 1;
     TDF_Label aLabel;

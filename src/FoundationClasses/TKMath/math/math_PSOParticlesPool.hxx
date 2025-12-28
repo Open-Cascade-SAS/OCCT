@@ -47,8 +47,7 @@ struct PSO_Particle
 class math_PSOParticlesPool
 {
 public:
-  Standard_EXPORT math_PSOParticlesPool(const int theParticlesCount,
-                                        const int theDimensionCount);
+  Standard_EXPORT math_PSOParticlesPool(const int theParticlesCount, const int theDimensionCount);
 
   Standard_EXPORT PSO_Particle* GetParticle(const int theIdx);
 
@@ -59,10 +58,10 @@ public:
   Standard_EXPORT ~math_PSOParticlesPool();
 
 private:
-  NCollection_Array1<PSO_Particle>  myParticlesPool;
-  NCollection_Array1<double> myMemory; // Stores particles vector data.
-  int                  myParticlesCount;
-  int                  myDimensionCount;
+  NCollection_Array1<PSO_Particle> myParticlesPool;
+  NCollection_Array1<double>       myMemory; // Stores particles vector data.
+  int                              myParticlesCount;
+  int                              myDimensionCount;
 };
 
 #endif

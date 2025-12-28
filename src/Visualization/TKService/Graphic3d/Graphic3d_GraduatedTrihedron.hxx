@@ -40,13 +40,13 @@ public:
     AxisAspect(const TCollection_ExtendedString theName            = "",
                const Quantity_Color             theNameColor       = Quantity_NOC_BLACK,
                const Quantity_Color             theColor           = Quantity_NOC_BLACK,
-               const int           theValuesOffset    = 10,
-               const int           theNameOffset      = 30,
-               const int           theTickmarksNumber = 5,
-               const int           theTickmarksLength = 10,
-               const bool           theToDrawName      = true,
-               const bool           theToDrawValues    = true,
-               const bool           theToDrawTickmarks = true)
+               const int                        theValuesOffset    = 10,
+               const int                        theNameOffset      = 30,
+               const int                        theTickmarksNumber = 5,
+               const int                        theTickmarksLength = 10,
+               const bool                       theToDrawName      = true,
+               const bool                       theToDrawValues    = true,
+               const bool                       theToDrawTickmarks = true)
         : myName(theName),
           myToDrawName(theToDrawName),
           myToDrawTickmarks(theToDrawTickmarks),
@@ -112,9 +112,9 @@ public:
 
     Quantity_Color myNameColor;
 
-    int myTickmarksNumber; //!< Number of splits along axes
-    int myTickmarksLength; //!< Length of tickmarks
-    Quantity_Color   myColor;           //!< Color of axis and values
+    int            myTickmarksNumber; //!< Number of splits along axes
+    int            myTickmarksLength; //!< Length of tickmarks
+    Quantity_Color myColor;           //!< Color of axis and values
 
     int myValuesOffset; //!< Offset for drawing values
     int myNameOffset;   //!< Offset for drawing name of axis
@@ -128,14 +128,14 @@ public:
   //! Constructs the default graduated trihedron with grid, X, Y, Z axes, and tickmarks
   Graphic3d_GraduatedTrihedron(const TCollection_AsciiString& theNamesFont    = "Arial",
                                const Font_FontAspect&         theNamesStyle   = Font_FA_Bold,
-                               const int         theNamesSize    = 12,
+                               const int                      theNamesSize    = 12,
                                const TCollection_AsciiString& theValuesFont   = "Arial",
                                const Font_FontAspect&         theValuesStyle  = Font_FA_Regular,
-                               const int         theValuesSize   = 12,
-                               const float       theArrowsLength = 30.0f,
+                               const int                      theValuesSize   = 12,
+                               const float                    theArrowsLength = 30.0f,
                                const Quantity_Color           theGridColor    = Quantity_NOC_WHITE,
-                               const bool         theToDrawGrid   = true,
-                               const bool         theToDrawAxes   = true)
+                               const bool                     theToDrawGrid   = true,
+                               const bool                     theToDrawAxes   = true)
       : myCubicAxesCallback(NULL),
         myNamesFont(theNamesFont),
         myNamesStyle(theNamesStyle),
@@ -250,11 +250,11 @@ protected:
 protected:
   TCollection_AsciiString myValuesFont;  //!< Font name of values: Courier, Arial, ...
   Font_FontAspect         myValuesStyle; //!< Style of values: OSD_FA_Regular, OSD_FA_Bold, ...
-  int        myValuesSize;  //!< Size of values: 8, 10, 12, 14, ...
+  int                     myValuesSize;  //!< Size of values: 8, 10, 12, 14, ...
 
 protected:
-  float myArrowsLength;
-  Quantity_Color     myGridColor;
+  float          myArrowsLength;
+  Quantity_Color myGridColor;
 
   bool myToDrawGrid;
   bool myToDrawAxes;

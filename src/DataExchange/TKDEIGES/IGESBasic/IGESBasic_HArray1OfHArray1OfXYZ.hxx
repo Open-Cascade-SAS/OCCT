@@ -22,9 +22,7 @@
 
 #include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Transient.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
@@ -32,8 +30,7 @@ class IGESBasic_HArray1OfHArray1OfXYZ : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT IGESBasic_HArray1OfHArray1OfXYZ(const int low,
-                                                  const int up);
+  Standard_EXPORT IGESBasic_HArray1OfHArray1OfXYZ(const int low, const int up);
 
   Standard_EXPORT int Lower() const;
 

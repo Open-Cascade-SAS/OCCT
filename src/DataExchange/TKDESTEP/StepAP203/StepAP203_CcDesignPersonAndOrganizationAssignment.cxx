@@ -35,7 +35,7 @@ StepAP203_CcDesignPersonAndOrganizationAssignment::
 void StepAP203_CcDesignPersonAndOrganizationAssignment::Init(
   const occ::handle<StepBasic_PersonAndOrganization>&
     aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-  const occ::handle<StepBasic_PersonAndOrganizationRole>&       aPersonAndOrganizationAssignment_Role,
+  const occ::handle<StepBasic_PersonAndOrganizationRole>& aPersonAndOrganizationAssignment_Role,
   const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& aItems)
 {
   StepBasic_PersonAndOrganizationAssignment::Init(

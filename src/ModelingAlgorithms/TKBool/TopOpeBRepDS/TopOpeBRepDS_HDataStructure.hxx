@@ -90,13 +90,11 @@ public:
   Standard_EXPORT int NbShapes() const;
 
   //! Returns the shape of index <I> in the DS
-  Standard_EXPORT const TopoDS_Shape& Shape(const int I,
-                                            const bool FindKeep = true) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int I, const bool FindKeep = true) const;
 
   //! Returns the index of shape <S> in the DS
   //! returns 0 if <S> is not in the DS
-  Standard_EXPORT int Shape(const TopoDS_Shape&    S,
-                                         const bool FindKeep = true) const;
+  Standard_EXPORT int Shape(const TopoDS_Shape& S, const bool FindKeep = true) const;
 
   //! Returns True if <S> has new geometries.
   Standard_EXPORT bool HasGeometry(const TopoDS_Shape& S) const;
@@ -104,13 +102,11 @@ public:
   //! Returns True if <S> has new geometries (SOLID,FACE,EDGE)
   //! or if <S> (SHELL,WIRE) has sub-shape (FACE,EDGE)
   //! with new geometries
-  Standard_EXPORT bool HasShape(const TopoDS_Shape&    S,
-                                            const bool FindKeep = true) const;
+  Standard_EXPORT bool HasShape(const TopoDS_Shape& S, const bool FindKeep = true) const;
 
   //! Returns True if <S> share a geometrical domain with
   //! some other shapes.
-  Standard_EXPORT bool
-    HasSameDomain(const TopoDS_Shape& S, const bool FindKeep = true) const;
+  Standard_EXPORT bool HasSameDomain(const TopoDS_Shape& S, const bool FindKeep = true) const;
 
   //! Returns an iterator on the SameDomain shapes attached
   //! to the shape <S>.
@@ -158,14 +154,17 @@ public:
   //! are SameParameter, otherwise False.
   Standard_EXPORT bool EdgesSameParameter() const;
 
-  Standard_EXPORT void SortOnParameter(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L1,
-                                       NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       L2) const;
+  Standard_EXPORT void SortOnParameter(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L1,
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       L2) const;
 
-  Standard_EXPORT void SortOnParameter(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L) const;
+  Standard_EXPORT void SortOnParameter(
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L) const;
 
-  Standard_EXPORT void MinMaxOnParameter(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L,
-                                         double&                         Min,
-                                         double&                         Max) const;
+  Standard_EXPORT void MinMaxOnParameter(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L,
+    double&                                                         Min,
+    double&                                                         Max) const;
 
   //! Search, among a list of interferences accessed by the iterator
   //! <IT>, a geometry <G> whose 3D point is identical to the 3D point
@@ -173,48 +172,55 @@ public:
   //! returns True if such an interference has been found, False else.
   //! if True, iterator It points (by the Value() method) on the first
   //! interference accessing an identical 3D point.
-  Standard_EXPORT bool ScanInterfList(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-                                                  const TopOpeBRepDS_Point& PDS) const;
+  Standard_EXPORT bool ScanInterfList(
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+    const TopOpeBRepDS_Point&                                           PDS) const;
 
   //! Get the geometry of a DS point <PDS>.
   //! Search for it with ScanInterfList (previous method).
   //! if found, set <G,K> to the geometry,kind of the interference found.
   //! returns the value of ScanInterfList().
-  Standard_EXPORT bool GetGeometry(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-                                               const TopOpeBRepDS_Point&                      PDS,
-                                               int&                              G,
-                                               TopOpeBRepDS_Kind& K) const;
+  Standard_EXPORT bool GetGeometry(
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+    const TopOpeBRepDS_Point&                                           PDS,
+    int&                                                                G,
+    TopOpeBRepDS_Kind&                                                  K) const;
 
   //! Add interference <I> to list <LI>.
-  Standard_EXPORT void StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                         NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&         LI,
-                                         const TCollection_AsciiString&           str = "");
+  Standard_EXPORT void StoreInterference(
+    const occ::handle<TopOpeBRepDS_Interference>&             I,
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+    const TCollection_AsciiString&                            str = "");
 
   //! Add interference <I> to list of interference of shape <S>.
   Standard_EXPORT void StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                         const TopoDS_Shape&                      S,
-                                         const TCollection_AsciiString&           str = "");
+                                         const TopoDS_Shape&                           S,
+                                         const TCollection_AsciiString&                str = "");
 
   //! Add interference <I> to list of interference of shape <IS>.
   Standard_EXPORT void StoreInterference(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                         const int                   IS,
-                                         const TCollection_AsciiString&           str = "");
+                                         const int                                     IS,
+                                         const TCollection_AsciiString&                str = "");
 
-  Standard_EXPORT void StoreInterferences(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                                          const TopoDS_Shape&                    S,
-                                          const TCollection_AsciiString&         str = "");
+  Standard_EXPORT void StoreInterferences(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+    const TopoDS_Shape&                                             S,
+    const TCollection_AsciiString&                                  str = "");
 
-  Standard_EXPORT void StoreInterferences(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                                          const int                 IS,
-                                          const TCollection_AsciiString&         str = "");
+  Standard_EXPORT void StoreInterferences(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+    const int                                                       IS,
+    const TCollection_AsciiString&                                  str = "");
 
-  Standard_EXPORT void ClearStoreInterferences(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                                               const TopoDS_Shape&                    S,
-                                               const TCollection_AsciiString&         str = "");
+  Standard_EXPORT void ClearStoreInterferences(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+    const TopoDS_Shape&                                             S,
+    const TCollection_AsciiString&                                  str = "");
 
-  Standard_EXPORT void ClearStoreInterferences(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                                               const int                 IS,
-                                               const TCollection_AsciiString&         str = "");
+  Standard_EXPORT void ClearStoreInterferences(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+    const int                                                       IS,
+    const TCollection_AsciiString&                                  str = "");
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_HDataStructure, Standard_Transient)
 

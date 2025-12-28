@@ -23,7 +23,7 @@ class StdLPersistent_Data::Parser
 {
 public:
   //! Start parsing a persistent data.
-  Parser(const NCollection_HArray1<int>&           theLabels,
+  Parser(const NCollection_HArray1<int>&                               theLabels,
          const NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>& theAttributes)
       : myLabelsIter(theLabels),
         myAttribIter(theAttributes)
@@ -72,7 +72,7 @@ public:
   }
 
 private:
-  NCollection_HArray1<int> ::Iterator          myLabelsIter;
+  NCollection_HArray1<int>::Iterator                               myLabelsIter;
   NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>::Iterator myAttribIter;
 };
 
@@ -108,7 +108,8 @@ occ::handle<TDF_Data> StdLPersistent_Data::Import() const
   Parser(*myLabels->Array(), *myAttributes->Array()).FillLabel(aData->Root());
 
   // Import transient attributes from persistent data
-  NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>::Iterator anAttribIter(*myAttributes->Array());
+  NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>::Iterator anAttribIter(
+    *myAttributes->Array());
   for (; anAttribIter.More(); anAttribIter.Next())
   {
     occ::handle<StdObjMgt_Persistent>& aPAttrib = anAttribIter.ChangeValue();

@@ -158,9 +158,10 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const IVtk_IShape::Handle& theSha
 
 //=================================================================================================
 
-void IVtkOCC_ShapePickerAlgo::SetSelectionMode(const NCollection_List<IVtk_IShape::Handle>& theShapes,
-                                               const IVtk_SelectionMode theMode,
-                                               const bool /*theIsTurnOn*/)
+void IVtkOCC_ShapePickerAlgo::SetSelectionMode(
+  const NCollection_List<IVtk_IShape::Handle>& theShapes,
+  const IVtk_SelectionMode                     theMode,
+  const bool /*theIsTurnOn*/)
 {
   for (NCollection_List<IVtk_IShape::Handle>::Iterator anIt(theShapes); anIt.More(); anIt.Next())
   {
@@ -192,11 +193,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick(const double theXMin,
   clearPicked();
 
   // Calling OCCT algorithm
-  myViewerSelector->Pick((int)theXMin,
-                         (int)theYMin,
-                         (int)theXMax,
-                         (int)theYMax,
-                         myView);
+  myViewerSelector->Pick((int)theXMin, (int)theYMin, (int)theXMax, (int)theYMax, myView);
 
   // Fill the results
   return processPicked();
@@ -224,7 +221,7 @@ const NCollection_List<IVtk_IdType>& IVtkOCC_ShapePickerAlgo::ShapesPicked() con
 
 //=================================================================================================
 
-void IVtkOCC_ShapePickerAlgo::SubShapesPicked(const IVtk_IdType theId,
+void IVtkOCC_ShapePickerAlgo::SubShapesPicked(const IVtk_IdType              theId,
                                               NCollection_List<IVtk_IdType>& theShapeList) const
 {
   if (mySubShapesPicked.IsBound(theId))

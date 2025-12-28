@@ -32,7 +32,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedSurfaceShapeRepresentation,
                           StepShape_ShapeRepresentation)
-
 };
 
 #endif // _StepShape_GeometricallyBoundedSurfaceShapeRepresentation_HeaderFile

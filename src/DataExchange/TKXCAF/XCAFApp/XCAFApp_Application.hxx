@@ -32,8 +32,7 @@ public:
   Standard_EXPORT virtual const char* ResourcesName() override;
 
   //! Set XCAFDoc_DocumentTool attribute
-  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const
-    override;
+  Standard_EXPORT virtual void InitDocument(const occ::handle<CDM_Document>& aDoc) const override;
 
   //! Initializes (for the first time) and returns the
   //! static object (XCAFApp_Application)

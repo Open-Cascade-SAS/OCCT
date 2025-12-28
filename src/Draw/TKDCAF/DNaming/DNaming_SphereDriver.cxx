@@ -72,7 +72,7 @@ int DNaming_SphereDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   if (aFunction.IsNull())
     return -1;
 
-  double               aRadius  = DNaming::GetReal(aFunction, SPHERE_RADIUS)->Get();
+  double                           aRadius  = DNaming::GetReal(aFunction, SPHERE_RADIUS)->Get();
   occ::handle<TDataStd_UAttribute> anObject = DNaming::GetObjectArg(aFunction, SPHERE_CENTER);
   occ::handle<TNaming_NamedShape>  aNSCnt   = DNaming::GetObjectValue(anObject);
   if (aNSCnt.IsNull() || aNSCnt->IsEmpty())
@@ -181,7 +181,7 @@ void DNaming_SphereDriver::LoadNamingDS(const TDF_Label&        theResultLabel,
   }
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> LateralEdges;
   TopExp::MapShapes(LateralFace, TopAbs_EDGE, LateralEdges);
-  int      i = 1;
+  int                   i = 1;
   NCollection_List<int> goodEdges;
   for (; i <= LateralEdges.Extent(); i++)
     if (!BRep_Tool::Degenerated(TopoDS::Edge(LateralEdges.FindKey(i))))

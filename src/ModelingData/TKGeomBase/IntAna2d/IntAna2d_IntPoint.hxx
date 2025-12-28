@@ -44,9 +44,7 @@ public:
   //! on the parametric element.
   //! Empty constructor. It's necessary to use one of
   //! the SetValue method after this one.
-  Standard_EXPORT IntAna2d_IntPoint(const double X,
-                                    const double Y,
-                                    const double U1);
+  Standard_EXPORT IntAna2d_IntPoint(const double X, const double Y, const double U1);
 
   Standard_EXPORT IntAna2d_IntPoint();
 
@@ -57,9 +55,7 @@ public:
                                         const double U2);
 
   //! Set the values for an "implicit" point.
-  Standard_EXPORT virtual void SetValue(const double X,
-                                        const double Y,
-                                        const double U1);
+  Standard_EXPORT virtual void SetValue(const double X, const double Y, const double U1);
 
   //! Returns the geometric point.
   const gp_Pnt2d& Value() const;
@@ -76,10 +72,10 @@ public:
   double ParamOnSecond() const;
 
 private:
-  double    myu1;
-  double    myu2;
-  gp_Pnt2d         myp;
-  bool myimplicit;
+  double   myu1;
+  double   myu2;
+  gp_Pnt2d myp;
+  bool     myimplicit;
 };
 
 #include <IntAna2d_IntPoint.lxx>

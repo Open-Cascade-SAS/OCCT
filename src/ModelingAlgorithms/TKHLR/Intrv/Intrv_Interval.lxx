@@ -59,10 +59,7 @@ inline float Intrv_Interval::TolEnd() const
 
 //=================================================================================================
 
-inline void Intrv_Interval::Bounds(double&      Start,
-                                   float& TolStart,
-                                   double&      End,
-                                   float& TolEnd) const
+inline void Intrv_Interval::Bounds(double& Start, float& TolStart, double& End, float& TolEnd) const
 {
   Start    = myStart;
   TolStart = myTolStart;
@@ -88,15 +85,14 @@ inline void Intrv_Interval::SetStart(const double Start, const float TolStart)
 //
 //=======================================================================
 
-inline void Intrv_Interval::FuseAtStart(const double      Start,
-                                        const float TolStart)
+inline void Intrv_Interval::FuseAtStart(const double Start, const float TolStart)
 {
   if (myStart != RealFirst())
   {
-    double a = std::min(myStart - myTolStart, Start - TolStart);
-    double b = std::min(myStart + myTolStart, Start + TolStart);
-    myStart         = (a + b) / 2;
-    myTolStart      = (float)(b - a) / 2;
+    double a   = std::min(myStart - myTolStart, Start - TolStart);
+    double b   = std::min(myStart + myTolStart, Start + TolStart);
+    myStart    = (a + b) / 2;
+    myTolStart = (float)(b - a) / 2;
   }
 }
 
@@ -114,10 +110,10 @@ inline void Intrv_Interval::CutAtStart(const double Start, const float TolStart)
 {
   if (myStart != RealFirst())
   {
-    double a = std::max(myStart - myTolStart, Start - TolStart);
-    double b = std::max(myStart + myTolStart, Start + TolStart);
-    myStart         = (a + b) / 2;
-    myTolStart      = (float)(b - a) / 2;
+    double a   = std::max(myStart - myTolStart, Start - TolStart);
+    double b   = std::max(myStart + myTolStart, Start + TolStart);
+    myStart    = (a + b) / 2;
+    myTolStart = (float)(b - a) / 2;
   }
 }
 
@@ -145,8 +141,8 @@ inline void Intrv_Interval::FuseAtEnd(const double End, const float TolEnd)
   {
     double a = std::max(myEnd - myTolEnd, End - TolEnd);
     double b = std::max(myEnd + myTolEnd, End + TolEnd);
-    myEnd           = (a + b) / 2;
-    myTolEnd        = (float)(b - a) / 2;
+    myEnd    = (a + b) / 2;
+    myTolEnd = (float)(b - a) / 2;
   }
 }
 
@@ -166,17 +162,14 @@ inline void Intrv_Interval::CutAtEnd(const double End, const float TolEnd)
   {
     double a = std::min(myEnd - myTolEnd, End - TolEnd);
     double b = std::min(myEnd + myTolEnd, End + TolEnd);
-    myEnd           = (a + b) / 2;
-    myTolEnd        = (float)(b - a) / 2;
+    myEnd    = (a + b) / 2;
+    myTolEnd = (float)(b - a) / 2;
   }
 }
 
 //=================================================================================================
 
-inline bool AreFused(const double      c1,
-                                 const float t1,
-                                 const double      c2,
-                                 const float t2)
+inline bool AreFused(const double c1, const float t1, const double c2, const float t2)
 {
   return t1 + t2 >= std::abs(c1 - c2);
 }

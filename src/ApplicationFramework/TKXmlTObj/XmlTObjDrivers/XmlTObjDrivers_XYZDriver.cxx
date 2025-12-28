@@ -55,9 +55,9 @@ occ::handle<TDF_Attribute> XmlTObjDrivers_XYZDriver::NewEmpty() const
 //           <aRelocTable> to keep the sharings.
 //=======================================================================
 
-bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  Source,
-                                                 const occ::handle<TDF_Attribute>& Target,
-                                                 XmlObjMgt_RRelocationTable& /*RelocTable*/) const
+bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&       Source,
+                                     const occ::handle<TDF_Attribute>& Target,
+                                     XmlObjMgt_RRelocationTable& /*RelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = Source;
 
@@ -67,9 +67,9 @@ bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  Source,
   TCollection_AsciiString CoordZ = anElement.getAttribute(::CoordZ());
 
   // creating gp_XYZ
-  gp_XYZ           aXYZ;
+  gp_XYZ      aXYZ;
   const char* aStr;
-  double    aCoord;
+  double      aCoord;
 
   aStr = CoordX.ToCString();
   if (!XmlObjMgt::GetReal(aStr, aCoord))
@@ -103,7 +103,7 @@ bool XmlTObjDrivers_XYZDriver::Paste(const XmlObjMgt_Persistent&  Source,
 //=======================================================================
 
 void XmlTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& Source,
-                                     XmlObjMgt_Persistent&        Target,
+                                     XmlObjMgt_Persistent&             Target,
                                      XmlObjMgt_SRelocationTable& /*RelocTable*/) const
 {
   occ::handle<TObj_TXYZ> aSource = occ::down_cast<TObj_TXYZ>(Source);

@@ -50,7 +50,7 @@ class StdLPersistent_NamedData : public StdObjMgt_Attribute<TDataStd_NamedData>
 
   private:
     Handle(StdLPersistent_HArray1::Persistent) myKeys;
-    occ::handle<HValuesArray>                       myValues;
+    occ::handle<HValuesArray>                  myValues;
   };
 
 public:

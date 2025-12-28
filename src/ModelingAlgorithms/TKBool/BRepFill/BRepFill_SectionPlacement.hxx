@@ -34,14 +34,14 @@ public:
 
   //! Automatic placement
   Standard_EXPORT BRepFill_SectionPlacement(const occ::handle<BRepFill_LocationLaw>& Law,
-                                            const TopoDS_Shape&                 Section,
+                                            const TopoDS_Shape&                      Section,
                                             const bool WithContact    = false,
                                             const bool WithCorrection = false);
 
   //! Placement on vertex
   Standard_EXPORT BRepFill_SectionPlacement(const occ::handle<BRepFill_LocationLaw>& Law,
-                                            const TopoDS_Shape&                 Section,
-                                            const TopoDS_Shape&                 Vertex,
+                                            const TopoDS_Shape&                      Section,
+                                            const TopoDS_Shape&                      Vertex,
                                             const bool WithContact    = false,
                                             const bool WithCorrection = false);
 
@@ -50,15 +50,15 @@ public:
   Standard_EXPORT double AbscissaOnPath();
 
 private:
-  Standard_EXPORT void Perform(const bool WithContact,
-                               const bool WithCorrection,
-                               const TopoDS_Shape&    Vertex);
+  Standard_EXPORT void Perform(const bool          WithContact,
+                               const bool          WithCorrection,
+                               const TopoDS_Shape& Vertex);
 
   occ::handle<BRepFill_LocationLaw> myLaw;
-  TopoDS_Shape                 mySection;
-  gp_Trsf                      myTrsf;
-  double                myParam;
-  int             myIndex;
+  TopoDS_Shape                      mySection;
+  gp_Trsf                           myTrsf;
+  double                            myParam;
+  int                               myIndex;
 };
 
 #endif // _BRepFill_SectionPlacement_HeaderFile

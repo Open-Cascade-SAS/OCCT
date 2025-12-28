@@ -26,7 +26,7 @@ StepElement_ElementDescriptor::StepElement_ElementDescriptor() {}
 
 //=================================================================================================
 
-void StepElement_ElementDescriptor::Init(const StepElement_ElementOrder          aTopologyOrder,
+void StepElement_ElementDescriptor::Init(const StepElement_ElementOrder aTopologyOrder,
                                          const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 

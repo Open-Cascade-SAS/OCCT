@@ -67,7 +67,7 @@ private:
 
 private:
   occ::handle<TObj_Model> myModel;
-  bool   myToFix;
+  bool                    myToFix;
 
 public:
   //! Declaration of CASCADE RTTI

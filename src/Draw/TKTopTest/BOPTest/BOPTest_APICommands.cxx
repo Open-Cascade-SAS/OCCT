@@ -23,7 +23,6 @@
 #include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 #include <Draw_ProgressIndicator.hxx>
@@ -98,8 +97,8 @@ int bapibop(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  bool              bRunParallel, bNonDestructive;
-  double                 aFuzzyValue;
+  bool                          bRunParallel, bNonDestructive;
+  double                        aFuzzyValue;
   BRepAlgoAPI_Common            aCommon;
   BRepAlgoAPI_Fuse              aFuse;
   BRepAlgoAPI_Cut               aCut;
@@ -204,9 +203,9 @@ int bapibuild(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  bool        bRunParallel, bNonDestructive;
-  int        iErr;
-  double           aFuzzyValue;
+  bool                    bRunParallel, bNonDestructive;
+  int                     iErr;
+  double                  aFuzzyValue;
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
   NCollection_List<TopoDS_Shape> aLS = BOPTest_Objects::Shapes();

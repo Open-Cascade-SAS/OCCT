@@ -59,7 +59,7 @@ public:
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTarget);
 
 private:
-  double         myTol;
+  double                myTol;
   NCollection_List<int> myResInd;
   VectorOfPoint         myPoints;
   gp_XYZ                myCurrent;

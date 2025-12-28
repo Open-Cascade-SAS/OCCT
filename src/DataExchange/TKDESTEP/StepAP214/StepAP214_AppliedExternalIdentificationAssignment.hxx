@@ -43,10 +43,12 @@ public:
     const occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>>& aItems);
 
   //! Returns field Items
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>> Items()
+    const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>>& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_ExternalIdentificationItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_AppliedExternalIdentificationAssignment,
                           StepBasic_ExternalIdentificationAssignment)

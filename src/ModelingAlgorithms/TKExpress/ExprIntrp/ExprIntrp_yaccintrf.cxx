@@ -45,18 +45,16 @@
 #include <Expr_UnknownIterator.hxx>
 #include <Expr_FunctionDerivative.hxx>
 #include <Expr.hxx>
-#include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Expr_Operators.hxx>
 #include <ExprIntrp_SyntaxError.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
-#include <Expr_GeneralExpression.hxx>
 #include <NCollection_Array1.hxx>
 
 static TCollection_AsciiString ExprIntrp_assname;
 static TCollection_AsciiString ExprIntrp_funcdefname;
-static int        ExprIntrp_nbargs;
-static int        ExprIntrp_nbdiff;
+static int                     ExprIntrp_nbargs;
+static int                     ExprIntrp_nbdiff;
 
 extern "C" void ExprIntrp_StartFunction()
 {
@@ -81,8 +79,8 @@ extern "C" void ExprIntrp_EndDerivate()
 extern "C" void ExprIntrp_Derivation()
 {
   ExprIntrp_Recept.PushValue(1);
-  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
-  occ::handle<Expr_NamedExpression>   namexp  = ExprIntrp_Recept.GetNamed(thename);
+  const TCollection_AsciiString&    thename = ExprIntrp_GetResult();
+  occ::handle<Expr_NamedExpression> namexp  = ExprIntrp_Recept.GetNamed(thename);
   if (namexp.IsNull())
   {
     namexp = new Expr_NamedUnknown(thename);
@@ -103,10 +101,10 @@ extern "C" void ExprIntrp_DerivationValue()
 
 extern "C" void ExprIntrp_EndDerivation()
 {
-  int               degree = ExprIntrp_Recept.PopValue();
-  occ::handle<Expr_NamedUnknown>      var = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
+  int                            degree = ExprIntrp_Recept.PopValue();
+  occ::handle<Expr_NamedUnknown> var    = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
   occ::handle<Expr_GeneralExpression> exp = ExprIntrp_Recept.Pop();
-  exp                                = exp->NDerivative(var, degree);
+  exp                                     = exp->NDerivative(var, degree);
   ExprIntrp_Recept.Push(exp);
 }
 
@@ -139,15 +137,15 @@ extern "C" void ExprIntrp_DiffVar()
 extern "C" void ExprIntrp_DiffDegree()
 {
   const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
-  int               deg  = aStr.IntegerValue();
+  int                            deg  = aStr.IntegerValue();
   ExprIntrp_Recept.PushValue(deg);
 }
 
 extern "C" void ExprIntrp_VerDiffDegree()
 {
   const TCollection_AsciiString& aStr   = ExprIntrp_GetResult();
-  int               deg    = aStr.IntegerValue();
-  int               thedeg = ExprIntrp_Recept.PopValue();
+  int                            deg    = aStr.IntegerValue();
+  int                            thedeg = ExprIntrp_Recept.PopValue();
   if (deg != thedeg)
   {
     throw ExprIntrp_SyntaxError();
@@ -157,15 +155,15 @@ extern "C" void ExprIntrp_VerDiffDegree()
 
 extern "C" void ExprIntrp_EndDifferential()
 {
-  TCollection_AsciiString      name    = ExprIntrp_Recept.PopName();
+  TCollection_AsciiString           name    = ExprIntrp_Recept.PopName();
   occ::handle<Expr_GeneralFunction> thefunc = ExprIntrp_Recept.GetFunction(name);
   if (thefunc.IsNull())
   {
     throw ExprIntrp_SyntaxError();
   }
-  int          rank, degree;
+  int                            rank, degree;
   occ::handle<Expr_NamedUnknown> thediff;
-  int          nbvars = thefunc->NbOfVariables();
+  int                            nbvars = thefunc->NbOfVariables();
 
   for (int i = 1; i <= ExprIntrp_nbdiff; i++)
   {
@@ -209,7 +207,7 @@ extern "C" void ExprIntrp_EndDiffFunction()
   else
   {
     NCollection_Array1<occ::handle<Expr_GeneralExpression>> tabarg(1, nbargs);
-    occ::handle<Expr_GeneralExpression> arg;
+    occ::handle<Expr_GeneralExpression>                     arg;
     for (int i = 1; i <= nbargs; i++)
     {
       arg = ExprIntrp_Recept.Pop();
@@ -225,7 +223,7 @@ extern "C" void ExprIntrp_EndDiffFunction()
 }
 
 static occ::handle<Expr_GeneralExpression> ExprIntrp_StandardFunction(
-  const TCollection_AsciiString&        name,
+  const TCollection_AsciiString&             name,
   const occ::handle<Expr_GeneralExpression>& op)
 {
   // return standard functions equivalent corresponding to <name>
@@ -310,14 +308,14 @@ static occ::handle<Expr_GeneralExpression> ExprIntrp_StandardFunction(
 
 extern "C" void ExprIntrp_EndDerFunction()
 {
-  TCollection_AsciiString        name     = ExprIntrp_Recept.PopName();
+  TCollection_AsciiString             name     = ExprIntrp_Recept.PopName();
   occ::handle<Expr_GeneralExpression> op       = ExprIntrp_Recept.Pop();
   occ::handle<Expr_GeneralExpression> resstand = ExprIntrp_StandardFunction(name, op);
 
   if (!resstand.IsNull())
   {
     occ::handle<Expr_NamedUnknown> var;
-    Expr_UnknownIterator      rit(resstand);
+    Expr_UnknownIterator           rit(resstand);
     while (rit.More())
     {
       if (!var.IsNull())
@@ -340,7 +338,8 @@ extern "C" void ExprIntrp_EndDerFunction()
     }
     else
     {
-      occ::handle<Expr_GeneralExpression> res = resstand->NDerivative(var, ExprIntrp_Recept.PopValue());
+      occ::handle<Expr_GeneralExpression> res =
+        resstand->NDerivative(var, ExprIntrp_Recept.PopValue());
       ExprIntrp_Recept.Push(res);
     }
   }
@@ -366,7 +365,7 @@ extern "C" void ExprIntrp_EndDerFunction()
 
 extern "C" void ExprIntrp_EndFunction()
 {
-  TCollection_AsciiString        name = ExprIntrp_Recept.PopName();
+  TCollection_AsciiString             name = ExprIntrp_Recept.PopName();
   occ::handle<Expr_GeneralExpression> op   = ExprIntrp_Recept.Pop();
 
   occ::handle<Expr_GeneralExpression> resstand = ExprIntrp_StandardFunction(name, op);
@@ -400,7 +399,7 @@ extern "C" void ExprIntrp_EndFunction()
     else
     {
       NCollection_Array1<occ::handle<Expr_GeneralExpression>> tabarg(1, nbargs);
-      occ::handle<Expr_GeneralExpression> arg;
+      occ::handle<Expr_GeneralExpression>                     arg;
       tabarg(nbargs) = op;
       for (int i = 1; i < nbargs; i++)
       {
@@ -483,8 +482,8 @@ extern "C" void ExprIntrp_UnaryPlusOperator()
 
 extern "C" void ExprIntrp_VariableIdentifier()
 {
-  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
-  occ::handle<Expr_NamedExpression>   nameexp = ExprIntrp_Recept.GetNamed(thename);
+  const TCollection_AsciiString&    thename = ExprIntrp_GetResult();
+  occ::handle<Expr_NamedExpression> nameexp = ExprIntrp_Recept.GetNamed(thename);
   if (nameexp.IsNull())
   {
     nameexp = new Expr_NamedUnknown(thename);
@@ -496,8 +495,8 @@ extern "C" void ExprIntrp_VariableIdentifier()
 extern "C" void ExprIntrp_NumValue()
 {
   const TCollection_AsciiString& aStr  = ExprIntrp_GetResult();
-  double                  value = aStr.RealValue();
-  occ::handle<Expr_NumericValue>      nval  = new Expr_NumericValue(value);
+  double                         value = aStr.RealValue();
+  occ::handle<Expr_NumericValue> nval  = new Expr_NumericValue(value);
   ExprIntrp_Recept.Push(nval);
 }
 
@@ -508,8 +507,8 @@ extern "C" void ExprIntrp_AssignVariable()
 
 extern "C" void ExprIntrp_Deassign()
 {
-  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
-  occ::handle<Expr_NamedExpression>   nameexp = ExprIntrp_Recept.GetNamed(thename);
+  const TCollection_AsciiString&    thename = ExprIntrp_GetResult();
+  occ::handle<Expr_NamedExpression> nameexp = ExprIntrp_Recept.GetNamed(thename);
   if (nameexp.IsNull())
   {
     throw ExprIntrp_SyntaxError();
@@ -585,7 +584,7 @@ extern "C" void ExprIntrp_EndOfAssign()
   occ::handle<Expr_NamedUnknown>    namu;
   if (namexp.IsNull())
   {
-    namu                                           = new Expr_NamedUnknown(ExprIntrp_assname);
+    namu                                                = new Expr_NamedUnknown(ExprIntrp_assname);
     const occ::handle<Expr_NamedExpression>& aNamedExpr = namu; // to resolve ambiguity
     ExprIntrp_Recept.Use(aNamedExpr);
   }
@@ -602,11 +601,11 @@ extern "C" void ExprIntrp_EndOfAssign()
 
 extern "C" void ExprIntrp_EndOfFuncDef()
 {
-  occ::handle<Expr_GeneralExpression> theexp = ExprIntrp_Recept.Pop();
-  int               nbargs = ExprIntrp_Recept.PopValue();
-  NCollection_Array1<occ::handle<Expr_NamedUnknown>>      vars(1, nbargs);
-  NCollection_Array1<occ::handle<Expr_NamedUnknown>>      internvars(1, nbargs);
-  int               i;
+  occ::handle<Expr_GeneralExpression>                theexp = ExprIntrp_Recept.Pop();
+  int                                                nbargs = ExprIntrp_Recept.PopValue();
+  NCollection_Array1<occ::handle<Expr_NamedUnknown>> vars(1, nbargs);
+  NCollection_Array1<occ::handle<Expr_NamedUnknown>> internvars(1, nbargs);
+  int                                                i;
   for (i = nbargs; i > 0; i--)
   {
     vars(i)       = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
@@ -640,9 +639,9 @@ extern "C" void ExprIntrp_ConstantIdentifier()
 
 extern "C" void ExprIntrp_ConstantDefinition()
 {
-  TCollection_AsciiString            name     = ExprIntrp_Recept.PopName();
-  const TCollection_AsciiString&     aStr     = ExprIntrp_GetResult();
-  double                      val      = aStr.RealValue();
+  TCollection_AsciiString                 name     = ExprIntrp_Recept.PopName();
+  const TCollection_AsciiString&          aStr     = ExprIntrp_GetResult();
+  double                                  val      = aStr.RealValue();
   occ::handle<Expr_NamedConstant>         theconst = new Expr_NamedConstant(name, val);
   const occ::handle<Expr_NamedExpression> theexpr  = theconst; // to resolve ambiguity
   ExprIntrp_Recept.Use(theexpr);
@@ -651,16 +650,16 @@ extern "C" void ExprIntrp_ConstantDefinition()
 
 extern "C" void ExprIntrp_Sumator()
 {
-  occ::handle<Expr_NumericValue> number   = occ::down_cast<Expr_NumericValue>(ExprIntrp_Recept.Pop());
-  int          nb       = (int)number->GetValue();
-  occ::handle<Expr_GeneralExpression> inc = ExprIntrp_Recept.Pop();
+  occ::handle<Expr_NumericValue> number = occ::down_cast<Expr_NumericValue>(ExprIntrp_Recept.Pop());
+  int                            nb     = (int)number->GetValue();
+  occ::handle<Expr_GeneralExpression> inc   = ExprIntrp_Recept.Pop();
   occ::handle<Expr_GeneralExpression> first = ExprIntrp_Recept.Pop();
-  occ::handle<Expr_NamedUnknown>      var = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
-  occ::handle<Expr_GeneralExpression> theexp  = ExprIntrp_Recept.Pop();
-  bool               thesame = (theexp == var);
-  occ::handle<Expr_GeneralExpression> cur     = Expr::CopyShare(first);
-  occ::handle<Expr_GeneralExpression> res;
-  occ::handle<Expr_GeneralExpression> member;
+  occ::handle<Expr_NamedUnknown> var = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
+  occ::handle<Expr_GeneralExpression>                       theexp  = ExprIntrp_Recept.Pop();
+  bool                                                      thesame = (theexp == var);
+  occ::handle<Expr_GeneralExpression>                       cur     = Expr::CopyShare(first);
+  occ::handle<Expr_GeneralExpression>                       res;
+  occ::handle<Expr_GeneralExpression>                       member;
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> seq;
   for (int i = 1; i <= nb; i++)
   {
@@ -682,16 +681,16 @@ extern "C" void ExprIntrp_Sumator()
 
 extern "C" void ExprIntrp_Productor()
 {
-  occ::handle<Expr_NumericValue> number   = occ::down_cast<Expr_NumericValue>(ExprIntrp_Recept.Pop());
-  int          nb       = (int)number->GetValue();
-  occ::handle<Expr_GeneralExpression> inc = ExprIntrp_Recept.Pop();
+  occ::handle<Expr_NumericValue> number = occ::down_cast<Expr_NumericValue>(ExprIntrp_Recept.Pop());
+  int                            nb     = (int)number->GetValue();
+  occ::handle<Expr_GeneralExpression> inc   = ExprIntrp_Recept.Pop();
   occ::handle<Expr_GeneralExpression> first = ExprIntrp_Recept.Pop();
-  occ::handle<Expr_NamedUnknown>      var = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
-  occ::handle<Expr_GeneralExpression> theexp  = ExprIntrp_Recept.Pop();
-  bool               thesame = (theexp == var);
-  occ::handle<Expr_GeneralExpression> cur     = Expr::CopyShare(first);
-  occ::handle<Expr_GeneralExpression> res;
-  occ::handle<Expr_GeneralExpression> member;
+  occ::handle<Expr_NamedUnknown> var = occ::down_cast<Expr_NamedUnknown>(ExprIntrp_Recept.Pop());
+  occ::handle<Expr_GeneralExpression>                       theexp  = ExprIntrp_Recept.Pop();
+  bool                                                      thesame = (theexp == var);
+  occ::handle<Expr_GeneralExpression>                       cur     = Expr::CopyShare(first);
+  occ::handle<Expr_GeneralExpression>                       res;
+  occ::handle<Expr_GeneralExpression>                       member;
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> seq;
   for (int i = 1; i <= nb; i++)
   {

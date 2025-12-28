@@ -31,8 +31,9 @@ class StepVisual_PresentationLayerUsage : public Standard_Transient
 public:
   Standard_EXPORT StepVisual_PresentationLayerUsage();
 
-  Standard_EXPORT void Init(const occ::handle<StepVisual_PresentationLayerAssignment>& aAssignment,
-                            const occ::handle<StepVisual_PresentationRepresentation>&  aPresentation);
+  Standard_EXPORT void Init(
+    const occ::handle<StepVisual_PresentationLayerAssignment>& aAssignment,
+    const occ::handle<StepVisual_PresentationRepresentation>&  aPresentation);
 
   Standard_EXPORT void SetAssignment(
     const occ::handle<StepVisual_PresentationLayerAssignment>& aAssignment);

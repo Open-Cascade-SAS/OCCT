@@ -48,7 +48,7 @@ public:
 
 private:
   NCollection_IndexedMap<occ::handle<Expr_NamedUnknown>> myMap;
-  int       myCurrent;
+  int                                                    myCurrent;
 };
 
 #endif // _Expr_RUIterator_HeaderFile

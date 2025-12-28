@@ -31,8 +31,6 @@
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <cmath>
@@ -45,7 +43,7 @@ const double THE_TOLERANCE = 1e-10;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -62,8 +60,8 @@ occ::handle<Geom_BSplineCurve> CreateSimpleBSpline()
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
 
-  NCollection_Array1<double>    aKnots(1, 2);
-  NCollection_Array1<int> aMults(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 1.0);
   aMults.SetValue(1, 4);
@@ -128,7 +126,8 @@ TEST(GeomGridEval_LineTest, NonOriginLine)
 TEST(GeomGridEval_CircleTest, BasicEvaluation)
 {
   // Circle in XY plane, radius 2, center at origin
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
   GeomGridEval_Circle anEval(aGeomCircle);
   EXPECT_FALSE(anEval.Geometry().IsNull());
@@ -167,7 +166,8 @@ TEST(GeomGridEval_CircleTest, BasicEvaluation)
 TEST(GeomGridEval_CircleTest, NonStandardCircle)
 {
   // Circle in YZ plane, radius 3, center at (1, 0, 0)
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(1, 0, 0), gp_Dir(1, 0, 0)), 3.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(1, 0, 0), gp_Dir(1, 0, 0)), 3.0);
 
   GeomGridEval_Circle anEval(aGeomCircle);
 
@@ -258,7 +258,7 @@ TEST(GeomGridEval_OtherCurveTest, EllipseFallback)
 TEST(GeomGridEval_CurveTest, LineDispatch)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -280,8 +280,9 @@ TEST(GeomGridEval_CurveTest, LineDispatch)
 
 TEST(GeomGridEval_CurveTest, CircleDispatch)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Curve   anAdaptor(aGeomCircle);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -303,7 +304,7 @@ TEST(GeomGridEval_CurveTest, CircleDispatch)
 TEST(GeomGridEval_CurveTest, BSplineDispatch)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomAdaptor_Curve         anAdaptor(aCurve);
+  GeomAdaptor_Curve              anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -370,8 +371,9 @@ TEST(GeomGridEval_CurveTest, HyperbolaDispatch)
 
 TEST(GeomGridEval_CurveTest, ParabolaDispatch)
 {
-  occ::handle<Geom_Parabola> aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
-  GeomAdaptor_Curve     anAdaptor(aParab);
+  occ::handle<Geom_Parabola> aParab =
+    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  GeomAdaptor_Curve anAdaptor(aParab);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -399,7 +401,7 @@ TEST(GeomGridEval_CurveTest, BezierCurveDispatch)
   aPoles.SetValue(3, gp_Pnt(3, 2, 0));
   aPoles.SetValue(4, gp_Pnt(4, 0, 0));
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -423,7 +425,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveFallbackDispatch)
   // Offset curve is not optimized, should use fallback
   occ::handle<Geom_Line>        aLine    = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
-  GeomAdaptor_Curve        anAdaptor(anOffset);
+  GeomAdaptor_Curve             anAdaptor(anOffset);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -463,7 +465,7 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
   GeomGridEval_Curve anEval;
   EXPECT_FALSE(anEval.IsInitialized());
 
-  NCollection_Array1<double>       aEmptyParams;
+  NCollection_Array1<double> aEmptyParams;
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
@@ -471,14 +473,14 @@ TEST(GeomGridEval_CurveTest, UninitializedState)
 TEST(GeomGridEval_CurveTest, EmptyParams)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
 
   // EvaluateGrid with empty params should return empty
-  NCollection_Array1<double>       aEmptyParams;
+  NCollection_Array1<double> aEmptyParams;
   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
@@ -490,7 +492,7 @@ TEST(GeomGridEval_CurveTest, EmptyParams)
 TEST(GeomGridEval_BSplineCurveTest, RationalBSpline)
 {
   // Create a rational B-spline (NURBS circle approximation)
-  NCollection_Array1<gp_Pnt>   aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   NCollection_Array1<double> aWeights(1, 4);
 
   aPoles.SetValue(1, gp_Pnt(1, 0, 0));
@@ -503,14 +505,15 @@ TEST(GeomGridEval_BSplineCurveTest, RationalBSpline)
   aWeights.SetValue(3, 1.0);
   aWeights.SetValue(4, 1.0 / std::sqrt(2.0));
 
-  NCollection_Array1<double>    aKnots(1, 2);
-  NCollection_Array1<int> aMults(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 1.0);
   aMults.SetValue(1, 4);
   aMults.SetValue(2, 4);
 
-  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
 
   GeomGridEval_BSplineCurve anEval(aCurve);
 
@@ -539,8 +542,8 @@ TEST(GeomGridEval_BSplineCurveTest, MultiSpanBSpline)
   aPoles.SetValue(5, gp_Pnt(4, -1, 0));
   aPoles.SetValue(6, gp_Pnt(5, 0, 0));
 
-  NCollection_Array1<double>    aKnots(1, 3);
-  NCollection_Array1<int> aMults(1, 3);
+  NCollection_Array1<double> aKnots(1, 3);
+  NCollection_Array1<int>    aMults(1, 3);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 0.5);
   aKnots.SetValue(3, 1.0);
@@ -575,8 +578,8 @@ TEST(GeomGridEval_BSplineCurveTest, HighDegree)
   aPoles.SetValue(5, gp_Pnt(4, 2, 0));
   aPoles.SetValue(6, gp_Pnt(5, 0, 0));
 
-  NCollection_Array1<double>    aKnots(1, 2);
-  NCollection_Array1<int> aMults(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 1.0);
   aMults.SetValue(1, 6);
@@ -606,7 +609,7 @@ TEST(GeomGridEval_LineTest, DerivativeD1)
 {
   // Line along (1, 2, 3) normalized direction
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 2, 3));
-  GeomGridEval_Line anEval(aGeomLine);
+  GeomGridEval_Line      anEval(aGeomLine);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 5.0, 6);
 
@@ -627,7 +630,7 @@ TEST(GeomGridEval_LineTest, DerivativeD1)
 TEST(GeomGridEval_LineTest, DerivativeD2D3)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomGridEval_Line anEval(aGeomLine);
+  GeomGridEval_Line      anEval(aGeomLine);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 5.0, 6);
 
@@ -645,7 +648,8 @@ TEST(GeomGridEval_LineTest, DerivativeD2D3)
 
 TEST(GeomGridEval_CircleTest, DerivativeD1)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Circle anEval(aGeomCircle);
 
   NCollection_Array1<double> aParams(1, 5);
@@ -670,7 +674,8 @@ TEST(GeomGridEval_CircleTest, DerivativeD1)
 
 TEST(GeomGridEval_CircleTest, DerivativeD2)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Circle anEval(aGeomCircle);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -692,7 +697,7 @@ TEST(GeomGridEval_CircleTest, DerivativeD2)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeD1)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -712,7 +717,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD1)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeD2)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -733,7 +738,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD2)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -754,8 +759,9 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeD3)
 
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
-  GeomAdaptor_Curve   anAdaptor(aGeomCircle);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -778,7 +784,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD1)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomAdaptor_Curve         anAdaptor(aCurve);
+  GeomAdaptor_Curve              anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -805,7 +811,8 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD2)
 
 TEST(GeomGridEval_CircleTest, DerivativeD3)
 {
-  occ::handle<Geom_Circle> aGeomCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Circle> aGeomCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   GeomGridEval_Circle anEval(aGeomCircle);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
@@ -828,9 +835,9 @@ TEST(GeomGridEval_CircleTest, DerivativeD3)
 TEST(GeomGridEval_OffsetCurveTest, DerivativeD3)
 {
   // Offset curve from a circle
-  occ::handle<Geom_Circle>      aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aCircle, 0.5, gp::DZ());
-  GeomAdaptor_Curve        anAdaptor(anOffset);
+  GeomAdaptor_Curve             anAdaptor(anOffset);
 
   GeomGridEval_OtherCurve anEval(anAdaptor);
 
@@ -856,7 +863,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
   // Offset curve via unified dispatcher
   occ::handle<Geom_Line>        aLine    = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aLine, 1.0, gp::DZ());
-  GeomAdaptor_Curve        anAdaptor(anOffset);
+  GeomAdaptor_Curve             anAdaptor(anOffset);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -882,7 +889,7 @@ TEST(GeomGridEval_CurveTest, OffsetCurveDerivativeD3)
 TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomAdaptor_Curve         anAdaptor(aCurve);
+  GeomAdaptor_Curve              anAdaptor(aCurve);
 
   GeomGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);
@@ -911,7 +918,7 @@ TEST(GeomGridEval_CurveTest, UnifiedDerivativeD3)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order1)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -927,7 +934,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order1)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order2)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -943,7 +950,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order2)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_Order3)
 {
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -960,7 +967,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_BeyondDegree)
 {
   // Cubic B-spline (degree 3), 4th derivative should be zero
   occ::handle<Geom_BSplineCurve> aCurve = CreateSimpleBSpline();
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -975,7 +982,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_BeyondDegree)
 TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_RationalCurve)
 {
   // Create a rational B-spline (NURBS)
-  NCollection_Array1<gp_Pnt>   aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   NCollection_Array1<double> aWeights(1, 4);
 
   aPoles.SetValue(1, gp_Pnt(1, 0, 0));
@@ -988,14 +995,15 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_RationalCurve)
   aWeights.SetValue(3, 1.0);
   aWeights.SetValue(4, 1.0 / std::sqrt(2.0));
 
-  NCollection_Array1<double>    aKnots(1, 2);
-  NCollection_Array1<int> aMults(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 1.0);
   aMults.SetValue(1, 4);
   aMults.SetValue(2, 4);
 
-  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 3);
   GeomGridEval_BSplineCurve anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 21);
@@ -1024,8 +1032,8 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_MultiSpan)
   aPoles.SetValue(5, gp_Pnt(4, -1, 0));
   aPoles.SetValue(6, gp_Pnt(5, 0, 0));
 
-  NCollection_Array1<double>    aKnots(1, 3);
-  NCollection_Array1<int> aMults(1, 3);
+  NCollection_Array1<double> aKnots(1, 3);
+  NCollection_Array1<int>    aMults(1, 3);
   aKnots.SetValue(1, 0.0);
   aKnots.SetValue(2, 0.5);
   aKnots.SetValue(3, 1.0);
@@ -1034,7 +1042,7 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_MultiSpan)
   aMults.SetValue(3, 4);
 
   occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomGridEval_BSplineCurve anEval(aCurve);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 31);
 

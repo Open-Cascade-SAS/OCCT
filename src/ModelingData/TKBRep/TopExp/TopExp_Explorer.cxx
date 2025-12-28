@@ -17,22 +17,19 @@
 namespace
 {
 //! Returns true if the given type matches the type to find.
-inline bool isSameType(const TopAbs_ShapeEnum theType,
-                                   const TopAbs_ShapeEnum toFind) noexcept
+inline bool isSameType(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind == theType;
 }
 
 //! Returns true if the given type should be avoided.
-inline bool shouldAvoid(const TopAbs_ShapeEnum theType,
-                                    const TopAbs_ShapeEnum toAvoid) noexcept
+inline bool shouldAvoid(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum toAvoid) noexcept
 {
   return toAvoid != TopAbs_SHAPE && toAvoid == theType;
 }
 
 //! Returns true if the given type is more complex than the type to find.
-inline bool isMoreComplex(const TopAbs_ShapeEnum theType,
-                                      const TopAbs_ShapeEnum toFind) noexcept
+inline bool isMoreComplex(const TopAbs_ShapeEnum theType, const TopAbs_ShapeEnum toFind) noexcept
 {
   return toFind > theType;
 }

@@ -23,12 +23,12 @@ inline BRepFeat_MakePrism::BRepFeat_MakePrism()
 
 //=================================================================================================
 
-inline BRepFeat_MakePrism::BRepFeat_MakePrism(const TopoDS_Shape&    Sbase,
-                                              const TopoDS_Shape&    Pbase,
-                                              const TopoDS_Face&     Skface,
-                                              const gp_Dir&          Direc,
-                                              const int Fuse,
-                                              const bool Modify)
+inline BRepFeat_MakePrism::BRepFeat_MakePrism(const TopoDS_Shape& Sbase,
+                                              const TopoDS_Shape& Pbase,
+                                              const TopoDS_Face&  Skface,
+                                              const gp_Dir&       Direc,
+                                              const int           Fuse,
+                                              const bool          Modify)
 
 {
   Init(Sbase, Pbase, Skface, Direc, Fuse, Modify);

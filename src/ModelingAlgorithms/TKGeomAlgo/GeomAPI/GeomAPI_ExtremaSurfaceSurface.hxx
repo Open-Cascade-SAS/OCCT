@@ -74,19 +74,20 @@ public:
   //! parametric direction.
   Standard_EXPORT GeomAPI_ExtremaSurfaceSurface(const occ::handle<Geom_Surface>& S1,
                                                 const occ::handle<Geom_Surface>& S2,
-                                                const double         U1min,
-                                                const double         U1max,
-                                                const double         V1min,
-                                                const double         V1max,
-                                                const double         U2min,
-                                                const double         U2max,
-                                                const double         V2min,
-                                                const double         V2max);
+                                                const double                     U1min,
+                                                const double                     U1max,
+                                                const double                     V1min,
+                                                const double                     V1max,
+                                                const double                     U2min,
+                                                const double                     U2max,
+                                                const double                     V2min,
+                                                const double                     V2max);
 
   //! Initializes this algorithm with the given arguments
   //! and computes the extrema distances between the
   //! surfaces <S1> and <S2>
-  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S1, const occ::handle<Geom_Surface>& S2);
+  Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S1,
+                            const occ::handle<Geom_Surface>& S2);
 
   //! Initializes this algorithm with the given arguments
   //! and computes the extrema distances between -
@@ -100,19 +101,19 @@ public:
   //! parameter (V2min,V2max) in the v parametric direction.
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S1,
                             const occ::handle<Geom_Surface>& S2,
-                            const double         U1min,
-                            const double         U1max,
-                            const double         V1min,
-                            const double         V1max,
-                            const double         U2min,
-                            const double         U2max,
-                            const double         V2min,
-                            const double         V2max);
+                            const double                     U1min,
+                            const double                     U1max,
+                            const double                     V1min,
+                            const double                     V1max,
+                            const double                     U2min,
+                            const double                     U2max,
+                            const double                     V2min,
+                            const double                     V2max);
 
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT int NbExtrema() const;
-  Standard_EXPORT                  operator int() const;
+  Standard_EXPORT     operator int() const;
 
   //! Returns the points P1 on the first surface and P2 on
   //! the second surface, which are the ends of the
@@ -132,10 +133,10 @@ public:
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
   Standard_EXPORT void Parameters(const int Index,
-                                  double&         U1,
-                                  double&         V1,
-                                  double&         U2,
-                                  double&         V2) const;
+                                  double&   U1,
+                                  double&   V1,
+                                  double&   U2,
+                                  double&   V2) const;
 
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -168,15 +169,15 @@ public:
   //! shortest extremum computed by this algorithm.
   //! Exceptions StdFail_NotDone if this algorithm fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT               operator double() const;
+  Standard_EXPORT        operator double() const;
 
   //! return the algorithmic object from Extrema
   const Extrema_ExtSS& Extrema() const;
 
 private:
-  bool myIsDone;
-  int myIndex;
-  Extrema_ExtSS    myExtSS;
+  bool          myIsDone;
+  int           myIndex;
+  Extrema_ExtSS myExtSS;
 };
 
 #include <GeomAPI_ExtremaSurfaceSurface.lxx>

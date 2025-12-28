@@ -107,7 +107,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     {
       return;
     }
-    occ::handle<Geom_Curve>                  BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>             BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3dContinuity spc;
     spc.Init(BasCurve, VFirst, VLast);
     spc.SetCriterion(myCriterion);
@@ -133,7 +133,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     {
       return;
     }
-    occ::handle<Geom_Curve>                  BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>             BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3dContinuity spc;
     spc.Init(BasCurve, UFirst, ULast);
     spc.SetCriterion(myCriterion);
@@ -166,7 +166,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
     }
     double U1, U2, V1, V2;
     tmp->Bounds(U1, U2, V1, V2);
-    occ::handle<Geom_Surface>                theSurf = tmp->BasisSurface();
+    occ::handle<Geom_Surface>           theSurf = tmp->BasisSurface();
     ShapeUpgrade_SplitSurfaceContinuity sps;
     sps.Init(theSurf,
              std::max(U1, UFirst),
@@ -246,11 +246,9 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
   int UDeg      = MyBSpline->UDegree();
   int VDeg      = MyBSpline->VDegree();
   int NbUKnots  = MyBSpline->NbUKnots();
-  int UFirstInd = MyBSpline->FirstUKnotIndex() + 1,
-                   ULastInd  = MyBSpline->LastUKnotIndex() - 1,
-                   VFirstInd = MyBSpline->FirstVKnotIndex() + 1,
-                   VLastInd  = MyBSpline->LastVKnotIndex() - 1;
-  int NbVKnots  = MyBSpline->NbVKnots();
+  int UFirstInd = MyBSpline->FirstUKnotIndex() + 1, ULastInd = MyBSpline->LastUKnotIndex() - 1,
+      VFirstInd = MyBSpline->FirstVKnotIndex() + 1, VLastInd = MyBSpline->LastVKnotIndex() - 1;
+  int NbVKnots = MyBSpline->NbVKnots();
 
   //  if (ShapeUpgrade::Debug()) std::cout<<". NbUKnots="<<NbUKnots<<std::endl;
   if (NbUKnots > 2)
@@ -272,7 +270,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
         if (Continuity < myCont)
         {
           // At this knot, the Surface is C0; try to remove Knot.
-          int newMultiplicity = UDeg - myCont;
+          int  newMultiplicity = UDeg - myCont;
           bool corrected       = false;
           if (newMultiplicity >= 0)
             corrected = MyBSpline->RemoveUKnot(iknot, newMultiplicity, myTolerance);
@@ -327,7 +325,7 @@ void ShapeUpgrade_SplitSurfaceContinuity::Compute(const bool Segment)
         if (Continuity < myCont)
         {
           // At this knot, the Surface is C0; try to remove Knot.
-          int newMultiplicity = VDeg - myCont;
+          int  newMultiplicity = VDeg - myCont;
           bool corrected       = false;
           if (newMultiplicity >= 0)
             corrected = MyBSpline->RemoveVKnot(iknot, newMultiplicity, myTolerance);

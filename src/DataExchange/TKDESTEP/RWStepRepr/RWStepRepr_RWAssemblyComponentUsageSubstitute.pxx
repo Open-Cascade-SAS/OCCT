@@ -36,18 +36,18 @@ public:
 
   Standard_HIDDEN RWStepRepr_RWAssemblyComponentUsageSubstitute();
 
-  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&                   data,
-                                const int                                   num,
-                                occ::handle<Interface_Check>&                                 ach,
-                                const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const;
+  Standard_HIDDEN void ReadStep(
+    const occ::handle<StepData_StepReaderData>&                   data,
+    const int                                                     num,
+    occ::handle<Interface_Check>&                                 ach,
+    const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                     SW,
+    StepData_StepWriter&                                          SW,
     const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent,
-                             Interface_EntityIterator&                                iter) const;
-
+                             Interface_EntityIterator& iter) const;
 };
 
 #endif // _RWStepRepr_RWAssemblyComponentUsageSubstitute_HeaderFile

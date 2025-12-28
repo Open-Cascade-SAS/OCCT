@@ -22,8 +22,8 @@
 
 //=================================================================================================
 
-BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const double    tolerance,
-                                                                   const bool option)
+BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const double tolerance,
+                                                                   const bool   option)
 {
   mySewing = new BRepBuilderAPI_Sewing;
   Init(tolerance, option);
@@ -31,8 +31,7 @@ BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const double 
 
 //=================================================================================================
 
-void BRepOffsetAPI_FindContigousEdges::Init(const double    tolerance,
-                                            const bool option)
+void BRepOffsetAPI_FindContigousEdges::Init(const double tolerance, const bool option)
 {
   mySewing->Init(tolerance, option, false, true);
 }
@@ -60,8 +59,7 @@ int BRepOffsetAPI_FindContigousEdges::NbContigousEdges() const
 
 //=================================================================================================
 
-const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::ContigousEdge(
-  const int index) const
+const TopoDS_Edge& BRepOffsetAPI_FindContigousEdges::ContigousEdge(const int index) const
 {
   Standard_OutOfRange_Raise_if(index < 0 || index > NbContigousEdges(),
                                "BRepOffsetAPI_FindContigousEdges::ContigousEdge");
@@ -97,8 +95,7 @@ int BRepOffsetAPI_FindContigousEdges::NbDegeneratedShapes() const
 
 //=================================================================================================
 
-const TopoDS_Shape& BRepOffsetAPI_FindContigousEdges::DegeneratedShape(
-  const int index) const
+const TopoDS_Shape& BRepOffsetAPI_FindContigousEdges::DegeneratedShape(const int index) const
 {
   Standard_OutOfRange_Raise_if(index < 0 || index > NbDegeneratedShapes(),
                                "BRepOffsetAPI_FindContigousEdges::DegereratedShape");

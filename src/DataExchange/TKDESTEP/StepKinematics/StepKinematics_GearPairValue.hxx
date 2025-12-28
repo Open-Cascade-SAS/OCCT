@@ -31,9 +31,10 @@ public:
   Standard_EXPORT StepKinematics_GearPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-                            const double                         theActualRotation1);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const double                                     theActualRotation1);
 
   //! Returns field ActualRotation1
   Standard_EXPORT double ActualRotation1() const;

@@ -25,30 +25,30 @@
 #define precpers 0.95
 #define ButtonPress 4
 #define MotionNotify 6
-static const double       DRAWINFINITE = 1e50;
+static const double  DRAWINFINITE = 1e50;
 Standard_EXPORT bool Draw_Bounds  = true;
 extern bool          Draw_Batch;
-const int           MAXSEGMENT = 1000;
-Draw_XSegment                    segm[MAXSEGMENT];
-static int                       nbseg     = 0;
-static Draw_View*                curview   = NULL;
-static int          curviewId = 0;
-static char                      blank[2]  = "";
-static double             xmin, xmax, ymin, ymax;
+const int            MAXSEGMENT = 1000;
+Draw_XSegment        segm[MAXSEGMENT];
+static int           nbseg     = 0;
+static Draw_View*    curview   = NULL;
+static int           curviewId = 0;
+static char          blank[2]  = "";
+static double        xmin, xmax, ymin, ymax;
 static bool          found = false;
-static int          xpick, ypick, precpick;
-static gp_Pnt                    lastPickP1;
-static gp_Pnt                    lastPickP2;
-static double             lastPickParam;
-static Draw_Color                highlightcol;
-static Draw_Color                currentcolor;
+static int           xpick, ypick, precpick;
+static gp_Pnt        lastPickP1;
+static gp_Pnt        lastPickP2;
+static double        lastPickParam;
+static Draw_Color    highlightcol;
+static Draw_Color    currentcolor;
 static bool          highlight = false;
-static int          ps_vx, ps_vy;
-static double             ps_kx, ps_ky;
-static int          ps_px, ps_py;
-static std::ostream*             ps_stream;
-static int          ps_width[MAXCOLOR];
-static double             ps_gray[MAXCOLOR];
+static int           ps_vx, ps_vy;
+static double        ps_kx, ps_ky;
+static int           ps_px, ps_py;
+static std::ostream* ps_stream;
+static int           ps_width[MAXCOLOR];
+static double        ps_gray[MAXCOLOR];
 
 enum DrawingMode
 {
@@ -86,12 +86,12 @@ bool Draw_Viewer::DefineColor(const int i, const char* colname)
 
 //=================================================================================================
 
-void Draw_Viewer::MakeView(const int id,
-                           const char*            typ,
-                           const int X,
-                           const int Y,
-                           const int W,
-                           const int H)
+void Draw_Viewer::MakeView(const int   id,
+                           const char* typ,
+                           const int   X,
+                           const int   Y,
+                           const int   W,
+                           const int   H)
 {
   if (Draw_Batch)
     return;
@@ -115,14 +115,14 @@ void Draw_Viewer::MakeView(const int id,
 #ifdef _WIN32
 //=================================================================================================
 
-void Draw_Viewer::MakeView(const int id,
-                           const char*            typ,
-                           const int X,
-                           const int Y,
-                           const int W,
-                           const int H,
-                           HWND                   win,
-                           bool       useBuffer)
+void Draw_Viewer::MakeView(const int   id,
+                           const char* typ,
+                           const int   X,
+                           const int   Y,
+                           const int   W,
+                           const int   H,
+                           HWND        win,
+                           bool        useBuffer)
 {
   if (Draw_Batch)
     return;
@@ -239,10 +239,7 @@ void Draw_Viewer::RotateView(const int id, const gp_Dir2d& D, const double A)
 
 //=================================================================================================
 
-void Draw_Viewer::RotateView(const int id,
-                             const gp_Pnt&          P,
-                             const gp_Dir&          D,
-                             const double    A)
+void Draw_Viewer::RotateView(const int id, const gp_Pnt& P, const gp_Dir& D, const double A)
 {
   if (Draw_Batch)
     return;
@@ -334,11 +331,7 @@ void Draw_Viewer::SetTrsf(const int id, gp_Trsf& T)
 
 //=================================================================================================
 
-void Draw_Viewer::GetPosSize(const int id,
-                             int&      X,
-                             int&      Y,
-                             int&      W,
-                             int&      H)
+void Draw_Viewer::GetPosSize(const int id, int& X, int& Y, int& W, int& H)
 {
   if (Draw_Batch)
     return;
@@ -352,11 +345,7 @@ void Draw_Viewer::GetPosSize(const int id,
 
 //=================================================================================================
 
-void Draw_Viewer::GetFrame(const int id,
-                           int&      xminf,
-                           int&      yminf,
-                           int&      xmaxf,
-                           int&      ymaxf)
+void Draw_Viewer::GetFrame(const int id, int& xminf, int& yminf, int& xmaxf, int& ymaxf)
 {
   if (Draw_Batch)
     return;
@@ -382,7 +371,7 @@ void Draw_Viewer::FitView(const int id, const int frame)
 
     // is this the only view in its category
     bool is2d = myViews[id]->Is2D();
-    int i, nbviews = 0;
+    int  i, nbviews = 0;
     for (i = 1; i < MAXVIEW; i++)
     {
       if (myViews[i])
@@ -455,9 +444,7 @@ void Draw_Viewer::FitView(const int id, const int frame)
 
 //=================================================================================================
 
-void Draw_Viewer::PanView(const int id,
-                          const int DX,
-                          const int DY)
+void Draw_Viewer::PanView(const int id, const int DX, const int DY)
 {
   if (Draw_Batch)
     return;
@@ -470,9 +457,7 @@ void Draw_Viewer::PanView(const int id,
 
 //=================================================================================================
 
-void Draw_Viewer::SetPan(const int id,
-                         const int DX,
-                         const int DY)
+void Draw_Viewer::SetPan(const int id, const int DX, const int DY)
 {
   if (Draw_Batch)
     return;
@@ -619,34 +604,34 @@ void Draw_Viewer::ConfigView(const int id) const
 
 //=================================================================================================
 
-void Draw_Viewer::PostScriptView(const int id,
-                                 const int VXmin,
-                                 const int VYmin,
-                                 const int VXmax,
-                                 const int VYmax,
-                                 const int PXmin,
-                                 const int PYmin,
-                                 const int PXmax,
-                                 const int PYmax,
-                                 std::ostream&          sortie) const
+void Draw_Viewer::PostScriptView(const int     id,
+                                 const int     VXmin,
+                                 const int     VYmin,
+                                 const int     VXmax,
+                                 const int     VYmax,
+                                 const int     PXmin,
+                                 const int     PYmin,
+                                 const int     PXmax,
+                                 const int     PYmax,
+                                 std::ostream& sortie) const
 {
   if (Draw_Batch)
     return;
   if (myViews[id])
   {
-    ps_vx              = VXmin;
-    ps_vy              = VYmin;
-    ps_px              = PXmin;
-    ps_py              = PYmin;
-    ps_kx              = ((double)(PXmax - PXmin)) / ((double)(VXmax - VXmin));
-    ps_ky              = ((double)(PYmax - PYmin)) / ((double)(VYmax - VYmin));
-    ps_stream          = &sortie;
-    int n = myDrawables.Length();
+    ps_vx     = VXmin;
+    ps_vy     = VYmin;
+    ps_px     = PXmin;
+    ps_py     = PYmin;
+    ps_kx     = ((double)(PXmax - PXmin)) / ((double)(VXmax - VXmin));
+    ps_ky     = ((double)(PYmax - PYmin)) / ((double)(VYmax - VYmin));
+    ps_stream = &sortie;
+    int n     = myDrawables.Length();
     if (n == 0)
       return;
-    CurrentMode             = POSTSCRIPT;
-    Draw_Display     DF     = MakeDisplay(id);
-    bool view2d = myViews[id]->Is2D();
+    CurrentMode         = POSTSCRIPT;
+    Draw_Display DF     = MakeDisplay(id);
+    bool         view2d = myViews[id]->Is2D();
     for (int i = 1; i <= n; i++)
       if (myDrawables(i)->Is3D())
       {
@@ -665,9 +650,7 @@ void Draw_Viewer::PostScriptView(const int id,
 
 //=================================================================================================
 
-void Draw_Viewer::PostColor(const int icol,
-                            const int width,
-                            const double    gray)
+void Draw_Viewer::PostColor(const int icol, const int width, const double gray)
 {
   if (Draw_Batch)
     return;
@@ -850,9 +833,9 @@ void Draw_Viewer::DrawOnView(const int id, const occ::handle<Draw_Drawable3D>& D
 
 //=================================================================================================
 
-void Draw_Viewer::HighlightOnView(const int         id,
+void Draw_Viewer::HighlightOnView(const int                           id,
                                   const occ::handle<Draw_Drawable3D>& D,
-                                  const Draw_ColorKind           C) const
+                                  const Draw_ColorKind                C) const
 {
   if (Draw_Batch)
     return;
@@ -922,11 +905,7 @@ Draw_Display Draw_Viewer::MakeDisplay(const int id) const
 
 //=================================================================================================
 
-void Draw_Viewer::Select(int& theId,
-                         int& theX,
-                         int& theY,
-                         int& theButton,
-                         bool  theToWait)
+void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool theToWait)
 {
   if (Draw_Batch)
   {
@@ -934,7 +913,7 @@ void Draw_Viewer::Select(int& theId,
   }
 
   theId = theX = theY = theButton = 0;
-  bool hasView        = false;
+  bool hasView                    = false;
   for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
   {
     if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsMapped())
@@ -1085,12 +1064,12 @@ void Draw_Viewer::Select(int& theId,
 
 //=================================================================================================
 
-int Draw_Viewer::Pick(const int   id,
-                                   const int   X,
-                                   const int   Y,
-                                   const int   Prec,
-                                   occ::handle<Draw_Drawable3D>& D,
-                                   const int   first) const
+int Draw_Viewer::Pick(const int                     id,
+                      const int                     X,
+                      const int                     Y,
+                      const int                     Prec,
+                      occ::handle<Draw_Drawable3D>& D,
+                      const int                     first) const
 {
   if (Draw_Batch)
     return 0;
@@ -1099,7 +1078,7 @@ int Draw_Viewer::Pick(const int   id,
 
   // is this the only view in its category
   bool is2d = myViews[id]->Is2D();
-  int i, nbviews = 0;
+  int  i, nbviews = 0;
   for (i = 0; i < MAXVIEW; i++)
   {
     if (myViews[i])
@@ -1268,8 +1247,8 @@ void Draw_Display::Flush() const
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt2d&        ppt,
-                              const char* S,
+void Draw_Display::DrawString(const gp_Pnt2d& ppt,
+                              const char*     S,
                               const double    moveX,
                               const double    moveY)
 {
@@ -1333,10 +1312,10 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt, const char* S)
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt&          pt,
-                              const char* S,
-                              const double    moveX,
-                              const double    moveY)
+void Draw_Display::DrawString(const gp_Pnt& pt,
+                              const char*   S,
+                              const double  moveX,
+                              const double  moveY)
 {
   if (Draw_Batch)
     return;
@@ -1371,8 +1350,8 @@ void Draw_Display::Project(const gp_Pnt& p, gp_Pnt2d& p2d) const
   if (curview->IsPerspective())
   {
     const double aDistance = curview->GetFocalDistance();
-    xp                            = xp * aDistance / (aDistance - zp);
-    yp                            = yp * aDistance / (aDistance - zp);
+    xp                     = xp * aDistance / (aDistance - zp);
+    yp                     = yp * aDistance / (aDistance - zp);
   }
   p2d.SetCoord(xp, yp);
 }
@@ -1398,7 +1377,7 @@ void Draw_Display::MoveTo(const gp_Pnt2d& pp)
   if (Draw_Batch)
     return;
   const double aZoom = curview->GetZoom();
-  gp_Pnt2d            pt(pp.X() * aZoom, pp.Y() * aZoom);
+  gp_Pnt2d     pt(pp.X() * aZoom, pp.Y() * aZoom);
   switch (CurrentMode)
   {
 
@@ -1433,11 +1412,11 @@ void Draw_Display::MoveTo(const gp_Pnt2d& pp)
 //=================================================================================================
 
 inline int CalculRegion(const double x,
-                                     const double y,
-                                     const double x1,
-                                     const double y1,
-                                     const double x2,
-                                     const double y2)
+                        const double y,
+                        const double x1,
+                        const double y1,
+                        const double x2,
+                        const double y2)
 {
   int r;
   if (x < x1)
@@ -1469,12 +1448,7 @@ inline int CalculRegion(const double x,
   return (r);
 }
 
-bool Trim(gp_Pnt2d&     P1,
-                      gp_Pnt2d&     P2,
-                      double x0,
-                      double y0,
-                      double x1,
-                      double y1)
+bool Trim(gp_Pnt2d& P1, gp_Pnt2d& P2, double x0, double y0, double x1, double y1)
 {
   double xa = P1.X(), ya = P1.Y(), xb = P2.X(), yb = P2.Y();
 
@@ -1499,8 +1473,8 @@ bool Trim(gp_Pnt2d&     P1,
     double d = sqrt(x1 * x1 + y1 * y1) * 2;
 
     double p = (xm - xa) * dx + (ym - ya) * dy;
-    xm              = xa + p * dx;
-    ym              = ya + p * dy;
+    xm       = xa + p * dx;
+    ym       = ya + p * dy;
     gp_Pnt2d Pm(xm, ym);
 
     gp_Pnt2d MFen(mfenx, mfeny);
@@ -1637,9 +1611,8 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
         bool inside = true;
         if ((x1 > xpick + precpick) || (x2 > xpick + precpick))
         {
-          double y = (double)y1
-                            + (double)(y2 - y1) * (double)(xpick + precpick - x1)
-                                / (double)(x2 - x1);
+          double y =
+            (double)y1 + (double)(y2 - y1) * (double)(xpick + precpick - x1) / (double)(x2 - x1);
           if ((y < ypick + precpick) && (y > ypick - precpick))
           {
             found         = true;
@@ -1652,9 +1625,8 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
         if ((x1 < xpick - precpick) || (x2 < xpick - precpick))
         {
-          double y = (double)y1
-                            + (double)(y2 - y1) * (double)(xpick - precpick - x1)
-                                / (double)(x2 - x1);
+          double y =
+            (double)y1 + (double)(y2 - y1) * (double)(xpick - precpick - x1) / (double)(x2 - x1);
           if ((y < ypick + precpick) && (y > ypick - precpick))
           {
             found         = true;
@@ -1667,9 +1639,8 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
         if ((y1 > ypick + precpick) || (y2 > ypick + precpick))
         {
-          double x = (double)x1
-                            + (double)(x2 - x1) * (double)(ypick + precpick - y1)
-                                / (double)(y2 - y1);
+          double x =
+            (double)x1 + (double)(x2 - x1) * (double)(ypick + precpick - y1) / (double)(y2 - y1);
           if ((x < xpick + precpick) && (x > xpick - precpick))
           {
             found         = true;
@@ -1682,9 +1653,8 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
         if ((y1 < ypick - precpick) || (y2 < ypick - precpick))
         {
-          double x = (double)x1
-                            + (double)(x2 - x1) * (double)(ypick - precpick - y1)
-                                / (double)(y2 - y1);
+          double x =
+            (double)x1 + (double)(x2 - x1) * (double)(ypick - precpick - y1) / (double)(y2 - y1);
           if ((x < xpick + precpick) && (x > xpick - precpick))
           {
             found         = true;
@@ -1763,7 +1733,7 @@ void Draw_Display::DrawTo(const gp_Pnt& pt)
   if ((CurrentMode == PICK) && found)
     return;
 
-  gp_Pnt        pt2 = pt.Transformed(curview->GetMatrix());
+  gp_Pnt pt2 = pt.Transformed(curview->GetMatrix());
   double xp2 = pt2.X();
   double yp2 = pt2.Y();
 
@@ -1776,7 +1746,7 @@ void Draw_Display::DrawTo(const gp_Pnt& pt)
     double yp1 = PtPers.Y();
     double zp1 = PtPers.Z();
     double zp2 = pt2.Z();
-    PtPers            = pt2;
+    PtPers     = pt2;
     if ((zp1 >= aDistance * precpers) && (zp2 >= aDistance * precpers))
     {
       return; // segment is not visible in perspective (behind the eye)

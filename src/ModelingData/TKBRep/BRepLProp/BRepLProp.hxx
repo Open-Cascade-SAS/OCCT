@@ -39,16 +39,16 @@ public:
   //! tolerance used two compare the derivative.
   Standard_EXPORT static GeomAbs_Shape Continuity(const BRepAdaptor_Curve& C1,
                                                   const BRepAdaptor_Curve& C2,
-                                                  const double      u1,
-                                                  const double      u2,
-                                                  const double      tl,
-                                                  const double      ta);
+                                                  const double             u1,
+                                                  const double             u2,
+                                                  const double             tl,
+                                                  const double             ta);
 
   //! The same as preceding but using the standard tolerances from package Precision.
   Standard_EXPORT static GeomAbs_Shape Continuity(const BRepAdaptor_Curve& C1,
                                                   const BRepAdaptor_Curve& C2,
-                                                  const double      u1,
-                                                  const double      u2);
+                                                  const double             u1,
+                                                  const double             u2);
 };
 
 #endif // _BRepLProp_HeaderFile

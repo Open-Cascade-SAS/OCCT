@@ -65,7 +65,6 @@
 #include <IntTools_PntOn2Faces.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntTools_Curve.hxx>
-#include <NCollection_Sequence.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -100,12 +99,12 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
   // Helper function to create conical surface
   static occ::handle<Geom_Surface>
-    CreateCone(const gp_Pnt& theApex,
-               const gp_Dir& theDir,
-               const gp_Dir& theXDir,
-               double theR,
-               double theSemiAngle,
-               double /*theH*/)
+  CreateCone(const gp_Pnt& theApex,
+             const gp_Dir& theDir,
+             const gp_Dir& theXDir,
+             double        theR,
+             double        theSemiAngle,
+             double /*theH*/)
 {
   gp_Ax3 anAxis(theApex, theDir, theXDir);
   return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
@@ -131,7 +130,7 @@ static int OCC230(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  GCE2d_MakeSegment                  MakeSegment(P1, P2);
+  GCE2d_MakeSegment                       MakeSegment(P1, P2);
   const occ::handle<Geom2d_TrimmedCurve>& TrimmedCurve = MakeSegment.Value();
   DrawTrSurf::Set(argv[1], TrimmedCurve);
   return 0;
@@ -149,7 +148,7 @@ int OCC22611(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   TCollection_AsciiString aToken = argv[1];
-  int        aNb    = atoi(argv[2]);
+  int                     aNb    = atoi(argv[2]);
 
   occ::handle<ExprIntrp_GenExp> aGen = ExprIntrp_GenExp::Create();
   for (int i = 0; i < aNb; i++)
@@ -168,8 +167,8 @@ int OCC22611(Draw_Interpretor& di, int argc, const char** argv)
 #include <BRepTools.hxx>
 
 static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
-                                     const TopoDS_Shape& originalWire,
-                                     Draw_Interpretor&   di)
+                         const TopoDS_Shape& originalWire,
+                         Draw_Interpretor&   di)
 {
   BRepExtrema_DistShapeShape distShapeShape(grossPlateFace, originalWire, Extrema_ExtFlag_MIN);
   if (!distShapeShape.IsDone())
@@ -289,7 +288,7 @@ struct GeomConvertTest_Data
   {
   }
 
-  int     nbupoles;
+  int                       nbupoles;
   occ::handle<Geom_Surface> surf;
 };
 
@@ -322,9 +321,7 @@ static void* GeomConvertTest(void* data)
   }
 }
 
-static int OCC23952sweep(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -371,7 +368,7 @@ struct GeomIntSSTest_Data
   {
   }
 
-  int     nbsol;
+  int                       nbsol;
   occ::handle<Geom_Surface> surf1, surf2;
 };
 
@@ -399,9 +396,7 @@ static void* GeomIntSSTest(void* data)
   }
 }
 
-static int OCC23952intersect(Draw_Interpretor& di,
-                                          int  argc,
-                                          const char**      argv)
+static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
@@ -453,8 +448,8 @@ static int OCC23683(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int ucontinuity = 1;
-  int vcontinuity = 1;
+  int  ucontinuity = 1;
+  int  vcontinuity = 1;
   bool iscnu       = false;
   bool iscnv       = false;
 
@@ -481,8 +476,8 @@ static int test_offset(Draw_Interpretor& di, int argc, const char** argv)
     return 1; // TCL_ERROR
   }
 
-  gp_Ax1               RotoAx(gp::Origin(), gp::DZ());
-  gp_Ax22d             Ax2(gp::Origin2d(), gp::DY2d(), gp::DX2d());
+  gp_Ax1                    RotoAx(gp::Origin(), gp::DZ());
+  gp_Ax22d                  Ax2(gp::Origin2d(), gp::DY2d(), gp::DX2d());
   occ::handle<Geom_Surface> Plane = new Geom_Plane(gp::YOZ());
 
   di << "<<<< Preparing sample surface of revolution based on trimmed curve >>>>\n";
@@ -490,7 +485,7 @@ static int test_offset(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<Geom2d_Circle>       C2d1        = new Geom2d_Circle(Ax2, 1.0);
   occ::handle<Geom2d_TrimmedCurve> C2d1Trimmed = new Geom2d_TrimmedCurve(C2d1, 0.0, M_PI / 2.0);
-  TopoDS_Edge                 E1          = BRepBuilderAPI_MakeEdge(C2d1Trimmed, Plane);
+  TopoDS_Edge                      E1          = BRepBuilderAPI_MakeEdge(C2d1Trimmed, Plane);
 
   DBRep::Set("e1", E1);
 
@@ -505,7 +500,7 @@ static int test_offset(Draw_Interpretor& di, int argc, const char** argv)
   di << "-----------------------------------------------------------------------\n";
 
   occ::handle<Geom2d_OffsetCurve> C2d2Offset = new Geom2d_OffsetCurve(C2d1Trimmed, -0.5);
-  TopoDS_Edge                E2         = BRepBuilderAPI_MakeEdge(C2d2Offset, Plane);
+  TopoDS_Edge                     E2         = BRepBuilderAPI_MakeEdge(C2d2Offset, Plane);
 
   DBRep::Set("e2", E2);
 
@@ -630,9 +625,7 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
 
 //=================================================================================================
 
-static int OCC24005(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgv)
+static int OCC24005(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 {
   if (theNArg < 2)
   {
@@ -673,11 +666,11 @@ static int OCC24005(Draw_Interpretor& theDI,
   // occ::handle<Geom_Curve> aResult;
   // gp_Pnt             aPoint;
 
-  const NCollection_Sequence<IntTools_Curve>&      aCvsX  = anInters.Lines();
+  const NCollection_Sequence<IntTools_Curve>&       aCvsX  = anInters.Lines();
   const NCollection_Sequence<IntTools_PntOn2Faces>& aPntsX = anInters.Points();
 
-  char             buf[1024];
-  int aNbCurves, aNbPoints;
+  char buf[1024];
+  int  aNbCurves, aNbPoints;
 
   aNbCurves = aCvsX.Length();
   aNbPoints = aPntsX.Length();
@@ -689,14 +682,14 @@ static int OCC24005(Draw_Interpretor& theDI,
       Sprintf(buf, "%s_%d", theArgv[1], i);
       theDI << buf << " ";
 
-      const IntTools_Curve&     aIC  = aCvsX(i);
+      const IntTools_Curve&          aIC  = aCvsX(i);
       const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
       DrawTrSurf::Set(buf, aC3D);
     }
   }
   else if (aNbCurves == 1)
   {
-    const IntTools_Curve&     aIC  = aCvsX(1);
+    const IntTools_Curve&          aIC  = aCvsX(1);
     const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
     Sprintf(buf, "%s", theArgv[1]);
     theDI << buf << " ";
@@ -766,9 +759,7 @@ static int OCC24086(Draw_Interpretor& di, int argc, const char** argv)
 #include <math_Vector.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 
-static int OCC24137(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgv)
+static int OCC24137(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 {
   int anArgIter = 1;
   if (theNArg < 5)
@@ -778,13 +769,13 @@ static int OCC24137(Draw_Interpretor& theDI,
   }
 
   // get target shape
-  const char*       aFaceName = theArgv[anArgIter++];
-  const char*       aVertName = theArgv[anArgIter++];
-  const TopoDS_Shape     aShapeF   = DBRep::Get(aFaceName);
-  const TopoDS_Shape     aShapeV   = DBRep::Get(aVertName);
-  const double    aUFrom    = Atof(theArgv[anArgIter++]);
-  const double    aVFrom    = Atof(theArgv[anArgIter++]);
-  const int aNbIts    = (anArgIter < theNArg) ? Draw::Atoi(theArgv[anArgIter++]) : 100;
+  const char*        aFaceName = theArgv[anArgIter++];
+  const char*        aVertName = theArgv[anArgIter++];
+  const TopoDS_Shape aShapeF   = DBRep::Get(aFaceName);
+  const TopoDS_Shape aShapeV   = DBRep::Get(aVertName);
+  const double       aUFrom    = Atof(theArgv[anArgIter++]);
+  const double       aVFrom    = Atof(theArgv[anArgIter++]);
+  const int          aNbIts    = (anArgIter < theNArg) ? Draw::Atoi(theArgv[anArgIter++]) : 100;
   if (aShapeF.IsNull() || aShapeF.ShapeType() != TopAbs_FACE)
   {
     std::cout << "Error: " << aFaceName << " shape is null / not a face" << std::endl;
@@ -832,9 +823,7 @@ static int OCC24137(Draw_Interpretor& theDI,
 }
 
 //! Check boolean operations on NCollection_Map
-static int OCC23972(Draw_Interpretor& /*theDI*/,
-                                 int theNArg,
-                                 const char**     theArgs)
+static int OCC23972(Draw_Interpretor& /*theDI*/, int theNArg, const char** theArgs)
 {
   if (theNArg != 3)
     return 1;
@@ -910,10 +899,10 @@ static int OCC24370(Draw_Interpretor& di, int argc, const char** argv)
   bool isfirstdone = aProj.IsFirstDone();
   bool islastdone  = aProj.IsLastDone();
 
-  double    first              = 0.;
-  double    last               = 0.;
-  int isfirstdoneInteger = 0;
-  int islastdoneInteger  = 0;
+  double first              = 0.;
+  double last               = 0.;
+  int    isfirstdoneInteger = 0;
+  int    islastdoneInteger  = 0;
 
   if (isfirstdone)
   {
@@ -943,6 +932,7 @@ public:
   }
   DEFINE_STANDARD_RTTI_INLINE(QABugs_HandleClass, Standard_Transient) // Type definition
 };
+
 // Dummy class to test interface for compilation issues
 struct QABugs_NHandleClass
 {
@@ -964,8 +954,8 @@ static int OCC23951(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape             s1   = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
-  TDF_Label                lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
+  TopoDS_Shape                  s1   = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
+  TDF_Label                     lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
   XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s1);
   TDataStd_Name::Set(lab1, "Box1");
 
@@ -981,8 +971,8 @@ static int OCC23951(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  const occ::handle<Message_Messenger>& aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>>       aPrinters;
+  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
+  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
   aPrinters.Append(aMsgMgr->ChangePrinters());
   aMsgMgr->AddPrinter(new Draw_Printer(di));
 
@@ -1005,9 +995,9 @@ static int OCC23950(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape             s6   = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
-  gp_Trsf                  t0;
-  TopLoc_Location          location0(t0);
+  TopoDS_Shape                  s6   = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
+  gp_Trsf                       t0;
+  TopLoc_Location               location0(t0);
 
   TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
   XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s6);
@@ -1032,8 +1022,8 @@ static int OCC23950(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  const occ::handle<Message_Messenger>& aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>>       aPrinters;
+  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
+  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
   aPrinters.Append(aMsgMgr->ChangePrinters());
   aMsgMgr->AddPrinter(new Draw_Printer(di));
 
@@ -1111,7 +1101,8 @@ static TopoDS_Shape CreateTestShape(int& theShapeNb)
   BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aComp);
   // NURBS modifier is used to increase footprint of each shape
-  occ::handle<BRepTools_NurbsConvertModification> aNurbsModif = new BRepTools_NurbsConvertModification;
+  occ::handle<BRepTools_NurbsConvertModification> aNurbsModif =
+    new BRepTools_NurbsConvertModification;
   TopoDS_Shape       aRefShape = BRepPrimAPI_MakeCylinder(50., 100.).Solid();
   BRepTools_Modifier aModifier(aRefShape, aNurbsModif);
   if (aModifier.IsDone())
@@ -1200,8 +1191,8 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   }
 
   NCollection_List<MyStubObject> aList;
-  const int         aSmallBlockSize = 40;
-  const int         aLargeBlockSize = 1500000;
+  const int                      aSmallBlockSize = 40;
+  const int                      aLargeBlockSize = 1500000;
 
   // quick populate memory with large blocks
   try
@@ -1279,7 +1270,7 @@ public:
 
     double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
     double aLnPt = s * (1 - t) * cos(u);        // Linear part of funcrtion.
-    F                   = a * aSqPt * aSqPt + aLnPt + s;
+    F            = a * aSqPt * aSqPt + aLnPt + s;
     return true;
   }
 
@@ -1289,8 +1280,8 @@ public:
     double v = X(2);
 
     double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
-    G(1)                = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
-    G(2)                = 2 * a * aSqPt;
+    G(1)         = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
+    G(2)         = 2 * a * aSqPt;
 
     return true;
   }
@@ -1303,10 +1294,7 @@ public:
     return true;
   }
 
-  virtual bool Values(const math_Vector& X,
-                                  double&     F,
-                                  math_Vector&       G,
-                                  math_Matrix&       H)
+  virtual bool Values(const math_Vector& X, double& F, math_Vector& G, math_Matrix& H)
   {
     Value(X, F);
     Gradient(X, G);
@@ -1316,10 +1304,10 @@ public:
 
     double aSqPt  = (v - b * u * u + c * u - r); // Square Part of function.
     double aTmpPt = c - 2 * b * u;               // Tmp part.
-    H(1, 1)              = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
-    H(1, 2)              = 2 * a * aTmpPt;
-    H(2, 1)              = H(1, 2);
-    H(2, 2)              = 2 * a;
+    H(1, 1)       = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
+    H(1, 2)       = 2 * a * aTmpPt;
+    H(2, 1)       = H(1, 2);
+    H(2, 2)       = 2 * a;
 
     return true;
   }
@@ -1329,9 +1317,7 @@ private:
   double a, b, c, r, s, t;
 };
 
-static int OCC25004(Draw_Interpretor& theDI,
-                                 int /*theNArg*/,
-                                 const char** /*theArgs*/)
+static int OCC25004(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgs*/)
 {
   BraninFunction aFunc;
 
@@ -1341,11 +1327,11 @@ static int OCC25004(Draw_Interpretor& theDI,
   aUpper(1) = 10;
   aUpper(2) = 15;
 
-  int aGridOrder = 16;
-  math_Vector      aFuncValues(1, aGridOrder * aGridOrder);
+  int         aGridOrder = 16;
+  math_Vector aFuncValues(1, aGridOrder * aGridOrder);
 
-  double aLipConst = 0;
-  math_Vector   aCurrPnt1(1, 2), aCurrPnt2(1, 2);
+  double      aLipConst = 0;
+  math_Vector aCurrPnt1(1, 2), aCurrPnt2(1, 2);
 
   // Get Lipshitz constant estimation on regular grid.
   int i, j, idx = 1;
@@ -1429,8 +1415,8 @@ public:
     return new XmlDrivers_DocumentRetrievalDriver();
   }
 
-  virtual occ::handle<PCDM_StorageDriver> WriterFromFormat(const TCollection_ExtendedString&)
-    override
+  virtual occ::handle<PCDM_StorageDriver> WriterFromFormat(
+    const TCollection_ExtendedString&) override
   {
     return new XmlDrivers_DocumentStorageDriver("Test");
   }
@@ -1447,9 +1433,7 @@ public:
 
 //=================================================================================================
 
-static int OCC24925(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC24925(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2 && theArgNb != 5)
   {
@@ -1458,7 +1442,7 @@ static int OCC24925(Draw_Interpretor& theDI,
     return 1;
   }
 
-  int           anArgIter = 1;
+  int                        anArgIter = 1;
   TCollection_ExtendedString aFileName = theArgVec[anArgIter++];
   TCollection_AsciiString    aPlugin   = "TKXml";
   // clang-format off
@@ -1501,9 +1485,7 @@ static int OCC24925(Draw_Interpretor& theDI,
 
 #include <BRepAlgoAPI_Check.hxx>
 
-static int OCC25043(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC25043(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2)
   {
@@ -1525,15 +1507,15 @@ static int OCC25043(Draw_Interpretor& theDI,
     NCollection_List<BOPAlgo_CheckResult>::Iterator anCheckIter(anAlgoApiCheck.Result());
     for (; anCheckIter.More(); anCheckIter.Next())
     {
-      const BOPAlgo_CheckResult&         aCurCheckRes     = anCheckIter.Value();
-      const NCollection_List<TopoDS_Shape>&        aCurFaultyShapes = aCurCheckRes.GetFaultyShapes1();
+      const BOPAlgo_CheckResult&               aCurCheckRes     = anCheckIter.Value();
+      const NCollection_List<TopoDS_Shape>&    aCurFaultyShapes = aCurCheckRes.GetFaultyShapes1();
       NCollection_List<TopoDS_Shape>::Iterator aFaultyIter(aCurFaultyShapes);
       for (; aFaultyIter.More(); aFaultyIter.Next())
       {
         const TopoDS_Shape& aFaultyShape = aFaultyIter.Value();
 
-        bool anIsFaultyShapeFound = false;
-        TopExp_Explorer  anExp(aShape, aFaultyShape.ShapeType());
+        bool            anIsFaultyShapeFound = false;
+        TopExp_Explorer anExp(aShape, aFaultyShape.ShapeType());
         for (; anExp.More() && !anIsFaultyShapeFound; anExp.Next())
         {
           if (anExp.Current().IsEqual(aFaultyShape))
@@ -1562,9 +1544,7 @@ static int OCC25043(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC24606(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC24606(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb > 1)
   {
@@ -1590,9 +1570,7 @@ static int OCC24606(Draw_Interpretor& theDI,
 
 #include <ShapeBuild_ReShape.hxx>
 
-static int OCC25202(Draw_Interpretor& theDI,
-                                 int  theArgN,
-                                 const char**      theArgVal)
+static int OCC25202(Draw_Interpretor& theDI, int theArgN, const char** theArgVal)
 {
   //  0      1    2     3     4     5     6
   // reshape res shape numF1 face1 numF2 face2
@@ -1602,10 +1580,10 @@ static int OCC25202(Draw_Interpretor& theDI,
     return 1;
   }
 
-  TopoDS_Shape           aShape    = DBRep::Get(theArgVal[2]);
-  const int aNumOfRE1 = Draw::Atoi(theArgVal[3]), aNumOfRE2 = Draw::Atoi(theArgVal[5]);
-  TopoDS_Face            aShapeForRepl1 = TopoDS::Face(DBRep::Get(theArgVal[4])),
-              aShapeForRepl2            = TopoDS::Face(DBRep::Get(theArgVal[6]));
+  TopoDS_Shape aShape    = DBRep::Get(theArgVal[2]);
+  const int    aNumOfRE1 = Draw::Atoi(theArgVal[3]), aNumOfRE2 = Draw::Atoi(theArgVal[5]);
+  TopoDS_Face  aShapeForRepl1 = TopoDS::Face(DBRep::Get(theArgVal[4])),
+              aShapeForRepl2  = TopoDS::Face(DBRep::Get(theArgVal[6]));
 
   if (aShape.IsNull())
   {
@@ -1635,7 +1613,7 @@ static int OCC25202(Draw_Interpretor& theDI,
   for (TopExp_Explorer ex(aShape, TopAbs_FACE); ex.More(); ex.Next())
   {
     const TopoDS_Shape& Sx    = ex.Current();
-    bool    added = M.Add(Sx);
+    bool                added = M.Add(Sx);
     if (added)
     {
       aNbShapes++;
@@ -1691,9 +1669,7 @@ static int OCC7570(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-static int OCC25340(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgNb*/,
-                                 const char** /*theArgVec*/)
+static int OCC25340(Draw_Interpretor& /*theDI*/, int /*theArgNb*/, const char** /*theArgVec*/)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -1726,10 +1702,7 @@ public:
   int End() const { return myX.Size(); }
 
   //! Dummy calculation
-  void operator()(int theIndex) const
-  {
-    myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex);
-  }
+  void operator()(int theIndex) const { myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex); }
 
   //! Dummy calculation
   void operator()(int theThreadIndex, int theIndex) const
@@ -1786,9 +1759,7 @@ private:
 };
 
 //---------------------------------------------------------------------
-static int OCC24826(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC24826(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 2)
   {
@@ -1828,7 +1799,7 @@ static int OCC24826(Draw_Interpretor& theDI,
   for (int aMode = 0; aMode <= 4; ++aMode)
   {
     NCollection_Array1<double> anY2 = anY;
-    OSD_Timer                         aTimer;
+    OSD_Timer                  aTimer;
     aTimer.Start();
     const char*                   aModeDesc = NULL;
     const ParallelTest_Saxpy      aFunctor1(aX, anY2, 1e-6);
@@ -2058,7 +2029,7 @@ static int OCC25100(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  TopExp_Explorer             aFaceExp(S, TopAbs_FACE);
+  TopExp_Explorer                  aFaceExp(S, TopAbs_FACE);
   const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(TopoDS::Face(aFaceExp.Current()));
 
   GeomAPI_IntSS anIntersector(aSurf, aSurf, Precision::Confusion());
@@ -2094,14 +2065,14 @@ static int OCC25413(Draw_Interpretor& di, int narg, const char** a)
   Bnd_Box aBndBox;
   BRepBndLib::Add(aShape, aBndBox);
 
-  gp_Dir        aDir(gp_Dir::D::Y);
-  const int     N     = 250;
-  double xMin  = aBndBox.CornerMin().X();
-  double zMin  = aBndBox.CornerMin().Z();
-  double xMax  = aBndBox.CornerMax().X();
-  double zMax  = aBndBox.CornerMax().Z();
-  double xStep = (xMax - xMin) / N;
-  double zStep = (zMax - zMin) / N;
+  gp_Dir    aDir(gp_Dir::D::Y);
+  const int N     = 250;
+  double    xMin  = aBndBox.CornerMin().X();
+  double    zMin  = aBndBox.CornerMin().Z();
+  double    xMax  = aBndBox.CornerMax().X();
+  double    zMax  = aBndBox.CornerMax().Z();
+  double    xStep = (xMax - xMin) / N;
+  double    zStep = (zMax - zMin) / N;
 
   for (double x = xMin; x <= xMax; x += xStep)
     for (double z = zMin; z <= zMax; z += zStep)
@@ -2120,9 +2091,7 @@ static int OCC25413(Draw_Interpretor& di, int narg, const char** a)
 #include <BRepAlgoAPI_Section.hxx>
 //
 #include <TopExp.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
 
 //=================================================================================================
 
@@ -2148,7 +2117,7 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
     return 1;
   }
   //
-  int  iOp;
+  int               iOp;
   BOPAlgo_Operation aOp;
   //
   iOp = Draw::Atoi(argv[4]);
@@ -2159,9 +2128,9 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
   }
   aOp = (BOPAlgo_Operation)iOp;
   //
-  int     iErr;
+  int                            iErr;
   NCollection_List<TopoDS_Shape> aLS;
-  BOPAlgo_PaveFiller   aPF;
+  BOPAlgo_PaveFiller             aPF;
   //
   aLS.Append(aS1);
   aLS.Append(aS2);
@@ -2208,10 +2177,10 @@ static int OCC25446(Draw_Interpretor& theDI, int argc, const char** argv)
   const TopoDS_Shape& aRes = pBuilder->Shape();
   DBRep::Set(argv[1], aRes);
   //
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>              aMapArgs, aMapShape;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>           aMapArgs, aMapShape;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aIt;
-  bool                 bIsDeletedHist, bIsDeletedMap;
-  TopAbs_ShapeEnum                 aType;
+  bool                                                             bIsDeletedHist, bIsDeletedMap;
+  TopAbs_ShapeEnum                                                 aType;
   //
   TopExp::MapShapes(aS1, aMapArgs);
   TopExp::MapShapes(aS2, aMapArgs);
@@ -2252,9 +2221,9 @@ static int OCC26139(Draw_Interpretor& theDI, int argc, const char** argv)
     return 1;
   }
 
-  int aBoxGridSize  = 100;
-  int aCompGridSize = 3;
-  double    aBoxSize      = 5.0;
+  int    aBoxGridSize  = 100;
+  int    aCompGridSize = 3;
+  double aBoxSize      = 5.0;
 
   if (argc > 1)
   {
@@ -2332,8 +2301,6 @@ static int OCC26139(Draw_Interpretor& theDI, int argc, const char** argv)
 #include <Standard_Integer.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_DataMap.hxx>
 #include <OSD.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -2343,8 +2310,7 @@ static int OCC26139(Draw_Interpretor& theDI, int argc, const char** argv)
   #define EXCEPTION Standard_Failure const&
 #endif
 
-static ShapeExtend_Status getStatusGap(const occ::handle<ShapeFix_Wire>& theFix,
-                                       const bool       theIs3d)
+static ShapeExtend_Status getStatusGap(const occ::handle<ShapeFix_Wire>& theFix, const bool theIs3d)
 {
   for (int i = ShapeExtend_OK; i <= ShapeExtend_FAIL; i++)
   {
@@ -2377,7 +2343,7 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
 
   // map FixStatus - NbSuchStatuses
   NCollection_DataMap<int, int> aStatusNbDMap;
-  int                nbFixed = 0, nbOk = 0;
+  int                           nbFixed = 0, nbOk = 0;
 
   // Begin: STEP 7
   ShapeExtend_Status aStatus = ShapeExtend_OK;
@@ -2391,8 +2357,8 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
       TopoDS_Iterator aWireItr(aFace);
       for (; aWireItr.More(); aWireItr.Next())
       {
-        bool wasOk    = false;
-        TopoDS_Wire      aSrcWire = TopoDS::Wire(aWireItr.Value());
+        bool        wasOk    = false;
+        TopoDS_Wire aSrcWire = TopoDS::Wire(aWireItr.Value());
 
         aWireFix->Load(aSrcWire);
         aWireFix->SetFace(TopoDS::Face(aFace));
@@ -2496,9 +2462,7 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
 
 //=================================================================================================
 
-static int OCC26284(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC26284(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 1)
   {
@@ -2515,12 +2479,12 @@ static int OCC26284(Draw_Interpretor& theDI,
   }
 
   BRepPrimAPI_MakeSphere aSphereBuilder(gp_Pnt(0.0, 0.0, 0.0), 1.0);
-  occ::handle<AIS_Shape>      aSphere = new AIS_Shape(aSphereBuilder.Shape());
+  occ::handle<AIS_Shape> aSphere = new AIS_Shape(aSphereBuilder.Shape());
   anAISContext->Display(aSphere, false);
   for (int aChildIdx = 0; aChildIdx < 5; ++aChildIdx)
   {
     BRepPrimAPI_MakeSphere aBuilder(gp_Pnt(1.0 + aChildIdx, 1.0 + aChildIdx, 1.0 + aChildIdx), 1.0);
-    occ::handle<AIS_Shape>      aChild = new AIS_Shape(aBuilder.Shape());
+    occ::handle<AIS_Shape> aChild = new AIS_Shape(aBuilder.Shape());
     aSphere->AddChild(aChild);
     anAISContext->Display(aChild, false);
   }
@@ -2544,9 +2508,9 @@ int xprojponf(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  gp_Pnt                   aP, aPS;
-  TopoDS_Shape             aS;
-  TopoDS_Face              aF;
+  gp_Pnt                        aP, aPS;
+  TopoDS_Shape                  aS;
+  TopoDS_Face                   aF;
   occ::handle<IntTools_Context> aCtx;
   //
   DrawTrSurf::GetPoint(a[1], aP);
@@ -2587,13 +2551,11 @@ int xprojponf(Draw_Interpretor& di, int n, const char** a)
 #include <BRepMesh_CircleTool.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
-static bool inspect_point(const gp_XY&        thePoint,
-                                      const gp_XY&        theCenter,
-                                      const double theRadius)
+static bool inspect_point(const gp_XY& thePoint, const gp_XY& theCenter, const double theRadius)
 {
   static double aPrecision   = Precision::PConfusion();
   static double aSqPrecision = aPrecision * aPrecision;
-  const gp_XY          aDistVec     = thePoint - theCenter;
+  const gp_XY   aDistVec     = thePoint - theCenter;
   if (aDistVec.SquareModulus() - (theRadius * theRadius) < aSqPrecision)
     return true;
   else
@@ -2604,10 +2566,10 @@ static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
 {
   srand(static_cast<unsigned int>(time(NULL)));
 
-  const double    aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
-  const int aPointsNb     = 10000000;
-  const double    aMinAngle     = 5 * M_PI / 180.;
-  static double   aSqPrecision  = Precision::PConfusion() * Precision::PConfusion();
+  const double  aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
+  const int     aPointsNb     = 10000000;
+  const double  aMinAngle     = 5 * M_PI / 180.;
+  static double aSqPrecision  = Precision::PConfusion() * Precision::PConfusion();
 
   int aFailedNb = 0;
   for (int i = 0; i < aPointsNb; ++i)
@@ -2622,7 +2584,7 @@ static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
     if (aVec1.SquareModulus() > aSqPrecision && aVec2.SquareModulus() > aSqPrecision
         && (aVec1 ^ aVec2) > aMinAngle)
     {
-      gp_XY         aCenter;
+      gp_XY  aCenter;
       double aRadius;
       if (BRepMesh_CircleTool::MakeCircle(p[0], p[1], p[2], aCenter, aRadius))
       {
@@ -2647,8 +2609,7 @@ static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
     --i;
   }
 
-  const double aDeviation =
-    1. - (double)(aPointsNb - aFailedNb) / (double)aPointsNb;
+  const double aDeviation = 1. - (double)(aPointsNb - aFailedNb) / (double)aPointsNb;
 
   theDI << "Number of incorrect cases: " << aFailedNb << " (Total " << aPointsNb << ")\n";
   if (aDeviation > aMaxDeviation)
@@ -2669,9 +2630,7 @@ static int OCC24923(Draw_Interpretor& theDI, int argc, const char** argv)
 // purpose  : check implementation of Euler angles in gp_Quaternion
 //=======================================================================
 
-static int OCC25574(Draw_Interpretor& theDI,
-                                 int /*argc*/,
-                                 const char** /*argv*/)
+static int OCC25574(Draw_Interpretor& theDI, int /*argc*/, const char** /*argv*/)
 {
   bool isTestOk = true;
 
@@ -2679,8 +2638,8 @@ static int OCC25574(Draw_Interpretor& theDI,
   gp_Quaternion aQuat;
   aQuat.Set(0.06766916507860499, 0.21848101129786085, 0.11994599260380681, 0.9660744746954637);
   double alpha, beta, gamma;
-  gp_Mat        aRinv = aQuat.GetMatrix().Inverted();
-  gp_Mat        aI;
+  gp_Mat aRinv = aQuat.GetMatrix().Inverted();
+  gp_Mat aI;
   aI.SetIdentity();
   const char* names[] = {"Extrinsic_XYZ", "Extrinsic_XZY", "Extrinsic_YZX", "Extrinsic_YXZ",
                          "Extrinsic_ZXY", "Extrinsic_ZYX", "Intrinsic_XYZ", "Intrinsic_XZY",
@@ -2714,7 +2673,7 @@ static int OCC25574(Draw_Interpretor& theDI,
   alpha = 0.1517461713131;
   beta  = 1.5162198410141;
   gamma = 1.9313156236541;
-  double    alpha2, beta2, gamma2;
+  double           alpha2, beta2, gamma2;
   gp_EulerSequence pairs[][2] = {{gp_Extrinsic_XYZ, gp_Intrinsic_ZYX},
                                  {gp_Extrinsic_XZY, gp_Intrinsic_YZX},
                                  {gp_Extrinsic_YZX, gp_Intrinsic_XZY},
@@ -2945,12 +2904,12 @@ int OCC26446(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>          aCurves(0, 1);
-  NCollection_Array1<double>                   aTolerances(0, 0);
-  double                          aTolConf    = 1.e-3;
-  constexpr double                aTolClosure = Precision::Confusion();
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aCurves(0, 1);
+  NCollection_Array1<double>                         aTolerances(0, 0);
+  double                                             aTolConf    = 1.e-3;
+  constexpr double                                   aTolClosure = Precision::Confusion();
   occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>> aConcatCurves;
-  occ::handle<NCollection_HArray1<int>>       anIndices;
+  occ::handle<NCollection_HArray1<int>>                            anIndices;
 
   aCurves.SetValue(0, aCurve1);
   aCurves.SetValue(1, aCurve2);
@@ -2971,9 +2930,7 @@ int OCC26446(Draw_Interpretor& di, int n, const char** a)
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TCollection_AsciiString.hxx>
 
-static int OCC26407(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC26407(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2)
   {
@@ -3045,9 +3002,7 @@ static int OCC26407(Draw_Interpretor& theDI,
 
 #include <Poly.hxx>
 
-static int OCC26485(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC26485(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2)
   {
@@ -3063,12 +3018,12 @@ static int OCC26485(Draw_Interpretor& theDI,
     return 1;
   }
 
-  bool isFailed = false;
-  TopExp_Explorer  aExplorer(aShape, TopAbs_FACE);
+  bool            isFailed = false;
+  TopExp_Explorer aExplorer(aShape, TopAbs_FACE);
   for (; aExplorer.More(); aExplorer.Next())
   {
-    const TopoDS_Face&                aFace = TopoDS::Face(aExplorer.Current());
-    TopLoc_Location                   L     = TopLoc_Location();
+    const TopoDS_Face&                     aFace = TopoDS::Face(aExplorer.Current());
+    TopLoc_Location                        L     = TopLoc_Location();
     const occ::handle<Poly_Triangulation>& aT    = BRep_Tool::Triangulation(aFace, L);
 
     if (aT.IsNull())
@@ -3103,9 +3058,7 @@ static int OCC26485(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC26553(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC26553(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 2)
   {
@@ -3157,9 +3110,7 @@ static int OCC26553(Draw_Interpretor& theDI,
 #include <AIS_Line.hxx>
 #include <Aspect_Window.hxx>
 
-static int OCC26195(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC26195(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb < 3)
   {
@@ -3271,9 +3222,7 @@ static int OCC26195(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC26462(Draw_Interpretor& theDI,
-                                 int /*theArgNb*/,
-                                 const char** /*theArgVec*/)
+static int OCC26462(Draw_Interpretor& theDI, int /*theArgNb*/, const char** /*theArgVec*/)
 {
   if (ViewerTest::GetAISContext().IsNull())
   {
@@ -3281,8 +3230,8 @@ static int OCC26462(Draw_Interpretor& theDI,
     return 1;
   }
 
-  BRepPrimAPI_MakeBox           aBuilder1(gp_Pnt(10.0, 10.0, 0.0), 10.0, 10.0, 10.0);
-  BRepPrimAPI_MakeBox           aBuilder2(10.0, 10.0, 10.0);
+  BRepPrimAPI_MakeBox                aBuilder1(gp_Pnt(10.0, 10.0, 0.0), 10.0, 10.0, 10.0);
+  BRepPrimAPI_MakeBox                aBuilder2(10.0, 10.0, 10.0);
   occ::handle<AIS_InteractiveObject> aBox1 = new AIS_Shape(aBuilder1.Shape());
   occ::handle<AIS_InteractiveObject> aBox2 = new AIS_Shape(aBuilder2.Shape());
 
@@ -3407,9 +3356,9 @@ int OCC26525(Draw_Interpretor& di, int n, const char** a)
   aF = TopoDS::Face(aS2);
 
   char                              buf[128];
-  bool                  bIsDone;
-  int                  i, aNbPoints;
-  double                     aU, aV, aT;
+  bool                              bIsDone;
+  int                               i, aNbPoints;
+  double                            aU, aV, aT;
   gp_Pnt                            aP;
   BRepAdaptor_Curve                 aBAC;
   BRepAdaptor_Surface               aBAS;
@@ -3495,7 +3444,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
                                     0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x05,
                                     0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00,
                                     0x00, 0x08, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00};
-  int    anIntArr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+  int                 anIntArr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
   if (aF.is_open())
   {
     for (int i = 0; i < 10; ++i)
@@ -3521,7 +3470,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x04, 0xD2,
                                       0x00, 0x00, 0x04, 0xD3, 0xFF, 0xFF, 0xFD, 0x1E, 0xFF, 0xFF,
                                       0xFF, 0xFB, 0x00, 0x00, 0x03, 0x8D, 0x00, 0x3D, 0x09, 0x00};
-  int    aRndIntArr[] = {-4000000, -1234, 0, 1, 1234, 1235, -738, -5, 909, 4000000};
+  int                 aRndIntArr[] = {-4000000, -1234, 0, 1, 1234, 1235, -738, -5, 909, 4000000};
   if (aF.is_open())
   {
     for (int i = 0; i < 10; ++i)
@@ -3577,8 +3526,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
     0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x09, 0x21, 0xDA, 0x45, 0x5B, 0x53, 0xE4,
     0x54, 0xB2, 0x49, 0xAD, 0x25, 0x94, 0xC3, 0x7D, 0x40, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0xC0, 0x23, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCD, 0x40, 0x23, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCD};
-  const double aRndRealArr[] =
-    {-1e300, -1.e-9, 0., 1.e-9, 1., 3.1415296, 1.e100, 8.0, -9.9, 9.9};
+  const double aRndRealArr[] = {-1e300, -1.e-9, 0., 1.e-9, 1., 3.1415296, 1.e100, 8.0, -9.9, 9.9};
   if (aF.is_open())
   {
     for (int i = 0; i < 10; ++i)
@@ -3604,8 +3552,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
     0x3F, 0x80, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00, 0x00, 0x40, 0x80,
     0x00, 0x00, 0x40, 0xA0, 0x00, 0x00, 0x40, 0xC0, 0x00, 0x00, 0x40, 0xE0, 0x00, 0x00,
     0x41, 0x00, 0x00, 0x00, 0x41, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  const float aShortRealArr[] =
-    {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 0.0f};
+  const float aShortRealArr[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 0.0f};
   if (aF.is_open())
   {
     for (int i = 0; i < 10; ++i)
@@ -3665,7 +3612,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
   }
   else
   {
-    size_t        anInv[10];
+    size_t               anInv[10];
     const unsigned char* aSizeRef = SizeRef<sizeof(size_t)>();
     for (int i = 0; i < 10; ++i)
       anInv[i] = FSD_BinaryFile::InverseSize(aSizeArr[i]);
@@ -3691,7 +3638,7 @@ static int OCC24537(Draw_Interpretor& theDI, int argc, const char** argv)
 static TopoDS_Shape taper(const TopoDS_Shape& shape,
                           const TopoDS_Face&  face_a,
                           const TopoDS_Face&  face_b,
-                          double       angle)
+                          double              angle)
 {
   // Use maximum face-to-taper z-offset.
   const gp_Pln neutral_plane(gp_Ax3(gp_Pnt(0.0, 0.0, 140.0), gp_Dir(gp_Dir::D::Z)));
@@ -3736,9 +3683,7 @@ static void GetCoords(const char*& path_to_file, std::vector<double>& coords)
   dumpShapeVertices(taper(shape, face_a, face_b, 5.0), coords);
 }
 
-static int OCC26396(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 2)
   {
@@ -3782,9 +3727,7 @@ static int OCC26396(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int OCC26750(Draw_Interpretor& theDI,
-                                 int /*theNArg*/,
-                                 const char** /*theArgVal*/)
+static int OCC26750(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgVal*/)
 {
   const gp_Vec2d aVec1(1.0, 0.0);
   const gp_Vec2d aVec2(0.0, -1.0);
@@ -3820,9 +3763,7 @@ static int OCC26750(Draw_Interpretor& theDI,
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
 
-static int OCC26746(Draw_Interpretor& theDI,
-                                 int  theNArg,
-                                 const char**      theArgVal)
+static int OCC26746(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 {
   if (theNArg < 2)
   {
@@ -3833,11 +3774,11 @@ static int OCC26746(Draw_Interpretor& theDI,
   const occ::handle<Geom_ToroidalSurface> aGtor =
     occ::down_cast<Geom_ToroidalSurface>(DrawTrSurf::GetSurface(theArgVal[1]));
 
-  const double    aToler     = (theNArg >= 3) ? Draw::Atof(theArgVal[2]) : 1.0e-7;
-  const int aNbPntsMax = (theNArg >= 4) ? Draw::Atoi(theArgVal[3]) : 5;
+  const double aToler     = (theNArg >= 3) ? Draw::Atof(theArgVal[2]) : 1.0e-7;
+  const int    aNbPntsMax = (theNArg >= 4) ? Draw::Atoi(theArgVal[3]) : 5;
 
-  const int aLowIndex = 5;
-  const double    aStep     = 2.0 * M_PI / aNbPntsMax;
+  const int    aLowIndex = 5;
+  const double aStep     = 2.0 * M_PI / aNbPntsMax;
 
   NCollection_Array1<double> anArrCoeffs(aLowIndex, aLowIndex + 34);
   aGtor->Torus().Coefficients(anArrCoeffs);
@@ -3847,7 +3788,7 @@ static int OCC26746(Draw_Interpretor& theDI,
   {
     for (int aVind = 0; aVind <= aNbPntsMax; aVind++)
     {
-      const gp_Pnt        aPt(aGtor->Value(aUpar, aVpar));
+      const gp_Pnt aPt(aGtor->Value(aUpar, aVpar));
       const double aX1 = aPt.X();
       const double aX2 = aX1 * aX1;
       const double aX3 = aX2 * aX1;
@@ -3863,41 +3804,41 @@ static int OCC26746(Draw_Interpretor& theDI,
 
       int i = aLowIndex;
 
-      double aDelta = anArrCoeffs(i++) * aX4; // 1
-      aDelta += anArrCoeffs(i++) * aY4;              // 2
-      aDelta += anArrCoeffs(i++) * aZ4;              // 3
-      aDelta += anArrCoeffs(i++) * aX3 * aY1;        // 4
-      aDelta += anArrCoeffs(i++) * aX3 * aZ1;        // 5
-      aDelta += anArrCoeffs(i++) * aY3 * aX1;        // 6
-      aDelta += anArrCoeffs(i++) * aY3 * aZ1;        // 7
-      aDelta += anArrCoeffs(i++) * aZ3 * aX1;        // 8
-      aDelta += anArrCoeffs(i++) * aZ3 * aY1;        // 9
-      aDelta += anArrCoeffs(i++) * aX2 * aY2;        // 10
-      aDelta += anArrCoeffs(i++) * aX2 * aZ2;        // 11
-      aDelta += anArrCoeffs(i++) * aY2 * aZ2;        // 12
-      aDelta += anArrCoeffs(i++) * aX2 * aY1 * aZ1;  // 13
-      aDelta += anArrCoeffs(i++) * aX1 * aY2 * aZ1;  // 14
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ2;  // 15
-      aDelta += anArrCoeffs(i++) * aX3;              // 16
-      aDelta += anArrCoeffs(i++) * aY3;              // 17
-      aDelta += anArrCoeffs(i++) * aZ3;              // 18
-      aDelta += anArrCoeffs(i++) * aX2 * aY1;        // 19
-      aDelta += anArrCoeffs(i++) * aX2 * aZ1;        // 20
-      aDelta += anArrCoeffs(i++) * aY2 * aX1;        // 21
-      aDelta += anArrCoeffs(i++) * aY2 * aZ1;        // 22
-      aDelta += anArrCoeffs(i++) * aZ2 * aX1;        // 23
-      aDelta += anArrCoeffs(i++) * aZ2 * aY1;        // 24
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ1;  // 25
-      aDelta += anArrCoeffs(i++) * aX2;              // 26
-      aDelta += anArrCoeffs(i++) * aY2;              // 27
-      aDelta += anArrCoeffs(i++) * aZ2;              // 28
-      aDelta += anArrCoeffs(i++) * aX1 * aY1;        // 29
-      aDelta += anArrCoeffs(i++) * aX1 * aZ1;        // 30
-      aDelta += anArrCoeffs(i++) * aY1 * aZ1;        // 31
-      aDelta += anArrCoeffs(i++) * aX1;              // 32
-      aDelta += anArrCoeffs(i++) * aY1;              // 33
-      aDelta += anArrCoeffs(i++) * aZ1;              // 34
-      aDelta += anArrCoeffs(i++);                    // 35
+      double aDelta = anArrCoeffs(i++) * aX4;       // 1
+      aDelta += anArrCoeffs(i++) * aY4;             // 2
+      aDelta += anArrCoeffs(i++) * aZ4;             // 3
+      aDelta += anArrCoeffs(i++) * aX3 * aY1;       // 4
+      aDelta += anArrCoeffs(i++) * aX3 * aZ1;       // 5
+      aDelta += anArrCoeffs(i++) * aY3 * aX1;       // 6
+      aDelta += anArrCoeffs(i++) * aY3 * aZ1;       // 7
+      aDelta += anArrCoeffs(i++) * aZ3 * aX1;       // 8
+      aDelta += anArrCoeffs(i++) * aZ3 * aY1;       // 9
+      aDelta += anArrCoeffs(i++) * aX2 * aY2;       // 10
+      aDelta += anArrCoeffs(i++) * aX2 * aZ2;       // 11
+      aDelta += anArrCoeffs(i++) * aY2 * aZ2;       // 12
+      aDelta += anArrCoeffs(i++) * aX2 * aY1 * aZ1; // 13
+      aDelta += anArrCoeffs(i++) * aX1 * aY2 * aZ1; // 14
+      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ2; // 15
+      aDelta += anArrCoeffs(i++) * aX3;             // 16
+      aDelta += anArrCoeffs(i++) * aY3;             // 17
+      aDelta += anArrCoeffs(i++) * aZ3;             // 18
+      aDelta += anArrCoeffs(i++) * aX2 * aY1;       // 19
+      aDelta += anArrCoeffs(i++) * aX2 * aZ1;       // 20
+      aDelta += anArrCoeffs(i++) * aY2 * aX1;       // 21
+      aDelta += anArrCoeffs(i++) * aY2 * aZ1;       // 22
+      aDelta += anArrCoeffs(i++) * aZ2 * aX1;       // 23
+      aDelta += anArrCoeffs(i++) * aZ2 * aY1;       // 24
+      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ1; // 25
+      aDelta += anArrCoeffs(i++) * aX2;             // 26
+      aDelta += anArrCoeffs(i++) * aY2;             // 27
+      aDelta += anArrCoeffs(i++) * aZ2;             // 28
+      aDelta += anArrCoeffs(i++) * aX1 * aY1;       // 29
+      aDelta += anArrCoeffs(i++) * aX1 * aZ1;       // 30
+      aDelta += anArrCoeffs(i++) * aY1 * aZ1;       // 31
+      aDelta += anArrCoeffs(i++) * aX1;             // 32
+      aDelta += anArrCoeffs(i++) * aY1;             // 33
+      aDelta += anArrCoeffs(i++) * aZ1;             // 34
+      aDelta += anArrCoeffs(i++);                   // 35
 
       if (std::abs(aDelta) > aToler)
       {
@@ -3923,9 +3864,7 @@ static int OCC26746(Draw_Interpretor& theDI,
 // function : OCC27048
 // purpose  : Calculate value of B-spline surface N times
 //=======================================================================
-static int OCC27048(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int OCC27048(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 5)
   {
@@ -3935,11 +3874,11 @@ static int OCC27048(Draw_Interpretor& theDI,
   }
 
   occ::handle<Geom_Surface> aSurf = DrawTrSurf::GetSurface(theArgv[1]);
-  GeomAdaptor_Surface  anAdaptor(aSurf);
+  GeomAdaptor_Surface       anAdaptor(aSurf);
 
-  double    aU = Draw::Atof(theArgv[2]);
-  double    aV = Draw::Atof(theArgv[3]);
-  int aN = Draw::Atoi(theArgv[4]);
+  double aU = Draw::Atof(theArgv[2]);
+  double aV = Draw::Atof(theArgv[3]);
+  int    aN = Draw::Atoi(theArgv[4]);
 
   for (; aN > 0; --aN)
     anAdaptor.Value(aU, aV);
@@ -3951,9 +3890,7 @@ static int OCC27048(Draw_Interpretor& theDI,
 // function : OCC27318
 // purpose  : Creates a box that is not listed in map of AIS objects of ViewerTest
 //========================================================================
-static int OCC27318(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgc*/,
-                                 const char** theArgv)
+static int OCC27318(Draw_Interpretor& /*theDI*/, int /*theArgc*/, const char** theArgv)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -3962,7 +3899,7 @@ static int OCC27318(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  TopoDS_Shape      aBox    = BRepPrimAPI_MakeBox(20, 20, 20).Shape();
+  TopoDS_Shape           aBox    = BRepPrimAPI_MakeBox(20, 20, 20).Shape();
   occ::handle<AIS_Shape> aBoxObj = new AIS_Shape(aBox);
   aCtx->Display(aBoxObj, true);
 
@@ -3973,9 +3910,7 @@ static int OCC27318(Draw_Interpretor& /*theDI*/,
 // function : OCC27523
 // purpose  : Checks recomputation of deactivated selection mode after object's redisplaying
 //========================================================================
-static int OCC27523(Draw_Interpretor& theDI,
-                                 int  theArgNb,
-                                 const char**      theArgVec)
+static int OCC27523(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 1)
   {
@@ -3991,10 +3926,10 @@ static int OCC27523(Draw_Interpretor& theDI,
     return 1;
   }
 
-  gp_Pnt                        aStart(100, 100, 100);
-  gp_Pnt                        anEnd(300, 400, 600);
-  BRepBuilderAPI_MakeEdge       anEdgeBuilder(aStart, anEnd);
-  TopoDS_Edge                   anEdge        = anEdgeBuilder.Edge();
+  gp_Pnt                             aStart(100, 100, 100);
+  gp_Pnt                             anEnd(300, 400, 600);
+  BRepBuilderAPI_MakeEdge            anEdgeBuilder(aStart, anEnd);
+  TopoDS_Edge                        anEdge        = anEdgeBuilder.Edge();
   occ::handle<AIS_InteractiveObject> aTestAISShape = new AIS_Shape(anEdge);
   anAISContext->Display(aTestAISShape, false);
 
@@ -4080,8 +4015,8 @@ public:
     aFrameGroup->SetGroupPrimitivesAspect(aFillAspect);
 
     // create separate group for text elements
-    occ::handle<Graphic3d_Group>    aTextGroup = thePresentation->NewGroup();
-    TCollection_ExtendedString aString("YOU SHOULD SEE THIS TEXT", true);
+    occ::handle<Graphic3d_Group> aTextGroup = thePresentation->NewGroup();
+    TCollection_ExtendedString   aString("YOU SHOULD SEE THIS TEXT", true);
     Prs3d_Text::Draw(aTextGroup, myDrawer->TextAspect(), aString, gp_Ax2(gp::Origin(), gp::DZ()));
   }
 
@@ -4091,9 +4026,7 @@ public:
   }
 };
 
-static int OCC27700(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgNb*/,
-                                 const char** /*theArgVec*/)
+static int OCC27700(Draw_Interpretor& /*theDI*/, int /*theArgNb*/, const char** /*theArgVec*/)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -4110,9 +4043,7 @@ static int OCC27700(Draw_Interpretor& /*theDI*/,
 // function : OCC27757
 // purpose  : Creates a box that has a sphere as child object and displays it
 //========================================================================
-static int OCC27757(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgc*/,
-                                 const char** theArgv)
+static int OCC27757(Draw_Interpretor& /*theDI*/, int /*theArgc*/, const char** theArgv)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4140,9 +4071,7 @@ static int OCC27757(Draw_Interpretor& /*theDI*/,
 // function : OCC27818
 // purpose  : Creates three boxes and highlights one of them with own style
 //========================================================================
-static int OCC27818(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgc*/,
-                                 const char** theArgv)
+static int OCC27818(Draw_Interpretor& /*theDI*/, int /*theArgc*/, const char** theArgv)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4192,9 +4121,7 @@ static int OCC27818(Draw_Interpretor& /*theDI*/,
 // function : OCC27893
 // purpose  : Creates a box and selects it via AIS_InteractiveContext API
 //========================================================================
-static int OCC27893(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgc*/,
-                                 const char** theArgv)
+static int OCC27893(Draw_Interpretor& /*theDI*/, int /*theArgc*/, const char** theArgv)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4203,7 +4130,7 @@ static int OCC27893(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  TopoDS_Shape                  aBox    = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape                       aBox    = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   occ::handle<AIS_InteractiveObject> aBoxObj = new AIS_Shape(aBox);
   aCtx->Display(aBoxObj, AIS_Shaded, 0, false);
   aCtx->SetSelected(aBoxObj, true);
@@ -4216,9 +4143,7 @@ static int OCC27893(Draw_Interpretor& /*theDI*/,
 // purpose  : Tests validness of iterator in AIS_InteractiveContext after
 // an removing object from it
 //========================================================================
-static int OCC28310(Draw_Interpretor& /*theDI*/,
-                                 int /*theArgc*/,
-                                 const char** theArgv)
+static int OCC28310(Draw_Interpretor& /*theDI*/, int /*theArgc*/, const char** theArgv)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4227,7 +4152,7 @@ static int OCC28310(Draw_Interpretor& /*theDI*/,
     return 1;
   }
 
-  TopoDS_Shape                  aBox    = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  TopoDS_Shape                       aBox    = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   occ::handle<AIS_InteractiveObject> aBoxObj = new AIS_Shape(aBox);
   aCtx->Display(aBoxObj, AIS_Shaded, 0, false);
   ViewerTest::CurrentView()->FitAll();
@@ -4251,9 +4176,7 @@ static int OCC28310(Draw_Interpretor& /*theDI*/,
 
 // repetitive display and removal of multiple small objects in the viewer for
 // test of memory leak in visualization (OCCT 6.9.0 - 7.0.0)
-static int OCC29412(Draw_Interpretor& /*theDI*/,
-                                 int theArgNb,
-                                 const char**     theArgVec)
+static int OCC29412(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4269,8 +4192,8 @@ static int OCC29412(Draw_Interpretor& /*theDI*/,
     gp_Pnt pos;
     gp_Vec dir(0, 0, 1);
 
-    gp_Ax2            center(pos, dir);
-    gp_Circ           circle(center, 1);
+    gp_Ax2                 center(pos, dir);
+    gp_Circ                circle(center, 1);
     occ::handle<AIS_Shape> feature;
 
     BRepBuilderAPI_MakeEdge builder(circle);

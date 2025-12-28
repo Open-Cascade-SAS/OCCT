@@ -22,7 +22,6 @@
 
 #include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <TFunction_ExecutionStatus.hxx>
@@ -86,9 +85,9 @@ public:
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& OS) const;
 
 private:
-  NCollection_List<TDF_Label>           myCurrent;
-  bool        myUsageOfExecutionStatus;
-  NCollection_Map<TDF_Label>            myPassedFunctions;
+  NCollection_List<TDF_Label>  myCurrent;
+  bool                         myUsageOfExecutionStatus;
+  NCollection_Map<TDF_Label>   myPassedFunctions;
   occ::handle<TFunction_Scope> myScope;
 };
 

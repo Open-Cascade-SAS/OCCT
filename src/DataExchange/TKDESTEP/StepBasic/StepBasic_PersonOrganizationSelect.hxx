@@ -51,7 +51,6 @@ public:
 
   //! returns Value as a PersonAndOrganization (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> PersonAndOrganization() const;
-
 };
 
 #endif // _StepBasic_PersonOrganizationSelect_HeaderFile

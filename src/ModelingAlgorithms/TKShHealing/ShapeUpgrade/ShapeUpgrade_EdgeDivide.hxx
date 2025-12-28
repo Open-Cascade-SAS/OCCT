@@ -66,9 +66,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_EdgeDivide, ShapeUpgrade_Tool)
 
 protected:
-  TopoDS_Face                     myFace;
-  bool                myHasCurve2d;
-  bool                myHasCurve3d;
+  TopoDS_Face                                myFace;
+  bool                                       myHasCurve2d;
+  bool                                       myHasCurve3d;
   occ::handle<NCollection_HSequence<double>> myKnots2d;
   occ::handle<NCollection_HSequence<double>> myKnots3d;
 

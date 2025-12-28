@@ -58,12 +58,9 @@ public:
   Standard_EXPORT void Surface(const TopoDS_Face& F);
 
   //! returns true if it is a side face
-  Standard_EXPORT bool IsSide(const double tolf,
-                                          const double toler) const;
+  Standard_EXPORT bool IsSide(const double tolf, const double toler) const;
 
-  Standard_EXPORT bool IsAbove(const bool back,
-                                           const HLRBRep_Curve*   A,
-                                           const double    tolC) const;
+  Standard_EXPORT bool IsAbove(const bool back, const HLRBRep_Curve* A, const double tolC) const;
 
   double FirstUParameter() const;
 
@@ -121,12 +118,12 @@ public:
   //! intervals is not C2.
   void D2(const double U,
           const double V,
-          gp_Pnt&             P,
-          gp_Vec&             D1U,
-          gp_Vec&             D1V,
-          gp_Vec&             D2U,
-          gp_Vec&             D2V,
-          gp_Vec&             D2UV) const;
+          gp_Pnt&      P,
+          gp_Vec&      D1U,
+          gp_Vec&      D1V,
+          gp_Vec&      D2U,
+          gp_Vec&      D2V,
+          gp_Vec&      D2UV) const;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -134,16 +131,16 @@ public:
   //! intervals is not C3.
   void D3(const double U,
           const double V,
-          gp_Pnt&             P,
-          gp_Vec&             D1U,
-          gp_Vec&             D1V,
-          gp_Vec&             D2U,
-          gp_Vec&             D2V,
-          gp_Vec&             D2UV,
-          gp_Vec&             D3U,
-          gp_Vec&             D3V,
-          gp_Vec&             D3UUV,
-          gp_Vec&             D3UVV) const;
+          gp_Pnt&      P,
+          gp_Vec&      D1U,
+          gp_Vec&      D1V,
+          gp_Vec&      D2U,
+          gp_Vec&      D2V,
+          gp_Vec&      D2UV,
+          gp_Vec&      D3U,
+          gp_Vec&      D3V,
+          gp_Vec&      D3UUV,
+          gp_Vec&      D3UVV) const;
 
   //! Computes the derivative of order Nu in the
   //! direction U and Nv in the direction V at the point P(U,
@@ -151,10 +148,7 @@ public:
   //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  gp_Vec DN(const double    U,
-            const double    V,
-            const int Nu,
-            const int Nv) const;
+  gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const;
 
   //! Returns the type of the surface : Plane, Cylinder,
   //! Cone, Sphere, Torus, BezierSurface,
@@ -188,10 +182,10 @@ public:
 
 private:
   //! returns true if it is a side face
-  Standard_EXPORT bool SideRowsOfPoles(const double    tol,
-                                                   const int nbuPoles,
-                                                   const int nbvPoles,
-                                                   NCollection_Array2<gp_Pnt>&    Pnt) const;
+  Standard_EXPORT bool SideRowsOfPoles(const double                tol,
+                                       const int                   nbuPoles,
+                                       const int                   nbvPoles,
+                                       NCollection_Array2<gp_Pnt>& Pnt) const;
 
   BRepAdaptor_Surface      mySurf;
   GeomAbs_SurfaceType      myType;

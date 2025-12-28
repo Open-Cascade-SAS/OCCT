@@ -40,8 +40,7 @@ public:
   //! Recognizes a kind of EdgeOrCurve select type
   //! -- 1 -> Curve
   //! -- 2 -> Edge
-  Standard_EXPORT int
-    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as Curve (or Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Curve> Curve() const;

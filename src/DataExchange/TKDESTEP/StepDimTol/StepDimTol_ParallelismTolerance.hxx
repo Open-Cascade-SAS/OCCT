@@ -30,7 +30,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ParallelismTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
-
 };
 
 #endif // _StepDimTol_ParallelismTolerance_HeaderFile

@@ -21,11 +21,8 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -41,7 +38,7 @@ Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
 
 Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
   const occ::handle<Geom2d_BoundedCurve>& BasisCurve,
-  const Convert_ParameterisationType Parameterisation)
+  const Convert_ParameterisationType      Parameterisation)
     : myTol(Precision::Confusion()),
       myType(Parameterisation)
 {
@@ -58,10 +55,9 @@ Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve(
 
 //=================================================================================================
 
-bool Geom2dConvert_CompCurveToBSplineCurve::Add(
-  const occ::handle<Geom2d_BoundedCurve>& NewCurve,
-  const double                Tolerance,
-  const bool             After)
+bool Geom2dConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom2d_BoundedCurve>& NewCurve,
+                                                const double                            Tolerance,
+                                                const bool                              After)
 {
   // conversion
   occ::handle<Geom2d_BSplineCurve> Bs = occ::down_cast<Geom2d_BSplineCurve>(NewCurve);
@@ -79,25 +75,21 @@ bool Geom2dConvert_CompCurveToBSplineCurve::Add(
     return true;
   }
 
-  myTol                      = Tolerance;
+  myTol               = Tolerance;
   const double aSqTol = Tolerance * Tolerance;
 
-  int LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
-  double    d1 = myCurve->Pole(1).SquareDistance(Bs->Pole(1));
-  double    d2 = myCurve->Pole(1).SquareDistance(Bs->Pole(LBs));
+  int    LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
+  double d1 = myCurve->Pole(1).SquareDistance(Bs->Pole(1));
+  double d2 = myCurve->Pole(1).SquareDistance(Bs->Pole(LBs));
 
-  bool isBeforeReversed =
-    (myCurve->Pole(1).SquareDistance(Bs->Pole(1)) < aSqTol) && (d1 < d2);
-  bool isBefore =
-    (myCurve->Pole(1).SquareDistance(Bs->Pole(LBs)) < aSqTol) || isBeforeReversed;
+  bool isBeforeReversed = (myCurve->Pole(1).SquareDistance(Bs->Pole(1)) < aSqTol) && (d1 < d2);
+  bool isBefore = (myCurve->Pole(1).SquareDistance(Bs->Pole(LBs)) < aSqTol) || isBeforeReversed;
 
   d1 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(1));
   d2 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs));
 
-  bool isAfterReversed =
-    (myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs)) < aSqTol) && (d2 < d1);
-  bool isAfter =
-    (myCurve->Pole(LCb).SquareDistance(Bs->Pole(1)) < aSqTol) || isAfterReversed;
+  bool isAfterReversed = (myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs)) < aSqTol) && (d2 < d1);
+  bool isAfter = (myCurve->Pole(LCb).SquareDistance(Bs->Pole(1)) < aSqTol) || isAfterReversed;
 
   // myCurve and NewCurve together form a closed curve
   if (isBefore && isAfter)
@@ -137,7 +129,7 @@ bool Geom2dConvert_CompCurveToBSplineCurve::Add(
 
 void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>& FirstCurve,
                                                 occ::handle<Geom2d_BSplineCurve>& SecondCurve,
-                                                const bool       After)
+                                                const bool                        After)
 {
   // Harmonisation des degres.
   int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
@@ -151,15 +143,15 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
   }
 
   // Declarationd
-  double           L1, L2, U_de_raccord;
-  int        ii, jj;
-  double           Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
-  int        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
-  int        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
-  NCollection_Array1<double>    Noeuds(1, NbK1 + NbK2 - 1);
-  NCollection_Array1<gp_Pnt2d>    Poles(1, NbP1 + NbP2 - 1);
-  NCollection_Array1<double>    Poids(1, NbP1 + NbP2 - 1);
-  NCollection_Array1<int> Mults(1, NbK1 + NbK2 - 1);
+  double                       L1, L2, U_de_raccord;
+  int                          ii, jj;
+  double                       Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
+  int                          NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
+  int                          NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
+  NCollection_Array1<double>   Noeuds(1, NbK1 + NbK2 - 1);
+  NCollection_Array1<gp_Pnt2d> Poles(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<double>   Poids(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<int>      Mults(1, NbK1 + NbK2 - 1);
 
   // Ratio de reparametrisation (C1 si possible)
   L1 = FirstCurve->DN(FirstCurve->LastParameter(), 1).Magnitude();
@@ -230,7 +222,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
 
   // Reduction eventuelle de la multiplicite
   bool Ok = true;
-  int M  = Mults(NbK1);
+  int  M  = Mults(NbK1);
   while ((M > 0) && Ok)
   {
     M--;

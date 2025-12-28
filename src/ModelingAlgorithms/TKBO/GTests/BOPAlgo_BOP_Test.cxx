@@ -79,8 +79,8 @@ TEST_F(BOPAlgo_DirectOperationsTest, DirectCut_NurbsBoxMinusBox)
 
   const TopoDS_Shape aBox2 = BOPTest_Utilities::CreateBox(gp_Pnt(0, 1, 0), 1.0, 0.5, 1.0);
 
-  const TopoDS_Shape  aResult      = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT);
-  const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
+  const TopoDS_Shape aResult      = PerformDirectBOP(aBox1, aBox2, BOPAlgo_CUT);
+  const double       aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "NURBS cut result should have positive surface area";
 }
 
@@ -98,8 +98,8 @@ TEST_F(BOPAlgo_TwoStepOperationsTest, TwoStepCut_SphereMinusBox)
   const TopoDS_Shape aSphere = BOPTest_Utilities::CreateUnitSphere();
   const TopoDS_Shape aBox    = BOPTest_Utilities::CreateUnitBox();
 
-  const TopoDS_Shape  aResult      = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_CUT);
-  const double aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
+  const TopoDS_Shape aResult      = PerformTwoStepBOP(aSphere, aBox, BOPAlgo_CUT);
+  const double       aSurfaceArea = BOPTest_Utilities::GetSurfaceArea(aResult);
   EXPECT_GT(aSurfaceArea, 0.0) << "Two-step cut result should have positive surface area";
 }
 
@@ -159,8 +159,8 @@ TEST_F(BOPAlgo_ComplexOperationsTest, MultipleIntersectingPrimitives)
   EXPECT_FALSE(aIntermediate.IsNull()) << "Intermediate result should not be null";
 
   // Then fuse with box
-  const TopoDS_Shape  aFinalResult = PerformDirectBOP(aIntermediate, aBox, BOPAlgo_FUSE);
-  const double aVolume      = BOPTest_Utilities::GetVolume(aFinalResult);
+  const TopoDS_Shape aFinalResult = PerformDirectBOP(aIntermediate, aBox, BOPAlgo_FUSE);
+  const double       aVolume      = BOPTest_Utilities::GetVolume(aFinalResult);
   EXPECT_GT(aVolume, 0.0) << "Complex operation result should have positive volume";
 }
 

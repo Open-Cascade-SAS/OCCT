@@ -29,8 +29,8 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_CameraFrustum, AIS_InteractiveObject)
 
 namespace
 {
-constexpr float THE_DEFAULT_TRANSPARENCY = 0.7f;
-const Quantity_Color         THE_DEFAULT_COLOR        = Quantity_NOC_WHITE;
+constexpr float      THE_DEFAULT_TRANSPARENCY = 0.7f;
+const Quantity_Color THE_DEFAULT_COLOR        = Quantity_NOC_WHITE;
 } // namespace
 
 //=================================================================================================
@@ -160,8 +160,7 @@ void AIS_CameraFrustum::fillTriangles()
     }
   }
 
-  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
-       ++aPointIter)
+  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB; ++aPointIter)
   {
     const NCollection_Vec3<double> aPnt = myPoints[aPointIter];
     myTriangles->SetVertice(aPointIter + 1, gp_Pnt(aPnt.x(), aPnt.y(), aPnt.z()));
@@ -176,7 +175,7 @@ void AIS_CameraFrustum::fillBorders()
   {
     const int aPlaneSegmVertsNb = 2 * 4;
     const int aPlanesNb         = 3 * 2;
-    myBorders = new Graphic3d_ArrayOfSegments(Graphic3d_Camera::FrustumVerticesNB,
+    myBorders                   = new Graphic3d_ArrayOfSegments(Graphic3d_Camera::FrustumVerticesNB,
                                               aPlaneSegmVertsNb * aPlanesNb);
     myBorders->SetVertice(Graphic3d_Camera::FrustumVerticesNB, gp_Pnt(0.0, 0.0, 0.0));
 
@@ -205,8 +204,7 @@ void AIS_CameraFrustum::fillBorders()
     }
   }
 
-  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB;
-       ++aPointIter)
+  for (int aPointIter = 0; aPointIter < Graphic3d_Camera::FrustumVerticesNB; ++aPointIter)
   {
     const NCollection_Vec3<double> aPnt = myPoints[aPointIter];
     myBorders->SetVertice(aPointIter + 1, gp_Pnt(aPnt.x(), aPnt.y(), aPnt.z()));
@@ -217,7 +215,7 @@ void AIS_CameraFrustum::fillBorders()
 
 void AIS_CameraFrustum::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                 const occ::handle<Prs3d_Presentation>& thePrs,
-                                const int            theMode)
+                                const int                              theMode)
 {
   thePrs->SetInfiniteState(true);
   if (myTriangles.IsNull())
@@ -245,7 +243,7 @@ void AIS_CameraFrustum::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_CameraFrustum::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                         const int             theMode)
+                                         const int                               theMode)
 {
   occ::handle<SelectMgr_EntityOwner> anOwner = new SelectMgr_EntityOwner(this);
   switch (theMode)

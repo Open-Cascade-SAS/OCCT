@@ -32,7 +32,8 @@ public:
   Standard_EXPORT StepBasic_ActionRequestAssignment();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepBasic_VersionedActionRequest>& aAssignedActionRequest);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_VersionedActionRequest>& aAssignedActionRequest);
 
   //! Returns field AssignedActionRequest
   Standard_EXPORT occ::handle<StepBasic_VersionedActionRequest> AssignedActionRequest() const;

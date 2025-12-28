@@ -41,7 +41,7 @@ public:
 
   //! Create if not found the TDataXtd_Presentation attribute and set its driver GUID
   Standard_EXPORT static occ::handle<TDataXtd_Presentation> Set(const TDF_Label&     theLabel,
-                                                           const Standard_GUID& theDriverId);
+                                                                const Standard_GUID& theDriverId);
 
   //! Remove attribute of this type from the label
   Standard_EXPORT static void Unset(const TDF_Label& theLabel);
@@ -67,9 +67,9 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
-                                     const occ::handle<TDF_RelocationTable>& aRelocTationable) const
-    override;
+  Standard_EXPORT virtual void Paste(
+    const occ::handle<TDF_Attribute>&       intoAttribute,
+    const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
 
   Standard_EXPORT occ::handle<TDF_Attribute> BackupCopy() const override;
 
@@ -119,9 +119,9 @@ public:
   //! transaction mechanism (the attribute doesn't participate in undo/redo because of this
   //! modification). Certainly, if any other data of the attribute is modified (display mode, color,
   //! ...), the attribute will be included into undo/redo.
-  Standard_EXPORT void SetSelectionMode(const int theSelectionMode,
+  Standard_EXPORT void SetSelectionMode(const int  theSelectionMode,
                                         const bool theTransaction = true);
-  Standard_EXPORT void AddSelectionMode(const int theSelectionMode,
+  Standard_EXPORT void AddSelectionMode(const int  theSelectionMode,
                                         const bool theTransaction = true);
 
   Standard_EXPORT int MaterialIndex() const;
@@ -160,18 +160,18 @@ public:
 private:
   Standard_GUID         myDriverGUID;
   Quantity_NameOfColor  myColor;
-  int      myMaterialIndex;
-  int      myMode;
+  int                   myMaterialIndex;
+  int                   myMode;
   NCollection_List<int> mySelectionModes;
-  double         myTransparency;
-  double         myWidth;
-  bool      myIsDisplayed;
-  bool      myHasOwnColor;
-  bool      myHasOwnMaterial;
-  bool      myHasOwnTransparency;
-  bool      myHasOwnWidth;
-  bool      myHasOwnMode;
-  bool      myHasOwnSelectionMode;
+  double                myTransparency;
+  double                myWidth;
+  bool                  myIsDisplayed;
+  bool                  myHasOwnColor;
+  bool                  myHasOwnMaterial;
+  bool                  myHasOwnTransparency;
+  bool                  myHasOwnWidth;
+  bool                  myHasOwnMode;
+  bool                  myHasOwnSelectionMode;
 
   //! Checks a list of selection modes.
   bool HasSelectionMode(const int theSelectionMode) const;

@@ -33,10 +33,6 @@
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
@@ -105,12 +101,7 @@ public:
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
-  static void D3(const gp_Lin&       C,
-                 const double U,
-                 gp_Pnt&             P,
-                 gp_Vec&             V1,
-                 gp_Vec&             V2,
-                 gp_Vec&             V3);
+  static void D3(const gp_Lin& C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3);
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -150,25 +141,24 @@ public:
 
   static bool IsRational(const gp_Lin& C);
 
-  static void PolesAndWeights(const gp_Lin& C, NCollection_Array1<gp_Pnt>& TP, NCollection_Array1<double>& TW);
+  static void PolesAndWeights(const gp_Lin&               C,
+                              NCollection_Array1<gp_Pnt>& TP,
+                              NCollection_Array1<double>& TW);
 
   static int NbKnots(const gp_Lin& C);
 
-  static void KnotsAndMultiplicities(const gp_Lin&            C,
-                                     NCollection_Array1<double>&    TK,
-                                     NCollection_Array1<int>& TM);
+  static void KnotsAndMultiplicities(const gp_Lin&               C,
+                                     NCollection_Array1<double>& TK,
+                                     NCollection_Array1<int>&    TM);
 
-  static int NbSamples(const gp_Lin&       C,
-                                    const double U0,
-                                    const double U1);
+  static int NbSamples(const gp_Lin& C, const double U0, const double U1);
 
-  static void SamplePars(const gp_Lin&                  C,
-                         const double            U0,
-                         const double            U1,
-                         const double            Defl,
-                         const int         NbMin,
+  static void SamplePars(const gp_Lin&                             C,
+                         const double                              U0,
+                         const double                              U1,
+                         const double                              Defl,
+                         const int                                 NbMin,
                          occ::handle<NCollection_HArray1<double>>& Pars);
-
 };
 
 #include <HLRBRep_LineTool.lxx>

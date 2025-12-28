@@ -34,7 +34,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
-                            const bool                   hasDescription,
+                            const bool                                    hasDescription,
                             const occ::handle<TCollection_HAsciiString>&  aDescription,
                             const occ::handle<StepBasic_ProductCategory>& aCategory,
                             const occ::handle<StepBasic_ProductCategory>& aSubCategory);
@@ -73,7 +73,7 @@ private:
   occ::handle<TCollection_HAsciiString>  theDescription;
   occ::handle<StepBasic_ProductCategory> theCategory;
   occ::handle<StepBasic_ProductCategory> theSubCategory;
-  bool                  defDescription;
+  bool                                   defDescription;
 };
 
 #endif // _StepBasic_ProductCategoryRelationship_HeaderFile

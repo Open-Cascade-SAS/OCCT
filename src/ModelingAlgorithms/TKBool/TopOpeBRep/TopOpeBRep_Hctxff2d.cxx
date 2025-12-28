@@ -96,9 +96,9 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
 
   mySurfacesSameOriented  = true;
   myFacesSameOriented     = true;
-  bool so11   = true;
+  bool so11               = true;
   myf1surf1F_sameoriented = so11;
-  bool so21   = true;
+  bool so21               = true;
   myf2surf1F_sameoriented = so21;
 
   TopoDS_Face face1forward = myFace1;

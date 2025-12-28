@@ -27,9 +27,9 @@
 #endif
 
 #ifdef OCCT_DEBUG
-extern NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         STATIC_PURGE_mapv;
-extern NCollection_IndexedMap<TopoDS_Shape> STATIC_PURGE_mapeds;
-extern bool                   TopOpeBRepTool_GettracePURGE();
+extern NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_PURGE_mapv;
+extern NCollection_IndexedMap<TopoDS_Shape>                          STATIC_PURGE_mapeds;
+extern bool                                                          TopOpeBRepTool_GettracePURGE();
 
 void FUN_REINIT()
 {

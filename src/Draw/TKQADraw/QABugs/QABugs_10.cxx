@@ -60,32 +60,32 @@ static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
   W1.Add(gp_Pnt(10, 0, 10));
   W1.Add(gp_Pnt(10, 0, 0));
 
-  bool OnlyPlane1 = false;
-  TopoDS_Face      F1         = BRepBuilderAPI_MakeFace(W1.Wire(), OnlyPlane1);
+  bool        OnlyPlane1 = false;
+  TopoDS_Face F1         = BRepBuilderAPI_MakeFace(W1.Wire(), OnlyPlane1);
 
-  gp_Pnt        P1(0, 0, 0);
-  gp_Dir        D1(0, 0, 30);
-  gp_Ax1        A1(P1, D1);
-  double angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape  rs1    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
+  gp_Pnt       P1(0, 0, 0);
+  gp_Dir       D1(0, 0, 30);
+  gp_Ax1       A1(P1, D1);
+  double       angle1 = 360 * (M_PI / 180.0);
+  TopoDS_Shape rs1    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
 
   BRepBuilderAPI_MakePolygon W2;
-  double              f1 = 7.0710678118654752440;
-  double              f2 = 14.1421356237309504880;
+  double                     f1 = 7.0710678118654752440;
+  double                     f2 = 14.1421356237309504880;
   W2.Add(gp_Pnt(f1, f1, 10));
   W2.Add(gp_Pnt(f2, f2, 10));
   W2.Add(gp_Pnt(f2, f2, 20));
   W2.Add(gp_Pnt(f1, f1, 20));
   W2.Add(gp_Pnt(f1, f1, 10));
 
-  bool OnlyPlane2 = false;
-  TopoDS_Face      F2         = BRepBuilderAPI_MakeFace(W2.Wire(), OnlyPlane2);
+  bool        OnlyPlane2 = false;
+  TopoDS_Face F2         = BRepBuilderAPI_MakeFace(W2.Wire(), OnlyPlane2);
 
-  gp_Pnt        P2(0, 0, 0);
-  gp_Dir        D2(0, 0, 30);
-  gp_Ax1        A2(P2, D2);
-  double angle2 = 270 * (M_PI / 180.0);
-  TopoDS_Shape  rs2    = BRepPrimAPI_MakeRevol(F2, A2, angle2);
+  gp_Pnt       P2(0, 0, 0);
+  gp_Dir       D2(0, 0, 30);
+  gp_Ax1       A2(P2, D2);
+  double       angle2 = 270 * (M_PI / 180.0);
+  TopoDS_Shape rs2    = BRepPrimAPI_MakeRevol(F2, A2, angle2);
 
   BRepBuilderAPI_MakePolygon W3;
   W3.Add(gp_Pnt(10, 0, 20));
@@ -94,14 +94,14 @@ static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
   W3.Add(gp_Pnt(10, 0, 30));
   W3.Add(gp_Pnt(10, 0, 20));
 
-  bool OnlyPlane3 = false;
-  TopoDS_Face      F3         = BRepBuilderAPI_MakeFace(W3.Wire(), OnlyPlane3);
+  bool        OnlyPlane3 = false;
+  TopoDS_Face F3         = BRepBuilderAPI_MakeFace(W3.Wire(), OnlyPlane3);
 
-  gp_Pnt        P3(0, 0, 0);
-  gp_Dir        D3(0, 0, 30);
-  gp_Ax1        A3(P3, D3);
-  double angle3 = 360 * (M_PI / 180.0);
-  TopoDS_Shape  rs3    = BRepPrimAPI_MakeRevol(F3, A3, angle3);
+  gp_Pnt       P3(0, 0, 0);
+  gp_Dir       D3(0, 0, 30);
+  gp_Ax1       A3(P3, D3);
+  double       angle3 = 360 * (M_PI / 180.0);
+  TopoDS_Shape rs3    = BRepPrimAPI_MakeRevol(F3, A3, angle3);
 
   di << "fuse32 = BRepAlgoAPI_Fuse(rs3, rs2)\n";
   di << "fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1)\n";
@@ -126,8 +126,8 @@ static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
   {
     TopoDS_Face TopologicalFace = TopoDS::Face(ExpFace.Current());
     TopologicalFace.Orientation(TopAbs_FORWARD);
-    BRepMesh_IncrementalMesh   IM(TopologicalFace, 1);
-    TopLoc_Location            loc;
+    BRepMesh_IncrementalMesh        IM(TopologicalFace, 1);
+    TopLoc_Location                 loc;
     occ::handle<Poly_Triangulation> facing = BRep_Tool::Triangulation(TopologicalFace, loc);
     if (facing.IsNull())
     {
@@ -138,7 +138,8 @@ static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
   }
   di << "Triangulation of all Faces Completed. \n\n";
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edgemap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    edgemap;
   TopExp::MapShapesAndAncestors(aFuseUnif, TopAbs_EDGE, TopAbs_SOLID, edgemap);
   di << "No. of Edges: " << edgemap.Extent() << "\n";
   ChFi3d_FilletShape       FShape = ChFi3d_Rational;
@@ -189,7 +190,8 @@ static int isPeriodic(Draw_Interpretor& di, int argc, const char** argv)
       di << "isperiodic FAULTY. argument of command is not a surface";
       return 0;
     }
-    occ::handle<Geom_SurfaceOfRevolution> aRevolSurf = occ::down_cast<Geom_SurfaceOfRevolution>(aSurf);
+    occ::handle<Geom_SurfaceOfRevolution> aRevolSurf =
+      occ::down_cast<Geom_SurfaceOfRevolution>(aSurf);
     if (aRevolSurf.IsNull())
     {
       di << "isperiodic FAULTY. argument of command is not a surface of revolution";
@@ -252,7 +254,7 @@ static int OCC486(Draw_Interpretor& di, int argc, const char** argv)
     gp_Pnt P3D(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]));
 
     constexpr double Tol = Precision::PConfusion();
-    Extrema_ExtPS           myExtPS;
+    Extrema_ExtPS    myExtPS;
     if (argc > 5)
       du = Draw::Atof(argv[5]);
     if (argc > 6)
@@ -269,8 +271,8 @@ static int OCC486(Draw_Interpretor& di, int argc, const char** argv)
     if (nPSurf > 0)
     {
       // double distMin = myExtPS.Value ( 1 );
-      double    distMin = myExtPS.SquareDistance(1);
-      int indMin  = 1;
+      double distMin = myExtPS.SquareDistance(1);
+      int    indMin  = 1;
       for (int sol = 2; sol <= nPSurf; sol++)
       {
         // double dist = myExtPS.Value(sol);
@@ -284,7 +286,7 @@ static int OCC486(Draw_Interpretor& di, int argc, const char** argv)
       distMin = sqrt(distMin);
       double S, T;
       myExtPS.Point(indMin).Parameter(S, T);
-      gp_Pnt        aCheckPnt  = aSurf.Value(S, T);
+      gp_Pnt aCheckPnt  = aSurf.Value(S, T);
       double aCheckDist = P3D.Distance(aCheckPnt);
       di << "Solution is : U = " << S << "\t V = " << T << "\n";
       di << "Solution is : X = " << aCheckPnt.X() << "\t Y = " << aCheckPnt.Y()
@@ -377,7 +379,7 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<Geom_Surface> surf    = BRep_Tool::Surface(F);
   occ::handle<Geom_Plane>   P       = occ::down_cast<Geom_Plane>(surf);
-  gp_Pln               slabPln = P->Pln();
+  gp_Pln                    slabPln = P->Pln();
 
   try
   {
@@ -396,7 +398,7 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Shape slabShape = slab.Shape();
     if (fabs(draftAngle) > 0.01)
     {
-      double            angle = draftAngle * (M_PI / 180.0);
+      double                   angle = draftAngle * (M_PI / 180.0);
       BRepOffsetAPI_DraftAngle draftSlab(slabShape);
 
       TopoDS_Shape fShape = slab.FirstShape();
@@ -442,8 +444,8 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
 
 int performTriangulation(const TopoDS_Shape& aShape, Draw_Interpretor& di)
 {
-  int                        failed = 0, total = 0;
-  TopExp_Explorer            ExpFace;
+  int                             failed = 0, total = 0;
+  TopExp_Explorer                 ExpFace;
   occ::handle<Poly_Triangulation> facing;
 
   for (ExpFace.Init(aShape, TopAbs_FACE); ExpFace.More(); ExpFace.Next())
@@ -617,7 +619,7 @@ static int OCC823(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int           index = 1;
+  int    index = 1;
   double size  = 0.001;
 
   gp_Pnt                   P1(40, 50, 0);
@@ -717,7 +719,6 @@ static int OCC824(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <GeomConvert.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -737,7 +738,7 @@ static int OCC825(Draw_Interpretor& di, int argc, const char** argv)
 
   int index = 1;
 
-  double      size = 50;
+  double                     size = 50;
   NCollection_Array2<gp_Pnt> poles(1, 2, 1, 2);
 
   poles(1, 1).SetCoord(-size, 0, -size);
@@ -747,8 +748,8 @@ static int OCC825(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<Geom_BezierSurface>  BezSurf = new Geom_BezierSurface(poles);
   occ::handle<Geom_BSplineSurface> BSpSurf = GeomConvert::SurfaceToBSplineSurface(BezSurf);
-  BRepBuilderAPI_MakeFace     faceMaker(BSpSurf, Precision::Confusion());
-  const TopoDS_Face&          face = faceMaker.Face();
+  BRepBuilderAPI_MakeFace          faceMaker(BSpSurf, Precision::Confusion());
+  const TopoDS_Face&               face = faceMaker.Face();
 
   gp_Pnt                     pnt(0, size, 0);
   BRepPrimAPI_MakeHalfSpace* hSpace = new BRepPrimAPI_MakeHalfSpace(face, pnt);
@@ -843,14 +844,14 @@ static int OCC826(Draw_Interpretor& di, int argc, const char** argv)
   W1.Add(gp_Pnt(x1, y2, 0));
   W1.Add(gp_Pnt(x1, y1, 0));
 
-  bool myFalse = false;
-  TopoDS_Face      F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
+  bool        myFalse = false;
+  TopoDS_Face F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
 
-  gp_Pnt        P1(0, 0, 0);
-  gp_Dir        D1(0, 30, 0);
-  gp_Ax1        A1(P1, D1);
-  double angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape  rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
+  gp_Pnt       P1(0, 0, 0);
+  gp_Dir       D1(0, 30, 0);
+  gp_Ax1       A1(P1, D1);
+  double       angle1 = 360 * (M_PI / 180.0);
+  TopoDS_Shape rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
   if (index < argc)
     DBRep::Set(argv[index++], rev);
 
@@ -908,22 +909,22 @@ static int OCC827(Draw_Interpretor& di, int argc, const char** argv)
   W1.Add(gp_Pnt(10, 0, 50));
   W1.Add(gp_Pnt(10, 0, 0));
 
-  bool myFalse = false;
-  TopoDS_Face      F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
+  bool        myFalse = false;
+  TopoDS_Face F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
 
-  gp_Pnt        P1(0, 0, 0);
-  gp_Dir        D1(0, 0, 30);
-  gp_Ax1        A1(P1, D1);
-  double angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape  rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
+  gp_Pnt       P1(0, 0, 0);
+  gp_Dir       D1(0, 0, 30);
+  gp_Ax1       A1(P1, D1);
+  double       angle1 = 360 * (M_PI / 180.0);
+  TopoDS_Shape rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
   if (index < argc)
     DBRep::Set(argv[index++], rev);
 
   gp_Pnt                P2(0, 0, 50);
   gp_Dir                D2(0, 0, 30);
   gp_Ax2                A2(P2, D2);
-  double         majRad = 15;
-  double         minRad = 5;
+  double                majRad = 15;
+  double                minRad = 5;
   BRepPrimAPI_MakeTorus Torus1(A2, majRad, minRad);
   TopoDS_Shape          tor1 = Torus1.Shape();
   if (index < argc)
@@ -975,14 +976,12 @@ static int OCC827(Draw_Interpretor& di, int argc, const char** argv)
 //  performBlend
 //=======================================================================
 
-int performBlend(const TopoDS_Shape& aShape,
-                 double       rad,
-                 TopoDS_Shape&       bShape,
-                 Draw_Interpretor&   di)
+int performBlend(const TopoDS_Shape& aShape, double rad, TopoDS_Shape& bShape, Draw_Interpretor& di)
 {
-  int                          status = 0;
-  TopoDS_Shape                              newShape;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edgemap;
+  int          status = 0;
+  TopoDS_Shape newShape;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    edgemap;
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_SOLID, edgemap);
   di << "Blending All Edges: No. of Edges: " << edgemap.Extent() << "\n";
   ChFi3d_FilletShape       FShape = ChFi3d_Rational;

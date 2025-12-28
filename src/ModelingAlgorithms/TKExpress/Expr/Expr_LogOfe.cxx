@@ -67,7 +67,8 @@ bool Expr_LogOfe::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_LogOfe::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_LogOfe::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -80,7 +81,7 @@ occ::handle<Expr_GeneralExpression> Expr_LogOfe::Derivative(const occ::handle<Ex
 }
 
 double Expr_LogOfe::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                    const NCollection_Array1<double>&      vals) const
+                             const NCollection_Array1<double>&                         vals) const
 {
   return std::log(Operand()->Evaluate(vars, vals));
 }

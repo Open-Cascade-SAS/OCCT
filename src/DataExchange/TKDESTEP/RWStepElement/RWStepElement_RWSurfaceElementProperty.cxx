@@ -30,7 +30,7 @@ RWStepElement_RWSurfaceElementProperty::RWStepElement_RWSurfaceElementProperty()
 
 void RWStepElement_RWSurfaceElementProperty::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                            num,
+  const int                                              num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepElement_SurfaceElementProperty>& ent) const
 {
@@ -57,7 +57,7 @@ void RWStepElement_RWSurfaceElementProperty::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceElementProperty::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepElement_SurfaceElementProperty>& ent) const
 {
 
@@ -74,7 +74,7 @@ void RWStepElement_RWSurfaceElementProperty::WriteStep(
 
 void RWStepElement_RWSurfaceElementProperty::Share(
   const occ::handle<StepElement_SurfaceElementProperty>& ent,
-  Interface_EntityIterator&                         iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Own fields of SurfaceElementProperty

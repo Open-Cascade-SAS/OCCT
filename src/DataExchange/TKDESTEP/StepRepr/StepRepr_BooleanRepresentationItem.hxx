@@ -27,7 +27,7 @@ public:
   Standard_EXPORT StepRepr_BooleanRepresentationItem();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const bool                  theValue);
+                            const bool                                   theValue);
 
   inline void SetValue(const bool theValue) { value = theValue; }
 

@@ -42,9 +42,7 @@ public:
   //! @param theMaxVertexs  defines the maximum allowed vertex number in the array
   //! @param theMaxEdges    defines the maximum allowed edge   number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfTriangles(int     theMaxVertexs,
-                             int     theMaxEdges,
-                             Graphic3d_ArrayFlags theArrayFlags)
+  Graphic3d_ArrayOfTriangles(int theMaxVertexs, int theMaxEdges, Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLES,
                                     theMaxVertexs,
                                     0,
@@ -64,8 +62,8 @@ public:
   //! should be used to specify vertex color
   //! @param theHasVTexels  when TRUE,  AddVertex(Point,Texel) or AddVertex(Point,Normal,Texel)
   //! should be used to specify vertex UV coordinates
-  Graphic3d_ArrayOfTriangles(int theMaxVertexs,
-                             int theMaxEdges    = 0,
+  Graphic3d_ArrayOfTriangles(int  theMaxVertexs,
+                             int  theMaxEdges    = 0,
                              bool theHasVNormals = false,
                              bool theHasVColors  = false,
                              bool theHasVTexels  = false)

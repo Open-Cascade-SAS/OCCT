@@ -49,10 +49,10 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
     sol[anIdx] = RealLast();
   }
 
-  double              tol = Epsilon(100.0);
+  double                     tol = Epsilon(100.0);
   math_DirectPolynomialRoots MATH_A43210(A4, A3, A2, A1, A0);
-  bool           PbPossible       = false;
-  int           NbsolPolyComplet = 0;
+  bool                       PbPossible       = false;
+  int                        NbsolPolyComplet = 0;
   if (MATH_A43210.IsDone())
   {
     nbp              = MATH_A43210.NbSolutions();
@@ -99,8 +99,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        double    x   = MATH_A4321.Value(i);
-        bool Add = true;
+        double x   = MATH_A4321.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
           double t = sol[j] - x;
@@ -124,8 +124,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        double    x   = MATH_A3210.Value(i);
-        bool Add = true;
+        double x   = MATH_A3210.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
           double t = sol[j] - x;
@@ -149,8 +149,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       //-- On Ajoute les valeurs au tableau
       for (i = 1; i <= nbp; i++)
       {
-        double    x   = MATH_A210.Value(i);
-        bool Add = true;
+        double x   = MATH_A210.Value(i);
+        bool   Add = true;
         for (j = 0; j < nbsol; j++)
         {
           double t = sol[j] - x;
@@ -210,9 +210,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
   }
 }
 
-MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2,
-                                                 const double A1,
-                                                 const double A0)
+MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2, const double A1, const double A0)
 {
   //-- std::cout<<" IntAna2d : A2..A0 "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
   for (size_t anIdx = 0; anIdx < sizeof(val) / sizeof(val[0]); anIdx++)
@@ -232,9 +230,9 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2,
   {
     for (int i = 1; i <= MATH_A210.NbSolutions(); i++)
     {
-      double x = MATH_A210.Value(i);
-      val[nbsol]      = A0 + x * (A1 + x * A2);
-      sol[nbsol]      = x;
+      double x   = MATH_A210.Value(i);
+      val[nbsol] = A0 + x * (A1 + x * A2);
+      sol[nbsol] = x;
       //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<"  Val:"<<val[nbsol]<<std::endl;
       nbsol++;
     }
@@ -245,10 +243,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A2,
   }
 }
 
-bool Points_Confondus(const double x1,
-                                  const double y1,
-                                  const double x2,
-                                  const double y2)
+bool Points_Confondus(const double x1, const double y1, const double x2, const double y2)
 {
   if (std::abs(x1 - x2) < Epsilon(x1))
   {

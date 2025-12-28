@@ -42,12 +42,12 @@ public:
   //! defined by the attribute manager aDrawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const TCollection_ExtendedString& aText,
-                                  const gp_Pnt&                     AttachmentPoint1,
-                                  const gp_Pnt&                     AttachmentPoint2,
-                                  const gp_Dir&                     aDirection,
-                                  const gp_Dir&                     aDirection2,
-                                  const gp_Pnt&                     OffsetPoint);
+                                  const TCollection_ExtendedString&      aText,
+                                  const gp_Pnt&                          AttachmentPoint1,
+                                  const gp_Pnt&                          AttachmentPoint2,
+                                  const gp_Dir&                          aDirection,
+                                  const gp_Dir&                          aDirection2,
+                                  const gp_Pnt&                          OffsetPoint);
 
   //! draws the representation of axes alignment Constraint
   //! between the point AttachmentPoint1 and the
@@ -55,13 +55,12 @@ public:
   //! aDirection, using the offset point OffsetPoint.
   Standard_EXPORT static void AddAxes(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const TCollection_ExtendedString& aText,
-                                      const gp_Pnt&                     AttachmentPoint1,
-                                      const gp_Pnt&                     AttachmentPoint2,
-                                      const gp_Dir&                     aDirection,
-                                      const gp_Dir&                     aDirection2,
-                                      const gp_Pnt&                     OffsetPoint);
-
+                                      const TCollection_ExtendedString&      aText,
+                                      const gp_Pnt&                          AttachmentPoint1,
+                                      const gp_Pnt&                          AttachmentPoint2,
+                                      const gp_Dir&                          aDirection,
+                                      const gp_Dir&                          aDirection2,
+                                      const gp_Pnt&                          OffsetPoint);
 };
 
 #endif // _DsgPrs_OffsetPresentation_HeaderFile

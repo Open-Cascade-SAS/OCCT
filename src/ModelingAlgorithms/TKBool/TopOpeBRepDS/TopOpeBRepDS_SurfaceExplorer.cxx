@@ -40,8 +40,7 @@ TopOpeBRepDS_SurfaceExplorer::TopOpeBRepDS_SurfaceExplorer(const TopOpeBRepDS_Da
 
 //=================================================================================================
 
-void TopOpeBRepDS_SurfaceExplorer::Init(const TopOpeBRepDS_DataStructure& DS,
-                                        const bool            FindKeep)
+void TopOpeBRepDS_SurfaceExplorer::Init(const TopOpeBRepDS_DataStructure& DS, const bool FindKeep)
 {
   myIndex    = 1;
   myMax      = DS.NbSurfaces();

@@ -29,14 +29,16 @@ inline bool& ShapeUpgrade_RemoveInternalWires::RemoveFaceMode()
 
 //=================================================================================================
 
-inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedFaces() const
+inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedFaces()
+  const
 {
   return myRemovedFaces;
 }
 
 //=================================================================================================
 
-inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedWires() const
+inline const NCollection_Sequence<TopoDS_Shape>& ShapeUpgrade_RemoveInternalWires::RemovedWires()
+  const
 {
   return myRemoveWires;
 }
@@ -50,8 +52,7 @@ inline TopoDS_Shape ShapeUpgrade_RemoveInternalWires::GetResult() const
 
 //=================================================================================================
 
-inline bool ShapeUpgrade_RemoveInternalWires::Status(
-  const ShapeExtend_Status theStatus) const
+inline bool ShapeUpgrade_RemoveInternalWires::Status(const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }

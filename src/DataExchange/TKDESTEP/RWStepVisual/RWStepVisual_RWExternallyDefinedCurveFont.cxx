@@ -30,7 +30,7 @@ RWStepVisual_RWExternallyDefinedCurveFont::RWStepVisual_RWExternallyDefinedCurve
 
 void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent) const
 {
@@ -58,7 +58,7 @@ void RWStepVisual_RWExternallyDefinedCurveFont::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWExternallyDefinedCurveFont::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent) const
 {
 
@@ -73,7 +73,7 @@ void RWStepVisual_RWExternallyDefinedCurveFont::WriteStep(
 
 void RWStepVisual_RWExternallyDefinedCurveFont::Share(
   const occ::handle<StepVisual_ExternallyDefinedCurveFont>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of ExternallyDefinedItem

@@ -81,7 +81,6 @@ public:
   Standard_EXPORT virtual gp_Elips2d Ellipse() const;
 
   DEFINE_STANDARD_RTTIEXT(GccInt_Bisec, Standard_Transient)
-
 };
 
 #endif // _GccInt_Bisec_HeaderFile

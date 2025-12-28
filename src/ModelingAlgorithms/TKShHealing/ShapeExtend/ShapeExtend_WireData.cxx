@@ -44,9 +44,9 @@ ShapeExtend_WireData::ShapeExtend_WireData()
 
 //=================================================================================================
 
-ShapeExtend_WireData::ShapeExtend_WireData(const TopoDS_Wire&     wire,
-                                           const bool chained,
-                                           const bool theManifold)
+ShapeExtend_WireData::ShapeExtend_WireData(const TopoDS_Wire& wire,
+                                           const bool         chained,
+                                           const bool         theManifold)
 {
   Init(wire, chained, theManifold);
 }
@@ -67,14 +67,12 @@ void ShapeExtend_WireData::Init(const occ::handle<ShapeExtend_WireData>& other)
 
 //=================================================================================================
 
-bool ShapeExtend_WireData::Init(const TopoDS_Wire&     wire,
-                                            const bool chained,
-                                            const bool theManifold)
+bool ShapeExtend_WireData::Init(const TopoDS_Wire& wire, const bool chained, const bool theManifold)
 {
   Clear();
-  myManifoldMode      = theManifold;
-  bool OK = true;
-  TopoDS_Vertex    Vlast;
+  myManifoldMode   = theManifold;
+  bool          OK = true;
+  TopoDS_Vertex Vlast;
   for (TopoDS_Iterator it(wire); it.More(); it.Next())
   {
     TopoDS_Edge E = TopoDS::Edge(it.Value());
@@ -149,10 +147,10 @@ void ShapeExtend_WireData::ComputeSeams(const bool enforce)
 
   mySeams = new NCollection_HSequence<int>();
   mySeamF = mySeamR = 0;
-  TopoDS_Shape               S;
-  int           i, nb = NbEdges();
+  TopoDS_Shape                                                  S;
+  int                                                           i, nb = NbEdges();
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> ME;
-  int*          SE = new int[nb + 1];
+  int*                                                          SE = new int[nb + 1];
 
   //  deux passes : d abord on mappe les Edges REVERSED
   //  Pour chacune, on note aussi son RANG dans la liste
@@ -162,7 +160,7 @@ void ShapeExtend_WireData::ComputeSeams(const bool enforce)
     if (S.Orientation() == TopAbs_REVERSED)
     {
       int num = ME.Add(S);
-      SE[num]              = i;
+      SE[num] = i;
     }
   }
 
@@ -252,7 +250,7 @@ void ShapeExtend_WireData::Add(const TopoDS_Wire& wire, const int atnum)
 {
   if (wire.IsNull())
     return;
-  int         n = atnum;
+  int                                n = atnum;
   NCollection_Sequence<TopoDS_Shape> aNMEdges;
   for (TopoDS_Iterator it(wire); it.More(); it.Next())
   {
@@ -283,14 +281,13 @@ void ShapeExtend_WireData::Add(const TopoDS_Wire& wire, const int atnum)
 
 //=================================================================================================
 
-void ShapeExtend_WireData::Add(const occ::handle<ShapeExtend_WireData>& wire,
-                               const int              atnum)
+void ShapeExtend_WireData::Add(const occ::handle<ShapeExtend_WireData>& wire, const int atnum)
 {
   if (wire.IsNull())
     return;
   NCollection_Sequence<TopoDS_Shape> aNMEdges;
-  int         n = atnum;
-  int         i = 1;
+  int                                n = atnum;
+  int                                i = 1;
   for (; i <= wire->NbEdges(); i++)
   {
     TopoDS_Edge aE = wire->Edge(i);
@@ -451,7 +448,7 @@ static void SwapSeam(const TopoDS_Shape& S, const TopoDS_Face& F)
 
   //: S4136  double Tol = BRep_Tool::Tolerance(theface);
   occ::handle<Geom2d_Curve> c2df, c2dr;
-  double        uff, ulf, ufr, ulr;
+  double                    uff, ulf, ufr, ulr;
 
   // d abord FWD puis REV
   c2df = BRep_Tool::CurveOnSurface(E, theface, uff, ulf);
@@ -565,7 +562,7 @@ TopoDS_Wire ShapeExtend_WireData::Wire() const
   TopoDS_Wire  W;
   BRep_Builder B;
   B.MakeWire(W);
-  int i, nb = NbEdges();
+  int  i, nb = NbEdges();
   bool ismanifold = true;
   for (i = 1; i <= nb; i++)
   {
@@ -596,7 +593,7 @@ TopoDS_Wire ShapeExtend_WireData::WireAPIMake() const
 {
   TopoDS_Wire             W;
   BRepBuilderAPI_MakeWire MW;
-  int        i, nb = NbEdges();
+  int                     i, nb = NbEdges();
   for (i = 1; i <= nb; i++)
     MW.Add(Edge(i));
   if (myManifoldMode)

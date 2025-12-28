@@ -45,9 +45,10 @@ public:
   //! - aNode      : the Node
   //! - allTabData : Tabular Data Property carrying the load
   //! or constraint vector
-  Standard_EXPORT void Init(const int                       aType,
-                            const occ::handle<IGESAppli_Node>&                aNode,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>>& allTabData);
+  Standard_EXPORT void Init(
+    const int                                                                  aType,
+    const occ::handle<IGESAppli_Node>&                                         aNode,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>>& allTabData);
 
   //! returns total number of cases
   Standard_EXPORT int NbCases() const;
@@ -65,8 +66,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_NodalConstraint, IGESData_IGESEntity)
 
 private:
-  int                      theType;
-  occ::handle<IGESAppli_Node>                theNode;
+  int                                                                 theType;
+  occ::handle<IGESAppli_Node>                                         theNode;
   occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>> theTabularDataProps;
 };
 

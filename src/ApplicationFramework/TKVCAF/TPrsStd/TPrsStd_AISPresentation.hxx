@@ -51,7 +51,7 @@ public:
   //! Creates or retrieves the presentation attribute on
   //! the label L, and sets the GUID driver.
   Standard_EXPORT static occ::handle<TPrsStd_AISPresentation> Set(const TDF_Label&     L,
-                                                             const Standard_GUID& driver);
+                                                                  const Standard_GUID& driver);
 
   //! Delete (if exist) the presentation attribute associated to the label <L>.
   Standard_EXPORT static void Unset(const TDF_Label& L);
@@ -60,7 +60,8 @@ public:
   //! attribute attached to master.
   //! The GUID of the driver will be the GUID of master.
   //! master is the attribute you want to display.
-  Standard_EXPORT static occ::handle<TPrsStd_AISPresentation> Set(const occ::handle<TDF_Attribute>& master);
+  Standard_EXPORT static occ::handle<TPrsStd_AISPresentation> Set(
+    const occ::handle<TDF_Attribute>& master);
 
   Standard_EXPORT TPrsStd_AISPresentation();
 
@@ -155,9 +156,9 @@ public:
   //! transaction mechanism (the attribute doesn't participate in undo/redo because of this
   //! modification). Certainly, if any other data of the attribute is modified (display mode, color,
   //! ...), the attribute will be included into undo/redo.
-  Standard_EXPORT void SetSelectionMode(const int theSelectionMode,
+  Standard_EXPORT void SetSelectionMode(const int  theSelectionMode,
                                         const bool theTransaction = true);
-  Standard_EXPORT void AddSelectionMode(const int theSelectionMode,
+  Standard_EXPORT void AddSelectionMode(const int  theSelectionMode,
                                         const bool theTransaction = true);
 
   Standard_EXPORT bool HasOwnSelectionMode() const;
@@ -184,18 +185,16 @@ public:
 
   Standard_EXPORT virtual void AfterResume() override;
 
-  Standard_EXPORT virtual bool BeforeUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false) override;
+  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                          const bool forceIt = false) override;
 
   //! update AIS viewer according to delta
-  Standard_EXPORT virtual bool AfterUndo(
-    const occ::handle<TDF_AttributeDelta>& anAttDelta,
-    const bool            forceIt = false) override;
+  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
+                                         const bool forceIt = false) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISPresentation, TDF_Attribute)
 

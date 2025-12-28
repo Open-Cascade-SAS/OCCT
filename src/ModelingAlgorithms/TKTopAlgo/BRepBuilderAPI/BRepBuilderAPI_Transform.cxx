@@ -29,10 +29,10 @@ BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const gp_Trsf& T)
 
 //=================================================================================================
 
-BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const TopoDS_Shape&    theShape,
-                                                   const gp_Trsf&         theTrsf,
-                                                   const bool theCopyGeom,
-                                                   const bool theCopyMesh)
+BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const TopoDS_Shape& theShape,
+                                                   const gp_Trsf&      theTrsf,
+                                                   const bool          theCopyGeom,
+                                                   const bool          theCopyMesh)
     : myTrsf(theTrsf)
 {
   myModification = new BRepTools_TrsfModification(theTrsf);
@@ -41,9 +41,9 @@ BRepBuilderAPI_Transform::BRepBuilderAPI_Transform(const TopoDS_Shape&    theSha
 
 //=================================================================================================
 
-void BRepBuilderAPI_Transform::Perform(const TopoDS_Shape&    theShape,
-                                       const bool theCopyGeom,
-                                       const bool theCopyMesh)
+void BRepBuilderAPI_Transform::Perform(const TopoDS_Shape& theShape,
+                                       const bool          theCopyGeom,
+                                       const bool          theCopyMesh)
 {
   myUseModif = theCopyGeom || myTrsf.IsNegative()
                || (std::abs(std::abs(myTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());

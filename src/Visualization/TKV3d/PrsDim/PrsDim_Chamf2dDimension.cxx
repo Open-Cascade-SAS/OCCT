@@ -44,8 +44,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Chamf2dDimension, PrsDim_Relation)
 //=================================================================================================
 
 PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                                 const occ::handle<Geom_Plane>&         aPlane,
-                                                 const double               aVal,
+                                                 const occ::handle<Geom_Plane>&    aPlane,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText)
     : PrsDim_Relation()
 {
@@ -62,12 +62,12 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&            
 //=================================================================================================
 
 PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape&               aFShape,
-                                                 const occ::handle<Geom_Plane>&         aPlane,
-                                                 const double               aVal,
+                                                 const occ::handle<Geom_Plane>&    aPlane,
+                                                 const double                      aVal,
                                                  const TCollection_ExtendedString& aText,
                                                  const gp_Pnt&                     aPosition,
                                                  const DsgPrs_ArrowSide            aSymbolPrs,
-                                                 const double               anArrowSize)
+                                                 const double                      anArrowSize)
     : PrsDim_Relation()
 {
   myFShape    = aFShape;
@@ -87,15 +87,15 @@ void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
                                       const int)
 {
   occ::handle<Geom_Curve> gcurv;
-  gp_Pnt             pfirst, plast;
-  const TopoDS_Edge& thechamfedge = TopoDS::Edge(myFShape);
+  gp_Pnt                  pfirst, plast;
+  const TopoDS_Edge&      thechamfedge = TopoDS::Edge(myFShape);
   if (!PrsDim::ComputeGeometry(thechamfedge, gcurv, pfirst, plast))
     return;
 
   occ::handle<Geom_Line> glin = occ::down_cast<Geom_Line>(gcurv);
-  gp_Dir            dir1(glin->Position().Direction());
-  gp_Dir            norm1 = myPlane->Pln().Axis().Direction();
-  myDir                   = norm1.Crossed(dir1);
+  gp_Dir                 dir1(glin->Position().Direction());
+  gp_Dir                 norm1 = myPlane->Pln().Axis().Direction();
+  myDir                        = norm1.Crossed(dir1);
 
   //-------------------------------------------------
   // compute a direction orthogonal to the chamfer edge
@@ -143,8 +143,8 @@ void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
 
     myPntAttach.SetXYZ((pfirst.XYZ() + plast.XYZ()) / 2);
     occ::handle<Geom_Line> dimLin    = new Geom_Line(myPntAttach, myDir);
-    double     parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
-    curpos                      = ElCLib::Value(parcurpos, dimLin->Lin());
+    double                 parcurpos = ElCLib::Parameter(dimLin->Lin(), myPosition);
+    curpos                           = ElCLib::Value(parcurpos, dimLin->Lin());
     // static double minlength = 0.005;
     // taille minimale de la dimension
 
@@ -198,13 +198,13 @@ void PrsDim_Chamf2dDimension::ComputeSelection(const occ::handle<SelectMgr_Selec
   aSelection->Add(seg);
 
   // Text
-  double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
   occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                myPosition.X(),
-                                                                myPosition.Y(),
-                                                                myPosition.Z(),
-                                                                myPosition.X() + size,
-                                                                myPosition.Y() + size,
-                                                                myPosition.Z() + size);
+                                                                     myPosition.X(),
+                                                                     myPosition.Y(),
+                                                                     myPosition.Z(),
+                                                                     myPosition.X() + size,
+                                                                     myPosition.Y() + size,
+                                                                     myPosition.Z() + size);
   aSelection->Add(box);
 }

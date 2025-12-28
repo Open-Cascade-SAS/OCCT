@@ -29,7 +29,7 @@ void StepKinematics_SlidingSurfacePairValue::Init(
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
   const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface1,
   const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface2,
-  const double                         theActualRotation)
+  const double                                     theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -81,8 +81,7 @@ double StepKinematics_SlidingSurfacePairValue::ActualRotation() const
 
 //=================================================================================================
 
-void StepKinematics_SlidingSurfacePairValue::SetActualRotation(
-  const double theActualRotation)
+void StepKinematics_SlidingSurfacePairValue::SetActualRotation(const double theActualRotation)
 {
   myActualRotation = theActualRotation;
 }

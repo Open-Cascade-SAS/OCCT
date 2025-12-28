@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepBasic_VolumeUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_VolumeUnit, StepBasic_NamedUnit)
-
 };
 
 #endif // _StepBasic_VolumeUnit_HeaderFile

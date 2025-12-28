@@ -38,17 +38,16 @@ public:
   //! Returns in <dmax> the maximal distance between the produced
   //! plane and given points
   Standard_EXPORT static bool NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
-                                                       gp_Pln&                   aPln,
-                                                       double&            Dmax);
+                                           gp_Pln&                           aPln,
+                                           double&                           Dmax);
 
   //! Builds transformation object out of matrix.
   //! Matrix must be 3 x 4.
   //! Unit is used as multiplier.
   Standard_EXPORT static bool PositionTrsf(const occ::handle<NCollection_HArray2<double>>& coefs,
-                                                       gp_Trsf&                             trsf,
-                                                       const double                  unit,
-                                                       const double                  prec);
-
+                                           gp_Trsf&                                        trsf,
+                                           const double                                    unit,
+                                           const double                                    prec);
 };
 
 #endif // _ShapeAnalysis_Geom_HeaderFile

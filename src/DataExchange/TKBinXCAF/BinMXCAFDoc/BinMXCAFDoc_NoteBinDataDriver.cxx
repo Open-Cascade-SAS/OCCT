@@ -40,10 +40,9 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_NoteBinDataDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                          const occ::handle<TDF_Attribute>& theTarget,
+                                          BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
     return false;
@@ -54,7 +53,7 @@ bool BinMXCAFDoc_NoteBinDataDriver::Paste(
 
   TCollection_ExtendedString aTitle;
   TCollection_AsciiString    aMIMEtype;
-  int           nbSize;
+  int                        nbSize;
   if (!(theSource >> aTitle >> aMIMEtype >> nbSize))
     return false;
 
@@ -72,9 +71,10 @@ bool BinMXCAFDoc_NoteBinDataDriver::Paste(
 
 //=================================================================================================
 
-void BinMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          BinObjMgt_Persistent&        theTarget,
-                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMXCAFDoc_NoteBinDataDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 

@@ -52,12 +52,12 @@ public:
     void Import(const occ::handle<TDataXtd_Presentation>& theAttribute) const;
 
   private:
-    bool             myIsDisplayed;
+    bool                              myIsDisplayed;
     occ::handle<StdObjMgt_Persistent> myDriverGUID;
-    double                myTransparency;
-    int             myColor;
-    int             myMaterial;
-    double                myWidth;
+    double                            myTransparency;
+    int                               myColor;
+    int                               myMaterial;
+    double                            myWidth;
   };
 
   class AISPresentation_1 : public AISPresentation

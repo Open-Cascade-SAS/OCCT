@@ -30,10 +30,10 @@ struct Image_FormatInfo
   unsigned int NbComponents; //!< number of components
   unsigned int PixelSize;    //!< bytes per pixel
 
-  Image_FormatInfo(Image_Format  theFormat,
-                   const char*   theName,
-                   unsigned int  theNbComponents,
-                   size_t thePixelSize)
+  Image_FormatInfo(Image_Format theFormat,
+                   const char*  theName,
+                   unsigned int theNbComponents,
+                   size_t       thePixelSize)
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
@@ -44,7 +44,7 @@ struct Image_FormatInfo
   Image_FormatInfo(Image_CompressedFormat theFormat,
                    const char*            theName,
                    unsigned int           theNbComponents,
-                   size_t          thePixelSize)
+                   size_t                 thePixelSize)
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
@@ -98,7 +98,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 
 const occ::handle<NCollection_BaseAllocator>& Image_PixMap::DefaultAllocator()
 {
-  static const occ::handle<NCollection_BaseAllocator> THE_ALLOC = new NCollection_AlignedAllocator(16);
+  static const occ::handle<NCollection_BaseAllocator> THE_ALLOC =
+    new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 
@@ -158,8 +159,8 @@ void Image_PixMap::SetFormat(Image_Format thePixelFormat)
 
 //=================================================================================================
 
-bool Image_PixMap::InitWrapper3D(Image_Format                           thePixelFormat,
-                                 uint8_t*                         theDataPtr,
+bool Image_PixMap::InitWrapper3D(Image_Format                    thePixelFormat,
+                                 uint8_t*                        theDataPtr,
                                  const NCollection_Vec3<size_t>& theSizeXYZ,
                                  const size_t                    theSizeRowBytes)
 {
@@ -181,8 +182,8 @@ bool Image_PixMap::InitWrapper3D(Image_Format                           thePixel
 
 //=================================================================================================
 
-bool Image_PixMap::InitWrapper(Image_Format        thePixelFormat,
-                               uint8_t*      theDataPtr,
+bool Image_PixMap::InitWrapper(Image_Format thePixelFormat,
+                               uint8_t*     theDataPtr,
                                const size_t theSizeX,
                                const size_t theSizeY,
                                const size_t theSizeRowBytes)
@@ -195,7 +196,7 @@ bool Image_PixMap::InitWrapper(Image_Format        thePixelFormat,
 
 //=================================================================================================
 
-bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFormat,
+bool Image_PixMap::InitTrash3D(Image_Format                    thePixelFormat,
                                const NCollection_Vec3<size_t>& theSizeXYZ,
                                const size_t                    theSizeRowBytes)
 {
@@ -219,7 +220,7 @@ bool Image_PixMap::InitTrash3D(Image_Format                           thePixelFo
 
 //=================================================================================================
 
-bool Image_PixMap::InitTrash(Image_Format        thePixelFormat,
+bool Image_PixMap::InitTrash(Image_Format thePixelFormat,
                              const size_t theSizeX,
                              const size_t theSizeY,
                              const size_t theSizeRowBytes)
@@ -231,10 +232,10 @@ bool Image_PixMap::InitTrash(Image_Format        thePixelFormat,
 
 //=================================================================================================
 
-bool Image_PixMap::InitZero3D(Image_Format                           thePixelFormat,
+bool Image_PixMap::InitZero3D(Image_Format                    thePixelFormat,
                               const NCollection_Vec3<size_t>& theSizeXYZ,
                               const size_t                    theSizeRowBytes,
-                              const uint8_t                    theValue)
+                              const uint8_t                   theValue)
 {
   if (theSizeXYZ.z() > 1)
   {
@@ -297,9 +298,9 @@ void Image_PixMap::Clear()
 
 //=================================================================================================
 
-Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*   theRawValue,
-                                                   const Image_Format     theFormat,
-                                                   const bool theToLinearize)
+Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*     theRawValue,
+                                                   const Image_Format theFormat,
+                                                   const bool         theToLinearize)
 {
   switch (theFormat)
   {
@@ -439,7 +440,7 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*   theRawValue,
     }
     case Image_Format_Gray: {
       const uint8_t& aPixel      = *reinterpret_cast<const uint8_t*>(theRawValue);
-      const float          anIntensity = float(aPixel) / 255.0f;
+      const float    anIntensity = float(aPixel) / 255.0f;
       return Quantity_ColorRGBA(anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_Alpha: {
@@ -462,10 +463,10 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*   theRawValue,
 
 //=================================================================================================
 
-void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
+void Image_PixMap::ColorToRawPixel(uint8_t*                  theRawValue,
                                    const Image_Format        theFormat,
                                    const Quantity_ColorRGBA& theColor,
-                                   const bool    theToDeLinearize)
+                                   const bool                theToDeLinearize)
 {
   const NCollection_Vec4<float>& aColor = theColor;
   switch (theFormat)
@@ -539,9 +540,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorRGBA& aPixel = *reinterpret_cast<Image_ColorRGBA*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -556,9 +560,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorBGRA& aPixel = *reinterpret_cast<Image_ColorBGRA*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -573,9 +580,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorRGB32& aPixel = *reinterpret_cast<Image_ColorRGB32*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -590,9 +600,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorBGR32& aPixel = *reinterpret_cast<Image_ColorBGR32*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -607,9 +620,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorRGB& aPixel = *reinterpret_cast<Image_ColorRGB*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -623,9 +639,12 @@ void Image_PixMap::ColorToRawPixel(uint8_t*            theRawValue,
       Image_ColorBGR& aPixel = *reinterpret_cast<Image_ColorBGR*>(theRawValue);
       if (theToDeLinearize)
       {
-        aPixel.r() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
-        aPixel.g() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
-        aPixel.b() = static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
+        aPixel.r() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.r()) * 255.0f);
+        aPixel.g() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.g()) * 255.0f);
+        aPixel.b() =
+          static_cast<uint8_t>(Quantity_Color::Convert_LinearRGB_To_sRGB(aColor.b()) * 255.0f);
       }
       else
       {
@@ -801,7 +820,7 @@ void Image_PixMap::ToBlackWhite(Image_PixMap& theImage)
         {
           for (size_t aCol = 0; aCol < theImage.SizeX(); ++aCol)
           {
-            uint8_t*           aRawPixel    = theImage.ChangeRawValueXYZ(aCol, aRow, aSlice);
+            uint8_t*                 aRawPixel    = theImage.ChangeRawValueXYZ(aCol, aRow, aSlice);
             const Quantity_ColorRGBA aPixelRgba   = ColorFromRawPixel(aRawPixel, theImage.Format());
             const NCollection_Vec4<float>& aPixel = aPixelRgba;
             if (aPixel[0] != 0.0f || aPixel[1] != 0.0f || aPixel[2] != 0.0f)
@@ -836,8 +855,7 @@ bool Image_PixMap::FlipY(Image_PixMap& theImage)
   size_t aNbRowsHalf = theImage.SizeY() / 2;
   for (size_t aSlice = 0; aSlice < theImage.SizeZ(); ++aSlice)
   {
-    for (size_t aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf;
-         ++aRowT, --aRowB)
+    for (size_t aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf; ++aRowT, --aRowB)
     {
       uint8_t* aTop = theImage.ChangeSliceRow(aSlice, aRowT);
       uint8_t* aBot = theImage.ChangeSliceRow(aSlice, aRowB);

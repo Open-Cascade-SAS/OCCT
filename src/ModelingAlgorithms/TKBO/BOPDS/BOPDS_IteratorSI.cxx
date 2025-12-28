@@ -59,8 +59,8 @@ void BOPDS_IteratorSI::UpdateByLevelOfCheck(const int theLevel)
 //=================================================================================================
 
 void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
-                                 const bool          theCheckOBB,
-                                 const double             theFuzzyValue)
+                                 const bool                           theCheckOBB,
+                                 const double                         theFuzzyValue)
 {
   const int aNbS = myDS->NbSourceShapes();
 
@@ -87,8 +87,8 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
-  const int aNbPairs = static_cast<int>(aPairs.size());
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
+  const int                                             aNbPairs = static_cast<int>(aPairs.size());
 
   for (int iPair = 0; iPair < aNbPairs; ++iPair)
   {

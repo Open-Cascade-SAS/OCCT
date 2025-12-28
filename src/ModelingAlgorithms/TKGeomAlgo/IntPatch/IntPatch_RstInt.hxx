@@ -33,8 +33,8 @@ public:
                                               const occ::handle<Adaptor3d_Surface>&   Surf,
                                               const occ::handle<Adaptor3d_TopolTool>& Domain,
                                               const occ::handle<Adaptor3d_Surface>&   OtherSurf,
-                                              const bool             OnFirst,
-                                              const double                Tol);
+                                              const bool                              OnFirst,
+                                              const double                            Tol);
 };
 
 #endif // _IntPatch_RstInt_HeaderFile

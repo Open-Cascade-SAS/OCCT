@@ -34,10 +34,12 @@ public:
   //! Returns a AutoDesignGroupAssignment
   Standard_EXPORT StepAP214_AutoDesignGroupAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_Group>&                          aAssignedGroup,
-                            const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_Group>&                                      aAssignedGroup,
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>> Items() const;
 

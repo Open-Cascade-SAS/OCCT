@@ -31,8 +31,6 @@
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_DataMap.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <V3d.hxx>
 #include <V3d_TypeOfOrientation.hxx>
@@ -381,9 +379,7 @@ void IVtkDraw::ViewerInit(const IVtkWinParams& theParams)
 
 //=================================================================================================
 
-static int VtkInit(Draw_Interpretor&,
-                                int theNbArgs,
-                                const char**     theArgVec)
+static int VtkInit(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   bool                    hasSize = false;
   IVtkDraw::IVtkWinParams aParams;
@@ -453,9 +449,7 @@ static int VtkClose(Draw_Interpretor&, int theNbArgs, const char**)
 
 //=================================================================================================
 
-static int VtkRenderParams(Draw_Interpretor&,
-                                        int theNbArgs,
-                                        const char**     theArgVec)
+static int VtkRenderParams(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -598,9 +592,7 @@ static int VtkDefaults(Draw_Interpretor& theDi, int theArgsNb, const char** theA
 
 //=================================================================================================
 
-static int VtkDisplay(Draw_Interpretor&,
-                                   int theArgNum,
-                                   const char**     theArgs)
+static int VtkDisplay(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -660,7 +652,7 @@ static int VtkDisplay(Draw_Interpretor&,
       if (aNewShape.IsNull())
         continue;
       // Create actor from DRAW shape
-      int          anId    = GenerateId();
+      int                       anId    = GenerateId();
       vtkSmartPointer<vtkActor> anActor = CreateActor(anId, aNewShape);
       // Update maps
       GetMapOfShapes().Bind(aNewShape, aName);
@@ -682,9 +674,7 @@ static int VtkDisplay(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkErase(Draw_Interpretor&,
-                                 int theArgNum,
-                                 const char**     theArgs)
+static int VtkErase(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -730,9 +720,7 @@ static int VtkErase(Draw_Interpretor&,
 // Function : VtkRemove
 // Purpose  : Remove the actor from memory.
 //================================================================
-static int VtkRemove(Draw_Interpretor&,
-                                  int theArgNum,
-                                  const char**     theArgs)
+static int VtkRemove(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -810,9 +798,7 @@ static int VtkRemove(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkSetDisplayMode(Draw_Interpretor& theDI,
-                                          int  theArgNum,
-                                          const char**      theArgs)
+static int VtkSetDisplayMode(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -820,8 +806,8 @@ static int VtkSetDisplayMode(Draw_Interpretor& theDI,
     return 1;
   }
 
-  int                                aDispMode          = -1;
-  int                                isFaceBoundaryDraw = -1, isSmoothShading = -1;
+  int                                             aDispMode          = -1;
+  int                                             isFaceBoundaryDraw = -1, isSmoothShading = -1;
   Graphic3d_TypeOfShadingModel                    aShadingModel = Graphic3d_TOSM_DEFAULT;
   NCollection_Sequence<vtkSmartPointer<vtkActor>> anActors;
   for (int anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
@@ -958,9 +944,7 @@ static int VtkSetDisplayMode(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int VtkSetSelectionMode(Draw_Interpretor&,
-                                            int theArgNum,
-                                            const char**     theArgs)
+static int VtkSetSelectionMode(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -977,7 +961,7 @@ static int VtkSetSelectionMode(Draw_Interpretor&,
   {
     // Set sel mode for all objects
     const int aMode    = Draw::Atoi(theArgs[1]);
-    bool       isTurnOn = true;
+    bool      isTurnOn = true;
     if (aMode < 0 || aMode > 8 || !Draw::ParseOnOff(theArgs[2], isTurnOn))
     {
       Message::SendFail() << "Syntax error: only 0-8 selection modes are supported";
@@ -989,7 +973,7 @@ static int VtkSetSelectionMode(Draw_Interpretor&,
       vtkSmartPointer<vtkActor> anActor = anIter.Key1();
       if (aMode == SM_Shape && isTurnOn)
       {
-        NCollection_List<IVtk_SelectionMode>           aList = GetPicker()->GetSelectionModes(anActor);
+        NCollection_List<IVtk_SelectionMode> aList = GetPicker()->GetSelectionModes(anActor);
         NCollection_List<IVtk_SelectionMode>::Iterator anIt(aList);
         // Turn off all sel modes differed from SM_Shape
         while (anIt.More())
@@ -1039,7 +1023,7 @@ static int VtkSetSelectionMode(Draw_Interpretor&,
   {
     // Set sel mode for named object
     const int aMode    = Draw::Atoi(theArgs[2]);
-    bool       isTurnOn = true;
+    bool      isTurnOn = true;
     if (aMode < 0 || aMode > 8 || !Draw::ParseOnOff(theArgs[3], isTurnOn))
     {
       Message::SendFail() << "Syntax error: only 0-8 selection modes are supported";
@@ -1052,7 +1036,7 @@ static int VtkSetSelectionMode(Draw_Interpretor&,
       vtkSmartPointer<vtkActor> anActor = GetMapOfActors().Find2(aName);
       if (aMode == SM_Shape && isTurnOn)
       {
-        NCollection_List<IVtk_SelectionMode>           aList = GetPicker()->GetSelectionModes(anActor);
+        NCollection_List<IVtk_SelectionMode> aList = GetPicker()->GetSelectionModes(anActor);
         NCollection_List<IVtk_SelectionMode>::Iterator anIt(aList);
         // Turn off all sel modes differed from SM_Shape
         while (anIt.More())
@@ -1104,9 +1088,7 @@ static int VtkSetSelectionMode(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkSetColor(Draw_Interpretor&,
-                                    int theArgNb,
-                                    const char**     theArgVec)
+static int VtkSetColor(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1132,8 +1114,7 @@ static int VtkSetColor(Draw_Interpretor&,
     }
     else
     {
-      int aNbParsed =
-        Draw::ParseColor(theArgNb - anArgIter, theArgVec + anArgIter, aQColor);
+      int aNbParsed = Draw::ParseColor(theArgNb - anArgIter, theArgVec + anArgIter, aQColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -1171,9 +1152,7 @@ static int VtkSetColor(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkSetTransparency(Draw_Interpretor&,
-                                           int theArgNb,
-                                           const char**     theArgVec)
+static int VtkSetTransparency(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1182,7 +1161,7 @@ static int VtkSetTransparency(Draw_Interpretor&,
   }
 
   NCollection_Sequence<vtkSmartPointer<vtkActor>> anActorSeq;
-  double                                   aTransparency = -1.0;
+  double                                          aTransparency = -1.0;
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString   anArg(theArgVec[anArgIter]);
@@ -1226,9 +1205,7 @@ static int VtkSetTransparency(Draw_Interpretor&,
 // Purpose   :
 // Draw args : ivtkmoveto x y
 //================================================================
-static int VtkMoveTo(Draw_Interpretor& theDI,
-                                  int  theArgNum,
-                                  const char**      theArgs)
+static int VtkMoveTo(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1252,9 +1229,7 @@ static int VtkMoveTo(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int VtkSelect(Draw_Interpretor&,
-                                  int theArgNum,
-                                  const char**     theArgs)
+static int VtkSelect(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1275,9 +1250,7 @@ static int VtkSelect(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkViewProj(Draw_Interpretor&,
-                                    int theNbArgs,
-                                    const char**     theArgVec)
+static int VtkViewProj(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1333,7 +1306,7 @@ static int VtkViewProj(Draw_Interpretor&,
 
   if (hasProjDir)
   {
-    const gp_Dir    aBck = V3d::GetProjAxis(aProj);
+    const gp_Dir             aBck = V3d::GetProjAxis(aProj);
     NCollection_Vec3<double> anUp(0.0, 0.0, 1.0);
     if (aProj == V3d_Zpos)
     {
@@ -1347,7 +1320,8 @@ static int VtkViewProj(Draw_Interpretor&,
     vtkCamera*   aCam  = GetRenderer()->GetActiveCamera();
     const double aDist = aCam->GetDistance();
 
-    NCollection_Vec3<double> aNewEye = NCollection_Vec3<double>(aBck.X(), aBck.Y(), aBck.Z()) * aDist;
+    NCollection_Vec3<double> aNewEye =
+      NCollection_Vec3<double>(aBck.X(), aBck.Y(), aBck.Z()) * aDist;
     aCam->SetPosition(aNewEye.x(), aNewEye.y(), aNewEye.z());
     aCam->SetFocalPoint(0.0, 0.0, 0.0);
     aCam->SetViewUp(anUp.x(), anUp.y(), anUp.z());
@@ -1361,9 +1335,7 @@ static int VtkViewProj(Draw_Interpretor&,
 
 //=================================================================================================
 
-static int VtkViewParams(Draw_Interpretor& theDI,
-                         int  theArgsNb,
-                         const char** /*theArgVec*/)
+static int VtkViewParams(Draw_Interpretor& theDI, int theArgsNb, const char** /*theArgVec*/)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1386,9 +1358,9 @@ static int VtkViewParams(Draw_Interpretor& theDI,
   aViewProj.Reverse();
   aCam->GetPosition(aViewEye.ChangeCoord(1), aViewEye.ChangeCoord(2), aViewEye.ChangeCoord(3));
   aCam->GetFocalPoint(aViewAt.ChangeCoord(1), aViewAt.ChangeCoord(2), aViewAt.ChangeCoord(3));
-  const double aViewScale  = aCam->GetParallelScale();
-  const double aViewAspect = GetRenderer()->GetTiledAspectRatio();
-  vtkMatrix4x4*       aProjMat =
+  const double  aViewScale  = aCam->GetParallelScale();
+  const double  aViewAspect = GetRenderer()->GetTiledAspectRatio();
+  vtkMatrix4x4* aProjMat =
     aCam->GetProjectionTransformMatrix(GetRenderer()->GetTiledAspectRatio(), -1, 1);
   vtkMatrix4x4* aViewMat = aCam->GetViewTransformMatrix();
   // print all of the available view parameters
@@ -1485,7 +1457,7 @@ static int VtkCamera(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 
   for (int anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
-    const char*        anArg = theArgVec[anArgIter];
+    const char*             anArg = theArgVec[anArgIter];
     TCollection_AsciiString anArgCase(anArg);
     anArgCase.LowerCase();
     if (anArgCase == "-ortho" || anArgCase == "-orthographic")
@@ -1575,7 +1547,7 @@ static int VtkDump(Draw_Interpretor&, int theArgNum, const char** theArgs)
   // Set parameters for image writer
   vtkSmartPointer<vtkImageWriter> anImageWriter;
   TCollection_AsciiString         aFilename(theArgs[1]);
-  int        anExtStart = aFilename.SearchFromEnd(TCollection_AsciiString("."));
+  int                     anExtStart = aFilename.SearchFromEnd(TCollection_AsciiString("."));
   TCollection_AsciiString aFormat    = (anExtStart == -1)
                                          ? TCollection_AsciiString("")
                                          : aFilename.SubString(anExtStart + 1, aFilename.Length());
@@ -1654,9 +1626,7 @@ static int VtkDump(Draw_Interpretor&, int theArgNum, const char** theArgs)
 
 //=================================================================================================
 
-static int VtkBackgroundColor(Draw_Interpretor&,
-                                           int theArgNum,
-                                           const char**     theArgs)
+static int VtkBackgroundColor(Draw_Interpretor&, int theArgNum, const char** theArgs)
 {
   if (!GetInteractor() || !GetInteractor()->IsEnabled())
   {
@@ -1664,8 +1634,8 @@ static int VtkBackgroundColor(Draw_Interpretor&,
     return 1;
   }
 
-  Quantity_Color         aQColor1;
-  const int aNbParsed1 = Draw::ParseColor(theArgNum - 1, theArgs + 1, aQColor1);
+  Quantity_Color aQColor1;
+  const int      aNbParsed1 = Draw::ParseColor(theArgNum - 1, theArgs + 1, aQColor1);
   if (aNbParsed1 == 0)
   {
     Message::SendFail() << "Syntax error: wrong number of parameters";
@@ -1683,8 +1653,8 @@ static int VtkBackgroundColor(Draw_Interpretor&,
   GetRenderer()->SetBackground(aColor1.r(), aColor1.g(), aColor1.b());
   if (theArgNum - 1 > aNbParsed1)
   {
-    Quantity_Color         aQColor2;
-    const int aNbParsed2 =
+    Quantity_Color aQColor2;
+    const int      aNbParsed2 =
       Draw::ParseColor(theArgNum - 1 - aNbParsed1, theArgs + 1 + aNbParsed1, aQColor2);
     if (aNbParsed2 == 0)
     {

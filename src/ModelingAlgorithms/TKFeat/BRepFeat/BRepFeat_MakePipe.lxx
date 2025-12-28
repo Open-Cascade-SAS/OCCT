@@ -20,12 +20,12 @@ inline BRepFeat_MakePipe::BRepFeat_MakePipe() {}
 
 //=================================================================================================
 
-inline BRepFeat_MakePipe::BRepFeat_MakePipe(const TopoDS_Shape&    Sbase,
-                                            const TopoDS_Shape&    Pbase,
-                                            const TopoDS_Face&     Skface,
-                                            const TopoDS_Wire&     Spine,
-                                            const int Fuse,
-                                            const bool Modify)
+inline BRepFeat_MakePipe::BRepFeat_MakePipe(const TopoDS_Shape& Sbase,
+                                            const TopoDS_Shape& Pbase,
+                                            const TopoDS_Face&  Skface,
+                                            const TopoDS_Wire&  Spine,
+                                            const int           Fuse,
+                                            const bool          Modify)
 
 {
   Init(Sbase, Pbase, Skface, Spine, Fuse, Modify);

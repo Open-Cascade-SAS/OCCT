@@ -38,8 +38,8 @@ public:
   //! - nbDataFields : number of parameter data fields = 2
   //! - aType        : type of attached associativity
   //! - aName        : identifier of associativity of type AType
-  Standard_EXPORT void Init(const int                  nbDataFields,
-                            const int                  aType,
+  Standard_EXPORT void Init(const int                                    nbDataFields,
+                            const int                                    aType,
                             const occ::handle<TCollection_HAsciiString>& aName);
 
   //! returns the number of parameter data fields, always = 2
@@ -54,8 +54,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESBasic_AssocGroupType, IGESData_IGESEntity)
 
 private:
-  int                 theNbData;
-  int                 theType;
+  int                                   theNbData;
+  int                                   theType;
   occ::handle<TCollection_HAsciiString> theName;
 };
 

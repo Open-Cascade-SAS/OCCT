@@ -163,8 +163,7 @@ public:
   //! (remark : their content is changed)
   //! returned values are ended by null character in 9th
   //! returned Boolean is False if res1 and res2 are blank, true else
-  Standard_EXPORT bool CResValues(const char* res1,
-                                              const char* res2) const;
+  Standard_EXPORT bool CResValues(const char* res1, const char* res2) const;
 
   //! Returns true if a short label is defined.
   //! A short label is a non-blank 8-character string.
@@ -184,7 +183,7 @@ public:
 
   //! Initializes a directory field as an Entity of any kind
   //! See DirFieldEntity for more details
-  Standard_EXPORT void InitDirFieldEntity(const int             fieldnum,
+  Standard_EXPORT void InitDirFieldEntity(const int                               fieldnum,
                                           const occ::handle<IGESData_IGESEntity>& ent);
 
   //! Initializes Transf, or erases it if <ent> is given Null
@@ -196,17 +195,16 @@ public:
   //! Initializes LineFont : if <ent> is not Null, it gives LineFont,
   //! else <rank> gives or erases (if zero) RankLineFont
   Standard_EXPORT void InitLineFont(const occ::handle<IGESData_LineFontEntity>& ent,
-                                    const int                 rank = 0);
+                                    const int                                   rank = 0);
 
   //! Initializes Level : if <ent> is not Null, it gives LevelList,
   //! else <val> gives or erases (if zero) unique Level
   Standard_EXPORT void InitLevel(const occ::handle<IGESData_LevelListEntity>& ent,
-                                 const int                  val = 0);
+                                 const int                                    val = 0);
 
   //! Initializes Color data : if <ent> is not Null, it gives Color,
   //! else <rank> gives or erases (if zero) RankColor
-  Standard_EXPORT void InitColor(const occ::handle<IGESData_ColorEntity>& ent,
-                                 const int              rank = 0);
+  Standard_EXPORT void InitColor(const occ::handle<IGESData_ColorEntity>& ent, const int rank = 0);
 
   //! Initializes the Status of Directory Part
   Standard_EXPORT void InitStatus(const int blank,
@@ -218,7 +216,7 @@ public:
   //! If <sub> is given, it sets value of SubScriptNumber
   //! else, SubScriptNumber is erased
   Standard_EXPORT void SetLabel(const occ::handle<TCollection_HAsciiString>& label,
-                                const int                  sub = -1);
+                                const int                                    sub = -1);
 
   //! Initializes various data (those not yet seen above), or erases
   //! them if they are given as Null (Zero for <weightnum>) :
@@ -226,7 +224,7 @@ public:
   //! <weightnum> for WeightNumber
   Standard_EXPORT void InitMisc(const occ::handle<IGESData_IGESEntity>&         str,
                                 const occ::handle<IGESData_LabelDisplayEntity>& lab,
-                                const int                     weightnum);
+                                const int                                       weightnum);
 
   //! Returns True if an entity has one and only one parent, defined
   //! by a SingleParentEntity Type Associativity (explicit sharing).
@@ -306,8 +304,9 @@ public:
 
   //! returns the Property of a given Type
   //! Error if none or more than one
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TypedProperty(const occ::handle<Standard_Type>& atype,
-                                                            const int anum = 0) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TypedProperty(
+    const occ::handle<Standard_Type>& atype,
+    const int                         anum = 0) const;
 
   //! Adds a Property in the list
   Standard_EXPORT void AddProperty(const occ::handle<IGESData_IGESEntity>& ent);
@@ -318,9 +317,7 @@ public:
   //! computes and sets "true" line weight according IGES rules from
   //! global data MaxLineWeight (maxv) and LineWeightGrad (gradw),
   //! or sets it to defw (Default) if LineWeightNumber is null
-  Standard_EXPORT void SetLineWeight(const double    defw,
-                                     const double    maxw,
-                                     const int gradw);
+  Standard_EXPORT void SetLineWeight(const double defw, const double maxw, const int gradw);
 
   friend class IGESData_ReadWriteModule;
   friend class IGESData_GeneralModule;
@@ -335,8 +332,7 @@ protected:
 
   //! Initializes Type and Form Numbers to new values. Reserved for
   //! special uses
-  Standard_EXPORT void InitTypeAndForm(const int typenum,
-                                       const int formnum);
+  Standard_EXPORT void InitTypeAndForm(const int typenum, const int formnum);
 
   //! Loads a complete, already loaded, List of Asociativities
   //! (used during Read or Copy Operations)
@@ -362,27 +358,27 @@ private:
   //! Removes all associativities in once
   Standard_EXPORT void ClearAssociativities();
 
-  int                 theType;
-  int                 theForm;
+  int                                   theType;
+  int                                   theForm;
   occ::handle<IGESData_IGESEntity>      theStructure;
-  IGESData_DefSwitch               theDefLineFont;
+  IGESData_DefSwitch                    theDefLineFont;
   occ::handle<IGESData_IGESEntity>      theLineFont;
-  int                 theDefLevel;
+  int                                   theDefLevel;
   occ::handle<IGESData_IGESEntity>      theLevelList;
   occ::handle<IGESData_IGESEntity>      theView;
   occ::handle<IGESData_IGESEntity>      theTransf;
   occ::handle<IGESData_IGESEntity>      theLabDisplay;
-  int                 theStatusNum;
-  int                 theLWeightNum;
-  double                    theLWeightVal;
-  IGESData_DefSwitch               theDefColor;
+  int                                   theStatusNum;
+  int                                   theLWeightNum;
+  double                                theLWeightVal;
+  IGESData_DefSwitch                    theDefColor;
   occ::handle<IGESData_IGESEntity>      theColor;
-  char               theRes1[9];
-  char               theRes2[9];
+  char                                  theRes1[9];
+  char                                  theRes2[9];
   occ::handle<TCollection_HAsciiString> theShortLabel;
-  int                 theSubScriptN;
-  Interface_EntityList             theAssocs;
-  Interface_EntityList             theProps;
+  int                                   theSubScriptN;
+  Interface_EntityList                  theAssocs;
+  Interface_EntityList                  theProps;
 };
 
 #endif // _IGESData_IGESEntity_HeaderFile

@@ -79,13 +79,13 @@ TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
 // purpose  : Create a persistent object from a location
 //=======================================================================
 Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
-  const TopLoc_Location&            theLoc,
+  const TopLoc_Location&                                                                   theLoc,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   occ::handle<ItemLocation> aPLoc = new ItemLocation;
-  aPLoc->myDatum             = Translate(theLoc.FirstDatum(), theMap);
-  aPLoc->myPower             = theLoc.FirstPower();
-  aPLoc->myNext              = StdObject_Location::Translate(theLoc.NextLocation(), theMap);
+  aPLoc->myDatum                  = Translate(theLoc.FirstDatum(), theMap);
+  aPLoc->myPower                  = theLoc.FirstPower();
+  aPLoc->myNext                   = StdObject_Location::Translate(theLoc.NextLocation(), theMap);
   return aPLoc;
 }
 
@@ -94,7 +94,7 @@ Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
 // purpose  : Create a persistent object from a location datum
 //=======================================================================
 Handle(StdPersistent_TopLoc::Datum3D) StdPersistent_TopLoc::Translate(
-  const occ::handle<TopLoc_Datum3D>&     theDatum,
+  const occ::handle<TopLoc_Datum3D>&                                                       theDatum,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   occ::handle<Datum3D> aPDatum;

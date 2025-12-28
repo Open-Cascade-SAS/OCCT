@@ -74,7 +74,7 @@ void Message_Printer::SendStringStream(const Standard_SStream& theStream,
 //=================================================================================================
 
 void Message_Printer::SendObject(const occ::handle<Standard_Transient>& theObject,
-                                 const Message_Gravity             theGravity) const
+                                 const Message_Gravity                  theGravity) const
 {
   if (!theObject.IsNull() && theGravity >= myTraceLevel)
   {

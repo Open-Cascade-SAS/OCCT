@@ -25,12 +25,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array2.hxx>
 
 //! Root class for Filling;
 class GeomFill_Filling
@@ -51,10 +46,9 @@ public:
   Standard_EXPORT void Weights(NCollection_Array2<double>& Weights) const;
 
 protected:
-  bool              IsRational;
-  occ::handle<NCollection_HArray2<gp_Pnt>>   myPoles;
+  bool                                     IsRational;
+  occ::handle<NCollection_HArray2<gp_Pnt>> myPoles;
   occ::handle<NCollection_HArray2<double>> myWeights;
-
 };
 
 #endif // _GeomFill_Filling_HeaderFile

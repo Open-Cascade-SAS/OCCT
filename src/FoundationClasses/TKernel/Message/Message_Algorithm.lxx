@@ -18,9 +18,9 @@
 
 //=================================================================================================
 
-inline void Message_Algorithm::SetStatus(const Message_Status&  theStat,
-                                         const char* theStr,
-                                         const bool noRepetitions)
+inline void Message_Algorithm::SetStatus(const Message_Status& theStat,
+                                         const char*           theStr,
+                                         const bool            noRepetitions)
 {
   SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
@@ -29,16 +29,16 @@ inline void Message_Algorithm::SetStatus(const Message_Status&  theStat,
 
 inline void Message_Algorithm::SetStatus(const Message_Status&          theStat,
                                          const TCollection_AsciiString& theStr,
-                                         const bool         noRepetitions)
+                                         const bool                     noRepetitions)
 {
   SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
 
 //=================================================================================================
 
-inline void Message_Algorithm::SetStatus(const Message_Status&                   theStat,
+inline void Message_Algorithm::SetStatus(const Message_Status&                        theStat,
                                          const occ::handle<TCollection_HAsciiString>& theStr,
-                                         const bool                  noRepetitions)
+                                         const bool                                   noRepetitions)
 {
   SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }
@@ -47,7 +47,7 @@ inline void Message_Algorithm::SetStatus(const Message_Status&                  
 
 inline void Message_Algorithm::SetStatus(const Message_Status&             theStat,
                                          const TCollection_ExtendedString& theStr,
-                                         const bool            noRepetitions)
+                                         const bool                        noRepetitions)
 {
   SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);
 }

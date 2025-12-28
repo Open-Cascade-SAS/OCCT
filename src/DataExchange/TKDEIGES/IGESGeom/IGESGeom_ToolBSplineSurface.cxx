@@ -31,13 +31,10 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XYZ.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 // MGE 31/07/98
 //=================================================================================================
@@ -46,9 +43,10 @@ IGESGeom_ToolBSplineSurface::IGESGeom_ToolBSplineSurface() {}
 
 //=================================================================================================
 
-void IGESGeom_ToolBSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_BSplineSurface>& ent,
-                                                const occ::handle<IGESData_IGESReaderData>& /* IR */,
-                                                IGESData_ParamReader& PR) const
+void IGESGeom_ToolBSplineSurface::ReadOwnParams(
+  const occ::handle<IGESGeom_BSplineSurface>& ent,
+  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+  IGESData_ParamReader& PR) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -60,16 +58,16 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_BSpli
   Message_Msg Msg159("XSTEP_159");
   //========================================
 
-  int              I, J;
-  int              anIndexU, anIndexV, aDegU, aDegV;
-  bool              aCloseU, aCloseV, aPolynom, aPeriodU, aPeriodV;
-  double                 aUmin, aUmax, aVmin = 0., aVmax = 0.;
-  double                 tempVal;
-  gp_XYZ                        tempXYZ;
+  int                                      I, J;
+  int                                      anIndexU, anIndexV, aDegU, aDegV;
+  bool                                     aCloseU, aCloseV, aPolynom, aPeriodU, aPeriodV;
+  double                                   aUmin, aUmax, aVmin = 0., aVmax = 0.;
+  double                                   tempVal;
+  gp_XYZ                                   tempXYZ;
   occ::handle<NCollection_HArray1<double>> allKnotsU;
   occ::handle<NCollection_HArray1<double>> allKnotsV;
   occ::handle<NCollection_HArray2<double>> allWeights;
-  occ::handle<NCollection_HArray2<gp_XYZ>>   allPoles;
+  occ::handle<NCollection_HArray2<gp_XYZ>> allPoles;
 
   // bool st; //szv#4:S4163:12Mar99 not needed
   bool FlagindexU = PR.ReadInteger(PR.Current(), anIndexU);
@@ -140,8 +138,8 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_BSpli
     allWeights = new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
     allPoles   = new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
 
-    bool BadWeigth = false;
-    Message_Msg      Msg105("XSTEP_105");
+    bool        BadWeigth = false;
+    Message_Msg Msg105("XSTEP_105");
 
     for (J = 0; J <= anIndexV; J++)
     {
@@ -209,9 +207,9 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_BSpli
     st = PR.ReadReal(PR.Current(), "Ending Value For U Direction", aVmax);
   */
   //  PROTECTION against ANSYS 5.3 which writes 3 additional floats ...
-  int icur = PR.CurrentNumber(), imax = PR.NbParams();
-  double    bid;
-  int pbfin = 0;
+  int    icur = PR.CurrentNumber(), imax = PR.NbParams();
+  double bid;
+  int    pbfin = 0;
   // st = true; //szv#4:S4163:12Mar99 not needed
   while (imax >= icur)
   {
@@ -261,7 +259,7 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_BSpli
 //=================================================================================================
 
 void IGESGeom_ToolBSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_BSplineSurface>& ent,
-                                                 IGESData_IGESWriter&                   IW) const
+                                                 IGESData_IGESWriter& IW) const
 {
   int indU = ent->UpperIndexU();
   int indV = ent->UpperIndexV();
@@ -315,11 +313,11 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurf
                                           const occ::handle<IGESGeom_BSplineSurface>& ent,
                                           Interface_CopyTool& /* TC */) const
 {
-  int I, J;
-  int anIndexU, anIndexV, aDegU, aDegV;
-  bool aCloseU, aCloseV, aPolynom;
-  bool aPeriodU, aPeriodV;
-  double    aUmin, aUmax, aVmin, aVmax;
+  int    I, J;
+  int    anIndexU, anIndexV, aDegU, aDegV;
+  bool   aCloseU, aCloseV, aPolynom;
+  bool   aPeriodU, aPeriodV;
+  double aUmin, aUmax, aVmin, aVmax;
 
   anIndexU = another->UpperIndexU();
   anIndexV = another->UpperIndexV();
@@ -331,8 +329,10 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurf
   aPeriodU = another->IsPeriodicU();
   aPeriodV = another->IsPeriodicV();
 
-  occ::handle<NCollection_HArray1<double>> allKnotsU = new NCollection_HArray1<double>(-aDegU, anIndexU + 1);
-  occ::handle<NCollection_HArray1<double>> allKnotsV = new NCollection_HArray1<double>(-aDegV, anIndexV + 1);
+  occ::handle<NCollection_HArray1<double>> allKnotsU =
+    new NCollection_HArray1<double>(-aDegU, anIndexU + 1);
+  occ::handle<NCollection_HArray1<double>> allKnotsV =
+    new NCollection_HArray1<double>(-aDegV, anIndexV + 1);
 
   for (I = -aDegU; I <= anIndexU + 1; I++)
     allKnotsU->SetValue(I, another->KnotU(I));
@@ -340,8 +340,10 @@ void IGESGeom_ToolBSplineSurface::OwnCopy(const occ::handle<IGESGeom_BSplineSurf
   for (I = -aDegV; I <= anIndexV + 1; I++)
     allKnotsV->SetValue(I, another->KnotV(I));
 
-  occ::handle<NCollection_HArray2<double>> allWeights = new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
-  occ::handle<NCollection_HArray2<gp_XYZ>>   allPoles   = new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
+  occ::handle<NCollection_HArray2<double>> allWeights =
+    new NCollection_HArray2<double>(0, anIndexU, 0, anIndexV);
+  occ::handle<NCollection_HArray2<gp_XYZ>> allPoles =
+    new NCollection_HArray2<gp_XYZ>(0, anIndexU, 0, anIndexV);
 
   for (J = 0; J <= anIndexV; J++)
     for (I = 0; I <= anIndexU; I++)
@@ -441,9 +443,9 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSur
   */
 
   bool Flag = true;
-  int indU = ent->UpperIndexU();
-  int indV = ent->UpperIndexV();
-  int I, J;
+  int  indU = ent->UpperIndexU();
+  int  indV = ent->UpperIndexV();
+  int  I, J;
 
   if (ent->NbKnotsU() != (indU + ent->DegreeU() + 2))
   {
@@ -468,7 +470,7 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSur
     ach->SendFail(Msg104);
   }
 
-  Flag                  = true;
+  Flag           = true;
   double tempVal = ent->Weight(0, 0);
 
   for (J = 0; ((J < indV) && (Flag)); J++)
@@ -486,8 +488,8 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const occ::handle<IGESGeom_BSplineSur
 
 void IGESGeom_ToolBSplineSurface::OwnDump(const occ::handle<IGESGeom_BSplineSurface>& ent,
                                           const IGESData_IGESDumper& /* dumper */,
-                                          Standard_OStream&      S,
-                                          const int level) const
+                                          Standard_OStream& S,
+                                          const int         level) const
 {
   S << "BSplineSurface from IGESGeom\n\n";
 

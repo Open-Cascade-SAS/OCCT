@@ -18,8 +18,7 @@
 
 StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition() {}
 
-int StepShape_ToleranceMethodDefinition::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepShape_ToleranceMethodDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

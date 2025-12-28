@@ -39,7 +39,7 @@ public:
   Standard_EXPORT void LoadReferences(const occ::handle<CDM_Document>&    aDocument,
                                       const occ::handle<CDM_MetaData>&    aMetaData,
                                       const occ::handle<CDM_Application>& anApplication,
-                                      const bool         UseStorageConfiguration);
+                                      const bool                          UseStorageConfiguration);
 
   Standard_EXPORT virtual void Init(const occ::handle<CDM_MetaData>& aMetaData);
 
@@ -52,7 +52,7 @@ private:
 
   Standard_EXPORT virtual occ::handle<CDM_MetaData> MetaData(
     NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-    const bool   UseStorageConfiguration) const;
+    const bool UseStorageConfiguration) const;
 
   Standard_EXPORT virtual int ReferenceIdentifier() const;
 
@@ -60,9 +60,9 @@ private:
   Standard_EXPORT virtual int DocumentVersion() const;
 
 private:
-  NCollection_Sequence<PCDM_Reference>  myReferences;
-  int          myIterator;
-  occ::handle<Message_Messenger> myMessageDriver;
+  NCollection_Sequence<PCDM_Reference> myReferences;
+  int                                  myIterator;
+  occ::handle<Message_Messenger>       myMessageDriver;
 };
 
 #endif // _PCDM_ReferenceIterator_HeaderFile

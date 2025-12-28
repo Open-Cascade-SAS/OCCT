@@ -32,7 +32,7 @@ RWStepKinematics_RWRotationAboutDirection::RWStepKinematics_RWRotationAboutDirec
 
 void RWStepKinematics_RWRotationAboutDirection::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                               theNum,
+  const int                                                 theNum,
   occ::handle<Interface_Check>&                             theArch,
   const occ::handle<StepKinematics_RotationAboutDirection>& theEnt) const
 {
@@ -65,7 +65,7 @@ void RWStepKinematics_RWRotationAboutDirection::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRotationAboutDirection::WriteStep(
-  StepData_StepWriter&                                 theSW,
+  StepData_StepWriter&                                      theSW,
   const occ::handle<StepKinematics_RotationAboutDirection>& theEnt) const
 {
 
@@ -84,7 +84,7 @@ void RWStepKinematics_RWRotationAboutDirection::WriteStep(
 
 void RWStepKinematics_RWRotationAboutDirection::Share(
   const occ::handle<StepKinematics_RotationAboutDirection>& theEnt,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -19,7 +19,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GeomFill_LocationDraft.hxx>
-#include <GeomFill_LocationLaw.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Type.hxx>
@@ -37,7 +36,7 @@ static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T)
   T *= M1;
 }
 
-BRepFill_DraftLaw::BRepFill_DraftLaw(const TopoDS_Wire&                    Path,
+BRepFill_DraftLaw::BRepFill_DraftLaw(const TopoDS_Wire&                         Path,
                                      const occ::handle<GeomFill_LocationDraft>& Law)
     : BRepFill_Edge3DLaw(Path, Law)
 {
@@ -45,10 +44,10 @@ BRepFill_DraftLaw::BRepFill_DraftLaw(const TopoDS_Wire&                    Path,
 
 void BRepFill_DraftLaw::CleanLaw(const double TolAngular)
 {
-  double    First, Last; //, Angle;
-  int ipath;
-  gp_Mat           Trsf, M1, M2;
-  gp_Vec           V, T1, T2, N1, N2;
+  double First, Last; //, Angle;
+  int    ipath;
+  gp_Mat Trsf, M1, M2;
+  gp_Vec V, T1, T2, N1, N2;
   //  gp_Dir D;
 
   myLaws->Value(1)->GetDomain(First, Last);

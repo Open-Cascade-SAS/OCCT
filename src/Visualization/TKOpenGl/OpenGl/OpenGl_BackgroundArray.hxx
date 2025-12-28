@@ -34,7 +34,7 @@ public:
 
   //! Render primitives to the window
   Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                              Graphic3d_Camera::Projection    theProjection) const;
+                              Graphic3d_Camera::Projection         theProjection) const;
 
   //! Check if background parameters are set properly
   Standard_EXPORT bool IsDefined() const;
@@ -68,8 +68,8 @@ public:
 protected: //! @name Internal structure for storing gradient parameters
   struct OpenGl_GradientParameters
   {
-    NCollection_Vec4<float>               color1;
-    NCollection_Vec4<float>               color2;
+    NCollection_Vec4<float>   color1;
+    NCollection_Vec4<float>   color2;
     Aspect_GradientFillMethod type;
   };
 
@@ -84,8 +84,7 @@ protected:
 
   //! Initializes texture arrays.
   //! @param theWorkspace OpenGl workspace that stores texture in the current enabled face aspect.
-  Standard_EXPORT bool
-    createTextureArray(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
+  Standard_EXPORT bool createTextureArray(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
 
   //! Initializes cubemap arrays.
   Standard_EXPORT bool createCubeMapArray() const;

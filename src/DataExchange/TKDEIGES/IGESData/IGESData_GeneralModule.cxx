@@ -32,9 +32,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_GeneralModule, Interface_GeneralModule)
 
-void IGESData_GeneralModule::FillSharedCase(const int            CN,
+void IGESData_GeneralModule::FillSharedCase(const int                              CN,
                                             const occ::handle<Standard_Transient>& ent,
-                                            Interface_EntityIterator&         iter) const
+                                            Interface_EntityIterator&              iter) const
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
@@ -57,9 +57,9 @@ void IGESData_GeneralModule::FillSharedCase(const int            CN,
     iter.AddItem(assocs.Value());
 }
 
-void IGESData_GeneralModule::ListImpliedCase(const int            CN,
+void IGESData_GeneralModule::ListImpliedCase(const int                              CN,
                                              const occ::handle<Standard_Transient>& ent,
-                                             Interface_EntityIterator&         iter) const
+                                             Interface_EntityIterator&              iter) const
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
@@ -76,9 +76,9 @@ void IGESData_GeneralModule::OwnImpliedCase(const int,
 {
 } // by default, nothing (redefinable)
 
-void IGESData_GeneralModule::CheckCase(const int            CN,
+void IGESData_GeneralModule::CheckCase(const int                              CN,
                                        const occ::handle<Standard_Transient>& ent,
-                                       const Interface_ShareTool&        shares,
+                                       const Interface_ShareTool&             shares,
                                        occ::handle<Interface_Check>&          ach) const
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
@@ -89,15 +89,15 @@ void IGESData_GeneralModule::CheckCase(const int            CN,
 }
 
 bool IGESData_GeneralModule::CanCopy(const int /*CN*/,
-                                                 const occ::handle<Standard_Transient>& /*ent*/) const
+                                     const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return true;
 }
 
-void IGESData_GeneralModule::CopyCase(const int            CN,
+void IGESData_GeneralModule::CopyCase(const int                              CN,
                                       const occ::handle<Standard_Transient>& entfrom,
                                       const occ::handle<Standard_Transient>& entto,
-                                      Interface_CopyTool&               TC) const
+                                      Interface_CopyTool&                    TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, ento, entto);
   DeclareAndCast(IGESData_IGESEntity, enfr, entfrom);
@@ -162,10 +162,10 @@ void IGESData_GeneralModule::CopyCase(const int            CN,
   }
 }
 
-void IGESData_GeneralModule::RenewImpliedCase(const int            CN,
+void IGESData_GeneralModule::RenewImpliedCase(const int                              CN,
                                               const occ::handle<Standard_Transient>& entfrom,
                                               const occ::handle<Standard_Transient>& entto,
-                                              const Interface_CopyTool&         TC) const
+                                              const Interface_CopyTool&              TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, ento, entto);
   DeclareAndCast(IGESData_IGESEntity, enfr, entfrom);
@@ -192,7 +192,7 @@ void IGESData_GeneralModule::OwnRenewCase(const int,
 {
 }
 
-void IGESData_GeneralModule::WhenDeleteCase(const int            CN,
+void IGESData_GeneralModule::WhenDeleteCase(const int                              CN,
                                             const occ::handle<Standard_Transient>& ent,
                                             const bool) const // dispatched : ignored
 {
@@ -203,14 +203,14 @@ void IGESData_GeneralModule::WhenDeleteCase(const int            CN,
   OwnDeleteCase(CN, anent);
 }
 
-void IGESData_GeneralModule::OwnDeleteCase(const int,
-                                           const occ::handle<IGESData_IGESEntity>&) const
+void IGESData_GeneralModule::OwnDeleteCase(const int, const occ::handle<IGESData_IGESEntity>&) const
 {
 } // by default, nothing (redefinable)
 
-occ::handle<TCollection_HAsciiString> IGESData_GeneralModule::Name(const int,
-                                                              const occ::handle<Standard_Transient>& ent,
-                                                              const Interface_ShareTool&) const
+occ::handle<TCollection_HAsciiString> IGESData_GeneralModule::Name(
+  const int,
+  const occ::handle<Standard_Transient>& ent,
+  const Interface_ShareTool&) const
 {
   occ::handle<TCollection_HAsciiString> name;
   DeclareAndCast(IGESData_IGESEntity, anent, ent);

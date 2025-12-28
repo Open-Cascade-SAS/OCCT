@@ -35,7 +35,7 @@ occ::handle<ExprIntrp_GenFct> ExprIntrp_GenFct::Create()
 void ExprIntrp_GenFct::Process(const TCollection_AsciiString& str)
 {
   occ::handle<ExprIntrp_GenFct> me = this;
-  done                        = ExprIntrp::Parse(me, str);
+  done                             = ExprIntrp::Parse(me, str);
 }
 
 bool ExprIntrp_GenFct::IsDone() const

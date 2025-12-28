@@ -19,8 +19,6 @@
   #include <Standard_Type.hxx>
   #include <TCollection_AsciiString.hxx>
   #include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
-  #include <Standard_Integer.hxx>
   #include <NCollection_List.hxx>
   #include <TopAbs_ShapeEnum.hxx>
   #include <TopAbs_Orientation.hxx>
@@ -28,15 +26,12 @@
   #include <TopoDS_Shape.hxx>
   #include <TopTools_ShapeMapHasher.hxx>
   #include <NCollection_Map.hxx>
-  #include <NCollection_List.hxx>
   #include <NCollection_IndexedMap.hxx>
   #include <NCollection_DataMap.hxx>
-  #include <Standard_Integer.hxx>
   #include <NCollection_IndexedDataMap.hxx>
   #include <TopoDS_Face.hxx>
   #include <TopoDS_Edge.hxx>
   #include <TopoDS_Vertex.hxx>
-  #include <TCollection_AsciiString.hxx>
 
   #define AS(x) (Standard_PCharacter) TCollection_AsciiString((x)).ToCString();
   #define I 10
@@ -51,12 +46,12 @@ class BOOPNINTL
 public:
   BOOPNINTL();
   bool Get(int n, char** a);
-  int Set(const bool b, int n, char** a);
+  int  Set(const bool b, int n, char** a);
 
 private:
   NCollection_List<int> myTL[I];
-  bool      myTB[I];
-  int      mynl;
+  bool                  myTB[I];
+  int                   mynl;
 };
 
 BOOPNINTL::BOOPNINTL()
@@ -102,8 +97,8 @@ bool BOOPNINTL::Get(int n, char** a)
     if (L.IsEmpty())
       continue;
     NCollection_List<int>::Iterator itL(L);
-    int                    ia    = 0;
-    bool                    found = true;
+    int                             ia    = 0;
+    bool                            found = true;
     for (; itL.More() && (ia < n); itL.Next(), ia++)
     {
       int Lval = itL.Value();
@@ -137,9 +132,7 @@ Standard_EXPORT bool TopOpeBRep_GettraceEEFF()
 
 BOOPNINTL BOOPEEFF;
 
-Standard_EXPORT int TopOpeBRep_SettraceEEFF(const bool b,
-                                                         int       n,
-                                                         char**                 a)
+Standard_EXPORT int TopOpeBRep_SettraceEEFF(const bool b, int n, char** a)
 {
   int err = BOOPEEFF.Set(b, n, a);
   if (n == 0)
@@ -153,16 +146,13 @@ Standard_EXPORT bool TopOpeBRep_GettraceEEFF(int n, char** a)
   return b;
 }
 
-Standard_EXPORT bool TopOpeBRep_GettraceEEFF(const int i1,
-                                                         const int i2,
-                                                         const int i3,
-                                                         const int i4)
+Standard_EXPORT bool TopOpeBRep_GettraceEEFF(const int i1, const int i2, const int i3, const int i4)
 {
   char* t[4];
-  t[0]               = AS(i1);
-  t[1]               = AS(i2);
-  t[2]               = AS(i3);
-  t[3]               = AS(i4);
+  t[0]   = AS(i1);
+  t[1]   = AS(i2);
+  t[2]   = AS(i3);
+  t[3]   = AS(i4);
   bool b = BOOPEEFF.Get(4, t);
   return b;
 }
@@ -182,9 +172,7 @@ Standard_EXPORT bool TopOpeBRep_GettraceNVP()
 
 BOOPNINTL BOOPNVP;
 
-Standard_EXPORT int TopOpeBRep_SettraceNVP(const bool b,
-                                                        int       n,
-                                                        char**                 a)
+Standard_EXPORT int TopOpeBRep_SettraceNVP(const bool b, int n, char** a)
 {
   int err = BOOPNVP.Set(b, n, a);
   if (n == 0)
@@ -197,18 +185,14 @@ Standard_EXPORT bool TopOpeBRep_GettraceNVP(int n, char** a)
   return BOOPNVP.Get(n, a);
 }
 
-Standard_EXPORT bool TopOpeBRep_GettraceNVP(int i1,
-                                                        int i2,
-                                                        int i3,
-                                                        int i4,
-                                                        int i5)
+Standard_EXPORT bool TopOpeBRep_GettraceNVP(int i1, int i2, int i3, int i4, int i5)
 {
   char* t[5];
-  t[0]               = AS(i1);
-  t[1]               = AS(i2);
-  t[2]               = AS(i3);
-  t[3]               = AS(i4);
-  t[4]               = AS(i5);
+  t[0]   = AS(i1);
+  t[1]   = AS(i2);
+  t[2]   = AS(i3);
+  t[3]   = AS(i4);
+  t[4]   = AS(i5);
   bool b = BOOPNVP.Get(5, t);
   return b;
 }
@@ -228,9 +212,7 @@ Standard_EXPORT bool TopOpeBRep_GettraceSHA()
 
 BOOPNINTL BOOPSHA;
 
-Standard_EXPORT int TopOpeBRep_SettraceSHA(const bool b,
-                                                        int       n,
-                                                        char**                 a)
+Standard_EXPORT int TopOpeBRep_SettraceSHA(const bool b, int n, char** a)
 {
   int err = BOOPSHA.Set(b, n, a);
   if (n == 0)

@@ -37,7 +37,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -50,11 +49,11 @@
 //=================================================================================================
 
 static double Controle(const NCollection_Sequence<gp_Pnt>& thePoints,
-                              const occ::handle<Geom_Plane>&   thePlane)
+                       const occ::handle<Geom_Plane>&      thePlane)
 {
-  double    dfMaxDist = 0.;
-  double    a, b, c, d, dist;
-  int ii;
+  double dfMaxDist = 0.;
+  double a, b, c, d, dist;
+  int    ii;
   thePlane->Coefficients(a, b, c, d);
   for (ii = 1; ii <= thePoints.Length(); ii++)
   {
@@ -72,15 +71,15 @@ static double Controle(const NCollection_Sequence<gp_Pnt>& thePoints,
 // purpose  : Return true if the last vertex of theEdge1 coincides with
 //           the first vertex of theEdge2 in parametric space of theFace
 //=======================================================================
-inline static bool Is2DConnected(const TopoDS_Edge&          theEdge1,
-                                             const TopoDS_Edge&          theEdge2,
-                                             const occ::handle<Geom_Surface>& theSurface,
-                                             const TopLoc_Location&      theLocation)
+inline static bool Is2DConnected(const TopoDS_Edge&               theEdge1,
+                                 const TopoDS_Edge&               theEdge2,
+                                 const occ::handle<Geom_Surface>& theSurface,
+                                 const TopLoc_Location&           theLocation)
 {
   double f, l;
   // TopLoc_Location aLoc;
   occ::handle<Geom2d_Curve> aCurve;
-  gp_Pnt2d             p1, p2;
+  gp_Pnt2d                  p1, p2;
 
   // get 2D points
   aCurve = BRep_Tool::CurveOnSurface(theEdge1, theSurface, theLocation, f, l);
@@ -91,9 +90,9 @@ inline static bool Is2DConnected(const TopoDS_Edge&          theEdge1,
   // compare 2D points
   GeomAdaptor_Surface aSurface(theSurface);
   TopoDS_Vertex       aV    = TopExp::FirstVertex(theEdge2, true);
-  double       tol3D = BRep_Tool::Tolerance(aV);
-  double       tol2D = aSurface.UResolution(tol3D) + aSurface.VResolution(tol3D);
-  double       dist2 = p1.SquareDistance(p2);
+  double              tol3D = BRep_Tool::Tolerance(aV);
+  double              tol2D = aSurface.UResolution(tol3D) + aSurface.VResolution(tol3D);
+  double              dist2 = p1.SquareDistance(p2);
   return dist2 < tol2D * tol2D;
 }
 
@@ -103,9 +102,9 @@ inline static bool Is2DConnected(const TopoDS_Edge&          theEdge1,
 //           parametric space of theSurface
 //=======================================================================
 
-static bool Is2DClosed(const TopoDS_Shape&         theShape,
-                                   const occ::handle<Geom_Surface>& theSurface,
-                                   const TopLoc_Location&      theLocation)
+static bool Is2DClosed(const TopoDS_Shape&              theShape,
+                       const occ::handle<Geom_Surface>& theSurface,
+                       const TopLoc_Location&           theLocation)
 {
   try
   {
@@ -164,29 +163,28 @@ BRepLib_FindSurface::BRepLib_FindSurface()
 
 //=================================================================================================
 
-BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S,
-                                         const double    Tol,
-                                         const bool OnlyPlane,
-                                         const bool OnlyClosed)
+BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape& S,
+                                         const double        Tol,
+                                         const bool          OnlyPlane,
+                                         const bool          OnlyClosed)
 {
   Init(S, Tol, OnlyPlane, OnlyClosed);
 }
 
 namespace
 {
-static void fillParams(const NCollection_Array1<double>&        theKnots,
-                       int                   theDegree,
-                       double                      theParMin,
-                       double                      theParMax,
-                       NCollection_Vector<double>& theParams)
+static void fillParams(const NCollection_Array1<double>& theKnots,
+                       int                               theDegree,
+                       double                            theParMin,
+                       double                            theParMax,
+                       NCollection_Vector<double>&       theParams)
 {
   double aPrevPar = theParMin;
   theParams.Append(aPrevPar);
 
   int aNbP = std::max(theDegree, 1);
 
-  for (int i = 1;
-       (i < theKnots.Length()) && (theKnots(i) < (theParMax - Precision::PConfusion()));
+  for (int i = 1; (i < theKnots.Length()) && (theKnots(i) < (theParMax - Precision::PConfusion()));
        ++i)
   {
     if (theKnots(i + 1) < theParMin + Precision::PConfusion())
@@ -209,21 +207,21 @@ static void fillParams(const NCollection_Array1<double>&        theKnots,
   theParams.Append(theParMax);
 }
 
-static void fillPoints(const BRepAdaptor_Curve&                 theCurve,
+static void fillPoints(const BRepAdaptor_Curve&          theCurve,
                        const NCollection_Vector<double>& theParams,
-                       NCollection_Sequence<gp_Pnt>&                    thePoints,
-                       NCollection_Sequence<double>&                  theWeights)
+                       NCollection_Sequence<gp_Pnt>&     thePoints,
+                       NCollection_Sequence<double>&     theWeights)
 {
   double aDistPrev = 0., aDistNext;
-  gp_Pnt        aPPrev(theCurve.Value(theParams(0))), aPNext;
+  gp_Pnt aPPrev(theCurve.Value(theParams(0))), aPNext;
 
   for (int iP = 1; iP <= theParams.Length(); ++iP)
   {
     if (iP < theParams.Length())
     {
       double aParam = theParams(iP);
-      aPNext               = theCurve.Value(aParam);
-      aDistNext            = aPPrev.Distance(aPNext);
+      aPNext        = theCurve.Value(aParam);
+      aDistNext     = aPPrev.Distance(aPNext);
     }
     else
       aDistNext = 0.0;
@@ -239,10 +237,10 @@ static void fillPoints(const BRepAdaptor_Curve&                 theCurve,
 
 //=================================================================================================
 
-void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
-                               const double    Tol,
-                               const bool OnlyPlane,
-                               const bool OnlyClosed)
+void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
+                               const double        Tol,
+                               const bool          OnlyPlane,
+                               const bool          OnlyClosed)
 {
   myTolerance  = Tol;
   myTolReached = 0.;
@@ -265,12 +263,12 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   if (!ex.More())
     return; // no edges ....
 
-  TopoDS_Edge          E = TopoDS::Edge(ex.Current());
-  double        f, l, ff, ll;
+  TopoDS_Edge               E = TopoDS::Edge(ex.Current());
+  double                    f, l, ff, ll;
   occ::handle<Geom2d_Curve> PC, aPPC;
   occ::handle<Geom_Surface> SS;
-  TopLoc_Location      L;
-  int     i = 0, j;
+  TopLoc_Location           L;
+  int                       i = 0, j;
 
   // iterate on the surfaces of the first edge
   for (;;)
@@ -339,7 +337,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   //                    2. Minimizing the weighed sum of squared deviations
   //                       compute coefficients of the sought plane.
 
-  NCollection_Sequence<gp_Pnt>   aPoints;
+  NCollection_Sequence<gp_Pnt> aPoints;
   NCollection_Sequence<double> aWeight;
 
   // ======================= Step #1
@@ -362,7 +360,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     {
       case GeomAbs_BezierCurve: {
         occ::handle<Geom_BezierCurve> GC = c.Bezier();
-        NCollection_Array1<double>     aKnots(1, 2);
+        NCollection_Array1<double>    aKnots(1, 2);
         aKnots.SetValue(1, GC->FirstParameter());
         aKnots.SetValue(2, GC->LastParameter());
 
@@ -411,12 +409,12 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
   // ======================= Step #2
   myLocation.Identity();
-  int iPoint;
-  math_Matrix      aMat(1, 3, 1, 3, 0.);
-  math_Vector      aVec(1, 3, 0.);
+  int         iPoint;
+  math_Matrix aMat(1, 3, 1, 3, 0.);
+  math_Vector aVec(1, 3, 0.);
   // Find the barycenter and normalize weights
   double dfMaxWeight = 0.;
-  gp_XYZ        aBaryCenter(0., 0., 0.);
+  gp_XYZ aBaryCenter(0., 0., 0.);
   double dfSumWeight = 0.;
   for (iPoint = 1; iPoint <= aPoints.Length(); iPoint++)
   {
@@ -433,7 +431,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   // Fill the matrix and the right vector
   for (iPoint = 1; iPoint <= aPoints.Length(); iPoint++)
   {
-    gp_XYZ        p = aPoints(iPoint).XYZ() - aBaryCenter;
+    gp_XYZ p = aPoints(iPoint).XYZ() - aBaryCenter;
     double w = aWeight(iPoint) / dfMaxWeight;
     aMat(1, 1) += w * p.X() * p.X();
     aMat(1, 2) += w * p.X() * p.Y();
@@ -448,10 +446,10 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   aMat(3, 1) = aMat(1, 3);
   aMat(3, 2) = aMat(2, 3);
   //
-  math_Jacobi      anEignval(aMat);
-  math_Vector      anEVals(1, 3);
-  bool isSolved = anEignval.IsDone();
-  int isol     = 0;
+  math_Jacobi anEignval(aMat);
+  math_Vector anEVals(1, 3);
+  bool        isSolved = anEignval.IsDone();
+  int         isol     = 0;
   if (isSolved)
   {
     anEVals = anEignval.Values();
@@ -531,10 +529,10 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     if (std::abs(aVec(i)) <= eps)
       aVec(i) = 0.;
   }
-  gp_Vec             aN(aVec(1), aVec(2), aVec(3));
-  occ::handle<Geom_Plane> aPlane     = new Geom_Plane(aBaryCenter, aN);
-  myTolReached                  = Controle(aPoints, aPlane);
-  const double aWeakness = 5.0;
+  gp_Vec                  aN(aVec(1), aVec(2), aVec(3));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(aBaryCenter, aN);
+  myTolReached                   = Controle(aPoints, aPlane);
+  const double aWeakness         = 5.0;
   if (myTolReached <= myTolerance || (Tol < 0 && myTolReached < myTolerance * aWeakness))
   {
     mySurface = aPlane;

@@ -42,12 +42,14 @@ OpenGl_TextBuilder::OpenGl_TextBuilder()
 //=================================================================================================
 
 void OpenGl_TextBuilder::createGlyphs(
-  const occ::handle<Font_TextFormatter>&                                        theFormatter,
-  const occ::handle<OpenGl_Context>&                                            theCtx,
-  OpenGl_Font&                                                             theFont,
-  NCollection_Vector<GLuint>&                                              theTextures,
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>& theVertsPerTexture,
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>& theTCrdsPerTexture)
+  const occ::handle<Font_TextFormatter>& theFormatter,
+  const occ::handle<OpenGl_Context>&     theCtx,
+  OpenGl_Font&                           theFont,
+  NCollection_Vector<GLuint>&            theTextures,
+  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+    theVertsPerTexture,
+  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+    theTCrdsPerTexture)
 {
   NCollection_Vec2<float> aVec(0.0f, 0.0f);
 
@@ -64,7 +66,8 @@ void OpenGl_TextBuilder::createGlyphs(
   {
     theFont.RenderGlyph(theCtx, aFormatterIt.Symbol(), aTile);
 
-    const NCollection_Vec2<float>& aBottomLeft = theFormatter->BottomLeft(aFormatterIt.SymbolPosition());
+    const NCollection_Vec2<float>& aBottomLeft =
+      theFormatter->BottomLeft(aFormatterIt.SymbolPosition());
     aTile.px.Right += aBottomLeft.x();
     aTile.px.Left += aBottomLeft.x();
     aTile.px.Bottom += aBottomLeft.y();
@@ -113,20 +116,21 @@ void OpenGl_TextBuilder::createGlyphs(
 void OpenGl_TextBuilder::Perform(
   const occ::handle<Font_TextFormatter>&                theFormatter,
   const occ::handle<OpenGl_Context>&                    theCtx,
-  OpenGl_Font&                                     theFont,
-  NCollection_Vector<GLuint>&                      theTextures,
+  OpenGl_Font&                                          theFont,
+  NCollection_Vector<GLuint>&                           theTextures,
   NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
   NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture)
 {
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>> aVertsPerTexture;
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>> aTCrdsPerTexture;
+  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>
+    aVertsPerTexture;
+  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>
+    aTCrdsPerTexture;
 
   createGlyphs(theFormatter, theCtx, theFont, theTextures, aVertsPerTexture, aTCrdsPerTexture);
 
   if (theVertsPerTexture.Length() != theTextures.Length())
   {
-    for (int aTextureIter = 0; aTextureIter < theVertsPerTexture.Length();
-         ++aTextureIter)
+    for (int aTextureIter = 0; aTextureIter < theVertsPerTexture.Length(); ++aTextureIter)
     {
       theVertsPerTexture.Value(aTextureIter)->Release(theCtx.operator->());
       theTCrdsPerTexture.Value(aTextureIter)->Release(theCtx.operator->());
@@ -134,7 +138,7 @@ void OpenGl_TextBuilder::Perform(
     theVertsPerTexture.Clear();
     theTCrdsPerTexture.Clear();
 
-    const bool                  isNormalMode = theCtx->ToUseVbo();
+    const bool                       isNormalMode = theCtx->ToUseVbo();
     occ::handle<OpenGl_VertexBuffer> aVertsVbo, aTcrdsVbo;
     while (theVertsPerTexture.Length() < theTextures.Length())
     {
@@ -157,29 +161,29 @@ void OpenGl_TextBuilder::Perform(
 
   for (int aTextureIter = 0; aTextureIter < theTextures.Length(); ++aTextureIter)
   {
-    const NCollection_Vector<NCollection_Vec2<float>>& aVerts    = *aVertsPerTexture.Value(aTextureIter);
-    occ::handle<OpenGl_VertexBuffer>&           aVertsVbo = theVertsPerTexture.ChangeValue(aTextureIter);
+    const NCollection_Vector<NCollection_Vec2<float>>& aVerts =
+      *aVertsPerTexture.Value(aTextureIter);
+    occ::handle<OpenGl_VertexBuffer>& aVertsVbo = theVertsPerTexture.ChangeValue(aTextureIter);
     if (!aVertsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)NULL)
         || !myVboEditor.Init(theCtx, aVertsVbo))
     {
       continue;
     }
-    for (int aVertIter = 0; aVertIter < aVerts.Length();
-         ++aVertIter, myVboEditor.Next())
+    for (int aVertIter = 0; aVertIter < aVerts.Length(); ++aVertIter, myVboEditor.Next())
     {
       myVboEditor.Value() = aVerts.Value(aVertIter);
     }
     myVboEditor.Flush();
 
-    const NCollection_Vector<NCollection_Vec2<float>>& aTCrds    = *aTCrdsPerTexture.Value(aTextureIter);
-    occ::handle<OpenGl_VertexBuffer>&           aTCrdsVbo = theTCrdsPerTexture.ChangeValue(aTextureIter);
+    const NCollection_Vector<NCollection_Vec2<float>>& aTCrds =
+      *aTCrdsPerTexture.Value(aTextureIter);
+    occ::handle<OpenGl_VertexBuffer>& aTCrdsVbo = theTCrdsPerTexture.ChangeValue(aTextureIter);
     if (!aTCrdsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)NULL)
         || !myVboEditor.Init(theCtx, aTCrdsVbo))
     {
       continue;
     }
-    for (int aVertIter = 0; aVertIter < aVerts.Length();
-         ++aVertIter, myVboEditor.Next())
+    for (int aVertIter = 0; aVertIter < aVerts.Length(); ++aVertIter, myVboEditor.Next())
     {
       myVboEditor.Value() = aTCrds.Value(aVertIter);
     }

@@ -26,16 +26,15 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Return number of triangles for presentation with the given params.
-  static int TrianglesNb(const int theSlicesNb,
-                                      const int theStacksNb)
+  static int TrianglesNb(const int theSlicesNb, const int theStacksNb)
   {
     return theSlicesNb * theStacksNb * 2;
   }
 
   //! Return number of vertices for presentation with the given params.
-  static int VerticesNb(const int theSlicesNb,
-                                     const int theStacksNb,
-                                     const bool theIsIndexed = true)
+  static int VerticesNb(const int  theSlicesNb,
+                        const int  theStacksNb,
+                        const bool theIsIndexed = true)
   {
     return theIsIndexed ? (theSlicesNb + 1) * (theStacksNb + 1)
                         : TrianglesNb(theSlicesNb, theStacksNb) * 3;
@@ -51,7 +50,8 @@ public:
   //! Generate primitives for 3D quadric surface presentation.
   //! @param[in] theTrsf  optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT occ::handle<Poly_Triangulation> CreatePolyTriangulation(const gp_Trsf& theTrsf) const;
+  Standard_EXPORT occ::handle<Poly_Triangulation> CreatePolyTriangulation(
+    const gp_Trsf& theTrsf) const;
 
   //! Generate primitives for 3D quadric surface and fill the given array.
   //! @param[in][out] theArray  the array of vertices;
@@ -60,7 +60,7 @@ public:
   //!                           (will raise an exception if reserved array size is not large enough)
   //! @param[in] theTrsf  optional transformation to apply
   Standard_EXPORT void FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
-                                 const gp_Trsf&                      theTrsf) const;
+                                 const gp_Trsf&                           theTrsf) const;
 
   //! Return number of triangles in generated presentation.
   int TrianglesNb() const { return mySlicesNb * myStacksNb * 2; }
@@ -80,7 +80,7 @@ public:
     "Deprecated method, CreateTriangulation() and CreatePolyTriangulation() should be used instead")
   Standard_EXPORT void FillArray(occ::handle<Graphic3d_ArrayOfTriangles>& theArray,
                                  occ::handle<Poly_Triangulation>&         theTriangulation,
-                                 const gp_Trsf&                      theTrsf) const;
+                                 const gp_Trsf&                           theTrsf) const;
 
 protected:
   //! Redefine this method to generate vertex at given parameters.

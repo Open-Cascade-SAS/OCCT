@@ -33,7 +33,6 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -45,9 +44,9 @@ void IGESDimen_ToolWitnessLine::ReadOwnParams(const occ::handle<IGESDimen_Witnes
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  int           datatype;
-  double              zDisplacement;
-  int           nbval;
+  int                                     datatype;
+  double                                  zDisplacement;
+  int                                     nbval;
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints;
 
   // clang-format off
@@ -75,7 +74,7 @@ void IGESDimen_ToolWitnessLine::ReadOwnParams(const occ::handle<IGESDimen_Witnes
 }
 
 void IGESDimen_ToolWitnessLine::WriteOwnParams(const occ::handle<IGESDimen_WitnessLine>& ent,
-                                               IGESData_IGESWriter&                 IW) const
+                                               IGESData_IGESWriter&                      IW) const
 {
   int upper = ent->NbPoints();
   IW.Send(ent->Datatype());
@@ -97,9 +96,9 @@ void IGESDimen_ToolWitnessLine::OwnCopy(const occ::handle<IGESDimen_WitnessLine>
                                         const occ::handle<IGESDimen_WitnessLine>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
-  int datatype      = another->Datatype();
-  int nbval         = another->NbPoints();
-  double    zDisplacement = another->ZDisplacement();
+  int    datatype      = another->Datatype();
+  int    nbval         = another->NbPoints();
+  double zDisplacement = another->ZDisplacement();
 
   occ::handle<NCollection_HArray1<gp_XY>> dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
 
@@ -112,8 +111,7 @@ void IGESDimen_ToolWitnessLine::OwnCopy(const occ::handle<IGESDimen_WitnessLine>
   ent->Init(datatype, zDisplacement, dataPoints);
 }
 
-bool IGESDimen_ToolWitnessLine::OwnCorrect(
-  const occ::handle<IGESDimen_WitnessLine>& ent) const
+bool IGESDimen_ToolWitnessLine::OwnCorrect(const occ::handle<IGESDimen_WitnessLine>& ent) const
 {
   bool res = (ent->RankLineFont() != 1);
   if (res)
@@ -163,8 +161,8 @@ void IGESDimen_ToolWitnessLine::OwnCheck(const occ::handle<IGESDimen_WitnessLine
 
 void IGESDimen_ToolWitnessLine::OwnDump(const occ::handle<IGESDimen_WitnessLine>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream&      S,
-                                        const int level) const
+                                        Standard_OStream& S,
+                                        const int         level) const
 {
   S << "IGESDimen_WitnessLine\n"
     << "Data Type   : " << ent->Datatype() << "  "

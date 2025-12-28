@@ -57,14 +57,12 @@ public:
   //! Returns False if the transient is not an Interactive
   //! Object, or if the type of the Interactive Object is not
   //! the same as that stored in the filter.
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
-    override;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_TypeFilter, SelectMgr_Filter)
 
 protected:
   AIS_KindOfInteractive myKind;
-
 };
 
 #endif // _AIS_TypeFilter_HeaderFile

@@ -40,15 +40,15 @@ public:
   TopoDS_Shape ModifiedShape(const TopoDS_Shape& theInitShape) const;
 
 private:
-  void             AddShape(const TopoDS_Shape& theS);
+  void AddShape(const TopoDS_Shape& theS);
   bool PurgeLocation(const TopoDS_Shape& theS, TopoDS_Shape& theRes);
 
-  bool             myDone;
-  TopoDS_Shape                 myShape;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myMapShapes;
-  TopTools_LocationSet         myLocations;
+  bool                                                                     myDone;
+  TopoDS_Shape                                                             myShape;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>            myMapShapes;
+  TopTools_LocationSet                                                     myLocations;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapNewShapes;
-  occ::handle<BRepTools_ReShape>    myReShape;
+  occ::handle<BRepTools_ReShape>                                           myReShape;
 };
 
 #endif // _BRepTools_PurgeLocations_HeaderFile

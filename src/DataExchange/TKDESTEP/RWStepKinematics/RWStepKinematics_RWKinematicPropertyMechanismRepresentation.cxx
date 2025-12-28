@@ -35,7 +35,7 @@ RWStepKinematics_RWKinematicPropertyMechanismRepresentation::
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                 theData,
-  const int                                                 theNum,
+  const int                                                                   theNum,
   occ::handle<Interface_Check>&                                               theArch,
   const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt) const
 {
@@ -79,7 +79,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
-  StepData_StepWriter&                                                   theSW,
+  StepData_StepWriter&                                                        theSW,
   const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt) const
 {
 
@@ -98,7 +98,7 @@ void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::WriteStep(
 
 void RWStepKinematics_RWKinematicPropertyMechanismRepresentation::Share(
   const occ::handle<StepKinematics_KinematicPropertyMechanismRepresentation>& theEnt,
-  Interface_EntityIterator&                                              iter) const
+  Interface_EntityIterator&                                                   iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

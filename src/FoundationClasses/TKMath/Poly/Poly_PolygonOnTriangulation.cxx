@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation, Standard_Transient)
 
 //=================================================================================================
 
-Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const int theNbNodes,
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const int  theNbNodes,
                                                          const bool theHasParams)
     : myDeflection(0.0),
       myNodes(1, theNbNodes)
@@ -43,8 +43,9 @@ Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const NCollection_Array
 
 //=================================================================================================
 
-Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(const NCollection_Array1<int>& Nodes,
-                                                         const NCollection_Array1<double>&    Parameters)
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation(
+  const NCollection_Array1<int>&    Nodes,
+  const NCollection_Array1<double>& Parameters)
     : myDeflection(0.0),
       myNodes(1, Nodes.Length())
 {
@@ -68,7 +69,8 @@ occ::handle<Poly_PolygonOnTriangulation> Poly_PolygonOnTriangulation::Copy() con
 
 //=================================================================================================
 
-void Poly_PolygonOnTriangulation::SetParameters(const occ::handle<NCollection_HArray1<double>>& theParameters)
+void Poly_PolygonOnTriangulation::SetParameters(
+  const occ::handle<NCollection_HArray1<double>>& theParameters)
 {
   if (!theParameters.IsNull()
       && (theParameters->Lower() != myNodes.Lower() || theParameters->Upper() != myNodes.Upper()))

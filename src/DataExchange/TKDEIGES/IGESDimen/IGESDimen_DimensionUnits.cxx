@@ -24,13 +24,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_DimensionUnits, IGESData_IGESEntity)
 
 IGESDimen_DimensionUnits::IGESDimen_DimensionUnits() {}
 
-void IGESDimen_DimensionUnits::Init(const int                  nbPropVal,
-                                    const int                  aSecondPos,
-                                    const int                  aUnitsInd,
-                                    const int                  aCharSet,
+void IGESDimen_DimensionUnits::Init(const int                                    nbPropVal,
+                                    const int                                    aSecondPos,
+                                    const int                                    aUnitsInd,
+                                    const int                                    aCharSet,
                                     const occ::handle<TCollection_HAsciiString>& aFormat,
-                                    const int                  aFracFlag,
-                                    const int                  aPrecision)
+                                    const int                                    aFracFlag,
+                                    const int                                    aPrecision)
 {
   theNbPropertyValues       = nbPropVal;
   theSecondaryDimenPosition = aSecondPos;

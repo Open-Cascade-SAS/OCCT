@@ -56,10 +56,10 @@ public:
   //! <S> and <Ancestor> orientations are DIFFERENT.
   Standard_EXPORT TopOpeBRepDS_ShapeShapeInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const int         S,
+                                                      const int                      S,
                                                       const TopOpeBRepDS_Kind        GT,
-                                                      const int         G,
-                                                      const bool         GBound,
+                                                      const int                      G,
+                                                      const bool                     GBound,
                                                       const TopOpeBRepDS_Config      C);
 
   Standard_EXPORT TopOpeBRepDS_Config Config() const;
@@ -71,7 +71,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_ShapeShapeInterference, TopOpeBRepDS_Interference)
 
 private:
-  bool    myGBound;
+  bool                myGBound;
   TopOpeBRepDS_Config myC;
 };
 

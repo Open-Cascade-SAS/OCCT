@@ -67,7 +67,8 @@ bool Expr_SquareRoot::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_SquareRoot::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_SquareRoot::Derivative(
+  const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -82,7 +83,7 @@ occ::handle<Expr_GeneralExpression> Expr_SquareRoot::Derivative(const occ::handl
 }
 
 double Expr_SquareRoot::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                        const NCollection_Array1<double>&      vals) const
+                                 const NCollection_Array1<double>& vals) const
 {
   return std::sqrt(Operand()->Evaluate(vars, vals));
 }

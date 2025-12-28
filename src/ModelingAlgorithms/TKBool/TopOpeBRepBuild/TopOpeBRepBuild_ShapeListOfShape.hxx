@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
 
 //! represent shape + a list of shape
 class TopOpeBRepBuild_ShapeListOfShape
@@ -35,7 +34,7 @@ public:
 
   Standard_EXPORT TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape& S);
 
-  Standard_EXPORT TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape&         S,
+  Standard_EXPORT TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape&                   S,
                                                    const NCollection_List<TopoDS_Shape>& L);
 
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& List() const;
@@ -48,7 +47,7 @@ public:
 
 private:
   NCollection_List<TopoDS_Shape> myList;
-  TopoDS_Shape         myShape;
+  TopoDS_Shape                   myShape;
 };
 
 #endif // _TopOpeBRepBuild_ShapeListOfShape_HeaderFile

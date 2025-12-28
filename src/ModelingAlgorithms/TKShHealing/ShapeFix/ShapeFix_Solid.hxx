@@ -103,12 +103,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeFix_Solid, ShapeFix_Root)
 
 protected:
-  TopoDS_Shape           mySolid;
+  TopoDS_Shape                mySolid;
   occ::handle<ShapeFix_Shell> myFixShell;
-  int       myStatus;
-  int       myFixShellMode;
-  int       myFixShellOrientationMode;
-  bool       myCreateOpenSolidMode;
+  int                         myStatus;
+  int                         myFixShellMode;
+  int                         myFixShellOrientationMode;
+  bool                        myCreateOpenSolidMode;
 };
 
 #endif // _ShapeFix_Solid_HeaderFile

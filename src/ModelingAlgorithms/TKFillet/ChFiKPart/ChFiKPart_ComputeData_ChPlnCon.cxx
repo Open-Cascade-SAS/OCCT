@@ -46,21 +46,21 @@
 // out      : True if the chanfer has been computed
 //           False else
 //=======================================================================
-bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
-                                       const occ::handle<ChFiDS_SurfData>& Data,
-                                       const ChFiDS_ChamfMode         theMode,
-                                       const gp_Pln&                  Pln,
-                                       const gp_Cone&                 Con,
-                                       const double            fu,
-                                       const double            lu,
-                                       const TopAbs_Orientation       Or1,
-                                       const TopAbs_Orientation       Or2,
-                                       const double            theDis1,
-                                       const double            theDis2,
-                                       const gp_Circ&                 Spine,
-                                       const double            First,
-                                       const TopAbs_Orientation       Ofpl,
-                                       const bool         plandab)
+bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&         DStr,
+                           const occ::handle<ChFiDS_SurfData>& Data,
+                           const ChFiDS_ChamfMode              theMode,
+                           const gp_Pln&                       Pln,
+                           const gp_Cone&                      Con,
+                           const double                        fu,
+                           const double                        lu,
+                           const TopAbs_Orientation            Or1,
+                           const TopAbs_Orientation            Or2,
+                           const double                        theDis1,
+                           const double                        theDis2,
+                           const gp_Circ&                      Spine,
+                           const double                        First,
+                           const TopAbs_Orientation            Ofpl,
+                           const bool                          plandab)
 {
 
   double angcon = Con.SemiAngle();
@@ -78,15 +78,15 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     double SinAlpha   = std::sin(Alpha);
     double CosAlpha   = std::cos(Alpha);
     double CotanAlpha = CosAlpha / SinAlpha;
-    Dis1                     = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
+    Dis1              = sqrt(dis2dis2 - dis1dis1) - aDis1 * CotanAlpha;
     double CosBeta    = sqrt(1 - dis1dis1 / dis2dis2) * CosAlpha + aDis1 / aDis2 * SinAlpha;
     double FullDist1  = aDis2 / CosBeta;
-    Dis2                     = FullDist1 - aDis1 / SinAlpha;
+    Dis2              = FullDist1 - aDis1 / SinAlpha;
   }
 
-  double    sincon = std::abs(std::sin(angcon));
-  double    angle;
-  bool IsResol;
+  double sincon = std::abs(std::sin(angcon));
+  double angle;
+  bool   IsResol;
 
   gp_Ax3 PosPl = Pln.Position();
   gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
@@ -94,7 +94,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     Dpl.Reverse();
 
   // compute the origin of the conical chamfer PtPl
-  gp_Pnt        Or = Con.Location();
+  gp_Pnt Or = Con.Location();
   double u, v;
   ElSLib::PlaneParameters(PosPl, Or, u, v);
 #ifdef OCCT_DEBUG
@@ -124,7 +124,7 @@ bool ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure&    DStr,
     if (std::abs(Dis1 - Dis2 * sincon) > Precision::Confusion())
     {
       double abscos = std::abs(Dis2 - Dis1 * sincon);
-      angle                = std::atan((Dis1 * std::cos(angcon)) / abscos);
+      angle         = std::atan((Dis1 * std::cos(angcon)) / abscos);
     }
     else
     {

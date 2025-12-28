@@ -31,29 +31,29 @@ public:
   //! Returns a Address
   Standard_EXPORT StepBasic_Address();
 
-  Standard_EXPORT void Init(const bool                  hasAinternalLocation,
+  Standard_EXPORT void Init(const bool                                   hasAinternalLocation,
                             const occ::handle<TCollection_HAsciiString>& aInternalLocation,
-                            const bool                  hasAstreetNumber,
+                            const bool                                   hasAstreetNumber,
                             const occ::handle<TCollection_HAsciiString>& aStreetNumber,
-                            const bool                  hasAstreet,
+                            const bool                                   hasAstreet,
                             const occ::handle<TCollection_HAsciiString>& aStreet,
-                            const bool                  hasApostalBox,
+                            const bool                                   hasApostalBox,
                             const occ::handle<TCollection_HAsciiString>& aPostalBox,
-                            const bool                  hasAtown,
+                            const bool                                   hasAtown,
                             const occ::handle<TCollection_HAsciiString>& aTown,
-                            const bool                  hasAregion,
+                            const bool                                   hasAregion,
                             const occ::handle<TCollection_HAsciiString>& aRegion,
-                            const bool                  hasApostalCode,
+                            const bool                                   hasApostalCode,
                             const occ::handle<TCollection_HAsciiString>& aPostalCode,
-                            const bool                  hasAcountry,
+                            const bool                                   hasAcountry,
                             const occ::handle<TCollection_HAsciiString>& aCountry,
-                            const bool                  hasAfacsimileNumber,
+                            const bool                                   hasAfacsimileNumber,
                             const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
-                            const bool                  hasAtelephoneNumber,
+                            const bool                                   hasAtelephoneNumber,
                             const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
-                            const bool                  hasAelectronicMailAddress,
+                            const bool                                   hasAelectronicMailAddress,
                             const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
-                            const bool                  hasAtelexNumber,
+                            const bool                                   hasAtelexNumber,
                             const occ::handle<TCollection_HAsciiString>& aTelexNumber);
 
   Standard_EXPORT void SetInternalLocation(
@@ -121,7 +121,8 @@ public:
 
   Standard_EXPORT bool HasCountry() const;
 
-  Standard_EXPORT void SetFacsimileNumber(const occ::handle<TCollection_HAsciiString>& aFacsimileNumber);
+  Standard_EXPORT void SetFacsimileNumber(
+    const occ::handle<TCollection_HAsciiString>& aFacsimileNumber);
 
   Standard_EXPORT void UnSetFacsimileNumber();
 
@@ -129,7 +130,8 @@ public:
 
   Standard_EXPORT bool HasFacsimileNumber() const;
 
-  Standard_EXPORT void SetTelephoneNumber(const occ::handle<TCollection_HAsciiString>& aTelephoneNumber);
+  Standard_EXPORT void SetTelephoneNumber(
+    const occ::handle<TCollection_HAsciiString>& aTelephoneNumber);
 
   Standard_EXPORT void UnSetTelephoneNumber();
 
@@ -169,18 +171,18 @@ private:
   occ::handle<TCollection_HAsciiString> telephoneNumber;
   occ::handle<TCollection_HAsciiString> electronicMailAddress;
   occ::handle<TCollection_HAsciiString> telexNumber;
-  bool                 hasInternalLocation;
-  bool                 hasStreetNumber;
-  bool                 hasStreet;
-  bool                 hasPostalBox;
-  bool                 hasTown;
-  bool                 hasRegion;
-  bool                 hasPostalCode;
-  bool                 hasCountry;
-  bool                 hasFacsimileNumber;
-  bool                 hasTelephoneNumber;
-  bool                 hasElectronicMailAddress;
-  bool                 hasTelexNumber;
+  bool                                  hasInternalLocation;
+  bool                                  hasStreetNumber;
+  bool                                  hasStreet;
+  bool                                  hasPostalBox;
+  bool                                  hasTown;
+  bool                                  hasRegion;
+  bool                                  hasPostalCode;
+  bool                                  hasCountry;
+  bool                                  hasFacsimileNumber;
+  bool                                  hasTelephoneNumber;
+  bool                                  hasElectronicMailAddress;
+  bool                                  hasTelexNumber;
 };
 
 #endif // _StepBasic_Address_HeaderFile

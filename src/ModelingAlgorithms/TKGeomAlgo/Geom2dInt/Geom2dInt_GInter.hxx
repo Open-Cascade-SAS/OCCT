@@ -49,90 +49,86 @@ public:
   Geom2dInt_GInter();
 
   //! Self Intersection of a curve
-  Geom2dInt_GInter(const Adaptor2d_Curve2d& C,
-                   const double      TolConf,
-                   const double      Tol);
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C, const double TolConf, const double Tol);
 
   //! Self Intersection of a curve with a domain.
   Geom2dInt_GInter(const Adaptor2d_Curve2d& C,
                    const IntRes2d_Domain&   D,
-                   const double      TolConf,
-                   const double      Tol);
+                   const double             TolConf,
+                   const double             Tol);
 
   //! Intersection between 2 curves.
   Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
                    const Adaptor2d_Curve2d& C2,
-                   const double      TolConf,
-                   const double      Tol);
-
-  //! Intersection between 2 curves.
-  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
-                   const IntRes2d_Domain&   D1,
-                   const Adaptor2d_Curve2d& C2,
-                   const double      TolConf,
-                   const double      Tol);
-
-  //! Intersection between 2 curves.
-  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
-                   const Adaptor2d_Curve2d& C2,
-                   const IntRes2d_Domain&   D2,
-                   const double      TolConf,
-                   const double      Tol);
+                   const double             TolConf,
+                   const double             Tol);
 
   //! Intersection between 2 curves.
   Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
                    const IntRes2d_Domain&   D1,
                    const Adaptor2d_Curve2d& C2,
+                   const double             TolConf,
+                   const double             Tol);
+
+  //! Intersection between 2 curves.
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const Adaptor2d_Curve2d& C2,
                    const IntRes2d_Domain&   D2,
-                   const double      TolConf,
-                   const double      Tol);
+                   const double             TolConf,
+                   const double             Tol);
+
+  //! Intersection between 2 curves.
+  Geom2dInt_GInter(const Adaptor2d_Curve2d& C1,
+                   const IntRes2d_Domain&   D1,
+                   const Adaptor2d_Curve2d& C2,
+                   const IntRes2d_Domain&   D2,
+                   const double             TolConf,
+                   const double             Tol);
 
   //! Intersection between 2 curves.
   Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
                                const IntRes2d_Domain&   D1,
                                const Adaptor2d_Curve2d& C2,
                                const IntRes2d_Domain&   D2,
-                               const double      TolConf,
-                               const double      Tol);
+                               const double             TolConf,
+                               const double             Tol);
 
   //! Intersection between 2 curves.
   void Perform(const Adaptor2d_Curve2d& C1,
                const Adaptor2d_Curve2d& C2,
-               const double      TolConf,
-               const double      Tol);
+               const double             TolConf,
+               const double             Tol);
 
   //! Intersection between 2 curves.
   Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
                                const IntRes2d_Domain&   D1,
-                               const double      TolConf,
-                               const double      Tol);
+                               const double             TolConf,
+                               const double             Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1,
-                               const double      TolConf,
-                               const double      Tol);
+  Standard_EXPORT void Perform(const Adaptor2d_Curve2d& C1, const double TolConf, const double Tol);
 
   //! Intersection between 2 curves.
   void Perform(const Adaptor2d_Curve2d& C1,
                const IntRes2d_Domain&   D1,
                const Adaptor2d_Curve2d& C2,
-               const double      TolConf,
-               const double      Tol);
+               const double             TolConf,
+               const double             Tol);
 
   //! Intersection between 2 curves.
   void Perform(const Adaptor2d_Curve2d& C1,
                const Adaptor2d_Curve2d& C2,
                const IntRes2d_Domain&   D2,
-               const double      TolConf,
-               const double      Tol);
+               const double             TolConf,
+               const double             Tol);
 
   //! Create a domain from a curve
   Standard_EXPORT IntRes2d_Domain ComputeDomain(const Adaptor2d_Curve2d& C1,
-                                                const double      TolDomain) const;
+                                                const double             TolDomain) const;
 
   //! Set / get minimum number of points in polygon intersection.
-  Standard_EXPORT void             SetMinNbSamples(const int theMinNbSamples);
-  Standard_EXPORT int GetMinNbSamples() const;
+  Standard_EXPORT void SetMinNbSamples(const int theMinNbSamples);
+  Standard_EXPORT int  GetMinNbSamples() const;
 
 private:
   //! Intersection between 2 curves.
@@ -140,43 +136,43 @@ private:
                                        const IntRes2d_Domain&   D1,
                                        const Adaptor2d_Curve2d& C2,
                                        const IntRes2d_Domain&   D2,
-                                       const double      TolConf,
-                                       const double      Tol,
-                                       const bool   Composite);
+                                       const double             TolConf,
+                                       const double             Tol,
+                                       const bool               Composite);
 
   //! Part of InternalCompositePerform function
-  Standard_EXPORT void InternalCompositePerform_noRecurs(const int      NbInterC1,
-                                                         const Adaptor2d_Curve2d&    C1,
-                                                         const int      NumInterC1,
+  Standard_EXPORT void InternalCompositePerform_noRecurs(const int                NbInterC1,
+                                                         const Adaptor2d_Curve2d& C1,
+                                                         const int                NumInterC1,
                                                          const NCollection_Array1<double>& Tab1,
-                                                         const IntRes2d_Domain&      D1,
-                                                         const int      NbInterC2,
-                                                         const Adaptor2d_Curve2d&    C2,
-                                                         const int      NumInterC2,
+                                                         const IntRes2d_Domain&            D1,
+                                                         const int                NbInterC2,
+                                                         const Adaptor2d_Curve2d& C2,
+                                                         const int                NumInterC2,
                                                          const NCollection_Array1<double>& Tab2,
-                                                         const IntRes2d_Domain&      D2,
-                                                         const double         TolConf,
-                                                         const double         Tol);
+                                                         const IntRes2d_Domain&            D2,
+                                                         const double                      TolConf,
+                                                         const double                      Tol);
 
   //! Intersection between 2 curves.
-  Standard_EXPORT void InternalCompositePerform(const Adaptor2d_Curve2d&    C1,
-                                                const IntRes2d_Domain&      D1,
-                                                const int      N1,
-                                                const int      NB1,
+  Standard_EXPORT void InternalCompositePerform(const Adaptor2d_Curve2d&          C1,
+                                                const IntRes2d_Domain&            D1,
+                                                const int                         N1,
+                                                const int                         NB1,
                                                 const NCollection_Array1<double>& Tab1,
-                                                const Adaptor2d_Curve2d&    C2,
-                                                const IntRes2d_Domain&      D2,
-                                                const int      N2,
-                                                const int      NB2,
+                                                const Adaptor2d_Curve2d&          C2,
+                                                const IntRes2d_Domain&            D2,
+                                                const int                         N2,
+                                                const int                         NB2,
                                                 const NCollection_Array1<double>& Tab2,
-                                                const double         TolConf,
-                                                const double         Tol,
-                                                const bool      Composite);
+                                                const double                      TolConf,
+                                                const double                      Tol,
+                                                const bool                        Composite);
 
-  double                        param1inf;
-  double                        param1sup;
-  double                        param2inf;
-  double                        param2sup;
+  double                               param1inf;
+  double                               param1sup;
+  double                               param2inf;
+  double                               param2sup;
   IntCurve_IntConicConic               intconiconi;
   Geom2dInt_TheIntConicCurveOfGInter   intconicurv;
   Geom2dInt_TheIntPCurvePCurveOfGInter intcurvcurv;

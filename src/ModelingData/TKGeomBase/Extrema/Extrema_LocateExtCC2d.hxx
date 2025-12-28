@@ -41,8 +41,8 @@ public:
   //! the zero near the close point.
   Standard_EXPORT Extrema_LocateExtCC2d(const Adaptor2d_Curve2d& C1,
                                         const Adaptor2d_Curve2d& C2,
-                                        const double      U0,
-                                        const double      V0);
+                                        const double             U0,
+                                        const double             V0);
 
   //! Returns True if the distance is found.
   Standard_EXPORT bool IsDone() const;
@@ -55,8 +55,8 @@ public:
   Standard_EXPORT void Point(Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const;
 
 private:
-  bool  myDone;
-  double     mySqDist;
+  bool              myDone;
+  double            mySqDist;
   Extrema_POnCurv2d myPoint1;
   Extrema_POnCurv2d myPoint2;
 };

@@ -118,7 +118,8 @@ occ::handle<Geom2d_Geometry> Geom2d_Geometry::Translated(const gp_Vec2d& V) cons
   return G;
 }
 
-occ::handle<Geom2d_Geometry> Geom2d_Geometry::Translated(const gp_Pnt2d& P1, const gp_Pnt2d& P2) const
+occ::handle<Geom2d_Geometry> Geom2d_Geometry::Translated(const gp_Pnt2d& P1,
+                                                         const gp_Pnt2d& P2) const
 {
   occ::handle<Geom2d_Geometry> G = Copy();
   G->Translate(P1, P2);

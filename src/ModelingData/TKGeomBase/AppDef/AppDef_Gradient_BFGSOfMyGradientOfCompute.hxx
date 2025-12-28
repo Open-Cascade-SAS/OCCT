@@ -36,13 +36,12 @@ class AppDef_Gradient_BFGSOfMyGradientOfCompute : public math_BFGS
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AppDef_Gradient_BFGSOfMyGradientOfCompute(
-    math_MultipleVarFunctionWithGradient& F,
-    const math_Vector&                    StartingPoint,
-    const double                   Tolerance3d,
-    const double                   Tolerance2d,
-    const double                   Eps,
-    const int                NbIterations = 200);
+  Standard_EXPORT AppDef_Gradient_BFGSOfMyGradientOfCompute(math_MultipleVarFunctionWithGradient& F,
+                                                            const math_Vector& StartingPoint,
+                                                            const double       Tolerance3d,
+                                                            const double       Tolerance2d,
+                                                            const double       Eps,
+                                                            const int          NbIterations = 200);
 
   Standard_EXPORT virtual bool IsSolutionReached(
     math_MultipleVarFunctionWithGradient& F) const override;

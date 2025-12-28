@@ -29,7 +29,7 @@ RWStepVisual_RWSurfaceStyleReflectanceAmbient::RWStepVisual_RWSurfaceStyleReflec
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                   num,
+  const int                                                     num,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbient::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbient::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                          SW,
   const occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>& ent) const
 {
 

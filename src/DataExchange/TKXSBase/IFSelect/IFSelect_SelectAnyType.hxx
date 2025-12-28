@@ -38,10 +38,9 @@ public:
   //! Returns True for an Entity (model->Value(num)) which is kind
   //! of the chosen type, given by the method TypeForMatch.
   //! Criterium is IsKind.
-  Standard_EXPORT bool
-    Sort(const int                  rank,
-         const occ::handle<Standard_Transient>&       ent,
-         const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool Sort(const int                                    rank,
+                            const occ::handle<Standard_Transient>&       ent,
+                            const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectAnyType, IFSelect_SelectExtract)
 };

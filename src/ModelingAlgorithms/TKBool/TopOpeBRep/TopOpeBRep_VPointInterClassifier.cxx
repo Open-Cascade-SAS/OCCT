@@ -47,13 +47,12 @@ TopOpeBRep_VPointInterClassifier::TopOpeBRep_VPointInterClassifier()
 
 //=================================================================================================
 
-TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition(
-  const TopoDS_Shape&         F,
-  TopOpeBRep_VPointInter&     VP,
-  const int      FaceClassifyIndex,
-  TopOpeBRep_PointClassifier& PC,
-  const bool      AssumeINON,
-  const double         Tol)
+TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition(const TopoDS_Shape&     F,
+                                                              TopOpeBRep_VPointInter& VP,
+                                                              const int FaceClassifyIndex,
+                                                              TopOpeBRep_PointClassifier& PC,
+                                                              const bool   AssumeINON,
+                                                              const double Tol)
 {
   myState = TopAbs_UNKNOWN;
 
@@ -65,8 +64,8 @@ TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition(
       if (VP.IsOnDomS1())
       {
         VP.State(TopAbs_ON, 1);
-        const TopoDS_Edge&  E  = TopoDS::Edge(VP.ArcOnS1());
-        const double pE = VP.ParameterOnArc1();
+        const TopoDS_Edge& E  = TopoDS::Edge(VP.ArcOnS1());
+        const double       pE = VP.ParameterOnArc1();
         VP.EdgeON(E, pE, 1);
         myState = TopAbs_ON;
         return myState;
@@ -78,8 +77,8 @@ TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition(
       if (VP.IsOnDomS2())
       {
         VP.State(TopAbs_ON, 2);
-        const TopoDS_Edge&  E  = TopoDS::Edge(VP.ArcOnS2());
-        const double pE = VP.ParameterOnArc2();
+        const TopoDS_Edge& E  = TopoDS::Edge(VP.ArcOnS2());
+        const double       pE = VP.ParameterOnArc2();
         VP.EdgeON(E, pE, 2);
         myState = TopAbs_ON;
         return myState;
@@ -215,22 +214,22 @@ static TopAbs_State SlowClassifyOnBoundary(const gp_Pnt&             thePointToC
                                            const TopoDS_Face&        theFace)
 {
 
-  double      aParameterOnEdge = theSlowClassifier.EdgeParameter();
+  double             aParameterOnEdge = theSlowClassifier.EdgeParameter();
   const TopoDS_Edge& anEdge           = theSlowClassifier.Edge().Edge();
 
-  double      parf, parl;
+  double                  parf, parl;
   occ::handle<Geom_Curve> anEdgeCurve = BRep_Tool::Curve(anEdge, parf, parl);
 
   if (!anEdgeCurve.IsNull())
   {
-    double    minparameterdiff   = parl - parf;
-    double    aDistanceToCompare = 0;
-    bool samewithvertex     = false;
-    TopExp_Explorer  anExp(anEdge, TopAbs_VERTEX);
+    double          minparameterdiff   = parl - parf;
+    double          aDistanceToCompare = 0;
+    bool            samewithvertex     = false;
+    TopExp_Explorer anExp(anEdge, TopAbs_VERTEX);
     for (; anExp.More() && !samewithvertex; anExp.Next())
     {
       TopoDS_Vertex aVertex           = TopoDS::Vertex(anExp.Current());
-      double aVertexTolerance  = BRep_Tool::Tolerance(aVertex);
+      double        aVertexTolerance  = BRep_Tool::Tolerance(aVertex);
       gp_Pnt        anEdgeVertexPoint = BRep_Tool::Pnt(aVertex);
       if (thePointToClassify.IsEqual(anEdgeVertexPoint, aVertexTolerance))
         samewithvertex = true;
@@ -254,12 +253,13 @@ static TopAbs_State SlowClassifyOnBoundary(const gp_Pnt&             thePointToC
 
     if ((aProjTool.NbPoints() == 0) || (aDistanceToCompare >= anEdgeTolerance))
     {
-      occ::handle<Geom2d_Curve> anEdgePCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, parf, parl);
+      occ::handle<Geom2d_Curve> anEdgePCurve =
+        BRep_Tool::CurveOnSurface(anEdge, theFace, parf, parl);
 
       if (!anEdgePCurve.IsNull())
       {
-        gp_Pnt2d      aPoint2dOnEdge = anEdgePCurve->Value(aParameterOnEdge);
-        double aTol2d         = thePoint2dToClassify.Distance(aPoint2dOnEdge) / 3;
+        gp_Pnt2d aPoint2dOnEdge = anEdgePCurve->Value(aParameterOnEdge);
+        double   aTol2d         = thePoint2dToClassify.Distance(aPoint2dOnEdge) / 3;
         theSlowClassifier.Perform(theFace, thePoint2dToClassify, aTol2d);
         if (theSlowClassifier.State() == TopAbs_IN)
           return TopAbs_IN;

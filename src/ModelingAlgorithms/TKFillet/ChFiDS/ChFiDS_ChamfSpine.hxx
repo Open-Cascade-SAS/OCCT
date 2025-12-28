@@ -59,7 +59,7 @@ private:
   double d1;
   double d2;
   // bool dison1;
-  double      angle;
+  double             angle;
   ChFiDS_ChamfMethod mChamf;
 };
 

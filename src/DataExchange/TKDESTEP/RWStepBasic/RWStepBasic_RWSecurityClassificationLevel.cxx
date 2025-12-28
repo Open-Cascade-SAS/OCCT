@@ -20,7 +20,7 @@ RWStepBasic_RWSecurityClassificationLevel::RWStepBasic_RWSecurityClassificationL
 
 void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepBasic_SecurityClassificationLevel>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWSecurityClassificationLevel::ReadStep(
 }
 
 void RWStepBasic_RWSecurityClassificationLevel::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepBasic_SecurityClassificationLevel>& ent) const
 {
 

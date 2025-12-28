@@ -24,18 +24,18 @@
 namespace
 {
 static const char* Message_Table_PrintMetricTypeEnum[13] = {"NONE",
-                                                                 "ThreadCPUUserTime",
-                                                                 "ThreadCPUSystemTime",
-                                                                 "ProcessCPUUserTime",
-                                                                 "ProcessCPUSystemTime",
-                                                                 "WallClock",
-                                                                 "MemPrivate",
-                                                                 "MemVirtual",
-                                                                 "MemWorkingSet",
-                                                                 "MemWorkingSetPeak",
-                                                                 "MemSwapUsage",
-                                                                 "MemSwapUsagePeak",
-                                                                 "MemHeapUsage"};
+                                                            "ThreadCPUUserTime",
+                                                            "ThreadCPUSystemTime",
+                                                            "ProcessCPUUserTime",
+                                                            "ProcessCPUSystemTime",
+                                                            "WallClock",
+                                                            "MemPrivate",
+                                                            "MemVirtual",
+                                                            "MemWorkingSet",
+                                                            "MemWorkingSetPeak",
+                                                            "MemSwapUsage",
+                                                            "MemSwapUsagePeak",
+                                                            "MemHeapUsage"};
 }
 
 //=================================================================================================
@@ -48,9 +48,7 @@ const occ::handle<Message_Messenger>& Message::DefaultMessenger()
 
 //=================================================================================================
 
-TCollection_AsciiString Message::FillTime(const int hour,
-                                          const int minute,
-                                          const double    second)
+TCollection_AsciiString Message::FillTime(const int hour, const int minute, const double second)
 {
   char t[30];
   if (hour > 0)
@@ -83,12 +81,10 @@ const char* Message::MetricToString(const Message_MetricType theType)
 
 //=================================================================================================
 
-bool Message::MetricFromString(const char* theString,
-                                           Message_MetricType&    theGravity)
+bool Message::MetricFromString(const char* theString, Message_MetricType& theGravity)
 {
   TCollection_AsciiString aName(theString);
-  for (int aMetricIter = 0; aMetricIter <= Message_MetricType_MemHeapUsage;
-       ++aMetricIter)
+  for (int aMetricIter = 0; aMetricIter <= Message_MetricType_MemHeapUsage; ++aMetricIter)
   {
     const char* aMetricName = Message_Table_PrintMetricTypeEnum[aMetricIter];
     if (aName == aMetricName)
@@ -102,8 +98,7 @@ bool Message::MetricFromString(const char* theString,
 
 //=================================================================================================
 
-bool Message::ToOSDMetric(const Message_MetricType theMetric,
-                                      OSD_MemInfo::Counter&    theMemInfo)
+bool Message::ToOSDMetric(const Message_MetricType theMetric, OSD_MemInfo::Counter& theMemInfo)
 {
   switch (theMetric)
   {
@@ -136,8 +131,7 @@ bool Message::ToOSDMetric(const Message_MetricType theMetric,
 
 //=================================================================================================
 
-bool Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
-                                          Message_MetricType&        theMetric)
+bool Message::ToMessageMetric(const OSD_MemInfo::Counter theMemInfo, Message_MetricType& theMetric)
 {
   switch (theMemInfo)
   {

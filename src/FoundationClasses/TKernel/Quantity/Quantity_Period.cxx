@@ -34,11 +34,11 @@
 // 0 <= mics
 // -----------------------------------------------------------
 bool Quantity_Period::IsValid(const int dd,
-                                          const int hh,
-                                          const int mn,
-                                          const int ss,
-                                          const int mis,
-                                          const int mics)
+                              const int hh,
+                              const int mn,
+                              const int ss,
+                              const int mis,
+                              const int mics)
 {
   return (dd >= 0 && hh >= 0 && mn >= 0 && ss >= 0 && mis >= 0 && mics >= 0);
 }
@@ -89,15 +89,10 @@ Quantity_Period::Quantity_Period(const int ss, const int mics)
 // Values : Returns a period with the number of days,hours,
 // ~~~~~~   minutes,seconds,milliseconds and microseconds.
 // -------------------------------------------------------------
-void Quantity_Period::Values(int& dd,
-                             int& hh,
-                             int& mn,
-                             int& ss,
-                             int& mis,
-                             int& mics) const
+void Quantity_Period::Values(int& dd, int& hh, int& mn, int& ss, int& mis, int& mics) const
 {
   int carry = mySec;
-  dd                     = carry / SECONDS_PER_DAY;
+  dd        = carry / SECONDS_PER_DAY;
   carry -= dd * SECONDS_PER_DAY;
   extractTimeComponents(carry, hh, mn, ss);
   extractMillisAndMicros(myUSec, mis, mics);

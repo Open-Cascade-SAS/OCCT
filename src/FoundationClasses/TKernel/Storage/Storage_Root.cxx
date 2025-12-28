@@ -24,7 +24,7 @@ Storage_Root::Storage_Root()
 {
 }
 
-Storage_Root::Storage_Root(const TCollection_AsciiString&     theName,
+Storage_Root::Storage_Root(const TCollection_AsciiString&          theName,
                            const occ::handle<Standard_Persistent>& theObject)
     : myName(theName),
       myObject(theObject),
@@ -33,7 +33,7 @@ Storage_Root::Storage_Root(const TCollection_AsciiString&     theName,
 }
 
 Storage_Root::Storage_Root(const TCollection_AsciiString& theName,
-                           const int         theRef,
+                           const int                      theRef,
                            const TCollection_AsciiString& theType)
     : myName(theName),
       myType(theType),

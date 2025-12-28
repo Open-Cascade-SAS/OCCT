@@ -32,8 +32,8 @@ public:
   Standard_EXPORT StepVisual_PlanarExtent();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const double                     aSizeInX,
-                            const double                     aSizeInY);
+                            const double                                 aSizeInX,
+                            const double                                 aSizeInY);
 
   Standard_EXPORT void SetSizeInX(const double aSizeInX);
 

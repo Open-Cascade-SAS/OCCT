@@ -60,9 +60,7 @@ public:
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face& S, const gp_Pnt& VLocation, const double Eps);
 
   //! Computes the global properties of the region of 3D space
   //! delimited with the surface <S> and the point VLocation.
@@ -82,10 +80,10 @@ public:
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   const gp_Pnt&       O,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face& S,
+                                   const gp_Pnt&   O,
+                                   const gp_Pnt&   VLocation,
+                                   const double    Eps);
 
   //! Computes the global properties of the region of 3D space
   //! delimited with the surface <S> and the plane Pln.
@@ -105,10 +103,10 @@ public:
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   const gp_Pln&       Pl,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face& S,
+                                   const gp_Pln&   Pl,
+                                   const gp_Pnt&   VLocation,
+                                   const double    Eps);
 
   //! Computes the global properties of a region of 3D space
   //! delimited with the surface <S> and the point VLocation. S can be closed
@@ -125,10 +123,10 @@ public:
   //! Parameter Eps sets maximal relative error of computed mass (volume) for face.
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   BRepGProp_Domain&   D,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&   S,
+                                   BRepGProp_Domain& D,
+                                   const gp_Pnt&     VLocation,
+                                   const double      Eps);
 
   //! Computes the global properties of the region of 3D space
   //! delimited with the surface <S> and the point VLocation.
@@ -149,11 +147,11 @@ public:
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   BRepGProp_Domain&   D,
-                                   const gp_Pnt&       O,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&   S,
+                                   BRepGProp_Domain& D,
+                                   const gp_Pnt&     O,
+                                   const gp_Pnt&     VLocation,
+                                   const double      Eps);
 
   //! Computes the global properties of the region of 3D space
   //! delimited with the surface <S> and the plane Pln.
@@ -174,11 +172,11 @@ public:
   //! Error is calculated as std::abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values
   //! for two successive steps of adaptive integration.
   //! WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.
-  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&     S,
-                                   BRepGProp_Domain&   D,
-                                   const gp_Pln&       Pl,
-                                   const gp_Pnt&       VLocation,
-                                   const double Eps);
+  Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face&   S,
+                                   BRepGProp_Domain& D,
+                                   const gp_Pln&     Pl,
+                                   const gp_Pnt&     VLocation,
+                                   const double      Eps);
 
   Standard_EXPORT void SetLocation(const gp_Pnt& VLocation);
 
@@ -188,35 +186,29 @@ public:
 
   Standard_EXPORT void Perform(const BRepGProp_Face& S, const gp_Pnt& O);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        const gp_Pnt&       O,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face& S, const gp_Pnt& O, const double Eps);
 
   Standard_EXPORT void Perform(const BRepGProp_Face& S, const gp_Pln& Pl);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        const gp_Pln&       Pl,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face& S, const gp_Pln& Pl, const double Eps);
 
   Standard_EXPORT void Perform(BRepGProp_Face& S, BRepGProp_Domain& D);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        BRepGProp_Domain&   D,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const double Eps);
 
   Standard_EXPORT void Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& O);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        BRepGProp_Domain&   D,
-                                        const gp_Pnt&       O,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face&   S,
+                                 BRepGProp_Domain& D,
+                                 const gp_Pnt&     O,
+                                 const double      Eps);
 
   Standard_EXPORT void Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pln& Pl);
 
-  Standard_EXPORT double Perform(BRepGProp_Face&     S,
-                                        BRepGProp_Domain&   D,
-                                        const gp_Pln&       Pl,
-                                        const double Eps);
+  Standard_EXPORT double Perform(BRepGProp_Face&   S,
+                                 BRepGProp_Domain& D,
+                                 const gp_Pln&     Pl,
+                                 const double      Eps);
 
   //! If previously used methods contain Eps parameter
   //! gets actual relative error of the computation, else returns 1.0.

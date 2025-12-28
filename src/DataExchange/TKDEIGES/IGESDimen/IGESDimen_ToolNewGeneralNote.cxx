@@ -35,15 +35,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -51,36 +43,36 @@ IGESDimen_ToolNewGeneralNote::IGESDimen_ToolNewGeneralNote() {}
 
 void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_NewGeneralNote>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,
-                                                 IGESData_ParamReader&                   PR) const
+                                                 IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  int                        nbval;
-  double                           width;
-  double                           height;
-  int                        justifyCode;
-  gp_XYZ                                  areaLoc;
-  double                           areaRotationAngle;
-  gp_XYZ                                  baseLinePos;
-  double                           normalInterlineSpace;
-  occ::handle<NCollection_HArray1<int>>        charDisplays;
-  occ::handle<NCollection_HArray1<double>>           charWidths;
-  occ::handle<NCollection_HArray1<double>>           charHeights;
-  occ::handle<NCollection_HArray1<double>>           interCharSpaces;
-  occ::handle<NCollection_HArray1<double>>           interlineSpaces;
-  occ::handle<NCollection_HArray1<int>>        fontStyles;
-  occ::handle<NCollection_HArray1<double>>           charAngles;
+  int                                                                     nbval;
+  double                                                                  width;
+  double                                                                  height;
+  int                                                                     justifyCode;
+  gp_XYZ                                                                  areaLoc;
+  double                                                                  areaRotationAngle;
+  gp_XYZ                                                                  baseLinePos;
+  double                                                                  normalInterlineSpace;
+  occ::handle<NCollection_HArray1<int>>                                   charDisplays;
+  occ::handle<NCollection_HArray1<double>>                                charWidths;
+  occ::handle<NCollection_HArray1<double>>                                charHeights;
+  occ::handle<NCollection_HArray1<double>>                                interCharSpaces;
+  occ::handle<NCollection_HArray1<double>>                                interlineSpaces;
+  occ::handle<NCollection_HArray1<int>>                                   fontStyles;
+  occ::handle<NCollection_HArray1<double>>                                charAngles;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> controlCodeStrings;
-  occ::handle<NCollection_HArray1<int>>        nbChars;
-  occ::handle<NCollection_HArray1<double>>           boxWidths;
-  occ::handle<NCollection_HArray1<double>>           boxHeights;
-  occ::handle<NCollection_HArray1<int>>        charSetCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    charSetEntities;
-  occ::handle<NCollection_HArray1<double>>           slantAngles;
-  occ::handle<NCollection_HArray1<double>>           rotationAngles;
-  occ::handle<NCollection_HArray1<int>>        mirrorFlags;
-  occ::handle<NCollection_HArray1<int>>        rotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>             startPoints;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   charSetCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      charSetEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -121,24 +113,24 @@ void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_New
   if (!charDisplays.IsNull())
     for (int i = 1; i <= nbval; i++)
     {
-      int                 charDisplay;
-      double                    charWidth;
-      double                    charHeight;
-      double                    interCharSpace;
-      double                    interlineSpace;
-      int                 fontStyle;
-      double                    charAngle;
+      int                                   charDisplay;
+      double                                charWidth;
+      double                                charHeight;
+      double                                interCharSpace;
+      double                                interlineSpace;
+      int                                   fontStyle;
+      double                                charAngle;
       occ::handle<TCollection_HAsciiString> controlCodeString;
-      int                 nbChar;
-      double                    boxWidth;
-      double                    boxHeight;
-      int                 charSetCode;
+      int                                   nbChar;
+      double                                boxWidth;
+      double                                boxHeight;
+      int                                   charSetCode;
       occ::handle<IGESData_IGESEntity>      charSetEntity;
-      double                    slantAngle;
-      double                    rotationAngle;
-      int                 mirrorFlag;
-      int                 rotateFlag;
-      gp_XYZ                           startPoint;
+      double                                slantAngle;
+      double                                rotationAngle;
+      int                                   mirrorFlag;
+      int                                   rotateFlag;
+      gp_XYZ                                startPoint;
       occ::handle<TCollection_HAsciiString> text;
 
       // st = PR.ReadInteger(PR.Current(), "Character Display",charDisplay); //szv#4:S4163:12Mar99
@@ -284,7 +276,7 @@ void IGESDimen_ToolNewGeneralNote::ReadOwnParams(const occ::handle<IGESDimen_New
 }
 
 void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_NewGeneralNote>& ent,
-                                                  IGESData_IGESWriter&                    IW) const
+                                                  IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->TextWidth());
   IW.Send(ent->TextHeight());
@@ -329,7 +321,7 @@ void IGESDimen_ToolNewGeneralNote::WriteOwnParams(const occ::handle<IGESDimen_Ne
 }
 
 void IGESDimen_ToolNewGeneralNote::OwnShared(const occ::handle<IGESDimen_NewGeneralNote>& ent,
-                                             Interface_EntityIterator&               iter) const
+                                             Interface_EntityIterator& iter) const
 {
   int nbval = ent->NbStrings();
   for (int i = 1; i <= nbval; i++)
@@ -342,35 +334,35 @@ void IGESDimen_ToolNewGeneralNote::OwnShared(const occ::handle<IGESDimen_NewGene
 
 void IGESDimen_ToolNewGeneralNote::OwnCopy(const occ::handle<IGESDimen_NewGeneralNote>& another,
                                            const occ::handle<IGESDimen_NewGeneralNote>& ent,
-                                           Interface_CopyTool&                     TC) const
+                                           Interface_CopyTool&                          TC) const
 {
-  double    width                = another->TextWidth();
-  double    height               = another->TextHeight();
-  int justifyCode          = another->JustifyCode();
-  gp_XYZ           areaLoc              = (another->AreaLocation()).XYZ();
-  double    areaRotationAngle    = another->AreaRotationAngle();
-  gp_XYZ           baseLinePos          = (another->BaseLinePosition()).XYZ();
-  double    normalInterlineSpace = another->NormalInterlineSpace();
-  int nbval                = another->NbStrings();
+  double width                = another->TextWidth();
+  double height               = another->TextHeight();
+  int    justifyCode          = another->JustifyCode();
+  gp_XYZ areaLoc              = (another->AreaLocation()).XYZ();
+  double areaRotationAngle    = another->AreaRotationAngle();
+  gp_XYZ baseLinePos          = (another->BaseLinePosition()).XYZ();
+  double normalInterlineSpace = another->NormalInterlineSpace();
+  int    nbval                = another->NbStrings();
 
-  occ::handle<NCollection_HArray1<int>>        charDisplays;
-  occ::handle<NCollection_HArray1<double>>           charWidths;
-  occ::handle<NCollection_HArray1<double>>           charHeights;
-  occ::handle<NCollection_HArray1<double>>           interCharSpaces;
-  occ::handle<NCollection_HArray1<double>>           interlineSpaces;
-  occ::handle<NCollection_HArray1<int>>        fontStyles;
-  occ::handle<NCollection_HArray1<double>>           charAngles;
+  occ::handle<NCollection_HArray1<int>>                                   charDisplays;
+  occ::handle<NCollection_HArray1<double>>                                charWidths;
+  occ::handle<NCollection_HArray1<double>>                                charHeights;
+  occ::handle<NCollection_HArray1<double>>                                interCharSpaces;
+  occ::handle<NCollection_HArray1<double>>                                interlineSpaces;
+  occ::handle<NCollection_HArray1<int>>                                   fontStyles;
+  occ::handle<NCollection_HArray1<double>>                                charAngles;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> controlCodeStrings;
-  occ::handle<NCollection_HArray1<int>>        nbChars;
-  occ::handle<NCollection_HArray1<double>>           boxWidths;
-  occ::handle<NCollection_HArray1<double>>           boxHeights;
-  occ::handle<NCollection_HArray1<int>>        charSetCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    charSetEntities;
-  occ::handle<NCollection_HArray1<double>>           slantAngles;
-  occ::handle<NCollection_HArray1<double>>           rotationAngles;
-  occ::handle<NCollection_HArray1<int>>        mirrorFlags;
-  occ::handle<NCollection_HArray1<int>>        rotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>             startPoints;
+  occ::handle<NCollection_HArray1<int>>                                   nbChars;
+  occ::handle<NCollection_HArray1<double>>                                boxWidths;
+  occ::handle<NCollection_HArray1<double>>                                boxHeights;
+  occ::handle<NCollection_HArray1<int>>                                   charSetCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      charSetEntities;
+  occ::handle<NCollection_HArray1<double>>                                slantAngles;
+  occ::handle<NCollection_HArray1<double>>                                rotationAngles;
+  occ::handle<NCollection_HArray1<int>>                                   mirrorFlags;
+  occ::handle<NCollection_HArray1<int>>                                   rotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                                startPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> texts;
 
   charDisplays       = new NCollection_HArray1<int>(1, nbval);
@@ -517,9 +509,9 @@ void IGESDimen_ToolNewGeneralNote::OwnCheck(const occ::handle<IGESDimen_NewGener
 }
 
 void IGESDimen_ToolNewGeneralNote::OwnDump(const occ::handle<IGESDimen_NewGeneralNote>& ent,
-                                           const IGESData_IGESDumper&              dumper,
-                                           Standard_OStream&                       S,
-                                           const int                  level) const
+                                           const IGESData_IGESDumper&                   dumper,
+                                           Standard_OStream&                            S,
+                                           const int                                    level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
   int nbval    = ent->NbStrings();

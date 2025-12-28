@@ -67,10 +67,7 @@ public:
   //!
   //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
   //! Resolution from gp.
-  Standard_EXPORT gce_MakePln(const double A,
-                              const double B,
-                              const double C,
-                              const double D);
+  Standard_EXPORT gce_MakePln(const double A, const double B, const double C, const double D);
 
   //! Make a Pln from gp <ThePln> parallel to another
   //! Pln <Pln> and passing through a Pnt <Point>.

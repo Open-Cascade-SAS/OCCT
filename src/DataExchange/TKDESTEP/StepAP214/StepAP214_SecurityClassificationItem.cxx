@@ -36,8 +36,7 @@
 
 StepAP214_SecurityClassificationItem::StepAP214_SecurityClassificationItem() {}
 
-int StepAP214_SecurityClassificationItem::CaseNum(
-  const occ::handle<Standard_Transient>& ent) const
+int StepAP214_SecurityClassificationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
 
   if (ent.IsNull())
@@ -100,8 +99,8 @@ occ::handle<StepRepr_AssemblyComponentUsage> StepAP214_SecurityClassificationIte
   return GetCasted(StepRepr_AssemblyComponentUsage, Value());
 }
 
-occ::handle<StepRepr_ConfigurationDesign> StepAP214_SecurityClassificationItem::ConfigurationDesign()
-  const
+occ::handle<StepRepr_ConfigurationDesign> StepAP214_SecurityClassificationItem::
+  ConfigurationDesign() const
 {
   return GetCasted(StepRepr_ConfigurationDesign, Value());
 }
@@ -112,7 +111,8 @@ occ::handle<StepRepr_ConfigurationEffectivity> StepAP214_SecurityClassificationI
   return GetCasted(StepRepr_ConfigurationEffectivity, Value());
 }
 
-occ::handle<StepVisual_DraughtingModel> StepAP214_SecurityClassificationItem::DraughtingModel() const
+occ::handle<StepVisual_DraughtingModel> StepAP214_SecurityClassificationItem::DraughtingModel()
+  const
 {
   return GetCasted(StepVisual_DraughtingModel, Value());
 }
@@ -122,8 +122,8 @@ occ::handle<StepBasic_GeneralProperty> StepAP214_SecurityClassificationItem::Gen
   return GetCasted(StepBasic_GeneralProperty, Value());
 }
 
-occ::handle<StepRepr_MakeFromUsageOption> StepAP214_SecurityClassificationItem::MakeFromUsageOption()
-  const
+occ::handle<StepRepr_MakeFromUsageOption> StepAP214_SecurityClassificationItem::
+  MakeFromUsageOption() const
 {
   return GetCasted(StepRepr_MakeFromUsageOption, Value());
 }

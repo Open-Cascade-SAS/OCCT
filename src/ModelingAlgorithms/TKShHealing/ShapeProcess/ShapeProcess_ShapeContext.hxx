@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -39,14 +38,13 @@ class ShapeProcess_ShapeContext : public ShapeProcess_Context
 {
 
 public:
-  Standard_EXPORT ShapeProcess_ShapeContext(const char* file,
-                                            const char* seq = "");
+  Standard_EXPORT ShapeProcess_ShapeContext(const char* file, const char* seq = "");
 
   //! Initializes a tool by resource file and shape
   //! to be processed
-  Standard_EXPORT ShapeProcess_ShapeContext(const TopoDS_Shape&    S,
-                                            const char* file,
-                                            const char* seq = "");
+  Standard_EXPORT ShapeProcess_ShapeContext(const TopoDS_Shape& S,
+                                            const char*         file,
+                                            const char*         seq = "");
 
   //! Initializes tool by a new shape and clears all results
   Standard_EXPORT void Init(const TopoDS_Shape& S);
@@ -59,7 +57,8 @@ public:
 
   //! Returns map of replacements shape -> shape
   //! This map is not recursive
-  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Map() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                        Map() const;
 
   Standard_EXPORT const occ::handle<ShapeExtend_MsgRegistrator>& Messages() const;
 
@@ -86,8 +85,9 @@ public:
   //! result to a new one
   Standard_EXPORT void SetResult(const TopoDS_Shape& S);
 
-  Standard_EXPORT void RecordModification(const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       repl,
-                                          const occ::handle<ShapeExtend_MsgRegistrator>& msg = 0);
+  Standard_EXPORT void RecordModification(
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& repl,
+    const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg = 0);
 
   Standard_EXPORT void RecordModification(const occ::handle<ShapeBuild_ReShape>&         repl,
                                           const occ::handle<ShapeExtend_MsgRegistrator>& msg);
@@ -104,8 +104,8 @@ public:
   //! either by call to SetResult(), or by another call to
   //! RecordModification() which contains mapping of current
   //! result to a new one explicitly
-  Standard_EXPORT void RecordModification(const TopoDS_Shape&                       sh,
-                                          const BRepTools_Modifier&                 repl,
+  Standard_EXPORT void RecordModification(const TopoDS_Shape&                            sh,
+                                          const BRepTools_Modifier&                      repl,
                                           const occ::handle<ShapeExtend_MsgRegistrator>& msg = 0);
 
   //! Record a message for shape S
@@ -118,14 +118,12 @@ public:
 
   //! Get value of parameter as being of the type GeomAbs_Shape
   //! Returns False if parameter is not defined or has a wrong type
-  Standard_EXPORT bool GetContinuity(const char* param,
-                                                 GeomAbs_Shape&         val) const;
+  Standard_EXPORT bool GetContinuity(const char* param, GeomAbs_Shape& val) const;
 
   //! Get value of parameter as being of the type GeomAbs_Shape
   //! If parameter is not defined or does not have expected
   //! type, returns default value as specified
-  Standard_EXPORT GeomAbs_Shape ContinuityVal(const char* param,
-                                              const GeomAbs_Shape    def) const;
+  Standard_EXPORT GeomAbs_Shape ContinuityVal(const char* param, const GeomAbs_Shape def) const;
 
   //! Prints statistics on Shape Processing onto the current Messenger.
   Standard_EXPORT void PrintStatistics() const;
@@ -139,12 +137,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeProcess_ShapeContext, ShapeProcess_Context)
 
 private:
-  TopoDS_Shape                       myShape;
-  TopoDS_Shape                       myResult;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myMap;
-  occ::handle<ShapeExtend_MsgRegistrator> myMsg;
-  TopAbs_ShapeEnum                   myUntil;
-  bool                   myNonManifold;
+  TopoDS_Shape                                                             myShape;
+  TopoDS_Shape                                                             myResult;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
+  occ::handle<ShapeExtend_MsgRegistrator>                                  myMsg;
+  TopAbs_ShapeEnum                                                         myUntil;
+  bool                                                                     myNonManifold;
 };
 
 #endif // _ShapeProcess_ShapeContext_HeaderFile

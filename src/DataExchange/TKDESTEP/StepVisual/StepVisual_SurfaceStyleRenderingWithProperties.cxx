@@ -27,7 +27,7 @@ StepVisual_SurfaceStyleRenderingWithProperties::StepVisual_SurfaceStyleRendering
 
 void StepVisual_SurfaceStyleRenderingWithProperties::Init(
   const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
-  const occ::handle<StepVisual_Colour>&      theSurfaceStyleRendering_SurfaceColour,
+  const occ::handle<StepVisual_Colour>& theSurfaceStyleRendering_SurfaceColour,
   const occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>& theProperties)
 {
   StepVisual_SurfaceStyleRendering::Init(theSurfaceStyleRendering_RenderingMethod,

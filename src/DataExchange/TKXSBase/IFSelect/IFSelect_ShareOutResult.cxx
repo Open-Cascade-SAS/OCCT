@@ -21,8 +21,9 @@
 #include <Interface_InterfaceModel.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>&        sho,
-                                                 const occ::handle<Interface_InterfaceModel>& amodel)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_ShareOut>&        sho,
+  const occ::handle<Interface_InterfaceModel>& amodel)
     : thegraph(amodel),
       thedispres(amodel, false)
 {
@@ -32,7 +33,7 @@ IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Shar
 }
 
 IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>& sho,
-                                                 const Interface_Graph&           G)
+                                                 const Interface_Graph&                G)
     : thegraph(G),
       thedispres(G, false)
 {
@@ -41,8 +42,9 @@ IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Shar
   //  thedisplist = new NCollection_Sequence<int>();
 }
 
-IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>&        disp,
-                                                 const occ::handle<Interface_InterfaceModel>& amodel)
+IFSelect_ShareOutResult::IFSelect_ShareOutResult(
+  const occ::handle<IFSelect_Dispatch>&        disp,
+  const occ::handle<Interface_InterfaceModel>& amodel)
     : thegraph(amodel),
       thedispres(amodel, false)
 {
@@ -52,7 +54,7 @@ IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Disp
 }
 
 IFSelect_ShareOutResult::IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>& disp,
-                                                 const Interface_Graph&           G)
+                                                 const Interface_Graph&                G)
     : thegraph(G),
       thedispres(G, false)
 {
@@ -88,7 +90,7 @@ occ::handle<IFSelect_PacketList> IFSelect_ShareOutResult::Packets(const bool com
 {
   Evaluate();
   occ::handle<IFSelect_PacketList> list = new IFSelect_PacketList(thegraph.Model());
-  Interface_EntityIterator    iter;
+  Interface_EntityIterator         iter;
   for (; More(); Next())
   {
     list->AddPacket();
@@ -111,9 +113,9 @@ void IFSelect_ShareOutResult::Prepare()
   thedisplist.Clear();
   //  On alimente thedispres, thedisplist
   thedispres.Reset();
-  IFGraph_AllShared         A(thegraph);
+  IFGraph_AllShared              A(thegraph);
   occ::handle<IFSelect_Dispatch> disp = thedispatch;
-  int          nb = 1, first = 1;
+  int                            nb = 1, first = 1;
   if (!theshareout.IsNull())
   {
     nb    = theshareout->NbDispatches();
@@ -225,8 +227,7 @@ int IFSelect_ShareOutResult::DispatchRank() const
   return thedispnum;
 }
 
-void IFSelect_ShareOutResult::PacketsInDispatch(int& numpack,
-                                                int& nbpacks) const
+void IFSelect_ShareOutResult::PacketsInDispatch(int& numpack, int& nbpacks) const
 {
   numpack = thepackdisp;
   nbpacks = thenbindisp;

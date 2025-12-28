@@ -24,11 +24,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -43,8 +40,8 @@ GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
 //=================================================================================================
 
 GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
-  const occ::handle<Geom_BoundedCurve>&   BasisCurve,
-  const Convert_ParameterisationType Parameterisation)
+  const occ::handle<Geom_BoundedCurve>& BasisCurve,
+  const Convert_ParameterisationType    Parameterisation)
     : myTol(Precision::Confusion()),
       myType(Parameterisation)
 {
@@ -62,10 +59,10 @@ GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve(
 //=================================================================================================
 
 bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurve>& NewCurve,
-                                                          const double    Tolerance,
-                                                          const bool After,
-                                                          const bool WithRatio,
-                                                          const int MinM)
+                                              const double                          Tolerance,
+                                              const bool                            After,
+                                              const bool                            WithRatio,
+                                              const int                             MinM)
 {
   // conversion
   occ::handle<Geom_BSplineCurve> Bs = occ::down_cast<Geom_BSplineCurve>(NewCurve);
@@ -132,9 +129,9 @@ bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurv
 
 void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& FirstCurve,
                                               occ::handle<Geom_BSplineCurve>& SecondCurve,
-                                              const bool     After,
-                                              const bool     WithRatio,
-                                              const int     MinM)
+                                              const bool                      After,
+                                              const bool                      WithRatio,
+                                              const int                       MinM)
 {
   // Harmonisation des degres.
   int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
@@ -148,15 +145,15 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
   }
 
   // Declarationd
-  double           L1, L2;
-  int        ii, jj;
-  double           Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
-  int        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
-  int        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
-  NCollection_Array1<double>    Noeuds(1, NbK1 + NbK2 - 1);
-  NCollection_Array1<gp_Pnt>      Poles(1, NbP1 + NbP2 - 1);
-  NCollection_Array1<double>    Poids(1, NbP1 + NbP2 - 1);
-  NCollection_Array1<int> Mults(1, NbK1 + NbK2 - 1);
+  double                     L1, L2;
+  int                        ii, jj;
+  double                     Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
+  int                        NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
+  int                        NbK1 = FirstCurve->NbKnots(), NbK2 = SecondCurve->NbKnots();
+  NCollection_Array1<double> Noeuds(1, NbK1 + NbK2 - 1);
+  NCollection_Array1<gp_Pnt> Poles(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<double> Poids(1, NbP1 + NbP2 - 1);
+  NCollection_Array1<int>    Mults(1, NbK1 + NbK2 - 1);
 
   // Ratio de reparametrisation (C1 si possible)
   if (WithRatio)
@@ -245,7 +242,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
 
   // Reduction eventuelle de la multiplicite jusqu'a MinM
   bool Ok = true;
-  int M  = Mults(NbK1);
+  int  M  = Mults(NbK1);
   while ((M > MinM) && Ok)
   {
     M--;

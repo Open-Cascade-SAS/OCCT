@@ -61,10 +61,10 @@ private:
   {
   public:
     //! Constructor with 'Next'
-    IndexedDataMapNode(const TheKeyType&      theKey1,
-                       const int theIndex,
-                       const TheItemType&     theItem,
-                       NCollection_ListNode*  theNext1)
+    IndexedDataMapNode(const TheKeyType&     theKey1,
+                       const int             theIndex,
+                       const TheItemType&    theItem,
+                       NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheItemType>(theItem, theNext1),
           myKey1(theKey1),
           myIndex(theIndex)
@@ -72,10 +72,10 @@ private:
     }
 
     //! Constructor with 'Next'
-    IndexedDataMapNode(TheKeyType&&           theKey1,
-                       const int theIndex,
-                       const TheItemType&     theItem,
-                       NCollection_ListNode*  theNext1)
+    IndexedDataMapNode(TheKeyType&&          theKey1,
+                       const int             theIndex,
+                       const TheItemType&    theItem,
+                       NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheItemType>(theItem, theNext1),
           myKey1(std::forward<TheKeyType>(theKey1)),
           myIndex(theIndex)
@@ -83,10 +83,10 @@ private:
     }
 
     //! Constructor with 'Next'
-    IndexedDataMapNode(const TheKeyType&      theKey1,
-                       const int theIndex,
-                       TheItemType&&          theItem,
-                       NCollection_ListNode*  theNext1)
+    IndexedDataMapNode(const TheKeyType&     theKey1,
+                       const int             theIndex,
+                       TheItemType&&         theItem,
+                       NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext1),
           myKey1(theKey1),
           myIndex(theIndex)
@@ -94,10 +94,10 @@ private:
     }
 
     //! Constructor with 'Next'
-    IndexedDataMapNode(TheKeyType&&           theKey1,
-                       const int theIndex,
-                       TheItemType&&          theItem,
-                       NCollection_ListNode*  theNext1)
+    IndexedDataMapNode(TheKeyType&&          theKey1,
+                       const int             theIndex,
+                       TheItemType&&         theItem,
+                       NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext1),
           myKey1(std::forward<TheKeyType>(theKey1)),
           myIndex(theIndex)
@@ -111,7 +111,7 @@ private:
     int& Index() noexcept { return myIndex; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode*              theNode,
+    static void delNode(NCollection_ListNode*                   theNode,
                         occ::handle<NCollection_BaseAllocator>& theAl) noexcept
     {
       ((IndexedDataMapNode*)theNode)->~IndexedDataMapNode();
@@ -119,8 +119,8 @@ private:
     }
 
   private:
-    TheKeyType       myKey1;
-    int myIndex;
+    TheKeyType myKey1;
+    int        myIndex;
   };
 
 public:
@@ -143,10 +143,7 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept
-    {
-      return (myMap != NULL) && (myIndex <= myMap->Extent());
-    }
+    bool More(void) const noexcept { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
 
     //! Make a step along the collection
     void Next(void) noexcept { ++myIndex; }
@@ -180,7 +177,7 @@ public:
 
   private:
     NCollection_IndexedDataMap* myMap;   //!< Pointer to current node
-    int            myIndex; //!< Current index
+    int                         myIndex; //!< Current index
   };
 
   //! Shorthand for a regular iterator type.
@@ -212,8 +209,9 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_IndexedDataMap(const int                   theNbBuckets,
-                                      const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
+  explicit NCollection_IndexedDataMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
   }
@@ -282,7 +280,7 @@ public:
   {
     NCollection_ListNode** ppNewData1 = NULL;
     NCollection_ListNode** ppNewData2 = NULL;
-    int       newBuck;
+    int                    newBuck;
     if (BeginResize(N, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
@@ -351,7 +349,7 @@ public:
       return aNode->Index();
     }
     const int aNewIndex = Increment();
-    aNode                            = new (this->myAllocator)
+    aNode               = new (this->myAllocator)
       IndexedDataMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, theItem, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
@@ -375,7 +373,7 @@ public:
       return aNode->Index();
     }
     const int aNewIndex = Increment();
-    aNode                            = new (this->myAllocator)
+    aNode               = new (this->myAllocator)
       IndexedDataMapNode(theKey1, aNewIndex, std::forward<TheItemType>(theItem), myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
@@ -420,9 +418,7 @@ public:
   }
 
   //! Substitute
-  void Substitute(const int theIndex,
-                  const TheKeyType&      theKey1,
-                  const TheItemType&     theItem)
+  void Substitute(const int theIndex, const TheKeyType& theKey1, const TheItemType& theItem)
   {
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > Extent(),
                                  "NCollection_IndexedDataMap::Substitute : "
@@ -554,10 +550,7 @@ public:
   }
 
   //! operator ()
-  const TheItemType& operator()(const int theIndex) const
-  {
-    return FindFromIndex(theIndex);
-  }
+  const TheItemType& operator()(const int theIndex) const { return FindFromIndex(theIndex); }
 
   //! ChangeFromIndex
   TheItemType& ChangeFromIndex(const int theIndex)
@@ -665,9 +658,7 @@ protected:
   //! @param[out] theNode the detected node with equal key. Can be null.
   //! @param[out] theHash computed bounded hash code for current key.
   //! @return true if key is found
-  bool lookup(const TheKeyType&    theKey,
-                          IndexedDataMapNode*& theNode,
-                          size_t&              theHash) const
+  bool lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode, size_t& theHash) const
   {
     theHash = HashCode(theKey, NbBuckets());
     if (IsEmpty())

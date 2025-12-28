@@ -49,10 +49,7 @@ public:
   //! array.
   Standard_EXPORT const Interface_FileParameter& Value(const int Index) const;
 
-  const Interface_FileParameter& operator()(const int Index) const
-  {
-    return Value(Index);
-  }
+  const Interface_FileParameter& operator()(const int Index) const { return Value(Index); }
 
   //! return the value of the <Index>th element of the
   //! array.

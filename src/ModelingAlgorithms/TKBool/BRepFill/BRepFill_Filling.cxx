@@ -50,11 +50,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_XY.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -140,16 +137,16 @@ static TopoDS_Wire WireFromList(NCollection_List<TopoDS_Shape>& Edges)
 
 //=================================================================================================
 
-BRepFill_Filling::BRepFill_Filling(const int Degree,
-                                   const int NbPtsOnCur,
-                                   const int NbIter,
-                                   const bool Anisotropie,
-                                   const double    Tol2d,
-                                   const double    Tol3d,
-                                   const double    TolAng,
-                                   const double    TolCurv,
-                                   const int MaxDeg,
-                                   const int MaxSegments)
+BRepFill_Filling::BRepFill_Filling(const int    Degree,
+                                   const int    NbPtsOnCur,
+                                   const int    NbIter,
+                                   const bool   Anisotropie,
+                                   const double Tol2d,
+                                   const double Tol3d,
+                                   const double TolAng,
+                                   const double TolCurv,
+                                   const int    MaxDeg,
+                                   const int    MaxSegments)
 {
   myDegree      = Degree;
   myNbPtsOnCur  = NbPtsOnCur;
@@ -184,9 +181,9 @@ void BRepFill_Filling::SetConstrParam(const double Tol2d,
 
 //=================================================================================================
 
-void BRepFill_Filling::SetResolParam(const int Degree,
-                                     const int NbPtsOnCur,
-                                     const int NbIter,
+void BRepFill_Filling::SetResolParam(const int  Degree,
+                                     const int  NbPtsOnCur,
+                                     const int  NbIter,
                                      const bool Anisotropie)
 {
   myDegree      = Degree;
@@ -197,8 +194,7 @@ void BRepFill_Filling::SetResolParam(const int Degree,
 
 //=================================================================================================
 
-void BRepFill_Filling::SetApproxParam(const int MaxDeg,
-                                      const int MaxSegments)
+void BRepFill_Filling::SetApproxParam(const int MaxDeg, const int MaxSegments)
 {
   myMaxDeg      = MaxDeg;
   myMaxSegments = MaxSegments;
@@ -216,9 +212,7 @@ void BRepFill_Filling::LoadInitSurface(const TopoDS_Face& aFace)
 // function : Add
 // purpose  : adds an edge as a constraint
 //======================================================================
-int BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
-                                       const GeomAbs_Shape    Order,
-                                       const bool IsBound)
+int BRepFill_Filling::Add(const TopoDS_Edge& anEdge, const GeomAbs_Shape Order, const bool IsBound)
 {
   TopoDS_Face               NullFace;
   BRepFill_EdgeFaceAndOrder EdgeFaceAndOrder(anEdge, NullFace, Order);
@@ -238,10 +232,10 @@ int BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
 // function : Add
 // purpose  : adds an edge with supporting face as a constraint
 //======================================================================
-int BRepFill_Filling::Add(const TopoDS_Edge&     anEdge,
-                                       const TopoDS_Face&     Support,
-                                       const GeomAbs_Shape    Order,
-                                       const bool IsBound)
+int BRepFill_Filling::Add(const TopoDS_Edge&  anEdge,
+                          const TopoDS_Face&  Support,
+                          const GeomAbs_Shape Order,
+                          const bool          IsBound)
 {
   BRepFill_EdgeFaceAndOrder EdgeFaceAndOrder(anEdge, Support, Order);
   if (IsBound)
@@ -273,7 +267,8 @@ int BRepFill_Filling::Add(const TopoDS_Face& Support, const GeomAbs_Shape Order)
 //======================================================================
 int BRepFill_Filling::Add(const gp_Pnt& Point)
 {
-  occ::handle<GeomPlate_PointConstraint> aPC = new GeomPlate_PointConstraint(Point, GeomAbs_C0, myTol3d);
+  occ::handle<GeomPlate_PointConstraint> aPC =
+    new GeomPlate_PointConstraint(Point, GeomAbs_C0, myTol3d);
   myPoints.Append(aPC);
   return (myBoundary.Length() + myFreeConstraints.Length() + myConstraints.Length()
           + myPoints.Length());
@@ -283,10 +278,10 @@ int BRepFill_Filling::Add(const gp_Pnt& Point)
 // function : Add
 // purpose  : adds a point constraint on a face
 //======================================================================
-int BRepFill_Filling::Add(const double U,
-                                       const double V,
-                                       const TopoDS_Face&  Support,
-                                       const GeomAbs_Shape Order)
+int BRepFill_Filling::Add(const double        U,
+                          const double        V,
+                          const TopoDS_Face&  Support,
+                          const GeomAbs_Shape Order)
 {
   occ::handle<BRepAdaptor_Surface> HSurf = new BRepAdaptor_Surface();
   HSurf->Initialize(Support);
@@ -305,14 +300,15 @@ int BRepFill_Filling::Add(const double U,
 
 //=================================================================================================
 
-void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFaceAndOrder>& SeqOfConstraints)
+void BRepFill_Filling::AddConstraints(
+  const NCollection_Sequence<BRepFill_EdgeFaceAndOrder>& SeqOfConstraints)
 {
   TopoDS_Edge   CurEdge;
   TopoDS_Face   CurFace;
   GeomAbs_Shape CurOrder;
 
   occ::handle<GeomPlate_CurveConstraint> Constr;
-  int                  i;
+  int                                    i;
   for (i = 1; i <= SeqOfConstraints.Length(); i++)
   {
     CurEdge  = SeqOfConstraints(i).myEdge;
@@ -333,8 +329,8 @@ void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFa
         // On prend une representation Geometrique : au pif !
         occ::handle<Geom_Surface> Surface;
         occ::handle<Geom2d_Curve> C2d;
-        TopLoc_Location      loc;
-        double        f, l;
+        TopLoc_Location           loc;
+        double                    f, l;
         BRep_Tool::CurveOnSurface(CurEdge, C2d, Surface, loc, f, l);
         if (Surface.IsNull())
         {
@@ -346,8 +342,9 @@ void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFa
         occ::handle<GeomAdaptor_Surface> Surf    = new GeomAdaptor_Surface(Surface);
         occ::handle<Geom2dAdaptor_Curve> Curve2d = new Geom2dAdaptor_Curve(C2d);
 
-        Adaptor3d_CurveOnSurface         CurvOnSurf(Curve2d, Surf);
-        occ::handle<Adaptor3d_CurveOnSurface> HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
+        Adaptor3d_CurveOnSurface              CurvOnSurf(Curve2d, Surf);
+        occ::handle<Adaptor3d_CurveOnSurface> HCurvOnSurf =
+          new Adaptor3d_CurveOnSurface(CurvOnSurf);
 
         Constr = new GeomPlate_CurveConstraint(HCurvOnSurf,
                                                CurOrder,
@@ -366,7 +363,7 @@ void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFa
       // If CurEdge has no 2d representation on CurFace,
       // there will be exception "Attempt to access to null object"
       // in this initialization (null pcurve).
-      Adaptor3d_CurveOnSurface         CurvOnSurf(Curve2d, Surf);
+      Adaptor3d_CurveOnSurface              CurvOnSurf(Curve2d, Surf);
       occ::handle<Adaptor3d_CurveOnSurface> HCurvOnSurf = new Adaptor3d_CurveOnSurface(CurvOnSurf);
 
       Constr = new BRepFill_CurveConstraint(HCurvOnSurf,
@@ -379,7 +376,7 @@ void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFa
     if (myIsInitFaceGiven)
     {
       occ::handle<Geom2d_Curve> Curve2d;
-      double        FirstPar, LastPar;
+      double                    FirstPar, LastPar;
       Curve2d = BRep_Tool::CurveOnSurface(CurEdge, myInitFace, FirstPar, LastPar);
       if (!Curve2d.IsNull())
       {
@@ -393,10 +390,11 @@ void BRepFill_Filling::AddConstraints(const NCollection_Sequence<BRepFill_EdgeFa
 
 //=================================================================================================
 
-void BRepFill_Filling::BuildWires(NCollection_List<TopoDS_Shape>& EdgeList, NCollection_List<TopoDS_Shape>& WireList)
+void BRepFill_Filling::BuildWires(NCollection_List<TopoDS_Shape>& EdgeList,
+                                  NCollection_List<TopoDS_Shape>& WireList)
 {
   NCollection_List<TopoDS_Shape>::Iterator Itl;
-  int                   i, j;
+  int                                      i, j;
 
   while (!EdgeList.IsEmpty())
   {
@@ -478,7 +476,7 @@ void BRepFill_Filling::BuildWires(NCollection_List<TopoDS_Shape>& EdgeList, NCol
 void BRepFill_Filling::FindExtremitiesOfHoles(const NCollection_List<TopoDS_Shape>& WireList,
                                               NCollection_Sequence<TopoDS_Shape>&   VerSeq) const
 {
-  NCollection_Sequence<TopoDS_Shape>           WireSeq;
+  NCollection_Sequence<TopoDS_Shape>       WireSeq;
   NCollection_List<TopoDS_Shape>::Iterator Itl(WireList);
   for (; Itl.More(); Itl.Next())
     WireSeq.Append(Itl.Value());
@@ -507,10 +505,10 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const NCollection_List<TopoDS_Shap
 
   while (!WireSeq.IsEmpty())
   {
-    TopoDS_Vertex    MinVtx;
-    int i, MinInd = 1;
-    bool IsLast   = false;
-    double    MinAngle = M_PI;
+    TopoDS_Vertex MinVtx;
+    int           i, MinInd = 1;
+    bool          IsLast   = false;
+    double        MinAngle = M_PI;
 
     for (i = 1; i <= WireSeq.Length(); i++)
     {
@@ -575,9 +573,9 @@ void BRepFill_Filling::Build()
     return;
   }
 
-  TopoDS_Edge      CurEdge;
-  TopoDS_Face      CurFace;
-  int i, j;
+  TopoDS_Edge CurEdge;
+  TopoDS_Face CurFace;
+  int         i, j;
 
   // Creating array of vertices: extremities of wires
   NCollection_Sequence<TopoDS_Shape> VerSeq;
@@ -594,9 +592,9 @@ void BRepFill_Filling::Build()
   for (j = 1; j <= myFreeConstraints.Length(); j++)
   {
     GeomAPI_ProjectPointOnSurf Projector;
-    double              U1, V1, U2, V2;
+    double                     U1, V1, U2, V2;
 
-    CurFace                           = myFreeConstraints(j).myFace;
+    CurFace                                = myFreeConstraints(j).myFace;
     occ::handle<BRepAdaptor_Surface> HSurf = new BRepAdaptor_Surface();
     HSurf->Initialize(CurFace);
     occ::handle<Geom_Surface> CurSurface = BRep_Tool::Surface(HSurf->Face());
@@ -633,10 +631,10 @@ void BRepFill_Filling::Build()
 
       // Making the constraint
       NCollection_Array1<gp_Pnt2d> Points(1, 2);
-      Points(1)                         = gp_Pnt2d(U1, V1);
-      Points(2)                         = gp_Pnt2d(U2, V2);
+      Points(1)                              = gp_Pnt2d(U1, V1);
+      Points(2)                              = gp_Pnt2d(U2, V2);
       occ::handle<Geom2d_BezierCurve> Line2d = new Geom2d_BezierCurve(Points);
-      TopoDS_Edge                E      = BRepLib_MakeEdge(Line2d, CurSurface, FirstVtx, LastVtx);
+      TopoDS_Edge                     E = BRepLib_MakeEdge(Line2d, CurSurface, FirstVtx, LastVtx);
       Add(E, CurFace, myFreeConstraints(j).myOrder);
       VerSeq.Remove(i, i + 1);
       break;
@@ -700,9 +698,9 @@ void BRepFill_Filling::Build()
   }
 
   // Build the final wire and final face
-  NCollection_List<TopoDS_Shape>              FinalEdges;
+  NCollection_List<TopoDS_Shape>                              FinalEdges;
   occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> CurvesOnPlate = myBuilder->Curves2d();
-  BRep_Builder                      BB;
+  BRep_Builder                                                BB;
   for (i = 1; i <= myBoundary.Length(); i++)
   {
     const TopoDS_Edge& InitEdge = myBoundary(i).myEdge;

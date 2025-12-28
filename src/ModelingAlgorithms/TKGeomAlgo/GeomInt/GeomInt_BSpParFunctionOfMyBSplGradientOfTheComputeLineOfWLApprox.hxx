@@ -25,16 +25,10 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <math_IntegerVector.hxx>
 #include <AppParCurves_Constraint.hxx>
 class GeomInt_TheMultiLineOfWLApprox;
@@ -52,14 +46,14 @@ public:
   //! initializes the fields of the function. The approximating
   //! curve has <NbPol> control points.
   Standard_EXPORT GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox(
-    const GeomInt_TheMultiLineOfWLApprox&                 SSP,
-    const int                                FirstPoint,
-    const int                                LastPoint,
+    const GeomInt_TheMultiLineOfWLApprox&                                  SSP,
+    const int                                                              FirstPoint,
+    const int                                                              LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    const math_Vector&                                    Parameters,
-    const NCollection_Array1<double>&                           Knots,
-    const NCollection_Array1<int>&                        Mults,
-    const int                                NbPol);
+    const math_Vector&                                                     Parameters,
+    const NCollection_Array1<double>&                                      Knots,
+    const NCollection_Array1<int>&                                         Mults,
+    const int                                                              NbPol);
 
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
@@ -88,8 +82,7 @@ public:
 
   //! returns the distance between the MultiPoint of range
   //! IPoint and the curve CurveIndex.
-  Standard_EXPORT double Error(const int IPoint,
-                                      const int CurveIndex);
+  Standard_EXPORT double Error(const int IPoint, const int CurveIndex);
 
   //! returns the maximum distance between the points
   //! and the MultiBSpCurve.
@@ -113,13 +106,13 @@ public:
   //! to Index(ieme point) + degree +1.
   Standard_EXPORT const math_IntegerVector& Index() const;
 
-  Standard_EXPORT AppParCurves_Constraint
-    FirstConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-                    const int                                FirstPoint) const;
+  Standard_EXPORT AppParCurves_Constraint FirstConstraint(
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    const int                                                              FirstPoint) const;
 
-  Standard_EXPORT AppParCurves_Constraint
-    LastConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-                   const int                                LastPoint) const;
+  Standard_EXPORT AppParCurves_Constraint LastConstraint(
+    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+    const int                                                              LastPoint) const;
 
   Standard_EXPORT void SetFirstLambda(const double l1);
 
@@ -131,12 +124,12 @@ protected:
   Standard_EXPORT void Perform(const math_Vector& X);
 
 private:
-  bool                                                    Done;
+  bool                                                                Done;
   GeomInt_TheMultiLineOfWLApprox                                      MyMultiLine;
   AppParCurves_MultiBSpCurve                                          MyMultiBSpCurve;
-  int                                                    nbpoles;
+  int                                                                 nbpoles;
   math_Vector                                                         myParameters;
-  double                                                       FVal;
+  double                                                              FVal;
   math_Vector                                                         ValGrad_F;
   math_Matrix                                                         MyF;
   math_Matrix                                                         PTLX;
@@ -145,19 +138,19 @@ private:
   math_Matrix                                                         A;
   math_Matrix                                                         DA;
   GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox MyLeastSquare;
-  bool                                                    Contraintes;
-  int                                                    NbP;
-  int                                                    NbCu;
-  int                                                    Adeb;
-  int                                                    Afin;
-  occ::handle<NCollection_HArray1<int>>                                    tabdim;
-  double                                                       ERR3d;
-  double                                                       ERR2d;
-  int                                                    FirstP;
-  int                                                    LastP;
-  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>                      myConstraints;
-  double                                                       mylambda1;
-  double                                                       mylambda2;
+  bool                                                                Contraintes;
+  int                                                                 NbP;
+  int                                                                 NbCu;
+  int                                                                 Adeb;
+  int                                                                 Afin;
+  occ::handle<NCollection_HArray1<int>>                               tabdim;
+  double                                                              ERR3d;
+  double                                                              ERR2d;
+  int                                                                 FirstP;
+  int                                                                 LastP;
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>     myConstraints;
+  double                                                              mylambda1;
+  double                                                              mylambda2;
 };
 
 #endif // _GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox_HeaderFile

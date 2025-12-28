@@ -30,7 +30,7 @@
 // =======================================================================
 
 XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
-                                                   const int          theLevel)
+                                                   const int                            theLevel)
     : myMaxLevel(theLevel),
       mySeedLevel(1)
 {
@@ -44,7 +44,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Doc
   NCollection_Sequence<TDF_Label> aRoots;
   myShapeTool->GetFreeShapes(aRoots);
 
-  AuxAssemblyItem           anAuxItem;
+  AuxAssemblyItem                           anAuxItem;
   NCollection_List<TCollection_AsciiString> aParentPath;
   for (NCollection_Sequence<TDF_Label>::Iterator anIt(aRoots); anIt.More(); anIt.Next())
   {
@@ -59,8 +59,8 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Doc
 // =======================================================================
 
 XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Document>& theDoc,
-                                                   const XCAFDoc_AssemblyItemId&   theRoot,
-                                                   const int          theLevel)
+                                                   const XCAFDoc_AssemblyItemId&        theRoot,
+                                                   const int                            theLevel)
     : myMaxLevel(theLevel),
       mySeedLevel(theRoot.GetPath().Size())
 {
@@ -90,7 +90,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Doc
     else
     {
       TCollection_AsciiString aPathStr = theRoot.ToString();
-      int        anIndex  = aPathStr.SearchFromEnd("/");
+      int                     anIndex  = aPathStr.SearchFromEnd("/");
       if (anIndex != -1)
       {
         aPathStr.Remove(anIndex, aPathStr.Length() - anIndex + 1);
@@ -171,9 +171,10 @@ XCAFDoc_AssemblyItemId XCAFDoc_AssemblyIterator::Current() const
 // purpose  : Makes an assembly item id from the specified label
 // =======================================================================
 
-void XCAFDoc_AssemblyIterator::createItem(const TDF_Label&                 theLabel,
-                                          const NCollection_List<TCollection_AsciiString>& theParentPath,
-                                          AuxAssemblyItem&                 theAuxItem) const
+void XCAFDoc_AssemblyIterator::createItem(
+  const TDF_Label&                                 theLabel,
+  const NCollection_List<TCollection_AsciiString>& theParentPath,
+  AuxAssemblyItem&                                 theAuxItem) const
 {
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry(theLabel, anEntry);

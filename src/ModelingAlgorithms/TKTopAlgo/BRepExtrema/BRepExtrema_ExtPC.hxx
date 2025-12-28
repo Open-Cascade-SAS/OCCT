@@ -58,16 +58,13 @@ public:
   //! of parameter FirstParameter <pnt1> and
   //! dist2 is a square distance between <P> and the point
   //! of parameter LastParameter <pnt2>.
-  void TrimmedSquareDistances(double& dist1,
-                              double& dist2,
-                              gp_Pnt&        pnt1,
-                              gp_Pnt&        pnt2) const
+  void TrimmedSquareDistances(double& dist1, double& dist2, gp_Pnt& pnt1, gp_Pnt& pnt2) const
   {
     myExtPC.TrimmedSquareDistances(dist1, dist2, pnt1, pnt2);
   }
 
 private:
-  Extrema_ExtPC             myExtPC;
+  Extrema_ExtPC                  myExtPC;
   occ::handle<BRepAdaptor_Curve> myHC;
 };
 

@@ -16,7 +16,6 @@
 #include "RWStepAP214_RWAutoDesignDocumentReference.pxx"
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignReferencingItem.hxx>
-#include <StepAP214_AutoDesignReferencingItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Document.hxx>
@@ -28,7 +27,7 @@ RWStepAP214_RWAutoDesignDocumentReference::RWStepAP214_RWAutoDesignDocumentRefer
 
 void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                               num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepAP214_AutoDesignDocumentReference>& ent) const
 {
@@ -50,12 +49,12 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_AutoDesignReferencingItem>> aItems;
-  StepAP214_AutoDesignReferencingItem                  anItem;
-  int                                     nsub3;
+  StepAP214_AutoDesignReferencingItem                                   anItem;
+  int                                                                   nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aItems               = new NCollection_HArray1<StepAP214_AutoDesignReferencingItem>(1, nb3);
+    aItems  = new NCollection_HArray1<StepAP214_AutoDesignReferencingItem>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "item", ach, anItem);
@@ -70,7 +69,7 @@ void RWStepAP214_RWAutoDesignDocumentReference::ReadStep(
 }
 
 void RWStepAP214_RWAutoDesignDocumentReference::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepAP214_AutoDesignDocumentReference>& ent) const
 {
 
@@ -94,7 +93,7 @@ void RWStepAP214_RWAutoDesignDocumentReference::WriteStep(
 
 void RWStepAP214_RWAutoDesignDocumentReference::Share(
   const occ::handle<StepAP214_AutoDesignDocumentReference>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
   iter.AddItem(ent->AssignedDocument());
   for (int i3 = 1; i3 <= ent->NbItems(); i3++)

@@ -32,10 +32,10 @@ public:
   //! second shape aSShape, the plane aPlane and the index anExternRef.
   //! aPlane serves as an optional axis.
   //! anExternRef set to 0 indicates that there is no relation.
-  Standard_EXPORT PrsDim_TangentRelation(const TopoDS_Shape&       aFShape,
-                                         const TopoDS_Shape&       aSShape,
+  Standard_EXPORT PrsDim_TangentRelation(const TopoDS_Shape&            aFShape,
+                                         const TopoDS_Shape&            aSShape,
                                          const occ::handle<Geom_Plane>& aPlane,
-                                         const int    anExternRef = 0);
+                                         const int                      anExternRef = 0);
 
   //! Returns the external reference for tangency.
   //! The values are as follows:
@@ -66,10 +66,10 @@ private:
   Standard_EXPORT void ComputeTwoEdgesTangent(const occ::handle<Prs3d_Presentation>& aPresentation);
 
 private:
-  gp_Pnt           myAttach;
-  gp_Dir           myDir;
-  double    myLength;
-  int myExternRef;
+  gp_Pnt myAttach;
+  gp_Dir myDir;
+  double myLength;
+  int    myExternRef;
 };
 
 #endif // _PrsDim_TangentRelation_HeaderFile

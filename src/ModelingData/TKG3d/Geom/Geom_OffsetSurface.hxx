@@ -86,8 +86,8 @@ public:
   //! No check is done to verify that a unique normal direction is
   //! defined at any point of the basis surface S.
   Standard_EXPORT Geom_OffsetSurface(const occ::handle<Geom_Surface>& S,
-                                     const double         Offset,
-                                     const bool      isNotCheckC0 = false);
+                                     const double                     Offset,
+                                     const bool                       isNotCheckC0 = false);
 
   //! Raised if S is not at least C1.
   //! Warnings :
@@ -99,7 +99,7 @@ public:
   //! Standard_ConstructionError if the surface S is not
   //! at least "C1" continuous.
   Standard_EXPORT void SetBasisSurface(const occ::handle<Geom_Surface>& S,
-                                       const bool      isNotCheckC0 = false);
+                                       const bool                       isNotCheckC0 = false);
 
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the offset surface to copy from
@@ -144,10 +144,7 @@ public:
   //! If the surface is infinite, this function can return:
   //! - double::RealFirst(), or
   //! - double::RealLast().
-  Standard_EXPORT void Bounds(double& U1,
-                              double& U2,
-                              double& V1,
-                              double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
   //! This method returns the continuity of the basis surface - 1.
   //! Continuity of the Offset surface :
@@ -254,40 +251,38 @@ public:
   //! Raised if the continuity of the basis surface is not C1.
   //! Raised if the order of derivation required to compute the
   //! normal direction is greater than the second order.
-  Standard_EXPORT void D0(const double U,
-                          const double V,
-                          gp_Pnt&             P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Raised if the continuity of the basis surface is not C2.
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const override;
 
   //! Raised if the continuity of the basis surface is not C3.
   Standard_EXPORT void D2(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV) const override;
 
   //! Raised if the continuity of the basis surface is not C4.
   Standard_EXPORT void D3(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV,
-                          gp_Vec&             D3U,
-                          gp_Vec&             D3V,
-                          gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV,
+                          gp_Vec&      D3U,
+                          gp_Vec&      D3V,
+                          gp_Vec&      D3UUV,
+                          gp_Vec&      D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction u and Nv in the direction v.
   //!
@@ -304,10 +299,10 @@ public:
   //! Warnings:
   //! The exception UndefinedValue or UndefinedDerivative is
   //! raised if it is not possible to compute a unique offset direction.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U,
+                            const double V,
+                            const int    Nu,
+                            const int    Nv) const override;
 
   //! Applies the transformation T to this offset surface.
   //! Note: the basis surface is also modified.
@@ -327,8 +322,8 @@ public:
   //! me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual void TransformParameters(double& U,
-                                                   double& V,
+  Standard_EXPORT virtual void TransformParameters(double&        U,
+                                                   double&        V,
                                                    const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
@@ -345,8 +340,7 @@ public:
   //! me->ParametricTransformation(T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const
-    override;
+  Standard_EXPORT virtual gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
 
   //! Creates a new object which is a copy of this offset surface.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
@@ -361,36 +355,34 @@ public:
   //! along U at the point U,V. It means that DL/DU is
   //! collinear to DS/DU. If IsOpposite == true
   //! these vectors have opposite direction.
-  Standard_EXPORT bool
-    UOsculatingSurface(const double          U,
-                       const double          V,
-                       bool&            IsOpposite,
-                       occ::handle<Geom_BSplineSurface>& UOsculSurf) const;
+  Standard_EXPORT bool UOsculatingSurface(const double                      U,
+                                          const double                      V,
+                                          bool&                             IsOpposite,
+                                          occ::handle<Geom_BSplineSurface>& UOsculSurf) const;
 
   //! if true, L is the local osculating surface
   //! along V at the point U,V.
   //! It means that DL/DV is collinear to DS/DV.
   //! If IsOpposite == true
   //! these vectors have opposite direction.
-  Standard_EXPORT bool
-    VOsculatingSurface(const double          U,
-                       const double          V,
-                       bool&            IsOpposite,
-                       occ::handle<Geom_BSplineSurface>& VOsculSurf) const;
+  Standard_EXPORT bool VOsculatingSurface(const double                      U,
+                                          const double                      V,
+                                          bool&                             IsOpposite,
+                                          occ::handle<Geom_BSplineSurface>& VOsculSurf) const;
 
   //! Returns continuity of the basis surface.
   inline GeomAbs_Shape GetBasisSurfContinuity() const { return myBasisSurfContinuity; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 
 private:
-  occ::handle<Geom_Surface>                    basisSurf;
-  occ::handle<Geom_Surface>                    equivSurf;
-  double                           offsetValue;
+  occ::handle<Geom_Surface>               basisSurf;
+  occ::handle<Geom_Surface>               equivSurf;
+  double                                  offsetValue;
   std::unique_ptr<Geom_OsculatingSurface> myOscSurf;
   GeomAbs_Shape                           myBasisSurfContinuity;
 };

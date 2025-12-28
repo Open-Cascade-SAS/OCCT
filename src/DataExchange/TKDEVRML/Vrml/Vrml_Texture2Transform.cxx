@@ -25,10 +25,10 @@ Vrml_Texture2Transform::Vrml_Texture2Transform()
   myScaleFactor = tmpVec;
 }
 
-Vrml_Texture2Transform::Vrml_Texture2Transform(const gp_Vec2d&     aTranslation,
-                                               const double aRotation,
-                                               const gp_Vec2d&     aScaleFactor,
-                                               const gp_Vec2d&     aCenter)
+Vrml_Texture2Transform::Vrml_Texture2Transform(const gp_Vec2d& aTranslation,
+                                               const double    aRotation,
+                                               const gp_Vec2d& aScaleFactor,
+                                               const gp_Vec2d& aCenter)
 {
   myTranslation = aTranslation;
   myRotation    = aRotation;

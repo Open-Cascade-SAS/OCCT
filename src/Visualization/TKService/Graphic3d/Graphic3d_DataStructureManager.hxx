@@ -39,8 +39,7 @@ protected:
   virtual const occ::handle<Graphic3d_Camera>& Camera() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 };
 
 #endif // _Graphic3d_DataStructureManager_HeaderFile

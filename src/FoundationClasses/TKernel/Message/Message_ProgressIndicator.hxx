@@ -135,7 +135,7 @@ private:
   void Increment(const double theStep, const Message_ProgressScope& theScope);
 
 private:
-  double          myPosition;  //!< Total progress position ranged from 0 to 1
+  double                 myPosition;  //!< Total progress position ranged from 0 to 1
   std::mutex             myMutex;     //!< Protection of myPosition from concurrent increment
   Message_ProgressScope* myRootScope; //!< The root progress scope
 
@@ -148,7 +148,7 @@ private:
 
 //=================================================================================================
 
-inline void Message_ProgressIndicator::Increment(const double          theStep,
+inline void Message_ProgressIndicator::Increment(const double                 theStep,
                                                  const Message_ProgressScope& theScope)
 {
   // protect incrementation by mutex to avoid problems in multithreaded scenarios

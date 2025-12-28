@@ -73,23 +73,17 @@ public:
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and the normal of its plane <Norm> and
   //! its radius <Radius>.
-  Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
-                               const gp_Dir&       Norm,
-                               const double Radius);
+  Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and the normal of its plane <Plane> and
   //! its radius <Radius>.
-  Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
-                               const gp_Pln&       Plane,
-                               const double Radius);
+  Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and a point <Ptaxis> giving the normal
   //! of its plane <Plane> and its radius <Radius>.
-  Standard_EXPORT gce_MakeCirc(const gp_Pnt&       Center,
-                               const gp_Pnt&       Ptaxis,
-                               const double Radius);
+  Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and its radius <Radius>.

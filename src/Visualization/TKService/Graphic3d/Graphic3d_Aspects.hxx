@@ -204,9 +204,7 @@ public:
   void SetPolygonOffset(const Graphic3d_PolygonOffset& theOffset) { myPolygonOffset = theOffset; }
 
   //! Returns current polygon offsets settings.
-  void PolygonOffsets(int&   theMode,
-                      float& theFactor,
-                      float& theUnits) const
+  void PolygonOffsets(int& theMode, float& theFactor, float& theUnits) const
   {
     theMode   = myPolygonOffset.Mode;
     theFactor = myPolygonOffset.Factor;
@@ -360,7 +358,10 @@ public:
   const occ::handle<Graphic3d_MarkerImage>& MarkerImage() const { return myMarkerImage; }
 
   //! Set marker's image texture.
-  void SetMarkerImage(const occ::handle<Graphic3d_MarkerImage>& theImage) { myMarkerImage = theImage; }
+  void SetMarkerImage(const occ::handle<Graphic3d_MarkerImage>& theImage)
+  {
+    myMarkerImage = theImage;
+  }
 
   //! Returns TRUE if marker should be drawn using marker sprite (either user-provided or
   //! generated).
@@ -543,8 +544,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
   Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
@@ -581,8 +581,8 @@ protected:
   occ::handle<Graphic3d_MarkerImage>    myMarkerImage;
   occ::handle<Graphic3d_HatchStyle>     myHatchStyle;
   occ::handle<TCollection_HAsciiString> myTextFont;
-  Graphic3d_MaterialAspect         myFrontMaterial;
-  Graphic3d_MaterialAspect         myBackMaterial;
+  Graphic3d_MaterialAspect              myFrontMaterial;
+  Graphic3d_MaterialAspect              myBackMaterial;
 
   Quantity_ColorRGBA myInteriorColor;
   Quantity_ColorRGBA myBackInteriorColor;
@@ -593,20 +593,20 @@ protected:
   Graphic3d_TypeOfShadingModel    myShadingModel;
   Graphic3d_TypeOfBackfacingModel myFaceCulling;
   Graphic3d_AlphaMode             myAlphaMode;
-  float              myAlphaCutoff;
+  float                           myAlphaCutoff;
 
-  Aspect_TypeOfLine  myLineType;
-  float myLineWidth;
-  uint16_t           myLineFactor;
-  uint16_t           myLinePattern;
+  Aspect_TypeOfLine myLineType;
+  float             myLineWidth;
+  uint16_t          myLineFactor;
+  uint16_t          myLinePattern;
 
   Aspect_TypeOfMarker myMarkerType;
-  float  myMarkerScale;
+  float               myMarkerScale;
 
   Aspect_TypeOfStyleText   myTextStyle;
   Aspect_TypeOfDisplayText myTextDisplayType;
   Font_FontAspect          myTextFontAspect;
-  float       myTextAngle;
+  float                    myTextAngle;
 
   bool myToSkipFirstEdge;
   bool myToDistinguishMaterials;

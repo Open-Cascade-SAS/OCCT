@@ -52,17 +52,17 @@ void DrawDim_PlanarDiameter::DrawOn(Draw_Display& dis) const
 {
   if (myCircle.ShapeType() == TopAbs_EDGE)
   {
-    double      f, l;
+    double                  f, l;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(TopoDS::Edge(myCircle), f, l);
     if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
       gp_Circ       circle = occ::down_cast<Geom_Circle>(curve)->Circ();
       TopoDS_Vertex vf, vl;
       TopExp::Vertices(TopoDS::Edge(myCircle), vf, vl);
-      const gp_Pnt  first    = BRep_Tool::Pnt(vf);
-      double parfirst = ElCLib::Parameter(circle, first);
-      double parlast  = (parfirst + M_PI);
-      gp_Pnt        last     = ElCLib::Value(parlast, circle);
+      const gp_Pnt first    = BRep_Tool::Pnt(vf);
+      double       parfirst = ElCLib::Parameter(circle, first);
+      double       parlast  = (parfirst + M_PI);
+      gp_Pnt       last     = ElCLib::Value(parlast, circle);
       //
       dis.Draw(first, last);
       gp_Pnt p((first.X() + last.X()) / 2, (first.Y() + last.Y()) / 2, (first.Z() + last.Z()) / 2);

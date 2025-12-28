@@ -22,7 +22,6 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Efficient batch evaluator for B-spline surface points.
 //!
@@ -111,10 +110,11 @@ public:
   //! @param theNU derivative order in U direction
   //! @param theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
-                                                            const NCollection_Array1<double>& theVParams,
-                                                            int                         theNU,
-                                                            int theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theUParams,
+    const NCollection_Array1<double>& theVParams,
+    int                               theNU,
+    int                               theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! Results are returned in the original input order.
@@ -158,14 +158,16 @@ private:
   //! @param[in] theUDir true for U direction, false for V direction
   //! @param[in] theFlatKnots flat knots array
   //! @return span index in flat knots array
-  int locateSpan(double& theParam, bool theUDir, const NCollection_Array1<double>& theFlatKnots) const;
+  int locateSpan(double&                           theParam,
+                 bool                              theUDir,
+                 const NCollection_Array1<double>& theFlatKnots) const;
 
   //! Prepare UV points from grid parameters and sort for cache-optimal evaluation.
   //! @param theUParams array of U parameter values
   //! @param theVParams array of V parameter values
   //! @param theUVPoints output array of UV points with span info
-  void prepareGridPoints(const NCollection_Array1<double>&                        theUParams,
-                         const NCollection_Array1<double>&                        theVParams,
+  void prepareGridPoints(const NCollection_Array1<double>&                  theUParams,
+                         const NCollection_Array1<double>&                  theVParams,
                          NCollection_Array1<GeomGridEval::UVPointWithSpan>& theUVPoints) const;
 
   //! Prepare UV points from pairs and sort for cache-optimal evaluation.
@@ -190,8 +192,8 @@ private:
     const NCollection_Array1<double>& theVParams) const;
   NCollection_Array1<gp_Vec> EvaluatePointsDN(const NCollection_Array1<double>& theUParams,
                                               const NCollection_Array1<double>& theVParams,
-                                              int                         theNU,
-                                              int                         theNV) const;
+                                              int                               theNU,
+                                              int                               theNV) const;
 
 private:
   occ::handle<Geom_BSplineSurface> myGeom;

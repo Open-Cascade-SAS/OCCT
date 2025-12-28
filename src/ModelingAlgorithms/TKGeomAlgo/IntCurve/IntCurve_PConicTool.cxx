@@ -45,7 +45,7 @@ gp_Pnt2d IntCurve_PConicTool::Value(const IntCurve_PConic& PConic, const double 
 
 //----------------------------------------------------------------------
 void IntCurve_PConicTool::D1(const IntCurve_PConic& PConic,
-                             const double    U,
+                             const double           U,
                              gp_Pnt2d&              Pt,
                              gp_Vec2d&              Tan)
 {
@@ -79,7 +79,7 @@ void IntCurve_PConicTool::D1(const IntCurve_PConic& PConic,
 
 //----------------------------------------------------------------------
 void IntCurve_PConicTool::D2(const IntCurve_PConic& PConic,
-                             const double    U,
+                             const double           U,
                              gp_Pnt2d&              Pt,
                              gp_Vec2d&              Tan,
                              gp_Vec2d&              Norm)
@@ -125,9 +125,7 @@ int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic)
 
 // int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,const double
 // U0,const double U1) {
-int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic,
-                                                const double,
-                                                const double)
+int IntCurve_PConicTool::NbSamples(const IntCurve_PConic& PConic, const double, const double)
 {
   return (PConic.Accuracy());
 }

@@ -34,17 +34,17 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_ToroidalSurface, Geom_ElementarySurface)
 
-typedef Geom_ToroidalSurface ToroidalSurface;
+typedef Geom_ToroidalSurface       ToroidalSurface;
 typedef NCollection_Array1<double> Array1OfReal;
-typedef gp_Ax1               Ax1;
-typedef gp_Ax2               Ax2;
-typedef gp_Ax3               Ax3;
-typedef gp_Circ              Circ;
-typedef gp_Dir               Dir;
-typedef gp_Pnt               Pnt;
-typedef gp_Trsf              Trsf;
-typedef gp_Vec               Vec;
-typedef gp_XYZ               XYZ;
+typedef gp_Ax1                     Ax1;
+typedef gp_Ax2                     Ax2;
+typedef gp_Ax3                     Ax3;
+typedef gp_Circ                    Circ;
+typedef gp_Dir                     Dir;
+typedef gp_Pnt                     Pnt;
+typedef gp_Trsf                    Trsf;
+typedef gp_Vec                     Vec;
+typedef gp_XYZ                     XYZ;
 
 //=================================================================================================
 
@@ -58,7 +58,7 @@ occ::handle<Geom_Geometry> Geom_ToroidalSurface::Copy() const
 
 //=================================================================================================
 
-Geom_ToroidalSurface::Geom_ToroidalSurface(const Ax3&          A3,
+Geom_ToroidalSurface::Geom_ToroidalSurface(const Ax3&   A3,
                                            const double MajorRadius,
                                            const double MinorRadius)
 
@@ -191,10 +191,7 @@ double Geom_ToroidalSurface::Area() const
 
 //=================================================================================================
 
-void Geom_ToroidalSurface::Bounds(double& U1,
-                                  double& U2,
-                                  double& V1,
-                                  double& V2) const
+void Geom_ToroidalSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
 
   U1 = 0.0;
@@ -222,11 +219,7 @@ void Geom_ToroidalSurface::D0(const double U, const double V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_ToroidalSurface::D1(const double U,
-                              const double V,
-                              Pnt&                P,
-                              Vec&                D1U,
-                              Vec&                D1V) const
+void Geom_ToroidalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
 {
   ElSLib::TorusD1(U, V, pos, majorRadius, minorRadius, P, D1U, D1V);
 }
@@ -235,12 +228,12 @@ void Geom_ToroidalSurface::D1(const double U,
 
 void Geom_ToroidalSurface::D2(const double U,
                               const double V,
-                              Pnt&                P,
-                              Vec&                D1U,
-                              Vec&                D1V,
-                              Vec&                D2U,
-                              Vec&                D2V,
-                              Vec&                D2UV) const
+                              Pnt&         P,
+                              Vec&         D1U,
+                              Vec&         D1V,
+                              Vec&         D2U,
+                              Vec&         D2V,
+                              Vec&         D2UV) const
 {
   ElSLib::TorusD2(U, V, pos, majorRadius, minorRadius, P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -249,16 +242,16 @@ void Geom_ToroidalSurface::D2(const double U,
 
 void Geom_ToroidalSurface::D3(const double U,
                               const double V,
-                              Pnt&                P,
-                              Vec&                D1U,
-                              Vec&                D1V,
-                              Vec&                D2U,
-                              Vec&                D2V,
-                              Vec&                D2UV,
-                              Vec&                D3U,
-                              Vec&                D3V,
-                              Vec&                D3UUV,
-                              Vec&                D3UVV) const
+                              Pnt&         P,
+                              Vec&         D1U,
+                              Vec&         D1V,
+                              Vec&         D2U,
+                              Vec&         D2V,
+                              Vec&         D2UV,
+                              Vec&         D3U,
+                              Vec&         D3V,
+                              Vec&         D3UUV,
+                              Vec&         D3UVV) const
 {
 
   ElSLib::TorusD3(U,
@@ -280,10 +273,7 @@ void Geom_ToroidalSurface::D3(const double U,
 
 //=================================================================================================
 
-Vec Geom_ToroidalSurface::DN(const double    U,
-                             const double    V,
-                             const int Nu,
-                             const int Nv) const
+Vec Geom_ToroidalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
 
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, "  ");
@@ -302,7 +292,8 @@ gp_Torus Geom_ToroidalSurface::Torus() const
 
 occ::handle<Geom_Curve> Geom_ToroidalSurface::UIso(const double U) const
 {
-  occ::handle<Geom_Circle> GC = new Geom_Circle(ElSLib::TorusUIso(pos, majorRadius, minorRadius, U));
+  occ::handle<Geom_Circle> GC =
+    new Geom_Circle(ElSLib::TorusUIso(pos, majorRadius, minorRadius, U));
   return GC;
 }
 
@@ -310,7 +301,8 @@ occ::handle<Geom_Curve> Geom_ToroidalSurface::UIso(const double U) const
 
 occ::handle<Geom_Curve> Geom_ToroidalSurface::VIso(const double V) const
 {
-  occ::handle<Geom_Circle> GC = new Geom_Circle(ElSLib::TorusVIso(pos, majorRadius, minorRadius, V));
+  occ::handle<Geom_Circle> GC =
+    new Geom_Circle(ElSLib::TorusVIso(pos, majorRadius, minorRadius, V));
   return GC;
 }
 

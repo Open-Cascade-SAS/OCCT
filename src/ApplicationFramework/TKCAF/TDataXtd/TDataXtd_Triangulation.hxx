@@ -46,7 +46,7 @@ public:
   //! Finds or creates a triangulation attribute.
   //! Initializes the attribute by a Poly_Triangulation object.
   Standard_EXPORT static occ::handle<TDataXtd_Triangulation> Set(
-    const TDF_Label&                  theLabel,
+    const TDF_Label&                       theLabel,
     const occ::handle<Poly_Triangulation>& theTriangulation);
 
   //! Object methods
@@ -115,8 +115,7 @@ public:
   //! The method differs from Poly_Triangulation!
   //! Sets a triangle at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
-  Standard_EXPORT void SetTriangle(const int theIndex,
-                                   const Poly_Triangle&   theTriangle);
+  Standard_EXPORT void SetTriangle(const int theIndex, const Poly_Triangle& theTriangle);
 
   //! Changes normal at the given index.
   //! Raises Standard_OutOfRange exception.

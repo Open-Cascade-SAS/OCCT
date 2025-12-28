@@ -39,11 +39,11 @@ public:
 
 private:
   Handle(IMeshData::SequenceOfReal) fillParams(
-    const IMeshData::IMapOfReal&                   theParams,
-    const std::pair<double, double>& theRange,
-    const int                         theStepsNb,
-    const double                            theScale,
-    const occ::handle<NCollection_IncAllocator>&        theAllocator) const;
+    const IMeshData::IMapOfReal&                 theParams,
+    const std::pair<double, double>&             theRange,
+    const int                                    theStepsNb,
+    const double                                 theScale,
+    const occ::handle<NCollection_IncAllocator>& theAllocator) const;
 
   double FUN_CalcAverageDUV(NCollection_Array1<double>& P, const int PLen) const;
 };

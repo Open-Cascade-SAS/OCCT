@@ -20,19 +20,14 @@
 #include <BRepFill_EdgeFaceAndOrder.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BRepFill_FaceAndOrder.hxx>
-#include <NCollection_Sequence.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_PointConstraint.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <memory>
 
@@ -75,16 +70,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor
-  Standard_EXPORT BRepFill_Filling(const int Degree      = 3,
-                                   const int NbPtsOnCur  = 15,
-                                   const int NbIter      = 2,
-                                   const bool Anisotropie = false,
-                                   const double    Tol2d       = 0.00001,
-                                   const double    Tol3d       = 0.0001,
-                                   const double    TolAng      = 0.01,
-                                   const double    TolCurv     = 0.1,
-                                   const int MaxDeg      = 8,
-                                   const int MaxSegments = 9);
+  Standard_EXPORT BRepFill_Filling(const int    Degree      = 3,
+                                   const int    NbPtsOnCur  = 15,
+                                   const int    NbIter      = 2,
+                                   const bool   Anisotropie = false,
+                                   const double Tol2d       = 0.00001,
+                                   const double Tol3d       = 0.0001,
+                                   const double TolAng      = 0.01,
+                                   const double TolCurv     = 0.1,
+                                   const int    MaxDeg      = 8,
+                                   const int    MaxSegments = 9);
 
   //! Sets the values of Tolerances used to control the constraint.
   //! Tol2d:
@@ -113,14 +108,13 @@ public:
   //! For each iteration the number of discretisation points is
   //! increased.
   //! Anisotropie:
-  Standard_EXPORT void SetResolParam(const int Degree      = 3,
-                                     const int NbPtsOnCur  = 15,
-                                     const int NbIter      = 2,
+  Standard_EXPORT void SetResolParam(const int  Degree      = 3,
+                                     const int  NbPtsOnCur  = 15,
+                                     const int  NbIter      = 2,
                                      const bool Anisotropie = false);
 
   //! Sets the parameters used for approximation of the surface
-  Standard_EXPORT void SetApproxParam(const int MaxDeg      = 8,
-                                      const int MaxSegments = 9);
+  Standard_EXPORT void SetApproxParam(const int MaxDeg = 8, const int MaxSegments = 9);
 
   //! Loads the initial Surface
   //! The initial surface must have orthogonal local coordinates,
@@ -141,9 +135,9 @@ public:
   //! GeomAbs_G2 : the surface has to pass by 3D representation
   //! of the edge and to respect tangency and curvature
   //! with the first face of the edge.
-  Standard_EXPORT int Add(const TopoDS_Edge&     anEdge,
-                                       const GeomAbs_Shape    Order,
-                                       const bool IsBound = true);
+  Standard_EXPORT int Add(const TopoDS_Edge&  anEdge,
+                          const GeomAbs_Shape Order,
+                          const bool          IsBound = true);
 
   //! Adds a new constraint which also defines an edge of the wire
   //! of the face
@@ -156,10 +150,10 @@ public:
   //! GeomAbs_G2 : the surface has to pass by 3D representation
   //! of the edge and to respect tangency and curvature
   //! with the given face.
-  Standard_EXPORT int Add(const TopoDS_Edge&     anEdge,
-                                       const TopoDS_Face&     Support,
-                                       const GeomAbs_Shape    Order,
-                                       const bool IsBound = true);
+  Standard_EXPORT int Add(const TopoDS_Edge&  anEdge,
+                          const TopoDS_Face&  Support,
+                          const GeomAbs_Shape Order,
+                          const bool          IsBound = true);
 
   //! Adds a free constraint on a face. The corresponding edge has to
   //! be automatically recomputed.
@@ -170,10 +164,10 @@ public:
   Standard_EXPORT int Add(const gp_Pnt& Point);
 
   //! Adds a punctual constraint.
-  Standard_EXPORT int Add(const double U,
-                                       const double V,
-                                       const TopoDS_Face&  Support,
-                                       const GeomAbs_Shape Order);
+  Standard_EXPORT int Add(const double        U,
+                          const double        V,
+                          const TopoDS_Face&  Support,
+                          const GeomAbs_Shape Order);
 
   //! Builds the resulting faces
   Standard_EXPORT void Build();
@@ -200,10 +194,12 @@ public:
 
 private:
   //! Adds constraints to builder
-  Standard_EXPORT void AddConstraints(const NCollection_Sequence<BRepFill_EdgeFaceAndOrder>& SeqOfConstraints);
+  Standard_EXPORT void AddConstraints(
+    const NCollection_Sequence<BRepFill_EdgeFaceAndOrder>& SeqOfConstraints);
 
   //! Builds wires of maximum length
-  Standard_EXPORT void BuildWires(NCollection_List<TopoDS_Shape>& EdgeList, NCollection_List<TopoDS_Shape>& WireList);
+  Standard_EXPORT void BuildWires(NCollection_List<TopoDS_Shape>& EdgeList,
+                                  NCollection_List<TopoDS_Shape>& WireList);
 
   //! Finds extremities of future edges to fix the holes between wires.
   //! Can properly operate only with convex contour
@@ -211,27 +207,27 @@ private:
                                               NCollection_Sequence<TopoDS_Shape>&   VerSeq) const;
 
 private:
-  std::shared_ptr<GeomPlate_BuildPlateSurface> myBuilder;
-  NCollection_Sequence<BRepFill_EdgeFaceAndOrder>          myBoundary;
-  NCollection_Sequence<BRepFill_EdgeFaceAndOrder>          myConstraints;
-  NCollection_Sequence<BRepFill_FaceAndOrder>              myFreeConstraints;
-  NCollection_Sequence<occ::handle<GeomPlate_PointConstraint>>          myPoints;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>                 myOldNewMap;
-  NCollection_List<TopoDS_Shape>                         myGenerated;
-  TopoDS_Face                                  myFace;
-  TopoDS_Face                                  myInitFace;
-  double                                myTol2d;
-  double                                myTol3d;
-  double                                myTolAng;
-  double                                myTolCurv;
-  int                             myMaxDeg;
-  int                             myMaxSegments;
-  int                             myDegree;
-  int                             myNbPtsOnCur;
-  int                             myNbIter;
-  bool                             myAnisotropie;
-  bool                             myIsInitFaceGiven;
-  bool                             myIsDone;
+  std::shared_ptr<GeomPlate_BuildPlateSurface>                             myBuilder;
+  NCollection_Sequence<BRepFill_EdgeFaceAndOrder>                          myBoundary;
+  NCollection_Sequence<BRepFill_EdgeFaceAndOrder>                          myConstraints;
+  NCollection_Sequence<BRepFill_FaceAndOrder>                              myFreeConstraints;
+  NCollection_Sequence<occ::handle<GeomPlate_PointConstraint>>             myPoints;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myOldNewMap;
+  NCollection_List<TopoDS_Shape>                                           myGenerated;
+  TopoDS_Face                                                              myFace;
+  TopoDS_Face                                                              myInitFace;
+  double                                                                   myTol2d;
+  double                                                                   myTol3d;
+  double                                                                   myTolAng;
+  double                                                                   myTolCurv;
+  int                                                                      myMaxDeg;
+  int                                                                      myMaxSegments;
+  int                                                                      myDegree;
+  int                                                                      myNbPtsOnCur;
+  int                                                                      myNbIter;
+  bool                                                                     myAnisotropie;
+  bool                                                                     myIsInitFaceGiven;
+  bool                                                                     myIsDone;
 };
 
 #endif // _BRepFill_Filling_HeaderFile

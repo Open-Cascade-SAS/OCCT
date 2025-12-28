@@ -41,10 +41,10 @@ public:
   //! returns state of VP on ShapeIndex.
   Standard_EXPORT TopAbs_State VPointPosition(const TopoDS_Shape&         F,
                                               TopOpeBRep_VPointInter&     VP,
-                                              const int      ShapeIndex,
+                                              const int                   ShapeIndex,
                                               TopOpeBRep_PointClassifier& PC,
-                                              const bool      AssumeINON,
-                                              const double         Tol);
+                                              const bool                  AssumeINON,
+                                              const double                Tol);
 
   //! returns the edge containing the VPoint <VP> used in the
   //! last VPointPosition() call. Edge is defined if the state previously

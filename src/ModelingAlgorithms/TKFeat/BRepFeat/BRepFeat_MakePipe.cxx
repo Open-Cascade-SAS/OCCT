@@ -38,18 +38,20 @@ extern bool BRepFeat_GettraceFEAT();
 
 static void MajMap(const TopoDS_Shape&, // base
                    LocOpe_Pipe&,
-                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
-                   TopoDS_Shape&,                       // myFShape
-                   TopoDS_Shape&);                      // myLShape
+                   NCollection_DataMap<TopoDS_Shape,
+                                       NCollection_List<TopoDS_Shape>,
+                                       TopTools_ShapeMapHasher>&, // myMap
+                   TopoDS_Shape&,                                 // myFShape
+                   TopoDS_Shape&);                                // myLShape
 
 //=================================================================================================
 
-void BRepFeat_MakePipe::Init(const TopoDS_Shape&    Sbase,
-                             const TopoDS_Shape&    Pbase,
-                             const TopoDS_Face&     Skface,
-                             const TopoDS_Wire&     Spine,
-                             const int Mode,
-                             const bool Modify)
+void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
+                             const TopoDS_Shape& Pbase,
+                             const TopoDS_Face&  Skface,
+                             const TopoDS_Wire&  Spine,
+                             const int           Mode,
+                             const bool          Modify)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEAT();
@@ -357,11 +359,13 @@ occ::handle<Geom_Curve> BRepFeat_MakePipe::BarycCurve()
 // purpose  : management of descendants
 //=======================================================================
 
-static void MajMap(const TopoDS_Shape&                 theB,
-                   LocOpe_Pipe&                        theP,
-                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
-                   TopoDS_Shape&                       theFShape, // myFShape
-                   TopoDS_Shape&                       theLShape)                       // myLShape
+static void MajMap(
+  const TopoDS_Shape& theB,
+  LocOpe_Pipe&        theP,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+                theMap,    // myMap
+  TopoDS_Shape& theFShape, // myFShape
+  TopoDS_Shape& theLShape) // myLShape
 {
   TopExp_Explorer exp(theP.FirstShape(), TopAbs_WIRE);
   if (exp.More())

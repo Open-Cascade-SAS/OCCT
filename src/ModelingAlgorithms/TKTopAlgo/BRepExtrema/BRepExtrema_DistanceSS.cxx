@@ -26,7 +26,6 @@
 #include <Standard_Real.hxx>
 #include <BRepExtrema_SolutionElem.hxx>
 #include <NCollection_Sequence.hxx>
-#include <BRepExtrema_SolutionElem.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -57,9 +56,12 @@
 
 //=================================================================================================
 
-static bool TRI_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol, const gp_Pnt& Pt)
+static bool TRI_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol,
+                         const gp_Pnt&                                         Pt)
 {
-  for (NCollection_Sequence<BRepExtrema_SolutionElem>::iterator anIt = SeqSol.begin(); anIt != SeqSol.end(); anIt++)
+  for (NCollection_Sequence<BRepExtrema_SolutionElem>::iterator anIt = SeqSol.begin();
+       anIt != SeqSol.end();
+       anIt++)
   {
     const double dst = anIt->Point().Distance(Pt);
     if (dst <= Precision::Confusion())
@@ -74,12 +76,13 @@ static bool TRI_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& S
 
 static void MIN_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol1,
                          const NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol2,
-                         const double              DstRef,
-                         const double              Eps,
+                         const double                                          DstRef,
+                         const double                                          Eps,
                          NCollection_Sequence<BRepExtrema_SolutionElem>&       seqSol1,
                          NCollection_Sequence<BRepExtrema_SolutionElem>&       seqSol2)
 {
-  for (NCollection_Sequence<BRepExtrema_SolutionElem>::iterator anIt1 = SeqSol1.begin(), anIt2 = SeqSol2.begin();
+  for (NCollection_Sequence<BRepExtrema_SolutionElem>::iterator anIt1 = SeqSol1.begin(),
+                                                                anIt2 = SeqSol2.begin();
        anIt1 != SeqSol1.end();
        anIt1++, anIt2++)
   {
@@ -97,14 +100,14 @@ static void MIN_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& S
 static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
                               const TopoDS_Edge& S2,
                               TopoDS_Edge&       aResEdge,
-                              bool&  bIsTrim1,
-                              bool&  bIsTrim2)
+                              bool&              bIsTrim1,
+                              bool&              bIsTrim2)
 {
   if (BRep_Tool::Degenerated(S1) || BRep_Tool::Degenerated(S2))
     return;
 
   aResEdge = S2;
-  double      aFirst1, aLast1, aFirst2, aLast2;
+  double                  aFirst1, aLast1, aFirst2, aLast2;
   occ::handle<Geom_Curve> pCurv1 = BRep_Tool::Curve(S1, aFirst1, aLast1);
   occ::handle<Geom_Curve> pCurv2 = BRep_Tool::Curve(S2, aFirst2, aLast2);
 
@@ -112,8 +115,8 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
       && Precision::IsInfinite(aFirst2) && Precision::IsInfinite(aLast2))
     return;
 
-  double    Umin = 0., Umax = 0.;
-  bool bUmin, bUmax;
+  double Umin = 0., Umax = 0.;
+  bool   bUmin, bUmax;
   bUmin = bUmax = false;
 
   occ::handle<Geom_Curve> pCurv;
@@ -166,7 +169,7 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
     const gp_Pnt aPnt6(Xmax, Ymin, Zmax);
     const gp_Pnt aPnt7(Xmax, Ymin, Zmin);
 
-    double               arrU[8];
+    double                      arrU[8];
     GeomAPI_ProjectPointOnCurve aProj(aPnt0, pCurv);
     /*szv:aProj.Perform(aPnt0);*/ arrU[0] = aProj.LowerDistanceParameter();
     aProj.Perform(aPnt1);
@@ -214,7 +217,7 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
     }
 
     occ::handle<Geom_Curve> result = new Geom_TrimmedCurve(pCurv, Umin, Umax);
-    aResEdge                  = BRepBuilderAPI_MakeEdge(result);
+    aResEdge                       = BRepBuilderAPI_MakeEdge(result);
   }
 }
 
@@ -223,7 +226,7 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1,
 static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
                               const TopoDS_Shape& S2,
                               TopoDS_Face&        aResFace,
-                              bool&   bIsInfinit)
+                              bool&               bIsInfinit)
 {
   bIsInfinit = false;
 
@@ -253,16 +256,16 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
     return;
   }
 
-  aResFace                   = aF;
+  aResFace                        = aF;
   occ::handle<Geom_Surface> pSurf = BRep_Tool::Surface(aF);
 
   const bool bRestrict = BRep_Tool::NaturalRestriction(aF);
 
-  double    U1, V1, U2, V2;
-  double    Umin = RealLast(), Umax = RealFirst(), Vmin = RealLast(), Vmax = RealFirst();
-  bool bUmin, bUmax, bVmin, bVmax;
+  double U1, V1, U2, V2;
+  double Umin = RealLast(), Umax = RealFirst(), Vmin = RealLast(), Vmax = RealFirst();
+  bool   bUmin, bUmax, bVmin, bVmax;
   bUmin = bUmax = bVmin = bVmax = false;
-  bool bIsTrim      = false;
+  bool bIsTrim                  = false;
 
   if (bRestrict)
   {
@@ -327,7 +330,7 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
     const gp_Pnt aPnt6(Xmax, Ymin, Zmax);
     const gp_Pnt aPnt7(Xmax, Ymin, Zmin);
 
-    double              arrU[8], arrV[8];
+    double                     arrU[8], arrV[8];
     GeomAPI_ProjectPointOnSurf aProj(aPnt0, pSurf);
     /*szv:aProj.Perform(aPnt0);*/ if (aProj.IsDone())
       aProj.LowerDistanceParameters(arrU[0], arrV[0]);
@@ -381,7 +384,7 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
     }
 
     GeomAdaptor_Surface aGAS(pSurf);
-    const double tol = BRep_Tool::Tolerance(aF);
+    const double        tol = BRep_Tool::Tolerance(aF);
 
     const double EpsU = aGAS.UResolution(3. * tol);
     if (fabs(Umin - Umax) < EpsU)
@@ -397,8 +400,9 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
       Vmax += EpsV;
     }
 
-    occ::handle<Geom_Surface> result = new Geom_RectangularTrimmedSurface(pSurf, Umin, Umax, Vmin, Vmax);
-    aResFace                    = BRepBuilderAPI_MakeFace(result, Precision::Confusion());
+    occ::handle<Geom_Surface> result =
+      new Geom_RectangularTrimmedSurface(pSurf, Umin, Umax, Vmin, Vmax);
+    aResFace = BRepBuilderAPI_MakeFace(result, Precision::Confusion());
 
     bIsInfinit = true;
   }
@@ -408,13 +412,13 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1,
 
 //=================================================================================================
 
-static void PERFORM_C0(const TopoDS_Edge&         S1,
-                       const TopoDS_Edge&         S2,
+static void PERFORM_C0(const TopoDS_Edge&                              S1,
+                       const TopoDS_Edge&                              S2,
                        NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol1,
                        NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol2,
-                       const double        DstRef,
-                       double&             mDstRef,
-                       const double        Eps)
+                       const double                                    DstRef,
+                       double&                                         mDstRef,
+                       const double                                    Eps)
 {
   if (BRep_Tool::Degenerated(S1) || BRep_Tool::Degenerated(S2))
     return;
@@ -434,41 +438,41 @@ static void PERFORM_C0(const TopoDS_Edge&         S1,
       Eother = S1;
     }
 
-    double      aFirst, aLast;
+    double                  aFirst, aLast;
     occ::handle<Geom_Curve> pCurv = BRep_Tool::Curve(E, aFirst, aLast);
 
-    double      aFOther, aLOther;
+    double                  aFOther, aLOther;
     occ::handle<Geom_Curve> pCurvOther = BRep_Tool::Curve(Eother, aFOther, aLOther);
 
     if (pCurv->Continuity() == GeomAbs_C0)
     {
       constexpr double epsP = Precision::PConfusion();
 
-      GeomAdaptor_Curve      aAdaptorCurve(pCurv, aFirst, aLast);
-      const int nbIntervals = aAdaptorCurve.NbIntervals(GeomAbs_C1);
+      GeomAdaptor_Curve aAdaptorCurve(pCurv, aFirst, aLast);
+      const int         nbIntervals = aAdaptorCurve.NbIntervals(GeomAbs_C1);
 
       NCollection_Array1<double> arrInter(1, 1 + nbIntervals);
       aAdaptorCurve.Intervals(arrInter, GeomAbs_C1);
 
-      GeomAdaptor_Curve      aAdaptorCurveOther(pCurvOther, aFOther, aLOther);
-      const int nbIntervalsOther = aAdaptorCurveOther.NbIntervals(GeomAbs_C1);
-      NCollection_Array1<double>   arrInterOther(1, 1 + nbIntervalsOther);
+      GeomAdaptor_Curve          aAdaptorCurveOther(pCurvOther, aFOther, aLOther);
+      const int                  nbIntervalsOther = aAdaptorCurveOther.NbIntervals(GeomAbs_C1);
+      NCollection_Array1<double> arrInterOther(1, 1 + nbIntervalsOther);
       aAdaptorCurveOther.Intervals(arrInterOther, GeomAbs_C1);
 
       double Udeb, Ufin;
       BRep_Tool::Range(Eother, Udeb, Ufin);
 
       gp_Pnt                   Pt;
-      int         i, ii;
+      int                      i, ii;
       BRepClass_FaceClassifier classifier;
       for (i = 1; i <= arrInter.Length(); i++)
       {
-        const double aParameter = arrInter(i);
+        const double        aParameter = arrInter(i);
         const gp_Pnt        aPnt       = aAdaptorCurve.Value(aParameter);
         const TopoDS_Vertex V1         = BRepBuilderAPI_MakeVertex(aPnt);
 
-        BRepExtrema_ExtPC      Ext(V1, Eother);
-        const int NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
+        BRepExtrema_ExtPC Ext(V1, Eother);
+        const int         NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
         if (NbExtrema > 0)
         {
           // Search minimum distance dstmin
@@ -523,7 +527,7 @@ static void PERFORM_C0(const TopoDS_Edge&         S1,
         for (int i2 = 1; i2 <= arrInterOther.Length(); i2++)
         {
           const double aParameterOther = arrInterOther(i2);
-          const gp_Pnt        aPntOther       = aAdaptorCurveOther.Value(aParameterOther);
+          const gp_Pnt aPntOther       = aAdaptorCurveOther.Value(aParameterOther);
           const double Dst             = aPnt.Distance(aPntOther);
           if ((Dst < DstRef - Eps) || (fabs(Dst - DstRef) < Eps))
           {
@@ -548,15 +552,15 @@ static void PERFORM_C0(const TopoDS_Edge&         S1,
 // function : isOnBoundary
 // purpose  : Checks in 3d if the extrema point belongs to edge boundary
 //=======================================================================
-static bool isOnBoundary(const TopoDS_Edge&  theEdge,
-                                     const gp_Pnt&       theSol,
-                                     const double theParam,
-                                     const double thePTol)
+static bool isOnBoundary(const TopoDS_Edge& theEdge,
+                         const gp_Pnt&      theSol,
+                         const double       theParam,
+                         const double       thePTol)
 {
   for (TopoDS_Iterator it(theEdge); it.More(); it.Next())
   {
     const TopoDS_Vertex& aV      = TopoDS::Vertex(it.Value());
-    double        aVParam = BRep_Tool::Parameter(aV, theEdge);
+    double               aVParam = BRep_Tool::Parameter(aV, theEdge);
     if (std::abs(aVParam - theParam) < thePTol
         && BRep_Tool::Pnt(aV).Distance(theSol) < BRep_Tool::Tolerance(aV))
     {
@@ -621,10 +625,10 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Shape& theS1,
           break;
         }
         case TopAbs_EDGE: {
-          TopoDS_Edge      aE2 = TopoDS::Edge(theS2);
-          TopoDS_Edge      aTrimEdge;
-          bool bIsTrim1 = false;
-          bool bIsTrim2 = false;
+          TopoDS_Edge aE2 = TopoDS::Edge(theS2);
+          TopoDS_Edge aTrimEdge;
+          bool        bIsTrim1 = false;
+          bool        bIsTrim2 = false;
           TRIM_INFINIT_EDGE(aE1, aE2, aTrimEdge, bIsTrim1, bIsTrim2);
           if (bIsTrim1)
             aE1 = aTrimEdge;
@@ -634,9 +638,9 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Shape& theS1,
           break;
         }
         case TopAbs_FACE: {
-          TopoDS_Face      aF2 = TopoDS::Face(theS2);
-          TopoDS_Face      aTrimFace;
-          bool bIsInfinit;
+          TopoDS_Face aF2 = TopoDS::Face(theS2);
+          TopoDS_Face aTrimFace;
+          bool        bIsInfinit;
           TRIM_INFINIT_FACE(aE1, aF2, aTrimFace, bIsInfinit);
           if (bIsInfinit)
             aF2 = aTrimFace;
@@ -658,9 +662,9 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Shape& theS1,
           break;
         }
         case TopAbs_EDGE: {
-          TopoDS_Edge      aE2 = TopoDS::Edge(theS2);
-          TopoDS_Face      aTrimFace;
-          bool bIsInfinit;
+          TopoDS_Edge aE2 = TopoDS::Edge(theS2);
+          TopoDS_Face aTrimFace;
+          bool        bIsInfinit;
           TRIM_INFINIT_FACE(aF1, aE2, aTrimFace, bIsInfinit);
           if (bIsInfinit)
             aF1 = aTrimFace;
@@ -686,10 +690,11 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Shape& theS1,
 // function : Perform
 // purpose  : Vertex-Vertex
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
-                                     const TopoDS_Vertex&       theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Vertex&                            theS1,
+  const TopoDS_Vertex&                            theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
   const gp_Pnt aP1 = BRep_Tool::Pnt(theS1);
   const gp_Pnt aP2 = BRep_Tool::Pnt(theS2);
@@ -711,21 +716,22 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
 // function : Perform
 // purpose  : Vertex-Edge
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
-                                     const TopoDS_Edge&         theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Vertex&                            theS1,
+  const TopoDS_Edge&                              theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
   if (BRep_Tool::Degenerated(theS2))
     return;
 
-  BRepExtrema_ExtPC      Ext(theS1, theS2);
-  const int NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
+  BRepExtrema_ExtPC Ext(theS1, theS2);
+  const int         NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
   if (NbExtrema > 0)
   {
     // Search minimum distance Dstmin
-    int i;
-    double    Dstmin = Ext.SquareDistance(1);
+    int    i;
+    double Dstmin = Ext.SquareDistance(1);
     for (i = 2; i <= NbExtrema; i++)
     {
       const double sDst = Ext.SquareDistance(i);
@@ -735,7 +741,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
     Dstmin = sqrt(Dstmin);
     if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin - myDstRef) < myEps))
     {
-      gp_Pnt                  Pt, P1 = BRep_Tool::Pnt(theS1);
+      gp_Pnt           Pt, P1 = BRep_Tool::Pnt(theS1);
       constexpr double epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
@@ -768,18 +774,19 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
 // function : Perform
 // purpose  : Vertex-Face
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
-                                     const TopoDS_Face&         theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Vertex&                            theS1,
+  const TopoDS_Face&                              theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
-  BRepExtrema_ExtPF      Ext(theS1, theS2, myFlag, myAlgo);
-  const int NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
+  BRepExtrema_ExtPF Ext(theS1, theS2, myFlag, myAlgo);
+  const int         NbExtrema = Ext.IsDone() ? Ext.NbExt() : 0;
   if (NbExtrema > 0)
   {
     // Search minimum distance Dstmin
-    int i;
-    double    Dstmin = Ext.SquareDistance(1);
+    int    i;
+    double Dstmin = Ext.SquareDistance(1);
     for (i = 2; i <= NbExtrema; i++)
     {
       const double sDst = Ext.SquareDistance(i);
@@ -789,10 +796,10 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
     Dstmin = sqrt(Dstmin);
     if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin - myDstRef) < myEps))
     {
-      double            U, V;
+      double                   U, V;
       gp_Pnt                   Pt, P1 = BRep_Tool::Pnt(theS1);
       BRepClass_FaceClassifier classifier;
-      const double      tol = BRep_Tool::Tolerance(theS2);
+      const double             tol = BRep_Tool::Tolerance(theS2);
 
       for (i = 1; i <= NbExtrema; i++)
       {
@@ -826,23 +833,24 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Vertex&       theS1,
 // function : Perform
 // purpose  : Edge-Edge
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
-                                     const TopoDS_Edge&         theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Edge&                              theS1,
+  const TopoDS_Edge&                              theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
   if (BRep_Tool::Degenerated(theS1) || BRep_Tool::Degenerated(theS2))
     return;
 
   const double DstRef = myDstRef;
 
-  BRepExtrema_ExtCC      Ext(theS1, theS2);
-  const int NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
+  BRepExtrema_ExtCC Ext(theS1, theS2);
+  const int         NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
   if (NbExtrema > 0)
   {
     // Search minimum distance Dstmin
-    int i;
-    double    Dstmin = Ext.SquareDistance(1);
+    int    i;
+    double Dstmin = Ext.SquareDistance(1);
     for (i = 2; i <= NbExtrema; i++)
     {
       const double sDst = Ext.SquareDistance(i);
@@ -852,7 +860,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
     Dstmin = sqrt(Dstmin);
     if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin - myDstRef) < myEps))
     {
-      gp_Pnt                  Pt1, Pt2;
+      gp_Pnt           Pt1, Pt2;
       constexpr double epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
@@ -916,23 +924,24 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
 // function : Perform
 // purpose  : Edge-Face
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
-                                     const TopoDS_Face&         theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Edge&                              theS1,
+  const TopoDS_Face&                              theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
   if (BRep_Tool::Degenerated(theS1))
     return;
 
   BRepClass_FaceClassifier classifier;
 
-  BRepExtrema_ExtCF      Ext(theS1, theS2);
-  const int NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
+  BRepExtrema_ExtCF Ext(theS1, theS2);
+  const int         NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
   if (NbExtrema > 0)
   {
     // Search minimum distance Dstmin
-    int i;
-    double    Dstmin = Ext.SquareDistance(1);
+    int    i;
+    double Dstmin = Ext.SquareDistance(1);
     for (i = 2; i <= NbExtrema; i++)
     {
       const double sDst = Ext.SquareDistance(i);
@@ -945,7 +954,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
       double       U, V;
       const double tol = BRep_Tool::Tolerance(theS2);
 
-      gp_Pnt                  Pt1, Pt2;
+      gp_Pnt           Pt1, Pt2;
       constexpr double epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
@@ -980,15 +989,15 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
     }
   }
 
-  double      aFirst, aLast;
+  double                  aFirst, aLast;
   occ::handle<Geom_Curve> pCurv = BRep_Tool::Curve(theS1, aFirst, aLast);
   if (pCurv->Continuity() == GeomAbs_C0)
   {
     NCollection_Sequence<BRepExtrema_SolutionElem> SeqSolution1;
     NCollection_Sequence<BRepExtrema_SolutionElem> SeqSolution2;
 
-    GeomAdaptor_Curve      aAdaptorCurve(pCurv, aFirst, aLast);
-    const int nbIntervals = aAdaptorCurve.NbIntervals(GeomAbs_C1);
+    GeomAdaptor_Curve aAdaptorCurve(pCurv, aFirst, aLast);
+    const int         nbIntervals = aAdaptorCurve.NbIntervals(GeomAbs_C1);
 
     NCollection_Array1<double> arrInter(1, 1 + nbIntervals);
     aAdaptorCurve.Intervals(arrInter, GeomAbs_C1);
@@ -999,17 +1008,17 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
     int i;
     for (i = 1; i <= arrInter.Length(); i++)
     {
-      const double aParameter = arrInter(i);
-      gp_Pnt              aPnt       = aAdaptorCurve.Value(aParameter);
-      TopoDS_Vertex       V1         = BRepBuilderAPI_MakeVertex(aPnt);
+      const double  aParameter = arrInter(i);
+      gp_Pnt        aPnt       = aAdaptorCurve.Value(aParameter);
+      TopoDS_Vertex V1         = BRepBuilderAPI_MakeVertex(aPnt);
 
-      BRepExtrema_ExtPF      ExtPF(V1, theS2);
-      const int NbExtremaPF = ExtPF.IsDone() ? ExtPF.NbExt() : 0;
+      BRepExtrema_ExtPF ExtPF(V1, theS2);
+      const int         NbExtremaPF = ExtPF.IsDone() ? ExtPF.NbExt() : 0;
       if (NbExtremaPF > 0)
       {
         // Search minimum distance Dstmin
-        int ii;
-        double    Dstmin = ExtPF.SquareDistance(1);
+        int    ii;
+        double Dstmin = ExtPF.SquareDistance(1);
         for (ii = 2; ii <= NbExtremaPF; ii++)
         {
           const double sDst = ExtPF.SquareDistance(ii);
@@ -1070,18 +1079,19 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge&         theS1,
 // function : Perform
 // purpose  : Face-Face
 //=======================================================================
-void BRepExtrema_DistanceSS::Perform(const TopoDS_Face&         theS1,
-                                     const TopoDS_Face&         theS2,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
-                                     NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
+void BRepExtrema_DistanceSS::Perform(
+  const TopoDS_Face&                              theS1,
+  const TopoDS_Face&                              theS2,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape1,
+  NCollection_Sequence<BRepExtrema_SolutionElem>& theSeqSolShape2)
 {
-  BRepExtrema_ExtFF      Ext(theS1, theS2);
-  const int NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
+  BRepExtrema_ExtFF Ext(theS1, theS2);
+  const int         NbExtrema = Ext.IsDone() ? (Ext.IsParallel() ? 0 : Ext.NbExt()) : 0;
   if (NbExtrema > 0)
   {
     // Search minimum distance Dstmin
-    int i;
-    double    Dstmin = Ext.SquareDistance(1);
+    int    i;
+    double Dstmin = Ext.SquareDistance(1);
     for (i = 2; i <= NbExtrema; i++)
     {
       const double sDst = Ext.SquareDistance(i);
@@ -1096,7 +1106,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Face&         theS1,
 
       gp_Pnt                   Pt1, Pt2;
       gp_Pnt2d                 PUV;
-      double            U1, V1, U2, V2;
+      double                   U1, V1, U2, V2;
       BRepClass_FaceClassifier classifier;
 
       for (i = 1; i <= NbExtrema; i++)

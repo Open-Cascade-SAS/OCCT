@@ -41,10 +41,10 @@ DEPLY_Provider::DEPLY_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
 
 //=================================================================================================
 
-bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
+bool DEPLY_Provider::Write(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&    theProgress)
+                           const Message_ProgressRange&         theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -52,9 +52,9 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
+bool DEPLY_Provider::Write(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&    theProgress)
+                           const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
@@ -65,8 +65,8 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
   }
   occ::handle<DEPLY_ConfigurationNode> aNode = occ::down_cast<DEPLY_ConfigurationNode>(GetNode());
 
-  NCollection_Sequence<TDF_Label>         aRootLabels;
-  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  NCollection_Sequence<TDF_Label> aRootLabels;
+  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
   aShapeTool->GetFreeShapes(aRootLabels);
   if (aRootLabels.IsEmpty())
   {
@@ -83,7 +83,7 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
     aFileInfo.Add("Comments", aNode->InternalParameters.WriteComment);
   }
   RWMesh_CoordinateSystemConverter aConverter;
-  double                    aScaleFactorM = 1.;
+  double                           aScaleFactorM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorM))
   {
     aConverter.SetInputLengthUnit(aScaleFactorM);
@@ -117,10 +117,10 @@ bool DEPLY_Provider::Write(const TCollection_AsciiString&  thePath,
 
 //=================================================================================================
 
-bool DEPLY_Provider::Write(const TCollection_AsciiString& thePath,
-                           const TopoDS_Shape&            theShape,
+bool DEPLY_Provider::Write(const TCollection_AsciiString&      thePath,
+                           const TopoDS_Shape&                 theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&   theProgress)
+                           const Message_ProgressRange&        theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);

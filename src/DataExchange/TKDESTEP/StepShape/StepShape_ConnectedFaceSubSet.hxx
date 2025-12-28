@@ -34,15 +34,17 @@ public:
   Standard_EXPORT StepShape_ConnectedFaceSubSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   aRepresentationItem_Name,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&    aConnectedFaceSet_CfsFaces,
-                            const occ::handle<StepShape_ConnectedFaceSet>& aParentFaceSet);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                         aRepresentationItem_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aConnectedFaceSet_CfsFaces,
+    const occ::handle<StepShape_ConnectedFaceSet>&                       aParentFaceSet);
 
   //! Returns field ParentFaceSet
   Standard_EXPORT occ::handle<StepShape_ConnectedFaceSet> ParentFaceSet() const;
 
   //! Set field ParentFaceSet
-  Standard_EXPORT void SetParentFaceSet(const occ::handle<StepShape_ConnectedFaceSet>& ParentFaceSet);
+  Standard_EXPORT void SetParentFaceSet(
+    const occ::handle<StepShape_ConnectedFaceSet>& ParentFaceSet);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceSubSet, StepShape_ConnectedFaceSet)
 

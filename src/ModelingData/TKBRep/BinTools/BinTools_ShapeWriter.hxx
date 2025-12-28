@@ -66,22 +66,22 @@ private:
   //! Writes ploygon3d to the stream.
   void WritePolygon(BinTools_OStream& theStream, const occ::handle<Poly_Polygon3D>& thePolygon);
   //! Writes polygon on triangulation to the stream.
-  void WritePolygon(BinTools_OStream&                          theStream,
+  void WritePolygon(BinTools_OStream&                               theStream,
                     const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
   //! Writes triangulation to the stream.
-  void WriteTriangulation(BinTools_OStream&                 theStream,
+  void WriteTriangulation(BinTools_OStream&                      theStream,
                           const occ::handle<Poly_Triangulation>& theTriangulation,
-                          const bool            theNeedToWriteNormals);
+                          const bool                             theNeedToWriteNormals);
 
   /// position of the shape previously stored
-  NCollection_DataMap<TopoDS_Shape, uint64_t, TopTools_ShapeMapHasher> myShapePos;
-  NCollection_DataMap<TopLoc_Location, uint64_t>                       myLocationPos;
-  NCollection_DataMap<occ::handle<Geom_Curve>, uint64_t>                    myCurvePos;
-  NCollection_DataMap<occ::handle<Geom2d_Curve>, uint64_t>                  myCurve2dPos;
-  NCollection_DataMap<occ::handle<Geom_Surface>, uint64_t>                  mySurfacePos;
-  NCollection_DataMap<occ::handle<Poly_Polygon3D>, uint64_t>                myPolygon3dPos;
-  NCollection_DataMap<occ::handle<Poly_PolygonOnTriangulation>, uint64_t>   myPolygonPos;
-  NCollection_DataMap<occ::handle<Poly_Triangulation>, uint64_t>            myTriangulationPos;
+  NCollection_DataMap<TopoDS_Shape, uint64_t, TopTools_ShapeMapHasher>    myShapePos;
+  NCollection_DataMap<TopLoc_Location, uint64_t>                          myLocationPos;
+  NCollection_DataMap<occ::handle<Geom_Curve>, uint64_t>                  myCurvePos;
+  NCollection_DataMap<occ::handle<Geom2d_Curve>, uint64_t>                myCurve2dPos;
+  NCollection_DataMap<occ::handle<Geom_Surface>, uint64_t>                mySurfacePos;
+  NCollection_DataMap<occ::handle<Poly_Polygon3D>, uint64_t>              myPolygon3dPos;
+  NCollection_DataMap<occ::handle<Poly_PolygonOnTriangulation>, uint64_t> myPolygonPos;
+  NCollection_DataMap<occ::handle<Poly_Triangulation>, uint64_t>          myTriangulationPos;
 };
 
 #endif // _BinTools_ShapeWriter_HeaderFile

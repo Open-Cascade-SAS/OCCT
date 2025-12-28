@@ -34,20 +34,19 @@ public:
   Standard_EXPORT D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
                                const occ::handle<D3DHost_GraphicDriver>&      theDriver,
                                const occ::handle<OpenGl_Caps>&                theCaps,
-                               OpenGl_StateCounter*                      theCounter);
+                               OpenGl_StateCounter*                           theCounter);
 
   //! Default destructor.
   Standard_EXPORT virtual ~D3DHost_View();
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
-    override;
+  Standard_EXPORT virtual void ReleaseGlResources(
+    const occ::handle<OpenGl_Context>& theCtx) override;
 
   //! Creates and maps rendering window to the view.
   Standard_EXPORT virtual void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
                                          const occ::handle<Aspect_Window>&   theWindow,
-                                         const Aspect_RenderingContext  theContext)
-    override;
+                                         const Aspect_RenderingContext       theContext) override;
 
   //! Resizes the window.
   Standard_EXPORT virtual void Resized() override;
@@ -60,9 +59,9 @@ public:
 
   //! Fill in the dictionary with diagnostic info.
   //! Should be called within rendering thread.
-  Standard_EXPORT virtual void DiagnosticInformation(NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-                                                     Graphic3d_DiagnosticInfo theFlags) const
-    override;
+  Standard_EXPORT virtual void DiagnosticInformation(
+    NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+    Graphic3d_DiagnosticInfo theFlags) const override;
 
 public:
   //! @return true if IDirect3DDevice9Ex device has been created
@@ -110,7 +109,7 @@ protected:
   NCollection_Handle<D3DPRESENT_PARAMETERS> myD3dParams; //!< parameters for created Direct3D device
   unsigned int                              myRefreshRate; //!< refresh rate in fullscreen mode
   bool                                      myIsD3dEx;     //!< D3dEx flag for WDDM
-  occ::handle<D3DHost_FrameBuffer>               myD3dWglFbo;   //!< D3D/WGL interop FBO
+  occ::handle<D3DHost_FrameBuffer>          myD3dWglFbo;   //!< D3D/WGL interop FBO
 
 public:
   DEFINE_STANDARD_RTTIEXT(D3DHost_View, OpenGl_View)

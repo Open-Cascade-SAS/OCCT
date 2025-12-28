@@ -32,11 +32,12 @@ public:
   //! Returns a SiUnitAndSolidAngleUnit
   Standard_EXPORT StepBasic_SiUnitAndSolidAngleUnit();
 
-  Standard_EXPORT void Init(const bool     hasAprefix,
+  Standard_EXPORT void Init(const bool                 hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 
-  Standard_EXPORT void SetSolidAngleUnit(const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
+  Standard_EXPORT void SetSolidAngleUnit(
+    const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
 
   Standard_EXPORT occ::handle<StepBasic_SolidAngleUnit> SolidAngleUnit() const;
 

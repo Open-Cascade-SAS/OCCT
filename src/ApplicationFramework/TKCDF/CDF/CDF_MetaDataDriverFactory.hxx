@@ -30,7 +30,6 @@ public:
   Standard_EXPORT virtual occ::handle<CDF_MetaDataDriver> Build() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriverFactory, Standard_Transient)
-
 };
 
 #endif // _CDF_MetaDataDriverFactory_HeaderFile

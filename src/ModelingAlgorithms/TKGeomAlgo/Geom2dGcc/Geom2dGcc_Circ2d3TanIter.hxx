@@ -45,20 +45,20 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                            const GccEnt_QualifiedCirc& Qualified2,
                                            const Geom2dGcc_QCurve&     Qualified3,
-                                           const double         Param1,
-                                           const double         Param2,
-                                           const double         Param3,
-                                           const double         Tolerance);
+                                           const double                Param1,
+                                           const double                Param2,
+                                           const double                Param3,
+                                           const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and 2 curves.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                            const Geom2dGcc_QCurve&     Qualified2,
                                            const Geom2dGcc_QCurve&     Qualified3,
-                                           const double         Param1,
-                                           const double         Param2,
-                                           const double         Param3,
-                                           const double         Tolerance);
+                                           const double                Param1,
+                                           const double                Param2,
+                                           const double                Param3,
+                                           const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and a line and
@@ -66,10 +66,10 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                            const GccEnt_QualifiedLin&  Qualified2,
                                            const Geom2dGcc_QCurve&     Qualified3,
-                                           const double         Param1,
-                                           const double         Param2,
-                                           const double         Param3,
-                                           const double         Tolerance);
+                                           const double                Param1,
+                                           const double                Param2,
+                                           const double                Param3,
+                                           const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and a point and
@@ -77,29 +77,29 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedCirc& Qualified1,
                                            const Geom2dGcc_QCurve&     Qualified2,
                                            const gp_Pnt2d&             Point3,
-                                           const double         Param1,
-                                           const double         Param2,
-                                           const double         Tolerance);
+                                           const double                Param1,
+                                           const double                Param2,
+                                           const double                Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 2 lines and a curve.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qualified1,
                                            const GccEnt_QualifiedLin& Qualified2,
                                            const Geom2dGcc_QCurve&    Qualified3,
-                                           const double        Param1,
-                                           const double        Param2,
-                                           const double        Param3,
-                                           const double        Tolerance);
+                                           const double               Param1,
+                                           const double               Param2,
+                                           const double               Param3,
+                                           const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and 2 curves.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qualified1,
                                            const Geom2dGcc_QCurve&    Qualified2,
                                            const Geom2dGcc_QCurve&    Qualified3,
-                                           const double        Param1,
-                                           const double        Param2,
-                                           const double        Param3,
-                                           const double        Tolerance);
+                                           const double               Param1,
+                                           const double               Param2,
+                                           const double               Param3,
+                                           const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and a curve
@@ -107,36 +107,36 @@ public:
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const GccEnt_QualifiedLin& Qualified1,
                                            const Geom2dGcc_QCurve&    Qualified2,
                                            const gp_Pnt2d&            Point3,
-                                           const double        Param1,
-                                           const double        Param2,
-                                           const double        Tolerance);
+                                           const double               Param1,
+                                           const double               Param2,
+                                           const double               Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a curve and 2 points.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Qualified1,
                                            const gp_Pnt2d&         Point1,
                                            const gp_Pnt2d&         Point2,
-                                           const double     Param1,
-                                           const double     Tolerance);
+                                           const double            Param1,
+                                           const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 2 curves and a point.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Qualified1,
                                            const Geom2dGcc_QCurve& Qualified2,
                                            const gp_Pnt2d&         Point2,
-                                           const double     Param1,
-                                           const double     Param2,
-                                           const double     Tolerance);
+                                           const double            Param1,
+                                           const double            Param2,
+                                           const double            Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 3 curves.
   Standard_EXPORT Geom2dGcc_Circ2d3TanIter(const Geom2dGcc_QCurve& Qualified1,
                                            const Geom2dGcc_QCurve& Qualified2,
                                            const Geom2dGcc_QCurve& Qualified3,
-                                           const double     Param1,
-                                           const double     Param2,
-                                           const double     Param3,
-                                           const double     Tolerance);
+                                           const double            Param1,
+                                           const double            Param2,
+                                           const double            Param3,
+                                           const double            Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
@@ -159,9 +159,7 @@ public:
   //! on the argument curv.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void Tangency1(double& ParSol,
-                                 double& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns information about the tangency point between
   //! the result and the second argument.
@@ -171,9 +169,7 @@ public:
   //! on the argument curv.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void Tangency2(double& ParSol,
-                                 double& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency2(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns information about the tangency point between
   //! the result and the third argument.
@@ -183,9 +179,7 @@ public:
   //! on the argument curv.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
-  Standard_EXPORT void Tangency3(double& ParSol,
-                                 double& ParArg,
-                                 gp_Pnt2d&      PntSol) const;
+  Standard_EXPORT void Tangency3(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.
@@ -200,23 +194,23 @@ public:
   Standard_EXPORT bool IsTheSame3() const;
 
 private:
-  bool WellDone;
-  gp_Circ2d        cirsol;
-  GccEnt_Position  qualifier1;
-  GccEnt_Position  qualifier2;
-  GccEnt_Position  qualifier3;
-  bool TheSame1;
-  bool TheSame2;
-  bool TheSame3;
-  gp_Pnt2d         pnttg1sol;
-  gp_Pnt2d         pnttg2sol;
-  gp_Pnt2d         pnttg3sol;
-  double    par1sol;
-  double    par2sol;
-  double    par3sol;
-  double    pararg1;
-  double    pararg2;
-  double    pararg3;
+  bool            WellDone;
+  gp_Circ2d       cirsol;
+  GccEnt_Position qualifier1;
+  GccEnt_Position qualifier2;
+  GccEnt_Position qualifier3;
+  bool            TheSame1;
+  bool            TheSame2;
+  bool            TheSame3;
+  gp_Pnt2d        pnttg1sol;
+  gp_Pnt2d        pnttg2sol;
+  gp_Pnt2d        pnttg3sol;
+  double          par1sol;
+  double          par2sol;
+  double          par3sol;
+  double          pararg1;
+  double          pararg2;
+  double          pararg3;
 };
 
 #endif // _Geom2dGcc_Circ2d3TanIter_HeaderFile

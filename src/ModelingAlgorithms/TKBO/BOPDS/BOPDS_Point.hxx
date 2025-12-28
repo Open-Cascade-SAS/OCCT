@@ -68,11 +68,10 @@ public:
   int Index() const;
 
 protected:
-  gp_Pnt           myPnt;
-  gp_Pnt2d         myPnt2D1;
-  gp_Pnt2d         myPnt2D2;
-  int myIndex;
-
+  gp_Pnt   myPnt;
+  gp_Pnt2d myPnt2D1;
+  gp_Pnt2d myPnt2D2;
+  int      myIndex;
 };
 
 #include <BOPDS_Point.lxx>

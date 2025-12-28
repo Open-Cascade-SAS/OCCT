@@ -54,17 +54,17 @@ public:
   //! - aFunctionCode        : Connect Point Function Code
   //! - aSwapFlag            : Connect Point Swap Flag
   //! - anOwnerSubfigure     : Pointer to the "Owner" Entity
-  Standard_EXPORT void Init(const gp_XYZ&                                aPoint,
+  Standard_EXPORT void Init(const gp_XYZ&                                     aPoint,
                             const occ::handle<IGESData_IGESEntity>&           aDisplaySymbol,
-                            const int                       aTypeFlag,
-                            const int                       aFunctionFlag,
+                            const int                                         aTypeFlag,
+                            const int                                         aFunctionFlag,
                             const occ::handle<TCollection_HAsciiString>&      aFunctionIdentifier,
                             const occ::handle<IGESGraph_TextDisplayTemplate>& anIdentifierTemplate,
                             const occ::handle<TCollection_HAsciiString>&      aFunctionName,
                             const occ::handle<IGESGraph_TextDisplayTemplate>& aFunctionTemplate,
-                            const int                       aPointIdentifier,
-                            const int                       aFunctionCode,
-                            const int                       aSwapFlag,
+                            const int                                         aPointIdentifier,
+                            const int                                         aFunctionCode,
+                            const int                                         aSwapFlag,
                             const occ::handle<IGESData_IGESEntity>&           anOwnerSubfigure);
 
   //! returns the coordinate of the connection point
@@ -148,17 +148,17 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_ConnectPoint, IGESData_IGESEntity)
 
 private:
-  gp_XYZ                                thePoint;
+  gp_XYZ                                     thePoint;
   occ::handle<IGESData_IGESEntity>           theDisplaySymbol;
-  int                      theTypeFlag;
-  int                      theFunctionFlag;
+  int                                        theTypeFlag;
+  int                                        theFunctionFlag;
   occ::handle<TCollection_HAsciiString>      theFunctionIdentifier;
   occ::handle<IGESGraph_TextDisplayTemplate> theIdentifierTemplate;
   occ::handle<TCollection_HAsciiString>      theFunctionName;
   occ::handle<IGESGraph_TextDisplayTemplate> theFunctionTemplate;
-  int                      thePointIdentifier;
-  int                      theFunctionCode;
-  bool                      theSwapFlag;
+  int                                        thePointIdentifier;
+  int                                        theFunctionCode;
+  bool                                       theSwapFlag;
   occ::handle<IGESData_IGESEntity>           theOwnerSubfigure;
 };
 

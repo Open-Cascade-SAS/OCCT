@@ -19,14 +19,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Type.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DoubleMap.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -59,7 +55,8 @@ public:
   //! Assigns the IDs to the drivers of the given Types.
   //! It uses indices in the map as IDs.
   //! Useful in storage procedure.
-  Standard_EXPORT void AssignIds(const NCollection_IndexedMap<occ::handle<Standard_Transient>>& theTypes);
+  Standard_EXPORT void AssignIds(
+    const NCollection_IndexedMap<occ::handle<Standard_Transient>>& theTypes);
 
   //! Assigns the IDs to the drivers of the given Type Names;
   //! It uses indices in the sequence as IDs.
@@ -68,8 +65,7 @@ public:
 
   //! Gets a driver <theDriver> according to <theType>.
   //! Returns Type ID if the driver was assigned an ID; 0 otherwise.
-  int GetDriver(const occ::handle<Standard_Type>& theType,
-                             occ::handle<BinMDF_ADriver>&      theDriver);
+  int GetDriver(const occ::handle<Standard_Type>& theType, occ::handle<BinMDF_ADriver>& theDriver);
 
   //! Returns a driver according to <theTypeId>.
   //! Returns null handle if a driver is not found
@@ -82,7 +78,7 @@ private:
   void AssignId(const occ::handle<Standard_Type>& theType, const int theId);
 
   NCollection_DataMap<occ::handle<Standard_Type>, occ::handle<BinMDF_ADriver>> myMap;
-  NCollection_DoubleMap<occ::handle<Standard_Type>, int>      myMapId;
+  NCollection_DoubleMap<occ::handle<Standard_Type>, int>                       myMapId;
 };
 
 #include <BinMDF_ADriverTable.lxx>

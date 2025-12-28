@@ -23,13 +23,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <BRepAlgo_Image.hxx>
 class TopoDS_Edge;
@@ -63,11 +58,13 @@ public:
   Standard_EXPORT void Perform();
 
   //! Update VE map according to Image Vertex - Vertex
-  Standard_EXPORT void UpdateVEmap(NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVEmap);
+  Standard_EXPORT void UpdateVEmap(NCollection_IndexedDataMap<TopoDS_Shape,
+                                                              NCollection_List<TopoDS_Shape>,
+                                                              TopTools_ShapeMapHasher>& theVEmap);
 
   //! Cut the edge <E> in several edges <NE> on the
   //! vertices<VonE>.
-  Standard_EXPORT void CutEdge(const TopoDS_Edge&          E,
+  Standard_EXPORT void CutEdge(const TopoDS_Edge&                    E,
                                const NCollection_List<TopoDS_Shape>& VonE,
                                NCollection_List<TopoDS_Shape>&       NE) const;
 
@@ -88,9 +85,11 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& NewEdges(const TopoDS_Edge& E) const;
 
   //! Returns the datamap of vertices with their substitutes.
-  Standard_EXPORT void GetVerticesForSubstitute(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& VerVerMap) const;
+  Standard_EXPORT void GetVerticesForSubstitute(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& VerVerMap) const;
 
-  Standard_EXPORT void VerticesForSubstitute(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& VerVerMap);
+  Standard_EXPORT void VerticesForSubstitute(
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& VerVerMap);
 
   //! Set maximal tolerance used for comparing distances between vertices.
   void SetTolConf(const double theTolConf) { myTolConf = theTolConf; }
@@ -99,16 +98,18 @@ public:
   double GetTolConf() const { return myTolConf; }
 
 private:
-  TopoDS_Face                        myFace;
-  NCollection_List<TopoDS_Shape>               myConstEdges;
-  NCollection_List<TopoDS_Shape>               myEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myVerOnEdges;
-  NCollection_List<TopoDS_Shape>               myNewWires;
-  NCollection_List<TopoDS_Shape>               myNewFaces;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myCutEdges;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myVerticesForSubstitute;
-  BRepAlgo_Image                     myImageVV;
-  double                      myTolConf;
+  TopoDS_Face                    myFace;
+  NCollection_List<TopoDS_Shape> myConstEdges;
+  NCollection_List<TopoDS_Shape> myEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                 myVerOnEdges;
+  NCollection_List<TopoDS_Shape> myNewWires;
+  NCollection_List<TopoDS_Shape> myNewFaces;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                           myCutEdges;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVerticesForSubstitute;
+  BRepAlgo_Image                                                           myImageVV;
+  double                                                                   myTolConf;
 };
 
 #endif // _BRepAlgo_Loop_HeaderFile

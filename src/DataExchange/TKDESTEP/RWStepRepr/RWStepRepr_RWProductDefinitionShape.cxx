@@ -29,7 +29,7 @@ RWStepRepr_RWProductDefinitionShape::RWStepRepr_RWProductDefinitionShape() {}
 
 void RWStepRepr_RWProductDefinitionShape::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepRepr_ProductDefinitionShape>& ent) const
 {
@@ -43,7 +43,7 @@ void RWStepRepr_RWProductDefinitionShape::ReadStep(
   data->ReadString(num, 1, "property_definition.name", ach, aPropertyDefinition_Name);
 
   occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
-  bool                 hasPropertyDefinition_Description = true;
+  bool                                  hasPropertyDefinition_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -70,7 +70,7 @@ void RWStepRepr_RWProductDefinitionShape::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWProductDefinitionShape::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepRepr_ProductDefinitionShape>& ent) const
 {
 
@@ -90,8 +90,9 @@ void RWStepRepr_RWProductDefinitionShape::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWProductDefinitionShape::Share(const occ::handle<StepRepr_ProductDefinitionShape>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepRepr_RWProductDefinitionShape::Share(
+  const occ::handle<StepRepr_ProductDefinitionShape>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of PropertyDefinition

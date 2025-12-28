@@ -45,7 +45,7 @@ public:
   //! - aRefdir : the reference direction
   //! Null in case of Unparametrised surface
   Standard_EXPORT void Init(const occ::handle<IGESGeom_Point>&     aCenter,
-                            const double               aRadius,
+                            const double                           aRadius,
                             const occ::handle<IGESGeom_Direction>& anAxis,
                             const occ::handle<IGESGeom_Direction>& aRefdir);
 
@@ -74,7 +74,7 @@ public:
 
 private:
   occ::handle<IGESGeom_Point>     theCenter;
-  double              theRadius;
+  double                          theRadius;
   occ::handle<IGESGeom_Direction> theAxis;
   occ::handle<IGESGeom_Direction> theRefDir;
 };

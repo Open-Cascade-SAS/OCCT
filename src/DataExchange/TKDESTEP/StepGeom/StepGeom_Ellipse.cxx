@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Ellipse, StepGeom_Conic)
 StepGeom_Ellipse::StepGeom_Ellipse() {}
 
 void StepGeom_Ellipse::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&          aPosition,
-                            const double                     aSemiAxis1,
-                            const double                     aSemiAxis2)
+                            const StepGeom_Axis2Placement&               aPosition,
+                            const double                                 aSemiAxis1,
+                            const double                                 aSemiAxis2)
 {
   // --- classe own fields ---
   semiAxis1 = aSemiAxis1;

@@ -24,7 +24,6 @@
 #include <NCollection_Shared.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 
@@ -38,7 +37,7 @@ public:
 
   //! Performs conversion of the given list of triangles to Poly_Triangulation.
   Standard_EXPORT static occ::handle<Poly_Triangulation> ToPolyTriangulation(
-    const NCollection_Array1<gp_Pnt>&              theNodes,
+    const NCollection_Array1<gp_Pnt>&      theNodes,
     const NCollection_List<Poly_Triangle>& thePolyTriangles);
 
 public:
@@ -62,8 +61,7 @@ private:
                     NCollection_List<Poly_Triangle>& thePolyTriangles);
 
   // auxiliary for addTriange34
-  bool checkCondition(const int (&theNodes)[4],
-                                  const NCollection_Sequence<int>& theWire);
+  bool checkCondition(const int (&theNodes)[4], const NCollection_Sequence<int>& theWire);
 
   // performs initialization of mesh data structure.
   bool prepareMeshStructure();
@@ -75,11 +73,11 @@ private:
   const NCollection_Vector<gp_XYZ>&                  myXYZs;
   const NCollection_List<NCollection_Sequence<int>>& myWires;
   gp_Pln                                             myPlane;
-  occ::handle<Message_Messenger>                          myMess;
+  occ::handle<Message_Messenger>                     myMess;
 
   occ::handle<BRepMesh_DataStructureOfDelaun> myMeshStructure;
-  NCollection_DataMap<int, int>        myTmpMap;
-  Handle(IMeshData::VectorOfInteger)     myIndices;
+  NCollection_DataMap<int, int>               myTmpMap;
+  Handle(IMeshData::VectorOfInteger)          myIndices;
 };
 
 #endif // _BRepMesh_Triangulator_HeaderFile

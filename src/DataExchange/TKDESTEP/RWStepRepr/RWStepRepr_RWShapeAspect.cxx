@@ -23,7 +23,7 @@
 RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect() {}
 
 void RWStepRepr_RWShapeAspect::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepRepr_ShapeAspect>&    ent) const
 {
@@ -65,7 +65,7 @@ void RWStepRepr_RWShapeAspect::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aName, aDescription, aOfShape, aProductDefinitional);
 }
 
-void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
+void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                     SW,
                                          const occ::handle<StepRepr_ShapeAspect>& ent) const
 {
 
@@ -87,7 +87,7 @@ void RWStepRepr_RWShapeAspect::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepRepr_RWShapeAspect::Share(const occ::handle<StepRepr_ShapeAspect>& ent,
-                                     Interface_EntityIterator&           iter) const
+                                     Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->OfShape());

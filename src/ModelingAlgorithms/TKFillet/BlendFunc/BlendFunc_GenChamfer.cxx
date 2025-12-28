@@ -107,7 +107,7 @@ void BlendFunc_GenChamfer::Section(const double /*Param*/,
                                    const double V2,
                                    double&      Pdeb,
                                    double&      Pfin,
-                                   gp_Lin&             C)
+                                   gp_Lin&      C)
 {
   const gp_Pnt pts1 = surf1->Value(U1, V1);
   const gp_Pnt pts2 = surf2->Value(U2, V2);
@@ -150,10 +150,7 @@ void BlendFunc_GenChamfer::Intervals(NCollection_Array1<double>& T, const GeomAb
 
 //=================================================================================================
 
-void BlendFunc_GenChamfer::GetShape(int& NbPoles,
-                                    int& NbKnots,
-                                    int& Degree,
-                                    int& NbPoles2d)
+void BlendFunc_GenChamfer::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles   = 2;
   NbPoles2d = 2;
@@ -193,36 +190,36 @@ void BlendFunc_GenChamfer::Mults(NCollection_Array1<int>& TMults)
 //=================================================================================================
 
 bool BlendFunc_GenChamfer::Section(const Blend_Point& /*P*/,
-                                               NCollection_Array1<gp_Pnt>& /*Poles*/,
-                                               NCollection_Array1<gp_Vec>& /*DPoles*/,
-                                               NCollection_Array1<gp_Vec>& /*D2Poles*/,
-                                               NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
-                                               NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
-                                               NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
-                                               NCollection_Array1<double>& /*Weights*/,
-                                               NCollection_Array1<double>& /*DWeights*/,
-                                               NCollection_Array1<double>& /*D2Weights*/)
+                                   NCollection_Array1<gp_Pnt>& /*Poles*/,
+                                   NCollection_Array1<gp_Vec>& /*DPoles*/,
+                                   NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                                   NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                                   NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                                   NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                                   NCollection_Array1<double>& /*Weights*/,
+                                   NCollection_Array1<double>& /*DWeights*/,
+                                   NCollection_Array1<double>& /*D2Weights*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-bool BlendFunc_GenChamfer::Section(const Blend_Point&    P,
-                                               NCollection_Array1<gp_Pnt>&   Poles,
-                                               NCollection_Array1<gp_Vec>&   DPoles,
-                                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                               NCollection_Array1<double>& Weights,
-                                               NCollection_Array1<double>& DWeights)
+bool BlendFunc_GenChamfer::Section(const Blend_Point&            P,
+                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                   NCollection_Array1<double>&   Weights,
+                                   NCollection_Array1<double>&   DWeights)
 {
   math_Vector sol(1, 4), valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
 
-  double    prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
-  bool istgt;
+  double prm = P.Parameter();
+  int    low = Poles.Lower();
+  int    upp = Poles.Upper();
+  bool   istgt;
 
   P.ParametersOnS1(sol(1), sol(2));
   P.ParametersOnS2(sol(3), sol(4));
@@ -258,15 +255,15 @@ bool BlendFunc_GenChamfer::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-void BlendFunc_GenChamfer::Section(const Blend_Point&    P,
+void BlendFunc_GenChamfer::Section(const Blend_Point&            P,
                                    NCollection_Array1<gp_Pnt>&   Poles,
                                    NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                   NCollection_Array1<double>& Weights)
+                                   NCollection_Array1<double>&   Weights)
 {
-  double    u1, v1, u2, v2, prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
-  math_Vector      X(1, 4), F(1, 4);
+  double      u1, v1, u2, v2, prm = P.Parameter();
+  int         low = Poles.Lower();
+  int         upp = Poles.Upper();
+  math_Vector X(1, 4), F(1, 4);
 
   P.ParametersOnS1(u1, v1);
   P.ParametersOnS2(u2, v2);
@@ -285,10 +282,10 @@ void BlendFunc_GenChamfer::Section(const Blend_Point&    P,
   Weights(upp) = 1.0;
 }
 
-void BlendFunc_GenChamfer::Resolution(const int IC2d,
-                                      const double    Tol,
-                                      double&         TolU,
-                                      double&         TolV) const
+void BlendFunc_GenChamfer::Resolution(const int    IC2d,
+                                      const double Tol,
+                                      double&      TolU,
+                                      double&      TolV) const
 {
   if (IC2d == 1)
   {

@@ -48,8 +48,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_Dumper, IFSelect_SessionDumper)
 // #include <IGESSelect_SelectIGESTypeForm.hxx>
 IGESSelect_Dumper::IGESSelect_Dumper() {}
 
-bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&             file,
-                                             const occ::handle<Standard_Transient>& item) const
+bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
+                                 const occ::handle<Standard_Transient>& item) const
 {
   if (item.IsNull())
     return false;
@@ -97,8 +97,8 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&             file,
   if (type == STANDARD_TYPE(IGESSelect_FloatFormat))
   {
     DeclareAndCast(IGESSelect_FloatFormat, ff, item);
-    bool        zerosup, hasrange;
-    double           rangemin, rangemax;
+    bool                    zerosup, hasrange;
+    double                  rangemin, rangemax;
     TCollection_AsciiString mainform, forminrange;
     ff->Format(zerosup, mainform, hasrange, forminrange, rangemin, rangemax);
     file.SendText((char*)(zerosup ? "zerosup" : "nozerosup"));
@@ -124,9 +124,9 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&             file,
   if (type == STANDARD_TYPE(IGESSelect_SetGlobalParameter))
   {
     DeclareAndCast(IGESSelect_SetGlobalParameter, sp, item);
-    int                 np  = sp->GlobalNumber();
+    int                                   np  = sp->GlobalNumber();
     occ::handle<TCollection_HAsciiString> val = sp->Value();
-    char                             intext[10];
+    char                                  intext[10];
     Sprintf(intext, "%d", np);
     file.SendText(intext);
     file.SendItem(val);
@@ -164,9 +164,9 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&             file,
   return false;
 }
 
-bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&          file,
-                                            const TCollection_AsciiString& type,
-                                            occ::handle<Standard_Transient>&    item) const
+bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&            file,
+                                const TCollection_AsciiString&   type,
+                                occ::handle<Standard_Transient>& item) const
 {
   if (type.IsEqual("IGESSelect_DispPerSingleView"))
   {
@@ -226,7 +226,7 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&          file,
       return false;
     occ::handle<IGESSelect_SelectName>    sn   = new IGESSelect_SelectName;
     occ::handle<TCollection_HAsciiString> name = sn->Name();
-    item                                  = sn;
+    item                                       = sn;
     return true;
   }
   if (type.IsEqual("IGESSelect_SelectFromSingleView"))
@@ -260,8 +260,8 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&          file,
     if (file.NbParams() < 2)
       return false;
     occ::handle<IGESSelect_FloatFormat> ff = new IGESSelect_FloatFormat;
-    bool               zerosup;
-    const TCollection_AsciiString& zsup = file.ParamValue(1);
+    bool                                zerosup;
+    const TCollection_AsciiString&      zsup = file.ParamValue(1);
     if (zsup.Length() < 1)
       return false;
     if (zsup.Value(1) == 'z')
@@ -361,7 +361,7 @@ bool IGESSelect_Dumper::ReadOwn(IFSelect_SessionFile&          file,
   {
     if (file.NbParams() < 1)
       return false;
-    bool               tryc2;
+    bool                           tryc2;
     const TCollection_AsciiString& tc2 = file.ParamValue(1);
     if (tc2.Length() < 1)
       return false;

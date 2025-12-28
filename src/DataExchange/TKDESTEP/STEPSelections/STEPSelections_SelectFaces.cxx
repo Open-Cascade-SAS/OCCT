@@ -32,9 +32,9 @@ STEPSelections_SelectFaces::STEPSelections_SelectFaces()
 }
 
 bool STEPSelections_SelectFaces::Explore(const int /*level*/,
-                                                     const occ::handle<Standard_Transient>& start,
-                                                     const Interface_Graph&            G,
-                                                     Interface_EntityIterator& explored) const
+                                         const occ::handle<Standard_Transient>& start,
+                                         const Interface_Graph&                 G,
+                                         Interface_EntityIterator&              explored) const
 {
   if (start.IsNull())
     return false;

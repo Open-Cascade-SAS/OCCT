@@ -119,7 +119,7 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
-  NCollection_List<TopoDS_Shape>&              L = aShape.TShape()->myShapes;
+  NCollection_List<TopoDS_Shape>&          L = aShape.TShape()->myShapes;
   NCollection_List<TopoDS_Shape>::Iterator It(L);
   while (It.More())
   {

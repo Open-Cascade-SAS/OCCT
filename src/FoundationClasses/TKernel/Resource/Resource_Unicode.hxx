@@ -38,68 +38,64 @@ public:
 
   //! Converts non-ASCII CString <fromstr> in SJIS format
   //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static void ConvertSJISToUnicode(const char*      fromstr,
+  Standard_EXPORT static void ConvertSJISToUnicode(const char*                 fromstr,
                                                    TCollection_ExtendedString& tostr);
 
   //! Converts non-ASCII CString <fromstr> in EUC format
   //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static void ConvertEUCToUnicode(const char*      fromstr,
+  Standard_EXPORT static void ConvertEUCToUnicode(const char*                 fromstr,
                                                   TCollection_ExtendedString& tostr);
 
   //! Converts non-ASCII CString <fromstr> in GB format
   //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static void ConvertGBToUnicode(const char*      fromstr,
+  Standard_EXPORT static void ConvertGBToUnicode(const char*                 fromstr,
                                                  TCollection_ExtendedString& tostr);
 
   //! Converts non-ASCII CString <fromstr> in GBK format
   //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static bool ConvertGBKToUnicode(const char*      fromstr,
-                                                              TCollection_ExtendedString& tostr);
+  Standard_EXPORT static bool ConvertGBKToUnicode(const char*                 fromstr,
+                                                  TCollection_ExtendedString& tostr);
 
   //! Converts non-ASCII CString <fromstr> in Big5 format
   //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static bool ConvertBig5ToUnicode(const char*      fromstr,
-                                                               TCollection_ExtendedString& tostr);
+  Standard_EXPORT static bool ConvertBig5ToUnicode(const char*                 fromstr,
+                                                   TCollection_ExtendedString& tostr);
 
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in SJIS format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more
   //! than twice the length of <fromstr>. Returns true if
   //! <maxsize> has not been reached before end of conversion.
-  Standard_EXPORT static bool ConvertUnicodeToSJIS(
-    const TCollection_ExtendedString& fromstr,
-    Standard_PCharacter&              tostr,
-    const int            maxsize);
+  Standard_EXPORT static bool ConvertUnicodeToSJIS(const TCollection_ExtendedString& fromstr,
+                                                   Standard_PCharacter&              tostr,
+                                                   const int                         maxsize);
 
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in EUC format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more
   //! than twice the length of <fromstr>. Returns true if
   //! <maxsize> has not been reached before end of conversion.
-  Standard_EXPORT static bool ConvertUnicodeToEUC(
-    const TCollection_ExtendedString& fromstr,
-    Standard_PCharacter&              tostr,
-    const int            maxsize);
+  Standard_EXPORT static bool ConvertUnicodeToEUC(const TCollection_ExtendedString& fromstr,
+                                                  Standard_PCharacter&              tostr,
+                                                  const int                         maxsize);
 
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in GB format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more
   //! than twice the length of <fromstr>. Returns true if
   //! <maxsize> has not been reached before end of conversion.
-  Standard_EXPORT static bool ConvertUnicodeToGB(
-    const TCollection_ExtendedString& fromstr,
-    Standard_PCharacter&              tostr,
-    const int            maxsize);
+  Standard_EXPORT static bool ConvertUnicodeToGB(const TCollection_ExtendedString& fromstr,
+                                                 Standard_PCharacter&              tostr,
+                                                 const int                         maxsize);
 
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in ANSI format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more
   //! than twice the length of <fromstr>. Returns true if
   //! <maxsize> has not been reached before end of conversion.
-  Standard_EXPORT static bool ConvertUnicodeToANSI(
-    const TCollection_ExtendedString& fromstr,
-    Standard_PCharacter&              tostr,
-    const int            maxsize);
+  Standard_EXPORT static bool ConvertUnicodeToANSI(const TCollection_ExtendedString& fromstr,
+                                                   Standard_PCharacter&              tostr,
+                                                   const int                         maxsize);
 
   //! Defines the current conversion format as typecode.
   //! This conversion format will then be used by the
@@ -119,8 +115,7 @@ public:
 
   //! Converts the non-ASCII C string (as specified by GetFormat()) to the Unicode string of
   //! extended characters.
-  static void ConvertFormatToUnicode(const char*      theFromStr,
-                                     TCollection_ExtendedString& theToStr)
+  static void ConvertFormatToUnicode(const char* theFromStr, TCollection_ExtendedString& theToStr)
   {
     return ConvertFormatToUnicode(Resource_Unicode::GetFormat(), theFromStr, theToStr);
   }
@@ -131,7 +126,7 @@ public:
   //! @param[in] theFromStr  text to convert
   //! @param[out] theToStr   destination string
   Standard_EXPORT static void ConvertFormatToUnicode(const Resource_FormatType   theFormat,
-                                                     const char*      theFromStr,
+                                                     const char*                 theFromStr,
                                                      TCollection_ExtendedString& theToStr);
 
   //! Converts the Unicode string of extended characters to the non-ASCII string according to
@@ -142,11 +137,10 @@ public:
   //! @param[in] theFromStr  text to convert
   //! @param[out] theToStr   destination buffer
   //! @param[in] theMaxSize  destination buffer length
-  Standard_EXPORT static bool ConvertUnicodeToFormat(
-    const Resource_FormatType         theFormat,
-    const TCollection_ExtendedString& theFromStr,
-    Standard_PCharacter&              theToStr,
-    const int            theMaxSize);
+  Standard_EXPORT static bool ConvertUnicodeToFormat(const Resource_FormatType         theFormat,
+                                                     const TCollection_ExtendedString& theFromStr,
+                                                     Standard_PCharacter&              theToStr,
+                                                     const int                         theMaxSize);
 
   //! Converts the Unicode string of extended characters to the non-ASCII string according to the
   //! format returned by the function GetFormat.
@@ -154,8 +148,8 @@ public:
   //! @param[out] theToStr   destination buffer
   //! @param[in] theMaxSize  destination buffer length
   static bool ConvertUnicodeToFormat(const TCollection_ExtendedString& theFromStr,
-                                                 Standard_PCharacter&              theToStr,
-                                                 const int            theMaxSize)
+                                     Standard_PCharacter&              theToStr,
+                                     const int                         theMaxSize)
   {
     return ConvertUnicodeToFormat(Resource_Unicode::GetFormat(), theFromStr, theToStr, theMaxSize);
   }

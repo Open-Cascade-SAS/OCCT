@@ -24,11 +24,7 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <GccEnt_Position.hxx>
 class gp_Pnt2d;
 class GccEnt_QualifiedCirc;
 class gp_Lin2d;
@@ -57,9 +53,9 @@ public:
   //! create 2d lines passing through 2 points.
   //! Tolerance is used because we can't create a line
   //! when the distance between the two points is too small.
-  Standard_EXPORT GccAna_Lin2d2Tan(const gp_Pnt2d&     ThePoint1,
-                                   const gp_Pnt2d&     ThePoint2,
-                                   const double Tolerance);
+  Standard_EXPORT GccAna_Lin2d2Tan(const gp_Pnt2d& ThePoint1,
+                                   const gp_Pnt2d& ThePoint2,
+                                   const double    Tolerance);
 
   //! This methods implements the algorithms used to
   //! create 2d lines tangent to one circle and passing
@@ -71,7 +67,7 @@ public:
   //! the tolerance.
   Standard_EXPORT GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
                                    const gp_Pnt2d&             ThePoint,
-                                   const double         Tolerance);
+                                   const double                Tolerance);
 
   //! This methods implements the algorithms used to
   //! create 2d lines tangent to 2 circles.
@@ -79,7 +75,7 @@ public:
   //! EnclosedCirc
   Standard_EXPORT GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
                                    const GccEnt_QualifiedCirc& Qualified2,
-                                   const double         Tolerance);
+                                   const double                Tolerance);
 
   //! This method returns true when there is a solution
   //! and false in the other cases.
@@ -113,9 +109,9 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void WhichQualifier(const int Index,
-                                      GccEnt_Position&       Qualif1,
-                                      GccEnt_Position&       Qualif2) const;
+  Standard_EXPORT void WhichQualifier(const int        Index,
+                                      GccEnt_Position& Qualif1,
+                                      GccEnt_Position& Qualif2) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -126,9 +122,9 @@ public:
   //! the number of solutions.
   //! It raises NotDone if the algorithm failed.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the second argument.
@@ -139,22 +135,22 @@ public:
   //! the number of solutions.
   //! It raises NotDone if the algorithm failed.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
 private:
-  bool        WellDone;
-  int        NbrSol;
-  NCollection_Array1<gp_Lin2d>    linsol;
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Lin2d>        linsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
-  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
-  NCollection_Array1<double>    par1sol;
-  NCollection_Array1<double>    par2sol;
-  NCollection_Array1<double>    pararg1;
-  NCollection_Array1<double>    pararg2;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          par2sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<double>          pararg2;
 };
 
 #endif // _GccAna_Lin2d2Tan_HeaderFile

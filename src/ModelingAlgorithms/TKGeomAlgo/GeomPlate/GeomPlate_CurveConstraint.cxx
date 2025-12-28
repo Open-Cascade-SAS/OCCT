@@ -57,11 +57,11 @@ GeomPlate_CurveConstraint ::GeomPlate_CurveConstraint()
 //         Constructeurs avec courbe sur surface
 //---------------------------------------------------------
 GeomPlate_CurveConstraint ::GeomPlate_CurveConstraint(const occ::handle<Adaptor3d_Curve>& Boundary,
-                                                      const int         Tang,
-                                                      const int         NPt,
-                                                      const double            TolDist,
-                                                      const double            TolAng,
-                                                      const double            TolCurv)
+                                                      const int                           Tang,
+                                                      const int                           NPt,
+                                                      const double                        TolDist,
+                                                      const double                        TolAng,
+                                                      const double                        TolCurv)
     : myLProp(2, TolDist),
       myTolDist(TolDist),
       myTolAng(TolAng),
@@ -194,12 +194,12 @@ void GeomPlate_CurveConstraint ::D1(const double U, gp_Pnt& P, gp_Vec& V1, gp_Ve
 // Fonction : D2
 //---------------------------------------------------------
 void GeomPlate_CurveConstraint ::D2(const double U,
-                                    gp_Pnt&             P,
-                                    gp_Vec&             V1,
-                                    gp_Vec&             V2,
-                                    gp_Vec&             V3,
-                                    gp_Vec&             V4,
-                                    gp_Vec&             V5) const
+                                    gp_Pnt&      P,
+                                    gp_Vec&      V1,
+                                    gp_Vec&      V2,
+                                    gp_Vec&      V3,
+                                    gp_Vec&      V4,
+                                    gp_Vec&      V5) const
 {
   gp_Pnt2d P2d;
   if (!my3dCurve.IsNull())
@@ -285,10 +285,10 @@ occ::handle<Geom2d_Curve> GeomPlate_CurveConstraint ::Curve2dOnSurf() const
   if (my2dCurve.IsNull() && !myHCurve2d.IsNull())
   {
     occ::handle<Geom2d_Curve> C2d;
-    GeomAbs_Shape        Continuity = GeomAbs_C1;
-    int     MaxDegree  = 10;
-    int     MaxSeg     = 20 + myHCurve2d->NbIntervals(GeomAbs_C3);
-    Approx_Curve2d       appr(myHCurve2d,
+    GeomAbs_Shape             Continuity = GeomAbs_C1;
+    int                       MaxDegree  = 10;
+    int                       MaxSeg     = 20 + myHCurve2d->NbIntervals(GeomAbs_C3);
+    Approx_Curve2d            appr(myHCurve2d,
                         myHCurve2d->FirstParameter(),
                         myHCurve2d->LastParameter(),
                         myTolU,
@@ -323,8 +323,8 @@ occ::handle<Adaptor2d_Curve2d> GeomPlate_CurveConstraint ::ProjectedCurve() cons
 // Fonction : SetProjectedCurve
 //---------------------------------------------------------
 void GeomPlate_CurveConstraint ::SetProjectedCurve(const occ::handle<Adaptor2d_Curve2d>& Curve,
-                                                   const double              TolU,
-                                                   const double              TolV)
+                                                   const double                          TolU,
+                                                   const double                          TolV)
 {
   myHCurve2d = Curve;
   myTolU     = TolU;

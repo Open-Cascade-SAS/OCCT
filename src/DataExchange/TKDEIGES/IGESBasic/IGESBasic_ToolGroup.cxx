@@ -24,7 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -41,7 +40,7 @@ IGESBasic_ToolGroup::IGESBasic_ToolGroup() {}
 
 void IGESBasic_ToolGroup::ReadOwnParams(const occ::handle<IGESBasic_Group>&         ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,
-                                        IGESData_ParamReader&                  PR) const
+                                        IGESData_ParamReader&                       PR) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -76,7 +75,7 @@ void IGESBasic_ToolGroup::ReadOwnParams(const occ::handle<IGESBasic_Group>&     
 }
 
 void IGESBasic_ToolGroup::WriteOwnParams(const occ::handle<IGESBasic_Group>& ent,
-                                         IGESData_IGESWriter&           IW) const
+                                         IGESData_IGESWriter&                IW) const
 {
   int upper = ent->NbEntities();
   IW.Send(upper);
@@ -85,7 +84,7 @@ void IGESBasic_ToolGroup::WriteOwnParams(const occ::handle<IGESBasic_Group>& ent
 }
 
 void IGESBasic_ToolGroup::OwnShared(const occ::handle<IGESBasic_Group>& ent,
-                                    Interface_EntityIterator&      iter) const
+                                    Interface_EntityIterator&           iter) const
 {
   int upper = ent->NbEntities();
   for (int i = 1; i <= upper; i++)
@@ -94,12 +93,13 @@ void IGESBasic_ToolGroup::OwnShared(const occ::handle<IGESBasic_Group>& ent,
 
 void IGESBasic_ToolGroup::OwnCopy(const occ::handle<IGESBasic_Group>& another,
                                   const occ::handle<IGESBasic_Group>& ent,
-                                  Interface_CopyTool&            TC) const
+                                  Interface_CopyTool&                 TC) const
 {
   int lower, upper;
-  lower                                         = 1;
-  upper                                         = another->NbEntities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
+  lower = 1;
+  upper = another->NbEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
   for (int i = lower; i <= upper; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->Entity(i)));
@@ -139,7 +139,8 @@ bool IGESBasic_ToolGroup::OwnCorrect(const occ::handle<IGESBasic_Group>& ent) co
   return true;
 }
 
-IGESData_DirChecker IGESBasic_ToolGroup::DirChecker(const occ::handle<IGESBasic_Group>& /* ent */) const
+IGESData_DirChecker IGESBasic_ToolGroup::DirChecker(
+  const occ::handle<IGESBasic_Group>& /* ent */) const
 {
   IGESData_DirChecker DC(402, 1); // TypeNo. 402, Form no. 1
   DC.Structure(IGESData_DefVoid);
@@ -154,7 +155,7 @@ void IGESBasic_ToolGroup::OwnCheck(const occ::handle<IGESBasic_Group>& ent,
                                    occ::handle<Interface_Check>& /* ach */) const
 {
   bool ianul = false;
-  int i, nb = ent->NbEntities();
+  int  i, nb = ent->NbEntities();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
@@ -170,9 +171,9 @@ void IGESBasic_ToolGroup::OwnCheck(const occ::handle<IGESBasic_Group>& ent,
 }
 
 void IGESBasic_ToolGroup::OwnDump(const occ::handle<IGESBasic_Group>& ent,
-                                  const IGESData_IGESDumper&     dumper,
-                                  Standard_OStream&              S,
-                                  const int         level) const
+                                  const IGESData_IGESDumper&          dumper,
+                                  Standard_OStream&                   S,
+                                  const int                           level) const
 {
   S << "IGESBasic_Group\n"
     << "Entries in the Group : ";

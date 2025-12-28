@@ -19,13 +19,10 @@
 #include <Standard_Integer.hxx>
 #include <Quantity_Color.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <MeshVS_TwoColors.hxx>
-#include <NCollection_DataMap.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
-#include <MeshVS_TwoColors.hxx>
 
 class MeshVS_Mesh;
 class MeshVS_DataSource;
@@ -41,16 +38,16 @@ public:
   //! Constructor
   Standard_EXPORT MeshVS_ElementalColorPrsBuilder(
     const occ::handle<MeshVS_Mesh>&       Parent,
-    const MeshVS_DisplayModeFlags&   Flags    = MeshVS_DMF_ElementalColorDataPrs,
+    const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_ElementalColorDataPrs,
     const occ::handle<MeshVS_DataSource>& DS       = 0,
-    const int           Id       = -1,
-    const MeshVS_BuilderPriority&    Priority = MeshVS_BP_ElemColor);
+    const int                             Id       = -1,
+    const MeshVS_BuilderPriority&         Priority = MeshVS_BP_ElemColor);
 
   //! Builds presentation of elements with assigned colors.
   Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger& IDs,
-                                     TColStd_PackedMapOfInteger&       IDsToExclude,
-                                     const bool            IsElement,
+                                     const TColStd_PackedMapOfInteger&      IDs,
+                                     TColStd_PackedMapOfInteger&            IDsToExclude,
+                                     const bool                             IsElement,
                                      const int DisplayMode) const override;
 
   //! Returns map of colors same for front and back side of face.
@@ -63,8 +60,7 @@ public:
   Standard_EXPORT bool HasColors1() const;
 
   //! Returns color assigned with element number ID
-  Standard_EXPORT bool GetColor1(const int ID,
-                                             Quantity_Color&        theColor) const;
+  Standard_EXPORT bool GetColor1(const int ID, Quantity_Color& theColor) const;
 
   //! Sets color assigned with element number ID
   Standard_EXPORT void SetColor1(const int ID, const Quantity_Color& theColor);
@@ -79,15 +75,14 @@ public:
   Standard_EXPORT bool HasColors2() const;
 
   //! Returns colors assigned with element number ID
-  Standard_EXPORT bool GetColor2(const int ID,
-                                             MeshVS_TwoColors&      theColor) const;
+  Standard_EXPORT bool GetColor2(const int ID, MeshVS_TwoColors& theColor) const;
 
   //! Returns colors assigned with element number ID
   //! theColor1 is the front element color
   //! theColor2 is the back element color
-  Standard_EXPORT bool GetColor2(const int ID,
-                                             Quantity_Color&        theColor1,
-                                             Quantity_Color&        theColor2) const;
+  Standard_EXPORT bool GetColor2(const int       ID,
+                                 Quantity_Color& theColor1,
+                                 Quantity_Color& theColor2) const;
 
   //! Sets colors assigned with element number ID
   Standard_EXPORT void SetColor2(const int ID, const MeshVS_TwoColors& theTwoColors);
@@ -95,14 +90,14 @@ public:
   //! Sets color assigned with element number ID
   //! theColor1 is the front element color
   //! theColor2 is the back element color
-  Standard_EXPORT void SetColor2(const int ID,
-                                 const Quantity_Color&  theColor1,
-                                 const Quantity_Color&  theColor2);
+  Standard_EXPORT void SetColor2(const int             ID,
+                                 const Quantity_Color& theColor1,
+                                 const Quantity_Color& theColor2);
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
 
 private:
-  NCollection_DataMap<int, Quantity_Color>     myElemColorMap1;
+  NCollection_DataMap<int, Quantity_Color>   myElemColorMap1;
   NCollection_DataMap<int, MeshVS_TwoColors> myElemColorMap2;
 };
 

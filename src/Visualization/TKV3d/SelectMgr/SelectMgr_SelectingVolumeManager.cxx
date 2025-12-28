@@ -49,8 +49,8 @@ SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager()
 //            is not needed furthermore in the code.
 //=======================================================================
 SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTransform(
-  const int                  theScaleFactor,
-  const gp_GTrsf&                         theTrsf,
+  const int                                    theScaleFactor,
+  const gp_GTrsf&                              theTrsf,
   const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   SelectMgr_SelectingVolumeManager aMgr;
@@ -128,8 +128,7 @@ void SelectMgr_SelectingVolumeManager::SetCamera(const occ::handle<Graphic3d_Cam
 
 //=================================================================================================
 
-void SelectMgr_SelectingVolumeManager::WindowSize(int& theWidth,
-                                                  int& theHeight) const
+void SelectMgr_SelectingVolumeManager::WindowSize(int& theWidth, int& theHeight) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -142,8 +141,7 @@ void SelectMgr_SelectingVolumeManager::WindowSize(int& theWidth,
 // function : SetWindowSize
 // purpose  : Updates window size in all selecting volumes
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetWindowSize(const int theWidth,
-                                                     const int theHeight)
+void SelectMgr_SelectingVolumeManager::SetWindowSize(const int theWidth, const int theHeight)
 {
   Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
                         "SelectMgr_SelectingVolumeManager::SetWindowSize() should be called after "
@@ -274,7 +272,8 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume(const gp_Pnt2d& theM
 
 //=================================================================================================
 
-void SelectMgr_SelectingVolumeManager::BuildSelectingVolume(const NCollection_Array1<gp_Pnt2d>& thePoints)
+void SelectMgr_SelectingVolumeManager::BuildSelectingVolume(
+  const NCollection_Array1<gp_Pnt2d>& thePoints)
 {
   InitPolylineSelectingVolume(thePoints);
   myActiveSelectingVolume->Build();
@@ -285,10 +284,9 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume(const NCollection_Ar
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-bool SelectMgr_SelectingVolumeManager::OverlapsBox(
-  const NCollection_Vec3<double>&    theBoxMin,
-  const NCollection_Vec3<double>&    theBoxMax,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_SelectingVolumeManager::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
+                                                   const NCollection_Vec3<double>& theBoxMax,
+                                                   SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -303,8 +301,8 @@ bool SelectMgr_SelectingVolumeManager::OverlapsBox(
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
 bool SelectMgr_SelectingVolumeManager::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
-                                                               const NCollection_Vec3<double>& theBoxMax,
-                                                               bool* theInside) const
+                                                   const NCollection_Vec3<double>& theBoxMax,
+                                                   bool*                           theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -318,9 +316,8 @@ bool SelectMgr_SelectingVolumeManager::OverlapsBox(const NCollection_Vec3<double
 // function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-bool SelectMgr_SelectingVolumeManager::OverlapsPoint(
-  const gp_Pnt&            thePnt,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_SelectingVolumeManager::OverlapsPoint(const gp_Pnt&            thePnt,
+                                                     SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -353,8 +350,8 @@ bool SelectMgr_SelectingVolumeManager::OverlapsPoint(const gp_Pnt& thePnt) const
 //=======================================================================
 bool SelectMgr_SelectingVolumeManager::OverlapsPolygon(
   const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
-  int          theSensType,
-  SelectBasics_PickResult&  thePickResult) const
+  int                               theSensType,
+  SelectBasics_PickResult&          thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -371,10 +368,9 @@ bool SelectMgr_SelectingVolumeManager::OverlapsPolygon(
 // function : OverlapsSegment
 // purpose  : Checks if line segment overlaps selecting volume
 //=======================================================================
-bool SelectMgr_SelectingVolumeManager::OverlapsSegment(
-  const gp_Pnt&            thePt1,
-  const gp_Pnt&            thePt2,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_SelectingVolumeManager::OverlapsSegment(const gp_Pnt&            thePt1,
+                                                       const gp_Pnt&            thePt2,
+                                                       SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -395,7 +391,7 @@ bool SelectMgr_SelectingVolumeManager::OverlapsTriangle(
   const gp_Pnt&            thePt1,
   const gp_Pnt&            thePt2,
   const gp_Pnt&            thePt3,
-  int         theSensType,
+  int                      theSensType,
   SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
@@ -413,10 +409,9 @@ bool SelectMgr_SelectingVolumeManager::OverlapsTriangle(
 
 //=================================================================================================
 
-bool SelectMgr_SelectingVolumeManager::OverlapsSphere(
-  const gp_Pnt&            theCenter,
-  const double      theRadius,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_SelectingVolumeManager::OverlapsSphere(const gp_Pnt&            theCenter,
+                                                      const double             theRadius,
+                                                      SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -430,9 +425,9 @@ bool SelectMgr_SelectingVolumeManager::OverlapsSphere(
 
 //=================================================================================================
 
-bool SelectMgr_SelectingVolumeManager::OverlapsSphere(const gp_Pnt&       theCenter,
-                                                                  const double theRadius,
-                                                                  bool* theInside) const
+bool SelectMgr_SelectingVolumeManager::OverlapsSphere(const gp_Pnt& theCenter,
+                                                      const double  theRadius,
+                                                      bool*         theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -444,11 +439,11 @@ bool SelectMgr_SelectingVolumeManager::OverlapsSphere(const gp_Pnt&       theCen
 //=================================================================================================
 
 bool SelectMgr_SelectingVolumeManager::OverlapsCylinder(
-  const double      theBottomRad,
-  const double      theTopRad,
-  const double      theHeight,
+  const double             theBottomRad,
+  const double             theTopRad,
+  const double             theHeight,
   const gp_Trsf&           theTrsf,
-  const bool   theIsHollow,
+  const bool               theIsHollow,
   SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
@@ -466,13 +461,12 @@ bool SelectMgr_SelectingVolumeManager::OverlapsCylinder(
 
 //=================================================================================================
 
-bool SelectMgr_SelectingVolumeManager::OverlapsCylinder(
-  const double    theBottomRad,
-  const double    theTopRad,
-  const double    theHeight,
-  const gp_Trsf&         theTrsf,
-  const bool theIsHollow,
-  bool*      theInside) const
+bool SelectMgr_SelectingVolumeManager::OverlapsCylinder(const double   theBottomRad,
+                                                        const double   theTopRad,
+                                                        const double   theHeight,
+                                                        const gp_Trsf& theTrsf,
+                                                        const bool     theIsHollow,
+                                                        bool*          theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -484,11 +478,10 @@ bool SelectMgr_SelectingVolumeManager::OverlapsCylinder(
 
 //=================================================================================================
 
-bool SelectMgr_SelectingVolumeManager::OverlapsCircle(
-  const double      theRadius,
-  const gp_Trsf&           theTrsf,
-  const bool   theIsFilled,
-  SelectBasics_PickResult& thePickResult) const
+bool SelectMgr_SelectingVolumeManager::OverlapsCircle(const double             theRadius,
+                                                      const gp_Trsf&           theTrsf,
+                                                      const bool               theIsFilled,
+                                                      SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -503,11 +496,10 @@ bool SelectMgr_SelectingVolumeManager::OverlapsCircle(
 
 //=================================================================================================
 
-bool SelectMgr_SelectingVolumeManager::OverlapsCircle(
-  const double    theRadius,
-  const gp_Trsf&         theTrsf,
-  const bool theIsFilled,
-  bool*      theInside) const
+bool SelectMgr_SelectingVolumeManager::OverlapsCircle(const double   theRadius,
+                                                      const gp_Trsf& theTrsf,
+                                                      const bool     theIsFilled,
+                                                      bool*          theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
@@ -652,7 +644,7 @@ void SelectMgr_SelectingVolumeManager::GetPlanes(
 void SelectMgr_SelectingVolumeManager::SetViewClipping(
   const occ::handle<Graphic3d_SequenceOfHClipPlane>& theViewPlanes,
   const occ::handle<Graphic3d_SequenceOfHClipPlane>& theObjPlanes,
-  const SelectMgr_SelectingVolumeManager*       theWorldSelMgr)
+  const SelectMgr_SelectingVolumeManager*            theWorldSelMgr)
 {
   myViewClipPlanes   = theViewPlanes;
   myObjectClipPlanes = theObjPlanes;
@@ -692,8 +684,7 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping(
 
 //=================================================================================================
 
-void SelectMgr_SelectingVolumeManager::DumpJson(Standard_OStream& theOStream,
-                                                int  theDepth) const
+void SelectMgr_SelectingVolumeManager::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_SelectingVolumeManager)
 

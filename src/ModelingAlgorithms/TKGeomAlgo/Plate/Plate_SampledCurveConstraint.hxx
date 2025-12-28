@@ -31,8 +31,9 @@ class Plate_SampledCurveConstraint
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Plate_SampledCurveConstraint(const NCollection_Sequence<Plate_PinpointConstraint>& SOPPC,
-                                               const int                    n);
+  Standard_EXPORT Plate_SampledCurveConstraint(
+    const NCollection_Sequence<Plate_PinpointConstraint>& SOPPC,
+    const int                                             n);
 
   const Plate_LinearXYZConstraint& LXYZC() const;
 

@@ -18,10 +18,7 @@
 
 static const double MinStep = 1.0e-7;
 
-LProp_CLProps::LProp_CLProps(const Curve&           C,
-                             const double    U,
-                             const int N,
-                             const double    Resolution)
+LProp_CLProps::LProp_CLProps(const Curve& C, const double U, const int N, const double Resolution)
     : myCurve(C),
       myDerOrder(N),
       myCN(4),
@@ -33,9 +30,7 @@ LProp_CLProps::LProp_CLProps(const Curve&           C,
   SetParameter(U);
 }
 
-LProp_CLProps::LProp_CLProps(const Curve&           C,
-                             const int N,
-                             const double    Resolution)
+LProp_CLProps::LProp_CLProps(const Curve& C, const int N, const double Resolution)
     : myCurve(C),
       myU(RealLast()),
       myDerOrder(N),
@@ -181,7 +176,7 @@ void LProp_CLProps::Tangent(Dir& D)
   {
     const double DivisionFactor = 1.e-3;
     const double anUsupremum    = Tool::LastParameter(myCurve),
-                        anUinfium      = Tool::FirstParameter(myCurve);
+                 anUinfium      = Tool::FirstParameter(myCurve);
 
     double du;
     if ((anUsupremum >= RealLast()) || (anUinfium <= RealFirst()))
@@ -204,7 +199,7 @@ void LProp_CLProps::Tangent(Dir& D)
     Tool::Value(myCurve, std::min(myU, u), P1);
     Tool::Value(myCurve, std::max(myU, u), P2);
 
-    Vec           V1(P1, P2);
+    Vec    V1(P1, P2);
     double aDirFactor = V.Dot(V1);
 
     if (aDirFactor < 0.0)

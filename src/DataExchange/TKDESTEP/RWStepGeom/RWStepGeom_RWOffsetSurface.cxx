@@ -21,7 +21,7 @@
 RWStepGeom_RWOffsetSurface::RWStepGeom_RWOffsetSurface() {}
 
 void RWStepGeom_RWOffsetSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepGeom_OffsetSurface>&  ent) const
 {
@@ -60,7 +60,7 @@ void RWStepGeom_RWOffsetSurface::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aBasisSurface, aDistance, aSelfIntersect);
 }
 
-void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                  SW,
+void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepGeom_OffsetSurface>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepGeom_RWOffsetSurface::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepGeom_RWOffsetSurface::Share(const occ::handle<StepGeom_OffsetSurface>& ent,
-                                       Interface_EntityIterator&             iter) const
+                                       Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->BasisSurface());

@@ -42,7 +42,7 @@ public:
 
 private:
   NCollection_Sequence<occ::handle<TDocStd_Document>> myDocuments;
-  TCollection_ExtendedString myName;
+  TCollection_ExtendedString                          myName;
 };
 
 #include <TDocStd_ApplicationDelta.lxx>

@@ -79,11 +79,9 @@ protected:
                const double,
                Bnd_Box2d& aBox2D);
   //
-  static int Compute(const occ::handle<Geom2d_Conic>&,
-                                  const GeomAbs_CurveType,
-                                  double*);
-  static bool IsTypeBase(const occ::handle<Geom2d_Curve>&, GeomAbs_CurveType&);
-  static double    AdjustToPeriod(const double, const double);
+  static int    Compute(const occ::handle<Geom2d_Conic>&, const GeomAbs_CurveType, double*);
+  static bool   IsTypeBase(const occ::handle<Geom2d_Curve>&, GeomAbs_CurveType&);
+  static double AdjustToPeriod(const double, const double);
   //
   void PerformOnePoint();
   //
@@ -91,23 +89,23 @@ protected:
   //
   int NbSamples();
   //
-  double AdjustExtr(const double    UMin,
-                           const double    UMax,
-                           const double    Extr0,
-                           const int CoordIndx,
-                           const double    Tol,
-                           const bool IsMin);
+  double AdjustExtr(const double UMin,
+                    const double UMax,
+                    const double Extr0,
+                    const int    CoordIndx,
+                    const double Tol,
+                    const bool   IsMin);
   //-----------------------------
 protected:
   occ::handle<Geom2d_Curve> myCurve;
-  Bnd_Box2d            myBox;
-  int     myErrorStatus;
+  Bnd_Box2d                 myBox;
+  int                       myErrorStatus;
   occ::handle<Geom2d_Curve> myCurveBase;
-  double        myOffsetBase;
-  bool     myOffsetFlag;
-  double        myT1;
-  double        myT2;
-  GeomAbs_CurveType    myTypeBase;
+  double                    myOffsetBase;
+  bool                      myOffsetFlag;
+  double                    myT1;
+  double                    myT2;
+  GeomAbs_CurveType         myTypeBase;
 };
 
 //
@@ -115,10 +113,10 @@ class Curv2dMaxMinCoordMVar : public math_MultipleVarFunction
 {
 public:
   Curv2dMaxMinCoordMVar(const occ::handle<Geom2d_Curve>& theCurve,
-                        const double         UMin,
-                        const double         UMax,
-                        const int      CoordIndx,
-                        const double         Sign)
+                        const double                     UMin,
+                        const double                     UMax,
+                        const int                        CoordIndx,
+                        const double                     Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -153,10 +151,10 @@ private:
   }
 
   const occ::handle<Geom2d_Curve>& myCurve;
-  double               myUMin;
-  double               myUMax;
-  int            myCoordIndx;
-  double               mySign;
+  double                           myUMin;
+  double                           myUMax;
+  int                              myCoordIndx;
+  double                           mySign;
 };
 
 //
@@ -164,10 +162,10 @@ class Curv2dMaxMinCoord : public math_Function
 {
 public:
   Curv2dMaxMinCoord(const occ::handle<Geom2d_Curve>& theCurve,
-                    const double         UMin,
-                    const double         UMax,
-                    const int      CoordIndx,
-                    const double         Sign)
+                    const double                     UMin,
+                    const double                     UMax,
+                    const int                        CoordIndx,
+                    const double                     Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -200,10 +198,10 @@ private:
   }
 
   const occ::handle<Geom2d_Curve>& myCurve;
-  double               myUMin;
-  double               myUMax;
-  int            myCoordIndx;
-  double               mySign;
+  double                           myUMin;
+  double                           myUMax;
+  int                              myCoordIndx;
+  double                           mySign;
 };
 
 //=================================================================================================
@@ -393,9 +391,9 @@ void BndLib_Box2dCurve::PerformBezier()
     return;
   }
   //
-  int           i, aNbPoles;
-  double              aT1, aT2, aTb[2];
-  gp_Pnt2d                   aP2D;
+  int                             i, aNbPoles;
+  double                          aT1, aT2, aTb[2];
+  gp_Pnt2d                        aP2D;
   occ::handle<Geom2d_Geometry>    aG;
   occ::handle<Geom2d_BezierCurve> aCBz, aCBzSeg;
   //
@@ -446,9 +444,9 @@ void BndLib_Box2dCurve::PerformBSpline()
     return;
   }
   //
-  int            i, aNbPoles;
-  double               aT1, aT2, aTb[2];
-  gp_Pnt2d                    aP2D;
+  int                              i, aNbPoles;
+  double                           aT1, aT2, aTb[2];
+  gp_Pnt2d                         aP2D;
   occ::handle<Geom2d_Geometry>     aG;
   occ::handle<Geom2d_BSplineCurve> aCBS, aCBSs;
   //
@@ -499,9 +497,9 @@ void BndLib_Box2dCurve::PerformBSpline()
 
 void BndLib_Box2dCurve::PerformOther()
 {
-  int j, aNb;
-  double    aT, dT;
-  gp_Pnt2d         aP2D;
+  int      j, aNb;
+  double   aT, dT;
+  gp_Pnt2d aP2D;
   //
   aNb = 33;
   dT  = (myT2 - myT1) / (aNb - 1);
@@ -525,7 +523,7 @@ int BndLib_Box2dCurve::NbSamples()
   {
     case GeomAbs_BezierCurve: {
       occ::handle<Geom2d_BezierCurve> aCBz = occ::down_cast<Geom2d_BezierCurve>(myCurveBase);
-      N                               = aCBz->NbPoles();
+      N                                    = aCBz->NbPoles();
       // By default parametric range of Bezier curv is [0, 1]
       double du = myT2 - myT1;
       if (du < .9)
@@ -537,7 +535,7 @@ int BndLib_Box2dCurve::NbSamples()
     }
     case GeomAbs_BSplineCurve: {
       occ::handle<Geom2d_BSplineCurve> aCBS = occ::down_cast<Geom2d_BSplineCurve>(myCurveBase);
-      N                                = (aCBS->Degree() + 1) * (aCBS->NbKnots() - 1);
+      N                                     = (aCBS->Degree() + 1) * (aCBS->NbKnots() - 1);
       double umin = aCBS->FirstParameter(), umax = aCBS->LastParameter();
       double du = (myT2 - myT1) / (umax - umin);
       if (du < .9)
@@ -555,12 +553,12 @@ int BndLib_Box2dCurve::NbSamples()
 
 //=================================================================================================
 
-double BndLib_Box2dCurve::AdjustExtr(const double    UMin,
-                                            const double    UMax,
-                                            const double    Extr0,
-                                            const int CoordIndx,
-                                            const double    Tol,
-                                            const bool IsMin)
+double BndLib_Box2dCurve::AdjustExtr(const double UMin,
+                                     const double UMax,
+                                     const double Extr0,
+                                     const int    CoordIndx,
+                                     const double Tol,
+                                     const bool   IsMin)
 {
   double aSign = IsMin ? 1. : -1.;
   double extr  = aSign * Extr0;
@@ -568,8 +566,8 @@ double BndLib_Box2dCurve::AdjustExtr(const double    UMin,
   double Du = (myCurve->LastParameter() - myCurve->FirstParameter());
   //
   Geom2dAdaptor_Curve aGAC(myCurve);
-  double       UTol   = std::max(aGAC.Resolution(Tol), Precision::PConfusion());
-  double       reltol = UTol / std::max(std::abs(UMin), std::abs(UMax));
+  double              UTol   = std::max(aGAC.Resolution(Tol), Precision::PConfusion());
+  double              reltol = UTol / std::max(std::abs(UMin), std::abs(UMax));
   if (UMax - UMin < 0.01 * Du)
   {
     // It is suggested that function has one extremum on small interval
@@ -583,12 +581,12 @@ double BndLib_Box2dCurve::AdjustExtr(const double    UMin,
     }
   }
   //
-  int aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  double    maxstep      = (UMax - UMin) / (aNbParticles + 1);
-  math_Vector      aT(1, 1);
-  math_Vector      aLowBorder(1, 1);
-  math_Vector      aUppBorder(1, 1);
-  math_Vector      aSteps(1, 1);
+  int         aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  double      maxstep      = (UMax - UMin) / (aNbParticles + 1);
+  math_Vector aT(1, 1);
+  math_Vector aLowBorder(1, 1);
+  math_Vector aUppBorder(1, 1);
+  math_Vector aSteps(1, 1);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
   aSteps(1)     = std::min(0.1 * Du, maxstep);
@@ -625,10 +623,10 @@ void BndLib_Box2dCurve::PerformGenCurv(const double Tol)
   double DeflMax[2]  = {-RealLast(), -RealLast()};
   //
   gp_Pnt2d                  P;
-  int          i, k;
-  double             du = (myT2 - myT1) / (Nu - 1), du2 = du / 2.;
+  int                       i, k;
+  double                    du = (myT2 - myT1) / (Nu - 1), du2 = du / 2.;
   NCollection_Array1<gp_XY> aPnts(1, Nu);
-  double             u;
+  double                    u;
   for (i = 1, u = myT1; i <= Nu; i++, u += du)
   {
     D0(u, P);
@@ -685,8 +683,8 @@ void BndLib_Box2dCurve::PerformGenCurv(const double Tol)
       if (aPnts(i).Coord(k + 1) - CMin < d)
       {
         double tmin, tmax;
-        tmin               = myT1 + std::max(0, i - 2) * du;
-        tmax               = myT1 + std::min(Nu - 1, i) * du;
+        tmin        = myT1 + std::max(0, i - 2) * du;
+        tmax        = myT1 + std::min(Nu - 1, i) * du;
         double cmin = AdjustExtr(tmin, tmax, CMin, k + 1, Tol, true);
         if (cmin < CMin)
         {
@@ -696,8 +694,8 @@ void BndLib_Box2dCurve::PerformGenCurv(const double Tol)
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         double tmin, tmax;
-        tmin               = myT1 + std::max(0, i - 2) * du;
-        tmax               = myT1 + std::min(Nu - 1, i) * du;
+        tmin        = myT1 + std::max(0, i - 2) * du;
+        tmax        = myT1 + std::min(Nu - 1, i) * du;
         double cmax = AdjustExtr(tmin, tmax, CMax, k + 1, Tol, false);
         if (cmax > CMax)
         {
@@ -724,8 +722,8 @@ void BndLib_Box2dCurve::D0(const double aU, gp_Pnt2d& aP2D)
   //
   if (myOffsetFlag)
   {
-    int aIndex, aMaxDegree;
-    double    aA, aB, aR, aRes;
+    int    aIndex, aMaxDegree;
+    double aA, aB, aR, aRes;
     //
     aMaxDegree = 9;
     aIndex     = 2;
@@ -758,9 +756,9 @@ void BndLib_Box2dCurve::D0(const double aU, gp_Pnt2d& aP2D)
 
 void BndLib_Box2dCurve::GetInfoBase()
 {
-  bool            bIsTypeBase;
-  int            iTrimmed, iOffset;
-  GeomAbs_CurveType           aTypeB;
+  bool                             bIsTypeBase;
+  int                              iTrimmed, iOffset;
+  GeomAbs_CurveType                aTypeB;
   occ::handle<Geom2d_Curve>        aC2DB;
   occ::handle<Geom2d_TrimmedCurve> aCT2D;
   occ::handle<Geom2d_OffsetCurve>  aCF2D;
@@ -821,10 +819,9 @@ void BndLib_Box2dCurve::GetInfoBase()
 
 //=================================================================================================
 
-bool BndLib_Box2dCurve::IsTypeBase(const occ::handle<Geom2d_Curve>& aC2D,
-                                               GeomAbs_CurveType&          aTypeB)
+bool BndLib_Box2dCurve::IsTypeBase(const occ::handle<Geom2d_Curve>& aC2D, GeomAbs_CurveType& aTypeB)
 {
-  bool      bRet;
+  bool                       bRet;
   occ::handle<Standard_Type> aType;
   //
   bRet = true;
@@ -870,9 +867,9 @@ bool BndLib_Box2dCurve::IsTypeBase(const occ::handle<Geom2d_Curve>& aC2D,
 
 void BndLib_Box2dCurve::PerformLineConic()
 {
-  int i, iInf[2];
-  double    aTb[2];
-  gp_Pnt2d         aP2D;
+  int      i, iInf[2];
+  double   aTb[2];
+  gp_Pnt2d aP2D;
   //
   myErrorStatus = 0;
   //
@@ -923,14 +920,14 @@ void BndLib_Box2dCurve::PerformLineConic()
 //=================================================================================================
 
 void BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
-                                const GeomAbs_CurveType     aType,
-                                const double         aT1,
-                                const double         aT2,
-                                Bnd_Box2d&                  aBox2D)
+                                const GeomAbs_CurveType          aType,
+                                const double                     aT1,
+                                const double                     aT2,
+                                Bnd_Box2d&                       aBox2D)
 {
-  int i, aNbT;
-  double    pT[10], aT, aTwoPI, dT, aEps;
-  gp_Pnt2d         aP2D;
+  int      i, aNbT;
+  double   pT[10], aT, aTwoPI, dT, aEps;
+  gp_Pnt2d aP2D;
   //
   aNbT = Compute(aConic2D, aType, pT);
   //
@@ -982,12 +979,12 @@ void BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
 //=================================================================================================
 
 int BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
-                                            const GeomAbs_CurveType     aType,
-                                            double*              pT)
+                               const GeomAbs_CurveType          aType,
+                               double*                          pT)
 {
-  int iRet, i, j;
-  double    aCosBt, aSinBt, aCosGm, aSinGm;
-  double    aLx, aLy;
+  int    iRet, i, j;
+  double aCosBt, aSinBt, aCosGm, aSinGm;
+  double aLx, aLy;
   //
   iRet = 0;
   //
@@ -1057,8 +1054,8 @@ int BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
   //
   else if (aType == GeomAbs_Parabola)
   {
-    double           aFc, aEps;
-    double           aA1, aA2;
+    double                       aFc, aEps;
+    double                       aA1, aA2;
     occ::handle<Geom2d_Parabola> aPR2D;
     //
     aEps = Precision::Angular();
@@ -1088,9 +1085,9 @@ int BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
   //
   else if (aType == GeomAbs_Hyperbola)
   {
-    int         k;
-    double            aR1, aR2;
-    double            aEps, aB1, aB2, aB12, aB22, aZ, aD;
+    int                           k;
+    double                        aR1, aR2;
+    double                        aEps, aB1, aB2, aB12, aB22, aZ, aD;
     occ::handle<Geom2d_Hyperbola> aHP2D;
     //
     aEps = Precision::Angular();
@@ -1150,8 +1147,8 @@ int BndLib_Box2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
 
 double BndLib_Box2dCurve::AdjustToPeriod(const double aT, const double aPeriod)
 {
-  int k;
-  double    aTRet;
+  int    k;
+  double aTRet;
   //
   aTRet = aT;
   if (aT < 0.)
@@ -1183,9 +1180,7 @@ double BndLib_Box2dCurve::AdjustToPeriod(const double aT, const double aPeriod)
 
 //=================================================================================================
 
-void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC,
-                            const double      aTol,
-                            Bnd_Box2d&               aBox2D)
+void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC, const double aTol, Bnd_Box2d& aBox2D)
 {
   BndLib_Add2dCurve::Add(aC, aC.FirstParameter(), aC.LastParameter(), aTol, aBox2D);
 }
@@ -1193,17 +1188,17 @@ void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC,
 //=================================================================================================
 
 void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC,
-                            const double      aU1,
-                            const double      aU2,
-                            const double      aTol,
+                            const double             aU1,
+                            const double             aU2,
+                            const double             aTol,
                             Bnd_Box2d&               aBox2D)
 {
   const Geom2dAdaptor_Curve* pA = dynamic_cast<const Geom2dAdaptor_Curve*>(&aC);
   if (!pA)
   {
-    double    U, DU;
-    int N, j;
-    gp_Pnt2d         P;
+    double   U, DU;
+    int      N, j;
+    gp_Pnt2d P;
     N  = 33;
     U  = aU1;
     DU = (aU2 - aU1) / (N - 1);
@@ -1227,8 +1222,8 @@ void BndLib_Add2dCurve::Add(const Adaptor2d_Curve2d& aC,
 //=================================================================================================
 
 void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
-                            const double         aTol,
-                            Bnd_Box2d&                  aBox2D)
+                            const double                     aTol,
+                            Bnd_Box2d&                       aBox2D)
 {
   double aT1, aT2;
   //
@@ -1241,10 +1236,10 @@ void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
 //=================================================================================================
 
 void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
-                            const double         aT1,
-                            const double         aT2,
-                            const double         aTol,
-                            Bnd_Box2d&                  aBox2D)
+                            const double                     aT1,
+                            const double                     aT2,
+                            const double                     aTol,
+                            Bnd_Box2d&                       aBox2D)
 {
   BndLib_Box2dCurve aBC;
   //
@@ -1261,10 +1256,10 @@ void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
 //=================================================================================================
 
 void BndLib_Add2dCurve::AddOptimal(const occ::handle<Geom2d_Curve>& aC2D,
-                                   const double         aT1,
-                                   const double         aT2,
-                                   const double         aTol,
-                                   Bnd_Box2d&                  aBox2D)
+                                   const double                     aT1,
+                                   const double                     aT2,
+                                   const double                     aTol,
+                                   Bnd_Box2d&                       aBox2D)
 {
   BndLib_Box2dCurve aBC;
   //

@@ -97,15 +97,10 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) override
-  {
-    Perform(theSet, 0, theSet->Size() - 1);
-  }
+  virtual void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>*         theSet,
-                       const int theStart,
-                       const int theFinal) override;
+  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override;
 
   //! Returns Morton codes assigned to BVH primitives.
   const NCollection_Array1<BVH_EncodedLink>& EncodedLinks() const { return *myEncodedLinks; }
@@ -166,9 +161,9 @@ private:
   //! Structure defining sorting range.
   struct SortRange
   {
-    LinkIterator     myStart; //!< Start element of exclusive sorting range
-    LinkIterator     myFinal; //!< Final element of exclusive sorting range
-    int myDigit; //!< Bit number used for partition operation
+    LinkIterator myStart; //!< Start element of exclusive sorting range
+    LinkIterator myFinal; //!< Final element of exclusive sorting range
+    int          myDigit; //!< Bit number used for partition operation
   };
 
   //! Functor class to run sorting in parallel.
@@ -199,10 +194,10 @@ private:
   };
 
 public:
-  static void Sort(LinkIterator           theStart,
-                   LinkIterator           theFinal,
-                   int       theDigit,
-                   const bool isParallel)
+  static void Sort(LinkIterator theStart,
+                   LinkIterator theFinal,
+                   int          theDigit,
+                   const bool   isParallel)
   {
     if (theDigit < 24)
     {
@@ -235,9 +230,7 @@ protected:
 //=================================================================================================
 
 template <class T, int N>
-void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>*         theSet,
-                                    const int theStart,
-                                    const int theFinal)
+void BVH_RadixSorter<T, N>::Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal)
 {
   Standard_STATIC_ASSERT(N == 2 || N == 3 || N == 4);
 

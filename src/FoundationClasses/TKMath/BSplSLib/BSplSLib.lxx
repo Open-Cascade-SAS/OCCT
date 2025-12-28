@@ -17,15 +17,14 @@
 #include <BSplCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
-inline void BSplSLib::CoefsD0(const double         U,
-                              const double         V,
-                              const NCollection_Array2<gp_Pnt>&   Poles,
+inline void BSplSLib::CoefsD0(const double                      U,
+                              const double                      V,
+                              const NCollection_Array2<gp_Pnt>& Poles,
                               const NCollection_Array2<double>* Weights,
-                              gp_Pnt&                     Point)
+                              gp_Pnt&                           Point)
 {
   BSplSLib::CacheD0(U,
                     V,
@@ -42,13 +41,13 @@ inline void BSplSLib::CoefsD0(const double         U,
 
 //=================================================================================================
 
-inline void BSplSLib::CoefsD1(const double         U,
-                              const double         V,
-                              const NCollection_Array2<gp_Pnt>&   Poles,
+inline void BSplSLib::CoefsD1(const double                      U,
+                              const double                      V,
+                              const NCollection_Array2<gp_Pnt>& Poles,
                               const NCollection_Array2<double>* Weights,
-                              gp_Pnt&                     Point,
-                              gp_Vec&                     VecU,
-                              gp_Vec&                     VecV)
+                              gp_Pnt&                           Point,
+                              gp_Vec&                           VecU,
+                              gp_Vec&                           VecV)
 {
   BSplSLib::CacheD1(U,
                     V,
@@ -67,16 +66,16 @@ inline void BSplSLib::CoefsD1(const double         U,
 
 //=================================================================================================
 
-inline void BSplSLib::CoefsD2(const double         U,
-                              const double         V,
-                              const NCollection_Array2<gp_Pnt>&   Poles,
+inline void BSplSLib::CoefsD2(const double                      U,
+                              const double                      V,
+                              const NCollection_Array2<gp_Pnt>& Poles,
                               const NCollection_Array2<double>* Weights,
-                              gp_Pnt&                     Point,
-                              gp_Vec&                     VecU,
-                              gp_Vec&                     VecV,
-                              gp_Vec&                     VecUU,
-                              gp_Vec&                     VecUV,
-                              gp_Vec&                     VecVV)
+                              gp_Pnt&                           Point,
+                              gp_Vec&                           VecU,
+                              gp_Vec&                           VecV,
+                              gp_Vec&                           VecUU,
+                              gp_Vec&                           VecUV,
+                              gp_Vec&                           VecVV)
 {
   BSplSLib::CacheD2(U,
                     V,

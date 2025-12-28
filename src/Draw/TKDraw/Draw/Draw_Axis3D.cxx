@@ -61,7 +61,7 @@ void Draw_Axis3D::DrawOn(Draw_Display& dis) const
   Draw_Bounds = false;
   dis.SetColor(myColor);
   double z = dis.Zoom();
-  z               = (double)mySize / z;
+  z        = (double)mySize / z;
   gp_Pnt P, P0 = myAxes.Location();
   P = P0.Translated(gp_Vec(myAxes.XDirection()) * z);
   dis.Draw(P0, P);

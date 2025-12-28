@@ -65,9 +65,7 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
 
 //=================================================================================================
 
-static int ReadVrml(Draw_Interpretor& theDI,
-                                 int  theArgc,
-                                 const char**      theArgv)
+static int ReadVrml(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 3)
   {
@@ -76,12 +74,12 @@ static int ReadVrml(Draw_Interpretor& theDI,
   }
 
   occ::handle<TDocStd_Document> aDoc;
-  double            aFileUnitFactor = 1.0;
-  RWMesh_CoordinateSystem  aFileCoordSys   = RWMesh_CoordinateSystem_Yup,
-                          aSystemCoordSys  = RWMesh_CoordinateSystem_Zup;
-  bool        toUseExistingDoc = false;
-  bool        toFillIncomplete = true;
-  const char*        aDocName         = NULL;
+  double                        aFileUnitFactor = 1.0;
+  RWMesh_CoordinateSystem       aFileCoordSys   = RWMesh_CoordinateSystem_Yup,
+                          aSystemCoordSys       = RWMesh_CoordinateSystem_Zup;
+  bool                    toUseExistingDoc      = false;
+  bool                    toFillIncomplete      = true;
+  const char*             aDocName              = NULL;
   TCollection_AsciiString aFilePath;
 
   for (int anArgIt = 1; anArgIt < theArgc; anArgIt++)
@@ -249,7 +247,7 @@ static int loadvrml(Draw_Interpretor& di, int argc, const char** argv)
     di << "wrong number of parameters" << "\n";
   else
   {
-    TopoDS_Shape                      aShape;
+    TopoDS_Shape                                                                      aShape;
     NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>> aShapeAppMap;
 
     //-----------------------------------------------------------
@@ -274,8 +272,8 @@ static int loadvrml(Draw_Interpretor& di, int argc, const char** argv)
         aVrmlDir += aTrek;
       }
 
-      VrmlData_Scene      aScene;
-      const double anOCCUnitMM = XSDRAW::GetLengthUnit();
+      VrmlData_Scene aScene;
+      const double   anOCCUnitMM = XSDRAW::GetLengthUnit();
       aScene.SetLinearScale(1000. / anOCCUnitMM);
 
       aScene.SetVrmlDir(aVrmlDir);

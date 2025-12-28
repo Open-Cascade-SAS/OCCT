@@ -20,7 +20,7 @@ RWStepRepr_RWParametricRepresentationContext::RWStepRepr_RWParametricRepresentat
 
 void RWStepRepr_RWParametricRepresentationContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                  num,
+  const int                                                    num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepRepr_ParametricRepresentationContext>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepRepr_RWParametricRepresentationContext::ReadStep(
 }
 
 void RWStepRepr_RWParametricRepresentationContext::WriteStep(
-  StepData_StepWriter&                                    SW,
+  StepData_StepWriter&                                         SW,
   const occ::handle<StepRepr_ParametricRepresentationContext>& ent) const
 {
 

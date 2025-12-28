@@ -110,12 +110,12 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
     gp_Pnt p2 = BRep_Tool::Pnt(V2);
 
     double tailhead, tailtail, headhead, headtail;
-    tailhead             = p1.Distance(myLPnt);
-    tailtail             = p2.Distance(myLPnt);
-    headhead             = p1.Distance(myFPnt);
-    headtail             = p2.Distance(myFPnt);
-    double    dm1 = tailhead, dm2 = headtail;
-    int res1 = 0, res2 = 0;
+    tailhead   = p1.Distance(myLPnt);
+    tailtail   = p2.Distance(myLPnt);
+    headhead   = p1.Distance(myFPnt);
+    headtail   = p2.Distance(myFPnt);
+    double dm1 = tailhead, dm2 = headtail;
+    int    res1 = 0, res2 = 0;
     if (tailhead > tailtail)
     {
       res1 = 1;
@@ -126,15 +126,15 @@ bool ShapeAnalysis_BoxBndTreeSelector::Accept(const int& theObj)
       res2 = 1;
       dm2  = headhead;
     }
-    int result = res1;
-    double    min3d;
+    int    result = res1;
+    double min3d;
     min3d = std::min(dm1, dm2);
     if (min3d > myMin3d)
       return false;
 
-    int minInd = (dm1 > dm2 ? First : Last);
-    int maxInd = (dm1 > dm2 ? Last : First);
-    myArrIndices(minInd)    = theObj;
+    int minInd           = (dm1 > dm2 ? First : Last);
+    int maxInd           = (dm1 > dm2 ? Last : First);
+    myArrIndices(minInd) = theObj;
     if ((min3d - myMin3d) > RealSmall())
       myArrIndices(maxInd) = 0;
 

@@ -51,9 +51,9 @@ public:
   // Parse a file
   // Returns True if error occurred, then GetError() can be called
 
-  Standard_EXPORT bool parse(std::istream&          anInput,
-                                         const bool theTagPerStep  = false,
-                                         const bool theWithoutRoot = false);
+  Standard_EXPORT bool parse(std::istream& anInput,
+                             const bool    theTagPerStep  = false,
+                             const bool    theWithoutRoot = false);
   // Parse a C++ stream
   // theTagPerStep - if true - extract characters from anInput until '>'
   //                           extracted character and parse only these characters.
@@ -83,8 +83,7 @@ protected:
 
 private:
   // ---------- PRIVATE METHODS ----------
-  bool ParseDocument(Standard_IStream&      theIStream,
-                                 const bool theWithoutRoot = false);
+  bool ParseDocument(Standard_IStream& theIStream, const bool theWithoutRoot = false);
 
   bool ParseElement(Standard_IStream& theIStream, bool& theDocStart);
 
@@ -99,10 +98,10 @@ private:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  LDOM_XmlReader*         myReader;
+  LDOM_XmlReader*              myReader;
   occ::handle<LDOM_MemManager> myDocument;
-  LDOM_OSStream           myCurrentData;
-  TCollection_AsciiString myError;
+  LDOM_OSStream                myCurrentData;
+  TCollection_AsciiString      myError;
 };
 
 #endif

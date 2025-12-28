@@ -42,7 +42,7 @@ public:
    */
   inline VrmlData_ArrayVec3d(const VrmlData_Scene& theScene,
                              const char*           theName,
-                             const size_t   nVec,
+                             const size_t          nVec,
                              const gp_XYZ*         arrVec)
       : VrmlData_Node(theScene, theName),
         myArray(arrVec),
@@ -87,15 +87,14 @@ public:
   /**
    * Read the Node from input stream.
    */
-  Standard_EXPORT VrmlData_ErrorStatus ReadArray(VrmlData_InBuffer&     theBuffer,
-                                                 const char*            theName,
-                                                 const bool isScale);
+  Standard_EXPORT VrmlData_ErrorStatus ReadArray(VrmlData_InBuffer& theBuffer,
+                                                 const char*        theName,
+                                                 const bool         isScale);
 
   /**
    * Write the Node to the output stream currently opened in Scene.
    */
-  Standard_EXPORT VrmlData_ErrorStatus WriteArray(const char*            theName,
-                                                  const bool isScale) const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteArray(const char* theName, const bool isScale) const;
 
   /**
    * Returns True if the node is default, so that it should not be written.
@@ -117,7 +116,7 @@ protected:
   // ---------- PROTECTED FIELDS ----------
 
   const gp_XYZ* myArray;
-  size_t myLength;
+  size_t        myLength;
 
 public:
   // Declaration of CASCADE RTTI

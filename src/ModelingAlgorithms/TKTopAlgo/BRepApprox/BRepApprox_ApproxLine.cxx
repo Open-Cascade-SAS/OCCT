@@ -37,8 +37,7 @@ BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<Geom_BSplineCurve
 
 //=================================================================================================
 
-BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<IntSurf_LineOn2S>& lin,
-                                             const bool)
+BRepApprox_ApproxLine::BRepApprox_ApproxLine(const occ::handle<IntSurf_LineOn2S>& lin, const bool)
     : myLineOn2S(lin)
 {
 }

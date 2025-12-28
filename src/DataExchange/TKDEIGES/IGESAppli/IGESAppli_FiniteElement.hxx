@@ -42,9 +42,10 @@ public:
   //! - aType    : Indicates the topology type
   //! - allNodes : List of Nodes defining the element
   //! - aName    : Element type name
-  Standard_EXPORT void Init(const int                  aType,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&  allNodes,
-                            const occ::handle<TCollection_HAsciiString>& aName);
+  Standard_EXPORT void Init(
+    const int                                                            aType,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>& allNodes,
+    const occ::handle<TCollection_HAsciiString>&                         aName);
 
   //! returns Topology type
   Standard_EXPORT int Topology() const;
@@ -62,9 +63,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_FiniteElement, IGESData_IGESEntity)
 
 private:
-  int                 theTopology;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  theNodes;
-  occ::handle<TCollection_HAsciiString> theName;
+  int                                                           theTopology;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> theNodes;
+  occ::handle<TCollection_HAsciiString>                         theName;
 };
 
 #endif // _IGESAppli_FiniteElement_HeaderFile

@@ -53,8 +53,8 @@ public:
   Standard_EXPORT const occ::handle<Geom2d_Curve>& CurveOnF2() const;
 
 private:
-  BRepFill_MultiLine   myML;
-  bool     myIsDone;
+  BRepFill_MultiLine        myML;
+  bool                      myIsDone;
   occ::handle<Geom_Curve>   myCurve;
   occ::handle<Geom2d_Curve> myPCurve1;
   occ::handle<Geom2d_Curve> myPCurve2;

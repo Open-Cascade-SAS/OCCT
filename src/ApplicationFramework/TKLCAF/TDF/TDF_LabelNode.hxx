@@ -82,10 +82,7 @@ public:
       AllMayBeModified();
   }
 
-  inline bool AttributesModified() const
-  {
-    return ((myFlags & TDF_LabelNodeAttModMsk) != 0);
-  }
+  inline bool AttributesModified() const { return ((myFlags & TDF_LabelNodeAttModMsk) != 0); }
 
   // Flag MayBeModified access
   inline void MayBeModified(const bool aStatus)
@@ -93,10 +90,7 @@ public:
     myFlags = (aStatus) ? (myFlags | TDF_LabelNodeMayModMsk) : (myFlags & ~TDF_LabelNodeMayModMsk);
   }
 
-  inline bool MayBeModified() const
-  {
-    return ((myFlags & TDF_LabelNodeMayModMsk) != 0);
-  }
+  inline bool MayBeModified() const { return ((myFlags & TDF_LabelNodeMayModMsk) != 0); }
 
 private:
   // Memory management
@@ -122,9 +116,11 @@ private:
   TDF_LabelNode(const int Tag, TDF_LabelNode* Father);
 
   // Others
-  void AddAttribute(const occ::handle<TDF_Attribute>& afterAtt, const occ::handle<TDF_Attribute>& newAtt);
+  void AddAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                    const occ::handle<TDF_Attribute>& newAtt);
 
-  void RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt, const occ::handle<TDF_Attribute>& oldAtt);
+  void RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt,
+                       const occ::handle<TDF_Attribute>& oldAtt);
 
   TDF_LabelNode* RootNode();
 
@@ -136,10 +132,7 @@ private:
   inline void Tag(const int aTag) { myTag = aTag; }
 
   // Depth modification
-  inline void Depth(const int aDepth)
-  {
-    myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth);
-  }
+  inline void Depth(const int aDepth) { myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth); }
 
   // Flag Imported access
   inline void Imported(const bool aStatus)
@@ -152,13 +145,13 @@ private:
   // Private Fields
   // --------------------------------------------------------------------------
 
-  TDF_LabelNodePtr myFather;
-  TDF_LabelNodePtr myBrother;
-  TDF_LabelNodePtr myFirstChild;
+  TDF_LabelNodePtr              myFather;
+  TDF_LabelNodePtr              myBrother;
+  TDF_LabelNodePtr              myFirstChild;
   std::atomic<TDF_LabelNodePtr> myLastFoundChild; // jfa 10.01.2003
-  int      myTag;
-  int      myFlags; // Flags & Depth
-  occ::handle<TDF_Attribute> myFirstAttribute;
+  int                           myTag;
+  int                           myFlags; // Flags & Depth
+  occ::handle<TDF_Attribute>    myFirstAttribute;
 #ifdef KEEP_LOCAL_ROOT
   TDF_Data* myData;
 #endif

@@ -65,8 +65,8 @@ private:
   occ::handle<Poly_Triangulation>       myTriangulation;
   occ::handle<NCollection_HArray1<int>> myInternals;
   occ::handle<NCollection_HArray1<int>> myFree;
-  bool                 myNodes;
-  bool                 myTriangles;
+  bool                                  myNodes;
+  bool                                  myTriangles;
 };
 
 #endif // _DrawTrSurf_Triangulation_HeaderFile

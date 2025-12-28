@@ -22,7 +22,6 @@
 #include <Convert_ParameterisationType.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 
 class gp_Pnt2d;
@@ -37,36 +36,36 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static void GetShape(const BlendFunc_SectionShape  SectShape,
-                                       const double           MaxAng,
-                                       int&             NbPoles,
-                                       int&             NbKnots,
-                                       int&             Degree,
+                                       const double                  MaxAng,
+                                       int&                          NbPoles,
+                                       int&                          NbKnots,
+                                       int&                          Degree,
                                        Convert_ParameterisationType& TypeConv);
 
   Standard_EXPORT static void Knots(const BlendFunc_SectionShape SectShape,
-                                    NCollection_Array1<double>&        TKnots);
+                                    NCollection_Array1<double>&  TKnots);
 
   Standard_EXPORT static void Mults(const BlendFunc_SectionShape SectShape,
                                     NCollection_Array1<int>&     TMults);
 
   Standard_EXPORT static void GetMinimalWeights(const BlendFunc_SectionShape       SectShape,
                                                 const Convert_ParameterisationType TConv,
-                                                const double                AngleMin,
-                                                const double                AngleMax,
-                                                NCollection_Array1<double>&              Weigths);
+                                                const double                       AngleMin,
+                                                const double                       AngleMax,
+                                                NCollection_Array1<double>&        Weigths);
 
   //! Used to obtain the next level of continuity.
   Standard_EXPORT static GeomAbs_Shape NextShape(const GeomAbs_Shape S);
 
   Standard_EXPORT static bool ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
-                                                        const gp_Pnt2d&                  p2d,
-                                                        gp_Vec&                          Normal);
+                                            const gp_Pnt2d&                       p2d,
+                                            gp_Vec&                               Normal);
 
   Standard_EXPORT static bool ComputeDNormal(const occ::handle<Adaptor3d_Surface>& Surf,
-                                                         const gp_Pnt2d&                  p2d,
-                                                         gp_Vec&                          Normal,
-                                                         gp_Vec&                          DNu,
-                                                         gp_Vec&                          DNv);
+                                             const gp_Pnt2d&                       p2d,
+                                             gp_Vec&                               Normal,
+                                             gp_Vec&                               DNu,
+                                             gp_Vec&                               DNv);
 };
 
 #endif // _BlendFunc_HeaderFile

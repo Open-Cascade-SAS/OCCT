@@ -52,7 +52,7 @@ public:
   Standard_EXPORT const TopoDS_Shape& Ancestor(const TopoDS_Edge& S1) const;
 
 private:
-  bool             myIsPerform;
+  bool                                                                     myIsPerform;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 

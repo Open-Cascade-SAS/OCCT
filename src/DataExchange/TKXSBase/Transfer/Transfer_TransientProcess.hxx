@@ -26,7 +26,6 @@
 #include <Transfer_ProcessForTransient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 class Interface_InterfaceModel;
@@ -65,15 +64,14 @@ public:
 
   //! Sets a Context : according to receiving appli, to be
   //! interpreted by the Actor
-  Standard_EXPORT void SetContext(const char*            name,
-                                  const occ::handle<Standard_Transient>& ctx);
+  Standard_EXPORT void SetContext(const char* name, const occ::handle<Standard_Transient>& ctx);
 
   //! Returns the Context attached to a name, if set and if it is
   //! Kind of the type, else a Null Handle
   //! Returns True if OK, False if no Context
-  Standard_EXPORT bool GetContext(const char*       name,
-                                              const occ::handle<Standard_Type>& type,
-                                              occ::handle<Standard_Transient>&  ctx) const;
+  Standard_EXPORT bool GetContext(const char*                       name,
+                                  const occ::handle<Standard_Type>& type,
+                                  occ::handle<Standard_Transient>&  ctx) const;
 
   //! Returns (modifiable) the whole definition of Context
   //! Rather for internal use (ex.: preparing and setting in once)
@@ -83,18 +81,18 @@ public:
   //! Specific printing to trace an entity : prints label and type
   //! (if model is set)
   Standard_EXPORT virtual void PrintTrace(const occ::handle<Standard_Transient>& start,
-                                          Standard_OStream& S) const override;
+                                          Standard_OStream&                      S) const override;
 
   //! Specific number of a starting object for check-list : Number
   //! in model
-  Standard_EXPORT virtual int CheckNum(const occ::handle<Standard_Transient>& ent) const
-    override;
+  Standard_EXPORT virtual int CheckNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns the list of sharings entities, AT ANY LEVEL, which are
   //! kind of a given type. Calls TypedSharings from Graph
   //! Returns an empty list if the Graph has not been acknowledged
-  Standard_EXPORT Interface_EntityIterator TypedSharings(const occ::handle<Standard_Transient>& start,
-                                                         const occ::handle<Standard_Type>& type) const;
+  Standard_EXPORT Interface_EntityIterator
+    TypedSharings(const occ::handle<Standard_Transient>& start,
+                  const occ::handle<Standard_Type>&      type) const;
 
   //! Tells if an entity is well loaded from file (even if its data
   //! fail on checking, they are present). Mostly often, answers
@@ -112,7 +110,8 @@ public:
   //! Prints statistics on a given output, according mode
   Standard_EXPORT void PrintStats(const int mode, Standard_OStream& S) const;
 
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> RootsForTransfer();
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
+                  RootsForTransfer();
 
   DEFINE_STANDARD_RTTIEXT(Transfer_TransientProcess, Transfer_ProcessForTransient)
 
@@ -120,7 +119,7 @@ private:
   occ::handle<Interface_InterfaceModel>                                         themodel;
   occ::handle<Interface_HGraph>                                                 thegraph;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> thectx;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>                                     thetrroots;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>           thetrroots;
 };
 
 #endif // _Transfer_TransientProcess_HeaderFile

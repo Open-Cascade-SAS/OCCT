@@ -36,9 +36,9 @@ public:
   //! Initializes the computation of the minimum of F.
   //! Warning: constructor does not perform computations.
   Standard_EXPORT math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
-                            const double                         theTolerance,
-                            const int                      theNbIterations = 200,
-                            const double                         theZEPS         = 1.0e-12);
+                            const double                                theTolerance,
+                            const int                                   theNbIterations = 200,
+                            const double                                theZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_FRPR();
@@ -91,19 +91,19 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  math_Vector   TheLocation;
-  math_Vector   TheGradient;
-  double TheMinimum;
-  double PreviousMinimum;
-  double XTol;
-  double EPSZ;
+  math_Vector TheLocation;
+  math_Vector TheGradient;
+  double      TheMinimum;
+  double      PreviousMinimum;
+  double      XTol;
+  double      EPSZ;
 
 private:
-  bool Done;
-  int Iter;
-  int State;
-  math_Status      TheStatus;
-  int Itermax;
+  bool        Done;
+  int         Iter;
+  int         State;
+  math_Status TheStatus;
+  int         Itermax;
 };
 
 #include <math_FRPR.lxx>

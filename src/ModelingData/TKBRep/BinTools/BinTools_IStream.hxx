@@ -120,9 +120,7 @@ public:
   //! Reads transformation value from the stream.
   Standard_EXPORT BinTools_IStream& operator>>(gp_Trsf& theValue);
   //! Reads 3 boolean values from one byte
-  Standard_EXPORT void ReadBools(bool& theBool1,
-                                 bool& theBool2,
-                                 bool& theBool3);
+  Standard_EXPORT void ReadBools(bool& theBool1, bool& theBool2, bool& theBool3);
   //! Reads 7 boolean values from one byte
   Standard_EXPORT void ReadBools(bool& theBool1,
                                  bool& theBool2,

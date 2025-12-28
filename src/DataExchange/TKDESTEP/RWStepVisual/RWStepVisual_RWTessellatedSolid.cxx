@@ -22,7 +22,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepVisual_TessellatedStructuredItem.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 
 //=================================================================================================
@@ -33,7 +32,7 @@ RWStepVisual_RWTessellatedSolid::RWStepVisual_RWTessellatedSolid() {}
 
 void RWStepVisual_RWTessellatedSolid::ReadStep(
   const occ::handle<StepData_StepReaderData>&     theData,
-  const int                     theNum,
+  const int                                       theNum,
   occ::handle<Interface_Check>&                   theCheck,
   const occ::handle<StepVisual_TessellatedSolid>& theEnt) const
 {
@@ -51,11 +50,11 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
   // Own fields of TessellatedSolid
 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> aItems;
-  int                                      sub2 = 0;
+  int                                                                                 sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
     int nb0  = theData->NbParams(sub2);
-    aItems                = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, nb0);
+    aItems   = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -71,7 +70,7 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
   }
 
   occ::handle<StepShape_ManifoldSolidBrep> aGeometricLink;
-  bool                    hasGeometricLink = true;
+  bool                                     hasGeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -94,7 +93,7 @@ void RWStepVisual_RWTessellatedSolid::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedSolid::WriteStep(
-  StepData_StepWriter&                       theSW,
+  StepData_StepWriter&                            theSW,
   const occ::handle<StepVisual_TessellatedSolid>& theEnt) const
 {
 

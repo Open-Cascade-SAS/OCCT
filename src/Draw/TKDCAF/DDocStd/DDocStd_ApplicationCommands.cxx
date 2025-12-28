@@ -44,15 +44,13 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-static int DDocStd_ListDocuments(Draw_Interpretor& di,
-                                              int  nb,
-                                              const char** /*a*/)
+static int DDocStd_ListDocuments(Draw_Interpretor& di, int nb, const char** /*a*/)
 {
   if (nb == 1)
   {
     occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
     occ::handle<TDocStd_Document>    D;
-    int            nbdoc = A->NbDocuments();
+    int                              nbdoc = A->NbDocuments();
     for (int i = 1; i <= nbdoc; i++)
     {
       A->GetDocument(i, D);
@@ -74,9 +72,7 @@ static int DDocStd_ListDocuments(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static int DDocStd_NewDocument(Draw_Interpretor& di,
-                                            int  nb,
-                                            const char**      a)
+static int DDocStd_NewDocument(Draw_Interpretor& di, int nb, const char** a)
 {
   occ::handle<TDocStd_Document>     D;
   occ::handle<DDocStd_DrawDocument> DD;
@@ -120,13 +116,13 @@ static int DDocStd_Open(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb >= 3)
   {
-    TCollection_ExtendedString  path(a[1], true);
-    const char*            DocName = a[2];
+    TCollection_ExtendedString       path(a[1], true);
+    const char*                      DocName = a[2];
     occ::handle<TDocStd_Application> A       = DDocStd::GetApplication();
     occ::handle<TDocStd_Document>    D;
-    PCDM_ReaderStatus           theStatus;
+    PCDM_ReaderStatus                theStatus;
 
-    bool          anUseStream = false;
+    bool                           anUseStream = false;
     occ::handle<PCDM_ReaderFilter> aFilter     = new PCDM_ReaderFilter;
     for (int i = 3; i < nb; i++)
     {
@@ -172,7 +168,7 @@ static int DDocStd_Open(Draw_Interpretor& di, int nb, const char** a)
     if (anUseStream)
     {
       const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::istream> aFileStream =
+      std::shared_ptr<std::istream>      aFileStream =
         aFileSystem->OpenIStream(path, std::ios::in | std::ios::binary);
 
       theStatus = A->Open(*aFileStream, D, aFilter, aProgress->Start());
@@ -265,9 +261,9 @@ static int DDocStd_SaveAs(Draw_Interpretor& di, int nb, const char** a)
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(a[1], D))
       return 1;
-    TCollection_ExtendedString  path(a[2], true);
+    TCollection_ExtendedString       path(a[2], true);
     occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
-    PCDM_StoreStatus            theStatus;
+    PCDM_StoreStatus                 theStatus;
 
     bool anUseStream(false), isSaveEmptyLabels(false);
     for (int i = 3; i < nb; i++)
@@ -289,7 +285,7 @@ static int DDocStd_SaveAs(Draw_Interpretor& di, int nb, const char** a)
     if (anUseStream)
     {
       const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      std::shared_ptr<std::ostream> aFileStream =
+      std::shared_ptr<std::ostream>      aFileStream =
         aFileSystem->OpenOStream(path, std::ios::out | std::ios::binary);
       theStatus = A->SaveAs(D, *aFileStream, aProgress->Start());
     }
@@ -346,9 +342,7 @@ static int DDocStd_SaveAs(Draw_Interpretor& di, int nb, const char** a)
 
 //=================================================================================================
 
-static int DDocStd_Close(Draw_Interpretor& theDI,
-                                      int  theArgNb,
-                                      const char**      theArgVec)
+static int DDocStd_Close(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   bool                                      toComplain = true;
   NCollection_List<TCollection_AsciiString> aDocNames;
@@ -395,17 +389,17 @@ static int DDocStd_Close(Draw_Interpretor& theDI,
        aDocNameIter.More();
        aDocNameIter.Next())
   {
-    const char*         aDocName = aDocNameIter.Value().ToCString();
+    const char*                   aDocName = aDocNameIter.Value().ToCString();
     occ::handle<TDocStd_Document> aDoc;
     if (DDocStd::GetDocument(aDocName, aDoc, toComplain))
     {
-      TDF_Label                 aRoot = aDoc->GetData()->Root();
+      TDF_Label                      aRoot = aDoc->GetData()->Root();
       occ::handle<TPrsStd_AISViewer> aDocViewer;
       if (TPrsStd_AISViewer::Find(aRoot, aDocViewer)
           && !aDocViewer->GetInteractiveContext().IsNull())
       {
         occ::handle<V3d_Viewer> aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
-        NCollection_List<occ::handle<V3d_View>>     aViews;
+        NCollection_List<occ::handle<V3d_View>> aViews;
         for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(
                aDocViewer->GetInteractiveContext()->CurrentViewer()->DefinedViewIterator());
              aViewIter.More();
@@ -413,7 +407,8 @@ static int DDocStd_Close(Draw_Interpretor& theDI,
         {
           aViews.Append(aViewIter.Value());
         }
-        for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(aViews); aViewIter.More(); aViewIter.Next())
+        for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(aViews); aViewIter.More();
+             aViewIter.Next())
         {
           occ::handle<V3d_View> aView = aViewIter.Value();
           ViewerTest::RemoveView(aView);
@@ -437,9 +432,7 @@ static int DDocStd_Close(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int DDocStd_IsInSession(Draw_Interpretor& di,
-                                            int  nb,
-                                            const char**      a)
+static int DDocStd_IsInSession(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
@@ -490,9 +483,7 @@ static int DDocStd_Path(Draw_Interpretor& di, int nb, const char** a)
 
 //=================================================================================================
 
-static int DDocStd_AddComment(Draw_Interpretor& di,
-                                           int  nb,
-                                           const char**      a)
+static int DDocStd_AddComment(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 3)
   {
@@ -511,9 +502,7 @@ static int DDocStd_AddComment(Draw_Interpretor& di,
 
 //=================================================================================================
 
-static int DDocStd_PrintComments(Draw_Interpretor& di,
-                                              int  nb,
-                                              const char**      a)
+static int DDocStd_PrintComments(Draw_Interpretor& di, int nb, const char** a)
 {
   if (nb == 2)
   {
@@ -538,8 +527,8 @@ static int DDocStd_PrintComments(Draw_Interpretor& di,
 //=================================================================================================
 
 static int DDocStd_StorageFormatVersion(Draw_Interpretor& theDI,
-                                                     int  theNbArgs,
-                                                     const char**      theArgVec)
+                                        int               theNbArgs,
+                                        const char**      theArgVec)
 {
   if (theNbArgs != 2 && theNbArgs != 3)
   {

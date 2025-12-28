@@ -56,12 +56,12 @@ void BRepCheck::Add(NCollection_List<BRepCheck_Status>& lst, const BRepCheck_Sta
 //=================================================================================================
 
 bool BRepCheck::SelfIntersection(const TopoDS_Wire& W,
-                                             const TopoDS_Face& myFace,
-                                             TopoDS_Edge&       RetE1,
-                                             TopoDS_Edge&       RetE2)
+                                 const TopoDS_Face& myFace,
+                                 TopoDS_Edge&       RetE1,
+                                 TopoDS_Edge&       RetE2)
 {
   occ::handle<BRepCheck_Wire> chkw = new BRepCheck_Wire(W);
-  BRepCheck_Status       stat = chkw->SelfIntersect(myFace, RetE1, RetE2);
+  BRepCheck_Status            stat = chkw->SelfIntersect(myFace, RetE1, RetE2);
   return (stat == BRepCheck_SelfIntersectingWire);
 }
 
@@ -107,8 +107,8 @@ double BRepCheck::PrecSurface(const occ::handle<Adaptor3d_Surface>& aAHSurf)
   GeomAbs_SurfaceType aST = aAHSurf->GetType();
   if (aST == GeomAbs_Cone)
   {
-    gp_Cone       aCone = aAHSurf->Cone();
-    double aX[4];
+    gp_Cone aCone = aAHSurf->Cone();
+    double  aX[4];
     //
     aCone.Location().Coord(aX[0], aX[1], aX[2]);
     aX[3]  = aCone.RefRadius();

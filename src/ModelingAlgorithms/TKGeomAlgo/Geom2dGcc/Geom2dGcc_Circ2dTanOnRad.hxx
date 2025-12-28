@@ -25,13 +25,7 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class Geom2dAdaptor_Curve;
 class Geom2d_Point;
@@ -72,8 +66,8 @@ public:
   //! -   tangential to the curve Qualified1
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRad(const Geom2dGcc_QualifiedCurve& Qualified1,
                                            const Geom2dAdaptor_Curve&      OnCurv,
-                                           const double             Radius,
-                                           const double             Tolerance);
+                                           const double                    Radius,
+                                           const double                    Tolerance);
 
   //! Constructs one or more 2D circles of radius Radius,
   //! centered on the 2D curve OnCurv and:
@@ -106,9 +100,9 @@ public:
   //! }
   //! }
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRad(const occ::handle<Geom2d_Point>& Point1,
-                                           const Geom2dAdaptor_Curve&  OnCurv,
-                                           const double         Radius,
-                                           const double         Tolerance);
+                                           const Geom2dAdaptor_Curve&       OnCurv,
+                                           const double                     Radius,
+                                           const double                     Tolerance);
 
   Standard_EXPORT void Results(const GccAna_Circ2dTanOnRad& Circ);
 
@@ -164,9 +158,9 @@ public:
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns the center PntSol on the second argument (i.e.
   //! line or circle) of the solution of index Index computed by
@@ -178,9 +172,7 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void CenterOn3(const int Index,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns true if the solution of index Index and the first
   //! argument of this algorithm are the same (i.e. there are 2
@@ -196,16 +188,16 @@ public:
   Standard_EXPORT bool IsTheSame1(const int Index) const;
 
 private:
-  bool        WellDone;
-  int        NbrSol;
-  NCollection_Array1<gp_Circ2d>   cirsol;
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Circ2d>       cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<int> TheSame1;
-  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
-  NCollection_Array1<double>    par1sol;
-  NCollection_Array1<double>    pararg1;
-  NCollection_Array1<gp_Pnt2d>    pntcen3;
-  NCollection_Array1<double>    parcen3;
+  NCollection_Array1<int>             TheSame1;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<gp_Pnt2d>        pntcen3;
+  NCollection_Array1<double>          parcen3;
 };
 
 #endif // _Geom2dGcc_Circ2dTanOnRad_HeaderFile

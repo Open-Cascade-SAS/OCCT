@@ -36,11 +36,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeHyperbola(
     const occ::handle<Geom2d_Hyperbola>& C,
-    const StepData_Factors&         theLocalFactors = StepData_Factors());
+    const StepData_Factors&              theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeHyperbola(
     const occ::handle<Geom_Hyperbola>& C,
-    const StepData_Factors&       theLocalFactors = StepData_Factors());
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Hyperbola>& Value() const;
 

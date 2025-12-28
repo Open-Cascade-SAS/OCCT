@@ -57,8 +57,8 @@ static inline void MinMax(double& theParMIN, double& theParMAX)
   if (theParMIN > theParMAX)
   {
     const double aTmp = theParMAX;
-    theParMAX                = theParMIN;
-    theParMIN                = aTmp;
+    theParMAX         = theParMIN;
+    theParMIN         = aTmp;
   }
 }
 
@@ -67,8 +67,8 @@ static inline void MinMax(double& theParMIN, double& theParMAX)
 // purpose  : Fill points hash by input data.
 //            Static subfunction in ComputePurgedWLine.
 //=========================================================================
-static void FillPointsHash(const occ::handle<IntPatch_WLine>&         theWLine,
-                           NCollection_Array1<int>& thePointsHash)
+static void FillPointsHash(const occ::handle<IntPatch_WLine>& theWLine,
+                           NCollection_Array1<int>&           thePointsHash)
 {
   // 1 - Delete point.
   // 0 - Store point.
@@ -80,8 +80,8 @@ static void FillPointsHash(const occ::handle<IntPatch_WLine>&         theWLine,
 
   for (v = 1; v <= theWLine->NbVertex(); v++)
   {
-    IntPatch_Point   aVertex      = theWLine->Vertex(v);
-    int avertexindex = (int)aVertex.ParameterOnLine();
+    IntPatch_Point aVertex      = theWLine->Vertex(v);
+    int            avertexindex = (int)aVertex.ParameterOnLine();
     thePointsHash.SetValue(avertexindex, -1);
   }
 }
@@ -91,29 +91,28 @@ static void FillPointsHash(const occ::handle<IntPatch_WLine>&         theWLine,
 // purpose  : Makes new walking line according to the points hash
 //            Static subfunction in ComputePurgedWLine and DeleteOuter.
 //=========================================================================
-static occ::handle<IntPatch_WLine> MakeNewWLine(const occ::handle<IntPatch_WLine>&         theWLine,
-                                           NCollection_Array1<int>& thePointsHash,
-                                           const bool                theIsOuter)
+static occ::handle<IntPatch_WLine> MakeNewWLine(const occ::handle<IntPatch_WLine>& theWLine,
+                                                NCollection_Array1<int>&           thePointsHash,
+                                                const bool                         theIsOuter)
 {
   int i;
 
   occ::handle<IntSurf_LineOn2S> aPurgedLineOn2S = new IntSurf_LineOn2S();
   occ::handle<IntPatch_WLine>   aLocalWLine     = new IntPatch_WLine(aPurgedLineOn2S, false);
   aLocalWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
-  int anOldLineIdx = 1, aVertexIdx = 1, anIndexPrev = -1, anIdxOld = -1;
-  gp_Pnt           aPPrev, aPOld;
+  int    anOldLineIdx = 1, aVertexIdx = 1, anIndexPrev = -1, anIdxOld = -1;
+  gp_Pnt aPPrev, aPOld;
   for (i = 1; i <= thePointsHash.Upper(); i++)
   {
     if (thePointsHash(i) == 0)
     {
       // Point has to be added
 
-      const gp_Pnt        aP          = theWLine->Point(i).Value();
+      const gp_Pnt aP          = theWLine->Point(i).Value();
       const double aSqDistPrev = aPPrev.SquareDistance(aPOld);
       const double aSqDist     = aPPrev.SquareDistance(aP);
 
-      const double aRatio =
-        (aSqDistPrev < gp::Resolution()) ? 0.0 : 9.0 * aSqDist / aSqDistPrev;
+      const double aRatio = (aSqDistPrev < gp::Resolution()) ? 0.0 : 9.0 * aSqDist / aSqDistPrev;
 
       if (theIsOuter || (aRatio < gp::Resolution()) || ((1.0 < aRatio) && (aRatio < 81.0))
           || (i - anIndexPrev <= 1) || (i - anIdxOld <= 1))
@@ -209,11 +208,12 @@ static void MovePoint(const occ::handle<Adaptor3d_Surface>& theS1, double& U1, d
 // purpose  : Check and delete out of bounds points on walking line.
 //            Static subfunction in ComputePurgedWLine.
 //=========================================================================
-static occ::handle<IntPatch_WLine> DeleteOuterPoints(const occ::handle<IntPatch_WLine>&      theWLine,
-                                                const occ::handle<Adaptor3d_Surface>&   theS1,
-                                                const occ::handle<Adaptor3d_Surface>&   theS2,
-                                                const occ::handle<Adaptor3d_TopolTool>& theDom1,
-                                                const occ::handle<Adaptor3d_TopolTool>& theDom2)
+static occ::handle<IntPatch_WLine> DeleteOuterPoints(
+  const occ::handle<IntPatch_WLine>&      theWLine,
+  const occ::handle<Adaptor3d_Surface>&   theS1,
+  const occ::handle<Adaptor3d_Surface>&   theS2,
+  const occ::handle<Adaptor3d_TopolTool>& theDom1,
+  const occ::handle<Adaptor3d_TopolTool>& theDom2)
 {
   int i;
 
@@ -223,14 +223,14 @@ static occ::handle<IntPatch_WLine> DeleteOuterPoints(const occ::handle<IntPatch_
   if (theS1->IsUPeriodic() || theS1->IsVPeriodic() || theS2->IsUPeriodic() || theS2->IsVPeriodic())
     return theWLine;
 
-  gp_Pnt2d      aPntOnF1, aPntOnF2;
-  double aX1, aY1, aX2, aY2;
+  gp_Pnt2d aPntOnF1, aPntOnF2;
+  double   aX1, aY1, aX2, aY2;
 
   // Iterate over points in walking line and delete which are out of bounds.
   // Forward.
   bool isAllDeleted  = true;
   bool aChangedFirst = false;
-  int aFirstGeomIdx = 1;
+  int  aFirstGeomIdx = 1;
   for (i = 1; i <= theWLine->NbPnts(); i++)
   {
     theWLine->Point(i).Parameters(aX1, aY1, aX2, aY2);
@@ -267,7 +267,7 @@ static occ::handle<IntPatch_WLine> DeleteOuterPoints(const occ::handle<IntPatch_
 
   // Backward.
   bool aChangedLast = false;
-  int aLastGeomIdx = theWLine->NbPnts();
+  int  aLastGeomIdx = theWLine->NbPnts();
   for (i = theWLine->NbPnts(); i >= 1; i--)
   {
     theWLine->Point(i).Parameters(aX1, aY1, aX2, aY2);
@@ -340,10 +340,10 @@ static occ::handle<IntPatch_WLine> DeleteOuterPoints(const occ::handle<IntPatch_
 // purpose  : Check if aNextPnt lies inside of tube build on aBasePnt and aBaseVec.
 //            In 2d space. Static subfunction in DeleteByTube.
 //=========================================================================
-static bool IsInsideIn2d(const gp_Pnt2d&     aBasePnt,
-                                     const gp_Vec2d&     aBaseVec,
-                                     const gp_Pnt2d&     aNextPnt,
-                                     const double aSquareMaxDist)
+static bool IsInsideIn2d(const gp_Pnt2d& aBasePnt,
+                         const gp_Vec2d& aBaseVec,
+                         const gp_Pnt2d& aNextPnt,
+                         const double    aSquareMaxDist)
 {
   gp_Vec2d aVec2d(aBasePnt, aNextPnt);
 
@@ -359,10 +359,10 @@ static bool IsInsideIn2d(const gp_Pnt2d&     aBasePnt,
 // purpose  : Check if aNextPnt lies inside of tube build on aBasePnt and aBaseVec.
 //            In 3d space. Static subfunction in DeleteByTube.
 //=========================================================================
-static bool IsInsideIn3d(const gp_Pnt&       aBasePnt,
-                                     const gp_Vec&       aBaseVec,
-                                     const gp_Pnt&       aNextPnt,
-                                     const double aSquareMaxDist)
+static bool IsInsideIn3d(const gp_Pnt& aBasePnt,
+                         const gp_Vec& aBaseVec,
+                         const gp_Pnt& aNextPnt,
+                         const double  aSquareMaxDist)
 {
   gp_Vec aVec(aBasePnt, aNextPnt);
 
@@ -405,8 +405,8 @@ static bool IsSurfPlaneLike(const occ::handle<Adaptor3d_Surface>& theS)
 //=========================================================================
 
 static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine>&    theWLine,
-                                           const occ::handle<Adaptor3d_Surface>& theS1,
-                                           const occ::handle<Adaptor3d_Surface>& theS2)
+                                                const occ::handle<Adaptor3d_Surface>& theS1,
+                                                const occ::handle<Adaptor3d_Surface>& theS2)
 {
   // III: Check points for tube criteria:
   // Workaround to handle case of small amount points after purge.
@@ -426,13 +426,13 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
   theWLine->Point(1).ParametersOnS2(UonS2[0], VonS2[0]);
   theWLine->Point(2).ParametersOnS2(UonS2[1], VonS2[1]);
 
-  gp_Pnt2d      aBase2dPnt1(UonS1[0], VonS1[0]);
-  gp_Pnt2d      aBase2dPnt2(UonS2[0], VonS2[0]);
-  gp_Vec2d      aBase2dVec1(UonS1[1] - UonS1[0], VonS1[1] - VonS1[0]);
-  gp_Vec2d      aBase2dVec2(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
-  gp_Pnt        aBase3dPnt = theWLine->Point(1).Value();
-  gp_Vec        aBase3dVec(theWLine->Point(1).Value(), theWLine->Point(2).Value());
-  double aPrevStep = aBase3dVec.SquareMagnitude();
+  gp_Pnt2d aBase2dPnt1(UonS1[0], VonS1[0]);
+  gp_Pnt2d aBase2dPnt2(UonS2[0], VonS2[0]);
+  gp_Vec2d aBase2dVec1(UonS1[1] - UonS1[0], VonS1[1] - VonS1[0]);
+  gp_Vec2d aBase2dVec2(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
+  gp_Pnt   aBase3dPnt = theWLine->Point(1).Value();
+  gp_Vec   aBase3dVec(theWLine->Point(1).Value(), theWLine->Point(2).Value());
+  double   aPrevStep = aBase3dVec.SquareMagnitude();
 
   // Choose base tolerance and scale it to pipe algorithm.
   constexpr double aBaseTolerance = Precision::Approximation();
@@ -446,7 +446,7 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
 
   const double aLimitCoeff  = 0.99 * 0.99;
   const double aMaxSqrRatio = 15. * 15.;
-  bool    isPlanePlane = IsSurfPlaneLike(theS1) && IsSurfPlaneLike(theS2);
+  bool         isPlanePlane = IsSurfPlaneLike(theS1) && IsSurfPlaneLike(theS2);
   for (i = 3; i <= theWLine->NbPnts(); i++)
   {
     bool isDeleteState = false;
@@ -595,11 +595,11 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
 //          [3] - V-parameter of 2nd surface.
 //=======================================================================
 static bool IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
-                                      const IntSurf_PntOn2S& thePtl,
-                                      const IntSurf_PntOn2S& thePtmid,
-                                      const double    theArrPeriods[4],
-                                      const double    theFBound[4],
-                                      const double    theLBound[4])
+                          const IntSurf_PntOn2S& thePtl,
+                          const IntSurf_PntOn2S& thePtmid,
+                          const double           theArrPeriods[4],
+                          const double           theFBound[4],
+                          const double           theLBound[4])
 {
   double aParF[4] = {0.0, 0.0, 0.0, 0.0};
   double aParL[4] = {0.0, 0.0, 0.0, 0.0};
@@ -680,13 +680,13 @@ static bool IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
 //           In this case, parameters of thePmid on every quadric
 //            will be recomputed and returned.
 //=======================================================================
-static bool IsIntersectionPoint(const gp_Pnt&                    thePmid,
-                                            const occ::handle<Adaptor3d_Surface>& theS1,
-                                            const occ::handle<Adaptor3d_Surface>& theS2,
-                                            const IntSurf_PntOn2S&           theRefPt,
-                                            const double              theTol,
-                                            const double* const       theArrPeriods,
-                                            IntSurf_PntOn2S&                 theNewPt)
+static bool IsIntersectionPoint(const gp_Pnt&                         thePmid,
+                                const occ::handle<Adaptor3d_Surface>& theS1,
+                                const occ::handle<Adaptor3d_Surface>& theS2,
+                                const IntSurf_PntOn2S&                theRefPt,
+                                const double                          theTol,
+                                const double* const                   theArrPeriods,
+                                IntSurf_PntOn2S&                      theNewPt)
 {
   double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
 
@@ -756,7 +756,8 @@ static bool IsIntersectionPoint(const gp_Pnt&                    thePmid,
 // function : ExtendFirst
 // purpose  : Adds thePOn2S to the begin of theWline
 //=======================================================================
-static void ExtendFirst(const occ::handle<IntPatch_WLine>& theWline, const IntSurf_PntOn2S& theAddedPt)
+static void ExtendFirst(const occ::handle<IntPatch_WLine>& theWline,
+                        const IntSurf_PntOn2S&             theAddedPt)
 {
   double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   theAddedPt.Parameters(aU1, aV1, aU2, aV2);
@@ -799,7 +800,8 @@ static void ExtendFirst(const occ::handle<IntPatch_WLine>& theWline, const IntSu
 // function : ExtendLast
 // purpose  : Adds thePOn2S to the end of theWline
 //=======================================================================
-static void ExtendLast(const occ::handle<IntPatch_WLine>& theWline, const IntSurf_PntOn2S& theAddedPt)
+static void ExtendLast(const occ::handle<IntPatch_WLine>& theWline,
+                       const IntSurf_PntOn2S&             theAddedPt)
 {
   double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   theAddedPt.Parameters(aU1, aV1, aU2, aV2);
@@ -831,10 +833,10 @@ static void ExtendLast(const occ::handle<IntPatch_WLine>& theWline, const IntSur
 // purpose : Checks, if 2D-representation of thePOn2S is in surfaces domain,
 //            defined by bounding-boxes theBoxS1 and theBoxS2
 //=========================================================================
-static bool IsOutOfDomain(const Bnd_Box2d&           theBoxS1,
-                                      const Bnd_Box2d&           theBoxS2,
-                                      const IntSurf_PntOn2S&     thePOn2S,
-                                      const double* const theArrPeriods)
+static bool IsOutOfDomain(const Bnd_Box2d&       theBoxS1,
+                          const Bnd_Box2d&       theBoxS2,
+                          const IntSurf_PntOn2S& thePOn2S,
+                          const double* const    theArrPeriods)
 {
   double aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   double aU1min = 0.0, aU1max = 0.0, aV1min = 0.0, aV1max = 0.0;
@@ -858,20 +860,21 @@ static bool IsOutOfDomain(const Bnd_Box2d&           theBoxS1,
 // purpose  : Check if extending is possible
 //            (see IntPatch_WLineTool::ExtendTwoWLines)
 //=======================================================================
-static IntPatchWT_WLsConnectionType CheckArgumentsToExtend(const occ::handle<Adaptor3d_Surface>& theS1,
-                                                           const occ::handle<Adaptor3d_Surface>& theS2,
-                                                           const IntSurf_PntOn2S&     thePtWL1,
-                                                           const IntSurf_PntOn2S&     thePtWL2,
-                                                           IntSurf_PntOn2S&           theNewPoint,
-                                                           const gp_Vec&              theVec1,
-                                                           const gp_Vec&              theVec2,
-                                                           const gp_Vec&              theVec3,
-                                                           const Bnd_Box2d&           theBoxS1,
-                                                           const Bnd_Box2d&           theBoxS2,
-                                                           const double        theToler3D,
-                                                           const double* const theArrPeriods)
+static IntPatchWT_WLsConnectionType CheckArgumentsToExtend(
+  const occ::handle<Adaptor3d_Surface>& theS1,
+  const occ::handle<Adaptor3d_Surface>& theS2,
+  const IntSurf_PntOn2S&                thePtWL1,
+  const IntSurf_PntOn2S&                thePtWL2,
+  IntSurf_PntOn2S&                      theNewPoint,
+  const gp_Vec&                         theVec1,
+  const gp_Vec&                         theVec2,
+  const gp_Vec&                         theVec3,
+  const Bnd_Box2d&                      theBoxS1,
+  const Bnd_Box2d&                      theBoxS2,
+  const double                          theToler3D,
+  const double* const                   theArrPeriods)
 {
-  const double          aSqToler = theToler3D * theToler3D;
+  const double                 aSqToler = theToler3D * theToler3D;
   IntPatchWT_WLsConnectionType aRetVal  = IntPatchWT_NotConnected;
   if (theVec3.SquareMagnitude() <= aSqToler)
   {
@@ -1014,12 +1017,12 @@ static IntPatchWT_WLsConnectionType CheckArgumentsToExtend(const occ::handle<Ada
 //            (see IntPatch_WLineTool::JoinWLines(...))
 //=======================================================================
 bool CheckArgumentsToJoin(const occ::handle<Adaptor3d_Surface>& theS1,
-                                      const occ::handle<Adaptor3d_Surface>& theS2,
-                                      const IntSurf_PntOn2S&           thePnt,
-                                      const gp_Pnt&                    theP1,
-                                      const gp_Pnt&                    theP2,
-                                      const gp_Pnt&                    theP3,
-                                      const double              theMinRad)
+                          const occ::handle<Adaptor3d_Surface>& theS2,
+                          const IntSurf_PntOn2S&                thePnt,
+                          const gp_Pnt&                         theP1,
+                          const gp_Pnt&                         theP2,
+                          const gp_Pnt&                         theP3,
+                          const double                          theMinRad)
 {
   const double aRad = IntPatch_PointLine::CurvatureRadiusOfIntersLine(theS1, theS2, thePnt);
 
@@ -1052,7 +1055,7 @@ bool CheckArgumentsToJoin(const occ::handle<Adaptor3d_Surface>& theS1,
   if (aV12f.Angle(aV12l) > IntPatch_WLineTool::myMaxConcatAngle)
     return false;
 
-  const gp_Vec        aV13(theP1, theP3);
+  const gp_Vec aV13(theP1, theP3);
   const double aSq13 = aV13.SquareMagnitude();
 
   return (aV12f.CrossSquareMagnitude(aV13) < 1.0e-4 * aSq13 * aSq13);
@@ -1067,17 +1070,17 @@ static void ExtendTwoWLFirstFirst(const occ::handle<Adaptor3d_Surface>& theS1,
                                   const occ::handle<Adaptor3d_Surface>& theS2,
                                   const occ::handle<IntPatch_WLine>&    theWLine1,
                                   const occ::handle<IntPatch_WLine>&    theWLine2,
-                                  const IntSurf_PntOn2S&           thePtWL1,
-                                  const IntSurf_PntOn2S&           thePtWL2,
-                                  const gp_Vec&                    theVec1,
-                                  const gp_Vec&                    theVec2,
-                                  const gp_Vec&                    theVec3,
-                                  const Bnd_Box2d&                 theBoxS1,
-                                  const Bnd_Box2d&                 theBoxS2,
-                                  const double              theToler3D,
-                                  const double* const       theArrPeriods,
-                                  unsigned int&                    theCheckResult,
-                                  bool&                theHasBeenJoined)
+                                  const IntSurf_PntOn2S&                thePtWL1,
+                                  const IntSurf_PntOn2S&                thePtWL2,
+                                  const gp_Vec&                         theVec1,
+                                  const gp_Vec&                         theVec2,
+                                  const gp_Vec&                         theVec3,
+                                  const Bnd_Box2d&                      theBoxS1,
+                                  const Bnd_Box2d&                      theBoxS2,
+                                  const double                          theToler3D,
+                                  const double* const                   theArrPeriods,
+                                  unsigned int&                         theCheckResult,
+                                  bool&                                 theHasBeenJoined)
 {
   IntSurf_PntOn2S                    aPOn2S;
   const IntPatchWT_WLsConnectionType aCheckRes = CheckArgumentsToExtend(theS1,
@@ -1123,15 +1126,15 @@ static void ExtendTwoWLFirstFirst(const occ::handle<Adaptor3d_Surface>& theS1,
 
   for (int aNVtx = 1; aNVtx <= theWLine1->NbVertex(); aNVtx++)
   {
-    IntPatch_Point&     aVert     = theWLine1->ChangeVertex(aNVtx);
-    const double aCurParam = aVert.ParameterOnLine();
+    IntPatch_Point& aVert     = theWLine1->ChangeVertex(aNVtx);
+    const double    aCurParam = aVert.ParameterOnLine();
     aVert.SetParameter(aNbPts + aCurParam - 1);
   }
 
   for (int aNVtx = 1; aNVtx <= theWLine2->NbVertex(); aNVtx++)
   {
-    IntPatch_Point&     aVert     = theWLine2->ChangeVertex(aNVtx);
-    const double aCurParam = aVert.ParameterOnLine();
+    IntPatch_Point& aVert     = theWLine2->ChangeVertex(aNVtx);
+    const double    aCurParam = aVert.ParameterOnLine();
     aVert.SetParameter(aNbPts - aCurParam + 1);
     theWLine1->AddVertex(aVert, true);
   }
@@ -1148,17 +1151,17 @@ static void ExtendTwoWLFirstLast(const occ::handle<Adaptor3d_Surface>& theS1,
                                  const occ::handle<Adaptor3d_Surface>& theS2,
                                  const occ::handle<IntPatch_WLine>&    theWLine1,
                                  const occ::handle<IntPatch_WLine>&    theWLine2,
-                                 const IntSurf_PntOn2S&           thePtWL1,
-                                 const IntSurf_PntOn2S&           thePtWL2,
-                                 const gp_Vec&                    theVec1,
-                                 const gp_Vec&                    theVec2,
-                                 const gp_Vec&                    theVec3,
-                                 const Bnd_Box2d&                 theBoxS1,
-                                 const Bnd_Box2d&                 theBoxS2,
-                                 const double              theToler3D,
-                                 const double* const       theArrPeriods,
-                                 unsigned int&                    theCheckResult,
-                                 bool&                theHasBeenJoined)
+                                 const IntSurf_PntOn2S&                thePtWL1,
+                                 const IntSurf_PntOn2S&                thePtWL2,
+                                 const gp_Vec&                         theVec1,
+                                 const gp_Vec&                         theVec2,
+                                 const gp_Vec&                         theVec3,
+                                 const Bnd_Box2d&                      theBoxS1,
+                                 const Bnd_Box2d&                      theBoxS2,
+                                 const double                          theToler3D,
+                                 const double* const                   theArrPeriods,
+                                 unsigned int&                         theCheckResult,
+                                 bool&                                 theHasBeenJoined)
 {
   IntSurf_PntOn2S                    aPOn2S;
   const IntPatchWT_WLsConnectionType aCheckRes = CheckArgumentsToExtend(theS1,
@@ -1204,8 +1207,8 @@ static void ExtendTwoWLFirstLast(const occ::handle<Adaptor3d_Surface>& theS1,
 
   for (int aNVtx = 1; aNVtx <= theWLine1->NbVertex(); aNVtx++)
   {
-    IntPatch_Point&     aVert     = theWLine1->ChangeVertex(aNVtx);
-    const double aCurParam = aVert.ParameterOnLine();
+    IntPatch_Point& aVert     = theWLine1->ChangeVertex(aNVtx);
+    const double    aCurParam = aVert.ParameterOnLine();
     aVert.SetParameter(aNbPts + aCurParam - 1);
   }
 
@@ -1227,17 +1230,17 @@ static void ExtendTwoWLLastFirst(const occ::handle<Adaptor3d_Surface>& theS1,
                                  const occ::handle<Adaptor3d_Surface>& theS2,
                                  const occ::handle<IntPatch_WLine>&    theWLine1,
                                  const occ::handle<IntPatch_WLine>&    theWLine2,
-                                 const IntSurf_PntOn2S&           thePtWL1,
-                                 const IntSurf_PntOn2S&           thePtWL2,
-                                 const gp_Vec&                    theVec1,
-                                 const gp_Vec&                    theVec2,
-                                 const gp_Vec&                    theVec3,
-                                 const Bnd_Box2d&                 theBoxS1,
-                                 const Bnd_Box2d&                 theBoxS2,
-                                 const double              theToler3D,
-                                 const double* const       theArrPeriods,
-                                 unsigned int&                    theCheckResult,
-                                 bool&                theHasBeenJoined)
+                                 const IntSurf_PntOn2S&                thePtWL1,
+                                 const IntSurf_PntOn2S&                thePtWL2,
+                                 const gp_Vec&                         theVec1,
+                                 const gp_Vec&                         theVec2,
+                                 const gp_Vec&                         theVec3,
+                                 const Bnd_Box2d&                      theBoxS1,
+                                 const Bnd_Box2d&                      theBoxS2,
+                                 const double                          theToler3D,
+                                 const double* const                   theArrPeriods,
+                                 unsigned int&                         theCheckResult,
+                                 bool&                                 theHasBeenJoined)
 {
   IntSurf_PntOn2S                    aPOn2S;
   const IntPatchWT_WLsConnectionType aCheckRes = CheckArgumentsToExtend(theS1,
@@ -1285,8 +1288,8 @@ static void ExtendTwoWLLastFirst(const occ::handle<Adaptor3d_Surface>& theS1,
 
   for (int aNVtx = 1; aNVtx <= theWLine2->NbVertex(); aNVtx++)
   {
-    IntPatch_Point&     aVert     = theWLine2->ChangeVertex(aNVtx);
-    const double aCurParam = aVert.ParameterOnLine();
+    IntPatch_Point& aVert     = theWLine2->ChangeVertex(aNVtx);
+    const double    aCurParam = aVert.ParameterOnLine();
     aVert.SetParameter(aNbPts + aCurParam - 1);
     theWLine1->AddVertex(aVert, false);
   }
@@ -1300,17 +1303,17 @@ static void ExtendTwoWLLastLast(const occ::handle<Adaptor3d_Surface>& theS1,
                                 const occ::handle<Adaptor3d_Surface>& theS2,
                                 const occ::handle<IntPatch_WLine>&    theWLine1,
                                 const occ::handle<IntPatch_WLine>&    theWLine2,
-                                const IntSurf_PntOn2S&           thePtWL1,
-                                const IntSurf_PntOn2S&           thePtWL2,
-                                const gp_Vec&                    theVec1,
-                                const gp_Vec&                    theVec2,
-                                const gp_Vec&                    theVec3,
-                                const Bnd_Box2d&                 theBoxS1,
-                                const Bnd_Box2d&                 theBoxS2,
-                                const double              theToler3D,
-                                const double* const       theArrPeriods,
-                                unsigned int&                    theCheckResult,
-                                bool&                theHasBeenJoined)
+                                const IntSurf_PntOn2S&                thePtWL1,
+                                const IntSurf_PntOn2S&                thePtWL2,
+                                const gp_Vec&                         theVec1,
+                                const gp_Vec&                         theVec2,
+                                const gp_Vec&                         theVec3,
+                                const Bnd_Box2d&                      theBoxS1,
+                                const Bnd_Box2d&                      theBoxS2,
+                                const double                          theToler3D,
+                                const double* const                   theArrPeriods,
+                                unsigned int&                         theCheckResult,
+                                bool&                                 theHasBeenJoined)
 {
   IntSurf_PntOn2S                    aPOn2S;
   const IntPatchWT_WLsConnectionType aCheckRes = CheckArgumentsToExtend(theS1,
@@ -1356,8 +1359,8 @@ static void ExtendTwoWLLastLast(const occ::handle<Adaptor3d_Surface>& theS1,
 
   for (int aNVtx = theWLine2->NbVertex(); aNVtx >= 1; aNVtx--)
   {
-    IntPatch_Point&     aVert     = theWLine2->ChangeVertex(aNVtx);
-    const double aCurParam = aVert.ParameterOnLine();
+    IntPatch_Point& aVert     = theWLine2->ChangeVertex(aNVtx);
+    const double    aCurParam = aVert.ParameterOnLine();
     aVert.SetParameter(aNbPts - aCurParam);
     theWLine1->AddVertex(aVert, false);
   }
@@ -1374,7 +1377,7 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
   const occ::handle<Adaptor3d_TopolTool>& theDom1,
   const occ::handle<Adaptor3d_TopolTool>& theDom2)
 {
-  int       i, k, v, nb, nbvtx;
+  int                         i, k, v, nb, nbvtx;
   occ::handle<IntPatch_WLine> aResult;
   nbvtx = theWLine->NbVertex();
   nb    = theWLine->NbPnts();
@@ -1389,7 +1392,7 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
   occ::handle<IntPatch_WLine>   aLocalWLine;
   occ::handle<IntPatch_WLine>   aTmpWLine = theWLine;
   occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();
-  aLocalWLine                        = new IntPatch_WLine(aLineOn2S, false);
+  aLocalWLine                             = new IntPatch_WLine(aLineOn2S, false);
   aLocalWLine->SetCreatingWayInfo(theWLine->GetCreatingWay());
   for (i = 1; i <= nb; i++)
     aLineOn2S->Add(theWLine->Point(i));
@@ -1402,8 +1405,8 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
   {
     int aStartIndex = i + 1;
     int anEndIndex  = i + 5;
-    nb                           = aLineOn2S->NbPoints();
-    anEndIndex                   = (anEndIndex > nb) ? nb : anEndIndex;
+    nb              = aLineOn2S->NbPoints();
+    anEndIndex      = (anEndIndex > nb) ? nb : anEndIndex;
 
     if ((aStartIndex > nb) || (anEndIndex <= 1))
       continue;
@@ -1438,8 +1441,8 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
 
           for (v = 1; v <= aTmpWLine->NbVertex(); v++)
           {
-            IntPatch_Point   aVertex      = aTmpWLine->Vertex(v);
-            int avertexindex = (int)aVertex.ParameterOnLine();
+            IntPatch_Point aVertex      = aTmpWLine->Vertex(v);
+            int            avertexindex = (int)aVertex.ParameterOnLine();
 
             if (avertexindex >= k)
             {
@@ -1490,32 +1493,31 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
 
 //=================================================================================================
 
-void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>&  theSlin,
-                                    NCollection_Sequence<IntPatch_Point>& theSPnt,
-                                    occ::handle<Adaptor3d_Surface> theS1,
-                                    occ::handle<Adaptor3d_Surface> theS2,
-                                    const double       theTol3D)
+void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+                                    NCollection_Sequence<IntPatch_Point>&             theSPnt,
+                                    occ::handle<Adaptor3d_Surface>                    theS1,
+                                    occ::handle<Adaptor3d_Surface>                    theS2,
+                                    const double                                      theTol3D)
 {
   if (theSlin.Length() == 0)
     return;
 
   // For two cylindrical surfaces only
-  const double aMinRad =
-    1.0e-3 * std::min(theS1->Cylinder().Radius(), theS2->Cylinder().Radius());
+  const double aMinRad = 1.0e-3 * std::min(theS1->Cylinder().Radius(), theS2->Cylinder().Radius());
 
   const double anArrPeriods[4] = {theS1->IsUPeriodic() ? theS1->UPeriod() : 0.0,
-                                         theS1->IsVPeriodic() ? theS1->VPeriod() : 0.0,
-                                         theS2->IsUPeriodic() ? theS2->UPeriod() : 0.0,
-                                         theS2->IsVPeriodic() ? theS2->VPeriod() : 0.0};
+                                  theS1->IsVPeriodic() ? theS1->VPeriod() : 0.0,
+                                  theS2->IsUPeriodic() ? theS2->UPeriod() : 0.0,
+                                  theS2->IsVPeriodic() ? theS2->VPeriod() : 0.0};
 
   const double anArrFBonds[4] = {theS1->FirstUParameter(),
-                                        theS1->FirstVParameter(),
-                                        theS2->FirstUParameter(),
-                                        theS2->FirstVParameter()};
+                                 theS1->FirstVParameter(),
+                                 theS2->FirstUParameter(),
+                                 theS2->FirstVParameter()};
   const double anArrLBonds[4] = {theS1->LastUParameter(),
-                                        theS1->LastVParameter(),
-                                        theS2->LastUParameter(),
-                                        theS2->LastVParameter()};
+                                 theS1->LastVParameter(),
+                                 theS2->LastUParameter(),
+                                 theS2->LastVParameter()};
 
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
 
@@ -1528,7 +1530,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       continue;
     }
 
-    const int aNbPntsWL1 = aWLine1->NbPnts();
+    const int              aNbPntsWL1 = aWLine1->NbPnts();
     const IntSurf_PntOn2S& aPntFWL1   = aWLine1->Point(1);
     const IntSurf_PntOn2S& aPntLWL1   = aWLine1->Point(aNbPntsWL1);
 
@@ -1572,7 +1574,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       const double aSqMinFDist = std::min(aSqDistF, aSqDistL);
       if (aSqMinFDist < Precision::SquareConfusion())
       {
-        const bool isFM = (aSqDistF < aSqDistL);
+        const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
         if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
@@ -1587,7 +1589,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       const double aSqMinLDist = std::min(aSqDistF, aSqDistL);
       if (aSqMinLDist < Precision::SquareConfusion())
       {
-        const bool isFM = (aSqDistF < aSqDistL);
+        const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
         if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
@@ -1625,17 +1627,17 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       continue;
     }
 
-    const int anIndexWL2 = isFirstConnected ? aListFC.First() : aListLC.First();
+    const int                   anIndexWL2 = isFirstConnected ? aListFC.First() : aListLC.First();
     occ::handle<IntPatch_WLine> aWLine2(occ::down_cast<IntPatch_WLine>(theSlin.Value(anIndexWL2)));
-    const int aNbPntsWL2 = aWLine2->NbPnts();
-    const IntSurf_PntOn2S& aPntFWL2   = aWLine2->Point(1);
-    const IntSurf_PntOn2S& aPntLWL2   = aWLine2->Point(aNbPntsWL2);
+    const int                   aNbPntsWL2 = aWLine2->NbPnts();
+    const IntSurf_PntOn2S&      aPntFWL2   = aWLine2->Point(1);
+    const IntSurf_PntOn2S&      aPntLWL2   = aWLine2->Point(aNbPntsWL2);
 
     if (isFirstConnected)
     {
-      const double    aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
-      const double    aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
-      const bool isFM     = (aSqDistF < aSqDistL);
+      const double aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
+      const double aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
+      const bool   isFM     = (aSqDistF < aSqDistL);
 
       const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
       const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
@@ -1677,7 +1679,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       const double aSqDistF = aPntLWL1.Value().SquareDistance(aPntFWL2.Value());
       const double aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      const bool isFM = (aSqDistF < aSqDistL);
+      const bool             isFM = (aSqDistF < aSqDistL);
       const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
       const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
 
@@ -1725,20 +1727,20 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
 // purpose  : Detect is WLine need to skip.
 //=======================================================================
 static bool IsNeedSkipWL(const occ::handle<IntPatch_WLine>& theWL,
-                                     const Bnd_Box2d&              theBoxS1,
-                                     const Bnd_Box2d&              theBoxS2,
-                                     const double* const    theArrPeriods)
+                         const Bnd_Box2d&                   theBoxS1,
+                         const Bnd_Box2d&                   theBoxS2,
+                         const double* const                theArrPeriods)
 {
-  double    aFirstp, aLastp;
-  int aNbVtx = theWL->NbVertex();
+  double aFirstp, aLastp;
+  int    aNbVtx = theWL->NbVertex();
 
   for (int i = 1; i < aNbVtx; i++)
   {
     aFirstp = theWL->Vertex(i).ParameterOnLine();
     aLastp  = theWL->Vertex(i + 1).ParameterOnLine();
 
-    double          aU1, aV1, aU2, aV2;
-    const int pmid  = (int)((aFirstp + aLastp) / 2);
+    double                 aU1, aV1, aU2, aV2;
+    const int              pmid  = (int)((aFirstp + aLastp) / 2);
     const IntSurf_PntOn2S& aPmid = theWL->Point(pmid);
     aPmid.Parameters(aU1, aV1, aU2, aV2);
 
@@ -1756,14 +1758,14 @@ static bool IsNeedSkipWL(const occ::handle<IntPatch_WLine>& theWL,
 // purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting end point.
 //=======================================================================
-void IntPatch_WLineTool::ExtendTwoWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>&         theSlin,
-                                         const occ::handle<Adaptor3d_Surface>& theS1,
-                                         const occ::handle<Adaptor3d_Surface>& theS2,
-                                         const double              theToler3D,
-                                         const double* const       theArrPeriods,
-                                         const Bnd_Box2d&                 theBoxS1,
-                                         const Bnd_Box2d&                 theBoxS2,
-                                         const NCollection_List<gp_Pnt>&  theListOfCriticalPoints)
+void IntPatch_WLineTool::ExtendTwoWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
+                                         const occ::handle<Adaptor3d_Surface>&             theS1,
+                                         const occ::handle<Adaptor3d_Surface>&             theS2,
+                                         const double                    theToler3D,
+                                         const double* const             theArrPeriods,
+                                         const Bnd_Box2d&                theBoxS1,
+                                         const Bnd_Box2d&                theBoxS2,
+                                         const NCollection_List<gp_Pnt>& theListOfCriticalPoints)
 {
   if (theSlin.Length() < 2)
     return;
@@ -1815,10 +1817,10 @@ void IntPatch_WLineTool::ExtendTwoWLines(NCollection_Sequence<occ::handle<IntPat
 
     // If aWLine1 is already connected with another Wline then
     // there is no point in extending.
-    for (int aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length();
-         aNumOfLine2++)
+    for (int aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
     {
-      occ::handle<IntPatch_WLine> aWLine2(occ::down_cast<IntPatch_WLine>(theSlin.Value(aNumOfLine2)));
+      occ::handle<IntPatch_WLine> aWLine2(
+        occ::down_cast<IntPatch_WLine>(theSlin.Value(aNumOfLine2)));
 
       if (aWLine2.IsNull())
         continue;
@@ -1890,10 +1892,10 @@ void IntPatch_WLineTool::ExtendTwoWLines(NCollection_Sequence<occ::handle<IntPat
             | IntPatchWT_DisLastLast))
       continue;
 
-    for (int aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length();
-         aNumOfLine2++)
+    for (int aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
     {
-      occ::handle<IntPatch_WLine> aWLine2(occ::down_cast<IntPatch_WLine>(theSlin.Value(aNumOfLine2)));
+      occ::handle<IntPatch_WLine> aWLine2(
+        occ::down_cast<IntPatch_WLine>(theSlin.Value(aNumOfLine2)));
 
       if (aWLine2.IsNull())
         continue;

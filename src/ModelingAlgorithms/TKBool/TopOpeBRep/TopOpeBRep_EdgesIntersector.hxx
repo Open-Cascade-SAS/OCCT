@@ -25,11 +25,9 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopOpeBRep_Point2d.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopOpeBRep_P2Dstatus.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 
@@ -66,9 +64,9 @@ public:
   //! set working space dimension D = 1 for E &|| W, 2 for E in F
   Standard_EXPORT int Dimension() const;
 
-  Standard_EXPORT void Perform(const TopoDS_Shape&    E1,
-                               const TopoDS_Shape&    E2,
-                               const bool ReduceSegments = true);
+  Standard_EXPORT void Perform(const TopoDS_Shape& E1,
+                               const TopoDS_Shape& E2,
+                               const bool          ReduceSegments = true);
 
   Standard_EXPORT bool IsEmpty();
 
@@ -99,8 +97,8 @@ public:
   Standard_EXPORT int NbSegments() const;
 
   Standard_EXPORT void Dump(const TCollection_AsciiString& str,
-                            const int         ie1 = 0,
-                            const int         ie2 = 0);
+                            const int                      ie1 = 0,
+                            const int                      ie2 = 0);
 
   Standard_EXPORT void InitPoint(const bool selectkeep = true);
 
@@ -115,8 +113,8 @@ public:
   Standard_EXPORT const TopOpeBRep_Point2d& Point(const int I) const;
 
   Standard_EXPORT virtual bool ReduceSegment(TopOpeBRep_Point2d& P1,
-                                                         TopOpeBRep_Point2d& P2,
-                                                         TopOpeBRep_Point2d& Pn) const;
+                                             TopOpeBRep_Point2d& P2,
+                                             TopOpeBRep_Point2d& Pn) const;
 
   Standard_EXPORT TopOpeBRep_P2Dstatus Status1() const;
 
@@ -145,7 +143,7 @@ private:
 
   Standard_EXPORT const IntRes2d_IntersectionPoint& Point1() const;
 
-  Standard_EXPORT TopOpeBRepDS_Transition Transition1(const int   Index,
+  Standard_EXPORT TopOpeBRepDS_Transition Transition1(const int                Index,
                                                       const TopAbs_Orientation EO) const;
 
   Standard_EXPORT double Parameter1(const int Index) const;
@@ -166,43 +164,43 @@ private:
   //! DIFFORIENTED if the edges share geometry and are not same oriented.
   Standard_EXPORT TopOpeBRepDS_Config EdgesConfig1() const;
 
-  TopoDS_Face                            myFace1;
-  TopoDS_Face                            myFace2;
-  occ::handle<BRepAdaptor_Surface>            mySurface1;
-  occ::handle<BRepAdaptor_Surface>            mySurface2;
-  GeomAbs_SurfaceType                    mySurfaceType1;
-  GeomAbs_SurfaceType                    mySurfaceType2;
-  bool                       mySurfacesSameOriented;
-  bool                       myFacesSameOriented;
-  IntRes2d_Domain                        myDomain1;
-  IntRes2d_Domain                        myDomain2;
-  TopoDS_Edge                            myEdge1;
-  TopoDS_Edge                            myEdge2;
-  Geom2dAdaptor_Curve                    myCurve1;
-  Geom2dAdaptor_Curve                    myCurve2;
-  double                          myTol1;
-  double                          myTol2;
-  bool                       myTolForced;
-  Geom2dInt_GInter                       myIntersector;
+  TopoDS_Face                                        myFace1;
+  TopoDS_Face                                        myFace2;
+  occ::handle<BRepAdaptor_Surface>                   mySurface1;
+  occ::handle<BRepAdaptor_Surface>                   mySurface2;
+  GeomAbs_SurfaceType                                mySurfaceType1;
+  GeomAbs_SurfaceType                                mySurfaceType2;
+  bool                                               mySurfacesSameOriented;
+  bool                                               myFacesSameOriented;
+  IntRes2d_Domain                                    myDomain1;
+  IntRes2d_Domain                                    myDomain2;
+  TopoDS_Edge                                        myEdge1;
+  TopoDS_Edge                                        myEdge2;
+  Geom2dAdaptor_Curve                                myCurve1;
+  Geom2dAdaptor_Curve                                myCurve2;
+  double                                             myTol1;
+  double                                             myTol2;
+  bool                                               myTolForced;
+  Geom2dInt_GInter                                   myIntersector;
   NCollection_Sequence<IntRes2d_IntersectionPoint>   mylpnt;
   NCollection_Sequence<IntRes2d_IntersectionSegment> mylseg;
-  int                       myNbPoints;
-  int                       myNbSegments;
-  int                       myTrueNbPoints;
-  int                       myPointIndex;
-  int                       myIsVertexPointIndex;
-  int                       myIsVertexIndex;
-  bool                       myIsVertexValue;
-  TopoDS_Vertex                          myIsVertexVertex;
-  int                       myDimension;
-  bool                       myHasSegment;
-  bool                       mySameDomain;
-  bool                       myf1surf1F_sameoriented;
-  bool                       myf2surf1F_sameoriented;
+  int                                                myNbPoints;
+  int                                                myNbSegments;
+  int                                                myTrueNbPoints;
+  int                                                myPointIndex;
+  int                                                myIsVertexPointIndex;
+  int                                                myIsVertexIndex;
+  bool                                               myIsVertexValue;
+  TopoDS_Vertex                                      myIsVertexVertex;
+  int                                                myDimension;
+  bool                                               myHasSegment;
+  bool                                               mySameDomain;
+  bool                                               myf1surf1F_sameoriented;
+  bool                                               myf2surf1F_sameoriented;
   NCollection_Sequence<TopOpeBRep_Point2d>           mysp2d;
-  int                       myip2d;
-  int                       mynp2d;
-  bool                       myselectkeep;
+  int                                                myip2d;
+  int                                                mynp2d;
+  bool                                               myselectkeep;
 };
 
 #endif // _TopOpeBRep_EdgesIntersector_HeaderFile

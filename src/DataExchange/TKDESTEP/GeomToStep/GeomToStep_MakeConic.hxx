@@ -37,11 +37,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeConic(
     const occ::handle<Geom_Conic>& C,
-    const StepData_Factors&   theLocalFactors = StepData_Factors());
+    const StepData_Factors&        theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeConic(
     const occ::handle<Geom2d_Conic>& C,
-    const StepData_Factors&     theLocalFactors = StepData_Factors());
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Conic>& Value() const;
 

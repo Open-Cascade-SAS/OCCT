@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_LevelFunction, IGESData_IGESEntity)
 
 IGESAppli_LevelFunction::IGESAppli_LevelFunction() {}
 
-void IGESAppli_LevelFunction::Init(const int                  nbPropVal,
-                                   const int                  aCode,
+void IGESAppli_LevelFunction::Init(const int                                    nbPropVal,
+                                   const int                                    aCode,
                                    const occ::handle<TCollection_HAsciiString>& aFuncDescrip)
 {
   theNbPropertyValues = nbPropVal;

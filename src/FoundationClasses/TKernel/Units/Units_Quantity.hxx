@@ -41,8 +41,8 @@ public:
   //! the name of the physical quantity, <adimensions> which
   //! is the physical dimensions, and <aunitssequence> which
   //! describes all the units known for this quantity.
-  Units_Quantity(const char*             aname,
-                 const occ::handle<Units_Dimensions>&    adimensions,
+  Units_Quantity(const char*                                                        aname,
+                 const occ::handle<Units_Dimensions>&                               adimensions,
                  const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence);
 
   //! Returns in a AsciiString from TCollection the name of the quantity.
@@ -65,9 +65,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(Units_Quantity, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString> thename;
-  occ::handle<Units_Dimensions>         thedimensions;
-  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>      theunitssequence;
+  occ::handle<TCollection_HAsciiString>                       thename;
+  occ::handle<Units_Dimensions>                               thedimensions;
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>> theunitssequence;
 };
 
 #include <Units_Quantity.lxx>

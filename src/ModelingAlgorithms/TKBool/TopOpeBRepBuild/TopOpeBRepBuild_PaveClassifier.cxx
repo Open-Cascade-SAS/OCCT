@@ -41,8 +41,8 @@ TopOpeBRepBuild_PaveClassifier::TopOpeBRepBuild_PaveClassifier(const TopoDS_Shap
 
   if (!BRep_Tool::Degenerated(myEdge))
   {
-    TopLoc_Location    loc;
-    double      f, l;
+    TopLoc_Location         loc;
+    double                  f, l;
     occ::handle<Geom_Curve> C = BRep_Tool::Curve(myEdge, loc, f, l);
     if (!C.IsNull())
     {
@@ -53,10 +53,10 @@ TopOpeBRepBuild_PaveClassifier::TopOpeBRepBuild_PaveClassifier(const TopoDS_Shap
         if (!v1.IsNull() && !v2.IsNull())
         {
           // --- the edge has vertices
-          myFirst          = f;
-          double fC = C->FirstParameter();
-          double lC = C->LastParameter();
-          myPeriod         = lC - fC;
+          myFirst        = f;
+          double fC      = C->FirstParameter();
+          double lC      = C->LastParameter();
+          myPeriod       = lC - fC;
           myEdgePeriodic = mySameParameters = v1.IsSame(v2);
           if (mySameParameters)
           {
@@ -102,8 +102,8 @@ TopOpeBRepBuild_PaveClassifier::TopOpeBRepBuild_PaveClassifier(const TopoDS_Shap
 TopAbs_State TopOpeBRepBuild_PaveClassifier::CompareOnNonPeriodic()
 {
 
-  TopAbs_State     state = TopAbs_UNKNOWN;
-  bool lower = false;
+  TopAbs_State state = TopAbs_UNKNOWN;
+  bool         lower = false;
   switch (myO2)
   {
     case TopAbs_FORWARD:
@@ -166,12 +166,12 @@ TopAbs_State TopOpeBRepBuild_PaveClassifier::CompareOnNonPeriodic()
 
 //=================================================================================================
 
-double TopOpeBRepBuild_PaveClassifier::AdjustCase(const double      p1,
-                                                         const TopAbs_Orientation o,
-                                                         const double      first,
-                                                         const double      period,
-                                                         const double      tol,
-                                                         int&        cas)
+double TopOpeBRepBuild_PaveClassifier::AdjustCase(const double             p1,
+                                                  const TopAbs_Orientation o,
+                                                  const double             first,
+                                                  const double             period,
+                                                  const double             tol,
+                                                  int&                     cas)
 {
   double p2;
   if (std::abs(p1 - first) < tol)

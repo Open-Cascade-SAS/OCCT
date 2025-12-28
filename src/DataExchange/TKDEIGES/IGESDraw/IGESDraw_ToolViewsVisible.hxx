@@ -47,41 +47,42 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESDraw_ViewsVisible>&   ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader&                  PR) const;
+                                     IGESData_ParamReader&                       PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                      IGESData_IGESWriter&                 IW) const;
+                                      IGESData_IGESWriter&                      IW) const;
 
   //! Lists the Entities shared by a ViewsVisible <ent>, from
   //! its specific (own) parameters shared not implied (the Views)
   Standard_EXPORT void OwnShared(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                 Interface_EntityIterator&            iter) const;
+                                 Interface_EntityIterator&                 iter) const;
 
   //! Lists the Entities shared by a ViewsVisible <ent>, from
   //! its specific (own) implied parameters : the Displayed Entities
   Standard_EXPORT void OwnImplied(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                  Interface_EntityIterator&            iter) const;
+                                  Interface_EntityIterator&                 iter) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESDraw_ViewsVisible>& ent) const;
+  Standard_EXPORT IGESData_DirChecker
+    DirChecker(const occ::handle<IGESDraw_ViewsVisible>& ent) const;
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                const Interface_ShareTool&           shares,
+                                const Interface_ShareTool&                shares,
                                 occ::handle<Interface_Check>&             ach) const;
 
   //! Copies Specific Parameters shared not implied, i.e. all but
   //! the Displayed Entities
   Standard_EXPORT void OwnCopy(const occ::handle<IGESDraw_ViewsVisible>& entfrom,
                                const occ::handle<IGESDraw_ViewsVisible>& entto,
-                               Interface_CopyTool&                  TC) const;
+                               Interface_CopyTool&                       TC) const;
 
   //! Copies Specific implied Parameters : the Displayed Entities
   //! which have already been copied
   Standard_EXPORT void OwnRenew(const occ::handle<IGESDraw_ViewsVisible>& entfrom,
                                 const occ::handle<IGESDraw_ViewsVisible>& entto,
-                                const Interface_CopyTool&            TC) const;
+                                const Interface_CopyTool&                 TC) const;
 
   //! Clears specific implied parameters, which cause looping
   //! structures; required for deletion
@@ -89,15 +90,14 @@ public:
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                               const IGESData_IGESDumper&           dumper,
-                               Standard_OStream&                    S,
-                               const int               own) const;
+                               const IGESData_IGESDumper&                dumper,
+                               Standard_OStream&                         S,
+                               const int                                 own) const;
 
   //! Sets automatic unambiguous Correction on a ViewsVisible
   //! (all displayed entities must refer to <ent> in directory part,
   //! else the list is cleared)
   Standard_EXPORT bool OwnCorrect(const occ::handle<IGESDraw_ViewsVisible>& ent) const;
-
 };
 
 #endif // _IGESDraw_ToolViewsVisible_HeaderFile

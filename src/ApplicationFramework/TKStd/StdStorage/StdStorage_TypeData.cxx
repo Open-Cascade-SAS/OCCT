@@ -45,7 +45,7 @@ bool StdStorage_TypeData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
     return false;
   }
 
-  int        aTypeNum;
+  int                     aTypeNum;
   TCollection_AsciiString aTypeName;
 
   int len = theDriver->TypeSectionSize();
@@ -133,8 +133,9 @@ bool StdStorage_TypeData::IsType(const TCollection_AsciiString& aName) const
 
 occ::handle<NCollection_HSequence<TCollection_AsciiString>> StdStorage_TypeData::Types() const
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r = new NCollection_HSequence<TCollection_AsciiString>;
-  int                       i;
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> r =
+    new NCollection_HSequence<TCollection_AsciiString>;
+  int i;
 
   for (i = 1; i <= myPt.Extent(); i++)
   {
@@ -144,8 +145,7 @@ occ::handle<NCollection_HSequence<TCollection_AsciiString>> StdStorage_TypeData:
   return r;
 }
 
-void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName,
-                                  const int         aTypeNum)
+void StdStorage_TypeData::AddType(const TCollection_AsciiString& aTypeName, const int aTypeNum)
 {
   myPt.Add(aTypeName, aTypeNum);
   myTypeId = std::max(aTypeNum, myTypeId);
@@ -202,8 +202,7 @@ int StdStorage_TypeData::Type(const TCollection_AsciiString& aTypeName) const
   return r;
 }
 
-StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(
-  const int aTypeNum) const
+StdObjMgt_Persistent::Instantiator StdStorage_TypeData::Instantiator(const int aTypeNum) const
 {
   TCollection_AsciiString            aTypeName      = Type(aTypeNum);
   StdObjMgt_Persistent::Instantiator anInstantiator = 0;

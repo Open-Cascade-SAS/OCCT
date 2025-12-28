@@ -50,7 +50,7 @@ void BRepFilletAPI_MakeFillet::SetParams(const double Tang,
 //=================================================================================================
 
 void BRepFilletAPI_MakeFillet::SetContinuity(const GeomAbs_Shape InternalContinuity,
-                                             const double AngleTol)
+                                             const double        AngleTol)
 {
   myBuilder.SetContinuity(InternalContinuity, AngleTol);
 }
@@ -76,9 +76,7 @@ void BRepFilletAPI_MakeFillet::Add(const double Radius, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::Add(const double R1,
-                                   const double R2,
-                                   const TopoDS_Edge&  E)
+void BRepFilletAPI_MakeFillet::Add(const double R1, const double R2, const TopoDS_Edge& E)
 {
   myBuilder.Add(E);
   int IinC;
@@ -112,9 +110,7 @@ void BRepFilletAPI_MakeFillet::Add(const NCollection_Array1<gp_Pnt2d>& UandR, co
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::SetRadius(const double    Radius,
-                                         const int IC,
-                                         const int IinC)
+void BRepFilletAPI_MakeFillet::SetRadius(const double Radius, const int IC, const int IinC)
 {
   gp_XY FirstUandR(0., Radius), LastUandR(1., Radius);
   myBuilder.SetRadius(FirstUandR, IC, IinC);
@@ -123,10 +119,10 @@ void BRepFilletAPI_MakeFillet::SetRadius(const double    Radius,
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::SetRadius(const double    R1,
-                                         const double    R2,
-                                         const int IC,
-                                         const int IinC)
+void BRepFilletAPI_MakeFillet::SetRadius(const double R1,
+                                         const double R2,
+                                         const int    IC,
+                                         const int    IinC)
 {
   double r1, r2;
 
@@ -145,8 +141,8 @@ void BRepFilletAPI_MakeFillet::SetRadius(const double    R1,
 //=================================================================================================
 
 void BRepFilletAPI_MakeFillet::SetRadius(const occ::handle<Law_Function>& L,
-                                         const int      IC,
-                                         const int      IinC)
+                                         const int                        IC,
+                                         const int                        IinC)
 {
   myBuilder.SetRadius(L, IC, IinC);
 }
@@ -154,8 +150,8 @@ void BRepFilletAPI_MakeFillet::SetRadius(const occ::handle<Law_Function>& L,
 //=================================================================================================
 
 void BRepFilletAPI_MakeFillet::SetRadius(const NCollection_Array1<gp_Pnt2d>& UandR,
-                                         const int      IC,
-                                         const int      IinC)
+                                         const int                           IC,
+                                         const int                           IinC)
 {
   if (UandR.Length() == 1)
     SetRadius(UandR(UandR.Lower()).Y(), IC, IinC);
@@ -168,7 +164,7 @@ void BRepFilletAPI_MakeFillet::SetRadius(const NCollection_Array1<gp_Pnt2d>& Uan
     for (int i = UandR.Lower(); i <= UandR.Upper(); i++)
     {
       double Ucur = UandR(i).X();
-      Ucur               = (Ucur - Uf) / (Ul - Uf);
+      Ucur        = (Ucur - Uf) / (Ul - Uf);
       gp_XY newUandR(Ucur, UandR(i).Y());
       myBuilder.SetRadius(newUandR, IC, IinC);
     }
@@ -198,8 +194,7 @@ void BRepFilletAPI_MakeFillet::ResetContour(const int IC)
 
 //=================================================================================================
 
-bool BRepFilletAPI_MakeFillet::IsConstant(const int IC,
-                                                      const TopoDS_Edge&     E)
+bool BRepFilletAPI_MakeFillet::IsConstant(const int IC, const TopoDS_Edge& E)
 {
   return myBuilder.IsConstant(IC, E);
 }
@@ -213,35 +208,29 @@ double BRepFilletAPI_MakeFillet::Radius(const int IC, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::SetRadius(const double    Radius,
-                                         const int IC,
-                                         const TopoDS_Edge&     E)
+void BRepFilletAPI_MakeFillet::SetRadius(const double Radius, const int IC, const TopoDS_Edge& E)
 {
   myBuilder.SetRadius(Radius, IC, E);
 }
 
 //=================================================================================================
 
-bool BRepFilletAPI_MakeFillet::GetBounds(const int IC,
-                                                     const TopoDS_Edge&     E,
-                                                     double&         F,
-                                                     double&         L)
+bool BRepFilletAPI_MakeFillet::GetBounds(const int IC, const TopoDS_Edge& E, double& F, double& L)
 {
   return myBuilder.GetBounds(IC, E, F, L);
 }
 
 //=================================================================================================
 
-occ::handle<Law_Function> BRepFilletAPI_MakeFillet::GetLaw(const int IC,
-                                                      const TopoDS_Edge&     E)
+occ::handle<Law_Function> BRepFilletAPI_MakeFillet::GetLaw(const int IC, const TopoDS_Edge& E)
 {
   return myBuilder.GetLaw(IC, E);
 }
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::SetLaw(const int      IC,
-                                      const TopoDS_Edge&          E,
+void BRepFilletAPI_MakeFillet::SetLaw(const int                        IC,
+                                      const TopoDS_Edge&               E,
                                       const occ::handle<Law_Function>& L)
 {
   myBuilder.SetLaw(IC, E, L);
@@ -249,9 +238,7 @@ void BRepFilletAPI_MakeFillet::SetLaw(const int      IC,
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeFillet::SetRadius(const double    Radius,
-                                         const int IC,
-                                         const TopoDS_Vertex&   V)
+void BRepFilletAPI_MakeFillet::SetRadius(const double Radius, const int IC, const TopoDS_Vertex& V)
 {
   myBuilder.SetRadius(Radius, IC, V);
 }
@@ -289,17 +276,16 @@ int BRepFilletAPI_MakeFillet::Contour(const TopoDS_Edge& E) const
 int BRepFilletAPI_MakeFillet::NbEdges(const int I) const
 {
   const occ::handle<ChFiDS_Spine>& Spine = myBuilder.Value(I);
-  int            n     = Spine->NbEdges();
+  int                              n     = Spine->NbEdges();
   return n;
 }
 
 //=================================================================================================
 
-const TopoDS_Edge& BRepFilletAPI_MakeFillet::Edge(const int I,
-                                                  const int J) const
+const TopoDS_Edge& BRepFilletAPI_MakeFillet::Edge(const int I, const int J) const
 {
   const occ::handle<ChFiDS_Spine>& Spine = myBuilder.Value(I);
-  const TopoDS_Edge&          S     = Spine->Edges(J);
+  const TopoDS_Edge&               S     = Spine->Edges(J);
   return S;
 }
 
@@ -333,16 +319,14 @@ TopoDS_Vertex BRepFilletAPI_MakeFillet::LastVertex(const int IC) const
 
 //=================================================================================================
 
-double BRepFilletAPI_MakeFillet::Abscissa(const int IC,
-                                                 const TopoDS_Vertex&   V) const
+double BRepFilletAPI_MakeFillet::Abscissa(const int IC, const TopoDS_Vertex& V) const
 {
   return myBuilder.Abscissa(IC, V);
 }
 
 //=================================================================================================
 
-double BRepFilletAPI_MakeFillet::RelativeAbscissa(const int IC,
-                                                         const TopoDS_Vertex&   V) const
+double BRepFilletAPI_MakeFillet::RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const
 {
   return myBuilder.RelativeAbscissa(IC, V);
 }
@@ -426,8 +410,9 @@ int BRepFilletAPI_MakeFillet::NbSurf(const int IC) const
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<ChFiDS_CircSection>> BRepFilletAPI_MakeFillet::Sect(const int IC,
-                                                         const int IS) const
+occ::handle<NCollection_HArray1<ChFiDS_CircSection>> BRepFilletAPI_MakeFillet::Sect(
+  const int IC,
+  const int IS) const
 {
   return myBuilder.Sect(IC, IS);
 }
@@ -507,7 +492,7 @@ int BRepFilletAPI_MakeFillet::NbComputedSurfaces(const int IC) const
 //=================================================================================================
 
 occ::handle<Geom_Surface> BRepFilletAPI_MakeFillet::ComputedSurface(const int IC,
-                                                               const int IS) const
+                                                                    const int IS) const
 {
   return myBuilder.ComputedSurface(IC, IS);
 }

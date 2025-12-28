@@ -85,28 +85,28 @@ public:
   //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
-                                       double&     UMin,
-                                       double&     UMax,
-                                       double&     VMin,
-                                       double&     VMax);
+                                       double&            UMin,
+                                       double&            UMax,
+                                       double&            VMin,
+                                       double&            VMax);
 
   //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values of the wire in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
                                        const TopoDS_Wire& W,
-                                       double&     UMin,
-                                       double&     UMax,
-                                       double&     VMin,
-                                       double&     VMax);
+                                       double&            UMin,
+                                       double&            UMax,
+                                       double&            VMin,
+                                       double&            VMax);
 
   //! Returns in UMin, UMax, VMin, VMax the bounding
   //! values of the edge in the parametric space of F.
   Standard_EXPORT static void UVBounds(const TopoDS_Face& F,
                                        const TopoDS_Edge& E,
-                                       double&     UMin,
-                                       double&     UMax,
-                                       double&     VMin,
-                                       double&     VMax);
+                                       double&            UMin,
+                                       double&            UMax,
+                                       double&            VMin,
+                                       double&            VMax);
 
   //! Adds to the box <B> the bounding values in the
   //! parametric space of F.
@@ -161,8 +161,7 @@ public:
   //! @param[in] theForce   allows removing all polygonal representations from the shape,
   //!                       including polygons on triangulations irrelevant for the faces of the
   //!                       given shape.
-  Standard_EXPORT static void Clean(const TopoDS_Shape&    theShape,
-                                    const bool theForce = false);
+  Standard_EXPORT static void Clean(const TopoDS_Shape& theShape, const bool theForce = false);
 
   //! Removes geometry (curves and surfaces) from all edges and faces of the shape
   Standard_EXPORT static void CleanGeometry(const TopoDS_Shape& theShape);
@@ -181,10 +180,9 @@ public:
   //!               or that triangulation has worse (greater) deflection than specified one,
   //!               or Edges in Shape lack polygons on triangulation
   //!               or free Edges in Shape lack 3D polygons
-  Standard_EXPORT static bool Triangulation(
-    const TopoDS_Shape&    theShape,
-    const double    theLinDefl,
-    const bool theToCheckFreeEdges = false);
+  Standard_EXPORT static bool Triangulation(const TopoDS_Shape& theShape,
+                                            const double        theLinDefl,
+                                            const bool          theToCheckFreeEdges = false);
 
   //! Loads triangulation data for each face of the shape
   //! from some deferred storage using specified shared input file system
@@ -198,9 +196,9 @@ public:
   //! @param[in] theFileSystem        shared file system
   //! @return TRUE if at least one triangulation is loaded.
   Standard_EXPORT static bool LoadTriangulation(
-    const TopoDS_Shape&           theShape,
-    const int        theTriangulationIdx = -1,
-    const bool        theToSetAsActive    = false,
+    const TopoDS_Shape&                theShape,
+    const int                          theTriangulationIdx = -1,
+    const bool                         theToSetAsActive    = false,
     const occ::handle<OSD_FileSystem>& theFileSystem       = occ::handle<OSD_FileSystem>());
 
   //! Releases triangulation data for each face of the shape if there is deferred storage to load it
@@ -212,9 +210,8 @@ public:
   //!        If some face doesn't contain triangulation with this index, nothing will be unloaded
   //!        for it. Exception will be thrown in case of invalid negative index
   //! @return TRUE if at least one triangulation is unloaded.
-  Standard_EXPORT static bool UnloadTriangulation(
-    const TopoDS_Shape&    theShape,
-    const int theTriangulationIdx = -1);
+  Standard_EXPORT static bool UnloadTriangulation(const TopoDS_Shape& theShape,
+                                                  const int           theTriangulationIdx = -1);
 
   //! Activates triangulation data for each face of the shape
   //! from some deferred storage using specified shared input file system
@@ -228,10 +225,9 @@ public:
   //!        triangulation will not be changed for it. Else the last available triangulation will be
   //!        activated.
   //! @return TRUE if at least one active triangulation was changed.
-  Standard_EXPORT static bool ActivateTriangulation(
-    const TopoDS_Shape&    theShape,
-    const int theTriangulationIdx,
-    const bool theToActivateStrictly = false);
+  Standard_EXPORT static bool ActivateTriangulation(const TopoDS_Shape& theShape,
+                                                    const int           theTriangulationIdx,
+                                                    const bool theToActivateStrictly = false);
 
   //! Loads all available triangulations for each face of the shape
   //! from some deferred storage using specified shared input file system
@@ -239,7 +235,7 @@ public:
   //! @param[in] theFileSystem  shared file system
   //! @return TRUE if at least one triangulation is loaded.
   Standard_EXPORT static bool LoadAllTriangulations(
-    const TopoDS_Shape&           theShape,
+    const TopoDS_Shape&                theShape,
     const occ::handle<OSD_FileSystem>& theFileSystem = occ::handle<OSD_FileSystem>());
 
   //! Releases all available triangulations for each face of the shape if there is deferred storage
@@ -263,17 +259,18 @@ public:
 
   //! Stores in the map <M> all the 3D topology edges
   //! of <S>.
-  Standard_EXPORT static void Map3DEdges(const TopoDS_Shape& S, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M);
+  Standard_EXPORT static void Map3DEdges(
+    const TopoDS_Shape&                                            S,
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& M);
 
   //! Verifies that the edge <E> is found two times on
   //! the face <F> before calling BRep_Tool::IsClosed.
-  Standard_EXPORT static bool IsReallyClosed(const TopoDS_Edge& E,
-                                                         const TopoDS_Face& F);
+  Standard_EXPORT static bool IsReallyClosed(const TopoDS_Edge& E, const TopoDS_Face& F);
 
   //! Detect closedness of face in U and V directions
   Standard_EXPORT static void DetectClosedness(const TopoDS_Face& theFace,
-                                               bool&  theUclosed,
-                                               bool&  theVclosed);
+                                               bool&              theUclosed,
+                                               bool&              theVclosed);
 
   //! Dumps the topological structure and the geometry
   //! of <Sh> on the stream <S>.
@@ -288,12 +285,7 @@ public:
                     Standard_OStream&            theStream,
                     const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
-    Write(theShape,
-          theStream,
-          true,
-          false,
-          TopTools_FormatVersion_CURRENT,
-          theProgress);
+    Write(theShape, theStream, true, false, TopTools_FormatVersion_CURRENT, theProgress);
   }
 
   //! Writes the shape to the stream in an ASCII format of specified version.
@@ -310,8 +302,8 @@ public:
   Standard_EXPORT static void Write(
     const TopoDS_Shape&          theShape,
     Standard_OStream&            theStream,
-    const bool       theWithTriangles,
-    const bool       theWithNormals,
+    const bool                   theWithTriangles,
+    const bool                   theWithNormals,
     const TopTools_FormatVersion theVersion,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -329,15 +321,10 @@ public:
   //! @param[in] theFile   the path to file to output shape into
   //! @param theProgress the range of progress indicator to fill in
   static bool Write(const TopoDS_Shape&          theShape,
-                                const char*       theFile,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange())
+                    const char*                  theFile,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
-    return Write(theShape,
-                 theFile,
-                 true,
-                 false,
-                 TopTools_FormatVersion_CURRENT,
-                 theProgress);
+    return Write(theShape, theFile, true, false, TopTools_FormatVersion_CURRENT, theProgress);
   }
 
   //! Writes the shape to the file in an ASCII format of specified version.
@@ -353,9 +340,9 @@ public:
   //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static bool Write(
     const TopoDS_Shape&          theShape,
-    const char*       theFile,
-    const bool       theWithTriangles,
-    const bool       theWithNormals,
+    const char*                  theFile,
+    const bool                   theWithTriangles,
+    const bool                   theWithNormals,
     const TopTools_FormatVersion theVersion,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -363,7 +350,7 @@ public:
   //! <B> is used to build the shape.
   Standard_EXPORT static bool Read(
     TopoDS_Shape&                Sh,
-    const char*       File,
+    const char*                  File,
     const BRep_Builder&          B,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -373,12 +360,12 @@ public:
   //! rang of edge
   //! If calculated tolerance is more then current edge tolerance, edge is updated.
   //! Method returns actual tolerance of edge
-  Standard_EXPORT static double EvalAndUpdateTol(const TopoDS_Edge&          theE,
-                                                        const occ::handle<Geom_Curve>&   theC3d,
-                                                        const occ::handle<Geom2d_Curve>& theC2d,
-                                                        const occ::handle<Geom_Surface>& theS,
-                                                        const double         theF,
-                                                        const double         theL);
+  Standard_EXPORT static double EvalAndUpdateTol(const TopoDS_Edge&               theE,
+                                                 const occ::handle<Geom_Curve>&   theC3d,
+                                                 const occ::handle<Geom2d_Curve>& theC2d,
+                                                 const occ::handle<Geom_Surface>& theS,
+                                                 const double                     theF,
+                                                 const double                     theL);
 
   //! returns the cumul of the orientation of <Edge>
   //! and the containing wire in <Face>
@@ -392,14 +379,13 @@ public:
   //! removal is not going to break topological connectivity between sub-shapes.
   //! The flag <theForce> if set to true disables the connectivity check and clears
   //! the given shape from all sub-shapes with internal orientation.
-  Standard_EXPORT static void RemoveInternals(TopoDS_Shape&          theS,
-                                              const bool theForce = false);
+  Standard_EXPORT static void RemoveInternals(TopoDS_Shape& theS, const bool theForce = false);
 
   //! Check all locations of shape according criterium:
   //! aTrsf.IsNegative() || (std::abs(std::abs(aTrsf.ScaleFactor()) - 1.) >
   //! TopLoc_Location::ScalePrec()) All sub-shapes having such locations are put in list
   //! theProblemShapes
-  Standard_EXPORT static void CheckLocations(const TopoDS_Shape&   theS,
+  Standard_EXPORT static void CheckLocations(const TopoDS_Shape&             theS,
                                              NCollection_List<TopoDS_Shape>& theProblemShapes);
 };
 

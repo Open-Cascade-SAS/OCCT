@@ -46,7 +46,7 @@ GeomFill_CurveAndTrihedron::GeomFill_CurveAndTrihedron(
 occ::handle<GeomFill_LocationLaw> GeomFill_CurveAndTrihedron::Copy() const
 {
   occ::handle<GeomFill_TrihedronLaw> law;
-  law                                     = myLaw->Copy();
+  law                                          = myLaw->Copy();
   occ::handle<GeomFill_CurveAndTrihedron> copy = new (GeomFill_CurveAndTrihedron)(myLaw->Copy());
   copy->SetCurve(myCurve);
   copy->SetTrsf(Trans);
@@ -103,9 +103,9 @@ bool GeomFill_CurveAndTrihedron::D0(const double Param, gp_Mat& M, gp_Vec& V)
 //=================================================================================================
 
 bool GeomFill_CurveAndTrihedron::D0(const double Param,
-                                                gp_Mat&             M,
-                                                gp_Vec&             V,
-                                                NCollection_Array1<gp_Pnt2d>&)
+                                    gp_Mat&      M,
+                                    gp_Vec&      V,
+                                    NCollection_Array1<gp_Pnt2d>&)
 {
   bool Ok;
   myTrimmed->D0(Param, Point);
@@ -124,12 +124,12 @@ bool GeomFill_CurveAndTrihedron::D0(const double Param,
 //=================================================================================================
 
 bool GeomFill_CurveAndTrihedron::D1(const double Param,
-                                                gp_Mat&             M,
-                                                gp_Vec&             V,
-                                                gp_Mat&             DM,
-                                                gp_Vec&             DV,
-                                                NCollection_Array1<gp_Pnt2d>&,
-                                                NCollection_Array1<gp_Vec2d>&)
+                                    gp_Mat&      M,
+                                    gp_Vec&      V,
+                                    gp_Mat&      DM,
+                                    gp_Vec&      DV,
+                                    NCollection_Array1<gp_Pnt2d>&,
+                                    NCollection_Array1<gp_Vec2d>&)
 {
   bool Ok;
   myTrimmed->D1(Param, Point, DV);
@@ -152,15 +152,15 @@ bool GeomFill_CurveAndTrihedron::D1(const double Param,
 //=================================================================================================
 
 bool GeomFill_CurveAndTrihedron::D2(const double Param,
-                                                gp_Mat&             M,
-                                                gp_Vec&             V,
-                                                gp_Mat&             DM,
-                                                gp_Vec&             DV,
-                                                gp_Mat&             D2M,
-                                                gp_Vec&             D2V,
-                                                NCollection_Array1<gp_Pnt2d>&,
-                                                NCollection_Array1<gp_Vec2d>&,
-                                                NCollection_Array1<gp_Vec2d>&)
+                                    gp_Mat&      M,
+                                    gp_Vec&      V,
+                                    gp_Mat&      DM,
+                                    gp_Vec&      DV,
+                                    gp_Mat&      D2M,
+                                    gp_Vec&      D2V,
+                                    NCollection_Array1<gp_Pnt2d>&,
+                                    NCollection_Array1<gp_Vec2d>&,
+                                    NCollection_Array1<gp_Vec2d>&)
 {
   bool Ok;
   myTrimmed->D2(Param, Point, DV, D2V);
@@ -213,7 +213,8 @@ int GeomFill_CurveAndTrihedron::NbIntervals(const GeomAbs_Shape S) const
 
 //=================================================================================================
 
-void GeomFill_CurveAndTrihedron::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
+void GeomFill_CurveAndTrihedron::Intervals(NCollection_Array1<double>& T,
+                                           const GeomAbs_Shape         S) const
 {
   int Nb_Sec, Nb_Law;
   Nb_Sec = myTrimmed->NbIntervals(S);
@@ -279,9 +280,9 @@ double GeomFill_CurveAndTrihedron::GetMaximalNorm()
 
 void GeomFill_CurveAndTrihedron::GetAverageLaw(gp_Mat& AM, gp_Vec& AV)
 {
-  int ii;
-  double    U, delta;
-  gp_Vec           V;
+  int    ii;
+  double U, delta;
+  gp_Vec V;
 
   myLaw->GetAverageLaw(V1, V2, V3);
   AM.SetCols(V1.XYZ(), V2.XYZ(), V3.XYZ());

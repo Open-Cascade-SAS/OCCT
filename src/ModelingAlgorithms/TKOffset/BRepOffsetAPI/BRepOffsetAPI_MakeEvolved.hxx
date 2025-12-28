@@ -86,16 +86,15 @@ public:
   //! (theProfile) along the spine (theSpine).
   //! theSpine can be shape only of type wire or face.
   //! See description to this class for detailed information.
-  Standard_EXPORT BRepOffsetAPI_MakeEvolved(
-    const TopoDS_Shape&    theSpine,
-    const TopoDS_Wire&     theProfile,
-    const GeomAbs_JoinType theJoinType      = GeomAbs_Arc,
-    const bool theIsAxeProf     = true,
-    const bool theIsSolid       = false,
-    const bool theIsProfOnSpine = false,
-    const double    theTol           = 0.0000001,
-    const bool theIsVolume      = false,
-    const bool theRunInParallel = false);
+  Standard_EXPORT BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    theSpine,
+                                            const TopoDS_Wire&     theProfile,
+                                            const GeomAbs_JoinType theJoinType      = GeomAbs_Arc,
+                                            const bool             theIsAxeProf     = true,
+                                            const bool             theIsSolid       = false,
+                                            const bool             theIsProfOnSpine = false,
+                                            const double           theTol           = 0.0000001,
+                                            const bool             theIsVolume      = false,
+                                            const bool             theRunInParallel = false);
 
   Standard_EXPORT const BRepFill_Evolved& Evolved() const;
 
@@ -106,8 +105,9 @@ public:
   //! Returns the shapes created from a subshape
   //! <SpineShape> of the spine and a subshape
   //! <ProfShape> on the profile.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(const TopoDS_Shape& SpineShape,
-                                                              const TopoDS_Shape& ProfShape) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
+    const TopoDS_Shape& SpineShape,
+    const TopoDS_Shape& ProfShape) const;
 
   //! Return the face Top if <Solid> is True in the constructor.
   Standard_EXPORT const TopoDS_Shape& Top() const;
@@ -118,7 +118,7 @@ public:
 private:
   BRepFill_Evolved         myEvolved;
   BRepFill_AdvancedEvolved myVolume;
-  bool         myIsVolume;
+  bool                     myIsVolume;
 };
 
 #endif // _BRepOffsetAPI_MakeEvolved_HeaderFile

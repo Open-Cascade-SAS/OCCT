@@ -124,10 +124,7 @@ struct Graphic3d_ZLayerSettings
   bool UseEnvironmentTexture() const { return myUseEnvironmentTexture; }
 
   //! Set the flag to allow/prevent environment texture mapping usage for specific layer.
-  void SetEnvironmentTexture(const bool theValue)
-  {
-    myUseEnvironmentTexture = theValue;
-  }
+  void SetEnvironmentTexture(const bool theValue) { myUseEnvironmentTexture = theValue; }
 
   //! Return true if depth test should be enabled.
   bool ToEnableDepthTest() const { return myToEnableDepthTest; }
@@ -151,10 +148,7 @@ struct Graphic3d_ZLayerSettings
   bool ToRenderInDepthPrepass() const { return myToRenderInDepthPrepass; }
 
   //! Set if layer should be rendered within depth pre-pass.
-  void SetRenderInDepthPrepass(bool theToRender)
-  {
-    myToRenderInDepthPrepass = theToRender;
-  }
+  void SetRenderInDepthPrepass(bool theToRender) { myToRenderInDepthPrepass = theToRender; }
 
   //! Return glPolygonOffset() arguments.
   const Graphic3d_PolygonOffset& PolygonOffset() const { return myPolygonOffset; }
@@ -205,7 +199,7 @@ struct Graphic3d_ZLayerSettings
   }
 
 protected:
-  TCollection_AsciiString    myName;       //!< user-provided name
+  TCollection_AsciiString         myName;       //!< user-provided name
   occ::handle<Graphic3d_LightSet> myLights;     //!< lights list
   occ::handle<TopLoc_Datum3D>     myOriginTrsf; //!< transformation to the origin
   // clang-format off

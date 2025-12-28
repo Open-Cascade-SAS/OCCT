@@ -22,7 +22,6 @@
 
 #include <IFSelect_Selection.hxx>
 #include <NCollection_Sequence.hxx>
-#include <IFSelect_Selection.hxx>
 #include <Standard_Integer.hxx>
 class IFSelect_SelectionIterator;
 

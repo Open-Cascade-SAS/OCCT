@@ -115,9 +115,9 @@ bool BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const double Tol)
   math_Vector valsol(1, 4), secmember(1, 4);
   math_Matrix gradsol(1, 4, 1, 4);
 
-  gp_Pnt        ptgui;
-  gp_Vec        np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
-  gp_Vec        d1u1, d1v1, d1u2, d1v2;
+  gp_Pnt ptgui;
+  gp_Vec np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
+  gp_Vec d1u1, d1v1, d1u2, d1v2;
   double Normg;
 
   tcurv->D2(param, ptgui, d1gui, d2gui);
@@ -139,8 +139,8 @@ bool BlendFunc_ChAsym::IsSolution(const math_Vector& Sol, const double Tol)
 
   surf2->D1(Sol(3), Sol(4), pt2, d1u2, d1v2);
 
-  gp_Vec        pguis1(ptgui, pt1), pguis2(ptgui, pt2);
-  gp_Vec        CrossVec, s1s2(pt1, pt2);
+  gp_Vec pguis1(ptgui, pt1), pguis2(ptgui, pt2);
+  gp_Vec CrossVec, s1s2(pt1, pt2);
   double PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
   double maxpiv  = 1.e-9;
   double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
@@ -212,15 +212,13 @@ double BlendFunc_ChAsym::GetMinimalDistance() const
 
 //=================================================================================================
 
-bool BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
-                                                 const int DegF,
-                                                 const int DegL)
+bool BlendFunc_ChAsym::ComputeValues(const math_Vector& X, const int DegF, const int DegL)
 {
   if (DegF > DegL)
     return false;
 
-  gp_Vec        np, d1gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2, Nsurf1;
-  gp_Pnt        ptgui;
+  gp_Vec np, d1gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2, Nsurf1;
+  gp_Pnt ptgui;
   double PScaInv, F4;
 
   tcurv->D1(param, ptgui, d1gui);
@@ -262,8 +260,8 @@ bool BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
   if (DegL == 1)
   {
     double temp;
-    gp_Vec        tempVec;
-    gp_Vec        d1utsurf1, d1vtsurf1;
+    gp_Vec tempVec;
+    gp_Vec d1utsurf1, d1vtsurf1;
     d1utsurf1 = (d2u1.Crossed(d1v1) + d1u1.Crossed(d2uv1)).Crossed(np);
     d1vtsurf1 = (d2uv1.Crossed(d1v1) + d1u1.Crossed(d2v1)).Crossed(np);
 
@@ -306,7 +304,7 @@ bool BlendFunc_ChAsym::ComputeValues(const math_Vector&     X,
 bool BlendFunc_ChAsym::Value(const math_Vector& X, math_Vector& F)
 {
   const bool Error = ComputeValues(X, 0, 0);
-  F                            = FX;
+  F                = FX;
   return Error;
 }
 
@@ -315,7 +313,7 @@ bool BlendFunc_ChAsym::Value(const math_Vector& X, math_Vector& F)
 bool BlendFunc_ChAsym::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   const bool Error = ComputeValues(X, 1, 1);
-  D                            = DX;
+  D                = DX;
   return Error;
 }
 
@@ -324,8 +322,8 @@ bool BlendFunc_ChAsym::Derivatives(const math_Vector& X, math_Matrix& D)
 bool BlendFunc_ChAsym::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   const bool Error = ComputeValues(X, 0, 1);
-  F                            = FX;
-  D                            = DX;
+  F                = FX;
+  D                = DX;
   return Error;
 }
 
@@ -414,16 +412,16 @@ void BlendFunc_ChAsym::Tangent(const double U1,
                                const double V1,
                                const double U2,
                                const double V2,
-                               gp_Vec&             TgF,
-                               gp_Vec&             TgL,
-                               gp_Vec&             NmF,
-                               gp_Vec&             NmL) const
+                               gp_Vec&      TgF,
+                               gp_Vec&      TgL,
+                               gp_Vec&      NmF,
+                               gp_Vec&      NmL) const
 {
-  gp_Pnt           Pt1, Pt2, ptgui;
-  gp_Vec           d1u1, d1v1, d1u2, d1v2;
-  gp_Vec           np, d1gui;
-  bool revF = false;
-  bool revL = false;
+  gp_Pnt Pt1, Pt2, ptgui;
+  gp_Vec d1u1, d1v1, d1u2, d1v2;
+  gp_Vec np, d1gui;
+  bool   revF = false;
+  bool   revL = false;
 
   tcurv->D1(param, ptgui, d1gui);
   np = d1gui.Normalized();
@@ -464,7 +462,7 @@ void BlendFunc_ChAsym::Section(const double /*Param*/,
                                const double V2,
                                double&      Pdeb,
                                double&      Pfin,
-                               gp_Lin&             C)
+                               gp_Lin&      C)
 {
   const gp_Pnt Pt1 = surf1->Value(U1, V1);
   const gp_Pnt Pt2 = surf2->Value(U2, V2);
@@ -514,10 +512,7 @@ void BlendFunc_ChAsym::Intervals(NCollection_Array1<double>& T, const GeomAbs_Sh
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::GetShape(int& NbPoles,
-                                int& NbKnots,
-                                int& Degree,
-                                int& NbPoles2d)
+void BlendFunc_ChAsym::GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d)
 {
   NbPoles   = 2;
   NbPoles2d = 2;
@@ -556,15 +551,15 @@ void BlendFunc_ChAsym::Mults(NCollection_Array1<int>& TMults)
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Section(const Blend_Point&    P,
+void BlendFunc_ChAsym::Section(const Blend_Point&            P,
                                NCollection_Array1<gp_Pnt>&   Poles,
                                NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<double>& Weights)
+                               NCollection_Array1<double>&   Weights)
 {
-  double    u1, v1, u2, v2, prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
-  math_Vector      X(1, 4), F(1, 4);
+  double      u1, v1, u2, v2, prm = P.Parameter();
+  int         low = Poles.Lower();
+  int         upp = Poles.Upper();
+  math_Vector X(1, 4), F(1, 4);
 
   P.ParametersOnS1(u1, v1);
   P.ParametersOnS2(u2, v2);
@@ -585,19 +580,19 @@ void BlendFunc_ChAsym::Section(const Blend_Point&    P,
 
 //=================================================================================================
 
-bool BlendFunc_ChAsym::Section(const Blend_Point&    P,
-                                           NCollection_Array1<gp_Pnt>&   Poles,
-                                           NCollection_Array1<gp_Vec>&   DPoles,
-                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                           NCollection_Array1<double>& Weights,
-                                           NCollection_Array1<double>& DWeights)
+bool BlendFunc_ChAsym::Section(const Blend_Point&            P,
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weights,
+                               NCollection_Array1<double>&   DWeights)
 {
-  math_Vector      Sol(1, 4), valsol(1, 4), secmember(1, 4);
-  math_Matrix      gradsol(1, 4, 1, 4);
-  double    prm = P.Parameter();
-  int low = Poles.Lower();
-  int upp = Poles.Upper();
+  math_Vector Sol(1, 4), valsol(1, 4), secmember(1, 4);
+  math_Matrix gradsol(1, 4, 1, 4);
+  double      prm = P.Parameter();
+  int         low = Poles.Lower();
+  int         upp = Poles.Upper();
 
   P.ParametersOnS1(Sol(1), Sol(2));
   P.ParametersOnS2(Sol(3), Sol(4));
@@ -610,9 +605,9 @@ bool BlendFunc_ChAsym::Section(const Blend_Point&    P,
   Weights(low) = 1.0;
   Weights(upp) = 1.0;
 
-  gp_Pnt        ptgui;
-  gp_Vec        np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
-  gp_Vec        d1u1, d1v1, d1u2, d1v2;
+  gp_Pnt ptgui;
+  gp_Vec np, dnp, d1gui, d2gui, Nsurf1, dwtsurf1;
+  gp_Vec d1u1, d1v1, d1u2, d1v2;
   double Normg;
 
   tcurv->D2(param, ptgui, d1gui, d2gui);
@@ -634,8 +629,8 @@ bool BlendFunc_ChAsym::Section(const Blend_Point&    P,
 
   surf2->D1(Sol(3), Sol(4), pt2, d1u2, d1v2);
 
-  gp_Vec        pguis1(ptgui, pt1), pguis2(ptgui, pt2);
-  gp_Vec        CrossVec, s1s2(pt1, pt2);
+  gp_Vec pguis1(ptgui, pt1), pguis2(ptgui, pt2);
+  gp_Vec CrossVec, s1s2(pt1, pt2);
   double PScaInv = 1. / tsurf1.Dot(s1s2), F4, temp;
   double maxpiv  = 1.e-9;
   double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
@@ -702,25 +697,25 @@ bool BlendFunc_ChAsym::Section(const Blend_Point&    P,
 //=================================================================================================
 
 bool BlendFunc_ChAsym::Section(const Blend_Point& /*P*/,
-                                           NCollection_Array1<gp_Pnt>& /*Poles*/,
-                                           NCollection_Array1<gp_Vec>& /*DPoles*/,
-                                           NCollection_Array1<gp_Vec>& /*D2Poles*/,
-                                           NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
-                                           NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
-                                           NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
-                                           NCollection_Array1<double>& /*Weights*/,
-                                           NCollection_Array1<double>& /*DWeights*/,
-                                           NCollection_Array1<double>& /*D2Weights*/)
+                               NCollection_Array1<gp_Pnt>& /*Poles*/,
+                               NCollection_Array1<gp_Vec>& /*DPoles*/,
+                               NCollection_Array1<gp_Vec>& /*D2Poles*/,
+                               NCollection_Array1<gp_Pnt2d>& /*Poles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*DPoles2d*/,
+                               NCollection_Array1<gp_Vec2d>& /*D2Poles2d*/,
+                               NCollection_Array1<double>& /*Weights*/,
+                               NCollection_Array1<double>& /*DWeights*/,
+                               NCollection_Array1<double>& /*D2Weights*/)
 {
   return false;
 }
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Resolution(const int IC2d,
-                                  const double    Tol,
-                                  double&         TolU,
-                                  double&         TolV) const
+void BlendFunc_ChAsym::Resolution(const int    IC2d,
+                                  const double Tol,
+                                  double&      TolU,
+                                  double&      TolV) const
 {
   if (IC2d == 1)
   {
@@ -736,9 +731,7 @@ void BlendFunc_ChAsym::Resolution(const int IC2d,
 
 //=================================================================================================
 
-void BlendFunc_ChAsym::Set(const double    Dist1,
-                           const double    Angle,
-                           const int Choix)
+void BlendFunc_ChAsym::Set(const double Dist1, const double Angle, const int Choix)
 {
   dist1 = std::abs(Dist1);
   angle = Angle;

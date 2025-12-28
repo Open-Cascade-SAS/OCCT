@@ -18,13 +18,9 @@
 #include <Standard_ConstructionError.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=================================================================================================
@@ -112,8 +108,8 @@ void BRepAlgo_Image::Remove(const TopoDS_Shape& S)
   {
     throw Standard_ConstructionError(" BRepAlgo_Image::Remove");
   }
-  const TopoDS_Shape&                OldS = up(S);
-  NCollection_List<TopoDS_Shape>&              L    = down(OldS);
+  const TopoDS_Shape&                      OldS = up(S);
+  NCollection_List<TopoDS_Shape>&          L    = down(OldS);
   NCollection_List<TopoDS_Shape>::Iterator it(L);
   while (it.More())
   {
@@ -240,7 +236,7 @@ void BRepAlgo_Image::Compact()
   NCollection_List<TopoDS_Shape>::Iterator it(roots);
   for (; it.More(); it.Next())
   {
-    const TopoDS_Shape&  S = it.Value();
+    const TopoDS_Shape&            S = it.Value();
     NCollection_List<TopoDS_Shape> LI;
     if (HasImage(S))
       LastImage(S, LI);
@@ -262,7 +258,7 @@ void BRepAlgo_Image::Compact()
 void BRepAlgo_Image::Filter(const TopoDS_Shape& S, const TopAbs_ShapeEnum T)
 
 {
-  TopExp_Explorer     exp(S, T);
+  TopExp_Explorer                                        exp(S, T);
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
   for (; exp.More(); exp.Next())
   {

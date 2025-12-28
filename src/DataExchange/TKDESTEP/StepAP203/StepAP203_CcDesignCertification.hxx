@@ -35,14 +35,15 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<StepBasic_Certification>&          aCertificationAssignment_AssignedCertification,
+    const occ::handle<StepBasic_Certification>& aCertificationAssignment_AssignedCertification,
     const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& aItems);
 
   //! Returns field Items
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& Items);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignCertification, StepBasic_CertificationAssignment)
 

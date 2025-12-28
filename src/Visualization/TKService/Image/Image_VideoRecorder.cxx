@@ -156,8 +156,7 @@ void Image_VideoRecorder::Close()
 
 //=================================================================================================
 
-bool Image_VideoRecorder::Open(const char*              theFileName,
-                                           const Image_VideoParams& theParams)
+bool Image_VideoRecorder::Open(const char* theFileName, const Image_VideoParams& theParams)
 {
 #ifdef HAVE_FFMPEG
   Close();
@@ -228,7 +227,7 @@ bool Image_VideoRecorder::Open(const char*              theFileName,
 //=================================================================================================
 
 bool Image_VideoRecorder::addVideoStream(const Image_VideoParams& theParams,
-                                                     const int   theDefCodecId)
+                                         const int                theDefCodecId)
 {
   myFrameRate.num = theParams.FpsNum;
   myFrameRate.den = theParams.FpsDen;
@@ -385,7 +384,8 @@ bool Image_VideoRecorder::openVideoCodec(const Image_VideoParams& theParams)
     }
 
     aCodecCtx->pix_fmt = aPixFormat;
-    for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aParamIter(theParams.VideoCodecParams);
+    for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aParamIter(
+           theParams.VideoCodecParams);
          aParamIter.More();
          aParamIter.Next())
     {

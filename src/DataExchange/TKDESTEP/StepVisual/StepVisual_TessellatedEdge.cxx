@@ -30,8 +30,8 @@ StepVisual_TessellatedEdge::StepVisual_TessellatedEdge()
 void StepVisual_TessellatedEdge::Init(
   const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
   const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
-  const bool                    theHasGeometricLink,
-  const StepVisual_EdgeOrCurve&             theGeometricLink,
+  const bool                                     theHasGeometricLink,
+  const StepVisual_EdgeOrCurve&                  theGeometricLink,
   const occ::handle<NCollection_HArray1<int>>&   theLineStrip)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
@@ -96,7 +96,8 @@ occ::handle<NCollection_HArray1<int>> StepVisual_TessellatedEdge::LineStrip() co
 
 //=================================================================================================
 
-void StepVisual_TessellatedEdge::SetLineStrip(const occ::handle<NCollection_HArray1<int>>& theLineStrip)
+void StepVisual_TessellatedEdge::SetLineStrip(
+  const occ::handle<NCollection_HArray1<int>>& theLineStrip)
 {
   myLineStrip = theLineStrip;
 }

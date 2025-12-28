@@ -51,7 +51,6 @@ public:
 
   //! returns Value as a AreaInSet (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_AreaInSet> AreaInSet() const;
-
 };
 
 #endif // _StepVisual_PresentationSizeAssignmentSelect_HeaderFile

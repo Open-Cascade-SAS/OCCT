@@ -49,13 +49,13 @@ bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
   if (V1.IsSame(V2) && !BRep_Tool::Degenerated(anEdge))
   {
     const int nbPoints = 23;
-    gp_Pnt                 pntV     = BRep_Tool::Pnt(V1);
-    double          TolV1    = LimitTolerance(BRep_Tool::Tolerance(V1));
-    TolV1                           = TolV1 * TolV1;
-    double      f, l;
+    gp_Pnt    pntV     = BRep_Tool::Pnt(V1);
+    double    TolV1    = LimitTolerance(BRep_Tool::Tolerance(V1));
+    TolV1              = TolV1 * TolV1;
+    double                  f, l;
     occ::handle<Geom_Curve> curve3d = BRep_Tool::Curve(anEdge, f, l);
-    myHasCurve3d               = !curve3d.IsNull();
-    double        f2d = 0., l2d = 0.;
+    myHasCurve3d                    = !curve3d.IsNull();
+    double                    f2d = 0., l2d = 0.;
     occ::handle<Geom2d_Curve> pcurve1;
     if (!myFace.IsNull())
     { // process free edges
@@ -70,7 +70,7 @@ bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
       double param = f + step;
       for (int i = 1; i < 23; i++, param += step)
       {
-        gp_Pnt        curPnt = curve3d->Value(param);
+        gp_Pnt curPnt = curve3d->Value(param);
         double dist   = pntV.SquareDistance(curPnt);
         if (dist > dMax)
         {
@@ -103,14 +103,14 @@ bool ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdge)
     if (myHasCurve2d)
     {
       occ::handle<Geom_Surface> surf   = BRep_Tool::Surface(myFace);
-      double        maxPar = f2d, dMax = 0;
-      double        step  = (l2d - f2d) / (nbPoints - 1);
-      double        param = f2d + step;
+      double                    maxPar = f2d, dMax = 0;
+      double                    step  = (l2d - f2d) / (nbPoints - 1);
+      double                    param = f2d + step;
       for (int i = 1; i < 23; i++, param += step)
       {
-        gp_Pnt2d      p2d    = pcurve1->Value(param);
-        gp_Pnt        curPnt = surf->Value(p2d.X(), p2d.Y());
-        double dist   = pntV.SquareDistance(curPnt);
+        gp_Pnt2d p2d    = pcurve1->Value(param);
+        gp_Pnt   curPnt = surf->Value(p2d.X(), p2d.Y());
+        double   dist   = pntV.SquareDistance(curPnt);
         if (dist > dMax)
         {
           maxPar = param;

@@ -30,7 +30,7 @@ RWStepBasic_RWExternallyDefinedItem::RWStepBasic_RWExternallyDefinedItem() {}
 
 void RWStepBasic_RWExternallyDefinedItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                         num,
+  const int                                           num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_ExternallyDefinedItem>& ent) const
 {
@@ -53,7 +53,7 @@ void RWStepBasic_RWExternallyDefinedItem::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWExternallyDefinedItem::WriteStep(
-  StepData_StepWriter&                           SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_ExternallyDefinedItem>& ent) const
 {
 
@@ -66,8 +66,9 @@ void RWStepBasic_RWExternallyDefinedItem::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWExternallyDefinedItem::Share(const occ::handle<StepBasic_ExternallyDefinedItem>& ent,
-                                                Interface_EntityIterator& iter) const
+void RWStepBasic_RWExternallyDefinedItem::Share(
+  const occ::handle<StepBasic_ExternallyDefinedItem>& ent,
+  Interface_EntityIterator&                           iter) const
 {
 
   // Own fields of ExternallyDefinedItem

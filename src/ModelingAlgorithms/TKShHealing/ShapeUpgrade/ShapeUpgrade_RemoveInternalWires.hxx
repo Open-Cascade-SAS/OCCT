@@ -20,15 +20,10 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_Tool.hxx>
@@ -102,14 +97,16 @@ private:
   //! from removed edges(belonging small internal wires)
   Standard_EXPORT void removeSmallFaces();
 
-  TopoDS_Shape                              myShape;
-  TopoDS_Shape                              myResult;
-  double                             myMinArea;
-  bool                          myRemoveFacesMode;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myEdgeFaces;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>        myRemoveEdges;
-  NCollection_Sequence<TopoDS_Shape>                  myRemovedFaces;
-  NCollection_Sequence<TopoDS_Shape>                  myRemoveWires;
+  TopoDS_Shape myShape;
+  TopoDS_Shape myResult;
+  double       myMinArea;
+  bool         myRemoveFacesMode;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myEdgeFaces;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                     myRemoveEdges;
+  NCollection_Sequence<TopoDS_Shape> myRemovedFaces;
+  NCollection_Sequence<TopoDS_Shape> myRemoveWires;
 };
 
 #include <ShapeUpgrade_RemoveInternalWires.lxx>

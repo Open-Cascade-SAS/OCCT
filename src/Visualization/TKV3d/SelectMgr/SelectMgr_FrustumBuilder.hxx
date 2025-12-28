@@ -39,8 +39,7 @@ public:
   Standard_EXPORT void SetCamera(const occ::handle<Graphic3d_Camera>& theCamera);
 
   //! Stores current window width and height
-  Standard_EXPORT void SetWindowSize(const int theWidth,
-                                     const int theHeight);
+  Standard_EXPORT void SetWindowSize(const int theWidth, const int theHeight);
 
   //! Stores current viewport coordinates
   Standard_EXPORT void SetViewport(const double theX,
@@ -55,7 +54,7 @@ public:
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
   Standard_EXPORT double SignedPlanePntDist(const NCollection_Vec3<double>& theEq,
-                                                   const NCollection_Vec3<double>& thePnt) const;
+                                            const NCollection_Vec3<double>& thePnt) const;
 
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
@@ -67,11 +66,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder, Standard_Transient)
 
 private:
-  occ::handle<Graphic3d_Camera>        myCamera;
-  int                myWidth;
-  int                myHeight;
-  NCollection_Vec4<double> myViewport;
-  bool                myIsViewportSet;
+  occ::handle<Graphic3d_Camera> myCamera;
+  int                           myWidth;
+  int                           myHeight;
+  NCollection_Vec4<double>      myViewport;
+  bool                          myIsViewportSet;
 };
 
 #endif // _SelectMgr_FrustumBuilder_HeaderFile

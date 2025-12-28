@@ -22,7 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_GraphicDriver, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(const occ::handle<Aspect_DisplayConnection>& theDisp)
+Graphic3d_GraphicDriver::Graphic3d_GraphicDriver(
+  const occ::handle<Aspect_DisplayConnection>& theDisp)
     : myDisplayConnection(theDisp)
 {
   // default layers are always presented in display layer sequence and cannot be removed
@@ -154,7 +155,8 @@ void Graphic3d_GraphicDriver::ZLayers(NCollection_Sequence<int>& theLayerSeq) co
   theLayerSeq.Clear();
 
   // append normal layers
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
     const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
@@ -165,7 +167,8 @@ void Graphic3d_GraphicDriver::ZLayers(NCollection_Sequence<int>& theLayerSeq) co
   }
 
   // append immediate layers
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers); aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
+       aLayerIter.More();
        aLayerIter.Next())
   {
     const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();
@@ -189,7 +192,8 @@ void Graphic3d_GraphicDriver::InsertLayerBefore(const Graphic3d_ZLayerId        
     !myLayerIds.IsBound(theNewLayerId),
     "Graphic3d_GraphicDriver::InsertLayerBefore, Layer with theLayerId already exists");
 
-  occ::handle<Graphic3d_Layer> aNewLayer = new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
+  occ::handle<Graphic3d_Layer> aNewLayer =
+    new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
   occ::handle<Graphic3d_Layer> anOtherLayer;
@@ -226,7 +230,8 @@ void Graphic3d_GraphicDriver::InsertLayerAfter(const Graphic3d_ZLayerId        t
     !myLayerIds.IsBound(theNewLayerId),
     "Graphic3d_GraphicDriver::InsertLayerAfter, Layer with theLayerId already exists");
 
-  occ::handle<Graphic3d_Layer> aNewLayer = new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
+  occ::handle<Graphic3d_Layer> aNewLayer =
+    new Graphic3d_Layer(theNewLayerId, occ::handle<BVH_Builder3d>());
   aNewLayer->SetLayerSettings(theSettings);
 
   occ::handle<Graphic3d_Layer> anOtherLayer;
@@ -282,8 +287,7 @@ void Graphic3d_GraphicDriver::SetZLayerSettings(const Graphic3d_ZLayerId        
 
 //=================================================================================================
 
-void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream,
-                                       int  theDepth) const
+void Graphic3d_GraphicDriver::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

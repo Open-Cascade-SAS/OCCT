@@ -19,7 +19,7 @@
 RWStepBasic_RWCalendarDate::RWStepBasic_RWCalendarDate() {}
 
 void RWStepBasic_RWCalendarDate::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepBasic_CalendarDate>&  ent) const
 {
@@ -52,7 +52,7 @@ void RWStepBasic_RWCalendarDate::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aYearComponent, aDayComponent, aMonthComponent);
 }
 
-void RWStepBasic_RWCalendarDate::WriteStep(StepData_StepWriter&                  SW,
+void RWStepBasic_RWCalendarDate::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepBasic_CalendarDate>& ent) const
 {
 

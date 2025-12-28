@@ -16,8 +16,6 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <gp_Pnt2d.hxx>
 
 class Geom2d_BezierCurve_Test : public ::testing::Test
 {

@@ -22,7 +22,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //! This class provides a polygon in 3D space, based on the triangulation
@@ -42,8 +41,7 @@ class Poly_PolygonOnTriangulation : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation, Standard_Transient)
 public:
   //! Constructs a 3D polygon on the triangulation of a shape with specified size of nodes.
-  Standard_EXPORT Poly_PolygonOnTriangulation(const int theNbNodes,
-                                              const bool theHasParams);
+  Standard_EXPORT Poly_PolygonOnTriangulation(const int theNbNodes, const bool theHasParams);
 
   //! Constructs a 3D polygon on the triangulation of a shape,
   //! defined by the table of nodes, <Nodes>.
@@ -60,8 +58,8 @@ public:
   //! Warning
   //! The tables Nodes and Parameters must be the same size.
   //! This property is not checked at construction time.
-  Standard_EXPORT Poly_PolygonOnTriangulation(const NCollection_Array1<int>& Nodes,
-                                              const NCollection_Array1<double>&    Parameters);
+  Standard_EXPORT Poly_PolygonOnTriangulation(const NCollection_Array1<int>&    Nodes,
+                                              const NCollection_Array1<double>& Parameters);
 
   //! Creates a copy of current polygon
   Standard_EXPORT virtual occ::handle<Poly_PolygonOnTriangulation> Copy() const;
@@ -83,10 +81,7 @@ public:
   int Node(int theIndex) const { return myNodes.Value(theIndex); }
 
   //! Sets node at the given index.
-  void SetNode(int theIndex, int theNode)
-  {
-    myNodes.SetValue(theIndex, theNode);
-  }
+  void SetNode(int theIndex, int theNode) { myNodes.SetValue(theIndex, theNode); }
 
   //! Returns true if parameters are associated with the nodes in this polygon.
   bool HasParameters() const { return !myParameters.IsNull(); }
@@ -112,8 +107,7 @@ public:
   Standard_EXPORT void SetParameters(const occ::handle<NCollection_HArray1<double>>& theParameters);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public:
   //! Returns the table of nodes for this polygon.
@@ -127,14 +121,16 @@ public:
   const occ::handle<NCollection_HArray1<double>>& Parameters() const { return myParameters; }
 
   Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
+
   NCollection_Array1<int>& ChangeNodes() { return myNodes; }
 
   Standard_DEPRECATED("Deprecated method, SetParameter() should be used instead")
+
   NCollection_Array1<double>& ChangeParameters() { return myParameters->ChangeArray1(); }
 
 private:
-  double                 myDeflection;
-  NCollection_Array1<int>       myNodes;
+  double                                   myDeflection;
+  NCollection_Array1<int>                  myNodes;
   occ::handle<NCollection_HArray1<double>> myParameters;
 };
 

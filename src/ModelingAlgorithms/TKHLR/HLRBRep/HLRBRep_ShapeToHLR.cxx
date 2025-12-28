@@ -33,26 +33,25 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=================================================================================================
 
-occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
-                                              const HLRAlgo_Projector&            P,
-                                              NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>&      MST,
-                                              const int              nbIso)
+occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
+  const occ::handle<HLRTopoBRep_OutLiner>&                                         S,
+  const HLRAlgo_Projector&                                                         P,
+  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+  const int                                                                        nbIso)
 {
   S->Fill(P, MST, nbIso);
 
-  HLRTopoBRep_Data&                         TopDS = S->DataStructure();
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                FM;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                EM;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> VerticesToEdges;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> EdgesToFaces;
+  HLRTopoBRep_Data&                                             TopDS = S->DataStructure();
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> FM;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> EM;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    VerticesToEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    EdgesToFaces;
 
   TopExp_Explorer exshell, exface;
 
@@ -83,17 +82,17 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(const occ::handle<HLRTopoBRep
   int nbVert = VerticesToEdges.Extent();
   int nbFace = FM.Extent();
 
-  TopoDS_Vertex                      VF, VL;
+  TopoDS_Vertex                            VF, VL;
   NCollection_List<TopoDS_Shape>::Iterator itn;
-  int                   i1, i2;
-  bool                   o1, o2;
-  bool                   c1, c2;
-  double                      pf, pl;
-  float                 tf, tl;
+  int                                      i1, i2;
+  bool                                     o1, o2;
+  bool                                     c1, c2;
+  double                                   pf, pl;
+  float                                    tf, tl;
 
   // Create the data structure
   occ::handle<HLRBRep_Data> DS = new HLRBRep_Data(nbVert, nbEdge, nbFace);
-  HLRBRep_EdgeData*    ed = NULL;
+  HLRBRep_EdgeData*         ed = NULL;
   if (nbEdge != 0)
     ed = &(DS->EDataArray().ChangeValue(1));
   //  ed++;
@@ -110,7 +109,7 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(const occ::handle<HLRTopoBRep
     BRep_Tool::Range(Edg, pf, pl);
     bool reg1 = false;
     bool regn = false;
-    int inde = EdgesToFaces.FindIndex(Edg);
+    int  inde = EdgesToFaces.FindIndex(Edg);
     if (inde > 0)
     {
       if (EdgesToFaces(inde).Extent() == 2)
@@ -168,13 +167,14 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(const occ::handle<HLRTopoBRep
 
 //=================================================================================================
 
-void HLRBRep_ShapeToHLR::ExploreFace(const occ::handle<HLRTopoBRep_OutLiner>& S,
-                                     const occ::handle<HLRBRep_Data>&         DS,
-                                     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   FM,
-                                     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   EM,
-                                     int&                   i,
-                                     const TopoDS_Face&                  F,
-                                     const bool              closed)
+void HLRBRep_ShapeToHLR::ExploreFace(
+  const occ::handle<HLRTopoBRep_OutLiner>&                             S,
+  const occ::handle<HLRBRep_Data>&                                     DS,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& FM,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& EM,
+  int&                                                                 i,
+  const TopoDS_Face&                                                   F,
+  const bool                                                           closed)
 {
   i++;
   TopExp_Explorer    Ex1, Ex2;
@@ -213,12 +213,12 @@ void HLRBRep_ShapeToHLR::ExploreFace(const occ::handle<HLRTopoBRep_OutLiner>& S,
       if (BRep_Tool::Degenerated(E))
         continue;
       ne++;
-      int   ie        = EM.FindIndex(E);
+      int                ie        = EM.FindIndex(E);
       TopAbs_Orientation anOrientE = E.Orientation();
-      bool   Int       = TopDS.IsIntLFaceEdge(F, E);
-      bool   Iso       = TopDS.IsIsoLFaceEdge(F, E);
-      bool   Out       = TopDS.IsOutLFaceEdge(F, E);
-      bool   Dbl       = BRepTools::IsReallyClosed(TopoDS::Edge(E), theFace);
+      bool               Int       = TopDS.IsIntLFaceEdge(F, E);
+      bool               Iso       = TopDS.IsIsoLFaceEdge(F, E);
+      bool               Out       = TopDS.IsOutLFaceEdge(F, E);
+      bool               Dbl       = BRepTools::IsReallyClosed(TopoDS::Edge(E), theFace);
       fd.SetWEdge(nw, ne, ie, anOrientE, Out, Int, Dbl, Iso);
     }
   }
@@ -227,14 +227,15 @@ void HLRBRep_ShapeToHLR::ExploreFace(const occ::handle<HLRTopoBRep_OutLiner>& S,
 
 //=================================================================================================
 
-void HLRBRep_ShapeToHLR::ExploreShape(const occ::handle<HLRTopoBRep_OutLiner>& S,
-                                      const occ::handle<HLRBRep_Data>&         DS,
-                                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   FM,
-                                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&   EM)
+void HLRBRep_ShapeToHLR::ExploreShape(
+  const occ::handle<HLRTopoBRep_OutLiner>&                             S,
+  const occ::handle<HLRBRep_Data>&                                     DS,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& FM,
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& EM)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> ShapeMap;
-  TopExp_Explorer     exshell, exface, exedge;
-  int    i = 0;
+  TopExp_Explorer                                        exshell, exface, exedge;
+  int                                                    i = 0;
 
   for (exshell.Init(S->OriginalShape(), TopAbs_SHELL); exshell.More(); exshell.Next())
   { // faces in a shell (open or close)

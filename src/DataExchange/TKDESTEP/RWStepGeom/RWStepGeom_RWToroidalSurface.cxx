@@ -22,7 +22,7 @@
 RWStepGeom_RWToroidalSurface::RWStepGeom_RWToroidalSurface() {}
 
 void RWStepGeom_RWToroidalSurface::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepGeom_ToroidalSurface>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepGeom_RWToroidalSurface::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aPosition, aMajorRadius, aMinorRadius);
 }
 
-void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&                    SW,
+void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepGeom_ToroidalSurface>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepGeom_RWToroidalSurface::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepGeom_RWToroidalSurface::Share(const occ::handle<StepGeom_ToroidalSurface>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   iter.GetOneItem(ent->Position());

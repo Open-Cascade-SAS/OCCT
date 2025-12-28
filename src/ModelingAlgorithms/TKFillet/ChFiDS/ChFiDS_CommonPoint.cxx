@@ -48,9 +48,9 @@ void ChFiDS_CommonPoint::Reset()
 // 30/09/1997 : PMN On n'ecrabouille plus la tolerance
 //=======================================================================
 
-void ChFiDS_CommonPoint::SetArc(const double      Tol,
+void ChFiDS_CommonPoint::SetArc(const double             Tol,
                                 const TopoDS_Edge&       A,
-                                const double      Param,
+                                const double             Param,
                                 const TopAbs_Orientation TArc)
 {
   isonarc = true;

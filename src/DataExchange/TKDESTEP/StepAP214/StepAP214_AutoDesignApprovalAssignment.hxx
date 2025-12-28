@@ -34,12 +34,15 @@ public:
   //! Returns a AutoDesignApprovalAssignment
   Standard_EXPORT StepAP214_AutoDesignApprovalAssignment();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_Approval>& aAssignedApproval,
-                            const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
+  Standard_EXPORT void Init(
+    const occ::handle<StepBasic_Approval>&                                      aAssignedApproval,
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
+  Standard_EXPORT void SetItems(
+    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> Items()
+    const;
 
   Standard_EXPORT StepAP214_AutoDesignGeneralOrgItem ItemsValue(const int num) const;
 

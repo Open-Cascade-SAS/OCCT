@@ -35,7 +35,6 @@
 #include <Draw_Marker2D.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_MarkerShape.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 #include <Geom2d_Circle.hxx>
@@ -75,7 +74,7 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
   for (int i = 1; i <= proj.NbPoints(); i++)
   {
     gp_Pnt2d                      aP1   = proj.Point(i);
-    const double           aDist = P.Distance(aP1);
+    const double                  aDist = P.Distance(aP1);
     const TCollection_AsciiString aName = TCollection_AsciiString("ext_") + i;
     if (aDist > Precision::PConfusion())
     {
@@ -127,10 +126,10 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
 
   int i, Nb = Draw::Atoi(a[2]);
 
-  bool     hasPoints = true;
+  bool                         hasPoints = true;
   NCollection_Array1<gp_Pnt2d> Points(1, Nb);
-  NCollection_Array1<double> YValues(1, Nb);
-  double        X0 = 0, DX = 0;
+  NCollection_Array1<double>   YValues(1, Nb);
+  double                       X0 = 0, DX = 0;
 
   occ::handle<Draw_Marker2D> mark;
 
@@ -165,8 +164,8 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
         return 1;
 
       double U, U1, U2;
-      U1                  = GC->FirstParameter();
-      U2                  = GC->LastParameter();
+      U1           = GC->FirstParameter();
+      U2           = GC->LastParameter();
       double Delta = (U2 - U1) / (Nb - 1);
       for (i = 1; i <= Nb; i++)
       {
@@ -292,8 +291,8 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   const double U2l = GC2->LastParameter();
 
   Geom2dAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
-  bool            isInfinitySolutions = Ex.Extrema().IsParallel();
-  const int      aNExtr              = Ex.NbExtrema();
+  bool                        isInfinitySolutions = Ex.Extrema().IsParallel();
+  const int                   aNExtr              = Ex.NbExtrema();
 
   if (aNExtr == 0 || isInfinitySolutions)
   {
@@ -323,7 +322,7 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     {
       occ::handle<Geom2d_Line>         L    = new Geom2d_Line(P1, gp_Vec2d(P1, P2));
       occ::handle<Geom2d_TrimmedCurve> CT   = new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
-      const char*                 temp = aName.ToCString();
+      const char*                      temp = aName.ToCString();
       DrawTrSurf::Set(temp, CT);
     }
     di << aName << "\n";
@@ -337,8 +336,8 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
 static int intersect(Draw_Interpretor& di, int n, const char** a)
 {
   occ::handle<Geom2d_Curve> C1, C2;
-  double        Tol         = 0.001;
-  bool     bPrintState = false;
+  double                    Tol         = 0.001;
+  bool                      bPrintState = false;
 
   // Retrieve other parameters if any
   for (int i = 1; i < n; ++i)
@@ -427,7 +426,7 @@ static int intersect(Draw_Interpretor& di, int n, const char** a)
 
   occ::handle<Geom2d_Curve>       S1, S2;
   occ::handle<DrawTrSurf_Curve2d> CD;
-  int           aNbSegments = Intersector.NbSegments();
+  int                             aNbSegments = Intersector.NbSegments();
   for (int i = 1; i <= aNbSegments; i++)
   {
     di << "Segment #" << i << " found.\n";
@@ -576,9 +575,7 @@ static int intconcon(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-static int deviation(Draw_Interpretor& theDI,
-                                  int  theNArg,
-                                  const char**      theArgv)
+static int deviation(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 {
   if (theNArg < 3)
   {
@@ -596,11 +593,11 @@ static int deviation(Draw_Interpretor& theDI,
 
   Geom2dAdaptor_Curve anAC(aC);
 
-  int aNbInterv      = 2;
-  double    aU0            = RealLast();
-  int aNbApprox      = 10;
-  int aNbExact       = 100;
-  bool anIsApproxOnly = false;
+  int    aNbInterv      = 2;
+  double aU0            = RealLast();
+  int    aNbApprox      = 10;
+  int    aNbExact       = 100;
+  bool   anIsApproxOnly = false;
 
   for (int aCurrArg = 3; aCurrArg < theNArg; aCurrArg++)
   {
@@ -637,10 +634,10 @@ static int deviation(Draw_Interpretor& theDI,
   const double aU1 = anAC.FirstParameter();
   const double aU2 = anAC.LastParameter();
 
-  double aRetCurvParam = aU0;
-  gp_Pnt2d      aPtOnCurv;
-  gp_Vec2d      aRetVec;
-  gp_Lin2d      aLinSegm;
+  double   aRetCurvParam = aU0;
+  gp_Pnt2d aPtOnCurv;
+  gp_Vec2d aRetVec;
+  gp_Lin2d aLinSegm;
 
   double aDefl = RealLast();
 
@@ -677,8 +674,8 @@ static int deviation(Draw_Interpretor& theDI,
   DrawTrSurf::Set(aPntString.ToCString(), aPtOnCurv);
   theDI << "From point " << aPntString << " (with parameter " << aRetCurvParam << ") to ";
 
-  occ::handle<Geom2d_Curve>    aLine      = new Geom2d_Line(aLinSegm);
-  TCollection_AsciiString aLinString = anArgString + "_lin";
+  occ::handle<Geom2d_Curve> aLine      = new Geom2d_Line(aLinSegm);
+  TCollection_AsciiString   aLinString = anArgString + "_lin";
   DrawTrSurf::Set(aLinString.ToCString(), aLine);
   theDI << "the line " << aLinString << ".\n";
 

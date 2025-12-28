@@ -37,16 +37,14 @@ public:
 
   //! Builds the Revol of meridian S axis A and angle D. If
   //! C is true S is copied.
-  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape&    S,
-                                  const gp_Ax1&          A,
-                                  const double    D,
-                                  const bool C = false);
+  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape& S,
+                                  const gp_Ax1&       A,
+                                  const double        D,
+                                  const bool          C = false);
 
   //! Builds the Revol of meridian S axis A and angle 2*Pi.
   //! If C is true S is copied.
-  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape&    S,
-                                  const gp_Ax1&          A,
-                                  const bool C = false);
+  Standard_EXPORT BRepSweep_Revol(const TopoDS_Shape& S, const gp_Ax1& A, const bool C = false);
 
   //! Returns the TopoDS Shape attached to the Revol.
   Standard_EXPORT TopoDS_Shape Shape();

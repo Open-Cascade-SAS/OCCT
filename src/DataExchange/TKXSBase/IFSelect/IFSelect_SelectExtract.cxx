@@ -40,7 +40,7 @@ Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Grap
 {
   Interface_EntityIterator iter;
   Interface_EntityIterator inputer = InputResult(G); // takes everything into account
-  int         rank    = 0;
+  int                      rank    = 0;
   for (inputer.Start(); inputer.More(); inputer.Next())
   {
     const occ::handle<Standard_Transient>& ent = inputer.Value();
@@ -51,9 +51,9 @@ Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Grap
   return iter;
 }
 
-bool IFSelect_SelectExtract::SortInGraph(const int            rank,
-                                                     const occ::handle<Standard_Transient>& ent,
-                                                     const Interface_Graph&            G) const
+bool IFSelect_SelectExtract::SortInGraph(const int                              rank,
+                                         const occ::handle<Standard_Transient>& ent,
+                                         const Interface_Graph&                 G) const
 {
   return Sort(rank, ent, G.Model());
 }

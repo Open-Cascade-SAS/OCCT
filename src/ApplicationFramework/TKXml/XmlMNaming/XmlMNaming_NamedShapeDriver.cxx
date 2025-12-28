@@ -74,16 +74,16 @@ occ::handle<TDF_Attribute> XmlMNaming_NamedShapeDriver::NewEmpty() const
 // purpose  : retrieval of TNaming_NamedShape
 //=======================================================================
 
-bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                    const occ::handle<TDF_Attribute>& theTarget,
-                                                    XmlObjMgt_RRelocationTable&) const
+bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                        const occ::handle<TDF_Attribute>& theTarget,
+                                        XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TNaming_NamedShape> aTarget = occ::down_cast<TNaming_NamedShape>(theTarget);
-  TDF_Label                  Label   = aTarget->Label();
-  TNaming_Builder            aBld(Label);
+  TDF_Label                       Label   = aTarget->Label();
+  TNaming_Builder                 aBld(Label);
 
   //    Get Version
-  int         aVersion   = 0;
+  int                      aVersion   = 0;
   const XmlObjMgt_Element& anElement  = theSource;
   XmlObjMgt_DOMString      aVerString = anElement.getAttribute(::VersionString());
   if (aVerString != NULL)
@@ -173,7 +173,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
 //=======================================================================
 
 void XmlMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_Persistent&             theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
   // AGV  XmlObjMgt_Document& aDoc =
@@ -181,10 +181,10 @@ void XmlMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   XmlObjMgt_Document aDoc = XmlObjMgt_Document(theTarget.Element().getOwnerDocument());
 
   occ::handle<TNaming_NamedShape> aNamedShape = occ::down_cast<TNaming_NamedShape>(theSource);
-  TNaming_Evolution          evol        = aNamedShape->Evolution();
+  TNaming_Evolution               evol        = aNamedShape->Evolution();
 
   //    Create arrays
-  int NbShapes = 0;
+  int              NbShapes = 0;
   TNaming_Iterator SItr(aNamedShape);
   while (SItr.More())
   {
@@ -199,7 +199,7 @@ void XmlMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   NewPShapes.CreateArrayElement(theTarget, ::NewsString());
 
   //    Fill arrays
-  int i = 1;
+  int              i = 1;
   TNaming_Iterator SIterator(aNamedShape);
   while (SIterator.More())
   {

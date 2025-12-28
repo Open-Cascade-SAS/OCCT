@@ -23,7 +23,7 @@
 RWStepGeom_RWDirection::RWStepGeom_RWDirection() {}
 
 void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                 num,
+                                      const int                                   num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepGeom_Direction>&      ent) const
 {
@@ -41,9 +41,9 @@ void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>
 
   // --- own field : directionRatios ---
 
-  double    aCoordinatesItem;
-  int aNSub2, aNbCoord = 0;
-  double    aXYZ[3] = {0., 0., 0.};
+  double aCoordinatesItem;
+  int    aNSub2, aNbCoord = 0;
+  double aXYZ[3] = {0., 0., 0.};
   if (data->ReadSubList(num, 2, "direction_ratios", ach, aNSub2))
   {
     int aNbElements = data->NbParams(aNSub2);
@@ -68,7 +68,7 @@ void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>
     ent->Init2D(aName, aXYZ[0], aXYZ[1]);
 }
 
-void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&              SW,
+void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&                   SW,
                                        const occ::handle<StepGeom_Direction>& ent) const
 {
 

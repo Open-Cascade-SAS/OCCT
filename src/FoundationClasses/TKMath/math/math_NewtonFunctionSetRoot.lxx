@@ -14,8 +14,7 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline bool math_NewtonFunctionSetRoot::IsSolutionReached(
-  math_FunctionSetWithDerivatives&)
+inline bool math_NewtonFunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives&)
 {
   for (int i = DeltaX.Lower(); i <= DeltaX.Upper(); ++i)
     if (std::abs(DeltaX(i)) > TolX(i) || std::abs(FValues(i)) > TolF)

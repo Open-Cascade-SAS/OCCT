@@ -36,8 +36,9 @@ void IGESSelect_CounterOfLevelNumber::Clear()
   thehigh = thenblists = 0;
 }
 
-void IGESSelect_CounterOfLevelNumber::AddSign(const occ::handle<Standard_Transient>& ent,
-                                              const occ::handle<Interface_InterfaceModel>& /*model*/)
+void IGESSelect_CounterOfLevelNumber::AddSign(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/)
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
@@ -63,7 +64,7 @@ void IGESSelect_CounterOfLevelNumber::AddSign(const occ::handle<Standard_Transie
 }
 
 void IGESSelect_CounterOfLevelNumber::AddLevel(const occ::handle<Standard_Transient>& ent,
-                                               const int            level)
+                                               const int                              level)
 {
   if (level < 0)
   {

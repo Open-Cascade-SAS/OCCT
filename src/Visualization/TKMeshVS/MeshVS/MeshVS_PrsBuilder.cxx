@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder, Standard_Transient)
 //=================================================================================================
 
 MeshVS_PrsBuilder::MeshVS_PrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
-                                     const MeshVS_DisplayModeFlags&   Flags,
+                                     const MeshVS_DisplayModeFlags&        Flags,
                                      const occ::handle<MeshVS_DataSource>& DS,
-                                     const int           Id,
-                                     const MeshVS_BuilderPriority&    Priority)
+                                     const int                             Id,
+                                     const MeshVS_BuilderPriority&         Priority)
 {
   if (Id < 0 && !Parent.IsNull())
     myId = Parent->GetFreeId();
@@ -160,7 +160,8 @@ occ::handle<MeshVS_Drawer> MeshVS_PrsBuilder::Drawer() const
 //            MeshVS_Mesh::Compute methodto assign presentation
 //            manager to the builder.
 //================================================================
-void MeshVS_PrsBuilder::SetPresentationManager(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr)
+void MeshVS_PrsBuilder::SetPresentationManager(
+  const occ::handle<PrsMgr_PresentationManager>& thePrsMgr)
 {
   myPrsMgr = thePrsMgr;
 }

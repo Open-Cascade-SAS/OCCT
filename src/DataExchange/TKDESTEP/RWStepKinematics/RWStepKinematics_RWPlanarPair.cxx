@@ -31,10 +31,11 @@ RWStepKinematics_RWPlanarPair::RWStepKinematics_RWPlanarPair() {}
 
 //=================================================================================================
 
-void RWStepKinematics_RWPlanarPair::ReadStep(const occ::handle<StepData_StepReaderData>&   theData,
-                                             const int                   theNum,
-                                             occ::handle<Interface_Check>&                 theArch,
-                                             const occ::handle<StepKinematics_PlanarPair>& theEnt) const
+void RWStepKinematics_RWPlanarPair::ReadStep(
+  const occ::handle<StepData_StepReaderData>&   theData,
+  const int                                     theNum,
+  occ::handle<Interface_Check>&                 theArch,
+  const occ::handle<StepKinematics_PlanarPair>& theEnt) const
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "planar_pair"))
@@ -55,7 +56,7 @@ void RWStepKinematics_RWPlanarPair::ReadStep(const occ::handle<StepData_StepRead
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -158,8 +159,9 @@ void RWStepKinematics_RWPlanarPair::ReadStep(const occ::handle<StepData_StepRead
 
 //=================================================================================================
 
-void RWStepKinematics_RWPlanarPair::WriteStep(StepData_StepWriter&                     theSW,
-                                              const occ::handle<StepKinematics_PlanarPair>& theEnt) const
+void RWStepKinematics_RWPlanarPair::WriteStep(
+  StepData_StepWriter&                          theSW,
+  const occ::handle<StepKinematics_PlanarPair>& theEnt) const
 {
 
   // Own fields of RepresentationItem
@@ -203,7 +205,7 @@ void RWStepKinematics_RWPlanarPair::WriteStep(StepData_StepWriter&              
 //=================================================================================================
 
 void RWStepKinematics_RWPlanarPair::Share(const occ::handle<StepKinematics_PlanarPair>& theEnt,
-                                          Interface_EntityIterator&                iter) const
+                                          Interface_EntityIterator&                     iter) const
 {
 
   // Inherited fields of RepresentationItem

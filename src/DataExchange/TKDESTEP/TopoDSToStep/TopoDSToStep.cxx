@@ -26,7 +26,8 @@
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 
-occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeBuilderError(const TopoDSToStep_BuilderError E)
+occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeBuilderError(
+  const TopoDSToStep_BuilderError E)
 {
   occ::handle<TCollection_HAsciiString> mess;
   switch (E)
@@ -47,7 +48,8 @@ occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeBuilderError(const Top
   return mess;
 }
 
-occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeFaceError(const TopoDSToStep_MakeFaceError E)
+occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeFaceError(
+  const TopoDSToStep_MakeFaceError E)
 {
   occ::handle<TCollection_HAsciiString> mess;
   switch (E)
@@ -76,7 +78,8 @@ occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeFaceError(const TopoDS
   return mess;
 }
 
-occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeWireError(const TopoDSToStep_MakeWireError E)
+occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeWireError(
+  const TopoDSToStep_MakeWireError E)
 {
   occ::handle<TCollection_HAsciiString> mess;
   switch (E)
@@ -97,7 +100,8 @@ occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeWireError(const TopoDS
   return mess;
 }
 
-occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeEdgeError(const TopoDSToStep_MakeEdgeError E)
+occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeEdgeError(
+  const TopoDSToStep_MakeEdgeError E)
 {
   occ::handle<TCollection_HAsciiString> mess;
   switch (E)
@@ -139,7 +143,7 @@ occ::handle<TCollection_HAsciiString> TopoDSToStep::DecodeVertexError(
 //=================================================================================================
 
 void TopoDSToStep::AddResult(const occ::handle<Transfer_FinderProcess>& FP,
-                             const TopoDS_Shape&                   Shape,
+                             const TopoDS_Shape&                        Shape,
                              const occ::handle<Standard_Transient>&     ent)
 {
   occ::handle<Transfer_SimpleBinderOfTransient> result = new Transfer_SimpleBinderOfTransient;
@@ -157,10 +161,12 @@ void TopoDSToStep::AddResult(const occ::handle<Transfer_FinderProcess>& FP,
 //=================================================================================================
 
 void TopoDSToStep::AddResult(const occ::handle<Transfer_FinderProcess>& FP,
-                             const TopoDSToStep_Tool&              Tool)
+                             const TopoDSToStep_Tool&                   Tool)
 {
-  const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>&           Map = Tool.Map();
-  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>::Iterator it(Map);
+  const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>&
+    Map = Tool.Map();
+  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>::
+    Iterator it(Map);
   for (; it.More(); it.Next())
     TopoDSToStep::AddResult(FP, it.Key(), it.Value());
 }

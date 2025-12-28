@@ -50,13 +50,13 @@ Standard_EXPORT void           TopOpeBRepTool_DrawSegment(const gp_Pnt&        P
 Standard_EXPORT void           TopOpeBRepTool_DrawSegment(const gp_Pnt& P1, const gp_Pnt& P2);
 Standard_EXPORT void           TopOpeBRepTool_DrawSegment(const gp_Pnt& P,
                                                           const gp_Lin&,
-                                                          const double  Par,
+                                                          const double         Par,
                                                           const Draw_ColorKind C);
 Standard_EXPORT Draw_ColorKind TopOpeBRepTool_ColorOnState(const TopAbs_State S);
-Standard_EXPORT void           TopOpeBRepTool_DrawSegment(const gp_Pnt&       P,
-                                                          const gp_Lin&       L,
-                                                          const double Par,
-                                                          const TopAbs_State  S);
+Standard_EXPORT void           TopOpeBRepTool_DrawSegment(const gp_Pnt&      P,
+                                                          const gp_Lin&      L,
+                                                          const double       Par,
+                                                          const TopAbs_State S);
 Standard_EXPORT void           FDRAW_DINS(const TCollection_AsciiString pref,
                                           const TopoDS_Shape&           SS,
                                           const TCollection_AsciiString Snam,
@@ -65,42 +65,43 @@ Standard_EXPORT void           FDRAW_DINE(const TCollection_AsciiString pref,
                                           const TopoDS_Edge&            EE,
                                           const TCollection_AsciiString Enam,
                                           const TCollection_AsciiString suff = "");
-Standard_EXPORT void           FDRAW_DINLOE(const TCollection_AsciiString pref,
-                                            const NCollection_List<TopoDS_Shape>&   LOE,
-                                            const TCollection_AsciiString str1,
-                                            const TCollection_AsciiString str2);
+Standard_EXPORT void           FDRAW_DINLOE(const TCollection_AsciiString         pref,
+                                            const NCollection_List<TopoDS_Shape>& LOE,
+                                            const TCollection_AsciiString         str1,
+                                            const TCollection_AsciiString         str2);
 Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString& aa,
                                              const gp_Pnt&                  p,
                                              const gp_Dir&                  d);
 Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString& aa,
                                              const gp_Pnt2d&                p,
                                              const gp_Dir2d&                d,
-                                             const int&        i);
+                                             const int&                     i);
 Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString aa, const gp_Pnt2d& p2d);
 Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString aa, const gp_Pnt& p);
+Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString   aa,
+                                             const occ::handle<Geom2d_Curve> c2d);
+Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString   aa,
+                                             const occ::handle<Geom2d_Curve> c2d,
+                                             const double                    f,
+                                             const double                    l);
+Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString& aa,
+                                             const occ::handle<Geom_Curve>& C);
 Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString aa,
-                                             const occ::handle<Geom2d_Curve>    c2d);
-Standard_EXPORT void           FUN_tool_draw(const TCollection_AsciiString aa,
-                                             const occ::handle<Geom2d_Curve>    c2d,
-                                             const double           f,
-                                             const double           l);
-Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString& aa, const occ::handle<Geom_Curve>& C);
-Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa,
-                                   const occ::handle<Geom_Curve>      c,
-                                   const double           f,
-                                   const double           l);
+                                             const occ::handle<Geom_Curve> c,
+                                             const double                  f,
+                                             const double                  l);
 Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa, const TopoDS_Shape& s);
 Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa,
                                    const TopoDS_Shape&           S,
-                                   const int        is);
+                                   const int                     is);
 Standard_EXPORT void FUN_tool_draw(TCollection_AsciiString aa,
                                    const TopoDS_Edge&      E,
                                    const TopoDS_Face&      F,
-                                   const int  ie);
+                                   const int               ie);
 Standard_EXPORT void FUN_tool_draw(TCollection_AsciiString aa,
                                    const TopoDS_Edge&      E,
                                    const TopoDS_Face&      F,
-                                   const int  ie);
+                                   const int               ie);
 Standard_EXPORT const TCollection_AsciiString& FUN_tool_PRODINS();
 Standard_EXPORT const TCollection_AsciiString& FUN_tool_PRODINP();
 #endif

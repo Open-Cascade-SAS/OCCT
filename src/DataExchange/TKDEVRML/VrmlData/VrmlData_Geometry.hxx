@@ -69,7 +69,7 @@ protected:
   // ---------- PROTECTED FIELDS ----------
 
   occ::handle<TopoDS_TShape> myTShape;
-  bool      myIsModified;
+  bool                       myIsModified;
 
 public:
   // Declaration of CASCADE RTTI

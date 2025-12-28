@@ -24,8 +24,6 @@
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_OverRidingStyledItem.hxx>
 #include <StepVisual_PresentationStyleAssignment.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class StepVisual_StyledItem;
@@ -38,16 +36,19 @@ public:
   //! Returns a ContextDependentOverRidingStyledItem
   Standard_EXPORT StepVisual_ContextDependentOverRidingStyledItem();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                        aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles,
-                            const occ::handle<Standard_Transient>&                              aItem,
-                            const occ::handle<StepVisual_StyledItem>&                  aOverRiddenStyle,
-                            const occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>& aStyleContext);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
+                                                                           aStyles,
+    const occ::handle<Standard_Transient>&                                 aItem,
+    const occ::handle<StepVisual_StyledItem>&                              aOverRiddenStyle,
+    const occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>& aStyleContext);
 
   Standard_EXPORT void SetStyleContext(
     const occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>>& aStyleContext);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>> StyleContext() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>> StyleContext()
+    const;
 
   Standard_EXPORT StepVisual_StyleContextSelect StyleContextValue(const int num) const;
 

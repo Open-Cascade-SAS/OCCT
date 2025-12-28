@@ -72,8 +72,8 @@ public:
 
 private:
   XmlObjMgt_Element myElement;
-  int  myFirst;
-  int  myLast;
+  int               myFirst;
+  int               myLast;
 };
 
 #include <XmlObjMgt_Array1.lxx>

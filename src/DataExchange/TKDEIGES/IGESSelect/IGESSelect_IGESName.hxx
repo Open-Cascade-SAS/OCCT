@@ -39,12 +39,11 @@ public:
 
   //! Returns the ShortLabel as being the Name of an IGESEntity
   //! If <ent> has no name, it returns empty string ""
-  Standard_EXPORT const char*
-    Value(const occ::handle<Standard_Transient>&       ent,
-          const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char* Value(
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_IGESName, IFSelect_Signature)
-
 };
 
 #endif // _IGESSelect_IGESName_HeaderFile

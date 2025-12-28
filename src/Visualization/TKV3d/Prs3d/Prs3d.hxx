@@ -48,13 +48,13 @@ public:
 
   //! draws an arrow at a given location, with respect
   //! to a given direction.
-  Standard_EXPORT static bool MatchSegment(const double X,
-                                                       const double Y,
-                                                       const double Z,
-                                                       const double aDistance,
-                                                       const gp_Pnt&       p1,
-                                                       const gp_Pnt&       p2,
-                                                       double&      dist);
+  Standard_EXPORT static bool MatchSegment(const double  X,
+                                           const double  Y,
+                                           const double  Z,
+                                           const double  aDistance,
+                                           const gp_Pnt& p1,
+                                           const gp_Pnt& p2,
+                                           double&       dist);
 
   //! Computes the absolute deflection value based on relative deflection
   //! Prs3d_Drawer::DeviationCoefficient().
@@ -64,8 +64,8 @@ public:
   //! Prs3d_Drawer::DeviationCoefficient()
   //! @return absolute deflection coefficient based on bounding box dimensions
   static double GetDeflection(const NCollection_Vec3<double>& theBndMin,
-                                     const NCollection_Vec3<double>& theBndMax,
-                                     const double    theDeviationCoefficient)
+                              const NCollection_Vec3<double>& theBndMax,
+                              const double                    theDeviationCoefficient)
   {
     const NCollection_Vec3<double> aDiag = theBndMax - theBndMin;
     return (std::max)(aDiag.maxComp() * theDeviationCoefficient * 4.0, Precision::Confusion());
@@ -80,9 +80,9 @@ public:
   //! Prs3d_Drawer::MaximalChordialDeviation()
   //! @return absolute deflection coefficient based on bounding box dimensions or
   //! theMaximalChordialDeviation if bounding box is Void or Infinite
-  static double GetDeflection(const Bnd_Box&      theBndBox,
-                                     const double theDeviationCoefficient,
-                                     const double theMaximalChordialDeviation)
+  static double GetDeflection(const Bnd_Box& theBndBox,
+                              const double   theDeviationCoefficient,
+                              const double   theMaximalChordialDeviation)
   {
     if (theBndBox.IsVoid())
     {
@@ -111,17 +111,18 @@ public:
     const NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePoints);
 
   //! Add primitives into new group in presentation and clear the list of polylines.
-  Standard_EXPORT static void AddPrimitivesGroup(const occ::handle<Prs3d_Presentation>& thePrs,
-                                                 const occ::handle<Prs3d_LineAspect>&   theAspect,
-                                                 NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&       thePolylines);
+  Standard_EXPORT static void AddPrimitivesGroup(
+    const occ::handle<Prs3d_Presentation>&                        thePrs,
+    const occ::handle<Prs3d_LineAspect>&                          theAspect,
+    NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylines);
 
   //! Add triangulation free edges into sequence of line segments.
   //! @param[out] theSegments  sequence of line segments to fill
   //! @param[in] thePolyTri    triangulation to process
   //! @param[in] theLocation   transformation to apply
-  Standard_EXPORT static void AddFreeEdges(NCollection_Sequence<gp_Pnt>&             theSegments,
+  Standard_EXPORT static void AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
                                            const occ::handle<Poly_Triangulation>& thePolyTri,
-                                           const gp_Trsf&                    theLocation);
+                                           const gp_Trsf&                         theLocation);
 };
 
 #endif // _Prs3d_HeaderFile

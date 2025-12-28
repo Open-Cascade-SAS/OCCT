@@ -139,11 +139,11 @@ extern "C" int getpagesize();
 
 //=================================================================================================
 
-Standard_MMgrOpt::Standard_MMgrOpt(const bool aClear,
-                                   const bool aMMap,
-                                   const size_t    aCellSize,
-                                   const int aNbPages,
-                                   const size_t    aThreshold)
+Standard_MMgrOpt::Standard_MMgrOpt(const bool   aClear,
+                                   const bool   aMMap,
+                                   const size_t aCellSize,
+                                   const int    aNbPages,
+                                   const size_t aThreshold)
 {
   // check basic assumption
   Standard_STATIC_ASSERT(sizeof(size_t) == sizeof(void*));
@@ -228,7 +228,7 @@ void Standard_MMgrOpt::Initialize()
     /* Ce partage des zones memoire pourra eventuellemt etre regle par une variable d'environnement
      */
     /* CLD_HIGH_SBRK */
-    char*         var;
+    char*  var;
     size_t high_sbrk;
 
     high_sbrk = 700 * 1024 * 1024;
@@ -280,10 +280,10 @@ Standard_EXPORT void Standard_MMgrOpt::SetCallBackFunction(TPCallBackFunc pFunc)
   MyPCallBackFunc = pFunc;
 }
 
-inline void callBack(const bool isAlloc,
-                     void* const aStorage,
-                     const size_t    aRoundSize,
-                     const size_t    aSize)
+inline void callBack(const bool   isAlloc,
+                     void* const  aStorage,
+                     const size_t aRoundSize,
+                     const size_t aSize)
 {
   if (MyPCallBackFunc)
     (*MyPCallBackFunc)(isAlloc, aStorage, aRoundSize, aSize);
@@ -319,8 +319,8 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       // the address of the next free block is stored in the header
       // of the memory block; use it to update list pointer
       // to point to next free block
-      size_t* aBlock = myFreeList[Index];
-      myFreeList[Index]     = *(size_t**)aBlock;
+      size_t* aBlock    = myFreeList[Index];
+      myFreeList[Index] = *(size_t**)aBlock;
 
       // unlock the mutex
       myMutex.unlock();
@@ -351,7 +351,7 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       {
         // otherwise, allocate new memory pool with page-aligned size
         size_t Size = myPageSize * myNbPages;
-        aBlock             = AllocMemory(Size); // note that size may be aligned by this call
+        aBlock      = AllocMemory(Size); // note that size may be aligned by this call
 
         if (myEndBlock > myNextAddr)
         {
@@ -363,7 +363,7 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
           {
             myMutex.lock();
             *(size_t**)myNextAddr = myFreeList[aPIndex];
-            myFreeList[aPIndex]          = myNextAddr;
+            myFreeList[aPIndex]   = myNextAddr;
             myMutex.unlock();
           }
         }
@@ -393,9 +393,8 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       myMutex.unlock();
 
       // we use operator ?: instead of if() since it is faster
-      size_t* aBlock =
-        (size_t*)(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
-                                 : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
+      size_t* aBlock = (size_t*)(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
+                                         : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
 
       // if allocation failed, try to free some memory by purging free lists, and retry
       if (!aBlock)
@@ -488,15 +487,15 @@ int Standard_MMgrOpt::Purge(bool)
 
   // free memory blocks contained in free lists
   // whose sizes are greater than cellsize
-  int nbFreed = 0;
-  size_t    i       = INDEX_CELL(ROUNDUP_CELL(myCellSize + BLOCK_SHIFT));
+  int    nbFreed = 0;
+  size_t i       = INDEX_CELL(ROUNDUP_CELL(myCellSize + BLOCK_SHIFT));
   for (; i <= myFreeListMax; i++)
   {
     size_t* aFree = myFreeList[i];
     while (aFree)
     {
       size_t* anOther = aFree;
-      aFree                  = *(size_t**)aFree;
+      aFree           = *(size_t**)aFree;
       free(anOther);
       nbFreed++;
     }
@@ -521,14 +520,14 @@ int Standard_MMgrOpt::Purge(bool)
   // declare the table of pools;
   // (we map free blocks onto a number of pools simultaneously)
   static const int NB_POOLS_WIN = 512;
-  static size_t*         aPools[NB_POOLS_WIN];
-  static size_t          aFreeSize[NB_POOLS_WIN];
+  static size_t*   aPools[NB_POOLS_WIN];
+  static size_t    aFreeSize[NB_POOLS_WIN];
   static int       aFreePools[NB_POOLS_WIN];
 
   size_t*      aNextPool = myAllocList;
   size_t*      aPrevPool = NULL;
   const size_t nCells    = INDEX_CELL(myCellSize);
-  int    nPool = 0, nPoolFreed = 0;
+  int          nPool = 0, nPoolFreed = 0;
 
   while (aNextPool)
   {
@@ -629,8 +628,7 @@ int Standard_MMgrOpt::Purge(bool)
       if (j == iLastFree || aFreePools[j + 1] - iPool > 1)
       {
         // get next non-free pool
-        size_t* aNext =
-          (j == iLastFree && aFreePools[j] == iLast) ? aNextPool : aPools[iPool + 1];
+        size_t* aNext = (j == iLastFree && aFreePools[j] == iLast) ? aNextPool : aPools[iPool + 1];
         // and connect it to the list of pools that have been processed
         // and remain non-free
         if (aPrev)
@@ -661,7 +659,7 @@ void Standard_MMgrOpt::FreePools()
 
   // last pool is remembered in myAllocList
   size_t* aFree = myAllocList;
-  myAllocList          = 0;
+  myAllocList   = 0;
   while (aFree)
   {
     size_t* aBlock = aFree;
@@ -674,8 +672,7 @@ void Standard_MMgrOpt::FreePools()
 
 //=================================================================================================
 
-void* Standard_MMgrOpt::Reallocate(void*    theStorage,
-                                              const size_t theNewSize)
+void* Standard_MMgrOpt::Reallocate(void* theStorage, const size_t theNewSize)
 {
   // if theStorage == NULL, just allocate new memory block
   if (!theStorage)
@@ -683,8 +680,8 @@ void* Standard_MMgrOpt::Reallocate(void*    theStorage,
     return Allocate(theNewSize);
   }
 
-  size_t*   aBlock     = GET_BLOCK(theStorage);
-  void* newStorage = NULL;
+  size_t* aBlock     = GET_BLOCK(theStorage);
+  void*   newStorage = NULL;
 
   // get current size of the memory block from its header
   size_t OldSize = aBlock[0];

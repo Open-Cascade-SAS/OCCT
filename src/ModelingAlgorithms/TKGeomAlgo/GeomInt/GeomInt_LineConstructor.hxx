@@ -56,8 +56,8 @@ protected:
   Standard_EXPORT void TreatCircle(const occ::handle<IntPatch_Line>& aLine, const double aTol);
 
 private:
-  bool            done;
-  NCollection_Sequence<double>      seqp;
+  bool                             done;
+  NCollection_Sequence<double>     seqp;
   occ::handle<Adaptor3d_TopolTool> myDom1;
   occ::handle<Adaptor3d_TopolTool> myDom2;
   occ::handle<GeomAdaptor_Surface> myHS1;

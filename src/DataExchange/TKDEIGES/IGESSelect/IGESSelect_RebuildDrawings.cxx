@@ -27,13 +27,8 @@
 #include <MoniTool_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <gp_XY.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RebuildDrawings, IGESSelect_ModelModifier)
 
@@ -44,9 +39,9 @@ IGESSelect_RebuildDrawings::IGESSelect_RebuildDrawings()
 {
 }
 
-void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ctx,
+void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&                 ctx,
                                             const occ::handle<IGESData_IGESModel>& target,
-                                            Interface_CopyTool&               TC) const
+                                            Interface_CopyTool&                    TC) const
 {
   //  On reconstruit les drawings qui peuvent l etre
   //  Pour chaque drawing de l original, on regarde les composants transferes
@@ -57,7 +52,7 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ct
   //  - On reconnecte les views aux entites (cf Directory Part)
 
   DeclareAndCast(IGESData_IGESModel, original, ctx.OriginalModel());
-  int        nbo = original->NbEntities();
+  int                     nbo = original->NbEntities();
   NCollection_Array1<int> pris(0, nbo);
   pris.Init(0);
 
@@ -93,7 +88,7 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ct
     if (item->IsKind(STANDARD_TYPE(IGESDraw_Drawing)))
     {
       DeclareAndCast(IGESDraw_Drawing, draw, item);
-      int                         nbv = draw->NbViews();
+      int                                                                    nbv = draw->NbViews();
       occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
       if (nbv > 0)
         views = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbv);
@@ -111,9 +106,9 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ct
       }
       //  Frame : passer ce qui a ete transfere
       occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> frame;
-      int                     nba = draw->NbAnnotations();
-      Interface_EntityIterator             framelist;
-      int                     ia; // svv Jan11 2000 : porting on DEC
+      int                      nba = draw->NbAnnotations();
+      Interface_EntityIterator framelist;
+      int                      ia; // svv Jan11 2000 : porting on DEC
       for (ia = 1; ia <= nba; ia++)
       {
         occ::handle<Standard_Transient> annot;
@@ -139,7 +134,7 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ct
     else if (item->IsKind(STANDARD_TYPE(IGESDraw_DrawingWithRotation)))
     {
       DeclareAndCast(IGESDraw_DrawingWithRotation, draw, item);
-      int                         nbv = draw->NbViews();
+      int                                                                    nbv = draw->NbViews();
       occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
       if (nbv > 0)
         views = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbv);
@@ -165,9 +160,9 @@ void IGESSelect_RebuildDrawings::Performing(IFSelect_ContextModif&            ct
       }
       //  Frame : passer ce qui a ete transfere
       occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> frame;
-      int                     nba = draw->NbAnnotations();
-      Interface_EntityIterator             framelist;
-      int                     ia; // svv Jan11 2000 : porting on DEC
+      int                      nba = draw->NbAnnotations();
+      Interface_EntityIterator framelist;
+      int                      ia; // svv Jan11 2000 : porting on DEC
       for (ia = 1; ia <= nba; ia++)
       {
         occ::handle<Standard_Transient> annot;

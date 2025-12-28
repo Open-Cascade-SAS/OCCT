@@ -23,7 +23,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class Standard_Transient;
 
@@ -43,9 +42,10 @@ public:
   //! - aDepth           : It indicates the amount of nesting
   //! - aName            : the subfigure name
   //! - allAssocEntities : the associated entities
-  Standard_EXPORT void Init(const int                      aDepth,
-                            const occ::handle<TCollection_HAsciiString>&     aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities);
+  Standard_EXPORT void Init(
+    const int                                                                 aDepth,
+    const occ::handle<TCollection_HAsciiString>&                              aName,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities);
 
   //! returns depth of the Subfigure
   //! if theDepth = 0 - No reference to any subfigure instance.
@@ -68,8 +68,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SubfigureDef, IGESData_IGESEntity)
 
 private:
-  int                     theDepth;
-  occ::handle<TCollection_HAsciiString>     theName;
+  int                                                                theDepth;
+  occ::handle<TCollection_HAsciiString>                              theName;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theAssocEntities;
 };
 

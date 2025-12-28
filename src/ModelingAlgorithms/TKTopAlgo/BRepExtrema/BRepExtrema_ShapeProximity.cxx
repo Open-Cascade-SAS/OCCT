@@ -19,9 +19,9 @@
 #include <TopExp_Explorer.hxx>
 
 // Assign a map of sub-shapes (edges/faces) of a given shape
-static bool initSubShapes(const TopoDS_Shape&              theShape,
-                                      NCollection_Vector<TopoDS_Shape>&           theSubshapesList,
-                                      occ::handle<BRepExtrema_TriangleSet>& theTriangleSet)
+static bool initSubShapes(const TopoDS_Shape&                   theShape,
+                          NCollection_Vector<TopoDS_Shape>&     theSubshapesList,
+                          occ::handle<BRepExtrema_TriangleSet>& theTriangleSet)
 {
   theSubshapesList.Clear();
 
@@ -61,7 +61,7 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const double theTolerance
 //=======================================================================
 BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity(const TopoDS_Shape& theShape1,
                                                        const TopoDS_Shape& theShape2,
-                                                       const double theTolerance)
+                                                       const double        theTolerance)
     : myTolerance(theTolerance),
       myElementSet1(new BRepExtrema_TriangleSet),
       myElementSet2(new BRepExtrema_TriangleSet),

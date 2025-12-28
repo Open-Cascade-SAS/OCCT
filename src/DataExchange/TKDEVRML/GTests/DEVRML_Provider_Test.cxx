@@ -28,9 +28,6 @@
 #include <gp_Dir.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_Triangle.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <Poly_Triangle.hxx>
 #include <NCollection_Array1.hxx>
 #include <BRep_Tool.hxx>
 #include <TopLoc_Location.hxx>
@@ -49,7 +46,7 @@ protected:
   {
     // Initialize provider with default configuration (will be modified per test)
     occ::handle<DEVRML_ConfigurationNode> aNode = new DEVRML_ConfigurationNode();
-    myProvider                             = new DEVRML_Provider(aNode);
+    myProvider                                  = new DEVRML_Provider(aNode);
 
     // Create test shapes
     myBox            = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape(); // For wireframe testing
@@ -116,9 +113,9 @@ protected:
 
 protected:
   occ::handle<DEVRML_Provider>  myProvider;
-  TopoDS_Shape             myBox;
-  TopoDS_Shape             mySphere;
-  TopoDS_Shape             myTriangularFace;
+  TopoDS_Shape                  myBox;
+  TopoDS_Shape                  mySphere;
+  TopoDS_Shape                  myTriangularFace;
   occ::handle<TDocStd_Document> myDocument;
 };
 
@@ -221,7 +218,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentWriteRead)
 
   // Add shape to document
   occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aShapeLabel = aShapeTool->AddShape(myTriangularFace);
+  TDF_Label                      aShapeLabel = aShapeTool->AddShape(myTriangularFace);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
   std::ostringstream           anOStream;
@@ -250,8 +247,9 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentWriteRead)
     EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
     // Validate document content
-    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-    NCollection_Sequence<TDF_Label>         aLabels;
+    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
+      XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+    NCollection_Sequence<TDF_Label> aLabels;
     aNewShapeTool->GetShapes(aLabels);
     EXPECT_GT(aLabels.Length(), 0); // Should have at least one shape in document
   }
@@ -268,7 +266,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentMultipleShapes)
 
   // Add multiple shapes to document
   occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aFirstLabel = aShapeTool->AddShape(myTriangularFace);
+  TDF_Label                      aFirstLabel = aShapeTool->AddShape(myTriangularFace);
   EXPECT_FALSE(aFirstLabel.IsNull());
 
   // Add a second shape - using the sphere for variety
@@ -301,8 +299,9 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentMultipleShapes)
     EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
     // Validate document content
-    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-    NCollection_Sequence<TDF_Label>         aLabels;
+    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
+      XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+    NCollection_Sequence<TDF_Label> aLabels;
     aNewShapeTool->GetShapes(aLabels);
     EXPECT_GT(aLabels.Length(), 0); // Should have at least one shape in document
   }
@@ -312,7 +311,7 @@ TEST_F(DEVRML_ProviderTest, StreamDocumentMultipleShapes)
 TEST_F(DEVRML_ProviderTest, DE_WrapperIntegration)
 {
   // Initialize DE_Wrapper and bind VRML provider
-  DE_Wrapper                       aWrapper;
+  DE_Wrapper                            aWrapper;
   occ::handle<DEVRML_ConfigurationNode> aNode = new DEVRML_ConfigurationNode();
   // Configure for shaded mode to ensure faces are generated
   aNode->InternalParameters.WriteRepresentationType =
@@ -348,8 +347,8 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperIntegration)
     aReadStreams2.Append(DE_Provider::ReadStreamNode("test.vrml", anIStream2));
 
     occ::handle<DEVRML_Provider> aDirectProvider = new DEVRML_Provider(aNode);
-    TopoDS_Shape            aDirectShape;
-    bool                    aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
+    TopoDS_Shape                 aDirectShape;
+    bool                         aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
 
     // REQUIREMENT: DE_Wrapper must work exactly the same as direct provider
     EXPECT_EQ(aWrapperResult, aDirectResult);
@@ -372,7 +371,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperIntegration)
 TEST_F(DEVRML_ProviderTest, DE_WrapperDocumentOperations)
 {
   // Initialize DE_Wrapper and bind VRML provider
-  DE_Wrapper                       aWrapper;
+  DE_Wrapper                            aWrapper;
   occ::handle<DEVRML_ConfigurationNode> aNode = new DEVRML_ConfigurationNode();
   // Configure for shaded mode for better document operations
   aNode->InternalParameters.WriteRepresentationType =
@@ -383,7 +382,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperDocumentOperations)
 
   // Add shape to document
   occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                 aShapeLabel = aShapeTool->AddShape(myTriangularFace);
+  TDF_Label                      aShapeLabel = aShapeTool->AddShape(myTriangularFace);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
   // Test document write with DE_Wrapper
@@ -431,7 +430,7 @@ TEST_F(DEVRML_ProviderTest, DE_WrapperDocumentOperations)
       aReadStreams2.Append(DE_Provider::ReadStreamNode("doc.vrml", anIStream2));
 
       occ::handle<DEVRML_Provider> aDirectProvider = new DEVRML_Provider(aNode);
-      bool aDirectDocResult                   = aDirectProvider->Read(aReadStreams2, aTestDocument);
+      bool aDirectDocResult = aDirectProvider->Read(aReadStreams2, aTestDocument);
 
       if (aDirectDocResult)
       {

@@ -45,7 +45,6 @@ public:
   //! Returns true if the type <theT> can be participant of
   //! an interference
   static bool IsInterfering(const TopAbs_ShapeEnum theT);
-
 };
 
 #include <BOPDS_Tools.lxx>

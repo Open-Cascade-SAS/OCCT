@@ -80,39 +80,39 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
   //   Processing.                                                          +
   //=========================================================================
 
-  gp_Lin2d             L1(Qualified1.Qualified());
-  gp_Lin2d             L2(Qualified2.Qualified());
-  gp_Lin2d             L3(Qualified3.Qualified());
-  gp_Pnt2d             origin1(L1.Location());
-  gp_Dir2d             dir1(L1.Direction());
-  gp_Dir2d             normL1(-dir1.Y(), dir1.X());
-  gp_Pnt2d             origin2(L2.Location());
-  gp_Dir2d             dir2(L2.Direction());
-  gp_Dir2d             normL2(-dir2.Y(), dir2.X());
-  gp_Pnt2d             origin3(L3.Location());
-  gp_Dir2d             dir3(L3.Direction());
-  gp_Dir2d             normL3(-dir3.Y(), dir3.X());
-  double        xloc1 = origin1.X();
-  double        xloc2 = origin2.X();
-  double        xloc3 = origin3.X();
-  double        yloc1 = origin1.Y();
-  double        yloc2 = origin2.Y();
-  double        yloc3 = origin3.Y();
-  double        xdir1 = dir1.X();
-  double        xdir2 = dir2.X();
-  double        xdir3 = dir3.X();
-  double        ydir1 = dir1.Y();
-  double        ydir2 = dir2.Y();
-  double        ydir3 = dir3.Y();
-  GccAna_Lin2dBisec    Bisec1(L1, L2);
-  GccAna_Lin2dBisec    Bisec2(L1, L3);
-  int     ncote1 = 0;
-  int     ncote2 = 0;
-  int     ncote3 = 0;
+  gp_Lin2d                   L1(Qualified1.Qualified());
+  gp_Lin2d                   L2(Qualified2.Qualified());
+  gp_Lin2d                   L3(Qualified3.Qualified());
+  gp_Pnt2d                   origin1(L1.Location());
+  gp_Dir2d                   dir1(L1.Direction());
+  gp_Dir2d                   normL1(-dir1.Y(), dir1.X());
+  gp_Pnt2d                   origin2(L2.Location());
+  gp_Dir2d                   dir2(L2.Direction());
+  gp_Dir2d                   normL2(-dir2.Y(), dir2.X());
+  gp_Pnt2d                   origin3(L3.Location());
+  gp_Dir2d                   dir3(L3.Direction());
+  gp_Dir2d                   normL3(-dir3.Y(), dir3.X());
+  double                     xloc1 = origin1.X();
+  double                     xloc2 = origin2.X();
+  double                     xloc3 = origin3.X();
+  double                     yloc1 = origin1.Y();
+  double                     yloc2 = origin2.Y();
+  double                     yloc3 = origin3.Y();
+  double                     xdir1 = dir1.X();
+  double                     xdir2 = dir2.X();
+  double                     xdir3 = dir3.X();
+  double                     ydir1 = dir1.Y();
+  double                     ydir2 = dir2.Y();
+  double                     ydir3 = dir3.Y();
+  GccAna_Lin2dBisec          Bisec1(L1, L2);
+  GccAna_Lin2dBisec          Bisec2(L1, L3);
+  int                        ncote1 = 0;
+  int                        ncote2 = 0;
+  int                        ncote3 = 0;
   NCollection_Array1<double> cote1(1, 2);
   NCollection_Array1<double> cote2(1, 2);
   NCollection_Array1<double> cote3(1, 2);
-  int     nbsol = 0;
+  int                        nbsol = 0;
   if (Bisec1.IsDone() && Bisec2.IsDone())
   {
     for (int i = 1; i <= Bisec1.NbSolutions(); i++)
@@ -131,10 +131,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                 (L1.Distance(Intp.Point(k).Value()) + L2.Distance(Intp.Point(k).Value())
                  + L3.Distance(Intp.Point(k).Value()))
                 / 3.0;
-              gp_Pnt2d      Center(Intp.Point(k).Value());
-              double cx = Center.X();
-              double cy = Center.Y();
-              cirsol(nbsol)    = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
+              gp_Pnt2d Center(Intp.Point(k).Value());
+              double   cx   = Center.X();
+              double   cy   = Center.Y();
+              cirsol(nbsol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius);
               //             ======================================================
               gp_Dir2d dc1(origin1.XY() - Center.XY());
               if (!Qualified1.IsUnqualified())
@@ -519,26 +519,26 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
             NbrSol++;
             cirsol(NbrSol) = gp_Circ2d(cirsol(i));
             //           =====================================
-            double Radius = cirsol(NbrSol).Radius();
-            gp_Pnt2d      Center(cirsol(NbrSol).Location());
-            gp_Dir2d      dc(origin1.XY() - Center.XY());
-            double sign = dc.Dot(gp_Dir2d(-dir1.Y(), dir1.X()));
-            dc                 = gp_Dir2d(sign * gp_XY(-dir1.Y(), dir1.X()));
-            pnttg1sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc.XY());
-            dc                 = gp_Dir2d(origin2.XY() - Center.XY());
-            sign               = dc.Dot(gp_Dir2d(-dir2.Y(), dir2.X()));
-            dc                 = gp_Dir2d(sign * gp_XY(-dir2.Y(), dir2.X()));
-            pnttg2sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc.XY());
-            dc                 = gp_Dir2d(origin3.XY() - Center.XY());
-            sign               = dc.Dot(gp_Dir2d(-dir3.Y(), dir3.X()));
-            dc                 = gp_Dir2d(sign * gp_XY(-dir3.Y(), dir3.X()));
-            pnttg3sol(NbrSol)  = gp_Pnt2d(Center.XY() + Radius * dc.XY());
-            par1sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
-            pararg1(NbrSol)    = ElCLib::Parameter(L1, pnttg1sol(NbrSol));
-            par2sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
-            pararg2(NbrSol)    = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
-            par3sol(NbrSol)    = ElCLib::Parameter(cirsol(NbrSol), pnttg3sol(NbrSol));
-            pararg3(NbrSol)    = ElCLib::Parameter(L3, pnttg3sol(NbrSol));
+            double   Radius = cirsol(NbrSol).Radius();
+            gp_Pnt2d Center(cirsol(NbrSol).Location());
+            gp_Dir2d dc(origin1.XY() - Center.XY());
+            double   sign     = dc.Dot(gp_Dir2d(-dir1.Y(), dir1.X()));
+            dc                = gp_Dir2d(sign * gp_XY(-dir1.Y(), dir1.X()));
+            pnttg1sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius * dc.XY());
+            dc                = gp_Dir2d(origin2.XY() - Center.XY());
+            sign              = dc.Dot(gp_Dir2d(-dir2.Y(), dir2.X()));
+            dc                = gp_Dir2d(sign * gp_XY(-dir2.Y(), dir2.X()));
+            pnttg2sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius * dc.XY());
+            dc                = gp_Dir2d(origin3.XY() - Center.XY());
+            sign              = dc.Dot(gp_Dir2d(-dir3.Y(), dir3.X()));
+            dc                = gp_Dir2d(sign * gp_XY(-dir3.Y(), dir3.X()));
+            pnttg3sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius * dc.XY());
+            par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
+            pararg1(NbrSol)   = ElCLib::Parameter(L1, pnttg1sol(NbrSol));
+            par2sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
+            pararg2(NbrSol)   = ElCLib::Parameter(L2, pnttg2sol(NbrSol));
+            par3sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg3sol(NbrSol));
+            pararg3(NbrSol)   = ElCLib::Parameter(L3, pnttg3sol(NbrSol));
           }
         }
       }

@@ -55,7 +55,7 @@ void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_
   // Surface initialization
 
   TopLoc_Location aLocation;
-  double   aFirstParam, aLastParam;
+  double          aFirstParam, aLastParam;
 
   occ::handle<Geom2d_Curve> aGeom2dCurve =
     BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
@@ -106,7 +106,8 @@ void BRepLib_CheckCurveOnSurface::Perform()
 // function : Compute
 // purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Compute(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface)
+void BRepLib_CheckCurveOnSurface::Compute(
+  const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface)
 {
   myCOnSurfGeom.SetParallel(myIsParallel);
   myCOnSurfGeom.Perform(theCurveOnSurface);

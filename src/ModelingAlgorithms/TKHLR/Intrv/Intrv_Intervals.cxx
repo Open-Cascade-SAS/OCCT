@@ -134,9 +134,9 @@ void Intrv_Intervals::Subtract(const Intrv_Intervals& Tool)
 
 void Intrv_Intervals::Unite(const Intrv_Interval& Tool)
 {
-  bool Inserted = false;
-  Intrv_Interval   Tins(Tool);
-  int index = 1;
+  bool           Inserted = false;
+  Intrv_Interval Tins(Tool);
+  int            index = 1;
 
   while (index <= myInter.Length())
   {

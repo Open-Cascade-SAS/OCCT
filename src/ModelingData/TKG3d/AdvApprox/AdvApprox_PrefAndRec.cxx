@@ -20,7 +20,7 @@
 
 AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const NCollection_Array1<double>& RecCut,
                                            const NCollection_Array1<double>& PrefCut,
-                                           const double         Weight)
+                                           const double                      Weight)
     : myRecCutting(1, RecCut.Length()),
       myPrefCutting(1, PrefCut.Length()),
       myWeight(Weight)
@@ -33,15 +33,13 @@ AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const NCollection_Array1<double>& Rec
   }
 }
 
-bool AdvApprox_PrefAndRec::Value(const double a,
-                                             const double b,
-                                             double&      cuttingvalue) const
+bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cuttingvalue) const
 {
   //  longueur minimum d'un intervalle parametrique : 10*PConfusion()
   constexpr double lgmin = 10 * Precision::PConfusion();
-  int        i;
+  int              i;
   double           cut, mil = (a + b) / 2, dist;
-  bool        isfound = false;
+  bool             isfound = false;
 
   cut = mil;
 

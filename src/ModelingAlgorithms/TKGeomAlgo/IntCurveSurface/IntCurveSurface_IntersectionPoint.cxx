@@ -27,9 +27,9 @@ IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint()
 //================================================================================
 IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint(
   const gp_Pnt&                           P,
-  const double                     USurf,
-  const double                     VSurf,
-  const double                     UCurv,
+  const double                            USurf,
+  const double                            VSurf,
+  const double                            UCurv,
   const IntCurveSurface_TransitionOnCurve TrOnCurv)
     : myP(P),
       myUSurf(USurf),
@@ -41,9 +41,9 @@ IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint(
 
 //================================================================================
 void IntCurveSurface_IntersectionPoint::SetValues(const gp_Pnt&                           P,
-                                                  const double                     USurf,
-                                                  const double                     VSurf,
-                                                  const double                     UCurv,
+                                                  const double                            USurf,
+                                                  const double                            VSurf,
+                                                  const double                            UCurv,
                                                   const IntCurveSurface_TransitionOnCurve TrOnCurv)
 {
   myP        = P;
@@ -55,9 +55,9 @@ void IntCurveSurface_IntersectionPoint::SetValues(const gp_Pnt&                 
 
 //================================================================================
 void IntCurveSurface_IntersectionPoint::Values(gp_Pnt&                            P,
-                                               double&                     USurf,
-                                               double&                     VSurf,
-                                               double&                     UCurv,
+                                               double&                            USurf,
+                                               double&                            VSurf,
+                                               double&                            UCurv,
                                                IntCurveSurface_TransitionOnCurve& TrOnCurv) const
 {
   P        = myP;

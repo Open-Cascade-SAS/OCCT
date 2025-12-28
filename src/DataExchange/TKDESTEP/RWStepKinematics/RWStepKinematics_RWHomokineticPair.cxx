@@ -34,7 +34,7 @@ RWStepKinematics_RWHomokineticPair::RWStepKinematics_RWHomokineticPair() {}
 
 void RWStepKinematics_RWHomokineticPair::ReadStep(
   const occ::handle<StepData_StepReaderData>&        theData,
-  const int                        theNum,
+  const int                                          theNum,
   occ::handle<Interface_Check>&                      theArch,
   const occ::handle<StepKinematics_HomokineticPair>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
 
   // Inherited fields of UniversalPair
 
-  double    aUniversalPair_InputSkewAngle;
-  bool hasUniversalPair_InputSkewAngle = true;
+  double aUniversalPair_InputSkewAngle;
+  bool   hasUniversalPair_InputSkewAngle = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -181,7 +181,7 @@ void RWStepKinematics_RWHomokineticPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWHomokineticPair::WriteStep(
-  StepData_StepWriter&                          theSW,
+  StepData_StepWriter&                               theSW,
   const occ::handle<StepKinematics_HomokineticPair>& theEnt) const
 {
 
@@ -234,8 +234,9 @@ void RWStepKinematics_RWHomokineticPair::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWHomokineticPair::Share(const occ::handle<StepKinematics_HomokineticPair>& theEnt,
-                                               Interface_EntityIterator& iter) const
+void RWStepKinematics_RWHomokineticPair::Share(
+  const occ::handle<StepKinematics_HomokineticPair>& theEnt,
+  Interface_EntityIterator&                          iter) const
 {
 
   // Inherited fields of RepresentationItem

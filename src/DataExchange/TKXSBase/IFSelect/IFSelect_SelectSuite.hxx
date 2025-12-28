@@ -81,8 +81,7 @@ public:
   //! this result is set as alternate input for the first item,
   //! which computes its result : this result is set as alternate
   //! input for the second item, etc...
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns the Label
   //! Either it has been defined by SetLabel, or it will give
@@ -92,7 +91,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSuite, IFSelect_SelectDeduct)
 
 private:
-  TCollection_AsciiString     thelab;
+  TCollection_AsciiString                               thelab;
   NCollection_Sequence<occ::handle<Standard_Transient>> thesel;
 };
 

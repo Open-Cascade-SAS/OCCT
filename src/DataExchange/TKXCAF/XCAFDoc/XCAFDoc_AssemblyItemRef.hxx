@@ -64,7 +64,7 @@ public:
   Standard_EXPORT static occ::handle<XCAFDoc_AssemblyItemRef> Set(
     const TDF_Label&              theLabel,
     const XCAFDoc_AssemblyItemId& theItemId,
-    const int        theShapeIndex);
+    const int                     theShapeIndex);
 
   //! @}
 
@@ -131,20 +131,20 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 public:
   // Overrides TDF_Attribute pure virtuals
-  Standard_EXPORT const Standard_GUID&  ID() const override;
+  Standard_EXPORT const Standard_GUID& ID() const override;
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
-  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
-  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
-                             const occ::handle<TDF_RelocationTable>& theRT) const override;
+  Standard_EXPORT void              Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
+  Standard_EXPORT void              Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
+                                          const occ::handle<TDF_RelocationTable>& theRT) const override;
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
 private:
   XCAFDoc_AssemblyItemId  myItemId;   ///< Assembly item ID
-  int        myExtraRef; ///< Type of extra reference: subshape or attribute
+  int                     myExtraRef; ///< Type of extra reference: subshape or attribute
   TCollection_AsciiString myExtraId;  ///< Extra reference data
 };
 

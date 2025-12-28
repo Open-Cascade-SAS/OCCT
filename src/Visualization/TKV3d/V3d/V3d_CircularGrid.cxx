@@ -41,7 +41,7 @@ class V3d_CircularGrid::CircularGridStructure : public Graphic3d_Structure
 public:
   //! Main constructor.
   CircularGridStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
-                        V3d_CircularGrid*                         theGrid)
+                        V3d_CircularGrid*                              theGrid)
       : Graphic3d_Structure(theManager),
         myGrid(theGrid)
   {
@@ -211,10 +211,10 @@ void V3d_CircularGrid::UpdateDisplay()
 
 void V3d_CircularGrid::DefineLines()
 {
-  const double    aStep     = RadiusStep();
-  const double    aDivision = DivisionNumber();
-  const bool toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
-                                    || aDivision != myCurDivi || aStep != myCurStep;
+  const double aStep     = RadiusStep();
+  const double aDivision = DivisionNumber();
+  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
+                        || aDivision != myCurDivi || aStep != myCurStep;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -228,8 +228,7 @@ void V3d_CircularGrid::DefineLines()
   myToComputePrs = false;
   myGroup->Clear();
 
-  const int Division =
-    (int)((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
+  const int Division = (int)((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
 
   int nbpnts = 2 * Division;
   // diametres
@@ -238,7 +237,7 @@ void V3d_CircularGrid::DefineLines()
   myGroup->SetGroupPrimitivesAspect(
     new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0));
   occ::handle<Graphic3d_ArrayOfSegments> aPrims1 = new Graphic3d_ArrayOfSegments(2 * nbpnts);
-  const gp_Pnt                      p0(0., 0., -myOffSet);
+  const gp_Pnt                           p0(0., 0., -myOffSet);
   for (int i = 1; i <= nbpnts; i++)
   {
     aPrims1->AddVertex(p0);
@@ -247,9 +246,9 @@ void V3d_CircularGrid::DefineLines()
   myGroup->AddPrimitiveArray(aPrims1, false);
 
   // circles
-  nbpnts                       = 2 * Division + 1;
-  alpha                        = M_PI / Division;
-  int     nblines = 0;
+  nbpnts                               = 2 * Division + 1;
+  alpha                                = M_PI / Division;
+  int                          nblines = 0;
   NCollection_Sequence<gp_Pnt> aSeqLines, aSeqTenth;
   for (double r = aStep; r <= myRadius; r += aStep, nblines++)
   {
@@ -264,8 +263,8 @@ void V3d_CircularGrid::DefineLines()
   {
     myGroup->SetGroupPrimitivesAspect(
       new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0));
-    int                   n, np;
-    const int             nbl = aSeqTenth.Length() / nbpnts;
+    int                                     n, np;
+    const int                               nbl = aSeqTenth.Length() / nbpnts;
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims2 =
       new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(), nbl);
     for (np = 1, n = 0; n < nbl; n++)
@@ -279,8 +278,8 @@ void V3d_CircularGrid::DefineLines()
   if (aSeqLines.Length())
   {
     myGroup->SetPrimitivesAspect(new Graphic3d_AspectLine3d(myColor, Aspect_TOL_SOLID, 1.0));
-    int                   n, np;
-    const int             nbl = aSeqLines.Length() / nbpnts;
+    int                                     n, np;
+    const int                               nbl = aSeqLines.Length() / nbpnts;
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims3 =
       new Graphic3d_ArrayOfPolylines(aSeqLines.Length(), nbl);
     for (np = 1, n = 0; n < nbl; n++)
@@ -302,10 +301,10 @@ void V3d_CircularGrid::DefineLines()
 
 void V3d_CircularGrid::DefinePoints()
 {
-  const double    aStep     = RadiusStep();
-  const double    aDivision = DivisionNumber();
-  const bool toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
-                                    || aDivision != myCurDivi || aStep != myCurStep;
+  const double aStep     = RadiusStep();
+  const double aDivision = DivisionNumber();
+  const bool   toUpdate  = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
+                        || aDivision != myCurDivi || aStep != myCurStep;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -325,7 +324,7 @@ void V3d_CircularGrid::DefinePoints()
   MarkerAttrib->SetScale(3.);
 
   const int nbpnts = int(2 * aDivision);
-  double          r, alpha = M_PI / aDivision;
+  double    r, alpha = M_PI / aDivision;
 
   // diameters
   NCollection_Sequence<gp_Pnt> aSeqPnts;
@@ -338,8 +337,8 @@ void V3d_CircularGrid::DefinePoints()
   myGroup->SetGroupPrimitivesAspect(MarkerAttrib);
   if (aSeqPnts.Length())
   {
-    double                   X, Y, Z;
-    const int          nbv    = aSeqPnts.Length();
+    double                               X, Y, Z;
+    const int                            nbv    = aSeqPnts.Length();
     occ::handle<Graphic3d_ArrayOfPoints> Cercle = new Graphic3d_ArrayOfPoints(nbv);
     for (int i = 1; i <= nbv; i++)
     {
@@ -363,8 +362,7 @@ void V3d_CircularGrid::GraphicValues(double& theRadius, double& theOffSet) const
   theOffSet = myOffSet;
 }
 
-void V3d_CircularGrid::SetGraphicValues(const double theRadius,
-                                        const double theOffSet)
+void V3d_CircularGrid::SetGraphicValues(const double theRadius, const double theOffSet)
 {
   if (!myCurAreDefined)
   {

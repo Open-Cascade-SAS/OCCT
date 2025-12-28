@@ -45,9 +45,9 @@ IMPLEMENT_STANDARD_RTTIEXT(DDataStd_DrawDriver, Standard_Transient)
 
 // attribut affichable
 // drawable object
-static int DISCRET = 100;
-static int NBISOS  = 10;
-static double    THESIZE = 1000.;
+static int    DISCRET = 100;
+static int    NBISOS  = 10;
+static double THESIZE = 1000.;
 
 static occ::handle<DDataStd_DrawDriver> DrawDriver;
 
@@ -68,8 +68,8 @@ DDataStd_DrawDriver::DDataStd_DrawDriver() {}
 //=================================================================================================
 
 static TopoDS_Shape Geometry(const occ::handle<TDataXtd_Constraint>& A,
-                             const int             i,
-                             TopAbs_ShapeEnum                   T)
+                             const int                               i,
+                             TopAbs_ShapeEnum                        T)
 {
   TopoDS_Shape S = TNaming_Tool::GetShape(A->GetGeometry(i));
   if (!S.IsNull())
@@ -330,9 +330,9 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableConstraint(
 
 //=================================================================================================
 
-occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TDF_Label&       L,
-                                                           const Draw_ColorKind   color,
-                                                           const bool current) const
+occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TDF_Label&     L,
+                                                                const Draw_ColorKind color,
+                                                                const bool           current) const
 {
   occ::handle<Draw_Drawable3D>    DS;
   occ::handle<TNaming_NamedShape> NS;
@@ -351,7 +351,7 @@ occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TDF_Label&
 //=================================================================================================
 
 occ::handle<Draw_Drawable3D> DDataStd_DrawDriver::DrawableShape(const TopoDS_Shape&  s,
-                                                           const Draw_ColorKind color)
+                                                                const Draw_ColorKind color)
 {
   occ::handle<DBRep_DrawableShape> DS;
   DS = new DBRep_DrawableShape(s, color, color, color, Draw_bleu, THESIZE, NBISOS, DISCRET);

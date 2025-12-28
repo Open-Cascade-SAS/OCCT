@@ -36,10 +36,11 @@ public:
   //! @param theText   text to draw
   //! @param theAttachmentPoint attachment point
   //! @return text to draw
-  Standard_EXPORT static occ::handle<Graphic3d_Text> Draw(const occ::handle<Graphic3d_Group>&    theGroup,
-                                                     const occ::handle<Prs3d_TextAspect>&   theAspect,
-                                                     const TCollection_ExtendedString& theText,
-                                                     const gp_Pnt& theAttachmentPoint);
+  Standard_EXPORT static occ::handle<Graphic3d_Text> Draw(
+    const occ::handle<Graphic3d_Group>&  theGroup,
+    const occ::handle<Prs3d_TextAspect>& theAspect,
+    const TCollection_ExtendedString&    theText,
+    const gp_Pnt&                        theAttachmentPoint);
 
   //! Draws the text label.
   //! @param theGroup       group to add primitives
@@ -49,11 +50,11 @@ public:
   //! @param theHasOwnAnchor
   //! @return text to draw
   Standard_EXPORT static occ::handle<Graphic3d_Text> Draw(
-    const occ::handle<Graphic3d_Group>&    theGroup,
-    const occ::handle<Prs3d_TextAspect>&   theAspect,
-    const TCollection_ExtendedString& theText,
-    const gp_Ax2&                     theOrientation,
-    const bool            theHasOwnAnchor = true);
+    const occ::handle<Graphic3d_Group>&  theGroup,
+    const occ::handle<Prs3d_TextAspect>& theAspect,
+    const TCollection_ExtendedString&    theText,
+    const gp_Ax2&                        theOrientation,
+    const bool                           theHasOwnAnchor = true);
 };
 
 #endif // _Prs3d_Text_HeaderFile

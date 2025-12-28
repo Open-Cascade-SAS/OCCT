@@ -40,16 +40,13 @@ public:
 
   //! Set native handle.
   //! @return true if definition has been changed
-  bool SetNativeHandle(Aspect_Drawable theWindow)
-  {
-    return SetNativeHandles(theWindow, 0, 0);
-  }
+  bool SetNativeHandle(Aspect_Drawable theWindow) { return SetNativeHandles(theWindow, 0, 0); }
 
   //! Set native handles.
   //! @return true if definition has been changed
   Standard_EXPORT bool SetNativeHandles(Aspect_Drawable theWindow,
-                                                    Aspect_Drawable theParentWindow,
-                                                    Aspect_FBConfig theFbConfig);
+                                        Aspect_Drawable theParentWindow,
+                                        Aspect_FBConfig theFbConfig);
 
   //! Return true if window is not hidden.
   virtual bool IsMapped() const override { return myIsMapped; }
@@ -73,10 +70,7 @@ public:
   }
 
   //! Return the window position.
-  virtual void Position(int& theX1,
-                        int& theY1,
-                        int& theX2,
-                        int& theY2) const override
+  virtual void Position(int& theX1, int& theY1, int& theX2, int& theY2) const override
   {
     theX1 = myPosX;
     theX2 = myPosX + myWidth;
@@ -90,10 +84,7 @@ public:
 
   //! Set the window position.
   //! @return true if position has been changed
-  Standard_EXPORT bool SetPosition(int theX1,
-                                               int theY1,
-                                               int theX2,
-                                               int theY2);
+  Standard_EXPORT bool SetPosition(int theX1, int theY1, int theX2, int theY2);
 
   //! Return the window size.
   virtual void Size(int& theWidth, int& theHeight) const override
@@ -104,18 +95,17 @@ public:
 
   //! Set the window size.
   //! @return true if size has been changed
-  Standard_EXPORT bool SetSize(const int theWidth,
-                                           const int theHeight);
+  Standard_EXPORT bool SetSize(const int theWidth, const int theHeight);
 
 protected:
-  Aspect_Drawable          myHandle;
-  Aspect_Drawable          myParentHandle;
-  Aspect_FBConfig          myFBConfig;
-  int         myPosX;
-  int         myPosY;
-  int         myWidth;
-  int         myHeight;
-  mutable bool myIsMapped;
+  Aspect_Drawable myHandle;
+  Aspect_Drawable myParentHandle;
+  Aspect_FBConfig myFBConfig;
+  int             myPosX;
+  int             myPosY;
+  int             myWidth;
+  int             myHeight;
+  mutable bool    myIsMapped;
 };
 
 #endif // _Aspect_NeutralWindow_HeaderFile

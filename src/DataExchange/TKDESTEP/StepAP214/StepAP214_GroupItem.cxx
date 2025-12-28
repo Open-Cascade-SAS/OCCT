@@ -87,7 +87,8 @@ occ::handle<StepBasic_ProductDefinition> StepAP214_GroupItem::ProductDefinition(
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_GroupItem::ProductDefinitionFormation() const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_GroupItem::ProductDefinitionFormation()
+  const
 {
   return GetCasted(StepBasic_ProductDefinitionFormation, Value());
 }
@@ -135,8 +136,8 @@ occ::handle<StepVisual_StyledItem> StepAP214_GroupItem::StyledItem() const
   return GetCasted(StepVisual_StyledItem, Value());
 }
 
-occ::handle<StepShape_TopologicalRepresentationItem> StepAP214_GroupItem::TopologicalRepresentationItem()
-  const
+occ::handle<StepShape_TopologicalRepresentationItem> StepAP214_GroupItem::
+  TopologicalRepresentationItem() const
 {
   return GetCasted(StepShape_TopologicalRepresentationItem, Value());
 }

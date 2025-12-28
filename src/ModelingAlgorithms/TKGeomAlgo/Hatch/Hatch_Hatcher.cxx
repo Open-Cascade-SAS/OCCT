@@ -44,10 +44,10 @@ void Hatch_Hatcher::AddLine(const gp_Lin2d& L, const Hatch_LineForm T)
 
 void Hatch_Hatcher::AddLine(const gp_Dir2d& D, const double Dist)
 {
-  double X = D.X();
-  double Y = D.Y();
-  gp_Pnt2d      O(-Y * Dist, X * Dist);
-  gp_Lin2d      L(O, D);
+  double   X = D.X();
+  double   Y = D.Y();
+  gp_Pnt2d O(-Y * Dist, X * Dist);
+  gp_Lin2d L(O, D);
   AddLine(L, Hatch_ANYLINE);
 }
 
@@ -80,14 +80,11 @@ void Hatch_Hatcher::Trim(const gp_Lin2d& L, const int Index)
 
 //=================================================================================================
 
-void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
-                         const double    Start,
-                         const double    End,
-                         const int Index)
+void Hatch_Hatcher::Trim(const gp_Lin2d& L, const double Start, const double End, const int Index)
 {
   IntAna2d_IntPoint        Pinter;
   IntAna2d_AnaIntersection Inters;
-  int         iLine;
+  int                      iLine;
   for (iLine = 1; iLine <= myLines.Length(); iLine++)
   {
     Inters.Perform(myLines(iLine).myLin, L);
@@ -96,7 +93,7 @@ void Hatch_Hatcher::Trim(const gp_Lin2d&        L,
       if (!Inters.IdenticalElements() && !Inters.ParallelElements())
       {
         // we have got something
-        Pinter                = Inters.Point(1);
+        Pinter         = Inters.Point(1);
         double linePar = Pinter.ParamOnSecond();
         if (linePar - Start < -myToler)
           continue;
@@ -236,10 +233,7 @@ double Hatch_Hatcher::Start(const int I, const int J) const
 
 //=================================================================================================
 
-void Hatch_Hatcher::StartIndex(const int I,
-                               const int J,
-                               int&      Index,
-                               double&         Par2) const
+void Hatch_Hatcher::StartIndex(const int I, const int J, int& Index, double& Par2) const
 {
   if (myLines(I).myInters.IsEmpty())
   {
@@ -289,10 +283,7 @@ double Hatch_Hatcher::End(const int I, const int J) const
 
 //=================================================================================================
 
-void Hatch_Hatcher::EndIndex(const int I,
-                             const int J,
-                             int&      Index,
-                             double&         Par2) const
+void Hatch_Hatcher::EndIndex(const int I, const int J, int& Index, double& Par2) const
 {
   if (myLines(I).myInters.IsEmpty())
   {

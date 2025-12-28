@@ -25,7 +25,6 @@
 #include <StepData_EDescr.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_CString.hxx>
 class StepData_ESDescr;

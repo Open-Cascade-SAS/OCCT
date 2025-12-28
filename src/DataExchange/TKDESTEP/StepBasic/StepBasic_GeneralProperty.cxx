@@ -31,7 +31,7 @@ StepBasic_GeneralProperty::StepBasic_GeneralProperty()
 
 void StepBasic_GeneralProperty::Init(const occ::handle<TCollection_HAsciiString>& aId,
                                      const occ::handle<TCollection_HAsciiString>& aName,
-                                     const bool                  hasDescription,
+                                     const bool                                   hasDescription,
                                      const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
@@ -85,7 +85,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_GeneralProperty::Description() c
 
 //=================================================================================================
 
-void StepBasic_GeneralProperty::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_GeneralProperty::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

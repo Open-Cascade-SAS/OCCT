@@ -20,8 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Poly_Polygon3D, Standard_Transient)
 
 //=================================================================================================
 
-Poly_Polygon3D::Poly_Polygon3D(const int theNbNodes,
-                               const bool theHasParams)
+Poly_Polygon3D::Poly_Polygon3D(const int theNbNodes, const bool theHasParams)
     : myDeflection(0.0),
       myNodes(1, theNbNodes)
 {
@@ -44,7 +43,8 @@ Poly_Polygon3D::Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes)
 
 //=================================================================================================
 
-Poly_Polygon3D::Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes, const NCollection_Array1<double>& P)
+Poly_Polygon3D::Poly_Polygon3D(const NCollection_Array1<gp_Pnt>& Nodes,
+                               const NCollection_Array1<double>& P)
     : myDeflection(0.),
       myNodes(1, Nodes.Length())
 

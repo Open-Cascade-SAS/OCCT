@@ -65,8 +65,8 @@ private:
   occ::handle<Poly_Triangulation> ReadTriangulation(BinTools_IStream& theStream);
 
   /// position of the shape previously restored
-  NCollection_DataMap<uint64_t, TopoDS_Shape>                        myShapePos;
-  NCollection_DataMap<uint64_t, TopLoc_Location>                     myLocationPos;
+  NCollection_DataMap<uint64_t, TopoDS_Shape>                             myShapePos;
+  NCollection_DataMap<uint64_t, TopLoc_Location>                          myLocationPos;
   NCollection_DataMap<uint64_t, occ::handle<Geom_Curve>>                  myCurvePos;
   NCollection_DataMap<uint64_t, occ::handle<Geom2d_Curve>>                myCurve2dPos;
   NCollection_DataMap<uint64_t, occ::handle<Geom_Surface>>                mySurfacePos;

@@ -54,15 +54,10 @@
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_WireSegment.hxx>
 #include <Standard_Type.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -72,12 +67,9 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_ComposeShell, ShapeFix_Root)
@@ -102,9 +94,9 @@ ShapeFix_ComposeShell::ShapeFix_ComposeShell()
 //=================================================================================================
 
 void ShapeFix_ComposeShell::Init(const occ::handle<ShapeExtend_CompositeSurface>& Grid,
-                                 const TopLoc_Location&                      L,
-                                 const TopoDS_Face&                          Face,
-                                 const double                         Prec)
+                                 const TopLoc_Location&                           L,
+                                 const TopoDS_Face&                               Face,
+                                 const double                                     Prec)
 {
   myGrid    = Grid;
   myUClosed = myGrid->IsUClosed();
@@ -173,8 +165,8 @@ void ShapeFix_ComposeShell::Init(const occ::handle<ShapeExtend_CompositeSurface>
       double u1, u2, v1, v2;
       myGrid->Patch(i, j)->Bounds(u1, u2, v1, v2);
       GeomAdaptor_Surface GAS(myGrid->Patch(i, j));
-      double       ures = GAS.UResolution(1.) * uRange / (u2 - u1);
-      double       vres = GAS.VResolution(1.) * vRange / (v2 - v1);
+      double              ures = GAS.UResolution(1.) * uRange / (u2 - u1);
+      double              vres = GAS.VResolution(1.) * vRange / (v2 - v1);
       if (ures > 0. && myUResolution > ures)
         myUResolution = ures;
       if (vres > 0. && myVResolution > vres)
@@ -297,9 +289,7 @@ static double PointLineDeviation(const gp_Pnt2d& p, const gp_Lin2d& line)
 //=================================================================================================
 
 // Define position of point relative to line
-static int PointLinePosition(const gp_Pnt2d& p,
-                                          const gp_Lin2d& line,
-                                          double&  dev)
+static int PointLinePosition(const gp_Pnt2d& p, const gp_Lin2d& line, double& dev)
 {
   dev = PointLineDeviation(p, line);
   return (dev > TOLINT ? IOR_LEFT : (dev < -TOLINT ? IOR_RIGHT : IOR_UNDEF));
@@ -357,9 +347,9 @@ static inline gp_Pnt2d ProjectPointOnLine(const gp_Pnt2d& p, const gp_Lin2d& lin
 //=================================================================================================
 
 // Apply context to one edge in the wire and put result into this wire
-static int ApplyContext(ShapeFix_WireSegment&             wire,
-                                     const int            iedge,
-                                     const occ::handle<ShapeBuild_ReShape>& context)
+static int ApplyContext(ShapeFix_WireSegment&                  wire,
+                        const int                              iedge,
+                        const occ::handle<ShapeBuild_ReShape>& context)
 {
   TopoDS_Edge  edge = wire.Edge(iedge);
   TopoDS_Shape res  = context->Apply(edge);
@@ -376,7 +366,7 @@ static int ApplyContext(ShapeFix_WireSegment&             wire,
   int index = iedge;
 
   occ::handle<ShapeExtend_WireData> segw = new ShapeExtend_WireData;
-  segw->ManifoldMode()              = false;
+  segw->ManifoldMode()                   = false;
   for (TopoDS_Iterator it(res); it.More(); it.Next())
   {
     TopoDS_Edge E = TopoDS::Edge(it.Value());
@@ -418,11 +408,11 @@ static int ApplyContext(ShapeFix_WireSegment&             wire,
 //=================================================================================================
 
 // check points coincidence
-static inline bool IsCoincided(const gp_Pnt2d&     p1,
-                                           const gp_Pnt2d&     p2,
-                                           const double UResolution,
-                                           const double VResolution,
-                                           const double tol)
+static inline bool IsCoincided(const gp_Pnt2d& p1,
+                               const gp_Pnt2d& p2,
+                               const double    UResolution,
+                               const double    VResolution,
+                               const double    tol)
 {
   // pdn Maximal accuracy is working precision of intersector.
   double UTolerance = UResolution * tol;
@@ -434,13 +424,13 @@ static inline bool IsCoincided(const gp_Pnt2d&     p1,
 //=================================================================================================
 
 // computes index for the patch by given parameter Param
-static int GetPatchIndex(const double                  Param,
-                                      const occ::handle<NCollection_HArray1<double>>& Params,
-                                      const bool               isClosed)
+static int GetPatchIndex(const double                                    Param,
+                         const occ::handle<NCollection_HArray1<double>>& Params,
+                         const bool                                      isClosed)
 {
-  int NP     = Params->Upper();
-  double    period = Params->Value(NP) - Params->Value(1);
-  double    shift  = 0;
+  int    NP     = Params->Upper();
+  double period = Params->Value(NP) - Params->Value(1);
+  double shift  = 0;
   if (isClosed)
     shift = ShapeAnalysis::AdjustToPeriod(Param, Params->Value(1), Params->Value(NP));
   double p = Param + shift;
@@ -455,8 +445,8 @@ static int GetPatchIndex(const double                  Param,
   }
   i--;
 
-  double    ish    = shift / period;
-  int ishift = (int)(ish < 0 ? ish - 0.5 : ish + 0.5);
+  double ish    = shift / period;
+  int    ishift = (int)(ish < 0 ? ish - 0.5 : ish + 0.5);
   return i - ishift * (NP - 1);
 }
 
@@ -499,8 +489,7 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
 
     if (isNonManifold)
     {
-      occ::handle<ShapeExtend_WireData> sbwd =
-        new ShapeExtend_WireData(wire, true, false);
+      occ::handle<ShapeExtend_WireData> sbwd = new ShapeExtend_WireData(wire, true, false);
       // pdn protection against wires w/o edges
       int nbEdges = sbwd->NbEdges();
       if (nbEdges)
@@ -516,7 +505,7 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
       // wire segment
       occ::handle<ShapeExtend_WireData> sbwdM  = new ShapeExtend_WireData();
       occ::handle<ShapeExtend_WireData> sbwdNM = new ShapeExtend_WireData();
-      sbwdNM->ManifoldMode()              = false;
+      sbwdNM->ManifoldMode()                   = false;
       TopoDS_Iterator aIt(wire);
       for (; aIt.More(); aIt.Next())
       {
@@ -544,7 +533,7 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
         // skl 01.04.2002
         occ::handle<ShapeFix_Wire> sfw = new ShapeFix_Wire;
         sfw->Load(sbwdM);
-        int     stat = 0;
+        int                       stat = 0;
         occ::handle<Geom_Surface> gs   = BRep_Tool::Surface(myFace);
         if (gs->IsUPeriodic() && gs->IsVPeriodic())
         {
@@ -553,7 +542,7 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
           ShapeAnalysis_Edge      sae;
           for (int i = 1; i <= nbMEdges; i++)
           {
-            double        f, l;
+            double                    f, l;
             occ::handle<Geom2d_Curve> c2d;
             // smh#8
             TopoDS_Shape tmpF = myFace.Oriented(TopAbs_FORWARD);
@@ -577,10 +566,10 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
           TopoDS_Shape dummy = myFace.EmptyCopied();
           TopoDS_Face  face  = TopoDS::Face(dummy);
           B.Add(face, wire);
-          bool isOuter = ShapeAnalysis::IsOuterBound(face);
-          TopoDS_Wire      w       = sbwdM->Wire();
-          dummy                    = myFace.EmptyCopied();
-          face                     = TopoDS::Face(dummy);
+          bool        isOuter = ShapeAnalysis::IsOuterBound(face);
+          TopoDS_Wire w       = sbwdM->Wire();
+          dummy               = myFace.EmptyCopied();
+          face                = TopoDS::Face(dummy);
           B.Add(face, w);
           bool isOuterAfter = ShapeAnalysis::IsOuterBound(face);
           if (isOuter != isOuterAfter)
@@ -602,32 +591,32 @@ void ShapeFix_ComposeShell::LoadWires(NCollection_Sequence<ShapeFix_WireSegment>
 //=======================================================================
 
 int ShapeFix_ComposeShell::ComputeCode(const occ::handle<ShapeExtend_WireData>& wire,
-                                                    const gp_Lin2d&                     line,
-                                                    const int              begInd,
-                                                    const int              endInd,
-                                                    const double                 begPar,
-                                                    const double                 endPar,
-                                                    const bool              isInternal)
+                                       const gp_Lin2d&                          line,
+                                       const int                                begInd,
+                                       const int                                endInd,
+                                       const double                             begPar,
+                                       const double                             endPar,
+                                       const bool                               isInternal)
 {
   int code = IOR_UNDEF;
 
-  ShapeAnalysis_Edge     sae;
-  const int NPOINTS = 5; // number of points for measuring deviation
+  ShapeAnalysis_Edge sae;
+  const int          NPOINTS = 5; // number of points for measuring deviation
 
   // track special closed case: segment starts at end of edge and ends at its beginning
   int special = (begInd == endInd
-                                  && (wire->Edge(begInd).Orientation() == TopAbs_FORWARD
-                                      || wire->Edge(begInd).Orientation() == TopAbs_INTERNAL)
-                                       == (begPar > endPar)
-                                ? 1
-                                : 0);
+                     && (wire->Edge(begInd).Orientation() == TopAbs_FORWARD
+                         || wire->Edge(begInd).Orientation() == TopAbs_INTERNAL)
+                          == (begPar > endPar)
+                   ? 1
+                   : 0);
   if (!special && begInd == endInd && begPar == endPar && (myClosedMode || isInternal))
     special = 1;
 
   // for tracking cases in closed mode
-  bool begin = true;
-  double    shift = 0;
-  gp_Pnt2d         p2d0;
+  bool     begin = true;
+  double   shift = 0;
+  gp_Pnt2d p2d0;
 
   // check if segment is tangency
   // Segment is considered as tangency if deviation of pcurve from line
@@ -644,24 +633,24 @@ int ShapeFix_ComposeShell::ComputeCode(const occ::handle<ShapeExtend_WireData>& 
     TopoDS_Edge edge = wire->Edge(i);
 
     occ::handle<Geom2d_Curve> c2d;
-    double        f, l;
+    double                    f, l;
     if (!sae.PCurve(edge, myFace, c2d, f, l, false))
     {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
       continue;
     }
-    double    tol        = LimitTolerance(BRep_Tool::Tolerance(edge));
-    bool isreversed = (edge.Orientation() == TopAbs_REVERSED);
+    double tol        = LimitTolerance(BRep_Tool::Tolerance(edge));
+    bool   isreversed = (edge.Orientation() == TopAbs_REVERSED);
 
-    double    par1 = (i == begInd && special >= 0 ? begPar : (isreversed ? l : f));
-    double    par2 = (i == endInd && special <= 0 ? endPar : (isreversed ? f : l));
-    double    dpar = (par2 - par1) / (NPOINTS - 1);
-    int np   = (std::abs(dpar) < ::Precision::PConfusion() ? 1 : NPOINTS);
-    int j; // svv #1
+    double par1 = (i == begInd && special >= 0 ? begPar : (isreversed ? l : f));
+    double par2 = (i == endInd && special <= 0 ? endPar : (isreversed ? f : l));
+    double dpar = (par2 - par1) / (NPOINTS - 1);
+    int    np   = (std::abs(dpar) < ::Precision::PConfusion() ? 1 : NPOINTS);
+    int    j; // svv #1
     for (j = 0; j < np; j++)
     {
-      double par = par1 + dpar * j;
-      gp_Pnt2d      p2d = c2d->Value(par);
+      double   par = par1 + dpar * j;
+      gp_Pnt2d p2d = c2d->Value(par);
       if (myClosedMode)
       {
         if (myUClosed && std::abs(line.Direction().X()) < ::Precision::PConfusion())
@@ -682,7 +671,7 @@ int ShapeFix_ComposeShell::ComputeCode(const occ::handle<ShapeExtend_WireData>& 
         }
         begin = false;
       }
-      p2d0                 = p2d;
+      p2d0    = p2d;
       int pos = PointLinePosition(p2d, line);
       if (pos == IOR_UNDEF)
         continue;
@@ -765,16 +754,16 @@ int ShapeFix_ComposeShell::ComputeCode(const occ::handle<ShapeExtend_WireData>& 
 // After applying context to (seam) edge, distribute its indices on new edges,
 // according to their parameters on that edge
 static void DistributeSplitPoints(const occ::handle<ShapeExtend_WireData>& sbwd,
-                                  const TopoDS_Face&                  myFace,
-                                  const int              index,
-                                  const int              nsplit,
-                                  NCollection_Sequence<int>&          indexes,
-                                  const NCollection_Sequence<double>&       values)
+                                  const TopoDS_Face&                       myFace,
+                                  const int                                index,
+                                  const int                                nsplit,
+                                  NCollection_Sequence<int>&               indexes,
+                                  const NCollection_Sequence<double>&      values)
 {
   bool isreversed = (nsplit > 0 && sbwd->Edge(index).Orientation() == TopAbs_REVERSED);
 
   NCollection_Array1<double> params(0, nsplit);
-  int     i; // svv #1
+  int                        i; // svv #1
   for (i = 0; i < nsplit; i++)
   {
     double f, l;
@@ -796,11 +785,11 @@ static void DistributeSplitPoints(const occ::handle<ShapeExtend_WireData>& sbwd,
 
 //=================================================================================================
 
-static int CheckByCurve3d(const gp_Pnt&             pos,
-                                       const occ::handle<Geom_Curve>& c3d,
-                                       const double       param,
-                                       const gp_Trsf&            T,
-                                       const double       tol)
+static int CheckByCurve3d(const gp_Pnt&                  pos,
+                          const occ::handle<Geom_Curve>& c3d,
+                          const double                   param,
+                          const gp_Trsf&                 T,
+                          const double                   tol)
 {
   if (c3d.IsNull())
     return true;
@@ -812,11 +801,11 @@ static int CheckByCurve3d(const gp_Pnt&             pos,
 
 //=================================================================================================
 
-static void DefinePatch(ShapeFix_WireSegment&  wire,
-                        const int code,
-                        const bool isCutByU,
-                        const int cutIndex,
-                        const int number = -1)
+static void DefinePatch(ShapeFix_WireSegment& wire,
+                        const int             code,
+                        const bool            isCutByU,
+                        const int             cutIndex,
+                        const int             number = -1)
 {
   int nb = (number > 0 ? number : wire.NbEdges());
   if (isCutByU)
@@ -838,36 +827,35 @@ static void DefinePatch(ShapeFix_WireSegment&  wire,
 //=================================================================================================
 
 static double GetGridResolution(const occ::handle<NCollection_HArray1<double>>& SplitValues,
-                                       const int               cutIndex)
+                                const int                                       cutIndex)
 {
-  int nb = SplitValues->Length();
-  double    leftLen =
-    (cutIndex > 1 ? SplitValues->Value(cutIndex) - SplitValues->Value(cutIndex - 1)
-                  : SplitValues->Value(nb) - SplitValues->Value(nb - 1));
-  double rigthLen =
-    (cutIndex < nb ? SplitValues->Value(cutIndex + 1) - SplitValues->Value(cutIndex)
-                   : SplitValues->Value(2) - SplitValues->Value(1));
+  int    nb       = SplitValues->Length();
+  double leftLen  = (cutIndex > 1 ? SplitValues->Value(cutIndex) - SplitValues->Value(cutIndex - 1)
+                                  : SplitValues->Value(nb) - SplitValues->Value(nb - 1));
+  double rigthLen = (cutIndex < nb ? SplitValues->Value(cutIndex + 1) - SplitValues->Value(cutIndex)
+                                   : SplitValues->Value(2) - SplitValues->Value(1));
   return std::min(leftLen, rigthLen) / 3.;
 }
 
 //=================================================================================================
 
-ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&            wire,
-                                                      NCollection_Sequence<int>&       indexes,
-                                                      const NCollection_Sequence<double>&    values,
-                                                      NCollection_Sequence<TopoDS_Shape>&        vertices,
+ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&               wire,
+                                                      NCollection_Sequence<int>&          indexes,
+                                                      const NCollection_Sequence<double>& values,
+                                                      NCollection_Sequence<TopoDS_Shape>& vertices,
                                                       const NCollection_Sequence<int>& SegmentCodes,
-                                                      const bool           isCutByU,
-                                                      const int           cutIndex)
+                                                      const bool                       isCutByU,
+                                                      const int                        cutIndex)
 {
-  BRep_Builder                  B;
-  ShapeFix_WireSegment          result;
-  occ::handle<ShapeAnalysis_Surface> aSurfTool = new ShapeAnalysis_Surface(BRep_Tool::Surface(myFace));
-  int              nbSplits  = indexes.Length();
-  ShapeAnalysis_Edge            sae;
-  int              start        = 1;
-  TopAbs_Orientation            anWireOrient = wire.Orientation();
-  gp_Trsf                       T;
+  BRep_Builder                       B;
+  ShapeFix_WireSegment               result;
+  occ::handle<ShapeAnalysis_Surface> aSurfTool =
+    new ShapeAnalysis_Surface(BRep_Tool::Surface(myFace));
+  int                nbSplits = indexes.Length();
+  ShapeAnalysis_Edge sae;
+  int                start        = 1;
+  TopAbs_Orientation anWireOrient = wire.Orientation();
+  gp_Trsf            T;
   if (!myLoc.IsIdentity())
     T = myLoc.Inverted().Transformation();
 
@@ -911,7 +899,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
     }
     // find non-manifold vertices on edge
     NCollection_Sequence<TopoDS_Shape> aNMVertices;
-    TopoDS_Iterator          aIt(edge, false);
+    TopoDS_Iterator                    aIt(edge, false);
     for (; aIt.More(); aIt.Next())
     {
       if (aIt.Value().Orientation() != TopAbs_FORWARD
@@ -920,11 +908,11 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
     }
 
     // Collect data on edge
-    double tolEdge  = BRep_Tool::Tolerance(edge);
+    double        tolEdge  = BRep_Tool::Tolerance(edge);
     TopoDS_Vertex prevV    = sae.FirstVertex(edge);
     TopoDS_Vertex lastV    = sae.LastVertex(edge);
-    double prevVTol = LimitTolerance(BRep_Tool::Tolerance(prevV));
-    double lastVTol = LimitTolerance(BRep_Tool::Tolerance(lastV));
+    double        prevVTol = LimitTolerance(BRep_Tool::Tolerance(prevV));
+    double        lastVTol = LimitTolerance(BRep_Tool::Tolerance(lastV));
     gp_Pnt        prevVPnt = BRep_Tool::Pnt(prevV);
     gp_Pnt        lastVPnt = BRep_Tool::Pnt(lastV);
     if (T.Form() != gp_Identity)
@@ -934,32 +922,32 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
     }
 
     occ::handle<Geom_Curve> c3d;
-    double      f3d, l3d;
+    double                  f3d, l3d;
     if (!sae.Curve3d(edge, c3d, f3d, l3d))
     { // not a crime
       c3d.Nullify();
       f3d = l3d = 0;
     }
 
-    double        firstPar, lastPar;
+    double                    firstPar, lastPar;
     occ::handle<Geom2d_Curve> C2d;
     if (!sae.PCurve(edge, myFace, C2d, firstPar, lastPar))
     {
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
     }
     // finding sequence of non-manifold parameters
-    int       nbNMVert = aNMVertices.Length();
+    int                          nbNMVert = aNMVertices.Length();
     NCollection_Sequence<double> aNMVertParams;
     if (nbNMVert)
     {
       Geom2dAdaptor_Curve adc(C2d);
-      int    n = 1;
+      int                 n = 1;
       for (; n <= nbNMVert; n++)
       {
-        gp_Pnt        apV    = BRep_Tool::Pnt(TopoDS::Vertex(aNMVertices.Value(n)));
+        gp_Pnt apV    = BRep_Tool::Pnt(TopoDS::Vertex(aNMVertices.Value(n)));
         double apar   = firstPar;
         double adist2 = RealLast();
-        gp_Pnt        aPproj;
+        gp_Pnt aPproj;
         if (!c3d.IsNull())
         {
           ShapeAnalysis_Curve asae;
@@ -972,7 +960,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
           Extrema_ExtPC2d aExtr(aP2d, adc);
           if (aExtr.IsDone() && aExtr.NbExt())
           {
-            adist2                 = aExtr.SquareDistance(1);
+            adist2    = aExtr.SquareDistance(1);
             int index = 1;
             int k     = 2;
             for (; k <= aExtr.NbExt(); k++)
@@ -992,24 +980,24 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
     }
 
     // pdn Calculating parametric shift
-    bool sp     = (f3d == firstPar && l3d == lastPar);
-    double    span2d = lastPar - firstPar;
+    bool   sp     = (f3d == firstPar && l3d == lastPar);
+    double span2d = lastPar - firstPar;
     //    double ln2d  = lastPar-prevPar;
     //    double ln3d  = l3d - f3d;
     //    double fact = ln2d/ln3d;
     //    double shift =  prevPar - f3d*fact;
-    double    prevPar    = firstPar;
-    gp_Pnt2d         prevPnt2d  = C2d->Value(prevPar);
-    gp_Pnt2d         lastPnt2d  = C2d->Value(lastPar);
-    gp_Pnt           prevPnt    = myGrid->Value(prevPnt2d);
-    gp_Pnt           lastPnt    = myGrid->Value(lastPnt2d);
-    bool isPeriodic = C2d->IsPeriodic();
-    double    aPeriod    = (isPeriodic ? C2d->Period() : 0.);
+    double   prevPar    = firstPar;
+    gp_Pnt2d prevPnt2d  = C2d->Value(prevPar);
+    gp_Pnt2d lastPnt2d  = C2d->Value(lastPar);
+    gp_Pnt   prevPnt    = myGrid->Value(prevPnt2d);
+    gp_Pnt   lastPnt    = myGrid->Value(lastPnt2d);
+    bool     isPeriodic = C2d->IsPeriodic();
+    double   aPeriod    = (isPeriodic ? C2d->Period() : 0.);
 
     // Splitting edge
-    int NbEdgesStart = result.NbEdges();
-    bool splitted     = false;
-    double    currPar      = lastPar; // SK
+    int    NbEdgesStart = result.NbEdges();
+    bool   splitted     = false;
+    double currPar      = lastPar; // SK
     for (int j = start; j <= stop; prevPar = currPar, j++)
     {
       if (!splitted && j >= stop)
@@ -1036,8 +1024,8 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       gp_Pnt   currPnt;
 
       // Try to adjust current splitting point to previous or end of edge
-      bool doCut = true;
-      TopoDS_Vertex    V;
+      bool          doCut = true;
+      TopoDS_Vertex V;
       if (std::abs(currPar - lastPar) < ::Precision::PConfusion())
       {
         V     = lastV;
@@ -1064,18 +1052,18 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
                            lastVTol + 2 * Precision::Confusion())
             && lastPnt.Distance(myGrid->Value(C2d->Value(0.5 * (currPar + lastPar)))) <= lastVTol)
         {
-          V                  = lastV;
+          V           = lastV;
           double uRes = myUResolution;
           double vRes = myVResolution;
           if (isCutByU)
           {
             double gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / lastVTol;
-            uRes                  = std::min(myUResolution, gridRes);
+            uRes           = std::min(myUResolution, gridRes);
           }
           else
           {
             double gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / lastVTol;
-            vRes                  = std::min(myVResolution, gridRes);
+            vRes           = std::min(myVResolution, gridRes);
           }
           if (IsCoincided(lastPnt2d, currPnt2d, uRes, vRes, lastVTol)
               && IsCoincided(lastPnt2d,
@@ -1098,18 +1086,18 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
                  && prevPnt.Distance(myGrid->Value(C2d->Value(0.5 * (currPar + prevPar))))
                       <= prevVTol)
         {
-          V                  = prevV;
+          V           = prevV;
           double uRes = myUResolution;
           double vRes = myVResolution;
           if (isCutByU)
           {
             double gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / prevVTol;
-            uRes                  = std::min(myUResolution, gridRes);
+            uRes           = std::min(myUResolution, gridRes);
           }
           else
           {
             double gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / prevVTol;
-            vRes                  = std::min(myVResolution, gridRes);
+            vRes           = std::min(myVResolution, gridRes);
           }
           if (IsCoincided(prevPnt2d, currPnt2d, uRes, vRes, prevVTol)
               && IsCoincided(prevPnt2d,
@@ -1187,9 +1175,9 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       splitted = true;
       prevV.Orientation(TopAbs_FORWARD);
       V.Orientation(TopAbs_REVERSED);
-      ShapeBuild_Edge  sbe;
-      TopoDS_Edge      anInitEdge = edge;
-      bool ismanifold =
+      ShapeBuild_Edge sbe;
+      TopoDS_Edge     anInitEdge = edge;
+      bool            ismanifold =
         (edge.Orientation() == TopAbs_FORWARD || edge.Orientation() == TopAbs_REVERSED);
       if (!ismanifold)
         anInitEdge.Orientation(TopAbs_FORWARD);
@@ -1199,7 +1187,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
       int n = 1;
       for (; n <= aNMVertParams.Length(); n++)
       {
-        double apar    = aNMVertParams.Value(n);
+        double        apar    = aNMVertParams.Value(n);
         TopoDS_Vertex aNMVert = TopoDS::Vertex(aNMVertices.Value(n));
         TopoDS_Vertex atmpV   = TopoDS::Vertex(Context()->Apply(aNMVert));
         if (fabs(apar - prevPar) <= Precision::PConfusion())
@@ -1282,7 +1270,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
         ShapeBuild_Edge sbe;
         if (edge.Orientation() == TopAbs_INTERNAL)
           edge.Orientation(TopAbs_FORWARD);
-        TopoDS_Edge          e1   = sbe.Copy(edge, false);
+        TopoDS_Edge               e1   = sbe.Copy(edge, false);
         occ::handle<Geom2d_Curve> C2d2 = occ::down_cast<Geom2d_Curve>(C2d->Copy());
         B.UpdateEdge(e1, C2d, C2d2, myFace, 0.);
         e1.Orientation(TopAbs_EXTERNAL);
@@ -1305,33 +1293,34 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire(ShapeFix_WireSegment&     
 
 //=================================================================================================
 
-bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
-                                                    const gp_Lin2d&            line,
-                                                    const bool     isCutByU,
-                                                    const int     cutIndex,
-                                                    NCollection_Sequence<double>&    SplitLinePar,
-                                                    NCollection_Sequence<int>& SplitLineCode,
-                                                    NCollection_Sequence<TopoDS_Shape>&  SplitLineVertex)
+bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&               wire,
+                                        const gp_Lin2d&                     line,
+                                        const bool                          isCutByU,
+                                        const int                           cutIndex,
+                                        NCollection_Sequence<double>&       SplitLinePar,
+                                        NCollection_Sequence<int>&          SplitLineCode,
+                                        NCollection_Sequence<TopoDS_Shape>& SplitLineVertex)
 {
   ShapeAnalysis_Edge sae;
   // prepare data on cutting line
   occ::handle<Geom2d_Line> jC2d = new Geom2d_Line(line);
-  Geom2dAdaptor_Curve jGAC(jC2d);
+  Geom2dAdaptor_Curve      jGAC(jC2d);
 
-  NCollection_Sequence<int> IntEdgeInd; // index of intersecting edge
-  NCollection_Sequence<double>    IntEdgePar; // parameter of intersection point on edge
-  NCollection_Sequence<double>    IntLinePar; // parameter of intersection point on line
+  NCollection_Sequence<int>    IntEdgeInd; // index of intersecting edge
+  NCollection_Sequence<double> IntEdgePar; // parameter of intersection point on edge
+  NCollection_Sequence<double> IntLinePar; // parameter of intersection point on line
 
   bool isnonmanifold = (wire.Orientation() == TopAbs_INTERNAL);
   // gka correction for non-manifold vertices SAMTECH
   if (wire.IsVertex())
   {
-    occ::handle<ShapeAnalysis_Surface> aSurfTool = new ShapeAnalysis_Surface(BRep_Tool::Surface(myFace));
-    TopoDS_Vertex                 aVert     = wire.GetVertex();
-    gp_Pnt                        aP3d      = BRep_Tool::Pnt(aVert);
-    gp_Pnt2d                      aP2d      = aSurfTool->ValueOfUV(aP3d, Precision::Confusion());
-    double                 dev       = 0.;
-    int              code      = PointLinePosition(aP2d, line, dev);
+    occ::handle<ShapeAnalysis_Surface> aSurfTool =
+      new ShapeAnalysis_Surface(BRep_Tool::Surface(myFace));
+    TopoDS_Vertex aVert = wire.GetVertex();
+    gp_Pnt        aP3d  = BRep_Tool::Pnt(aVert);
+    gp_Pnt2d      aP2d  = aSurfTool->ValueOfUV(aP3d, Precision::Confusion());
+    double        dev   = 0.;
+    int           code  = PointLinePosition(aP2d, line, dev);
     if (code != IOR_UNDEF)
       return false;
     double par = ParamPointOnLine(aP2d, line);
@@ -1364,15 +1353,15 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
 
   //============================================
   // make intersections and collect all data on intersection points
-  int firstCode = 0, prevCode = 0;
-  gp_Pnt2d         firstPos, prevPos;
-  double    firstDev = 0., prevDev = 0.;
+  int      firstCode = 0, prevCode = 0;
+  gp_Pnt2d firstPos, prevPos;
+  double   firstDev = 0., prevDev = 0.;
   for (int iedge = 1; iedge <= nbe; iedge++)
   {
-    TopoDS_Edge      E          = sewd->Edge(iedge);
-    bool isreversed = (E.Orientation() == TopAbs_REVERSED);
+    TopoDS_Edge E          = sewd->Edge(iedge);
+    bool        isreversed = (E.Orientation() == TopAbs_REVERSED);
 
-    double        f, l;
+    double                    f, l;
     occ::handle<Geom2d_Curve> c2d;
     if (!sae.PCurve(E, myFace, c2d, f, l, false))
       continue;
@@ -1385,14 +1374,14 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
     // In case of ClosedMode, adjust curve and end points to period on closed surface
     //: abv 16.10.01: Ziegler_CADDY01.sat -18: if pcurve is longer than period,
     // ensure processing of all intersections
-    int nbIter = 1;
-    gp_Vec2d         shiftNext(0., 0.);
+    int      nbIter = 1;
+    gp_Vec2d shiftNext(0., 0.);
     if (myClosedMode)
     {
       // get bounding box of pcurve
-      ShapeAnalysis_Curve    sac;
-      Bnd_Box2d              box;
-      const int aNbPoints = 41;
+      ShapeAnalysis_Curve sac;
+      Bnd_Box2d           box;
+      const int           aNbPoints = 41;
       sac.FillBndBox(c2d, f, l, aNbPoints, true, box);
       double umin, vmin, umax, vmax;
       box.Get(umin, vmin, umax, vmax);
@@ -1441,9 +1430,9 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
     }
 
     // detect intersections at junction of two edges
-    gp_Pnt2d         pos = (isreversed ? posl : posf);
-    double    dev;
-    int code = PointLinePosition(pos, line, dev);
+    gp_Pnt2d pos = (isreversed ? posl : posf);
+    double   dev;
+    int      code = PointLinePosition(pos, line, dev);
     if (iedge == 1)
     {
       firstCode = code;
@@ -1592,9 +1581,9 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
       }
       else if (nbe == 1 || IntEdgeInd(i) == (IntEdgeInd(j) % nbe) + 1)
       {
-        TopoDS_Edge   E1 = sewd->Edge(IntEdgeInd(j));
-        TopoDS_Edge   E2 = sewd->Edge(IntEdgeInd(i));
-        double a1, b1, a2, b2;
+        TopoDS_Edge E1 = sewd->Edge(IntEdgeInd(j));
+        TopoDS_Edge E2 = sewd->Edge(IntEdgeInd(i));
+        double      a1, b1, a2, b2;
         BRep_Tool::Range(E1, myFace, a1, b1);
         BRep_Tool::Range(E2, myFace, a2, b2);
         if (std::abs(IntEdgePar(j) - (E1.Orientation() == TopAbs_FORWARD ? b1 : a1))
@@ -1618,14 +1607,14 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
   // Compute segment codes (left side of line, right or tangential)
   for (i = 1; i <= IntEdgePar.Length(); i++)
   {
-    j                     = (i < IntEdgePar.Length() ? i + 1 : 1);
+    j        = (i < IntEdgePar.Length() ? i + 1 : 1);
     int code = ComputeCode(sewd,
-                                        line,
-                                        IntEdgeInd(i),
-                                        IntEdgeInd(j),
-                                        IntEdgePar(i),
-                                        IntEdgePar(j),
-                                        isnonmanifold);
+                           line,
+                           IntEdgeInd(i),
+                           IntEdgeInd(j),
+                           IntEdgePar(i),
+                           IntEdgePar(j),
+                           isnonmanifold);
     SegmentCodes.Append(code);
   }
 
@@ -1740,13 +1729,13 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&      wire,
 //=================================================================================================
 
 void ShapeFix_ComposeShell::SplitByLine(NCollection_Sequence<ShapeFix_WireSegment>& wires,
-                                        const gp_Lin2d&                 line,
-                                        const bool          isCutByU,
-                                        const int          cutIndex)
+                                        const gp_Lin2d&                             line,
+                                        const bool                                  isCutByU,
+                                        const int                                   cutIndex)
 {
-  NCollection_Sequence<double>    SplitLinePar;
-  NCollection_Sequence<int> SplitLineCode;
-  NCollection_Sequence<TopoDS_Shape>  SplitLineVertex;
+  NCollection_Sequence<double>       SplitLinePar;
+  NCollection_Sequence<int>          SplitLineCode;
+  NCollection_Sequence<TopoDS_Shape> SplitLineVertex;
 
   // split wires one by one, collecting data on intersection points
   int i; // svv #1
@@ -1786,13 +1775,13 @@ void ShapeFix_ComposeShell::SplitByLine(NCollection_Sequence<ShapeFix_WireSegmen
 
   // go along line, split it by intersection points and create edges
   // (only for internal parts, in particular not for tangential segments)
-  BRep_Builder     B;
-  int parity     = 0; // 0 - out, 1 - in
-  int halfparity = 0; // left/right for tangential segments
-  int tanglevel  = 0; // tangency nesting level
+  BRep_Builder B;
+  int          parity     = 0; // 0 - out, 1 - in
+  int          halfparity = 0; // left/right for tangential segments
+  int          tanglevel  = 0; // tangency nesting level
   for (i = 1; i <= SplitLinePar.Length(); i++)
   {
-    int code     = SplitLineCode(i);
+    int  code     = SplitLineCode(i);
     bool interior = (!tanglevel && parity % 2); // create an edge
     if (code & ITP_INTER)
     { // crossing
@@ -1832,15 +1821,15 @@ void ShapeFix_ComposeShell::SplitByLine(NCollection_Sequence<ShapeFix_WireSegmen
     TopoDS_Vertex V2    = TopoDS::Vertex(tmpV2);
     // protection against creating null-length edges or edges lying inside tolerance of vertices
     // first and last vertices for split line can not be merged to each other
-    bool canbeMerged = (/*myClosedMode &&*/ (i - 1 > 1 || i < SplitLinePar.Length()));
-    double    aMaxTol     = MaxTolerance();
+    bool   canbeMerged = (/*myClosedMode &&*/ (i - 1 > 1 || i < SplitLinePar.Length()));
+    double aMaxTol     = MaxTolerance();
     // case when max tolerance is not defined tolerance of vertices will be used as is
     if (aMaxTol <= 2. * Precision::Confusion())
       aMaxTol = Precision::Infinite();
     double aTol1 = std::min(BRep_Tool::Tolerance(V1), aMaxTol);
     double aTol2 = std::min(BRep_Tool::Tolerance(V2), aMaxTol);
-    gp_Pnt        aP1   = BRep_Tool::Pnt(V1);
-    gp_Pnt        aP2   = BRep_Tool::Pnt(V2);
+    gp_Pnt aP1   = BRep_Tool::Pnt(V1);
+    gp_Pnt aP2   = BRep_Tool::Pnt(V2);
     double aD    = aP1.SquareDistance(aP2);
     if (SplitLinePar(i) - SplitLinePar(i - 1) < ::Precision::PConfusion()
         || (canbeMerged && (aD <= (aTol1 * aTol1) || aD <= (aTol2 * aTol2))))
@@ -1945,8 +1934,8 @@ void ShapeFix_ComposeShell::SplitByGrid(NCollection_Sequence<ShapeFix_WireSegmen
 
   // value of precision to define number of patch should be the same as used in the definitin
   // position of point relatively to seam edge (TOLINT)
-  double    pprec = TOLINT; //::Precision::PConfusion();
-  int i     = 1;
+  double pprec = TOLINT; //::Precision::PConfusion();
+  int    i     = 1;
   if (myClosedMode)
   {
     // for closed mode when only one patch exist and location of the splitting line is coincident
@@ -1985,8 +1974,7 @@ void ShapeFix_ComposeShell::SplitByGrid(NCollection_Sequence<ShapeFix_WireSegmen
       // limit patch indices to be in range of grid (extended for periodic) (0, 2)
       // in same cases for example trj4_pm2-ug-203.stp (entity #8024) wire in 2D space has length
       // greater then period
-      int iumin =
-        std::max(0, GetPatchIndex(Uf1 + pprec, myGrid->UJointValues(), myUClosed));
+      int iumin = std::max(0, GetPatchIndex(Uf1 + pprec, myGrid->UJointValues(), myUClosed));
       int iumax = GetPatchIndex(Ul1 - pprec, myGrid->UJointValues(), myUClosed) + 1;
 
       for (int j = 1; j <= wire.NbEdges(); j++)
@@ -1995,8 +1983,7 @@ void ShapeFix_ComposeShell::SplitByGrid(NCollection_Sequence<ShapeFix_WireSegmen
         wire.DefineIUMax(j, iumax);
       }
 
-      int ivmin =
-        std::max(0, GetPatchIndex(Vf1 + pprec, myGrid->VJointValues(), myVClosed));
+      int ivmin = std::max(0, GetPatchIndex(Vf1 + pprec, myGrid->VJointValues(), myVClosed));
       int ivmax = GetPatchIndex(Vl1 - pprec, myGrid->VJointValues(), myVClosed) + 1;
 
       for (int j = 1; j <= wire.NbEdges(); j++)
@@ -2047,9 +2034,8 @@ void ShapeFix_ComposeShell::SplitByGrid(NCollection_Sequence<ShapeFix_WireSegmen
       double sh     = ShapeAnalysis::AdjustToPeriod(X, Uf, Uf + period);
       for (; X + sh <= Ul + pprec; sh += period)
       {
-        gp_Lin2d         ln = line.Translated(gp_Vec2d(sh, 0));
-        int cutIndex =
-          GetPatchIndex(X + sh + pprec, myGrid->UJointValues(), myUClosed);
+        gp_Lin2d ln       = line.Translated(gp_Vec2d(sh, 0));
+        int      cutIndex = GetPatchIndex(X + sh + pprec, myGrid->UJointValues(), myUClosed);
         SplitByLine(seqw, ln, true, cutIndex);
       }
     }
@@ -2069,9 +2055,8 @@ void ShapeFix_ComposeShell::SplitByGrid(NCollection_Sequence<ShapeFix_WireSegmen
       double sh     = ShapeAnalysis::AdjustToPeriod(Y, Vf, Vf + period);
       for (; Y + sh <= Vl + pprec; sh += period)
       {
-        gp_Lin2d         ln = line.Translated(gp_Vec2d(0, sh));
-        int cutIndex =
-          GetPatchIndex(Y + sh + pprec, myGrid->VJointValues(), myVClosed);
+        gp_Lin2d ln       = line.Translated(gp_Vec2d(0, sh));
+        int      cutIndex = GetPatchIndex(Y + sh + pprec, myGrid->VJointValues(), myVClosed);
         SplitByLine(seqw, ln, false, cutIndex);
       }
     }
@@ -2086,7 +2071,7 @@ void ShapeFix_ComposeShell::BreakWires(NCollection_Sequence<ShapeFix_WireSegment
 {
   // split all the wires by vertices
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> splitVertices;
-  ShapeAnalysis_Edge  sae;
+  ShapeAnalysis_Edge                                     sae;
 
   // first collect splitting vertices
   int i; // svv #1
@@ -2141,7 +2126,7 @@ void ShapeFix_ComposeShell::BreakWires(NCollection_Sequence<ShapeFix_WireSegment
     }
 
     // perform splitting
-    int     nbnew = 0;
+    int                  nbnew = 0;
     ShapeFix_WireSegment newwire;
     TopAbs_Orientation   curOri = ori;
     for (int ind = 1; ind <= sbwd->NbEdges(); ind++)
@@ -2187,23 +2172,23 @@ void ShapeFix_ComposeShell::BreakWires(NCollection_Sequence<ShapeFix_WireSegment
 // 1  - short even in 2d (to be taken always)
 // -1 - short in 3d but not in 2d (to be checked after algo and atteching to
 //      another wire if alone)
-static int IsShortSegment(const ShapeFix_WireSegment& seg,
-                                       const TopoDS_Face&          myFace,
-                                       const occ::handle<Geom_Surface>& myGrid,
-                                       const TopLoc_Location&      myLoc,
-                                       const double         UResolution,
-                                       const double         VResolution)
+static int IsShortSegment(const ShapeFix_WireSegment&      seg,
+                          const TopoDS_Face&               myFace,
+                          const occ::handle<Geom_Surface>& myGrid,
+                          const TopLoc_Location&           myLoc,
+                          const double                     UResolution,
+                          const double                     VResolution)
 {
   TopoDS_Vertex Vf = seg.FirstVertex();
   if (!Vf.IsSame(seg.LastVertex()))
     return 0;
 
-  gp_Pnt        pnt  = BRep_Tool::Pnt(Vf);
+  gp_Pnt pnt  = BRep_Tool::Pnt(Vf);
   double tol  = BRep_Tool::Tolerance(Vf);
   double tol2 = tol * tol;
 
-  int                    code = 1;
-  ShapeAnalysis_Edge                  sae;
+  int                                      code = 1;
+  ShapeAnalysis_Edge                       sae;
   const occ::handle<ShapeExtend_WireData>& sbwd = seg.WireData();
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
@@ -2211,7 +2196,7 @@ static int IsShortSegment(const ShapeFix_WireSegment& seg,
     if (!Vf.IsSame(sae.LastVertex(edge)))
       return 0;
     occ::handle<Geom2d_Curve> c2d;
-    double        f, l;
+    double                    f, l;
     if (!sae.PCurve(edge, myFace, c2d, f, l))
       continue;
 
@@ -2234,13 +2219,13 @@ static int IsShortSegment(const ShapeFix_WireSegment& seg,
 //=================================================================================================
 
 static bool IsSamePatch(const ShapeFix_WireSegment& wire,
-                                    const int      NU,
-                                    const int      NV,
-                                    int&           iumin,
-                                    int&           iumax,
-                                    int&           ivmin,
-                                    int&           ivmax,
-                                    const bool      extend = false)
+                        const int                   NU,
+                        const int                   NV,
+                        int&                        iumin,
+                        int&                        iumax,
+                        int&                        ivmin,
+                        int&                        ivmax,
+                        const bool                  extend = false)
 {
   // get patch indices for current segment
   int jumin, jumax, jvmin, jvmax;
@@ -2268,10 +2253,10 @@ static bool IsSamePatch(const ShapeFix_WireSegment& wire,
   }
 
   // compute common (extended) indices
-  int iun = std::min(iumin, jumin);
-  int iux = std::max(iumax, jumax);
-  int ivn = std::min(ivmin, jvmin);
-  int ivx = std::max(ivmax, jvmax);
+  int  iun = std::min(iumin, jumin);
+  int  iux = std::max(iumax, jumax);
+  int  ivn = std::min(ivmin, jvmin);
+  int  ivx = std::max(ivmax, jvmax);
   bool ok  = (iun == iux || iun + 1 == iux) && (ivn == ivx || ivn + 1 == ivx);
   if (ok && extend)
   {
@@ -2289,7 +2274,7 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
                                          NCollection_Sequence<ShapeFix_WireSegment>& seqw)
 {
   ShapeAnalysis_Edge sae;
-  int   i; // svv #1
+  int                i; // svv #1
   // Collect information on short closed segments
   NCollection_Array1<int> shorts(1, seqw.Length());
   for (i = 1; i <= seqw.Length(); i++)
@@ -2310,8 +2295,7 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
         break;
       }
 #endif
-    int isshort =
-      IsShortSegment(seqw(i), myFace, myGrid, myLoc, myUResolution, myVResolution);
+    int isshort = IsShortSegment(seqw(i), myFace, myGrid, myLoc, myUResolution, myVResolution);
     shorts.SetValue(i, isshort);
     if (isshort > 0
         && (seqw(i).Orientation() == TopAbs_EXTERNAL
@@ -2326,22 +2310,22 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
   }
 
   occ::handle<ShapeExtend_WireData> sbwd;
-  gp_Pnt2d                     endPnt, firstPnt;
-  gp_Vec2d                     endTan, firstTan;
-  TopoDS_Vertex                firstV, endV;
-  TopoDS_Edge                  firstEdge, lastEdge;
-  double                tol   = 0;
-  int             iumin = 0, iumax = 0, ivmin = 0, ivmax = 0;
-  double                dsu = 0., dsv = 0.;
-  bool             canBeClosed = false;
+  gp_Pnt2d                          endPnt, firstPnt;
+  gp_Vec2d                          endTan, firstTan;
+  TopoDS_Vertex                     firstV, endV;
+  TopoDS_Edge                       firstEdge, lastEdge;
+  double                            tol   = 0;
+  int                               iumin = 0, iumax = 0, ivmin = 0, ivmax = 0;
+  double                            dsu = 0., dsv = 0.;
+  bool                              canBeClosed = false;
   for (;;)
   {
-    int index       = 0;
-    bool misoriented = true, samepatch = false;
-    bool reverse = false, connected = false;
-    double    angle = -M_PI, mindist = RealLast();
-    int weigth = 0;
-    double    shiftu = 0., shiftv = 0.;
+    int    index       = 0;
+    bool   misoriented = true, samepatch = false;
+    bool   reverse = false, connected = false;
+    double angle = -M_PI, mindist = RealLast();
+    int    weigth = 0;
+    double shiftu = 0., shiftv = 0.;
 
     // find next segment to connect (or first if sbwd is NULL)
     for (i = 1; i <= seqw.Length(); i++)
@@ -2415,10 +2399,10 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
         }
 
         // compute starting tangent
-        gp_Pnt2d         lPnt;
-        gp_Vec2d         lVec;
-        int k;
-        double    edgeTol = 0;
+        gp_Pnt2d lPnt;
+        gp_Vec2d lVec;
+        int      k;
+        double   edgeTol = 0;
         for (k = 1; k <= wire->NbEdges(); k++)
         {
           TopoDS_Shape tmpE = wire->Edge(wire->NbEdges() - k + 1).Reversed();
@@ -2454,9 +2438,9 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
         // for coincidence (instead of vertex tolerance) in order
         // this check to be in agreement with check for position of wire segments
         // thus avoiding bad effects on overlapping edges
-        double    ctol = std::max(edgeTol, BRep_Tool::Tolerance(endV /*lastEdge*/));
-        bool conn = IsCoincided(endPnt, lPnt, myUResolution, myVResolution, ctol);
-        double    dist = endPnt.SquareDistance(lPnt);
+        double ctol = std::max(edgeTol, BRep_Tool::Tolerance(endV /*lastEdge*/));
+        bool   conn = IsCoincided(endPnt, lPnt, myUResolution, myVResolution, ctol);
+        double dist = endPnt.SquareDistance(lPnt);
 
         // check if case is better than last found
         int w1    = (sp ? 16 : 0) + (conn ? 4 : 0) + (misor == 0 ? 8 : 0);
@@ -2509,7 +2493,7 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
       else
       {
         occ::handle<ShapeExtend_WireData> wire = new ShapeExtend_WireData;
-        wire->ManifoldMode()              = false;
+        wire->ManifoldMode()                   = false;
         wire->Add(seg.WireData());
         wire->Reverse(myFace);
         sbwd->Add(wire);
@@ -2589,12 +2573,12 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
 
     // find any other wire containing the same vertex
     occ::handle<ShapeExtend_WireData> wd   = seqw(i).WireData();
-    TopoDS_Vertex                V    = seqw(i).FirstVertex();
-    int             minj = 0, mink = 0;
-    gp_Pnt2d                     p2d;
-    gp_Vec2d                     vec;
-    double                mindist   = 0;
-    bool             samepatch = false;
+    TopoDS_Vertex                     V    = seqw(i).FirstVertex();
+    int                               minj = 0, mink = 0;
+    gp_Pnt2d                          p2d;
+    gp_Vec2d                          vec;
+    double                            mindist   = 0;
+    bool                              samepatch = false;
     // int iumin, iumax, ivmin, ivmax;
     seqw(i).GetPatchIndex(1, iumin, iumax, ivmin, ivmax);
     sae.GetEndTangent2d(wd->Edge(1), myFace, false, p2d, vec);
@@ -2610,12 +2594,12 @@ void ShapeFix_ComposeShell::CollectWires(NCollection_Sequence<ShapeFix_WireSegme
         // clang-format on
 
         bool sp = IsSamePatch(wires(j),
-                                          myGrid->NbUPatches(),
-                                          myGrid->NbVPatches(),
-                                          iumin,
-                                          iumax,
-                                          ivmin,
-                                          ivmax);
+                              myGrid->NbUPatches(),
+                              myGrid->NbVPatches(),
+                              iumin,
+                              iumax,
+                              ivmin,
+                              ivmax);
         if (samepatch && !sp)
           continue;
         gp_Pnt2d pp;
@@ -2665,20 +2649,20 @@ static gp_Pnt2d GetMiddlePoint(const ShapeFix_WireSegment& wire, const TopoDS_Fa
 {
   if (wire.IsVertex())
   {
-    TopoDS_Vertex                 aV        = wire.GetVertex();
-    gp_Pnt                        aP3D      = BRep_Tool::Pnt(aV);
+    TopoDS_Vertex                      aV        = wire.GetVertex();
+    gp_Pnt                             aP3D      = BRep_Tool::Pnt(aV);
     occ::handle<Geom_Surface>          surf      = BRep_Tool::Surface(face);
     occ::handle<ShapeAnalysis_Surface> aSurfTool = new ShapeAnalysis_Surface(surf);
     return aSurfTool->ValueOfUV(aP3D, Precision::Confusion());
   }
-  Bnd_Box2d                           box;
-  ShapeAnalysis_Edge                  sae;
-  ShapeAnalysis_Curve                 sac;
+  Bnd_Box2d                                box;
+  ShapeAnalysis_Edge                       sae;
+  ShapeAnalysis_Curve                      sac;
   const occ::handle<ShapeExtend_WireData>& wd = wire.WireData();
   for (int i = 1; i <= wd->NbEdges(); i++)
   {
-    TopoDS_Edge          E = wd->Edge(i);
-    double        cf, cl;
+    TopoDS_Edge               E = wd->Edge(i);
+    double                    cf, cl;
     occ::handle<Geom2d_Curve> c2d;
     if (sae.PCurve(E, face, c2d, cf, cl, false))
     {
@@ -2697,9 +2681,9 @@ static gp_Pnt2d GetMiddlePoint(const ShapeFix_WireSegment& wire, const TopoDS_Fa
 
 //=================================================================================================
 
-void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&   faces,
-                                             const occ::handle<Geom_Surface>& surf,
-                                             NCollection_Sequence<TopoDS_Shape>&   loops) const
+void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>& faces,
+                                             const occ::handle<Geom_Surface>&    surf,
+                                             NCollection_Sequence<TopoDS_Shape>& loops) const
 {
   BRep_Builder B;
 
@@ -2716,9 +2700,10 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
     B.Add(newFace, wire);
     if (myInvertEdgeStatus)
     {
-      occ::handle<ShapeFix_Face> sff     = new ShapeFix_Face(newFace);
-      sff->FixAddNaturalBoundMode() = false;
-      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> MapWires;
+      occ::handle<ShapeFix_Face> sff = new ShapeFix_Face(newFace);
+      sff->FixAddNaturalBoundMode()  = false;
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        MapWires;
       MapWires.Clear();
       sff->FixOrientation(MapWires);
       newFace = sff->Face();
@@ -2735,8 +2720,8 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
   occ::handle<Geom_Surface> atSurf = BRep_Tool::Surface(pf);
 
   occ::handle<ShapeAnalysis_Surface> aSurfTool = new ShapeAnalysis_Surface(atSurf);
-  NCollection_Sequence<TopoDS_Shape>      roots;
-  int              i; // svv #1
+  NCollection_Sequence<TopoDS_Shape> roots;
+  int                                i; // svv #1
   for (i = 1; i <= loops.Length(); i++)
   {
     gp_Pnt2d     unp;
@@ -2762,7 +2747,7 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
     }
     if (!ew.More())
       continue;
-    double        cf, cl;
+    double                    cf, cl;
     occ::handle<Geom2d_Curve> cw = BRep_Tool::CurveOnSurface(ed, pf, cf, cl);
     if (cw.IsNull())
       continue;
@@ -2781,8 +2766,8 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
       TopoDS_Wire awtmp;
       B.MakeWire(awtmp);
       awtmp.Orientation(TopAbs_FORWARD);
-      TopoDS_Iterator  aIt(w1);
-      int nbe = 0;
+      TopoDS_Iterator aIt(w1);
+      int             nbe = 0;
       for (; aIt.More(); aIt.Next())
       {
         if (aIt.Value().Orientation() == TopAbs_FORWARD
@@ -2802,8 +2787,8 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
       if (stPoint == TopAbs_ON || stPoint == TopAbs_UNKNOWN)
       {
 
-        TopoDS_Edge          anEdge = TopoDS::Edge(ew.Value());
-        double        aCF, aCL;
+        TopoDS_Edge               anEdge = TopoDS::Edge(ew.Value());
+        double                    aCF, aCL;
         occ::handle<Geom2d_Curve> aCW = BRep_Tool::CurveOnSurface(anEdge, pf, aCF, aCL);
         // handle tangential case (ON)
         while (stPoint == TopAbs_ON || stPoint == TopAbs_UNKNOWN)
@@ -2859,9 +2844,9 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
   // Then iterate on loops
   for (i = 1; i <= roots.Length(); i++)
   {
-    bool reverse = false;
-    TopoDS_Wire      wire    = TopoDS::Wire(roots(i));
-    TopoDS_Face      fc;
+    bool        reverse = false;
+    TopoDS_Wire wire    = TopoDS::Wire(roots(i));
+    TopoDS_Face fc;
     B.MakeFace(fc, surf, myLoc, ::Precision::Confusion());
     B.Add(fc, wire);
     BRepTopAdaptor_FClass2d clas(fc, ::Precision::PConfusion());
@@ -2876,7 +2861,7 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
 
     // find all holes for that loop
     NCollection_Sequence<TopoDS_Shape> holes; // holes in holes not supported
-    int         j;     // svv #1
+    int                                j;     // svv #1
     for (j = 1; j <= loops.Length(); j++)
     {
       gp_Pnt2d unp;
@@ -2886,8 +2871,8 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
         TopoDS_Iterator ew(bw);
         if (!ew.More())
           continue;
-        TopoDS_Edge          ed = TopoDS::Edge(ew.Value());
-        double        cf, cl;
+        TopoDS_Edge               ed = TopoDS::Edge(ew.Value());
+        double                    cf, cl;
         occ::handle<Geom2d_Curve> cw = BRep_Tool::CurveOnSurface(ed, pf, cf, cl);
         if (cw.IsNull())
           continue;
@@ -2949,7 +2934,7 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&
 
 //=================================================================================================
 
-void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&       faces,
+void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&         faces,
                                           NCollection_Sequence<ShapeFix_WireSegment>& wires) const
 {
   BRep_Builder B;
@@ -2974,15 +2959,16 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
         TopoDS_Edge E = sbwd->Edge(jL);
         if (E.Orientation() == TopAbs_REVERSED && BRep_Tool::IsClosed(E, myFace))
         {
-          double        f1, l1, f2, l2;
+          double                    f1, l1, f2, l2;
           occ::handle<Geom2d_Curve> c21   = BRep_Tool::CurveOnSurface(E, myFace, f1, l1);
-          TopoDS_Shape         dummy = E.Reversed();
-          occ::handle<Geom2d_Curve> c22 = BRep_Tool::CurveOnSurface(TopoDS::Edge(dummy), myFace, f2, l2);
+          TopoDS_Shape              dummy = E.Reversed();
+          occ::handle<Geom2d_Curve> c22 =
+            BRep_Tool::CurveOnSurface(TopoDS::Edge(dummy), myFace, f2, l2);
           constexpr double dPreci = ::Precision::PConfusion() * Precision::PConfusion();
-          gp_Pnt2d                pf1    = c21->Value(f1);
-          gp_Pnt2d                pl1    = c21->Value(l1);
-          gp_Pnt2d                pf2    = c22->Value(f2);
-          gp_Pnt2d                pl2    = c22->Value(l2);
+          gp_Pnt2d         pf1    = c21->Value(f1);
+          gp_Pnt2d         pl1    = c21->Value(l1);
+          gp_Pnt2d         pf2    = c22->Value(f2);
+          gp_Pnt2d         pl2    = c22->Value(l2);
           if (c21 == c22 || pf1.SquareDistance(pf2) < dPreci || pl1.SquareDistance(pl2) < dPreci)
           {
             gp_Vec2d shift(0., 0.);
@@ -3027,7 +3013,7 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
 
   // Compute center points for wires
   NCollection_Sequence<gp_Pnt2d> mPnts;
-  int       nb = wires.Length();
+  int                            nb = wires.Length();
 
   // pdn protection on empty sequence
   if (nb == 0)
@@ -3039,17 +3025,17 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
 
   // Put each wire on its own surface patch (by reassigning pcurves)
   // and build 3d curve if necessary
-  ShapeBuild_ReShape    rs;
-  ShapeBuild_Edge       sbe;
-  ShapeAnalysis_Edge    sae;
+  ShapeBuild_ReShape         rs;
+  ShapeBuild_Edge            sbe;
+  ShapeAnalysis_Edge         sae;
   occ::handle<ShapeFix_Edge> sfe = new ShapeFix_Edge;
 
   double U1, U2, V1, V2;
   myGrid->Bounds(U1, U2, V1, V2);
   for (i = 1; i <= nb; i++)
   {
-    gp_Pnt2d      pnt = mPnts(i);
-    double ush = 0., vsh = 0.;
+    gp_Pnt2d pnt = mPnts(i);
+    double   ush = 0., vsh = 0.;
     if (myUClosed)
     {
       ush = ShapeAnalysis::AdjustToPeriod(pnt.X(), U1, U2);
@@ -3060,14 +3046,14 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
       vsh = ShapeAnalysis::AdjustToPeriod(pnt.Y(), V1, V2);
       pnt.SetY(pnt.Y() + vsh);
     }
-    mPnts(i)              = pnt;
+    mPnts(i) = pnt;
     int indU = myGrid->LocateUParameter(pnt.X());
     int indV = myGrid->LocateVParameter(pnt.Y());
 
     // compute parametric transformation
-    gp_Trsf2d        T;
+    gp_Trsf2d T;
     double    uFact = 1.;
-    bool needT = myGrid->GlobalToLocalTransformation(indU, indV, uFact, T);
+    bool      needT = myGrid->GlobalToLocalTransformation(indU, indV, uFact, T);
     if (ush != 0. || vsh != 0.)
     {
       gp_Trsf2d Sh;
@@ -3078,7 +3064,7 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
     if (wires(i).IsVertex())
       continue;
     occ::handle<Geom_Surface> surf = myGrid->Patch(indU, indV);
-    TopoDS_Face          face;
+    TopoDS_Face               face;
     B.MakeFace(face, surf, myLoc, ::Precision::Confusion());
     occ::handle<ShapeExtend_WireData> sewd = wires(i).WireData();
     for (int j = 1; j <= sewd->NbEdges(); j++)
@@ -3091,9 +3077,9 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
       // !! Accurately copy pcurves for SEAMS and SEAM-like edges !!
 
       // if edge is already copied, don`t copy any more
-      TopoDS_Edge      newEdge;
-      TopoDS_Edge      anInitEdge = edge;
-      bool ismanifold =
+      TopoDS_Edge newEdge;
+      TopoDS_Edge anInitEdge = edge;
+      bool        ismanifold =
         (edge.Orientation() == TopAbs_FORWARD || edge.Orientation() == TopAbs_REVERSED);
       if (rs.IsRecorded(edge))
       {
@@ -3118,15 +3104,15 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
       // transform pcurve to parametric space of patch
       if (needT)
       {
-        double        f, l;
+        double                    f, l;
         occ::handle<Geom2d_Curve> c2d;
         if (sae.PCurve(newEdge, face, c2d, f, l, false))
         {
-          double        newf = f, newl = l;
+          double                    newf = f, newl = l;
           occ::handle<Geom2d_Curve> c2dnew = sbe.TransformPCurve(c2d, T, uFact, newf, newl);
           if (BRep_Tool::IsClosed(newEdge, face))
           {
-            double        cf, cl;
+            double                    cf, cl;
             occ::handle<Geom2d_Curve> c2d2;
             // smh#8
             TopoDS_Shape tmpE = newEdge.Reversed();
@@ -3160,7 +3146,7 @@ void ShapeFix_ComposeShell::DispatchWires(NCollection_Sequence<TopoDS_Shape>&   
         else
           etmp = sbe.Copy(newEdge, false);
         sfe->FixAddCurve3d(etmp);
-        double      cf, cl;
+        double                  cf, cl;
         occ::handle<Geom_Curve> c3d;
         if (sae.Curve3d(etmp, c3d, cf, cl, false))
         {

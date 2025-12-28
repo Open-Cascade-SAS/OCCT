@@ -23,7 +23,6 @@
 #include <Draw_Grid.hxx>
 #include <Draw_Number.hxx>
 #include <Draw_ProgressIndicator.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Message.hxx>
 #include <NCollection_Array1.hxx>
@@ -64,18 +63,16 @@ static NCollection_Map<occ::handle<Draw_Drawable3D>>& Draw_changeDrawables()
 
 //=================================================================================================
 
-static int p_id   = 0;
-static int p_X    = 0;
-static int p_Y    = 0;
-static int p_b    = 0;
-static const char*      p_Name = "";
+static int         p_id   = 0;
+static int         p_X    = 0;
+static int         p_Y    = 0;
+static int         p_b    = 0;
+static const char* p_Name = "";
 
 //=======================================================================
 // save
 //=======================================================================
-static int save(Draw_Interpretor& theDI,
-                             int  theNbArgs,
-                             const char**      theArgVec)
+static int save(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -91,9 +88,9 @@ static int save(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const char*                   aName       = theArgVec[2];
+  const char*                        aName       = theArgVec[2];
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream =
+  std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(aName, std::ios::out | std::ios::binary);
   aStream->precision(15);
   if (aStream.get() == NULL || !aStream->good())
@@ -105,7 +102,7 @@ static int save(Draw_Interpretor& theDI,
   try
   {
     occ::handle<Draw_ProgressIndicator> aProgress     = new Draw_ProgressIndicator(theDI, 1);
-    const char*               aToolTypeName = aDrawable->DynamicType()->Name();
+    const char*                         aToolTypeName = aDrawable->DynamicType()->Name();
     *aStream << aToolTypeName << "\n";
     Draw::SetProgressBar(aProgress);
     aDrawable->Save(*aStream);
@@ -119,7 +116,7 @@ static int save(Draw_Interpretor& theDI,
   *aStream << "0\n\n";
   Draw::SetProgressBar(occ::handle<Draw_ProgressIndicator>());
 
-  errno                       = 0;
+  errno           = 0;
   const bool aRes = aStream->good() && !errno;
   if (!aRes)
   {
@@ -134,9 +131,7 @@ static int save(Draw_Interpretor& theDI,
 //=======================================================================
 // read
 //=======================================================================
-static int restore(Draw_Interpretor& theDI,
-                                int  theNbArgs,
-                                const char**      theArgVec)
+static int restore(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs != 3)
   {
@@ -147,7 +142,7 @@ static int restore(Draw_Interpretor& theDI,
   const char* aVarName  = theArgVec[2];
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aStream     = aFileSystem->OpenIStream(aFileName, std::ios::in);
+  std::shared_ptr<std::istream>      aStream = aFileSystem->OpenIStream(aFileName, std::ios::in);
   if (aStream.get() == NULL)
   {
     theDI << "Error: cannot open file for reading: '" << aFileName << "'";
@@ -341,8 +336,8 @@ static int draw(Draw_Interpretor&, int n, const char** a)
     Message::SendFail() << "bad view number in draw";
     return 1;
   }
-  int mo = Draw::Atoi(a[2]);
-  Draw_Display     d  = dout.MakeDisplay(id);
+  int          mo = Draw::Atoi(a[2]);
+  Draw_Display d  = dout.MakeDisplay(id);
   d.SetMode(mo);
   int i;
   for (i = 3; i < n; i++)
@@ -436,8 +431,8 @@ static int dname(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  Standard_PCharacter     pC;
-  int        i;
+  Standard_PCharacter          pC;
+  int                          i;
   occ::handle<Draw_Drawable3D> aD;
   //
   for (i = 1; i < n; ++i)
@@ -529,8 +524,8 @@ static int set(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  int i   = 1;
-  double    val = 0;
+  int    i   = 1;
+  double val = 0;
   for (i = 1; i < n; i += 2)
   {
     val = 0;
@@ -617,15 +612,15 @@ static int pick(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
     return 1;
-  int id;
-  int X, Y, b;
+  int  id;
+  int  X, Y, b;
   bool wait = (n == 6);
   if (!wait)
     id = Draw::Atoi(a[1]);
   dout.Select(id, X, Y, b, wait);
-  double z = dout.Zoom(id);
-  gp_Pnt        P((double)X / z, (double)Y / z, 0);
-  gp_Trsf       T;
+  double  z = dout.Zoom(id);
+  gp_Pnt  P((double)X / z, (double)Y / z, 0);
+  gp_Trsf T;
   dout.GetTrsf(id, T);
   T.Invert();
   P.Transform(T);
@@ -652,9 +647,9 @@ static int lastrep(Draw_Interpretor& di, int n, const char** a)
   }
   else if (n == 6)
   {
-    double z = dout.Zoom(p_id);
-    gp_Pnt        P((double)p_X / z, (double)p_Y / z, 0);
-    gp_Trsf       T;
+    double  z = dout.Zoom(p_id);
+    gp_Pnt  P((double)p_X / z, (double)p_Y / z, 0);
+    gp_Trsf T;
     dout.GetTrsf(p_id, T);
     T.Invert();
     P.Transform(T);
@@ -720,9 +715,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
 
 //=================================================================================================
 
-void Draw::Set(const char*         name,
-               const occ::handle<Draw_Drawable3D>& D,
-               const bool         displ)
+void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D, const bool displ)
 {
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
@@ -738,7 +731,7 @@ void Draw::Set(const char*         name,
   else
   {
     // Check if the variable with the same name exists
-    ClientData              aCD = Tcl_VarTraceInfo(aCommands.Interp(),
+    ClientData                   aCD = Tcl_VarTraceInfo(aCommands.Interp(),
                                       name,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
@@ -795,13 +788,12 @@ void Draw::Set(const char* theName, const double theValue)
 
 //=================================================================================================
 
-occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName,
-                                          bool  theToAllowPick)
+occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToAllowPick)
 {
   const bool toPick = ((theName[0] == '.') && (theName[1] == '\0'));
   if (!toPick)
   {
-    ClientData              aCD       = Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),
+    ClientData                   aCD       = Tcl_VarTraceInfo(Draw::GetInterpretor().Interp(),
                                       theName,
                                       TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                                       tracevar,
@@ -839,10 +831,7 @@ bool Draw::Get(const char* theName, double& theValue)
 
 //=================================================================================================
 
-void Draw::LastPick(int& view,
-                    int& X,
-                    int& Y,
-                    int& button)
+void Draw::LastPick(int& view, int& X, int& Y, int& button)
 {
   view   = p_id;
   X      = p_X;
@@ -963,8 +952,8 @@ static double ParseValue(char*& theName)
         // search for a function ...
         *p = c;
         // count arguments
-        int argc = 1;
-        char*            q    = p;
+        int   argc = 1;
+        char* q    = p;
         while ((*q == ' ') || (*q == '\t'))
         {
           ++q;
@@ -972,7 +961,7 @@ static double ParseValue(char*& theName)
         if (*q == '(')
         {
           int pc = 1;
-          argc                = 2;
+          argc   = 2;
           q++;
           while ((pc > 0) && *q)
           {
@@ -1139,7 +1128,7 @@ double Draw::Atof(const char* theName)
   char*                    n = &aBuff.ChangeFirst();
   strcpy(n, theName);
   Draw_ParseFailed = false;
-  double x  = Parse(n);
+  double x         = Parse(n);
   while ((*n == ' ') || (*n == '\t'))
     n++;
   if (*n)
@@ -1170,8 +1159,7 @@ int Draw::Atoi(const char* name)
 
 //=================================================================================================
 
-bool Draw::ParseInteger(const char* theExpressionString,
-                        int&      theParsedIntegerValue)
+bool Draw::ParseInteger(const char* theExpressionString, int& theParsedIntegerValue)
 {
   double aParsedRealValue = 0.0;
   if (!ParseReal(theExpressionString, aParsedRealValue))
@@ -1252,14 +1240,14 @@ void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
   Draw_Number::RegisterFactory();
 
   // set up some variables
-  const char*         n;
+  const char*              n;
   occ::handle<Draw_Axis3D> theAxes3d = new Draw_Axis3D(gp_Pnt(0, 0, 0), Draw_bleu, 20);
-  n                             = "axes";
+  n                                  = "axes";
   Draw::Set(n, theAxes3d);
   theAxes3d->Protected(true);
 
   occ::handle<Draw_Axis2D> theAxes2d = new Draw_Axis2D(gp_Pnt2d(0, 0), Draw_bleu, 20);
-  n                             = "axes2d";
+  n                                  = "axes2d";
   Draw::Set(n, theAxes2d);
   theAxes2d->Protected(true);
 
@@ -1275,7 +1263,7 @@ void Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
   Draw::Set(n, RealFirst());
   Draw::Get(n)->Protected(true);
 
-  n                         = "grid";
+  n                              = "grid";
   occ::handle<Draw_Grid> theGrid = new Draw_Grid();
   Draw::Set(n, theGrid);
   theGrid->Protected(true);

@@ -53,8 +53,7 @@ void Expr_NamedUnknown::Assign(const occ::handle<Expr_GeneralExpression>& exp)
   myExpression = exp;
 }
 
-const occ::handle<Expr_GeneralExpression>& Expr_NamedUnknown::SubExpression(
-  const int I) const
+const occ::handle<Expr_GeneralExpression>& Expr_NamedUnknown::SubExpression(const int I) const
 {
   if (!IsAssigned())
   {
@@ -191,7 +190,7 @@ occ::handle<Expr_GeneralExpression> Expr_NamedUnknown::ShallowSimplified() const
 }
 
 double Expr_NamedUnknown::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                          const NCollection_Array1<double>&      vals) const
+                                   const NCollection_Array1<double>& vals) const
 {
   if (!IsAssigned())
   {

@@ -58,7 +58,7 @@ static void BREP_sortonparameter2(NCollection_List<occ::handle<TopOpeBRepDS_Inte
   size_t            sad = sizeof(BOA_t);
   BOA_t*            T   = (BOA_t*)Standard::Allocate(sng * sad);
   TopOpeBRepDS_Kind K;
-  int  G, j = 0;
+  int               G, j = 0;
   for (tki.Init(); tki.More(); tki.Next(), j++)
     T[j] = &(tki.ChangeValue(K, G));
   qsort(T, sng, sad, compll);
@@ -74,7 +74,7 @@ static void BREP_sortonparameter2(NCollection_List<occ::handle<TopOpeBRepDS_Inte
 Standard_EXPORT void BREP_sortonparameter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  int            i = 1, n = HDS->NbShapes();
+  int                         i = 1, n = HDS->NbShapes();
   for (; i <= n; i++)
   {
     const TopoDS_Shape& s = HDS->Shape(i);

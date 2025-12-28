@@ -38,7 +38,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <ChFi3d.hxx>
@@ -53,10 +52,10 @@ static void CorrectOrientationOfTangent(gp_Vec&              TangVec,
     TangVec.Reverse();
 }
 
-static bool CheckMixedContinuity(const TopoDS_Edge&  theEdge,
-                                             const TopoDS_Face&  theFace1,
-                                             const TopoDS_Face&  theFace2,
-                                             const double theAngTol);
+static bool CheckMixedContinuity(const TopoDS_Edge& theEdge,
+                                 const TopoDS_Face& theFace1,
+                                 const TopoDS_Face& theFace2,
+                                 const double       theAngTol);
 
 //=================================================================================================
 
@@ -77,10 +76,10 @@ BRepOffset_Analyse::BRepOffset_Analyse(const TopoDS_Shape& S, const double Angle
 
 //=================================================================================================
 
-static void EdgeAnalyse(const TopoDS_Edge&         E,
-                        const TopoDS_Face&         F1,
-                        const TopoDS_Face&         F2,
-                        const double        SinTol,
+static void EdgeAnalyse(const TopoDS_Edge&                     E,
+                        const TopoDS_Face&                     F1,
+                        const TopoDS_Face&                     F2,
+                        const double                           SinTol,
                         NCollection_List<BRepOffset_Interval>& LI)
 {
   double f, l;
@@ -114,8 +113,8 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
     bool isMixedConcavity = false;
     if (isTwoSplines)
     {
-      double anAngTol = 0.1;
-      isMixedConcavity       = CheckMixedContinuity(E, F1, F2, anAngTol);
+      double anAngTol  = 0.1;
+      isMixedConcavity = CheckMixedContinuity(E, F1, F2, anAngTol);
     }
 
     if (!isMixedConcavity)
@@ -141,13 +140,13 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
 
 //=================================================================================================
 
-bool CheckMixedContinuity(const TopoDS_Edge&  theEdge,
-                                      const TopoDS_Face&  theFace1,
-                                      const TopoDS_Face&  theFace2,
-                                      const double theAngTol)
+bool CheckMixedContinuity(const TopoDS_Edge& theEdge,
+                          const TopoDS_Face& theFace1,
+                          const TopoDS_Face& theFace2,
+                          const double       theAngTol)
 {
-  bool aMixedCont = false;
-  GeomAbs_Shape    aCurrOrder = BRep_Tool::Continuity(theEdge, theFace1, theFace2);
+  bool          aMixedCont = false;
+  GeomAbs_Shape aCurrOrder = BRep_Tool::Continuity(theEdge, theFace1, theFace2);
   if (aCurrOrder > GeomAbs_C0)
   {
     // Method BRep_Tool::Continuity(...) always returns minimal continuity between faces
@@ -221,9 +220,9 @@ bool CheckMixedContinuity(const TopoDS_Edge&  theEdge,
 
   // Check for mixed concavity: convex in some regions, concave in others.
   const double aDelta      = (aLast - aFirst) / (aNbSamples - 1);
-  bool                aHasConvex  = false;
-  bool                aHasConcave = false;
-  int    aNbValid    = 0;
+  bool         aHasConvex  = false;
+  bool         aHasConcave = false;
+  int          aNbValid    = 0;
 
   for (int i = 1; i <= aNbSamples; i++)
   {
@@ -250,8 +249,8 @@ bool CheckMixedContinuity(const TopoDS_Edge&  theEdge,
     if (!aCont.IsG1() && (!aHasConvex || !aHasConcave))
     {
       const double anAngle = aCont.C0Value();
-      aHasConvex                  = aHasConvex || (anAngle > M_PI_2 + theAngTol);
-      aHasConcave                 = aHasConcave || (anAngle < M_PI_2 - theAngTol);
+      aHasConvex           = aHasConvex || (anAngle > M_PI_2 + theAngTol);
+      aHasConcave          = aHasConcave || (anAngle < M_PI_2 - theAngTol);
     }
   }
 
@@ -268,7 +267,10 @@ bool CheckMixedContinuity(const TopoDS_Edge&  theEdge,
 
 //=================================================================================================
 
-static void BuildAncestors(const TopoDS_Shape& S, NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& MA)
+static void BuildAncestors(
+  const TopoDS_Shape& S,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    MA)
 {
   MA.Clear();
   TopExp::MapShapesAndUniqueAncestors(S, TopAbs_VERTEX, TopAbs_EDGE, MA);
@@ -278,7 +280,7 @@ static void BuildAncestors(const TopoDS_Shape& S, NCollection_IndexedDataMap<Top
 //=================================================================================================
 
 void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
-                                 const double          Angle,
+                                 const double                 Angle,
                                  const Message_ProgressRange& theRange)
 {
   myShape = S;
@@ -287,16 +289,16 @@ void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
   myReplacement.Clear();
   myDescendants.Clear();
 
-  myAngle              = Angle;
+  myAngle       = Angle;
   double SinTol = std::abs(std::sin(Angle));
 
   // Build ancestors.
   BuildAncestors(S, myAncestors);
 
-  NCollection_List<TopoDS_Shape>  aLETang;
-  TopExp_Explorer       Exp(S.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-  Message_ProgressScope aPSOuter(theRange, NULL, 2);
-  Message_ProgressScope aPS(aPSOuter.Next(), "Performing edges analysis", 1, true);
+  NCollection_List<TopoDS_Shape> aLETang;
+  TopExp_Explorer                Exp(S.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+  Message_ProgressScope          aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope          aPS(aPSOuter.Next(), "Performing edges analysis", 1, true);
   for (; Exp.More(); Exp.Next(), aPS.Next())
   {
     if (!aPS.More())
@@ -326,7 +328,7 @@ void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
       }
       else if (L.Extent() == 1)
       {
-        double      U1, U2;
+        double             U1, U2;
         const TopoDS_Face& F = TopoDS::Face(L.First());
         BRep_Tool::Range(E, F, U1, U2);
         BRepOffset_Interval Inter(U1, U2, ChFiDS_Other);
@@ -356,8 +358,8 @@ void BRepOffset_Analyse::Perform(const TopoDS_Shape&          S,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&  theLE,
-                                           const Message_ProgressRange& theRange)
+void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>& theLE,
+                                           const Message_ProgressRange&          theRange)
 {
   if (theLE.IsEmpty() || myFaceOffsetMap.IsEmpty())
   {
@@ -374,8 +376,8 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   // Bind vertices of the tangent edges with connected edges
   // of the face with smaller offset value
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aDMVEMin;
-  Message_ProgressScope        aPSOuter(theRange, NULL, 3);
-  Message_ProgressScope        aPS1(aPSOuter.Next(),
+  Message_ProgressScope aPSOuter(theRange, NULL, 3);
+  Message_ProgressScope aPS1(aPSOuter.Next(),
                              "Binding vertices with connected edges",
                              theLE.Size());
   for (NCollection_List<TopoDS_Shape>::Iterator it(theLE); it.More(); it.Next(), aPS1.Next())
@@ -384,7 +386,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
     {
       return;
     }
-    const TopoDS_Shape&         aE  = it.Value();
+    const TopoDS_Shape&                   aE  = it.Value();
     const NCollection_List<TopoDS_Shape>& aLA = Ancestors(aE);
 
     const TopoDS_Shape &aF1 = aLA.First(), aF2 = aLA.Last();
@@ -425,7 +427,8 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
     return;
 
   // Create map of Face ancestors for the vertices on tangent edges
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aDMVFAnc;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aDMVFAnc;
 
   Message_ProgressScope aPS2(aPSOuter.Next(), "Creating map of Face ancestors", theLE.Size());
   for (NCollection_List<TopoDS_Shape>::Iterator itE(theLE); itE.More(); itE.Next(), aPS2.Next())
@@ -447,12 +450,12 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
 
     for (TopoDS_Iterator itV(aE); itV.More(); itV.Next())
     {
-      const TopoDS_Shape&         aV   = itV.Value();
-      NCollection_List<TopoDS_Shape>*       pLFA = aDMVFAnc.Bound(aV, NCollection_List<TopoDS_Shape>());
+      const TopoDS_Shape&             aV   = itV.Value();
+      NCollection_List<TopoDS_Shape>* pLFA = aDMVFAnc.Bound(aV, NCollection_List<TopoDS_Shape>());
       const NCollection_List<TopoDS_Shape>& aLVA = Ancestors(aV);
       for (NCollection_List<TopoDS_Shape>::Iterator itLVA(aLVA); itLVA.More(); itLVA.Next())
       {
-        const TopoDS_Edge&               aEA        = TopoDS::Edge(itLVA.Value());
+        const TopoDS_Edge&                           aEA        = TopoDS::Edge(itLVA.Value());
         const NCollection_List<BRepOffset_Interval>* pIntervals = myMapEdgeType.Seek(aEA);
         if (!pIntervals || pIntervals->IsEmpty())
           continue;
@@ -475,8 +478,9 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   double aSinTol = std::abs(std::sin(myAngle));
 
   // Make blocks of connected edges
-  NCollection_List<NCollection_List<TopoDS_Shape>>                aLCB;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMVEMap;
+  NCollection_List<NCollection_List<TopoDS_Shape>> aLCB;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aMVEMap;
 
   BOPTools_AlgoTools::MakeConnexityBlocks(aCETangent, TopAbs_VERTEX, TopAbs_EDGE, aLCB, aMVEMap);
 
@@ -484,7 +488,8 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   Message_ProgressScope aPS3(aPSOuter.Next(),
                              "Analyzing blocks to find co-planar edges",
                              aLCB.Size());
-  for (NCollection_List<NCollection_List<TopoDS_Shape>>::Iterator itLCB(aLCB); itLCB.More(); itLCB.Next(), aPS3.Next())
+  for (NCollection_List<NCollection_List<TopoDS_Shape>>::Iterator itLCB(aLCB); itLCB.More();
+       itLCB.Next(), aPS3.Next())
   {
     if (!aPS3.More())
     {
@@ -503,7 +508,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
       BRep_Builder().MakeCompound(aBlock);
       BRep_Builder().Add(aBlock, aE1.Oriented(TopAbs_FORWARD));
 
-      double               anOffset = anEdgeOffsetMap.Find(aE1);
+      double                                anOffset = anEdgeOffsetMap.Find(aE1);
       const NCollection_List<TopoDS_Shape>& aLF1     = Ancestors(aE1);
 
       gp_Dir aDN1;
@@ -534,15 +539,18 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
       if (!aMP.IsDone())
         continue;
 
-      NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aPrismAncestors;
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+        aPrismAncestors;
       TopExp::MapShapesAndAncestors(aMP.Shape(), TopAbs_EDGE, TopAbs_FACE, aPrismAncestors);
       TopExp::MapShapesAndAncestors(aMP.Shape(), TopAbs_VERTEX, TopAbs_EDGE, aPrismAncestors);
 
       for (TopoDS_Iterator itE(aBlock); itE.More(); itE.Next())
       {
-        const TopoDS_Edge&          aE    = TopoDS::Edge(itE.Value());
+        const TopoDS_Edge&                    aE    = TopoDS::Edge(itE.Value());
         const NCollection_List<TopoDS_Shape>& aLG   = aMP.Generated(aE);
-        TopoDS_Face                 aFNew = TopoDS::Face(aLG.First());
+        TopoDS_Face                           aFNew = TopoDS::Face(aLG.First());
 
         NCollection_List<TopoDS_Shape>& aLA = myAncestors.ChangeFromKey(aE);
 
@@ -574,11 +582,11 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
             }
           }
 
-          gp_Pnt2d                  aP2d;
-          gp_Pnt                    aPInF;
-          double             f, l;
+          gp_Pnt2d                       aP2d;
+          gp_Pnt                         aPInF;
+          double                         f, l;
           const occ::handle<Geom_Curve>& aC3D  = BRep_Tool::Curve(aEInF, f, l);
-          gp_Pnt                    aPOnE = aC3D->Value((f + l) / 2.);
+          gp_Pnt                         aPOnE = aC3D->Value((f + l) / 2.);
           BOPTools_AlgoTools3D::PointNearEdge(aEInF,
                                               TopoDS::Face(aFOpposite),
                                               (f + l) / 2.,
@@ -732,15 +740,18 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
                     aSinTol,
                     myMapEdgeType(aEOpposite));
 
-        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pEEMap = myReplacement.ChangeSeek(aFToRemove);
+        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pEEMap =
+          myReplacement.ChangeSeek(aFToRemove);
         if (!pEEMap)
-          pEEMap = myReplacement.Bound(aFToRemove, NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>());
+          pEEMap = myReplacement.Bound(
+            aFToRemove,
+            NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>());
         pEEMap->Bind(aE, aEOpposite);
 
         // Add ancestors for the vertices
         for (TopoDS_Iterator itV(aEOpposite); itV.More(); itV.Next())
         {
-          const TopoDS_Shape&         aV   = itV.Value();
+          const TopoDS_Shape&                   aV   = itV.Value();
           const NCollection_List<TopoDS_Shape>& aLVA = aPrismAncestors.FindFromKey(aV);
           myAncestors.Add(aV, aLVA);
         }
@@ -757,7 +768,8 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
 const TopoDS_Edge& BRepOffset_Analyse::EdgeReplacement(const TopoDS_Face& theF,
                                                        const TopoDS_Edge& theE) const
 {
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pEE = myReplacement.Seek(theF);
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pEE =
+    myReplacement.Seek(theF);
   if (!pEE)
     return theE;
 
@@ -779,8 +791,8 @@ TopoDS_Shape BRepOffset_Analyse::Generated(const TopoDS_Shape& theS) const
 
 //=================================================================================================
 
-const NCollection_List<TopoDS_Shape>* BRepOffset_Analyse::Descendants(const TopoDS_Shape&    theS,
-                                                            const bool theUpdate) const
+const NCollection_List<TopoDS_Shape>* BRepOffset_Analyse::Descendants(const TopoDS_Shape& theS,
+                                                                      const bool theUpdate) const
 {
   if (myDescendants.IsEmpty() || theUpdate)
   {
@@ -788,7 +800,7 @@ const NCollection_List<TopoDS_Shape>* BRepOffset_Analyse::Descendants(const Topo
     const int aNbA = myAncestors.Extent();
     for (int i = 1; i <= aNbA; ++i)
     {
-      const TopoDS_Shape&         aSS = myAncestors.FindKey(i);
+      const TopoDS_Shape&                   aSS = myAncestors.FindKey(i);
       const NCollection_List<TopoDS_Shape>& aLA = myAncestors(i);
 
       for (NCollection_List<TopoDS_Shape>::Iterator it(aLA); it.More(); it.Next())
@@ -833,17 +845,17 @@ const NCollection_List<BRepOffset_Interval>& BRepOffset_Analyse::Type(const Topo
 
 //=================================================================================================
 
-void BRepOffset_Analyse::Edges(const TopoDS_Vertex&         V,
-                               const ChFiDS_TypeOfConcavity T,
-                               NCollection_List<TopoDS_Shape>&        LE) const
+void BRepOffset_Analyse::Edges(const TopoDS_Vertex&            V,
+                               const ChFiDS_TypeOfConcavity    T,
+                               NCollection_List<TopoDS_Shape>& LE) const
 {
   LE.Clear();
-  const NCollection_List<TopoDS_Shape>&        L = Ancestors(V);
+  const NCollection_List<TopoDS_Shape>&    L = Ancestors(V);
   NCollection_List<TopoDS_Shape>::Iterator it(L);
 
   for (; it.More(); it.Next())
   {
-    const TopoDS_Edge&               E          = TopoDS::Edge(it.Value());
+    const TopoDS_Edge&                           E          = TopoDS::Edge(it.Value());
     const NCollection_List<BRepOffset_Interval>* pIntervals = myMapEdgeType.Seek(E);
     if (pIntervals && pIntervals->Extent() > 0)
     {
@@ -865,9 +877,9 @@ void BRepOffset_Analyse::Edges(const TopoDS_Vertex&         V,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::Edges(const TopoDS_Face&           F,
-                               const ChFiDS_TypeOfConcavity T,
-                               NCollection_List<TopoDS_Shape>&        LE) const
+void BRepOffset_Analyse::Edges(const TopoDS_Face&              F,
+                               const ChFiDS_TypeOfConcavity    T,
+                               NCollection_List<TopoDS_Shape>& LE) const
 {
   LE.Clear();
   TopExp_Explorer exp(F, TopAbs_EDGE);
@@ -876,7 +888,7 @@ void BRepOffset_Analyse::Edges(const TopoDS_Face&           F,
   {
     const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
 
-    const NCollection_List<BRepOffset_Interval>&        Lint = Type(E);
+    const NCollection_List<BRepOffset_Interval>&    Lint = Type(E);
     NCollection_List<BRepOffset_Interval>::Iterator it(Lint);
     for (; it.More(); it.Next())
     {
@@ -888,13 +900,13 @@ void BRepOffset_Analyse::Edges(const TopoDS_Face&           F,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&    Edge,
-                                      const TopoDS_Vertex&  Vertex,
+void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&              Edge,
+                                      const TopoDS_Vertex&            Vertex,
                                       NCollection_List<TopoDS_Shape>& Edges) const
 {
   gp_Vec V, VRef;
 
-  double     U, URef;
+  double            U, URef;
   BRepAdaptor_Curve C3d, C3dRef;
 
   URef   = BRep_Tool::Parameter(Vertex, Edge);
@@ -906,7 +918,7 @@ void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&    Edge,
 
   Edges.Clear();
 
-  const NCollection_List<TopoDS_Shape>&        Anc = Ancestors(Vertex);
+  const NCollection_List<TopoDS_Shape>&    Anc = Ancestors(Vertex);
   NCollection_List<TopoDS_Shape>::Iterator it(Anc);
   for (; it.More(); it.Next())
   {
@@ -928,10 +940,11 @@ void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&    Edge,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>& List, const ChFiDS_TypeOfConcavity T) const
+void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>& List,
+                                 const ChFiDS_TypeOfConcavity    T) const
 {
   List.Clear();
-  BRep_Builder        B;
+  BRep_Builder                                           B;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Map;
 
   TopExp_Explorer Fexp;
@@ -953,12 +966,12 @@ void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>& List, const ChF
 
 //=================================================================================================
 
-void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>&        List,
-                                 const ChFiDS_TypeOfConcavity T1,
-                                 const ChFiDS_TypeOfConcavity T2) const
+void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>& List,
+                                 const ChFiDS_TypeOfConcavity    T1,
+                                 const ChFiDS_TypeOfConcavity    T2) const
 {
   List.Clear();
-  BRep_Builder        B;
+  BRep_Builder                                           B;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Map;
 
   TopExp_Explorer Fexp;
@@ -980,18 +993,18 @@ void BRepOffset_Analyse::Explode(NCollection_List<TopoDS_Shape>&        List,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::AddFaces(const TopoDS_Face&           Face,
-                                  TopoDS_Compound&             Co,
-                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&         Map,
-                                  const ChFiDS_TypeOfConcavity T) const
+void BRepOffset_Analyse::AddFaces(const TopoDS_Face&                                      Face,
+                                  TopoDS_Compound&                                        Co,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Map,
+                                  const ChFiDS_TypeOfConcavity                            T) const
 {
-  BRep_Builder                B;
+  BRep_Builder                          B;
   const NCollection_List<TopoDS_Shape>* pLE = Descendants(Face);
   if (!pLE)
     return;
   for (NCollection_List<TopoDS_Shape>::Iterator it(*pLE); it.More(); it.Next())
   {
-    const TopoDS_Edge&               E  = TopoDS::Edge(it.Value());
+    const TopoDS_Edge&                           E  = TopoDS::Edge(it.Value());
     const NCollection_List<BRepOffset_Interval>& LI = Type(E);
     if (!LI.IsEmpty() && LI.First().Type() == T)
     {
@@ -1014,19 +1027,19 @@ void BRepOffset_Analyse::AddFaces(const TopoDS_Face&           Face,
 
 //=================================================================================================
 
-void BRepOffset_Analyse::AddFaces(const TopoDS_Face&           Face,
-                                  TopoDS_Compound&             Co,
-                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&         Map,
-                                  const ChFiDS_TypeOfConcavity T1,
-                                  const ChFiDS_TypeOfConcavity T2) const
+void BRepOffset_Analyse::AddFaces(const TopoDS_Face&                                      Face,
+                                  TopoDS_Compound&                                        Co,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Map,
+                                  const ChFiDS_TypeOfConcavity                            T1,
+                                  const ChFiDS_TypeOfConcavity                            T2) const
 {
-  BRep_Builder                B;
+  BRep_Builder                          B;
   const NCollection_List<TopoDS_Shape>* pLE = Descendants(Face);
   if (!pLE)
     return;
   for (NCollection_List<TopoDS_Shape>::Iterator it(*pLE); it.More(); it.Next())
   {
-    const TopoDS_Edge&               E  = TopoDS::Edge(it.Value());
+    const TopoDS_Edge&                           E  = TopoDS::Edge(it.Value());
     const NCollection_List<BRepOffset_Interval>& LI = Type(E);
     if (!LI.IsEmpty() && (LI.First().Type() == T1 || LI.First().Type() == T2))
     {

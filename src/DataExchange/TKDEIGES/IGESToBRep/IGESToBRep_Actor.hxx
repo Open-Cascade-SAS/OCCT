@@ -50,13 +50,12 @@ public:
   //! Return "thecontinuity"
   Standard_EXPORT int GetContinuity() const;
 
-  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start)
-    override;
+  Standard_EXPORT virtual bool Recognize(const occ::handle<Standard_Transient>& start) override;
 
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Standard_Transient>&        start,
     const occ::handle<Transfer_TransientProcess>& TP,
-    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&                  theProgress = Message_ProgressRange()) override;
 
   //! Returns the tolerance which was actually used, either from
   //! the file or from statics
@@ -66,8 +65,8 @@ public:
 
 private:
   occ::handle<Interface_InterfaceModel> themodel;
-  int                 thecontinuity;
-  double                    theeps;
+  int                                   thecontinuity;
+  double                                theeps;
 };
 
 #endif // _IGESToBRep_Actor_HeaderFile

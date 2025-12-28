@@ -54,12 +54,12 @@ public:
 
   Standard_EXPORT void ClosedVertices(const bool B);
 
-  Standard_EXPORT static double AdjustCase(const double      p1,
-                                                  const TopAbs_Orientation o,
-                                                  const double      first,
-                                                  const double      period,
-                                                  const double      tol,
-                                                  int&        cas);
+  Standard_EXPORT static double AdjustCase(const double             p1,
+                                           const TopAbs_Orientation o,
+                                           const double             first,
+                                           const double             period,
+                                           const double             tol,
+                                           int&                     cas);
 
 private:
   Standard_EXPORT TopAbs_State CompareOnNonPeriodic();
@@ -71,17 +71,17 @@ private:
   Standard_EXPORT bool ToAdjustOnPeriodic() const;
 
   TopoDS_Edge        myEdge;
-  bool   myEdgePeriodic;
-  double      myFirst;
-  double      myPeriod;
-  bool   mySameParameters;
-  bool   myClosedVertices;
-  double      myP1;
-  double      myP2;
+  bool               myEdgePeriodic;
+  double             myFirst;
+  double             myPeriod;
+  bool               mySameParameters;
+  bool               myClosedVertices;
+  double             myP1;
+  double             myP2;
   TopAbs_Orientation myO1;
   TopAbs_Orientation myO2;
-  int   myCas1;
-  int   myCas2;
+  int                myCas1;
+  int                myCas2;
 };
 
 #endif // _TopOpeBRepBuild_PaveClassifier_HeaderFile

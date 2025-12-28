@@ -32,11 +32,9 @@ public:
   //! Constructs an empty or selection filter.
   Standard_EXPORT SelectMgr_OrFilter();
 
-  Standard_EXPORT bool
-    IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_OrFilter, SelectMgr_CompositionFilter)
-
 };
 
 #endif // _SelectMgr_OrFilter_HeaderFile

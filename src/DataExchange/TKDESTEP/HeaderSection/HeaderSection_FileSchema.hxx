@@ -33,15 +33,18 @@ public:
   //! Returns a FileSchema
   Standard_EXPORT HeaderSection_FileSchema();
 
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSchemaIdentifiers);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&
+      aSchemaIdentifiers);
 
   Standard_EXPORT void SetSchemaIdentifiers(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSchemaIdentifiers);
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&
+      aSchemaIdentifiers);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> SchemaIdentifiers() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
+                  SchemaIdentifiers() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(
-    const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(const int num) const;
 
   Standard_EXPORT int NbSchemaIdentifiers() const;
 

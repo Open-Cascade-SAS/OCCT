@@ -72,14 +72,14 @@ occ::handle<GccInt_Bisec> GccAna_CircLin2dBisec::ThisSolution(const int Index) c
     throw Standard_OutOfRange();
 
   occ::handle<GccInt_Bisec> bissol;
-  double        xdir    = line.Direction().X();
-  double        ydir    = line.Direction().Y();
-  double        xloc    = line.Location().X();
-  double        yloc    = line.Location().Y();
-  double        xcencir = circle.Location().X();
-  double        ycencir = circle.Location().Y();
-  double        R1      = circle.Radius();
-  double        dist    = line.Distance(circle.Location());
+  double                    xdir    = line.Direction().X();
+  double                    ydir    = line.Direction().Y();
+  double                    xloc    = line.Location().X();
+  double                    yloc    = line.Location().Y();
+  double                    xcencir = circle.Location().X();
+  double                    ycencir = circle.Location().Y();
+  double                    R1      = circle.Radius();
+  double                    dist    = line.Distance(circle.Location());
   if ((std::abs(line.Distance(circle.Location()) - circle.Radius()) <= gp::Resolution())
       && (Index == 1))
   {

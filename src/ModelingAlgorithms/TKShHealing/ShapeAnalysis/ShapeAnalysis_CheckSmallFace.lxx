@@ -28,44 +28,37 @@ inline double ShapeAnalysis_CheckSmallFace::Tolerance() const
   return myPrecision;
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusSpot(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusSpot(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSpot, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusStrip(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusStrip(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusStrip, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusPin(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusPin(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusPin, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusTwisted(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusTwisted(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusTwisted, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusPinFace(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusPinFace(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusPinFace, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusPinEdges(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusPinEdges(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusPinEdges, status);
 }
 
-inline bool ShapeAnalysis_CheckSmallFace::StatusSplitVert(
-  const ShapeExtend_Status status) const
+inline bool ShapeAnalysis_CheckSmallFace::StatusSplitVert(const ShapeExtend_Status status) const
 {
   return ShapeExtend::DecodeStatus(myStatusSplitVert, status);
 }

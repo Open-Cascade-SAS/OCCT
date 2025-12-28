@@ -83,13 +83,13 @@ public:
 
   int GetDepthV() const;
 
-  Standard_EXPORT IntTools_Range GetRangeU(const double    theFirstU,
-                                           const double    theLastU,
-                                           const int theNbSampleU) const;
+  Standard_EXPORT IntTools_Range GetRangeU(const double theFirstU,
+                                           const double theLastU,
+                                           const int    theNbSampleU) const;
 
-  Standard_EXPORT IntTools_Range GetRangeV(const double    theFirstV,
-                                           const double    theLastV,
-                                           const int theNbSampleV) const;
+  Standard_EXPORT IntTools_Range GetRangeV(const double theFirstV,
+                                           const double theLastV,
+                                           const int    theNbSampleV) const;
 
   bool IsEqual(const IntTools_SurfaceRangeSample& Other) const;
 

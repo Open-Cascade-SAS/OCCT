@@ -46,7 +46,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_DocumentRepresentationType::Name
 
 //=================================================================================================
 
-void StepBasic_DocumentRepresentationType::SetName(const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_DocumentRepresentationType::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }

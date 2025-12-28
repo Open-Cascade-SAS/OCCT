@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_SelectForTransfer, IFSelect_SelectExtract)
 
 XSControl_SelectForTransfer::XSControl_SelectForTransfer() {}
 
-XSControl_SelectForTransfer::XSControl_SelectForTransfer(const occ::handle<XSControl_TransferReader>& TR)
+XSControl_SelectForTransfer::XSControl_SelectForTransfer(
+  const occ::handle<XSControl_TransferReader>& TR)
 {
   theTR = TR;
 }
@@ -48,10 +49,9 @@ occ::handle<XSControl_TransferReader> XSControl_SelectForTransfer::Reader() cons
   return theTR;
 }
 
-bool XSControl_SelectForTransfer::Sort(
-  const int /*rank*/,
-  const occ::handle<Standard_Transient>& ent,
-  const occ::handle<Interface_InterfaceModel>& /*model*/) const
+bool XSControl_SelectForTransfer::Sort(const int /*rank*/,
+                                       const occ::handle<Standard_Transient>& ent,
+                                       const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   occ::handle<Transfer_ActorOfTransientProcess> act = theAC;
   if (act.IsNull() && !theTR.IsNull())

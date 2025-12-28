@@ -18,13 +18,11 @@
 #include <MAT2d_Tool2d.hxx>
 #include <MAT_Bisector.hxx>
 #include <Standard_Integer.hxx>
-#include <MAT_Bisector.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MAT_Edge.hxx>
 #include <MAT_ListOfBisector.hxx>
 #include <MAT_ListOfEdge.hxx>
 #include <Precision.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
 //=================================================================================================
@@ -132,15 +130,15 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   occ::handle<MAT_Edge> edgetoremove;
   occ::handle<MAT_Edge> previousedge, currentedge;
 
-  int     noofbisectorstoremove;
+  int                       noofbisectorstoremove;
   occ::handle<MAT_Bisector> firstbisector, secondbisector;
   occ::handle<MAT_Edge>     edge;
-  int     intersectionpoint;
-  int     beginbisector;
-  int     noofbisectors;
+  int                       intersectionpoint;
+  int                       beginbisector;
+  int                       noofbisectors;
 
-  int        NbIterBis     = 0;
-  int        EvenNbIterBis = 10;
+  int                     NbIterBis     = 0;
+  int                     EvenNbIterBis = 10;
   NCollection_Array1<int> EdgeNumbers(1, EvenNbIterBis + 1);
   EdgeNumbers.Init(-1);
   bool ToNullifyNoofbisectorstoremove = false;
@@ -150,10 +148,10 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
   occ::handle<MAT_Bisector> bisectortoremove, lastbisector, currentbisector;
   occ::handle<MAT_Bisector> previousbisector;
 
-  int i, j, k, narea, shift, compact, all;
-  int noofedges;
-  int NumberMaxOfIte;
-  double    toleranceofconfusion;
+  int    i, j, k, narea, shift, compact, all;
+  int    noofedges;
+  int    NumberMaxOfIte;
+  double toleranceofconfusion;
 
   noofedges            = atool.NumberOfItems();
   toleranceofconfusion = atool.ToleranceOfConfusion();
@@ -831,15 +829,15 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   occ::handle<MAT_Edge> edgetoremove;
   occ::handle<MAT_Edge> previousedge, currentedge;
 
-  int     noofbisectorstoremove;
+  int                       noofbisectorstoremove;
   occ::handle<MAT_Bisector> firstbisector, secondbisector;
   occ::handle<MAT_Edge>     edge;
-  int     intersectionpoint;
-  int     beginbisector;
-  int     noofbisectors;
+  int                       intersectionpoint;
+  int                       beginbisector;
+  int                       noofbisectors;
 
-  int        NbIterBis     = 0;
-  int        EvenNbIterBis = 10;
+  int                     NbIterBis     = 0;
+  int                     EvenNbIterBis = 10;
   NCollection_Array1<int> EdgeNumbers(1, EvenNbIterBis + 1);
   EdgeNumbers.Init(-1);
   bool ToNullifyNoofbisectorstoremove = false;
@@ -849,10 +847,10 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   occ::handle<MAT_Bisector> bisectortoremove, lastbisector, currentbisector;
   occ::handle<MAT_Bisector> previousbisector;
 
-  int i, j, k, narea, shift, compact, all;
-  int noofedges;
-  int NumberMaxOfIte;
-  double    toleranceofconfusion;
+  int    i, j, k, narea, shift, compact, all;
+  int    noofedges;
+  int    NumberMaxOfIte;
+  double toleranceofconfusion;
 
   noofedges            = atool.NumberOfItems();
   toleranceofconfusion = atool.ToleranceOfConfusion();
@@ -865,8 +863,8 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
   int parama[2];
   int paramb[2];
   //
-  int aNbOfNarea1 = 0, aPrefNarea = 0, aNbMaxNarea1 = 10;
-  int aNbElts[2] = {0, 0}, aCountElts[2] = {0, 0};
+  int  aNbOfNarea1 = 0, aPrefNarea = 0, aNbMaxNarea1 = 10;
+  int  aNbElts[2] = {0, 0}, aCountElts[2] = {0, 0};
   bool isBreak = false;
 
   // -----------------------------------------
@@ -1564,16 +1562,16 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 //  function : LoadBisectorsToRemove
 //  purpose  : Chargement des bisectrices a effacer.
 //========================================================================
-void MAT2d_Mat2d::LoadBisectorsToRemove(int&           noofbisectorstoremove,
-                                        const double         distance1,
-                                        const double         distance2,
+void MAT2d_Mat2d::LoadBisectorsToRemove(int&                             noofbisectorstoremove,
+                                        const double                     distance1,
+                                        const double                     distance2,
                                         const occ::handle<MAT_Bisector>& firstbisectortoremove1,
                                         const occ::handle<MAT_Bisector>& firstbisectortoremove2,
                                         const occ::handle<MAT_Bisector>& lastbisectortoremove1,
                                         const occ::handle<MAT_Bisector>& lastbisectortoremove2)
 {
 
-  int     found, index;
+  int                       found, index;
   occ::handle<MAT_Bisector> firstbisectortoremove[2];
   occ::handle<MAT_Bisector> lastbisectortoremove[2];
 
@@ -1637,16 +1635,16 @@ void MAT2d_Mat2d::LoadBisectorsToRemove(int&           noofbisectorstoremove,
 //             Si <aside=2> Intersection de <secondbisector> avec ses
 //                descendants les plus a gauche et les plus a droite.
 //========================================================================v
-void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&               atool,
-                            const int      aside,
-                            int&           noofbisectortoremove,
+void MAT2d_Mat2d::Intersect(MAT2d_Tool2d&                    atool,
+                            const int                        aside,
+                            int&                             noofbisectortoremove,
                             const occ::handle<MAT_Bisector>& firstbisector,
                             const occ::handle<MAT_Bisector>& secondbisector)
 {
-  int     bisectornumber;
-  double        distant, saveparameter;
-  double        distance[2];
-  int     intersectionpoint;
+  int                       bisectornumber;
+  double                    distant, saveparameter;
+  double                    distance[2];
+  int                       intersectionpoint;
   occ::handle<MAT_Bisector> lastbisector, previousbisector;
   occ::handle<MAT_Bisector> firstbisectortoremove[2];
   occ::handle<MAT_Bisector> lastbisectortoremove[2];

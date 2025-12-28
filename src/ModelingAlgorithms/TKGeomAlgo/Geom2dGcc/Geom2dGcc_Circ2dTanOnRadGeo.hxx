@@ -24,13 +24,7 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
-#include <GccEnt_Position.hxx>
 class Geom2dGcc_QCurve;
 class gp_Lin2d;
 class gp_Circ2d;
@@ -73,8 +67,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                               const gp_Lin2d&         OnLine,
-                                              const double     Radius,
-                                              const double     Tolerance);
+                                              const double            Radius,
+                                              const double            Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a curve and centered on a 2d Circle
@@ -83,8 +77,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                               const gp_Circ2d&        OnCirc,
-                                              const double     Radius,
-                                              const double     Tolerance);
+                                              const double            Radius,
+                                              const double            Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a circle and centered on a 2d curve
@@ -93,8 +87,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedCirc& Qualified1,
                                               const Geom2dAdaptor_Curve&  OnCurv,
-                                              const double         Radius,
-                                              const double         Tolerance);
+                                              const double                Radius,
+                                              const double                Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a 2d Line and centered on a 2d curve
@@ -103,8 +97,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedLin& Qualified1,
                                               const Geom2dAdaptor_Curve& OnCurv,
-                                              const double        Radius,
-                                              const double        Tolerance);
+                                              const double               Radius,
+                                              const double               Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles tangent to a 2d curve and centered on a 2d curve
@@ -113,8 +107,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&    Qualified1,
                                               const Geom2dAdaptor_Curve& OnCurv,
-                                              const double        Radius,
-                                              const double        Tolerance);
+                                              const double               Radius,
+                                              const double               Tolerance);
 
   //! This methods implements the algorithms used to create
   //! 2d Circles passing through a 2d point and centered on a
@@ -123,8 +117,8 @@ public:
   //! raises NegativeValue in case of NegativeRadius.
   Standard_EXPORT Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&            Point1,
                                               const Geom2dAdaptor_Curve& OnCurv,
-                                              const double        Radius,
-                                              const double        Tolerance);
+                                              const double               Radius,
+                                              const double               Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
@@ -161,9 +155,9 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&         ParSol,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+                                 double&   ParSol,
+                                 double&   ParArg,
+                                 gp_Pnt2d& PntSol) const;
 
   //! Returns information about the center (on the curv)
   //! of the result.
@@ -174,9 +168,7 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
-  Standard_EXPORT void CenterOn3(const int Index,
-                                 double&         ParArg,
-                                 gp_Pnt2d&              PntSol) const;
+  Standard_EXPORT void CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument and False in the other cases.
@@ -187,16 +179,16 @@ public:
   Standard_EXPORT bool IsTheSame1(const int Index) const;
 
 private:
-  bool        WellDone;
-  int        NbrSol;
-  NCollection_Array1<gp_Circ2d>   cirsol;
+  bool                                WellDone;
+  int                                 NbrSol;
+  NCollection_Array1<gp_Circ2d>       cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<int> TheSame1;
-  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>    pntcen3;
-  NCollection_Array1<double>    par1sol;
-  NCollection_Array1<double>    pararg1;
-  NCollection_Array1<double>    parcen3;
+  NCollection_Array1<int>             TheSame1;
+  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>        pntcen3;
+  NCollection_Array1<double>          par1sol;
+  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<double>          parcen3;
 };
 
 #endif // _Geom2dGcc_Circ2dTanOnRadGeo_HeaderFile

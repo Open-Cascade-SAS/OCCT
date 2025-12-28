@@ -51,10 +51,10 @@ occ::handle<Geom2d_Geometry> Geom2d_TrimmedCurve::Copy() const
 //=================================================================================================
 
 Geom2d_TrimmedCurve::Geom2d_TrimmedCurve(const occ::handle<Geom2d_Curve>& C,
-                                         const double         U1,
-                                         const double         U2,
-                                         const bool      Sense,
-                                         const bool      theAdjustPeriodic)
+                                         const double                     U1,
+                                         const double                     U2,
+                                         const bool                       Sense,
+                                         const bool                       theAdjustPeriodic)
     : uTrim1(U1),
       uTrim2(U2)
 {
@@ -89,10 +89,10 @@ double Geom2d_TrimmedCurve::ReversedParameter(const double U) const
 
 //=================================================================================================
 
-void Geom2d_TrimmedCurve::SetTrim(const double    U1,
-                                  const double    U2,
-                                  const bool Sense,
-                                  const bool theAdjustPeriodic)
+void Geom2d_TrimmedCurve::SetTrim(const double U1,
+                                  const double U2,
+                                  const bool   Sense,
+                                  const bool   theAdjustPeriodic)
 {
   bool sameSense = true;
   if (U1 == U2)
@@ -263,8 +263,7 @@ void Geom2d_TrimmedCurve::Transform(const Trsf2d& T)
 
 //=================================================================================================
 
-double Geom2d_TrimmedCurve::TransformedParameter(const double U,
-                                                        const gp_Trsf2d&    T) const
+double Geom2d_TrimmedCurve::TransformedParameter(const double U, const gp_Trsf2d& T) const
 {
   return basisCurve->TransformedParameter(U, T);
 }

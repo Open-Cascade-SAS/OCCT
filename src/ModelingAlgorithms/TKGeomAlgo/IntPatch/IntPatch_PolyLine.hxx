@@ -52,9 +52,9 @@ public:
 private:
   Standard_EXPORT void Prepare();
 
-  gp_Pnt2d               pnt;
-  IntPatch_IType         typ;
-  bool       onfirst;
+  gp_Pnt2d                    pnt;
+  IntPatch_IType              typ;
+  bool                        onfirst;
   occ::handle<IntPatch_WLine> wpoly;
   occ::handle<IntPatch_RLine> rpoly;
 };

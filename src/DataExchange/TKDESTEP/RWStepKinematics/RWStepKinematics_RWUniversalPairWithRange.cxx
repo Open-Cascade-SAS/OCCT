@@ -34,7 +34,7 @@ RWStepKinematics_RWUniversalPairWithRange::RWStepKinematics_RWUniversalPairWithR
 
 void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                               theNum,
+  const int                                                 theNum,
   occ::handle<Interface_Check>&                             theArch,
   const occ::handle<StepKinematics_UniversalPairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
 
   // Inherited fields of UniversalPair
 
-  double    aUniversalPair_InputSkewAngle;
-  bool hasUniversalPair_InputSkewAngle = true;
+  double aUniversalPair_InputSkewAngle;
+  bool   hasUniversalPair_InputSkewAngle = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -162,8 +162,8 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
 
   // Own fields of UniversalPairWithRange
 
-  double    aLowerLimitFirstRotation;
-  bool hasLowerLimitFirstRotation = true;
+  double aLowerLimitFirstRotation;
+  bool   hasLowerLimitFirstRotation = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum, 14, "lower_limit_first_rotation", theArch, aLowerLimitFirstRotation);
@@ -174,8 +174,8 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
     aLowerLimitFirstRotation   = 0;
   }
 
-  double    aUpperLimitFirstRotation;
-  bool hasUpperLimitFirstRotation = true;
+  double aUpperLimitFirstRotation;
+  bool   hasUpperLimitFirstRotation = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum, 15, "upper_limit_first_rotation", theArch, aUpperLimitFirstRotation);
@@ -186,8 +186,8 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
     aUpperLimitFirstRotation   = 0;
   }
 
-  double    aLowerLimitSecondRotation;
-  bool hasLowerLimitSecondRotation = true;
+  double aLowerLimitSecondRotation;
+  bool   hasLowerLimitSecondRotation = true;
   if (theData->IsParamDefined(theNum, 16))
   {
     theData->ReadReal(theNum,
@@ -202,8 +202,8 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
     aLowerLimitSecondRotation   = 0;
   }
 
-  double    aUpperLimitSecondRotation;
-  bool hasUpperLimitSecondRotation = true;
+  double aUpperLimitSecondRotation;
+  bool   hasUpperLimitSecondRotation = true;
   if (theData->IsParamDefined(theNum, 17))
   {
     theData->ReadReal(theNum,
@@ -247,7 +247,7 @@ void RWStepKinematics_RWUniversalPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWUniversalPairWithRange::WriteStep(
-  StepData_StepWriter&                                 theSW,
+  StepData_StepWriter&                                      theSW,
   const occ::handle<StepKinematics_UniversalPairWithRange>& theEnt) const
 {
 
@@ -332,7 +332,7 @@ void RWStepKinematics_RWUniversalPairWithRange::WriteStep(
 
 void RWStepKinematics_RWUniversalPairWithRange::Share(
   const occ::handle<StepKinematics_UniversalPairWithRange>& theEnt,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of RepresentationItem

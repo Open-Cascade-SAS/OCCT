@@ -26,11 +26,12 @@ class Graphic3d_CubeMap : public Graphic3d_TextureMap
 public:
   //! Constructor defining loading cubemap from file.
   Standard_EXPORT Graphic3d_CubeMap(const TCollection_AsciiString& theFileName,
-                                    bool theToGenerateMipmaps = false);
+                                    bool                           theToGenerateMipmaps = false);
 
   //! Constructor defining direct cubemap initialization from PixMap.
-  Standard_EXPORT Graphic3d_CubeMap(const occ::handle<Image_PixMap>& thePixmap = occ::handle<Image_PixMap>(),
-                                    bool theToGenerateMipmaps = false);
+  Standard_EXPORT Graphic3d_CubeMap(
+    const occ::handle<Image_PixMap>& thePixmap            = occ::handle<Image_PixMap>(),
+    bool                             theToGenerateMipmaps = false);
 
   //! Returns whether the iterator has reached the end (true if it hasn't).
   bool More() const { return !myEndIsReached; }
@@ -62,10 +63,7 @@ public:
   bool HasMipmaps() const { return myHasMipmaps; }
 
   //! Sets whether to generate mipmaps of cubemap or not.
-  void SetMipmapsGeneration(bool theToGenerateMipmaps)
-  {
-    myHasMipmaps = theToGenerateMipmaps;
-  }
+  void SetMipmapsGeneration(bool theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
 
   //! Returns current cubemap side as compressed PixMap.
   //! Returns null handle if current side is invalid or if image is not in supported compressed
@@ -75,7 +73,8 @@ public:
 
   //! Returns PixMap containing current side of cubemap.
   //! Returns null handle if current side is invalid.
-  virtual occ::handle<Image_PixMap> Value(const occ::handle<Image_SupportedFormats>& theSupported) = 0;
+  virtual occ::handle<Image_PixMap> Value(
+    const occ::handle<Image_SupportedFormats>& theSupported) = 0;
 
   //! Sets iterator state to +X cubemap side.
   Graphic3d_CubeMap& Reset()

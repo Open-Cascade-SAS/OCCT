@@ -49,18 +49,14 @@ protected:
   {
   public:
     //! Constructor with 'Next'
-    IndexedMapNode(const TheKeyType&      theKey1,
-                   const int theIndex,
-                   NCollection_ListNode*  theNext1)
+    IndexedMapNode(const TheKeyType& theKey1, const int theIndex, NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheKeyType>(theKey1, theNext1),
           myIndex(theIndex)
     {
     }
 
     //! Constructor with 'Next'
-    IndexedMapNode(TheKeyType&&           theKey1,
-                   const int theIndex,
-                   NCollection_ListNode*  theNext1)
+    IndexedMapNode(TheKeyType&& theKey1, const int theIndex, NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheKeyType>(std::forward<TheKeyType>(theKey1), theNext1),
           myIndex(theIndex)
     {
@@ -73,7 +69,7 @@ protected:
     int& Index() noexcept { return myIndex; }
 
     //! Static deleter to be passed to BaseList
-    static void delNode(NCollection_ListNode*              theNode,
+    static void delNode(NCollection_ListNode*                   theNode,
                         occ::handle<NCollection_BaseAllocator>& theAl) noexcept
     {
       ((IndexedMapNode*)theNode)->~IndexedMapNode();
@@ -104,10 +100,7 @@ public:
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More(void) const noexcept
-    {
-      return (myMap != NULL) && (myIndex <= myMap->Extent());
-    }
+    bool More(void) const noexcept { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
 
     //! Make a step along the collection
     void Next(void) noexcept { myIndex++; }
@@ -127,7 +120,7 @@ public:
 
   private:
     NCollection_IndexedMap* myMap;   // Pointer to the map being iterated
-    int        myIndex; // Current index
+    int                     myIndex; // Current index
   };
 
   //! Shorthand for a constant iterator type.
@@ -150,7 +143,7 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_IndexedMap(const int                   theNbBuckets,
+  explicit NCollection_IndexedMap(const int                                     theNbBuckets,
                                   const occ::handle<NCollection_BaseAllocator>& theAllocator = 0L)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
@@ -219,7 +212,7 @@ public:
   {
     NCollection_ListNode** ppNewData1 = NULL;
     NCollection_ListNode** ppNewData2 = NULL;
-    int       newBuck;
+    int                    newBuck;
     if (BeginResize(theExtent, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
@@ -282,7 +275,7 @@ public:
       return aNode->Index();
     }
     const int aNewIndex = Increment();
-    aNode                            = new (this->myAllocator)
+    aNode               = new (this->myAllocator)
       IndexedMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;

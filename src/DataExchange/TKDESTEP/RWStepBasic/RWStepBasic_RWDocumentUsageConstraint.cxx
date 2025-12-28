@@ -23,7 +23,7 @@ RWStepBasic_RWDocumentUsageConstraint::RWStepBasic_RWDocumentUsageConstraint() {
 
 void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                           num,
+  const int                                             num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepBasic_DocumentUsageConstraint>& ent) const
 {
@@ -57,7 +57,7 @@ void RWStepBasic_RWDocumentUsageConstraint::ReadStep(
 }
 
 void RWStepBasic_RWDocumentUsageConstraint::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepBasic_DocumentUsageConstraint>& ent) const
 {
 
@@ -76,7 +76,7 @@ void RWStepBasic_RWDocumentUsageConstraint::WriteStep(
 
 void RWStepBasic_RWDocumentUsageConstraint::Share(
   const occ::handle<StepBasic_DocumentUsageConstraint>& ent,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
   iter.AddItem(ent->Source());
 }

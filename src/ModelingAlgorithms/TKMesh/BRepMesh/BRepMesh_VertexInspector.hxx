@@ -49,7 +49,7 @@ public:
       return myVertices->Length();
     }
 
-    int aNodeIndex             = myDelNodes.First();
+    int aNodeIndex                          = myDelNodes.First();
     myVertices->ChangeValue(aNodeIndex - 1) = theVertex;
     myDelNodes.RemoveFirst();
     return aNodeIndex;
@@ -92,10 +92,7 @@ public:
   int NbVertices() const { return myVertices->Length(); }
 
   //! Returns vertex with the given index.
-  BRepMesh_Vertex& GetVertex(int theIndex)
-  {
-    return myVertices->ChangeValue(theIndex - 1);
-  }
+  BRepMesh_Vertex& GetVertex(int theIndex) { return myVertices->ChangeValue(theIndex - 1); }
 
   //! Set reference point to be checked.
   void SetPoint(const gp_XY& thePoint)
@@ -124,16 +121,15 @@ public:
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTargetIndex);
 
   //! Checks indices for equality.
-  static bool IsEqual(const int theIndex,
-                                  const int theTargetIndex)
+  static bool IsEqual(const int theIndex, const int theTargetIndex)
   {
     return (theIndex == theTargetIndex);
   }
 
 private:
-  int                  myIndex;
-  double                     myMinSqDist;
-  double                     myTolerance[2];
+  int                               myIndex;
+  double                            myMinSqDist;
+  double                            myTolerance[2];
   Handle(IMeshData::VectorOfVertex) myVertices;
   IMeshData::ListOfInteger          myDelNodes;
   gp_XY                             myPoint;

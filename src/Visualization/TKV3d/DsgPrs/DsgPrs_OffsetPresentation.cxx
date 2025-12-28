@@ -35,22 +35,22 @@
 
 void DsgPrs_OffsetPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                     const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                    const TCollection_ExtendedString& aText,
-                                    const gp_Pnt&                     AttachmentPoint1,
-                                    const gp_Pnt&                     AttachmentPoint2,
-                                    const gp_Dir&                     aDirection,
-                                    const gp_Dir&                     aDirection2,
-                                    const gp_Pnt&                     OffsetPoint)
+                                    const TCollection_ExtendedString&      aText,
+                                    const gp_Pnt&                          AttachmentPoint1,
+                                    const gp_Pnt&                          AttachmentPoint2,
+                                    const gp_Dir&                          aDirection,
+                                    const gp_Dir&                          aDirection2,
+                                    const gp_Pnt&                          OffsetPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  gp_Lin           L1(AttachmentPoint1, aDirection);
-  gp_Lin           L2(AttachmentPoint2, aDirection2);
-  gp_Pnt           Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
-  gp_Pnt           Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
-  gp_Lin           L3, L4;
-  bool DimNulle = false;
+  gp_Lin L1(AttachmentPoint1, aDirection);
+  gp_Lin L2(AttachmentPoint2, aDirection2);
+  gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
+  gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
+  gp_Lin L3, L4;
+  bool   DimNulle = false;
   if (!Proj1.IsEqual(Proj2, Precision::Confusion() * 100.))
   {
     L3 = gce_MakeLin(Proj1, Proj2);
@@ -65,9 +65,9 @@ void DsgPrs_OffsetPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
     L4 = gp_Lin(Proj1, d4); // normale
   }
   double parmin, parmax, parcur;
-  parmin             = ElCLib::Parameter(L3, Proj1);
-  parmax             = parmin;
-  parcur             = ElCLib::Parameter(L3, Proj2);
+  parmin      = ElCLib::Parameter(L3, Proj1);
+  parmax      = parmin;
+  parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
@@ -131,7 +131,7 @@ void DsgPrs_OffsetPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
     aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     // ball 1 : 3eme groupe
-    Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
+    Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
     occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
       new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
     aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);
@@ -175,9 +175,9 @@ void DsgPrs_OffsetPresentation::AddAxes(const occ::handle<Prs3d_Presentation>& a
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
 
   occ::handle<Prs3d_DimensionAspect> LA     = aDrawer->DimensionAspect();
-  Quantity_Color                acolor = LA->LineAspect()->Aspect()->Color();
-  Aspect_TypeOfLine             atype  = LA->LineAspect()->Aspect()->Type();
-  double                 awidth = LA->LineAspect()->Aspect()->Width();
+  Quantity_Color                     acolor = LA->LineAspect()->Aspect()->Color();
+  Aspect_TypeOfLine                  atype  = LA->LineAspect()->Aspect()->Type();
+  double                             awidth = LA->LineAspect()->Aspect()->Width();
 
   occ::handle<Graphic3d_AspectLine3d> AxeAsp = new Graphic3d_AspectLine3d(acolor, atype, awidth);
   AxeAsp->SetType(Aspect_TOL_DOTDASH);

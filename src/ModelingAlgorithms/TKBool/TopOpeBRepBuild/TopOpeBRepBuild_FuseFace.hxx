@@ -34,11 +34,11 @@ public:
 
   TopOpeBRepBuild_FuseFace(const NCollection_List<TopoDS_Shape>& LIF,
                            const NCollection_List<TopoDS_Shape>& LRF,
-                           const int      CXM);
+                           const int                             CXM);
 
   Standard_EXPORT void Init(const NCollection_List<TopoDS_Shape>& LIF,
                             const NCollection_List<TopoDS_Shape>& LRF,
-                            const int      CXM);
+                            const int                             CXM);
 
   Standard_EXPORT void PerformFace();
 
@@ -78,9 +78,9 @@ private:
   NCollection_List<TopoDS_Shape> myLIF;
   NCollection_List<TopoDS_Shape> myLRF;
   NCollection_List<TopoDS_Shape> myLFF;
-  bool     myInternal;
-  bool     myModified;
-  bool     myDone;
+  bool                           myInternal;
+  bool                           myModified;
+  bool                           myDone;
 };
 
 #include <TopOpeBRepBuild_FuseFace.lxx>

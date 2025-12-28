@@ -57,9 +57,9 @@ TopOpeBRepTool_mkTondgE::TopOpeBRepTool_mkTondgE() {}
 //=================================================================================================
 
 bool TopOpeBRepTool_mkTondgE::Initialize(const TopoDS_Edge& dgE,
-                                                     const TopoDS_Face& F,
-                                                     const gp_Pnt2d&    uvi,
-                                                     const TopoDS_Face& Fi)
+                                         const TopoDS_Face& F,
+                                         const gp_Pnt2d&    uvi,
+                                         const TopoDS_Face& Fi)
 {
   isT2d   = false;
   hasRest = false;
@@ -71,9 +71,9 @@ bool TopOpeBRepTool_mkTondgE::Initialize(const TopoDS_Edge& dgE,
 
   TopExp_Explorer      exv(mydgE, TopAbs_VERTEX);
   const TopoDS_Vertex& v   = TopoDS::Vertex(exv.Current());
-  double        par = BRep_Tool::Parameter(v, mydgE);
+  double               par = BRep_Tool::Parameter(v, mydgE);
   gp_Pnt2d             uv;
-  bool     ok = FUN_tool_paronEF(mydgE, par, myF, uv);
+  bool                 ok = FUN_tool_paronEF(mydgE, par, myF, uv);
   if (!ok)
     return false;
   gp_Vec tmp;
@@ -82,15 +82,15 @@ bool TopOpeBRepTool_mkTondgE::Initialize(const TopoDS_Edge& dgE,
   if (!ok)
     return false;
 
-  myuvi                = uvi;
-  myFi                 = Fi;
+  myuvi    = uvi;
+  myFi     = Fi;
   bool oki = TopOpeBRepTool_TOOL::NggeomF(myuvi, myFi, tmp);
-  myngfi               = gp_Dir(tmp);
+  myngfi   = gp_Dir(tmp);
   if (!oki)
     return false;
 
   double dot = myngf.Dot(myngfi);
-  isT2d             = (std::abs(1 - std::abs(dot)) < FUN_tola());
+  isT2d      = (std::abs(1 - std::abs(dot)) < FUN_tola());
   return true;
 }
 
@@ -113,7 +113,7 @@ bool TopOpeBRepTool_mkTondgE::IsT2d() const
 
 bool TopOpeBRepTool_mkTondgE::SetRest(const double pari, const TopoDS_Edge& Ei)
 {
-  hasRest               = true;
+  hasRest   = true;
   bool clEi = TopOpeBRepTool_TOOL::IsClosingE(Ei, myFi);
   if (clEi)
   {
@@ -132,14 +132,14 @@ int TopOpeBRepTool_mkTondgE::GetAllRest(NCollection_List<TopoDS_Shape>& lEi)
   lEi.Clear();
 
   BRepAdaptor_Surface bs(myFi);
-  double       tol3d = bs.Tolerance();
-  double       tolu  = bs.UResolution(tol3d);
-  double       tolv  = bs.VResolution(tol3d);
+  double              tol3d = bs.Tolerance();
+  double              tolu  = bs.UResolution(tol3d);
+  double              tolv  = bs.VResolution(tol3d);
   TopExp_Explorer     ex(myFi, TopAbs_EDGE);
   for (; ex.More(); ex.Next())
   {
     const TopoDS_Edge& ei  = TopoDS::Edge(ex.Current());
-    bool   cli = TopOpeBRepTool_TOOL::IsClosingE(ei, myFi);
+    bool               cli = TopOpeBRepTool_TOOL::IsClosingE(ei, myFi);
     if (cli)
       continue;
 
@@ -150,10 +150,10 @@ int TopOpeBRepTool_mkTondgE::GetAllRest(NCollection_List<TopoDS_Shape>& lEi)
       continue;
     }
 
-    bool isou, isov;
-    gp_Dir2d         d2d;
-    gp_Pnt2d         o2d;
-    bool uviso = TopOpeBRepTool_TOOL::UVISO(ei, myFi, isou, isov, d2d, o2d);
+    bool     isou, isov;
+    gp_Dir2d d2d;
+    gp_Pnt2d o2d;
+    bool     uviso = TopOpeBRepTool_TOOL::UVISO(ei, myFi, isou, isov, d2d, o2d);
     if (!uviso)
       continue;
 
@@ -180,7 +180,7 @@ static bool FUN_getEc(const TopoDS_Face& f, const TopoDS_Vertex& v, TopoDS_Edge&
   for (; exe.More(); exe.Next())
   {
     const TopoDS_Edge& e      = TopoDS::Edge(exe.Current());
-    bool   closed = TopOpeBRepTool_TOOL::IsClosingE(e, f);
+    bool               closed = TopOpeBRepTool_TOOL::IsClosingE(e, f);
     if (!closed)
       continue;
     TopExp_Explorer exv(e, TopAbs_VERTEX);
@@ -197,12 +197,12 @@ static bool FUN_getEc(const TopoDS_Face& f, const TopoDS_Vertex& v, TopoDS_Edge&
 }
 
 static bool FUN_MkTonE(const gp_Vec& faxis,
-                                   const gp_Vec& dirINcle,
-                                   const gp_Vec& xxi,
-                                   const gp_Vec& /*ngf*/,
-                                   double&    par1,
-                                   double&    par2,
-                                   bool& outin)
+                       const gp_Vec& dirINcle,
+                       const gp_Vec& xxi,
+                       const gp_Vec& /*ngf*/,
+                       double& par1,
+                       double& par2,
+                       bool&   outin)
 {
   // tgi  / (tgi,xxi,faxis) is direct :
   gp_Vec tgi = xxi.Crossed(faxis);
@@ -210,9 +210,9 @@ static bool FUN_MkTonE(const gp_Vec& faxis,
   // ******************** getting par1, par2
   // at par1 : tr(dge, ei/fi) = forward
   // at par2 : tr(dge, ei/fi) = forward
-  double    tola  = FUN_tola();
-  double    dot1  = dirINcle.Dot(xxi);
-  bool isONi = (std::abs(dot1) < tola);
+  double tola  = FUN_tola();
+  double dot1  = dirINcle.Dot(xxi);
+  bool   isONi = (std::abs(dot1) < tola);
 
   // par1 = ang  -> inout
   // par2 = Cang -> outin
@@ -220,7 +220,7 @@ static bool FUN_MkTonE(const gp_Vec& faxis,
   if (isONi)
   {
     double dot = dirINcle.Dot(tgi);
-    ang               = (dot > 0) ? 0 : M_PI;
+    ang        = (dot > 0) ? 0 : M_PI;
     //    outin = (ang > 0); -xpu190499
     outin = true;
   }
@@ -237,16 +237,14 @@ static bool FUN_MkTonE(const gp_Vec& faxis,
   } //! isONi
 
   double Cang = (ang > M_PI) ? ang - M_PI : ang + M_PI;
-  par1               = outin ? ang : Cang;
-  par2               = outin ? Cang : ang;
+  par1        = outin ? ang : Cang;
+  par2        = outin ? Cang : ang;
   return true;
 } // FUN_MkTonE
 
 //=================================================================================================
 
-bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT,
-                                                 double&    par1,
-                                                 double&    par2)
+bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT, double& par1, double& par2)
 {
   if (isT2d)
     return false;
@@ -265,9 +263,9 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT,
   }
 
   // dirINcle : tangent to cle at v oriented INSIDE 1d(cle)
-  int ovcle;
-  gp_Vec           dirINcle;
-  bool ok = TopOpeBRepTool_TOOL::TgINSIDE(v, myclE, dirINcle, ovcle);
+  int    ovcle;
+  gp_Vec dirINcle;
+  bool   ok = TopOpeBRepTool_TOOL::TgINSIDE(v, myclE, dirINcle, ovcle);
   if (!ok)
     return NOI;
 
@@ -294,10 +292,7 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT,
 
 //=================================================================================================
 
-bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
-                                                 int&  mkT,
-                                                 double&     par1,
-                                                 double&     par2)
+bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& par1, double& par2)
 // isT2d = true :
 //   prequesitory : f,fi are tangent on v
 //                  dge interfers on v with ei
@@ -321,10 +316,10 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
 
   double pfi, pli;
   FUN_tool_bounds(ei, pfi, pli);
-  double    tolpi = TopOpeBRepTool_TOOL::TolP(ei, myFi);
-  bool onfi = (std::abs(pari - pfi) < tolpi), onli = (std::abs(pari - pli) < tolpi);
-  gp_Vec           tgin1di;
-  bool ok = TopOpeBRepTool_TOOL::TggeomE(pari, ei, tgin1di);
+  double tolpi = TopOpeBRepTool_TOOL::TolP(ei, myFi);
+  bool   onfi = (std::abs(pari - pfi) < tolpi), onli = (std::abs(pari - pli) < tolpi);
+  gp_Vec tgin1di;
+  bool   ok = TopOpeBRepTool_TOOL::TggeomE(pari, ei, tgin1di);
   if (!ok)
     return false;
   if (onli)
@@ -342,8 +337,8 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
   }
 
   // dirINcle : tangent to cle at v oriented INSIDE 1d(cle)
-  int ovcle;
-  gp_Vec           dirINcle;
+  int    ovcle;
+  gp_Vec dirINcle;
   ok = TopOpeBRepTool_TOOL::TgINSIDE(v, myclE, dirINcle, ovcle);
   if (!ok)
     return NOI;
@@ -361,9 +356,9 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
   gp_Dir xxri; // isT2d=true : oriented inside 1d(ei)
                //              oriented inside 2d(fi)
 
-  TopoDS_Vertex    vclo;
-  bool closedi = TopOpeBRepTool_TOOL::ClosedE(ei, vclo); //@190499
-  bool outin;
+  TopoDS_Vertex vclo;
+  bool          closedi = TopOpeBRepTool_TOOL::ClosedE(ei, vclo); //@190499
+  bool          outin;
   if (isT2d)
   {
     // xxi :
@@ -410,8 +405,8 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
     if (!ok)
       return false;
 
-    mkT               = MKI12;              // without restrictions.
-    gp_Vec        tgi = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
+    mkT        = MKI12;              // without restrictions.
+    gp_Vec tgi = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
     double dot = tgi.Dot(xxri);
     if (std::abs(dot) < FUN_tola())
     {
@@ -448,10 +443,10 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei,
         }*/
   } //! isT2d
 
-  mkT                      = MKI12;              // without restrictions.
-  gp_Vec           tgi     = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
-  double    dot     = tgi.Dot(xxri);
-  bool keepang = (dot > 0);
+  mkT            = MKI12;              // without restrictions.
+  gp_Vec tgi     = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
+  double dot     = tgi.Dot(xxri);
+  bool   keepang = (dot > 0);
   if (keepang)
     mkT = outin ? MKI1 : MKI2;
   else

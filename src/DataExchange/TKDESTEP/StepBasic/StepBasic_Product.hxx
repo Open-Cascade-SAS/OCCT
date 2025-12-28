@@ -35,10 +35,12 @@ public:
   //! Returns a Product
   Standard_EXPORT StepBasic_Product();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&          aId,
-                            const occ::handle<TCollection_HAsciiString>&          aName,
-                            const occ::handle<TCollection_HAsciiString>&          aDescription,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aId,
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<TCollection_HAsciiString>& aDescription,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>&
+      aFrameOfReference);
 
   Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& aId);
 
@@ -53,21 +55,22 @@ public:
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
   Standard_EXPORT void SetFrameOfReference(
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>& aFrameOfReference);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>&
+      aFrameOfReference);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> FrameOfReference() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>>
+                  FrameOfReference() const;
 
-  Standard_EXPORT occ::handle<StepBasic_ProductContext> FrameOfReferenceValue(
-    const int num) const;
+  Standard_EXPORT occ::handle<StepBasic_ProductContext> FrameOfReferenceValue(const int num) const;
 
   Standard_EXPORT int NbFrameOfReference() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_Product, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>          id;
-  occ::handle<TCollection_HAsciiString>          name;
-  occ::handle<TCollection_HAsciiString>          description;
+  occ::handle<TCollection_HAsciiString>                                   id;
+  occ::handle<TCollection_HAsciiString>                                   name;
+  occ::handle<TCollection_HAsciiString>                                   description;
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> frameOfReference;
 };
 

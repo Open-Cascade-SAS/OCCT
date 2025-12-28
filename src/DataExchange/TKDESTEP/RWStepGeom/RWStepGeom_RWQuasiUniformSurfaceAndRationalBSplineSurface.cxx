@@ -29,7 +29,7 @@ RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::
 
 void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&                               data,
-  const int                                               num0,
+  const int                                                                 num0,
   occ::handle<Interface_Check>&                                             ach,
   const occ::handle<StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface>& ent) const
 {
@@ -60,13 +60,14 @@ void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- field : controlPointsList ---
 
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>          anent3;
-  int                         nsub3;
+  occ::handle<StepGeom_CartesianPoint>                                   anent3;
+  int                                                                    nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
     int nbi3 = data->NbParams(nsub3);
     int nbj3 = data->NbParams(data->ParamNumber(nsub3, 1));
-    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi3, 1, nbj3);
+    aControlPointsList =
+      new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi3, 1, nbj3);
     for (int i3 = 1; i3 <= nbi3; i3++)
     {
       int nsi3;
@@ -140,13 +141,13 @@ void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- field : weightsData ---
 
   occ::handle<NCollection_HArray2<double>> aWeightsData;
-  double                 aWeightsDataItem;
-  int              nsub8;
+  double                                   aWeightsDataItem;
+  int                                      nsub8;
   if (data->ReadSubList(num, 1, "weights_data", ach, nsub8))
   {
-    int nbi8 = data->NbParams(nsub8);
-    int nbj8 = data->NbParams(data->ParamNumber(nsub8, 1));
-    aWeightsData          = new NCollection_HArray2<double>(1, nbi8, 1, nbj8);
+    int nbi8     = data->NbParams(nsub8);
+    int nbj8     = data->NbParams(data->ParamNumber(nsub8, 1));
+    aWeightsData = new NCollection_HArray2<double>(1, nbi8, 1, nbj8);
     for (int i8 = 1; i8 <= nbi8; i8++)
     {
       int nsi8;
@@ -196,7 +197,7 @@ void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::ReadStep(
 }
 
 void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::WriteStep(
-  StepData_StepWriter&                                                 SW,
+  StepData_StepWriter&                                                      SW,
   const occ::handle<StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface>& ent) const
 {
 
@@ -283,7 +284,7 @@ void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::WriteStep(
 
 void RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface::Share(
   const occ::handle<StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface>& ent,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                                 iter) const
 {
 
   int nbiElem1 = ent->NbControlPointsListI();

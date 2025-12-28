@@ -95,21 +95,18 @@ public:
   //! Returns the values of interval from which the Root was
   //! found [t1,t2] and the corresponding values
   //! of the function on the bounds f(t1), f(t2).
-  Standard_EXPORT void Interval(double& t1,
-                                double& t2,
-                                double& f1,
-                                double& f2) const;
+  Standard_EXPORT void Interval(double& t1, double& t2, double& f1, double& f2) const;
 
 private:
-  double    myRoot;
-  int myType;
-  double    myLayerHeight;
-  TopAbs_State     myStateBefore;
-  TopAbs_State     myStateAfter;
-  double    myt1;
-  double    myt2;
-  double    myf1;
-  double    myf2;
+  double       myRoot;
+  int          myType;
+  double       myLayerHeight;
+  TopAbs_State myStateBefore;
+  TopAbs_State myStateAfter;
+  double       myt1;
+  double       myt2;
+  double       myf1;
+  double       myf2;
 };
 
 #endif // _IntTools_Root_HeaderFile

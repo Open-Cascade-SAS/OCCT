@@ -40,8 +40,7 @@ public:
   //! current, or on one of the father labels of current.
   //! If a directory attribute is found, true is returned,
   //! and the attribute found is set as D.
-  Standard_EXPORT static bool Find(const TDF_Label&            current,
-                                               occ::handle<TDataStd_Directory>& D);
+  Standard_EXPORT static bool Find(const TDF_Label& current, occ::handle<TDataStd_Directory>& D);
 
   //! Creates an empty Directory attribute, located at
   //! <label>. Raises if <label> has attribute
@@ -67,7 +66,6 @@ public:
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Directory, TDataStd_GenericEmpty)
-
 };
 
 #endif // _TDataStd_Directory_HeaderFile

@@ -36,10 +36,8 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
-#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <cmath>
@@ -52,7 +50,7 @@ const double THE_TOLERANCE = 1e-10;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -69,10 +67,10 @@ occ::handle<Geom_BSplineSurface> CreateSimpleBSplineSurface()
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 1)); // Non-planar corner
 
-  NCollection_Array1<double>    aUKnots(1, 2);
-  NCollection_Array1<double>    aVKnots(1, 2);
-  NCollection_Array1<int> aUMults(1, 2);
-  NCollection_Array1<int> aVMults(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2);
+  NCollection_Array1<double> aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2);
+  NCollection_Array1<int>    aVMults(1, 2);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 1.0);
@@ -250,8 +248,8 @@ TEST(GeomGridEval_OtherSurfaceTest, CylinderFallback)
 
 TEST(GeomGridEval_SurfaceTest, PlaneDispatch)
 {
-  occ::handle<Geom_Plane>  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomAdaptor_Surface anAdaptor(aGeomPlane);
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomAdaptor_Surface     anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -304,7 +302,7 @@ TEST(GeomGridEval_SurfaceTest, SphereDispatch)
 TEST(GeomGridEval_SurfaceTest, BSplineDispatch)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -335,7 +333,7 @@ TEST(GeomGridEval_SurfaceTest, BezierSurfaceDispatch)
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 0));
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
-  GeomAdaptor_Surface        anAdaptor(aBezier);
+  GeomAdaptor_Surface             anAdaptor(aBezier);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -503,15 +501,15 @@ TEST(GeomGridEval_SurfaceTest, UninitializedState)
 
 TEST(GeomGridEval_SurfaceTest, EmptyParams)
 {
-  occ::handle<Geom_Plane>  aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomAdaptor_Surface anAdaptor(aGeomPlane);
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  GeomAdaptor_Surface     anAdaptor(aGeomPlane);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
   EXPECT_TRUE(anEval.IsInitialized());
 
   // EvaluateGrid with empty params should return empty
-  NCollection_Array1<double>       aEmptyParams;
+  NCollection_Array1<double> aEmptyParams;
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aEmptyParams, aEmptyParams);
   EXPECT_TRUE(aGrid.IsEmpty());
 }
@@ -524,7 +522,7 @@ TEST(GeomGridEval_PlaneTest, DerivativeD1)
 {
   // XY plane at origin
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomGridEval_Plane anEval(aPlane);
+  GeomGridEval_Plane      anEval(aPlane);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
@@ -549,7 +547,7 @@ TEST(GeomGridEval_PlaneTest, DerivativeD1)
 TEST(GeomGridEval_PlaneTest, DerivativeD2)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomGridEval_Plane anEval(aPlane);
+  GeomGridEval_Plane      anEval(aPlane);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);
@@ -655,7 +653,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD1)
 TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   GeomGridEval_Surface anEval;
   anEval.Initialize(anAdaptor);
@@ -690,7 +688,7 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD2)
 TEST(GeomGridEval_PlaneTest, DerivativeD3)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  GeomGridEval_Plane anEval(aPlane);
+  GeomGridEval_Plane      anEval(aPlane);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 5.0, 6);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 3.0, 4);

@@ -42,7 +42,6 @@ public:
 
   //! Returns Value as AnisotropicSymmetricTensor22d (or Null if another type)
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> AnisotropicSymmetricTensor22d() const;
-
 };
 
 #endif // _StepFEA_SymmetricTensor22d_HeaderFile

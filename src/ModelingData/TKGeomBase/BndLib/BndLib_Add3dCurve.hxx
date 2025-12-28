@@ -87,32 +87,29 @@ public:
   //! and P1 and P2 are either two negative infinite real
   //! numbers, or two positive infinite real numbers.
   Standard_EXPORT static void Add(const Adaptor3d_Curve& C,
-                                  const double    U1,
-                                  const double    U2,
-                                  const double    Tol,
+                                  const double           U1,
+                                  const double           U2,
+                                  const double           Tol,
                                   Bnd_Box&               B);
 
   //! Adds to the bounding box B the curve C
   //! These methods use more precise algorithms for building bnd box
   //! then methods Add(...)
+  Standard_EXPORT static void AddOptimal(const Adaptor3d_Curve& C, const double Tol, Bnd_Box& B);
   Standard_EXPORT static void AddOptimal(const Adaptor3d_Curve& C,
-                                         const double    Tol,
-                                         Bnd_Box&               B);
-  Standard_EXPORT static void AddOptimal(const Adaptor3d_Curve& C,
-                                         const double    U1,
-                                         const double    U2,
-                                         const double    Tol,
+                                         const double           U1,
+                                         const double           U2,
+                                         const double           Tol,
                                          Bnd_Box&               B);
   //! Adds to the bounding box B the curve C
   //! using numerical minimization algorithms
   //! This method is used in AddOptimal for not analytical curves.
   //! if Tol < Precision::Confusion(), Precision:;Confusion is used as computation tolerance
   Standard_EXPORT static void AddGenCurv(const Adaptor3d_Curve& C,
-                                         const double    UMin,
-                                         const double    UMax,
-                                         const double    Tol,
+                                         const double           UMin,
+                                         const double           UMax,
+                                         const double           Tol,
                                          Bnd_Box&               B);
-
 };
 
 #endif // _BndLib_Add3dCurve_HeaderFile

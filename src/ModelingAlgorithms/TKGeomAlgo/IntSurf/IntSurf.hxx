@@ -55,7 +55,7 @@ public:
   //! its period is considered to be equal to 0.
   Standard_EXPORT static void SetPeriod(const occ::handle<Adaptor3d_Surface>& theFirstSurf,
                                         const occ::handle<Adaptor3d_Surface>& theSecondSurf,
-                                        double                    theArrOfPeriod[4]);
+                                        double                                theArrOfPeriod[4]);
 };
 
 #endif // _IntSurf_HeaderFile

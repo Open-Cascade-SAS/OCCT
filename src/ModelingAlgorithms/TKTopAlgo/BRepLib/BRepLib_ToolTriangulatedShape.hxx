@@ -28,7 +28,8 @@ public:
   //! Does nothing if triangulation already defines normals.
   //! @param[in] theFace the face
   //! @param[in] theTris the definition of a face triangulation
-  static void ComputeNormals(const TopoDS_Face& theFace, const occ::handle<Poly_Triangulation>& theTris)
+  static void ComputeNormals(const TopoDS_Face&                     theFace,
+                             const occ::handle<Poly_Triangulation>& theTris)
   {
     Poly_Connect aPolyConnect;
     ComputeNormals(theFace, theTris, aPolyConnect);
@@ -39,9 +40,9 @@ public:
   //! @param[in] theFace the face
   //! @param[in] theTris the definition of a face triangulation
   //! @param[in,out] thePolyConnect optional, initialized tool for exploring triangulation
-  Standard_EXPORT static void ComputeNormals(const TopoDS_Face&                theFace,
+  Standard_EXPORT static void ComputeNormals(const TopoDS_Face&                     theFace,
                                              const occ::handle<Poly_Triangulation>& theTris,
-                                             Poly_Connect&                     thePolyConnect);
+                                             Poly_Connect&                          thePolyConnect);
 };
 
 #endif

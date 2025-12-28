@@ -44,8 +44,7 @@ inline const char* ConvertToString(const StepShape_BooleanOperator theSourceEnum
 //! @param theOperatorStr The string to convert
 //! @param theResultEnum The corresponding StepShape_BooleanOperator value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char*     theOperatorStr,
-                          StepShape_BooleanOperator& theResultEnum)
+inline bool ConvertToEnum(const char* theOperatorStr, StepShape_BooleanOperator& theResultEnum)
 {
   if (IsEqual(theOperatorStr, boDifference))
   {

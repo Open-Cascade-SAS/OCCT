@@ -66,7 +66,6 @@ public:
 protected:
   int myFirst;
   int myLast;
-
 };
 
 #include <BOPDS_IndexRange.lxx>

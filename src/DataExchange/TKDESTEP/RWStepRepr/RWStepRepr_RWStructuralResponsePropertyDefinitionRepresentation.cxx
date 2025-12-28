@@ -34,7 +34,7 @@ RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::
 
 void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                     data,
-  const int                                                     num,
+  const int                                                                       num,
   occ::handle<Interface_Check>&                                                   ach,
   const occ::handle<StepRepr_StructuralResponsePropertyDefinitionRepresentation>& ent) const
 {
@@ -72,7 +72,7 @@ void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::WriteStep(
-  StepData_StepWriter&                                                       SW,
+  StepData_StepWriter&                                                            SW,
   const occ::handle<StepRepr_StructuralResponsePropertyDefinitionRepresentation>& ent) const
 {
 
@@ -87,7 +87,7 @@ void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::WriteStep(
 
 void RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::Share(
   const occ::handle<StepRepr_StructuralResponsePropertyDefinitionRepresentation>& ent,
-  Interface_EntityIterator&                                                  iter) const
+  Interface_EntityIterator&                                                       iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

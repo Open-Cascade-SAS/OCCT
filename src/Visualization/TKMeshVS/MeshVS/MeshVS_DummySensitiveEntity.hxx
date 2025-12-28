@@ -31,8 +31,7 @@ public:
   Standard_EXPORT MeshVS_DummySensitiveEntity(const occ::handle<SelectMgr_EntityOwner>& theOwnerId);
 
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    override;
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   Standard_EXPORT virtual int NbSubElements() const override;
 

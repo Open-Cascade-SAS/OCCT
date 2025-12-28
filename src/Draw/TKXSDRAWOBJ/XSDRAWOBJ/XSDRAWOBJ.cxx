@@ -59,18 +59,15 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
 
 //=================================================================================================
 
-static int ReadObj(Draw_Interpretor& theDI,
-                                int  theNbArgs,
-                                const char**      theArgVec)
+static int ReadObj(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   TCollection_AsciiString aDestName, aFilePath;
-  bool        toUseExistingDoc = false;
-  double           aFileUnitFactor  = -1.0;
+  bool                    toUseExistingDoc = false;
+  double                  aFileUnitFactor  = -1.0;
   RWMesh_CoordinateSystem aResultCoordSys  = RWMesh_CoordinateSystem_Zup,
                           aFileCoordSys    = RWMesh_CoordinateSystem_Yup;
-  bool toListExternalFiles = false, isSingleFace = false,
-                   isSinglePrecision = false;
-  bool isNoDoc           = (TCollection_AsciiString(theArgVec[0]) == "readobj");
+  bool toListExternalFiles = false, isSingleFace = false, isSinglePrecision = false;
+  bool isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readobj");
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
@@ -161,7 +158,7 @@ static int ReadObj(Draw_Interpretor& theDI,
   if (!isNoDoc && !toListExternalFiles)
   {
     occ::handle<TDocStd_Application> anApp    = DDocStd::GetApplication();
-    const char*            aNameVar = aDestName.ToCString();
+    const char*                      aNameVar = aDestName.ToCString();
     DDocStd::GetDocument(aNameVar, aDoc, false);
     if (aDoc.IsNull())
     {
@@ -196,8 +193,8 @@ static int ReadObj(Draw_Interpretor& theDI,
     aSimpleReader.Read(aFilePath.ToCString(), aProgress->Start());
 
     occ::handle<Poly_Triangulation> aTriangulation = aSimpleReader.GetTriangulation();
-    TopoDS_Face                aFace;
-    BRep_Builder               aBuiler;
+    TopoDS_Face                     aFace;
+    BRep_Builder                    aBuiler;
     aBuiler.MakeFace(aFace);
     aBuiler.UpdateFace(aFace, aTriangulation);
     DBRep::Set(aDestName.ToCString(), aFace);
@@ -234,17 +231,15 @@ static int ReadObj(Draw_Interpretor& theDI,
 
 ///=================================================================================================
 
-static int WriteObj(Draw_Interpretor& theDI,
-                                 int  theNbArgs,
-                                 const char**      theArgVec)
+static int WriteObj(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
-  TCollection_AsciiString              anObjFilePath;
-  occ::handle<TDocStd_Document>             aDoc;
-  occ::handle<TDocStd_Application>          anApp = DDocStd::GetApplication();
+  TCollection_AsciiString          anObjFilePath;
+  occ::handle<TDocStd_Document>    aDoc;
+  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
   NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aFileInfo;
-  double                        aFileUnitFactor = -1.0;
-  RWMesh_CoordinateSystem              aSystemCoordSys = RWMesh_CoordinateSystem_Zup,
-                          aFileCoordSys                = RWMesh_CoordinateSystem_Yup;
+  double                  aFileUnitFactor = -1.0;
+  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup,
+                          aFileCoordSys   = RWMesh_CoordinateSystem_Yup;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
@@ -327,8 +322,8 @@ static int WriteObj(Draw_Interpretor& theDI,
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
 
-  const double aSystemUnitFactor = XSDRAW::GetLengthUnit() * 0.001;
-  RWObj_CafWriter     aWriter(anObjFilePath);
+  const double    aSystemUnitFactor = XSDRAW::GetLengthUnit() * 0.001;
+  RWObj_CafWriter aWriter(anObjFilePath);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit(aSystemUnitFactor);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem(aSystemCoordSys);
   aWriter.ChangeCoordinateSystemConverter().SetOutputLengthUnit(aFileUnitFactor);

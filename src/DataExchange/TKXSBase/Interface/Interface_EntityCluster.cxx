@@ -155,8 +155,7 @@ const occ::handle<Standard_Transient>& Interface_EntityCluster::Value(const int 
   return theents[num - 1]; // numbering from 0
 }
 
-void Interface_EntityCluster::SetValue(const int            num,
-                                       const occ::handle<Standard_Transient>& ent)
+void Interface_EntityCluster::SetValue(const int num, const occ::handle<Standard_Transient>& ent)
 {
   if (ent.IsNull())
     throw Standard_NullObject("Interface_EntityCluster SetValue");

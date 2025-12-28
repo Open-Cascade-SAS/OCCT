@@ -75,9 +75,7 @@ public:
   //! <me>.Value (3, 3) = theX3
   //! @endcode
   //! The other coefficients of the matrix are not modified.
-  constexpr void SetDiagonal(const double theX1,
-                             const double theX2,
-                             const double theX3) noexcept
+  constexpr void SetDiagonal(const double theX1, const double theX2, const double theX3) noexcept
   {
     myMat[0][0] = theX1;
     myMat[1][1] = theX2;
@@ -127,9 +125,7 @@ public:
 
   //! Assigns <theValue> to the coefficient of row theRow, column theCol of this matrix.
   //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 3
-  void SetValue(const int theRow,
-                const int theCol,
-                const double    theValue)
+  void SetValue(const int theRow, const int theCol, const double theValue)
   {
     Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 3, " ");
     myMat[theRow - 1][theCol - 1] = theValue;
@@ -167,8 +163,7 @@ public:
     return myMat[theRow - 1][theCol - 1];
   }
 
-  const double& operator()(const int theRow,
-                                  const int theCol) const
+  const double& operator()(const int theRow, const int theCol) const
   {
     return Value(theRow, theCol);
   }
@@ -181,10 +176,7 @@ public:
     return myMat[theRow - 1][theCol - 1];
   }
 
-  double& operator()(const int theRow, const int theCol)
-  {
-    return ChangeValue(theRow, theCol);
-  }
+  double& operator()(const int theRow, const int theCol) { return ChangeValue(theRow, theCol); }
 
   //! The Gauss LU decomposition is used to invert the matrix
   //! (see Math package) so the matrix is considered as singular if
@@ -388,23 +380,23 @@ inline constexpr gp_Mat gp_Mat::Divided(const double theScalar) const
 inline constexpr void gp_Mat::Multiply(const gp_Mat& theOther) noexcept
 {
   const double aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0]
-                             + myMat[0][2] * theOther.myMat[2][0];
+                      + myMat[0][2] * theOther.myMat[2][0];
   const double aT01 = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1]
-                             + myMat[0][2] * theOther.myMat[2][1];
+                      + myMat[0][2] * theOther.myMat[2][1];
   const double aT02 = myMat[0][0] * theOther.myMat[0][2] + myMat[0][1] * theOther.myMat[1][2]
-                             + myMat[0][2] * theOther.myMat[2][2];
+                      + myMat[0][2] * theOther.myMat[2][2];
   const double aT10 = myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0]
-                             + myMat[1][2] * theOther.myMat[2][0];
+                      + myMat[1][2] * theOther.myMat[2][0];
   const double aT11 = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1]
-                             + myMat[1][2] * theOther.myMat[2][1];
+                      + myMat[1][2] * theOther.myMat[2][1];
   const double aT12 = myMat[1][0] * theOther.myMat[0][2] + myMat[1][1] * theOther.myMat[1][2]
-                             + myMat[1][2] * theOther.myMat[2][2];
+                      + myMat[1][2] * theOther.myMat[2][2];
   const double aT20 = myMat[2][0] * theOther.myMat[0][0] + myMat[2][1] * theOther.myMat[1][0]
-                             + myMat[2][2] * theOther.myMat[2][0];
+                      + myMat[2][2] * theOther.myMat[2][0];
   const double aT21 = myMat[2][0] * theOther.myMat[0][1] + myMat[2][1] * theOther.myMat[1][1]
-                             + myMat[2][2] * theOther.myMat[2][1];
+                      + myMat[2][2] * theOther.myMat[2][1];
   const double aT22 = myMat[2][0] * theOther.myMat[0][2] + myMat[2][1] * theOther.myMat[1][2]
-                             + myMat[2][2] * theOther.myMat[2][2];
+                      + myMat[2][2] * theOther.myMat[2][2];
   myMat[0][0] = aT00;
   myMat[0][1] = aT01;
   myMat[0][2] = aT02;
@@ -421,23 +413,23 @@ inline constexpr void gp_Mat::Multiply(const gp_Mat& theOther) noexcept
 inline constexpr void gp_Mat::PreMultiply(const gp_Mat& theOther) noexcept
 {
   const double aT00 = theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0]
-                             + theOther.myMat[0][2] * myMat[2][0];
+                      + theOther.myMat[0][2] * myMat[2][0];
   const double aT01 = theOther.myMat[0][0] * myMat[0][1] + theOther.myMat[0][1] * myMat[1][1]
-                             + theOther.myMat[0][2] * myMat[2][1];
+                      + theOther.myMat[0][2] * myMat[2][1];
   const double aT02 = theOther.myMat[0][0] * myMat[0][2] + theOther.myMat[0][1] * myMat[1][2]
-                             + theOther.myMat[0][2] * myMat[2][2];
+                      + theOther.myMat[0][2] * myMat[2][2];
   const double aT10 = theOther.myMat[1][0] * myMat[0][0] + theOther.myMat[1][1] * myMat[1][0]
-                             + theOther.myMat[1][2] * myMat[2][0];
+                      + theOther.myMat[1][2] * myMat[2][0];
   const double aT11 = theOther.myMat[1][0] * myMat[0][1] + theOther.myMat[1][1] * myMat[1][1]
-                             + theOther.myMat[1][2] * myMat[2][1];
+                      + theOther.myMat[1][2] * myMat[2][1];
   const double aT12 = theOther.myMat[1][0] * myMat[0][2] + theOther.myMat[1][1] * myMat[1][2]
-                             + theOther.myMat[1][2] * myMat[2][2];
+                      + theOther.myMat[1][2] * myMat[2][2];
   const double aT20 = theOther.myMat[2][0] * myMat[0][0] + theOther.myMat[2][1] * myMat[1][0]
-                             + theOther.myMat[2][2] * myMat[2][0];
+                      + theOther.myMat[2][2] * myMat[2][0];
   const double aT21 = theOther.myMat[2][0] * myMat[0][1] + theOther.myMat[2][1] * myMat[1][1]
-                             + theOther.myMat[2][2] * myMat[2][1];
+                      + theOther.myMat[2][2] * myMat[2][1];
   const double aT22 = theOther.myMat[2][0] * myMat[0][2] + theOther.myMat[2][1] * myMat[1][2]
-                             + theOther.myMat[2][2] * myMat[2][2];
+                      + theOther.myMat[2][2] * myMat[2][2];
   myMat[0][0] = aT00;
   myMat[0][1] = aT01;
   myMat[0][2] = aT02;

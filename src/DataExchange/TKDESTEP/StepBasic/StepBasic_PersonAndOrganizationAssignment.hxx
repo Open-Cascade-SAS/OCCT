@@ -35,7 +35,8 @@ public:
   Standard_EXPORT void SetAssignedPersonAndOrganization(
     const occ::handle<StepBasic_PersonAndOrganization>& aAssignedPersonAndOrganization);
 
-  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> AssignedPersonAndOrganization() const;
+  Standard_EXPORT occ::handle<StepBasic_PersonAndOrganization> AssignedPersonAndOrganization()
+    const;
 
   Standard_EXPORT void SetRole(const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole);
 

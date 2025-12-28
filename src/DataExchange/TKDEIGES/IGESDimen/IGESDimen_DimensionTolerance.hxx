@@ -65,15 +65,15 @@ public:
   //! 1 = Display values as mixed fractions
   //! 2 = Display values as fractions
   //! - aPrecision    : Precision Value
-  Standard_EXPORT void Init(const int nbPropVal,
-                            const int aSecTolFlag,
-                            const int aTolType,
-                            const int aTolPlaceFlag,
-                            const double    anUpperTol,
-                            const double    aLowerTol,
-                            const bool aSignFlag,
-                            const int aFracFlag,
-                            const int aPrecision);
+  Standard_EXPORT void Init(const int    nbPropVal,
+                            const int    aSecTolFlag,
+                            const int    aTolType,
+                            const int    aTolPlaceFlag,
+                            const double anUpperTol,
+                            const double aLowerTol,
+                            const bool   aSignFlag,
+                            const int    aFracFlag,
+                            const int    aPrecision);
 
   //! returns the number of property values, always = 8
   Standard_EXPORT int NbPropertyValues() const;
@@ -105,15 +105,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_DimensionTolerance, IGESData_IGESEntity)
 
 private:
-  int theNbPropertyValues;
-  int theSecondaryToleranceFlag;
-  int theToleranceType;
-  int theTolerancePlacementFlag;
-  double    theUpperTolerance;
-  double    theLowerTolerance;
-  bool theSignSuppressionFlag;
-  int theFractionFlag;
-  int thePrecision;
+  int    theNbPropertyValues;
+  int    theSecondaryToleranceFlag;
+  int    theToleranceType;
+  int    theTolerancePlacementFlag;
+  double theUpperTolerance;
+  double theLowerTolerance;
+  bool   theSignSuppressionFlag;
+  int    theFractionFlag;
+  int    thePrecision;
 };
 
 #endif // _IGESDimen_DimensionTolerance_HeaderFile

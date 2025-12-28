@@ -20,14 +20,13 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem() {}
 
 void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&             data,
-  const int                             num,
+  const int                                               num,
   occ::handle<Interface_Check>&                           ach,
   const occ::handle<StepRepr_CompoundRepresentationItem>& ent) const
 {
@@ -44,12 +43,12 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
   // --- own field : item_element
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems;
-  occ::handle<StepRepr_RepresentationItem>          anent2;
-  int                             nsub2;
+  occ::handle<StepRepr_RepresentationItem>                                   anent2;
+  int                                                                        nsub2;
   if (data->ReadSubList(num, 2, "item_element", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aItems               = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb2);
+    aItems  = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       if (data->ReadEntity(nsub2,
@@ -66,7 +65,7 @@ void RWStepRepr_RWCompoundRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepRepr_CompoundRepresentationItem>& ent) const
 {
   // --- inherited field : name ---
@@ -85,7 +84,7 @@ void RWStepRepr_RWCompoundRepresentationItem::WriteStep(
 
 void RWStepRepr_RWCompoundRepresentationItem::Share(
   const occ::handle<StepRepr_CompoundRepresentationItem>& ent,
-  Interface_EntityIterator&                          iter) const
+  Interface_EntityIterator&                               iter) const
 {
   int i, nb = ent->NbItemElement();
   for (i = 1; i <= nb; i++)

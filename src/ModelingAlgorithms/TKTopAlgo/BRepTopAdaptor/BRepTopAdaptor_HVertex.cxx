@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex, Adaptor3d_HVertex)
 
-BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex(const TopoDS_Vertex&               V,
+BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex(const TopoDS_Vertex&                    V,
                                                const occ::handle<BRepAdaptor_Curve2d>& C)
     : myVtx(V),
       myCurve(C)
@@ -47,13 +47,13 @@ double BRepTopAdaptor_HVertex::Parameter(const occ::handle<Adaptor2d_Curve2d>& C
 double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   occ::handle<BRepAdaptor_Curve2d> brhc = occ::down_cast<BRepAdaptor_Curve2d>(C);
-  const TopoDS_Face&          F    = brhc->Face();
-  BRepAdaptor_Surface         S(F, 0);
-  double               tv = BRep_Tool::Tolerance(myVtx);
-  double               pp, p = BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
-  TopAbs_Orientation          Or = Orientation();
-  gp_Pnt2d                    p2d;
-  gp_Vec2d                    v2d;
+  const TopoDS_Face&               F    = brhc->Face();
+  BRepAdaptor_Surface              S(F, 0);
+  double                           tv = BRep_Tool::Tolerance(myVtx);
+  double                           pp, p = BRep_Tool::Parameter(myVtx, brhc->Edge(), brhc->Face());
+  TopAbs_Orientation               Or = Orientation();
+  gp_Pnt2d                         p2d;
+  gp_Vec2d                         v2d;
   C->D1(p, p2d, v2d);
   gp_Pnt P, P1;
   gp_Vec DU, DV, DC;

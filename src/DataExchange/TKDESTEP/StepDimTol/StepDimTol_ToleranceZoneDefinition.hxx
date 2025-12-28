@@ -23,7 +23,6 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepRepr_ShapeAspect.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 
 //! Representation of STEP entity ToleranceZoneDefinition
@@ -35,23 +34,25 @@ public:
   Standard_EXPORT StepDimTol_ToleranceZoneDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<StepDimTol_ToleranceZone>&      theZone,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries);
+  Standard_EXPORT void Init(
+    const occ::handle<StepDimTol_ToleranceZone>&                               theZone,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries);
 
   //! Returns field Boundaries
-  inline occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> Boundaries() const { return myBoundaries; }
+  inline occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> Boundaries() const
+  {
+    return myBoundaries;
+  }
 
   //! Set field Boundaries
-  inline void SetBoundaries(const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries)
+  inline void SetBoundaries(
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries)
   {
     myBoundaries = theBoundaries;
   }
 
   //! Returns number of Boundaries
-  inline int NbBoundaries() const
-  {
-    return (myBoundaries.IsNull() ? 0 : myBoundaries->Length());
-  }
+  inline int NbBoundaries() const { return (myBoundaries.IsNull() ? 0 : myBoundaries->Length()); }
 
   //! Returns Boundaries with the given number
   inline occ::handle<StepRepr_ShapeAspect> BoundariesValue(const int theNum) const
@@ -60,8 +61,7 @@ public:
   }
 
   //! Sets Boundaries with given number
-  inline void SetBoundariesValue(const int              theNum,
-                                 const occ::handle<StepRepr_ShapeAspect>& theItem)
+  inline void SetBoundariesValue(const int theNum, const occ::handle<StepRepr_ShapeAspect>& theItem)
   {
     myBoundaries->SetValue(theNum, theItem);
   }
@@ -76,6 +76,6 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> myBoundaries;
-  occ::handle<StepDimTol_ToleranceZone>      myZone;
+  occ::handle<StepDimTol_ToleranceZone>                               myZone;
 };
 #endif // _StepDimTol_ToleranceZoneDefinition_HeaderFile

@@ -24,13 +24,14 @@ StepGeom_SuParameters::StepGeom_SuParameters() {}
 
 //=================================================================================================
 
-void StepGeom_SuParameters::Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
-                                 const double                     theA,
-                                 const double                     theAlpha,
-                                 const double                     theB,
-                                 const double                     theBeta,
-                                 const double                     theC,
-                                 const double                     theGamma)
+void StepGeom_SuParameters::Init(
+  const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  const double                                 theA,
+  const double                                 theAlpha,
+  const double                                 theB,
+  const double                                 theBeta,
+  const double                                 theC,
+  const double                                 theGamma)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 

@@ -65,8 +65,7 @@ void TopOpeBRep_ShapeIntersector2d::SetIntersectionDone()
 
 //=================================================================================================
 
-const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::CurrentGeomShape(
-  const int Index) const
+const TopoDS_Shape& TopOpeBRep_ShapeIntersector2d::CurrentGeomShape(const int Index) const
 {
   if (myIntersectionDone)
   {

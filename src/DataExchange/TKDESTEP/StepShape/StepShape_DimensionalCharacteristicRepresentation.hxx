@@ -31,8 +31,9 @@ public:
   Standard_EXPORT StepShape_DimensionalCharacteristicRepresentation();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepShape_DimensionalCharacteristic&            aDimension,
-                            const occ::handle<StepShape_ShapeDimensionRepresentation>& aRepresentation);
+  Standard_EXPORT void Init(
+    const StepShape_DimensionalCharacteristic&                 aDimension,
+    const occ::handle<StepShape_ShapeDimensionRepresentation>& aRepresentation);
 
   //! Returns field Dimension
   Standard_EXPORT StepShape_DimensionalCharacteristic Dimension() const;
@@ -50,7 +51,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalCharacteristicRepresentation, Standard_Transient)
 
 private:
-  StepShape_DimensionalCharacteristic            theDimension;
+  StepShape_DimensionalCharacteristic                 theDimension;
   occ::handle<StepShape_ShapeDimensionRepresentation> theRepresentation;
 };
 

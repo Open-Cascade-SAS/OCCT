@@ -24,7 +24,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -32,25 +31,22 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_ToolExternalRefFileIndex::IGESBasic_ToolExternalRefFileIndex() {}
 
 void IGESBasic_ToolExternalRefFileIndex::ReadOwnParams(
   const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
   const occ::handle<IGESData_IGESReaderData>&        IR,
-  IGESData_ParamReader&                         PR) const
+  IGESData_ParamReader&                              PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                        num, i;
+  int                                                                     num, i;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    tempEntities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempEntities;
   bool st = PR.ReadInteger(PR.Current(), "Number of index entries", num);
   if (st && num > 0)
   {
@@ -80,7 +76,7 @@ void IGESBasic_ToolExternalRefFileIndex::ReadOwnParams(
 
 void IGESBasic_ToolExternalRefFileIndex::WriteOwnParams(
   const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
-  IGESData_IGESWriter&                          IW) const
+  IGESData_IGESWriter&                               IW) const
 {
   int i, num;
   IW.Send(ent->NbEntries());
@@ -93,7 +89,7 @@ void IGESBasic_ToolExternalRefFileIndex::WriteOwnParams(
 
 void IGESBasic_ToolExternalRefFileIndex::OwnShared(
   const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
-  Interface_EntityIterator&                     iter) const
+  Interface_EntityIterator&                          iter) const
 {
   int i, num;
   for (num = ent->NbEntries(), i = 1; i <= num; i++)
@@ -103,11 +99,13 @@ void IGESBasic_ToolExternalRefFileIndex::OwnShared(
 void IGESBasic_ToolExternalRefFileIndex::OwnCopy(
   const occ::handle<IGESBasic_ExternalRefFileIndex>& another,
   const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
-  Interface_CopyTool&                           TC) const
+  Interface_CopyTool&                                TC) const
 {
-  int                        num       = another->NbEntries();
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  int num = another->NbEntries();
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames =
+    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEntities =
+    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
   for (int i = 1; i <= num; i++)
   {
     tempNames->SetValue(i, new TCollection_HAsciiString(another->Name(i)));
@@ -139,10 +137,11 @@ void IGESBasic_ToolExternalRefFileIndex::OwnCheck(
 {
 }
 
-void IGESBasic_ToolExternalRefFileIndex::OwnDump(const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
-                                                 const IGESData_IGESDumper& dumper,
-                                                 Standard_OStream&          S,
-                                                 const int     level) const
+void IGESBasic_ToolExternalRefFileIndex::OwnDump(
+  const occ::handle<IGESBasic_ExternalRefFileIndex>& ent,
+  const IGESData_IGESDumper&                         dumper,
+  Standard_OStream&                                  S,
+  const int                                          level) const
 {
   int i, num;
   S << "IGESBasic_ExternalRefFileIndex\n"

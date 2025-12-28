@@ -79,14 +79,14 @@ public:
   //! if AutoTriangulation = False the old algorithm will be
   //! called to compute sensitive entities on faces.
   Standard_EXPORT static void Load(const occ::handle<SelectMgr_Selection>& aSelection,
-                                   const TopoDS_Shape&                aShape,
-                                   const TopAbs_ShapeEnum             aType,
-                                   const double                theDeflection,
-                                   const double                theDeviationAngle,
-                                   const bool AutoTriangulation = true,
-                                   const int aPriority         = -1,
-                                   const int NbPOnEdge         = 9,
-                                   const double    MaximalParameter  = 500);
+                                   const TopoDS_Shape&                     aShape,
+                                   const TopAbs_ShapeEnum                  aType,
+                                   const double                            theDeflection,
+                                   const double                            theDeviationAngle,
+                                   const bool                              AutoTriangulation = true,
+                                   const int                               aPriority         = -1,
+                                   const int                               NbPOnEdge         = 9,
+                                   const double                            MaximalParameter  = 500);
 
   //! Same functionalities. The only
   //! difference is that the selectable object from which the
@@ -98,22 +98,21 @@ public:
   //! (see EntityOwner from SelectBasics and BrepOwner)...
   Standard_EXPORT static void Load(const occ::handle<SelectMgr_Selection>&        aSelection,
                                    const occ::handle<SelectMgr_SelectableObject>& Origin,
-                                   const TopoDS_Shape&                       aShape,
-                                   const TopAbs_ShapeEnum                    aType,
-                                   const double                       theDeflection,
-                                   const double                       theDeviationAngle,
-                                   const bool AutoTriangulation = true,
-                                   const int aPriority         = -1,
-                                   const int NbPOnEdge         = 9,
-                                   const double    MaximalParameter  = 500);
+                                   const TopoDS_Shape&                            aShape,
+                                   const TopAbs_ShapeEnum                         aType,
+                                   const double                                   theDeflection,
+                                   const double                                   theDeviationAngle,
+                                   const bool   AutoTriangulation = true,
+                                   const int    aPriority         = -1,
+                                   const int    NbPOnEdge         = 9,
+                                   const double MaximalParameter  = 500);
 
   //! Returns the standard priority of the shape aShap having the type aType.
   //! This priority is passed to a StdSelect_BRepOwner object.
   //! You can use the function Load to modify the
   //! selection priority of an owner to make one entity
   //! more selectable than another one.
-  static int GetStandardPriority(const TopoDS_Shape&    theShape,
-                                              const TopAbs_ShapeEnum theType)
+  static int GetStandardPriority(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theType)
   {
     switch (theType)
     {
@@ -162,15 +161,14 @@ public:
   //! @param[in] theMaxiParam    sensitivity parameters for infinite objects (the default value is
   //! 500)
   //! @param[in] theAutoTriang   flag to compute triangulation for the faces which have none
-  Standard_EXPORT static void ComputeSensitive(
-    const TopoDS_Shape&                  theShape,
-    const occ::handle<SelectMgr_EntityOwner>& theOwner,
-    const occ::handle<SelectMgr_Selection>&   theSelection,
-    const double                  theDeflection,
-    const double                  theDeflAngle,
-    const int               theNbPOnEdge,
-    const double                  theMaxiParam,
-    const bool               theAutoTriang = true);
+  Standard_EXPORT static void ComputeSensitive(const TopoDS_Shape&                       theShape,
+                                               const occ::handle<SelectMgr_EntityOwner>& theOwner,
+                                               const occ::handle<SelectMgr_Selection>& theSelection,
+                                               const double theDeflection,
+                                               const double theDeflAngle,
+                                               const int    theNbPOnEdge,
+                                               const double theMaxiParam,
+                                               const bool   theAutoTriang = true);
 
   //! Creates the 3D sensitive entities for Face selection.
   //! @param[in]  theFace         face to compute sensitive entities
@@ -182,22 +180,22 @@ public:
   //! @param[in]  theInteriorFlag flag indicating that face interior (TRUE) or face boundary (FALSE)
   //! should be selectable
   Standard_EXPORT static bool GetSensitiveForFace(
-    const TopoDS_Face&                   theFace,
-    const occ::handle<SelectMgr_EntityOwner>& theOwner,
-    NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>&             theOutList,
-    const bool               theAutoTriang   = true,
-    const int               theNbPOnEdge    = 9,
-    const double                  theMaxiParam    = 500,
-    const bool               theInteriorFlag = true);
+    const TopoDS_Face&                                           theFace,
+    const occ::handle<SelectMgr_EntityOwner>&                    theOwner,
+    NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theOutList,
+    const bool                                                   theAutoTriang   = true,
+    const int                                                    theNbPOnEdge    = 9,
+    const double                                                 theMaxiParam    = 500,
+    const bool                                                   theInteriorFlag = true);
 
   //! Creates a sensitive cylinder.
   //! @param[in] theSubfacesMap map of cylinder faces
   //! @param[in] theOwner       selectable owner object
   //! @param[in] theSelection   selection to append new sensitive entities
   Standard_EXPORT static bool GetSensitiveForCylinder(
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&    theSubfacesMap,
-    const occ::handle<SelectMgr_EntityOwner>& theOwner,
-    const occ::handle<SelectMgr_Selection>&   theSelection);
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSubfacesMap,
+    const occ::handle<SelectMgr_EntityOwner>&                            theOwner,
+    const occ::handle<SelectMgr_Selection>&                              theSelection);
 
   //! Create a sensitive edge or sensitive wire.
   //! @param[in]  theShape          either TopoDS_Edge or TopoDS_Wire to compute sensitive entities
@@ -207,13 +205,13 @@ public:
   //! @param[in]  theDeviationAngle angular deflection
   //! @param[in]  theNbPOnEdge      sensitivity parameters
   //! @param[out] theMaxiParam      sensitivity parameters
-  Standard_EXPORT static void GetEdgeSensitive(const TopoDS_Shape&                  theShape,
+  Standard_EXPORT static void GetEdgeSensitive(const TopoDS_Shape&                       theShape,
                                                const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                               const occ::handle<SelectMgr_Selection>&   theSelection,
-                                               const double                  theDeflection,
-                                               const double               theDeviationAngle,
-                                               const int            theNbPOnEdge,
-                                               const double               theMaxiParam,
+                                               const occ::handle<SelectMgr_Selection>& theSelection,
+                                               const double theDeflection,
+                                               const double theDeviationAngle,
+                                               const int    theNbPOnEdge,
+                                               const double theMaxiParam,
                                                occ::handle<Select3D_SensitiveEntity>& theSensitive);
 
   //! Traverses the selection given and pre-builds BVH trees for heavyweight

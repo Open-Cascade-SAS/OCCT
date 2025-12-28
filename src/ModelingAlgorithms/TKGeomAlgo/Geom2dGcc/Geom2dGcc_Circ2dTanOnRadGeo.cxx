@@ -61,8 +61,8 @@ static const int aNbSolMAX = 8;
 //=========================================================================
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                          const gp_Lin2d&         OnLine,
-                                                         const double     Radius,
-                                                         const double     Tolerance)
+                                                         const double            Radius,
+                                                         const double            Tolerance)
     :
 
       //=========================================================================
@@ -83,12 +83,12 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double Tol      = std::abs(Tolerance);
-  double thefirst = -100000.;
-  double thelast  = 100000.;
-  double firstparam;
-  double lastparam;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   Tol      = std::abs(Tolerance);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
   WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -97,9 +97,9 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     throw GccEnt_BadQualifier();
     return;
   }
-  int     nbrcote1 = 0;
+  int                        nbrcote1 = 0;
   NCollection_Array1<double> Coef(1, 2);
-  Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
+  Geom2dAdaptor_Curve        Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
   {
@@ -186,8 +186,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                          const gp_Circ2d&        OnCirc,
-                                                         const double     Radius,
-                                                         const double     Tolerance)
+                                                         const double            Radius,
+                                                         const double            Tolerance)
     :
 
       //=========================================================================
@@ -208,15 +208,15 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
-  double    thefirst = -100000.;
-  double    thelast  = 100000.;
-  double    firstparam;
-  double    lastparam;
-  double    Tol      = std::abs(Tolerance);
-  int nbrcote1 = 0;
-  WellDone                  = false;
-  NbrSol                    = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
+  double   Tol      = std::abs(Tolerance);
+  int      nbrcote1 = 0;
+  WellDone          = false;
+  NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -224,7 +224,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     return;
   }
   NCollection_Array1<double> cote1(1, 2);
-  Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
+  Geom2dAdaptor_Curve        Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
   {
@@ -317,8 +317,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedCirc& Qualified1,
                                                          const Geom2dAdaptor_Curve&  OnCurv,
-                                                         const double         Radius,
-                                                         const double         Tolerance)
+                                                         const double                Radius,
+                                                         const double                Tolerance)
     :
 
       //=========================================================================
@@ -339,15 +339,15 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
-  double    thefirst = -100000.;
-  double    thelast  = 100000.;
-  double    firstparam;
-  double    lastparam;
-  double    Tol      = std::abs(Tolerance);
-  int nbrcote1 = 0;
-  WellDone                  = false;
-  NbrSol                    = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
+  double   Tol      = std::abs(Tolerance);
+  int      nbrcote1 = 0;
+  WellDone          = false;
+  NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -355,9 +355,9 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
     return;
   }
   NCollection_Array1<double> cote1(1, 2);
-  gp_Circ2d            C1 = Qualified1.Qualified();
-  gp_Pnt2d             center1(C1.Location());
-  double        R1 = C1.Radius();
+  gp_Circ2d                  C1 = Qualified1.Qualified();
+  gp_Pnt2d                   center1(C1.Location());
+  double                     R1 = C1.Radius();
 
   if (Radius < 0.0)
   {
@@ -464,8 +464,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedC
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedLin& Qualified1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const double        Radius,
-                                                         const double        Tolerance)
+                                                         const double               Radius,
+                                                         const double               Tolerance)
     :
 
       //=========================================================================
@@ -486,25 +486,25 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double thefirst = -100000.;
-  double thelast  = 100000.;
-  double firstparam;
-  double lastparam;
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  int     nbrcote1 = 0;
+  int                        nbrcote1 = 0;
   NCollection_Array1<double> cote1(1, 2);
-  gp_Lin2d             L1 = Qualified1.Qualified();
-  gp_Pnt2d             origin1(L1.Location());
-  gp_Dir2d             dir1(L1.Direction());
-  gp_Dir2d             norm1(-dir1.Y(), dir1.X());
+  gp_Lin2d                   L1 = Qualified1.Qualified();
+  gp_Pnt2d                   origin1(L1.Location());
+  gp_Dir2d                   dir1(L1.Direction());
+  gp_Dir2d                   norm1(-dir1.Y(), dir1.X());
 
   if (Radius < 0.0)
   {
@@ -602,8 +602,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const GccEnt_QualifiedL
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&    Qualified1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const double        Radius,
-                                                         const double        Tolerance)
+                                                         const double               Radius,
+                                                         const double               Tolerance)
     :
 
       //=========================================================================
@@ -624,15 +624,15 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d         dirx(gp_Dir2d::D::X);
-  double    thefirst = -100000.;
-  double    thelast  = 100000.;
-  double    firstparam;
-  double    lastparam;
-  double    Tol      = std::abs(Tolerance);
-  int nbrcote1 = 0;
-  WellDone                  = false;
-  NbrSol                    = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
+  double   Tol      = std::abs(Tolerance);
+  int      nbrcote1 = 0;
+  WellDone          = false;
+  NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -640,7 +640,7 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
     return;
   }
   NCollection_Array1<double> cote1(1, 2);
-  Geom2dAdaptor_Curve  Cu1 = Qualified1.Qualified();
+  Geom2dAdaptor_Curve        Cu1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
   {
@@ -675,14 +675,14 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
       firstparam = std::max(C1.FirstParameter(), thefirst);
       lastparam  = std::min(C1.LastParameter(), thelast);
-      IntRes2d_Domain             D1(C1.Value(firstparam),
+      IntRes2d_Domain                  D1(C1.Value(firstparam),
                          firstparam,
                          Tol,
                          C1.Value(lastparam),
                          lastparam,
                          Tol);
       occ::handle<Geom2dAdaptor_Curve> HOnCurv = new Geom2dAdaptor_Curve(OnCurv);
-      Adaptor2d_OffsetCurve       C2(HOnCurv);
+      Adaptor2d_OffsetCurve            C2(HOnCurv);
       firstparam = std::max(C2.FirstParameter(), thefirst);
       lastparam  = std::min(C2.LastParameter(), thelast);
       IntRes2d_Domain D2(C2.Value(firstparam),
@@ -736,8 +736,8 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const Geom2dGcc_QCurve&
 
 Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&            Point1,
                                                          const Geom2dAdaptor_Curve& OnCurv,
-                                                         const double        Radius,
-                                                         const double        Tolerance)
+                                                         const double               Radius,
+                                                         const double               Tolerance)
     :
 
       //=========================================================================
@@ -758,14 +758,14 @@ Geom2dGcc_Circ2dTanOnRadGeo::Geom2dGcc_Circ2dTanOnRadGeo(const gp_Pnt2d&        
   // Traitement.                                                            +
   //=========================================================================
 
-  gp_Dir2d      dirx(gp_Dir2d::D::X);
-  double thefirst = -100000.;
-  double thelast  = 100000.;
-  double firstparam;
-  double lastparam;
-  double Tol = std::abs(Tolerance);
-  WellDone          = false;
-  NbrSol            = 0;
+  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double   thefirst = -100000.;
+  double   thelast  = 100000.;
+  double   firstparam;
+  double   lastparam;
+  double   Tol = std::abs(Tolerance);
+  WellDone     = false;
+  NbrSol       = 0;
 
   if (Radius < 0.0)
   {
@@ -836,8 +836,7 @@ gp_Circ2d Geom2dGcc_Circ2dTanOnRadGeo::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const int Index,
-                                                 GccEnt_Position&       Qualif1) const
+void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
 {
   if (!WellDone)
   {
@@ -854,9 +853,9 @@ void Geom2dGcc_Circ2dTanOnRadGeo::WhichQualifier(const int Index,
 }
 
 void Geom2dGcc_Circ2dTanOnRadGeo::Tangency1(const int Index,
-                                            double&         ParSol,
-                                            double&         ParArg,
-                                            gp_Pnt2d&              PntSol) const
+                                            double&   ParSol,
+                                            double&   ParArg,
+                                            gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -874,9 +873,7 @@ void Geom2dGcc_Circ2dTanOnRadGeo::Tangency1(const int Index,
   }
 }
 
-void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const int Index,
-                                            double&         ParArg,
-                                            gp_Pnt2d&              PntSol) const
+void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {

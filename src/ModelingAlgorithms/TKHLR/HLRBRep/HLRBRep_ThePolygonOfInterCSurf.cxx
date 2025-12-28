@@ -25,8 +25,7 @@
 
 //==================================================================================================
 
-HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&          Curve,
-                                                               const int NbPnt)
+HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin& Curve, const int NbPnt)
     : ThePnts(1, (NbPnt < 5) ? 5 : NbPnt),
       ClosedPolygon(false)
 {
@@ -38,10 +37,10 @@ HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&    
 
 //==================================================================================================
 
-HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&          Curve,
-                                                               const double    U1,
-                                                               const double    U2,
-                                                               const int NbPnt)
+HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin& Curve,
+                                                               const double  U1,
+                                                               const double  U2,
+                                                               const int     NbPnt)
     : ThePnts(1, (NbPnt < 5) ? 5 : NbPnt),
       ClosedPolygon(false),
       Binf(U1),
@@ -53,8 +52,9 @@ HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&    
 
 //==================================================================================================
 
-HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&               Curve,
-                                                               const NCollection_Array1<double>& Upars)
+HLRBRep_ThePolygonOfInterCSurf::HLRBRep_ThePolygonOfInterCSurf(
+  const gp_Lin&                     Curve,
+  const NCollection_Array1<double>& Upars)
     : ThePnts(1, Upars.Length()),
       ClosedPolygon(false),
       Binf(Upars(Upars.Lower())),
@@ -80,7 +80,8 @@ void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve)
 
 //==================================================================================================
 
-void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve, const NCollection_Array1<double>& Upars)
+void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin&                     Curve,
+                                          const NCollection_Array1<double>& Upars)
 {
   IntCurveSurface_PolygonUtils::InitWithParams<gp_Lin, HLRBRep_LineTool>(Curve,
                                                                          Upars,
@@ -94,9 +95,8 @@ void HLRBRep_ThePolygonOfInterCSurf::Init(const gp_Lin& Curve, const NCollection
 
 //==================================================================================================
 
-double HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(
-  const int Index,
-  const double    ParamOnLine) const
+double HLRBRep_ThePolygonOfInterCSurf::ApproxParamOnCurve(const int    Index,
+                                                          const double ParamOnLine) const
 {
   return IntCurveSurface_PolygonUtils::ApproxParamOnCurve(Index,
                                                           ParamOnLine,

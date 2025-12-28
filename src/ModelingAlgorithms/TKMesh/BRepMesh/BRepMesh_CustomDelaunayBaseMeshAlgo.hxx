@@ -37,8 +37,7 @@ protected:
   virtual void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange)
   {
     const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
-    std::pair<int, int> aCellsCount =
-      this->getCellsCount(aStructure->NbNodes());
+    std::pair<int, int> aCellsCount = this->getCellsCount(aStructure->NbNodes());
     theMesher.InitCirclesTool(aCellsCount.first, aCellsCount.second);
 
     BaseAlgo::postProcessMesh(theMesher, theRange);

@@ -25,8 +25,6 @@
 #include <StepGeom_BSplineSurface.hxx>
 #include <Standard_Integer.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepData_Logical.hxx>
 #include <Standard_Real.hxx>
@@ -39,22 +37,23 @@ public:
   //! Returns a RationalBSplineSurface
   Standard_EXPORT StepGeom_RationalBSplineSurface();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
-                            const int                          aUDegree,
-                            const int                          aVDegree,
-                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-                            const StepData_Logical                          aUClosed,
-                            const StepData_Logical                          aVClosed,
-                            const StepData_Logical                          aSelfIntersect,
-                            const occ::handle<NCollection_HArray2<double>>&            aWeightsData);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const int                                    aUDegree,
+    const int                                    aVDegree,
+    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
+                                                    aControlPointsList,
+    const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+    const StepData_Logical                          aUClosed,
+    const StepData_Logical                          aVClosed,
+    const StepData_Logical                          aSelfIntersect,
+    const occ::handle<NCollection_HArray2<double>>& aWeightsData);
 
   Standard_EXPORT void SetWeightsData(const occ::handle<NCollection_HArray2<double>>& aWeightsData);
 
   Standard_EXPORT occ::handle<NCollection_HArray2<double>> WeightsData() const;
 
-  Standard_EXPORT double WeightsDataValue(const int num1,
-                                                 const int num2) const;
+  Standard_EXPORT double WeightsDataValue(const int num1, const int num2) const;
 
   Standard_EXPORT int NbWeightsDataI() const;
 

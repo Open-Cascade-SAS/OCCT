@@ -152,10 +152,7 @@ void Geom_CylindricalSurface::SetRadius(const double R)
 
 //=================================================================================================
 
-void Geom_CylindricalSurface::Bounds(double& U1,
-                                     double& U2,
-                                     double& V1,
-                                     double& V2) const
+void Geom_CylindricalSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
 
   U1 = 0.0;
@@ -190,16 +187,16 @@ void Geom_CylindricalSurface::Coefficients(double& A1,
   double T22 = T.Value(2, 2);
   double T23 = T.Value(2, 3);
   double T24 = T.Value(2, 4);
-  A1                = T11 * T11 + T21 * T21;
-  A2                = T12 * T12 + T22 * T22;
-  A3                = T13 * T13 + T23 * T23;
-  B1                = T11 * T12 + T21 * T22;
-  B2                = T11 * T13 + T21 * T23;
-  B3                = T12 * T13 + T22 * T23;
-  C1                = T11 * T14 + T21 * T24;
-  C2                = T12 * T14 + T22 * T24;
-  C3                = T13 * T14 + T23 * T24;
-  D                 = T14 * T14 + T24 * T24 - radius * radius;
+  A1         = T11 * T11 + T21 * T21;
+  A2         = T12 * T12 + T22 * T22;
+  A3         = T13 * T13 + T23 * T23;
+  B1         = T11 * T12 + T21 * T22;
+  B2         = T11 * T13 + T21 * T23;
+  B3         = T12 * T13 + T22 * T23;
+  C1         = T11 * T14 + T21 * T24;
+  C2         = T12 * T14 + T22 * T24;
+  C3         = T13 * T14 + T23 * T24;
+  D          = T14 * T14 + T24 * T24 - radius * radius;
 }
 
 //=================================================================================================
@@ -219,11 +216,7 @@ void Geom_CylindricalSurface::D0(const double U, const double V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_CylindricalSurface::D1(const double U,
-                                 const double V,
-                                 Pnt&                P,
-                                 Vec&                D1U,
-                                 Vec&                D1V) const
+void Geom_CylindricalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
 {
   ElSLib::CylinderD1(U, V, pos, radius, P, D1U, D1V);
 }
@@ -232,12 +225,12 @@ void Geom_CylindricalSurface::D1(const double U,
 
 void Geom_CylindricalSurface::D2(const double U,
                                  const double V,
-                                 Pnt&                P,
-                                 Vec&                D1U,
-                                 Vec&                D1V,
-                                 Vec&                D2U,
-                                 Vec&                D2V,
-                                 Vec&                D2UV) const
+                                 Pnt&         P,
+                                 Vec&         D1U,
+                                 Vec&         D1V,
+                                 Vec&         D2U,
+                                 Vec&         D2V,
+                                 Vec&         D2UV) const
 {
   ElSLib::CylinderD2(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -246,26 +239,23 @@ void Geom_CylindricalSurface::D2(const double U,
 
 void Geom_CylindricalSurface::D3(const double U,
                                  const double V,
-                                 Pnt&                P,
-                                 Vec&                D1U,
-                                 Vec&                D1V,
-                                 Vec&                D2U,
-                                 Vec&                D2V,
-                                 Vec&                D2UV,
-                                 Vec&                D3U,
-                                 Vec&                D3V,
-                                 Vec&                D3UUV,
-                                 Vec&                D3UVV) const
+                                 Pnt&         P,
+                                 Vec&         D1U,
+                                 Vec&         D1V,
+                                 Vec&         D2U,
+                                 Vec&         D2V,
+                                 Vec&         D2UV,
+                                 Vec&         D3U,
+                                 Vec&         D3V,
+                                 Vec&         D3UUV,
+                                 Vec&         D3UVV) const
 {
   ElSLib::CylinderD3(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-Vec Geom_CylindricalSurface::DN(const double    U,
-                                const double    V,
-                                const int Nu,
-                                const int Nv) const
+Vec Geom_CylindricalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
 
@@ -306,9 +296,7 @@ void Geom_CylindricalSurface::Transform(const Trsf& T)
 
 //=================================================================================================
 
-void Geom_CylindricalSurface::TransformParameters(double&,
-                                                  double& V,
-                                                  const gp_Trsf& T) const
+void Geom_CylindricalSurface::TransformParameters(double&, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
     V *= std::abs(T.ScaleFactor());
@@ -326,8 +314,7 @@ gp_GTrsf2d Geom_CylindricalSurface::ParametricTransformation(const gp_Trsf& T) c
 
 //=================================================================================================
 
-void Geom_CylindricalSurface::DumpJson(Standard_OStream& theOStream,
-                                       int  theDepth) const
+void Geom_CylindricalSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

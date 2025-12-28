@@ -30,11 +30,12 @@ StepBasic_VersionedActionRequest::StepBasic_VersionedActionRequest()
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::Init(const occ::handle<TCollection_HAsciiString>& aId,
-                                            const occ::handle<TCollection_HAsciiString>& aVersion,
-                                            const occ::handle<TCollection_HAsciiString>& aPurpose,
-                                            const bool                  hasDescription,
-                                            const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_VersionedActionRequest::Init(
+  const occ::handle<TCollection_HAsciiString>& aId,
+  const occ::handle<TCollection_HAsciiString>& aVersion,
+  const occ::handle<TCollection_HAsciiString>& aPurpose,
+  const bool                                   hasDescription,
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 
   theId = aId;
@@ -75,7 +76,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Version(
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetVersion(const occ::handle<TCollection_HAsciiString>& aVersion)
+void StepBasic_VersionedActionRequest::SetVersion(
+  const occ::handle<TCollection_HAsciiString>& aVersion)
 {
   theVersion = aVersion;
 }
@@ -89,7 +91,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_VersionedActionRequest::Purpose(
 
 //=================================================================================================
 
-void StepBasic_VersionedActionRequest::SetPurpose(const occ::handle<TCollection_HAsciiString>& aPurpose)
+void StepBasic_VersionedActionRequest::SetPurpose(
+  const occ::handle<TCollection_HAsciiString>& aPurpose)
 {
   thePurpose = aPurpose;
 }

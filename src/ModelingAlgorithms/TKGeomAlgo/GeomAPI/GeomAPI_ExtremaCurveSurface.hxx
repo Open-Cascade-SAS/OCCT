@@ -77,16 +77,17 @@ public:
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT GeomAPI_ExtremaCurveSurface(const occ::handle<Geom_Curve>&   Curve,
                                               const occ::handle<Geom_Surface>& Surface,
-                                              const double         Wmin,
-                                              const double         Wmax,
-                                              const double         Umin,
-                                              const double         Umax,
-                                              const double         Vmin,
-                                              const double         Vmax);
+                                              const double                     Wmin,
+                                              const double                     Wmax,
+                                              const double                     Umin,
+                                              const double                     Umax,
+                                              const double                     Vmin,
+                                              const double                     Vmax);
 
   //! Computes the extrema distances between the
   //! curve <C> and the surface <S>.
-  Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Curve, const occ::handle<Geom_Surface>& Surface);
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>&   Curve,
+                            const occ::handle<Geom_Surface>& Surface);
 
   //! Computes the extrema distances between the
   //! curve <C> and the surface <S>. The solution
@@ -98,17 +99,17 @@ public:
   //! of solutions. If this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>&   Curve,
                             const occ::handle<Geom_Surface>& Surface,
-                            const double         Wmin,
-                            const double         Wmax,
-                            const double         Umin,
-                            const double         Umax,
-                            const double         Vmin,
-                            const double         Vmax);
+                            const double                     Wmin,
+                            const double                     Wmax,
+                            const double                     Umin,
+                            const double                     Umax,
+                            const double                     Vmin,
+                            const double                     Vmax);
 
   //! Returns the number of extrema computed by this algorithm.
   //! Note: if this algorithm fails, NbExtrema returns 0.
   Standard_EXPORT int NbExtrema() const;
-  Standard_EXPORT                  operator int() const;
+  Standard_EXPORT     operator int() const;
 
   //! Returns the points P1 on the curve and P2 on the
   //! surface, which are the ends of the extremum of index
@@ -126,10 +127,7 @@ public:
   //! Standard_OutOfRange if Index is not in the range [
   //! 1,NbExtrema ], where NbExtrema is the
   //! number of extrema computed by this algorithm.
-  Standard_EXPORT void Parameters(const int Index,
-                                  double&         W,
-                                  double&         U,
-                                  double&         V) const;
+  Standard_EXPORT void Parameters(const int Index, double& W, double& U, double& V) const;
 
   //! Computes the distance between the end points of the
   //! extremum of index Index computed by this algorithm.
@@ -151,23 +149,21 @@ public:
   //! and (U,V) of the point on the surface, which are the
   //! ends of the shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
-  Standard_EXPORT void LowerDistanceParameters(double& W,
-                                               double& U,
-                                               double& V) const;
+  Standard_EXPORT void LowerDistanceParameters(double& W, double& U, double& V) const;
 
   //! Computes the distance between the end points of the
   //! shortest extremum computed by this algorithm.
   //! Exceptions - StdFail_NotDone if this algorithm fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT               operator double() const;
+  Standard_EXPORT        operator double() const;
 
   //! Returns the algorithmic object from Extrema
   const Extrema_ExtCS& Extrema() const;
 
 private:
-  bool myIsDone;
-  int myIndex;
-  Extrema_ExtCS    myExtCS;
+  bool          myIsDone;
+  int           myIndex;
+  Extrema_ExtCS myExtCS;
 };
 
 #include <GeomAPI_ExtremaCurveSurface.lxx>

@@ -34,7 +34,7 @@ RWStepKinematics_RWScrewPairWithRange::RWStepKinematics_RWScrewPairWithRange() {
 
 void RWStepKinematics_RWScrewPairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&           theData,
-  const int                           theNum,
+  const int                                             theNum,
   occ::handle<Interface_Check>&                         theArch,
   const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                 hasItemDefinedTransformation_Description = true;
+  bool                                  hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -105,8 +105,8 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 
   // Own fields of ScrewPairWithRange
 
-  double    aLowerLimitActualRotation;
-  bool hasLowerLimitActualRotation = true;
+  double aLowerLimitActualRotation;
+  bool   hasLowerLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 8))
   {
     theData->ReadReal(theNum, 8, "lower_limit_actual_rotation", theArch, aLowerLimitActualRotation);
@@ -117,8 +117,8 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
     aLowerLimitActualRotation   = 0;
   }
 
-  double    aUpperLimitActualRotation;
-  bool hasUpperLimitActualRotation = true;
+  double aUpperLimitActualRotation;
+  bool   hasUpperLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 9))
   {
     theData->ReadReal(theNum, 9, "upper_limit_actual_rotation", theArch, aUpperLimitActualRotation);
@@ -147,7 +147,7 @@ void RWStepKinematics_RWScrewPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWScrewPairWithRange::WriteStep(
-  StepData_StepWriter&                             theSW,
+  StepData_StepWriter&                                  theSW,
   const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt) const
 {
 
@@ -199,7 +199,7 @@ void RWStepKinematics_RWScrewPairWithRange::WriteStep(
 
 void RWStepKinematics_RWScrewPairWithRange::Share(
   const occ::handle<StepKinematics_ScrewPairWithRange>& theEnt,
-  Interface_EntityIterator&                        iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of RepresentationItem

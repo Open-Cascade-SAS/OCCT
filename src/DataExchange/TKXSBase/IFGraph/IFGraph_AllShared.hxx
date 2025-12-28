@@ -39,7 +39,7 @@ public:
 
   //! creates an AllShared which memrizes Entities shared by a given
   //! one, at any level, including itself
-  Standard_EXPORT IFGraph_AllShared(const Interface_Graph&            agraph,
+  Standard_EXPORT IFGraph_AllShared(const Interface_Graph&                 agraph,
                                     const occ::handle<Standard_Transient>& ent);
 
   //! adds an entity and its shared ones to the list (allows to

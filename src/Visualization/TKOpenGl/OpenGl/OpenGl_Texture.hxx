@@ -41,8 +41,8 @@ public:
 public:
   //! Create uninitialized texture.
   Standard_EXPORT OpenGl_Texture(
-    const TCollection_AsciiString&         theResourceId = TCollection_AsciiString::EmptyString(),
-    const occ::handle<Graphic3d_TextureParams>& theParams     = occ::handle<Graphic3d_TextureParams>());
+    const TCollection_AsciiString& theResourceId          = TCollection_AsciiString::EmptyString(),
+    const occ::handle<Graphic3d_TextureParams>& theParams = occ::handle<Graphic3d_TextureParams>());
 
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_Texture();
@@ -122,12 +122,12 @@ public:
   //! Bind this Texture to specified unit.
   //! Also binds Sampler Object if it is allocated.
   Standard_EXPORT void Bind(const occ::handle<OpenGl_Context>& theCtx,
-                            const Graphic3d_TextureUnit   theTextureUnit) const;
+                            const Graphic3d_TextureUnit        theTextureUnit) const;
 
   //! Unbind texture from specified unit.
   //! Also unbinds Sampler Object if it is allocated.
   Standard_EXPORT void Unbind(const occ::handle<OpenGl_Context>& theCtx,
-                              const Graphic3d_TextureUnit   theTextureUnit) const;
+                              const Graphic3d_TextureUnit        theTextureUnit) const;
 
   //! Revision of associated data source.
   size_t Revision() const { return myRevision; }
@@ -137,27 +137,27 @@ public:
 
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theCtx,
-                            const Image_PixMap&           theImage,
-                            const Graphic3d_TypeOfTexture theType,
-                            const bool        theIsColorMap);
+                            const Image_PixMap&                theImage,
+                            const Graphic3d_TypeOfTexture      theType,
+                            const bool                         theIsColorMap);
 
   //! Initialize the texture with specified format, size and texture type.
   //! If theImage is empty the texture data will contain trash.
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theCtx,
-                            const OpenGl_TextureFormat&   theFormat,
-                            const NCollection_Vec3<int>&        theSizeXYZ,
-                            const Graphic3d_TypeOfTexture theType,
-                            const Image_PixMap*           theImage = NULL);
+                            const OpenGl_TextureFormat&        theFormat,
+                            const NCollection_Vec3<int>&       theSizeXYZ,
+                            const Graphic3d_TypeOfTexture      theType,
+                            const Image_PixMap*                theImage = NULL);
 
   //! Initialize the 2D texture with specified format, size and texture type.
   //! If theImage is empty the texture data will contain trash.
   //! Notice that texture will be unbound after this call.
   bool Init(const occ::handle<OpenGl_Context>& theCtx,
-            const OpenGl_TextureFormat&   theFormat,
-            const NCollection_Vec2<int>&        theSizeXY,
-            const Graphic3d_TypeOfTexture theType,
-            const Image_PixMap*           theImage = NULL)
+            const OpenGl_TextureFormat&        theFormat,
+            const NCollection_Vec2<int>&       theSizeXY,
+            const Graphic3d_TypeOfTexture      theType,
+            const Image_PixMap*                theImage = NULL)
   {
     return Init(theCtx, theFormat, NCollection_Vec3<int>(theSizeXY, 1), theType, theImage);
   }
@@ -173,28 +173,28 @@ public:
 
   //! Initialize the texture with Image_CompressedPixMap.
   Standard_EXPORT bool InitCompressed(const occ::handle<OpenGl_Context>& theCtx,
-                                      const Image_CompressedPixMap& theImage,
-                                      const bool        theIsColorMap);
+                                      const Image_CompressedPixMap&      theImage,
+                                      const bool                         theIsColorMap);
 
   //! Initialize the 2D multisampling texture using glTexImage2DMultisample().
   Standard_EXPORT bool Init2DMultisample(const occ::handle<OpenGl_Context>& theCtx,
-                                         const int        theNbSamples,
-                                         const int        theTextFormat,
-                                         const int        theSizeX,
-                                         const int        theSizeY);
+                                         const int                          theNbSamples,
+                                         const int                          theTextFormat,
+                                         const int                          theSizeX,
+                                         const int                          theSizeY);
 
   //! Allocates texture rectangle with specified format and size.
   //! \note Texture data is not initialized (will contain trash).
   Standard_EXPORT bool InitRectangle(const occ::handle<OpenGl_Context>& theCtx,
-                                     const int        theSizeX,
-                                     const int        theSizeY,
-                                     const OpenGl_TextureFormat&   theFormat);
+                                     const int                          theSizeX,
+                                     const int                          theSizeY,
+                                     const OpenGl_TextureFormat&        theFormat);
 
   //! Initializes 3D texture rectangle with specified format and size.
   Standard_EXPORT bool Init3D(const occ::handle<OpenGl_Context>& theCtx,
-                              const OpenGl_TextureFormat&   theFormat,
-                              const NCollection_Vec3<int>&        theSizeXYZ,
-                              const void*                   thePixels);
+                              const OpenGl_TextureFormat&        theFormat,
+                              const NCollection_Vec3<int>&       theSizeXYZ,
+                              const void*                        thePixels);
 
   //! @return true if texture was generated within mipmaps
   bool HasMipmaps() const { return myMaxMipLevel > 0; }
@@ -219,20 +219,20 @@ public:
   //! @param[in] theLevel     mipmap level to dump
   //! @param[in] theCubeSide  cubemap side to dump within [0, 5] range
   //! @return FALSE on error
-  Standard_EXPORT bool ImageDump(Image_PixMap&                 theImage,
+  Standard_EXPORT bool ImageDump(Image_PixMap&                      theImage,
                                  const occ::handle<OpenGl_Context>& theCtx,
-                                 Graphic3d_TextureUnit         theTexUnit,
-                                 int              theLevel    = 0,
-                                 int              theCubeSide = 0) const;
+                                 Graphic3d_TextureUnit              theTexUnit,
+                                 int                                theLevel    = 0,
+                                 int                                theCubeSide = 0) const;
 
 public:
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used "
                       "instead")
   static bool GetDataFormat(const occ::handle<OpenGl_Context>& theCtx,
-                            const Image_Format            theFormat,
-                            int&             theTextFormat,
-                            unsigned int&                 thePixelFormat,
-                            unsigned int&                 theDataType)
+                            const Image_Format                 theFormat,
+                            int&                               theTextFormat,
+                            unsigned int&                      thePixelFormat,
+                            unsigned int&                      theDataType)
   {
     OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat(theCtx, theFormat, false);
     theTextFormat                = aFormat.InternalFormat();
@@ -244,10 +244,10 @@ public:
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used "
                       "instead")
   static bool GetDataFormat(const occ::handle<OpenGl_Context>& theCtx,
-                            const Image_PixMap&           theData,
-                            int&             theTextFormat,
-                            unsigned int&                 thePixelFormat,
-                            unsigned int&                 theDataType)
+                            const Image_PixMap&                theData,
+                            int&                               theTextFormat,
+                            unsigned int&                      thePixelFormat,
+                            unsigned int&                      theDataType)
   {
     OpenGl_TextureFormat aFormat =
       OpenGl_TextureFormat::FindFormat(theCtx, theData.Format(), false);
@@ -260,13 +260,13 @@ public:
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of "
                       "separate parameters")
   bool Init(const occ::handle<OpenGl_Context>& theCtx,
-            const int        theTextFormat,
-            const unsigned int            thePixelFormat,
-            const unsigned int            theDataType,
-            const int        theSizeX,
-            const int        theSizeY,
-            const Graphic3d_TypeOfTexture theType,
-            const Image_PixMap*           theImage = NULL)
+            const int                          theTextFormat,
+            const unsigned int                 thePixelFormat,
+            const unsigned int                 theDataType,
+            const int                          theSizeX,
+            const int                          theSizeY,
+            const Graphic3d_TypeOfTexture      theType,
+            const Image_PixMap*                theImage = NULL)
   {
     OpenGl_TextureFormat aFormat;
     aFormat.SetInternalFormat(theTextFormat);
@@ -278,8 +278,8 @@ public:
   Standard_DEPRECATED("Deprecated method, theIsColorMap parameter should be explicitly "
                       "specified")
   bool Init(const occ::handle<OpenGl_Context>& theCtx,
-            const Image_PixMap&           theImage,
-            const Graphic3d_TypeOfTexture theType)
+            const Image_PixMap&                theImage,
+            const Graphic3d_TypeOfTexture      theType)
   {
     return Init(theCtx, theImage, theType, true);
   }
@@ -287,13 +287,13 @@ public:
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of "
                       "separate parameters")
   bool Init3D(const occ::handle<OpenGl_Context>& theCtx,
-              const int        theTextFormat,
-              const unsigned int            thePixelFormat,
-              const unsigned int            theDataType,
-              const int        theSizeX,
-              const int        theSizeY,
-              const int        theSizeZ,
-              const void*                   thePixels)
+              const int                          theTextFormat,
+              const unsigned int                 thePixelFormat,
+              const unsigned int                 theDataType,
+              const int                          theSizeX,
+              const int                          theSizeY,
+              const int                          theSizeZ,
+              const void*                        thePixels)
   {
     OpenGl_TextureFormat aFormat;
     aFormat.SetInternalFormat(theTextFormat);
@@ -313,10 +313,10 @@ public:
   //! @param[in] theIsColorMap   flag indicating cubemap storing color values
   Standard_EXPORT bool InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
                                    const occ::handle<Graphic3d_CubeMap>& theCubeMap,
-                                   size_t                    theSize,
-                                   Image_Format                     theFormat,
-                                   bool                 theToGenMipmap,
-                                   bool                 theIsColorMap);
+                                   size_t                                theSize,
+                                   Image_Format                          theFormat,
+                                   bool                                  theToGenMipmap,
+                                   bool                                  theIsColorMap);
 
 protected:
   //! Apply default sampler parameters after texture creation.
@@ -324,15 +324,15 @@ protected:
 
 protected:
   occ::handle<OpenGl_Sampler> mySampler;     //!< texture sampler
-  size_t          myRevision;    //!< revision of associated data source
-  unsigned int           myTextureId;   //!< GL resource ID
-  unsigned int           myTarget;      //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
-  NCollection_Vec3<int>        mySize;        //!< texture width x height x depth
-  unsigned int           myTextFormat;  //!< texture format - GL_RGB, GL_RGBA,...
-  int       mySizedFormat; //!< internal (sized) texture format
-  int       myNbSamples;   //!< number of MSAA samples
-  int       myMaxMipLevel; //!< upper mipmap level index (0 means no mipmaps)
-  bool                   myIsAlpha;     //!< indicates alpha format
+  size_t                      myRevision;    //!< revision of associated data source
+  unsigned int                myTextureId;   //!< GL resource ID
+  unsigned int                myTarget;      //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
+  NCollection_Vec3<int>       mySize;        //!< texture width x height x depth
+  unsigned int                myTextFormat;  //!< texture format - GL_RGB, GL_RGBA,...
+  int                         mySizedFormat; //!< internal (sized) texture format
+  int                         myNbSamples;   //!< number of MSAA samples
+  int                         myMaxMipLevel; //!< upper mipmap level index (0 means no mipmaps)
+  bool                        myIsAlpha;     //!< indicates alpha format
   // clang-format off
   bool             myIsTopDown;  //!< indicates if 2D surface is defined top-down (TRUE) or bottom-up (FALSE)
   // clang-format on

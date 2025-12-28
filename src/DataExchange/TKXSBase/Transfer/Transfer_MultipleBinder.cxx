@@ -61,14 +61,16 @@ occ::handle<Standard_Transient> Transfer_MultipleBinder::ResultValue(const int n
   return themulres->Value(num);
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_MultipleBinder::MultipleResult() const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_MultipleBinder::
+  MultipleResult() const
 {
   if (!themulres.IsNull())
     return themulres;
   return new NCollection_HSequence<occ::handle<Standard_Transient>>();
 }
 
-void Transfer_MultipleBinder::SetMultipleResult(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& mulres)
+void Transfer_MultipleBinder::SetMultipleResult(
+  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& mulres)
 {
   themulres = mulres;
 }

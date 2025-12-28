@@ -27,9 +27,9 @@ public:
   Standard_EXPORT Graphic3d_AttribBuffer(const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
   //! Allocates new empty array
-  Standard_EXPORT bool Init(const int     theNbElems,
+  Standard_EXPORT bool Init(const int                  theNbElems,
                             const Graphic3d_Attribute* theAttribs,
-                            const int     theNbAttribs);
+                            const int                  theNbAttribs);
 
   //! Allocates new empty array
   bool Init(const int theNbElems, const NCollection_Array1<Graphic3d_Attribute>& theAttribs)
@@ -52,10 +52,7 @@ public:
   Standard_EXPORT void SetInterleaved(bool theIsInterleaved);
 
   //! Return invalidated range.
-  virtual Graphic3d_BufferRange InvalidatedRange() const override
-  {
-    return myInvalidatedRange;
-  }
+  virtual Graphic3d_BufferRange InvalidatedRange() const override { return myInvalidatedRange; }
 
   //! Reset invalidated range.
   virtual void Validate() override { myInvalidatedRange.Clear(); }
@@ -67,9 +64,7 @@ public:
   Standard_EXPORT void Invalidate(int theAttributeIndex);
 
   //! Invalidate attribute data within specified sub-range (starting from 0).
-  Standard_EXPORT void Invalidate(int theAttributeIndex,
-                                  int theVertexLower,
-                                  int theVertexUpper);
+  Standard_EXPORT void Invalidate(int theAttributeIndex, int theVertexLower, int theVertexUpper);
 
   //! Invalidate all attribute data within specified vertex sub-range (starting from 0).
   Standard_EXPORT void Invalidate(int theVertexLower, int theVertexUpper);
@@ -82,7 +77,7 @@ protected:
                                             // clang-format off
   bool      myIsInterleaved;    //!< flag indicating the vertex attributes being interleaved
                                             // clang-format on
-  bool myIsMutable;             //!< flag indicating that data can be invalidated
+  bool myIsMutable;                         //!< flag indicating that data can be invalidated
 };
 
 #endif // _Graphic3d_AttribBuffer_HeaderFile

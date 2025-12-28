@@ -46,20 +46,20 @@ occ::handle<TDF_Attribute> BinMDataStd_AsciiStringDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&  Source,
-                                                      const occ::handle<TDF_Attribute>& Target,
-                                                      BinObjMgt_RRelocationTable&  RelocTable) const
+bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&       Source,
+                                          const occ::handle<TDF_Attribute>& Target,
+                                          BinObjMgt_RRelocationTable&       RelocTable) const
 {
   occ::handle<TDataStd_AsciiString> aStrAtt = occ::down_cast<TDataStd_AsciiString>(Target);
-  TCollection_AsciiString      aString;
-  bool             ok = Source >> aString;
+  TCollection_AsciiString           aString;
+  bool                              ok = Source >> aString;
   if (ok)
     aStrAtt->Set(aString);
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const int& aPos = Source.Position();
-    Standard_GUID           aGuid;
+    const int&    aPos = Source.Position();
+    Standard_GUID aGuid;
     ok = Source >> aGuid;
     if (!ok)
     {
@@ -82,9 +82,10 @@ bool BinMDataStd_AsciiStringDriver::Paste(const BinObjMgt_Persistent&  Source,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& Source,
-                                          BinObjMgt_Persistent&        Target,
-                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
+void BinMDataStd_AsciiStringDriver::Paste(
+  const occ::handle<TDF_Attribute>& Source,
+  BinObjMgt_Persistent&             Target,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
   occ::handle<TDataStd_AsciiString> anAtt = occ::down_cast<TDataStd_AsciiString>(Source);
   Target << anAtt->Get();

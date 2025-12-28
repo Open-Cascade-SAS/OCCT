@@ -51,11 +51,12 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
 //=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init(
-  const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
-  const occ::handle<TCollection_HAsciiString>&                      aContextType,
-  const int                                       aCoordinateSpaceDimension,
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>&                  aUnits,
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& anUncertainty)
+  const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>& aContextType,
+  const int                                    aCoordinateSpaceDimension,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
+    anUncertainty)
 {
   // --- classe inherited fields ---
 
@@ -144,8 +145,8 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetCoordi
 
 //=================================================================================================
 
-int StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::
-  CoordinateSpaceDimension() const
+int StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::CoordinateSpaceDimension()
+  const
 {
   return geometricRepresentationContext->CoordinateSpaceDimension();
 }
@@ -192,7 +193,8 @@ int StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::NbUnits() 
 //=================================================================================================
 
 void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::SetUncertainty(
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
+    aUncertainty)
 {
   globalUncertaintyAssignedContext->SetUncertainty(aUncertainty);
 }
@@ -216,8 +218,7 @@ occ::handle<StepBasic_UncertaintyMeasureWithUnit>
 
 //=================================================================================================
 
-int StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::NbUncertainty()
-  const
+int StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::NbUncertainty() const
 {
   return globalUncertaintyAssignedContext->NbUncertainty();
 }

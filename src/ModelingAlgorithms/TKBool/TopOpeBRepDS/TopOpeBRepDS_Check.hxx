@@ -26,13 +26,10 @@
 #include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
-#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
-#include <TopOpeBRepDS_CheckStatus.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopOpeBRepDS_HDataStructure;
 
@@ -50,7 +47,8 @@ public:
 
   //! Check integrition of interferences
   //! (les supports et les geometries de LI)
-  Standard_EXPORT bool ChkIntgInterf(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT bool ChkIntgInterf(
+    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
 
   //! Verifie que le ieme element de la DS existe, et
   //! pour un K de type topologique, verifie qu'il est du
@@ -89,20 +87,22 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Check, Standard_Transient)
 
 private:
-  Standard_EXPORT Standard_OStream& PrintMap(NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
-                                             const char*             eltstr,
-                                             Standard_OStream&                  S);
+  Standard_EXPORT Standard_OStream& PrintMap(
+    NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
+    const char*                                         eltstr,
+    Standard_OStream&                                   S);
 
-  Standard_EXPORT Standard_OStream& PrintElts(NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
-                                              const TopOpeBRepDS_CheckStatus     Stat,
-                                              bool&                  b,
-                                              Standard_OStream&                  S);
+  Standard_EXPORT Standard_OStream& PrintElts(
+    NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
+    const TopOpeBRepDS_CheckStatus                      Stat,
+    bool&                                               b,
+    Standard_OStream&                                   S);
 
-  occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>   myMapSurfaceStatus;
-  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>   myMapCurveStatus;
-  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>   myMapPointStatus;
-  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>   myMapShapeStatus;
+  occ::handle<TopOpeBRepDS_HDataStructure>           myHDS;
+  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> myMapSurfaceStatus;
+  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> myMapCurveStatus;
+  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> myMapPointStatus;
+  NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> myMapShapeStatus;
 };
 
 #endif // _TopOpeBRepDS_Check_HeaderFile

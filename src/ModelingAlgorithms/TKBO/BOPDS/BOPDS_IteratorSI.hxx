@@ -60,9 +60,8 @@ public:
 protected:
   Standard_EXPORT virtual void Intersect(
     const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
-    const bool          theCheckOBB   = false,
-    const double             theFuzzyValue = Precision::Confusion()) override;
-
+    const bool                           theCheckOBB   = false,
+    const double                         theFuzzyValue = Precision::Confusion()) override;
 };
 
 #endif // _BOPDS_IteratorSI_HeaderFile

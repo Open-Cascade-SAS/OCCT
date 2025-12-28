@@ -46,12 +46,12 @@ public:
   //! the new tolerance. Otherwise, returns
   //! false, and <S>, <L>, <Tol> are not
   //! significant.
-  Standard_EXPORT bool NewSurface(const TopoDS_Face&    F,
-                                              occ::handle<Geom_Surface>& S,
-                                              TopLoc_Location&      L,
-                                              double&        Tol,
-                                              bool&     RevWires,
-                                              bool&     RevFace) override;
+  Standard_EXPORT bool NewSurface(const TopoDS_Face&         F,
+                                  occ::handle<Geom_Surface>& S,
+                                  TopLoc_Location&           L,
+                                  double&                    Tol,
+                                  bool&                      RevWires,
+                                  bool&                      RevFace) override;
 
   //! Returns true if the edge <E> has been
   //! modified. In this case, <C> is the new geometric
@@ -59,19 +59,17 @@ public:
   //! the new tolerance. Otherwise, returns
   //! false, and <C>, <L>, <Tol> are not
   //! significant.
-  Standard_EXPORT bool NewCurve(const TopoDS_Edge&  E,
-                                            occ::handle<Geom_Curve>& C,
-                                            TopLoc_Location&    L,
-                                            double&      Tol) override;
+  Standard_EXPORT bool NewCurve(const TopoDS_Edge&       E,
+                                occ::handle<Geom_Curve>& C,
+                                TopLoc_Location&         L,
+                                double&                  Tol) override;
 
   //! Returns true if the vertex <V> has been
   //! modified. In this case, <P> is the new geometric
   //! support of the vertex, <Tol> the new tolerance.
   //! Otherwise, returns false, and <P>, <Tol>
   //! are not significant.
-  Standard_EXPORT bool NewPoint(const TopoDS_Vertex& V,
-                                            gp_Pnt&              P,
-                                            double&       Tol) override;
+  Standard_EXPORT bool NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol) override;
 
   //! Returns true if the edge <E> has a new
   //! curve on surface on the face <F>.In this case, <C>
@@ -83,12 +81,12 @@ public:
   //!
   //! <NewE> is the new edge created from <E>. <NewF>
   //! is the new face created from <F>. They may be useful.
-  Standard_EXPORT bool NewCurve2d(const TopoDS_Edge&    E,
-                                              const TopoDS_Face&    F,
-                                              const TopoDS_Edge&    NewE,
-                                              const TopoDS_Face&    NewF,
-                                              occ::handle<Geom2d_Curve>& C,
-                                              double&        Tol) override;
+  Standard_EXPORT bool NewCurve2d(const TopoDS_Edge&         E,
+                                  const TopoDS_Face&         F,
+                                  const TopoDS_Edge&         NewE,
+                                  const TopoDS_Face&         NewF,
+                                  occ::handle<Geom2d_Curve>& C,
+                                  double&                    Tol) override;
 
   //! Returns true if the Vertex <V> has a new
   //! parameter on the edge <E>. In this case, <P> is
@@ -96,9 +94,9 @@ public:
   //! Otherwise, returns false, and <P>, <Tol>
   //! are not significant.
   Standard_EXPORT bool NewParameter(const TopoDS_Vertex& V,
-                                                const TopoDS_Edge&   E,
-                                                double&       P,
-                                                double&       Tol) override;
+                                    const TopoDS_Edge&   E,
+                                    double&              P,
+                                    double&              Tol) override;
 
   //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
@@ -114,7 +112,6 @@ public:
                                            const TopoDS_Face& NewF2) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_DirectModification, ShapeCustom_Modification)
-
 };
 
 #endif // _ShapeCustom_DirectModification_HeaderFile

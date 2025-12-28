@@ -24,7 +24,6 @@
 #include <Interface_BitMap.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 class Interface_InterfaceModel;
 class Interface_CopyControl;
@@ -66,7 +65,7 @@ public:
   //! Creates a CopyTool adapted to work from a Model. Works
   //! with a General Service Library, given as an argument
   Standard_EXPORT Interface_CopyTool(const occ::handle<Interface_InterfaceModel>& amodel,
-                                     const Interface_GeneralLib&             lib);
+                                     const Interface_GeneralLib&                  lib);
 
   //! Same as above, but Library is defined through a Protocol
   Standard_EXPORT Interface_CopyTool(const occ::handle<Interface_InterfaceModel>& amodel,
@@ -109,16 +108,17 @@ public:
   //! It basically makes a Deep Copy without changing the Types.
   //! It can be redefined for special uses.
   Standard_EXPORT virtual bool Copy(const occ::handle<Standard_Transient>& entfrom,
-                                                occ::handle<Standard_Transient>&       entto,
-                                                const bool            mapped,
-                                                const bool            errstat);
+                                    occ::handle<Standard_Transient>&       entto,
+                                    const bool                             mapped,
+                                    const bool                             errstat);
 
   //! Transfers one Entity, if not yet bound to a result
   //! Remark : For an Entity which is reported in the Starting Model,
   //! the ReportEntity will also be copied with its Content if it
   //! has one (at least ShallowCopy; Complete Copy if the Protocol
   //! recognizes the Content : see method Copy)
-  Standard_EXPORT occ::handle<Standard_Transient> Transferred(const occ::handle<Standard_Transient>& ent);
+  Standard_EXPORT occ::handle<Standard_Transient> Transferred(
+    const occ::handle<Standard_Transient>& ent);
 
   //! Defines a Result for the Transfer of a Starting object.
   //! Used by method Transferred (which performs a normal Copy),
@@ -132,7 +132,7 @@ public:
   //! Returns True if a Result is Bound (and fills "result")
   //! Returns False if no result is Bound
   Standard_EXPORT bool Search(const occ::handle<Standard_Transient>& ent,
-                                          occ::handle<Standard_Transient>&       res) const;
+                              occ::handle<Standard_Transient>&       res) const;
 
   //! Clears LastFlags only. This allows to know what Entities are
   //! copied after its call (see method LastCopiedAfter). It can be
@@ -148,9 +148,9 @@ public:
   //! while ( (num = CopyTool.LastCopiedAfter(num,ent,res)) ) {
   //! .. Process Starting <ent> and its Result <res>
   //! }
-  Standard_EXPORT int LastCopiedAfter(const int      numfrom,
-                                                   occ::handle<Standard_Transient>& ent,
-                                                   occ::handle<Standard_Transient>& res) const;
+  Standard_EXPORT int LastCopiedAfter(const int                        numfrom,
+                                      occ::handle<Standard_Transient>& ent,
+                                      occ::handle<Standard_Transient>& res) const;
 
   //! Transfers one Entity and records result into the Transfer List
   //! Calls method Transferred
@@ -173,14 +173,12 @@ public:
   //! If <withreports> is given True, the entities which were
   //! reported in the Starting Model are replaced in the list
   //! by the copied ReportEntities
-  Standard_EXPORT Interface_EntityIterator
-    CompleteResult(const bool withreports = false) const;
+  Standard_EXPORT Interface_EntityIterator CompleteResult(const bool withreports = false) const;
 
   //! Returns the list of Root copied Entities (those which were
   //! asked for copy by the user of CopyTool, not by copying
   //! another Entity)
-  Standard_EXPORT Interface_EntityIterator
-    RootResult(const bool withreports = false) const;
+  Standard_EXPORT Interface_EntityIterator RootResult(const bool withreports = false) const;
   Standard_EXPORT virtual ~Interface_CopyTool();
 
 protected:
@@ -192,7 +190,7 @@ protected:
   //!
   //! No mapping is managed by this method
   Standard_EXPORT virtual bool NewVoid(const occ::handle<Standard_Transient>& entfrom,
-                                                   occ::handle<Standard_Transient>&       entto);
+                                       occ::handle<Standard_Transient>&       entto);
 
   Interface_GeneralLib thelib;
 
@@ -204,13 +202,13 @@ private:
   occ::handle<Interface_InterfaceModel> themod;
   occ::handle<Interface_CopyControl>    themap;
   occ::handle<Interface_CopyMap>        therep;
-  Interface_BitMap                 thelst;
-  int                 thelev;
-  NCollection_Sequence<int>        therts;
-  bool                 theimp;
+  Interface_BitMap                      thelst;
+  int                                   thelev;
+  NCollection_Sequence<int>             therts;
+  bool                                  theimp;
   occ::handle<Standard_Transient>       theent;
   occ::handle<Interface_GeneralModule>  themdu;
-  int                 theCN;
+  int                                   theCN;
 };
 
 #endif // _Interface_CopyTool_HeaderFile

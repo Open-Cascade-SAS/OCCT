@@ -38,7 +38,7 @@ public:
   Standard_EXPORT IGESDimen_OrdinateDimension();
 
   Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
-                            const bool               aType,
+                            const bool                                aType,
                             const occ::handle<IGESDimen_WitnessLine>& aLine,
                             const occ::handle<IGESDimen_LeaderArrow>& anArrow);
 
@@ -61,7 +61,7 @@ public:
 
 private:
   occ::handle<IGESDimen_GeneralNote> theNote;
-  bool              isItLine;
+  bool                               isItLine;
   occ::handle<IGESDimen_WitnessLine> theWitnessLine;
   occ::handle<IGESDimen_LeaderArrow> theLeader;
 };

@@ -13,7 +13,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <StepData_Described.hxx>
@@ -75,8 +74,7 @@ occ::handle<Interface_InterfaceModel> StepData_Protocol::NewModel() const
   return new StepData_StepModel;
 }
 
-bool StepData_Protocol::IsSuitableModel(
-  const occ::handle<Interface_InterfaceModel>& model) const
+bool StepData_Protocol::IsSuitableModel(const occ::handle<Interface_InterfaceModel>& model) const
 {
   return model->IsKind(STANDARD_TYPE(StepData_StepModel));
 }
@@ -137,8 +135,7 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const int num) const
   return dsc;
 }
 
-occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* name,
-                                                 const bool anylevel) const
+occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* name, const bool anylevel) const
 {
   occ::handle<StepData_EDescr> sd;
   if (!thedscnam.IsEmpty())
@@ -164,16 +161,17 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* name,
 }
 
 occ::handle<StepData_ESDescr> StepData_Protocol::ESDescr(const char* name,
-                                                    const bool anylevel) const
+                                                         const bool  anylevel) const
 {
   return occ::down_cast<StepData_ESDescr>(Descr(name, anylevel));
 }
 
-occ::handle<StepData_ECDescr> StepData_Protocol::ECDescr(const NCollection_Sequence<TCollection_AsciiString>& names,
-                                                    const bool anylevel) const
+occ::handle<StepData_ECDescr> StepData_Protocol::ECDescr(
+  const NCollection_Sequence<TCollection_AsciiString>& names,
+  const bool                                           anylevel) const
 {
-  int                                     i, nb = names.Length();
-  occ::handle<StepData_ECDescr>                             cd;
+  int                                                                 i, nb = names.Length();
+  occ::handle<StepData_ECDescr>                                       cd;
   NCollection_DataMap<occ::handle<Standard_Transient>, int>::Iterator iter(thedscnum);
   for (; iter.More(); iter.Next())
   {
@@ -216,8 +214,7 @@ void StepData_Protocol::AddPDescr(const occ::handle<StepData_PDescr>& pdescr)
   thepdescr.Bind(pdescr->Name(), pdescr);
 }
 
-occ::handle<StepData_PDescr> StepData_Protocol::PDescr(const char* name,
-                                                  const bool anylevel) const
+occ::handle<StepData_PDescr> StepData_Protocol::PDescr(const char* name, const bool anylevel) const
 {
   occ::handle<StepData_PDescr> sd;
   if (!thepdescr.IsEmpty())
@@ -248,7 +245,7 @@ void StepData_Protocol::AddBasicDescr(const occ::handle<StepData_ESDescr>& esdes
 }
 
 occ::handle<StepData_EDescr> StepData_Protocol::BasicDescr(const char* name,
-                                                      const bool anylevel) const
+                                                           const bool  anylevel) const
 {
   occ::handle<StepData_EDescr> sd;
   if (!thedscbas.IsEmpty())

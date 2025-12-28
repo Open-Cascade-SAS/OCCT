@@ -24,7 +24,8 @@ void StepVisual_SurfaceStyleFillArea::Init(const occ::handle<StepVisual_FillArea
   fillArea = aFillArea;
 }
 
-void StepVisual_SurfaceStyleFillArea::SetFillArea(const occ::handle<StepVisual_FillAreaStyle>& aFillArea)
+void StepVisual_SurfaceStyleFillArea::SetFillArea(
+  const occ::handle<StepVisual_FillAreaStyle>& aFillArea)
 {
   fillArea = aFillArea;
 }

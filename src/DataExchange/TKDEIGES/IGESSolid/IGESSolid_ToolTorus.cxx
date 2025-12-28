@@ -42,7 +42,7 @@ void IGESSolid_ToolTorus::ReadOwnParams(const occ::handle<IGESSolid_Torus>& ent,
 {
   double r1, r2;
   double tempreal;
-  gp_XYZ        tempPoint, tempAxis;
+  gp_XYZ tempPoint, tempAxis;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Radius of revolution", r1); // szv#4:S4163:12Mar99 `st=` not needed
@@ -116,7 +116,7 @@ void IGESSolid_ToolTorus::ReadOwnParams(const occ::handle<IGESSolid_Torus>& ent,
 }
 
 void IGESSolid_ToolTorus::WriteOwnParams(const occ::handle<IGESSolid_Torus>& ent,
-                                         IGESData_IGESWriter&           IW) const
+                                         IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->MajorRadius());
   IW.Send(ent->DiscRadius());
@@ -143,7 +143,8 @@ void IGESSolid_ToolTorus::OwnCopy(const occ::handle<IGESSolid_Torus>& another,
             another->Axis().XYZ());
 }
 
-IGESData_DirChecker IGESSolid_ToolTorus::DirChecker(const occ::handle<IGESSolid_Torus>& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolTorus::DirChecker(
+  const occ::handle<IGESSolid_Torus>& /* ent */) const
 {
   IGESData_DirChecker DC(160, 0);
 
@@ -170,8 +171,8 @@ void IGESSolid_ToolTorus::OwnCheck(const occ::handle<IGESSolid_Torus>& ent,
 
 void IGESSolid_ToolTorus::OwnDump(const occ::handle<IGESSolid_Torus>& ent,
                                   const IGESData_IGESDumper& /* dumper */,
-                                  Standard_OStream&      S,
-                                  const int level) const
+                                  Standard_OStream& S,
+                                  const int         level) const
 {
   S << "IGESSolid_Torus\n"
     << "Radius of revolution : " << ent->MajorRadius() << "  "

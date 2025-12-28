@@ -42,8 +42,8 @@ void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::SetPlaneAngleUnit(
   planeAngleUnit = aPlaneAngleUnit;
 }
 
-occ::handle<StepBasic_PlaneAngleUnit> StepBasic_ConversionBasedUnitAndPlaneAngleUnit::PlaneAngleUnit()
-  const
+occ::handle<StepBasic_PlaneAngleUnit> StepBasic_ConversionBasedUnitAndPlaneAngleUnit::
+  PlaneAngleUnit() const
 {
   return planeAngleUnit;
 }

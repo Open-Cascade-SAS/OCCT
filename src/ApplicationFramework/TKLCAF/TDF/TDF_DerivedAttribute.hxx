@@ -31,13 +31,13 @@ class TCollection_AsciiString;
 //! attribute
 #define IMPLEMENT_DERIVED_ATTRIBUTE(Class, Base)                                                   \
   IMPLEMENT_STANDARD_RTTIEXT(Class, Base)                                                          \
-  static occ::handle<TDF_Attribute> TDF_DERIVED_New##Class()                                            \
+  static occ::handle<TDF_Attribute> TDF_DERIVED_New##Class()                                       \
   {                                                                                                \
     return new Class();                                                                            \
   }                                                                                                \
   static TDF_DerivedAttribute::NewDerived TDF_DERIVED_##Class(                                     \
     TDF_DerivedAttribute::Register(TDF_DERIVED_New##Class));                                       \
-  occ::handle<TDF_Attribute> Class::NewEmpty() const                                                    \
+  occ::handle<TDF_Attribute> Class::NewEmpty() const                                               \
   {                                                                                                \
     return TDF_DERIVED_##Class();                                                                  \
   }
@@ -46,13 +46,13 @@ class TCollection_AsciiString;
 //! Defines implementation of Handle method and registers the derived attribute
 #define IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(Class, Base, NameSpace, TypeName)                    \
   IMPLEMENT_STANDARD_RTTIEXT(Class, Base)                                                          \
-  static occ::handle<TDF_Attribute> TDF_DERIVED_New##Class()                                            \
+  static occ::handle<TDF_Attribute> TDF_DERIVED_New##Class()                                       \
   {                                                                                                \
     return new Class();                                                                            \
   }                                                                                                \
   static TDF_DerivedAttribute::NewDerived TDF_DERIVED_##Class(                                     \
     TDF_DerivedAttribute::Register(TDF_DERIVED_New##Class, NameSpace, TypeName));                  \
-  occ::handle<TDF_Attribute> Class::NewEmpty() const                                                    \
+  occ::handle<TDF_Attribute> Class::NewEmpty() const                                               \
   {                                                                                                \
     return TDF_DERIVED_##Class();                                                                  \
   }
@@ -67,7 +67,7 @@ public:
   typedef occ::handle<TDF_Attribute> (*NewDerived)();
 
   //! Registers a derived by the pointer to a method that creates a new derived attribute instance
-  Standard_EXPORT static NewDerived Register(NewDerived       theNewAttributeFunction,
+  Standard_EXPORT static NewDerived Register(NewDerived  theNewAttributeFunction,
                                              const char* theNameSpace = NULL,
                                              const char* theTypeName  = NULL);
 

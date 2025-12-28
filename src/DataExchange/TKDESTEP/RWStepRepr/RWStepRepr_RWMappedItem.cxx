@@ -22,7 +22,7 @@
 RWStepRepr_RWMappedItem::RWStepRepr_RWMappedItem() {}
 
 void RWStepRepr_RWMappedItem::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                       const int                 num,
+                                       const int                                   num,
                                        occ::handle<Interface_Check>&               ach,
                                        const occ::handle<StepRepr_MappedItem>&     ent) const
 {
@@ -65,7 +65,7 @@ void RWStepRepr_RWMappedItem::ReadStep(const occ::handle<StepData_StepReaderData
   ent->Init(aName, aMappingSource, aMappingTarget);
 }
 
-void RWStepRepr_RWMappedItem::WriteStep(StepData_StepWriter&               SW,
+void RWStepRepr_RWMappedItem::WriteStep(StepData_StepWriter&                    SW,
                                         const occ::handle<StepRepr_MappedItem>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepRepr_RWMappedItem::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepRepr_RWMappedItem::Share(const occ::handle<StepRepr_MappedItem>& ent,
-                                    Interface_EntityIterator&          iter) const
+                                    Interface_EntityIterator&               iter) const
 {
 
   iter.GetOneItem(ent->MappingSource());

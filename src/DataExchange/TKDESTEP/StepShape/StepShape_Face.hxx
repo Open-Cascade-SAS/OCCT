@@ -35,12 +35,15 @@ public:
   //! Returns a Face
   Standard_EXPORT StepShape_Face();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
-                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&                              aName,
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds);
 
-  Standard_EXPORT virtual void SetBounds(const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds);
+  Standard_EXPORT virtual void SetBounds(
+    const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds);
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> Bounds() const;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>
+    Bounds() const;
 
   Standard_EXPORT virtual occ::handle<StepShape_FaceBound> BoundsValue(const int num) const;
 

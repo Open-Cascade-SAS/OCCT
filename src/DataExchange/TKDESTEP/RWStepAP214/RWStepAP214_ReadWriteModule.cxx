@@ -4388,9 +4388,9 @@ int RWStepAP214_ReadWriteModule::CaseStep(
     for (i = 1; i <= theTypes.Length(); i++)
       types.Append(theTypes(i));
     // do ascending sorting
-    bool        isOK = false;
+    bool                    isOK = false;
     TCollection_AsciiString tmpStr;
-    int        aLen = types.Length() - 1;
+    int                     aLen = types.Length() - 1;
     while (!isOK)
     {
       isOK = true;
@@ -6395,7 +6395,7 @@ const std::string_view& RWStepAP214_ReadWriteModule::StepType(const int CN) cons
 //=======================================================================
 
 bool RWStepAP214_ReadWriteModule::ComplexType(
-  const int         CN,
+  const int                                      CN,
   NCollection_Sequence<TCollection_AsciiString>& types) const
 {
   switch (CN)
@@ -6730,9 +6730,9 @@ bool RWStepAP214_ReadWriteModule::ComplexType(
 
 //=================================================================================================
 
-void RWStepAP214_ReadWriteModule::ReadStep(const int                 CN,
+void RWStepAP214_ReadWriteModule::ReadStep(const int                                   CN,
                                            const occ::handle<StepData_StepReaderData>& data,
-                                           const int                 num,
+                                           const int                                   num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<Standard_Transient>&      ent) const
 {
@@ -11353,8 +11353,8 @@ void RWStepAP214_ReadWriteModule::ReadStep(const int                 CN,
 
 //=================================================================================================
 
-void RWStepAP214_ReadWriteModule::WriteStep(const int            CN,
-                                            StepData_StepWriter&              SW,
+void RWStepAP214_ReadWriteModule::WriteStep(const int                              CN,
+                                            StepData_StepWriter&                   SW,
                                             const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)

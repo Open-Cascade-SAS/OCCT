@@ -103,8 +103,7 @@ bool Convert_ElementarySurfaceToBSplineSurface::IsVPeriodic() const
 
 //=================================================================================================
 
-gp_Pnt Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex,
-                                                       const int VIndex) const
+gp_Pnt Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex, const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > nbUPoles || VIndex < 1 || VIndex > nbVPoles,
                                " ");
@@ -113,8 +112,7 @@ gp_Pnt Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex,
 
 //=================================================================================================
 
-double Convert_ElementarySurfaceToBSplineSurface::Weight(const int UIndex,
-                                                                const int VIndex) const
+double Convert_ElementarySurfaceToBSplineSurface::Weight(const int UIndex, const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > nbUPoles || VIndex < 1 || VIndex > nbVPoles,
                                " ");
@@ -139,8 +137,7 @@ double Convert_ElementarySurfaceToBSplineSurface::VKnot(const int VIndex) const
 
 //=================================================================================================
 
-int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(
-  const int UIndex) const
+int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(const int UIndex) const
 {
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > nbUKnots, " ");
   return umults(UIndex);
@@ -148,8 +145,7 @@ int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(
 
 //=================================================================================================
 
-int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(
-  const int VIndex) const
+int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(VIndex < 1 || VIndex > nbVKnots, " ");
   return vmults(VIndex);

@@ -45,7 +45,7 @@ IGESSolid_ToolShell::IGESSolid_ToolShell() {}
 
 void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&         ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,
-                                        IGESData_ParamReader&                  PR) const
+                                        IGESData_ParamReader&                       PR) const
 {
 
   // MGE 03/08/98
@@ -53,8 +53,8 @@ void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&     
   // bool abool; //szv#4:S4163:12Mar99 moved down
   int nbfaces = 0; // szv#4:S4163:12Mar99 `i` moved in for
   // occ::handle<IGESSolid_Face> aface; //szv#4:S4163:12Mar99 moved down
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  tempFaces;
-  occ::handle<NCollection_HArray1<int>> tempOrientation;
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> tempFaces;
+  occ::handle<NCollection_HArray1<int>>                         tempOrientation;
 
   // st = PR.ReadInteger(PR.Current(), Msg200, nbfaces); //szv#4:S4163:12Mar99 moved in if
   // st = PR.ReadInteger(PR.Current(), "Number of faces", nbfaces);
@@ -63,7 +63,7 @@ void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&     
   {
     Message_Msg Msg180("XSTEP_180");
 
-    bool       abool;
+    bool                        abool;
     occ::handle<IGESSolid_Face> aface;
     tempFaces       = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
     tempOrientation = new NCollection_HArray1<int>(1, nbfaces);
@@ -121,7 +121,7 @@ void IGESSolid_ToolShell::ReadOwnParams(const occ::handle<IGESSolid_Shell>&     
 //=================================================================================================
 
 void IGESSolid_ToolShell::WriteOwnParams(const occ::handle<IGESSolid_Shell>& ent,
-                                         IGESData_IGESWriter&           IW) const
+                                         IGESData_IGESWriter&                IW) const
 {
   int i, nbfaces = ent->NbFaces();
 
@@ -136,7 +136,7 @@ void IGESSolid_ToolShell::WriteOwnParams(const occ::handle<IGESSolid_Shell>& ent
 //=================================================================================================
 
 void IGESSolid_ToolShell::OwnShared(const occ::handle<IGESSolid_Shell>& ent,
-                                    Interface_EntityIterator&      iter) const
+                                    Interface_EntityIterator&           iter) const
 {
   int nbfaces = ent->NbFaces();
   for (int i = 1; i <= nbfaces; i++)
@@ -147,11 +147,12 @@ void IGESSolid_ToolShell::OwnShared(const occ::handle<IGESSolid_Shell>& ent,
 
 void IGESSolid_ToolShell::OwnCopy(const occ::handle<IGESSolid_Shell>& another,
                                   const occ::handle<IGESSolid_Shell>& ent,
-                                  Interface_CopyTool&            TC) const
+                                  Interface_CopyTool&                 TC) const
 {
   int nbfaces = another->NbFaces();
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  tempFaces       = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> tempFaces =
+    new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
   occ::handle<NCollection_HArray1<int>> tempOrientation = new NCollection_HArray1<int>(1, nbfaces);
   for (int i = 1; i <= nbfaces; i++)
   {
@@ -164,7 +165,8 @@ void IGESSolid_ToolShell::OwnCopy(const occ::handle<IGESSolid_Shell>& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESSolid_ToolShell::DirChecker(const occ::handle<IGESSolid_Shell>& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolShell::DirChecker(
+  const occ::handle<IGESSolid_Shell>& /* ent */) const
 {
   IGESData_DirChecker DC(514, 1, 2);
 
@@ -199,9 +201,9 @@ void IGESSolid_ToolShell::OwnCheck(const occ::handle<IGESSolid_Shell>& ent,
 //=================================================================================================
 
 void IGESSolid_ToolShell::OwnDump(const occ::handle<IGESSolid_Shell>& ent,
-                                  const IGESData_IGESDumper&     dumper,
-                                  Standard_OStream&              S,
-                                  const int         level) const
+                                  const IGESData_IGESDumper&          dumper,
+                                  Standard_OStream&                   S,
+                                  const int                           level) const
 {
   S << "IGESSolid_Shell\n";
   int upper    = ent->NbFaces();

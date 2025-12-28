@@ -54,15 +54,14 @@ public:
   Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
 
   //! Returns Value as PropertyDefinitionRelationship (or Null if another type)
-  Standard_EXPORT occ::handle<StepRepr_PropertyDefinitionRelationship> PropertyDefinitionRelationship()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_PropertyDefinitionRelationship>
+                  PropertyDefinitionRelationship() const;
 
   //! Returns Value as ShapeAspect (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! Returns Value as ShapeAspectRelationship (or Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
-
 };
 
 #endif // _StepRepr_RepresentedDefinition_HeaderFile

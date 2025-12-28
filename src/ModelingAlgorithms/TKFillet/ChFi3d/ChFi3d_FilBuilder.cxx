@@ -44,14 +44,10 @@
 #include <ChFiDS_Regul.hxx>
 #include <NCollection_List.hxx>
 #include <ChFiDS_Stripe.hxx>
-#include <NCollection_List.hxx>
-#include <ChFiDS_Regul.hxx>
 #include <ChFiDS_CircSection.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <ChFiDS_Spine.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_XY.hxx>
@@ -61,7 +57,6 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -72,8 +67,8 @@
 
 #ifdef OCCT_DEBUG
   #include <OSD_Chronometer.hxx>
-extern bool ChFi3d_GettraceCHRON();
-extern double    t_computedata, t_completedata;
+extern bool   ChFi3d_GettraceCHRON();
+extern double t_computedata, t_completedata;
 
 extern void ChFi3d_InitChron(OSD_Chronometer& ch);
 extern void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
@@ -81,7 +76,7 @@ extern void ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
 
 static double MaxRad(const occ::handle<ChFiDS_FilSpine>& fsp,
 
-                            const TopoDS_Edge& E)
+                     const TopoDS_Edge& E)
 {
   int IE = fsp->Index(E);
 
@@ -112,12 +107,12 @@ static double MaxRad(const occ::handle<ChFiDS_FilSpine>& fsp,
 
 static void SimulParams(const occ::handle<ChFiDS_ElSpine>&  HGuide,
                         const occ::handle<ChFiDS_FilSpine>& fsp,
-                        double&                 MaxStep,
-                        double&                 Fleche)
+                        double&                             MaxStep,
+                        double&                             Fleche)
 {
   double la = HGuide->LastParameter(), fi = HGuide->FirstParameter();
   double longueur = la - fi;
-  MaxStep                = longueur * 0.05;
+  MaxStep         = longueur * 0.05;
   double w;
   // gp_Pnt Pbid;
   // gp_Vec d1,d2;
@@ -126,11 +121,11 @@ static void SimulParams(const occ::handle<ChFiDS_ElSpine>&  HGuide,
     radiussect = fsp->Radius();
   else
   {
-    radiussect               = 0.;
+    radiussect                    = 0.;
     occ::handle<Law_Composite> lc = fsp->Law(HGuide);
     for (int i = 0; i <= 5; i++)
     {
-      w                  = fi + i * longueur * 0.2;
+      w           = fi + i * longueur * 0.2;
       double temp = lc->Value(w);
       if (temp > radiussect)
         radiussect = temp;
@@ -143,7 +138,7 @@ static void SimulParams(const occ::handle<ChFiDS_ElSpine>&  HGuide,
 
 ChFi3d_FilBuilder::ChFi3d_FilBuilder(const TopoDS_Shape&      S,
                                      const ChFi3d_FilletShape FShape,
-                                     const double      Ta)
+                                     const double             Ta)
     : ChFi3d_Builder(S, Ta)
 {
   SetFilletShape(FShape);
@@ -199,7 +194,7 @@ void ChFi3d_FilBuilder::Add(const TopoDS_Edge& E)
   {
     occ::handle<ChFiDS_Stripe> Stripe  = new ChFiDS_Stripe();
     occ::handle<ChFiDS_Spine>& Sp      = Stripe->ChangeSpine();
-    Sp                            = new ChFiDS_FilSpine(tolesp);
+    Sp                                 = new ChFiDS_FilSpine(tolesp);
     occ::handle<ChFiDS_FilSpine> Spine = occ::down_cast<ChFiDS_FilSpine>(Sp);
 
     TopoDS_Edge E_wnt = E;
@@ -226,9 +221,7 @@ void ChFi3d_FilBuilder::Add(const double Radius, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SetRadius(const occ::handle<Law_Function>& C,
-                                  const int      IC,
-                                  const int      IinC)
+void ChFi3d_FilBuilder::SetRadius(const occ::handle<Law_Function>& C, const int IC, const int IinC)
 {
   if (IC <= NbElements())
   {
@@ -274,9 +267,7 @@ void ChFi3d_FilBuilder::ResetContour(const int IC)
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SetRadius(const double    Radius,
-                                  const int IC,
-                                  const TopoDS_Edge&     E)
+void ChFi3d_FilBuilder::SetRadius(const double Radius, const int IC, const TopoDS_Edge& E)
 {
   if (IC <= NbElements())
   {
@@ -298,9 +289,7 @@ void ChFi3d_FilBuilder::UnSet(const int IC, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SetRadius(const double    Radius,
-                                  const int IC,
-                                  const TopoDS_Vertex&   V)
+void ChFi3d_FilBuilder::SetRadius(const double Radius, const int IC, const TopoDS_Vertex& V)
 {
   if (IC <= NbElements())
   {
@@ -322,9 +311,7 @@ void ChFi3d_FilBuilder::UnSet(const int IC, const TopoDS_Vertex& V)
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SetRadius(const gp_XY&           UandR,
-                                  const int IC,
-                                  const int IinC)
+void ChFi3d_FilBuilder::SetRadius(const gp_XY& UandR, const int IC, const int IinC)
 {
   if (IC <= NbElements())
   {
@@ -359,10 +346,7 @@ double ChFi3d_FilBuilder::Radius(const int IC, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-bool ChFi3d_FilBuilder::GetBounds(const int IC,
-                                              const TopoDS_Edge&     E,
-                                              double&         F,
-                                              double&         L)
+bool ChFi3d_FilBuilder::GetBounds(const int IC, const TopoDS_Edge& E, double& F, double& L)
 {
   if (IC <= NbElements())
   {
@@ -391,15 +375,15 @@ occ::handle<Law_Function> ChFi3d_FilBuilder::GetLaw(const int IC, const TopoDS_E
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SetLaw(const int      IC,
-                               const TopoDS_Edge&          E,
+void ChFi3d_FilBuilder::SetLaw(const int                        IC,
+                               const TopoDS_Edge&               E,
                                const occ::handle<Law_Function>& L)
 {
   // Check if it is necessary to check borders!
   if (IC <= NbElements())
   {
     occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Value(IC));
-    fsp->ChangeLaw(E)           = L;
+    fsp->ChangeLaw(E)                = L;
   }
 }
 
@@ -417,7 +401,7 @@ void ChFi3d_FilBuilder::Simulate(const int IC)
   }
 #endif
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                  i = 1;
+  int                                                    i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
@@ -445,7 +429,7 @@ void ChFi3d_FilBuilder::Simulate(const int IC)
 int ChFi3d_FilBuilder::NbSurf(const int IC) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                  i = 1;
+  int                                                    i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
@@ -459,17 +443,17 @@ int ChFi3d_FilBuilder::NbSurf(const int IC) const
 //=================================================================================================
 
 occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_FilBuilder::Sect(const int IC,
-                                                  const int IS) const
+                                                                             const int IS) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                  i = 1;
-  occ::handle<NCollection_HArray1<ChFiDS_CircSection>>         res;
+  int                                                    i = 1;
+  occ::handle<NCollection_HArray1<ChFiDS_CircSection>>   res;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
     {
       occ::handle<Standard_Transient> bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
-      res                            = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
+      res = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
       return res;
     }
   }
@@ -481,7 +465,7 @@ occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_FilBuilder::Sect(con
 void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  occ::handle<Geom_Surface>        S    = DStr.Surface(SD->Surf()).Surface();
+  occ::handle<Geom_Surface>   S    = DStr.Surface(SD->Surf()).Surface();
   gp_Pnt2d                    p1f =
     SD->InterferenceOnS1().PCurveOnSurf()->Value(SD->InterferenceOnS1().FirstParameter());
   gp_Pnt2d p1l =
@@ -490,10 +474,10 @@ void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
     SD->InterferenceOnS2().PCurveOnSurf()->Value(SD->InterferenceOnS2().FirstParameter());
   gp_Pnt2d p2l =
     SD->InterferenceOnS2().PCurveOnSurf()->Value(SD->InterferenceOnS2().LastParameter());
-  GeomAdaptor_Surface       AS(S);
+  GeomAdaptor_Surface                                  AS(S);
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-  double             u1, v1, u2, v2;
-  GeomAbs_SurfaceType       typ = AS.GetType();
+  double                                               u1, v1, u2, v2;
+  GeomAbs_SurfaceType                                  typ = AS.GetType();
   switch (typ)
   {
     case GeomAbs_Cylinder: {
@@ -510,41 +494,41 @@ void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
     }
     break;
     case GeomAbs_Torus: {
-      v1                    = p1f.Y();
-      v2                    = p2f.Y();
-      u1                    = std::max(p1f.X(), p2f.X());
-      u2                    = std::min(p1l.X(), p2l.X());
-      double    ang  = (u2 - u1);
-      gp_Torus         To   = AS.Torus();
-      double    majr = To.MajorRadius(), minr = To.MinorRadius();
-      int n = (int)(36. * ang / M_PI + 1);
+      v1            = p1f.Y();
+      v2            = p2f.Y();
+      u1            = std::max(p1f.X(), p2f.X());
+      u2            = std::min(p1l.X(), p2l.X());
+      double   ang  = (u2 - u1);
+      gp_Torus To   = AS.Torus();
+      double   majr = To.MajorRadius(), minr = To.MinorRadius();
+      int      n = (int)(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
       for (int i = 1; i <= n; i++)
       {
         ChFiDS_CircSection& isec = sec->ChangeValue(i);
-        double       u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
+        double              u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
         isec.Set(ElSLib::TorusUIso(To.Position(), majr, minr, u), v1, v2);
       }
     }
     break;
     case GeomAbs_Sphere: {
-      v1                   = p1f.Y();
-      v2                   = p2f.Y();
-      u1                   = std::max(p1f.X(), p2f.X());
-      u2                   = std::min(p1l.X(), p2l.X());
+      v1            = p1f.Y();
+      v2            = p2f.Y();
+      u1            = std::max(p1f.X(), p2f.X());
+      u2            = std::min(p1l.X(), p2l.X());
       double    ang = (u2 - u1);
-      gp_Sphere        Sp  = AS.Sphere();
+      gp_Sphere Sp  = AS.Sphere();
       double    rad = Sp.Radius();
-      int n   = (int)(36. * ang / M_PI + 1);
+      int       n   = (int)(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
       for (int i = 1; i <= n; i++)
       {
         ChFiDS_CircSection& isec = sec->ChangeValue(i);
-        double       u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
+        double              u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
         isec.Set(ElSLib::SphereUIso(Sp.Position(), rad, u), v1, v2);
       }
     }
@@ -558,24 +542,24 @@ void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
 //=================================================================================================
 
 bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
-                                              const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                              const occ::handle<ChFiDS_Spine>&        Spine,
-                                              const int             Choix,
-                                              const occ::handle<BRepAdaptor_Surface>& S1,
-                                              const occ::handle<Adaptor3d_TopolTool>& I1,
-                                              const occ::handle<BRepAdaptor_Surface>& S2,
-                                              const occ::handle<Adaptor3d_TopolTool>& I2,
-                                              const double                TolGuide,
-                                              double&                     First,
-                                              double&                     Last,
-                                              const bool             Inside,
-                                              const bool             Appro,
-                                              const bool             Forward,
-                                              const bool             RecOnS1,
-                                              const bool             RecOnS2,
-                                              const math_Vector&                 Soldep,
-                                              int&                  intf,
-                                              int&                  intl)
+                                  const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                  const occ::handle<ChFiDS_Spine>&        Spine,
+                                  const int                               Choix,
+                                  const occ::handle<BRepAdaptor_Surface>& S1,
+                                  const occ::handle<Adaptor3d_TopolTool>& I1,
+                                  const occ::handle<BRepAdaptor_Surface>& S2,
+                                  const occ::handle<Adaptor3d_TopolTool>& I2,
+                                  const double                            TolGuide,
+                                  double&                                 First,
+                                  double&                                 Last,
+                                  const bool                              Inside,
+                                  const bool                              Appro,
+                                  const bool                              Forward,
+                                  const bool                              RecOnS1,
+                                  const bool                              RecOnS2,
+                                  const math_Vector&                      Soldep,
+                                  int&                                    intf,
+                                  int&                                    intl)
 {
   occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
@@ -588,7 +572,7 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   double locfleche, MaxStep;
   SimulParams(HGuide, fsp, MaxStep, locfleche);
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-  gp_Pnt2d                  pf1, pl1, pf2, pl2;
+  gp_Pnt2d                                             pf1, pl1, pf2, pl2;
 
   occ::handle<ChFiDS_ElSpine> EmptyHGuide;
 
@@ -630,11 +614,11 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       return false;
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u1, v1, u2, v2, w, p1, p2;
+      double              u1, v1, u2, v2, w, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -687,11 +671,11 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       return false;
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u1, v1, u2, v2, w, p1, p2;
+      double              u1, v1, u2, v2, w, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -736,7 +720,7 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   bool reverse = (!Forward || Inside);
   if (intf && reverse)
   {
-    bool          ok  = false;
+    bool                      ok  = false;
     const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
     if (cp1.IsOnArc())
     {
@@ -755,7 +739,7 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   }
   if (intl)
   {
-    bool          ok  = 0;
+    bool                      ok  = 0;
     const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
     if (cp1.IsOnArc())
     {
@@ -780,27 +764,27 @@ bool ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
 void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                   const occ::handle<ChFiDS_ElSpine>&      HGuide,
                                   const occ::handle<ChFiDS_Spine>&        Spine,
-                                  const int             Choix,
+                                  const int                               Choix,
                                   const occ::handle<BRepAdaptor_Surface>& HS1,
                                   const occ::handle<Adaptor3d_TopolTool>& I1,
                                   const occ::handle<BRepAdaptor_Curve2d>& PC1,
                                   const occ::handle<BRepAdaptor_Surface>& HSref1,
                                   const occ::handle<BRepAdaptor_Curve2d>& PCref1,
-                                  bool&                  Decroch1,
+                                  bool&                                   Decroch1,
                                   const occ::handle<BRepAdaptor_Surface>& HS2,
                                   const occ::handle<Adaptor3d_TopolTool>& I2,
-                                  const TopAbs_Orientation           Or2,
+                                  const TopAbs_Orientation                Or2,
                                   const double /*Fleche*/,
-                                  const double    TolGuide,
-                                  double&         First,
-                                  double&         Last,
-                                  const bool Inside,
-                                  const bool Appro,
-                                  const bool Forward,
-                                  const bool RecP,
-                                  const bool RecS,
-                                  const bool RecRst,
-                                  const math_Vector&     Soldep)
+                                  const double       TolGuide,
+                                  double&            First,
+                                  double&            Last,
+                                  const bool         Inside,
+                                  const bool         Appro,
+                                  const bool         Forward,
+                                  const bool         RecP,
+                                  const bool         RecS,
+                                  const bool         RecRst,
+                                  const math_Vector& Soldep)
 {
   occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
@@ -811,7 +795,7 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   double locfleche, MaxStep;
   SimulParams(HGuide, fsp, MaxStep, locfleche);
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-  gp_Pnt2d                  pf, pl, ppcf, ppcl;
+  gp_Pnt2d                                             pf, pl, ppcf, ppcl;
 
   double PFirst = First;
   if (fsp->IsConstant())
@@ -825,8 +809,8 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     BRepBlend_ConstRadInv          finv(HS2, HSref1, HGuide);
     finv.Set(false, PCref1);
 
-    double    rad        = fsp->Radius();
-    int petitchoix = 1;
+    double rad        = fsp->Radius();
+    int    petitchoix = 1;
     if (Or2 == TopAbs_REVERSED)
       petitchoix = 3;
     if (Choix % 2 == 0)
@@ -869,11 +853,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
       throw Standard_Failure("SimulSurf : Failed process!");
     }
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, w, param, p1, p2;
+      double              u, v, w, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS(u, v);
@@ -897,7 +881,7 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   }
   else
   {
-    BRepBlend_SurfRstEvolRad         func(HS2, HS1, PC1, HGuide, fsp->Law(HGuide));
+    BRepBlend_SurfRstEvolRad              func(HS2, HS1, PC1, HGuide, fsp->Law(HGuide));
     occ::handle<Adaptor3d_CurveOnSurface> HC = new Adaptor3d_CurveOnSurface();
     HC->Load(PC1, HS1);
     BRepBlend_SurfCurvEvolRadInv  finvc(HS2, HC, HGuide, fsp->Law(HGuide));
@@ -944,11 +928,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       throw Standard_Failure("SimulSurf : Fail !");
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, w, param, p1, p2;
+      double              u, v, w, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS(u, v);
@@ -1000,27 +984,27 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
 void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                   const occ::handle<ChFiDS_ElSpine>&      HGuide,
                                   const occ::handle<ChFiDS_Spine>&        Spine,
-                                  const int             Choix,
+                                  const int                               Choix,
                                   const occ::handle<BRepAdaptor_Surface>& HS1,
                                   const occ::handle<Adaptor3d_TopolTool>& I1,
-                                  const TopAbs_Orientation           Or1,
+                                  const TopAbs_Orientation                Or1,
                                   const occ::handle<BRepAdaptor_Surface>& HS2,
                                   const occ::handle<Adaptor3d_TopolTool>& I2,
                                   const occ::handle<BRepAdaptor_Curve2d>& PC2,
                                   const occ::handle<BRepAdaptor_Surface>& HSref2,
                                   const occ::handle<BRepAdaptor_Curve2d>& PCref2,
-                                  bool&                  Decroch2,
+                                  bool&                                   Decroch2,
                                   const double /*Arrow*/,
-                                  const double    TolGuide,
-                                  double&         First,
-                                  double&         Last,
-                                  const bool Inside,
-                                  const bool Appro,
-                                  const bool Forward,
-                                  const bool RecP,
-                                  const bool RecS,
-                                  const bool RecRst,
-                                  const math_Vector&     Soldep)
+                                  const double       TolGuide,
+                                  double&            First,
+                                  double&            Last,
+                                  const bool         Inside,
+                                  const bool         Appro,
+                                  const bool         Forward,
+                                  const bool         RecP,
+                                  const bool         RecS,
+                                  const bool         RecRst,
+                                  const math_Vector& Soldep)
 {
   occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
@@ -1031,7 +1015,7 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   double locfleche, MaxStep;
   SimulParams(HGuide, fsp, MaxStep, locfleche);
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-  gp_Pnt2d                  pf, pl, ppcf, ppcl;
+  gp_Pnt2d                                             pf, pl, ppcf, ppcl;
 
   double PFirst = First;
   if (fsp->IsConstant())
@@ -1045,8 +1029,8 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     BRepBlend_ConstRadInv          finv(HS1, HSref2, HGuide);
     finv.Set(false, PCref2);
 
-    double    rad        = fsp->Radius();
-    int petitchoix = 1;
+    double rad        = fsp->Radius();
+    int    petitchoix = 1;
     if (Or1 == TopAbs_REVERSED)
       petitchoix = 3;
     if (Choix % 2 == 0)
@@ -1087,11 +1071,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       throw Standard_Failure("SimulSurf : Failed Processing!");
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, w, param, p1, p2;
+      double              u, v, w, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS(u, v);
@@ -1115,7 +1099,7 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   }
   else
   {
-    BRepBlend_SurfRstEvolRad         func(HS1, HS2, PC2, HGuide, fsp->Law(HGuide));
+    BRepBlend_SurfRstEvolRad              func(HS1, HS2, PC2, HGuide, fsp->Law(HGuide));
     occ::handle<Adaptor3d_CurveOnSurface> HC = new Adaptor3d_CurveOnSurface();
     HC->Load(PC2, HS2);
     BRepBlend_SurfCurvEvolRadInv  finvc(HS1, HC, HGuide, fsp->Law(HGuide));
@@ -1162,11 +1146,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       throw Standard_Failure("SimulSurf : Fail !");
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, w, param, p1, p2;
+      double              u, v, w, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS(u, v);
@@ -1218,33 +1202,33 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
 void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                                   const occ::handle<ChFiDS_ElSpine>&      HGuide,
                                   const occ::handle<ChFiDS_Spine>&        Spine,
-                                  const int             Choix,
+                                  const int                               Choix,
                                   const occ::handle<BRepAdaptor_Surface>& HS1,
                                   const occ::handle<Adaptor3d_TopolTool>& I1,
                                   const occ::handle<BRepAdaptor_Curve2d>& PC1,
                                   const occ::handle<BRepAdaptor_Surface>& HSref1,
                                   const occ::handle<BRepAdaptor_Curve2d>& PCref1,
-                                  bool&                  Decroch1,
-                                  const TopAbs_Orientation           Or1,
+                                  bool&                                   Decroch1,
+                                  const TopAbs_Orientation                Or1,
                                   const occ::handle<BRepAdaptor_Surface>& HS2,
                                   const occ::handle<Adaptor3d_TopolTool>& I2,
                                   const occ::handle<BRepAdaptor_Curve2d>& PC2,
                                   const occ::handle<BRepAdaptor_Surface>& HSref2,
                                   const occ::handle<BRepAdaptor_Curve2d>& PCref2,
-                                  bool&                  Decroch2,
-                                  const TopAbs_Orientation           Or2,
+                                  bool&                                   Decroch2,
+                                  const TopAbs_Orientation                Or2,
                                   const double /*Fleche*/,
-                                  const double    TolGuide,
-                                  double&         First,
-                                  double&         Last,
-                                  const bool Inside,
-                                  const bool Appro,
-                                  const bool Forward,
-                                  const bool RecP1,
-                                  const bool RecRst1,
-                                  const bool RecP2,
-                                  const bool RecRst2,
-                                  const math_Vector&     Soldep)
+                                  const double       TolGuide,
+                                  double&            First,
+                                  double&            Last,
+                                  const bool         Inside,
+                                  const bool         Appro,
+                                  const bool         Forward,
+                                  const bool         RecP1,
+                                  const bool         RecRst1,
+                                  const bool         RecP2,
+                                  const bool         RecRst2,
+                                  const math_Vector& Soldep)
 {
   occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
@@ -1257,8 +1241,8 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
   //  gp_Pnt2d pf,pl;
 
-  int ch1 = 1, ch2 = 2;
-  double    PFirst = First;
+  int    ch1 = 1, ch2 = 2;
+  double PFirst = First;
 
   if (fsp->IsConstant())
   {
@@ -1323,11 +1307,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       throw Standard_Failure("SimulSurf : Failed processing!");
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, param, p1, p2;
+      double              u, v, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       u                     = p.ParameterOnC1();
@@ -1405,11 +1389,11 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       throw Standard_Failure("SimulSurf : Fail !");
     int nbp = lin->NbPoints();
-    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (int i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double       u, v, param, p1, p2;
+      double              u, v, param, p1, p2;
       gp_Circ             ci;
       const Blend_Point&  p = lin->Point(i);
       u                     = p.ParameterOnC1();
@@ -1450,16 +1434,16 @@ void ChFi3d_FilBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
 //=================================================================================================
 
 bool ChFi3d_FilBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&        Spine,
-                                                        const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                                        const int             Choix,
-                                                        occ::handle<BRepAdaptor_Surface>&       S1,
-                                                        occ::handle<BRepAdaptor_Surface>&       S2,
-                                                        const occ::handle<Adaptor3d_TopolTool>& I1,
-                                                        const occ::handle<Adaptor3d_TopolTool>& I2,
-                                                        const double                Par,
-                                                        math_Vector&                       SolDep,
-                                                        TopAbs_State&                      Pos1,
-                                                        TopAbs_State& Pos2) const
+                                            const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                            const int                               Choix,
+                                            occ::handle<BRepAdaptor_Surface>&       S1,
+                                            occ::handle<BRepAdaptor_Surface>&       S2,
+                                            const occ::handle<Adaptor3d_TopolTool>& I1,
+                                            const occ::handle<Adaptor3d_TopolTool>& I2,
+                                            const double                            Par,
+                                            math_Vector&                            SolDep,
+                                            TopAbs_State&                           Pos1,
+                                            TopAbs_State&                           Pos2) const
 {
   occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
@@ -1485,27 +1469,27 @@ bool ChFi3d_FilBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&    
 
 //=================================================================================================
 
-bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
-                                                const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                                const occ::handle<ChFiDS_Spine>&        Spine,
-                                                const int             Choix,
-                                                const occ::handle<BRepAdaptor_Surface>& S1,
-                                                const occ::handle<Adaptor3d_TopolTool>& I1,
-                                                const occ::handle<BRepAdaptor_Surface>& S2,
-                                                const occ::handle<Adaptor3d_TopolTool>& I2,
-                                                const double                MaxStep,
-                                                const double                Fleche,
-                                                const double                TolGuide,
-                                                double&                     First,
-                                                double&                     Last,
-                                                const bool             Inside,
-                                                const bool             Appro,
-                                                const bool             Forward,
-                                                const bool             RecOnS1,
-                                                const bool             RecOnS2,
-                                                const math_Vector&                 Soldep,
-                                                int&                  intf,
-                                                int&                  intl)
+bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+                                    const occ::handle<ChFiDS_ElSpine>&                  HGuide,
+                                    const occ::handle<ChFiDS_Spine>&                    Spine,
+                                    const int                                           Choix,
+                                    const occ::handle<BRepAdaptor_Surface>&             S1,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I1,
+                                    const occ::handle<BRepAdaptor_Surface>&             S2,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I2,
+                                    const double                                        MaxStep,
+                                    const double                                        Fleche,
+                                    const double                                        TolGuide,
+                                    double&                                             First,
+                                    double&                                             Last,
+                                    const bool                                          Inside,
+                                    const bool                                          Appro,
+                                    const bool                                          Forward,
+                                    const bool                                          RecOnS1,
+                                    const bool                                          RecOnS2,
+                                    const math_Vector&                                  Soldep,
+                                    int&                                                intf,
+                                    int&                                                intl)
 {
 #ifdef OCCT_DEBUG
   OSD_Chronometer ch;
@@ -1514,10 +1498,10 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
-  bool       gd1, gd2, gf1, gf2, maybesingular;
+  bool                        gd1, gd2, gf1, gf2, maybesingular;
   occ::handle<BRepBlend_Line> lin;
-  TopAbs_Orientation     Or     = S1->Face().Orientation();
-  double          PFirst = First;
+  TopAbs_Orientation          Or     = S1->Face().Orientation();
+  double                      PFirst = First;
   if (intf)
     First = fsp->FirstParameter(1);
   if (intl)
@@ -1652,39 +1636,39 @@ bool ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
-                                    const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                    const occ::handle<ChFiDS_Spine>&        Spine,
-                                    const int             Choix,
-                                    const occ::handle<BRepAdaptor_Surface>& HS1,
-                                    const occ::handle<Adaptor3d_TopolTool>& I1,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PC1,
-                                    const occ::handle<BRepAdaptor_Surface>& HSref1,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PCref1,
-                                    bool&                  Decroch1,
-                                    const occ::handle<BRepAdaptor_Surface>& HS2,
-                                    const occ::handle<Adaptor3d_TopolTool>& I2,
-                                    const TopAbs_Orientation           Or2,
-                                    const double                MaxStep,
-                                    const double                Fleche,
-                                    const double                TolGuide,
-                                    double&                     First,
-                                    double&                     Last,
-                                    const bool             Inside,
-                                    const bool             Appro,
-                                    const bool             Forward,
-                                    const bool             RecP,
-                                    const bool             RecS,
-                                    const bool             RecRst,
-                                    const math_Vector&                 Soldep)
+void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+                                    const occ::handle<ChFiDS_ElSpine>&                  HGuide,
+                                    const occ::handle<ChFiDS_Spine>&                    Spine,
+                                    const int                                           Choix,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS1,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I1,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PC1,
+                                    const occ::handle<BRepAdaptor_Surface>&             HSref1,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PCref1,
+                                    bool&                                               Decroch1,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS2,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I2,
+                                    const TopAbs_Orientation                            Or2,
+                                    const double                                        MaxStep,
+                                    const double                                        Fleche,
+                                    const double                                        TolGuide,
+                                    double&                                             First,
+                                    double&                                             Last,
+                                    const bool                                          Inside,
+                                    const bool                                          Appro,
+                                    const bool                                          Forward,
+                                    const bool                                          RecP,
+                                    const bool                                          RecS,
+                                    const bool                                          RecRst,
+                                    const math_Vector&                                  Soldep)
 {
   occ::handle<ChFiDS_SurfData> Data = SeqData(1);
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   occ::handle<BRepBlend_Line> lin;
-  double          PFirst = First;
-  bool       maybesingular;
+  double                      PFirst = First;
+  bool                        maybesingular;
 
   if (fsp->IsConstant())
   {
@@ -1697,8 +1681,8 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
     BRepBlend_ConstRadInv          finv(HS2, HSref1, HGuide);
     finv.Set(false, PCref1);
 
-    double    rad        = fsp->Radius();
-    int petitchoix = 1;
+    double rad        = fsp->Radius();
+    int    petitchoix = 1;
     if (Or2 == TopAbs_REVERSED)
       petitchoix = 3;
     if (Choix % 2 == 0)
@@ -1809,39 +1793,39 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
-                                    const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                    const occ::handle<ChFiDS_Spine>&        Spine,
-                                    const int             Choix,
-                                    const occ::handle<BRepAdaptor_Surface>& HS1,
-                                    const occ::handle<Adaptor3d_TopolTool>& I1,
-                                    const TopAbs_Orientation           Or1,
-                                    const occ::handle<BRepAdaptor_Surface>& HS2,
-                                    const occ::handle<Adaptor3d_TopolTool>& I2,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PC2,
-                                    const occ::handle<BRepAdaptor_Surface>& HSref2,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PCref2,
-                                    bool&                  Decroch2,
-                                    const double                MaxStep,
-                                    const double                Fleche,
-                                    const double                TolGuide,
-                                    double&                     First,
-                                    double&                     Last,
-                                    const bool             Inside,
-                                    const bool             Appro,
-                                    const bool             Forward,
-                                    const bool             RecP,
-                                    const bool             RecS,
-                                    const bool             RecRst,
-                                    const math_Vector&                 Soldep)
+void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+                                    const occ::handle<ChFiDS_ElSpine>&                  HGuide,
+                                    const occ::handle<ChFiDS_Spine>&                    Spine,
+                                    const int                                           Choix,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS1,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I1,
+                                    const TopAbs_Orientation                            Or1,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS2,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I2,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PC2,
+                                    const occ::handle<BRepAdaptor_Surface>&             HSref2,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PCref2,
+                                    bool&                                               Decroch2,
+                                    const double                                        MaxStep,
+                                    const double                                        Fleche,
+                                    const double                                        TolGuide,
+                                    double&                                             First,
+                                    double&                                             Last,
+                                    const bool                                          Inside,
+                                    const bool                                          Appro,
+                                    const bool                                          Forward,
+                                    const bool                                          RecP,
+                                    const bool                                          RecS,
+                                    const bool                                          RecRst,
+                                    const math_Vector&                                  Soldep)
 {
   occ::handle<ChFiDS_SurfData> Data = SeqData(1);
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   occ::handle<BRepBlend_Line> lin;
-  double          PFirst = First;
-  bool       maybesingular;
+  double                      PFirst = First;
+  bool                        maybesingular;
 
   if (fsp->IsConstant())
   {
@@ -1854,8 +1838,8 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
     BRepBlend_ConstRadInv          finv(HS1, HSref2, HGuide);
     finv.Set(false, PCref2);
 
-    double    rad        = fsp->Radius();
-    int petitchoix = 1;
+    double rad        = fsp->Radius();
+    int    petitchoix = 1;
     if (Or1 == TopAbs_REVERSED)
       petitchoix = 3;
     if (Choix % 2 == 0)
@@ -1967,45 +1951,45 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
-                                    const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                    const occ::handle<ChFiDS_Spine>&        Spine,
-                                    const int             Choix,
-                                    const occ::handle<BRepAdaptor_Surface>& HS1,
-                                    const occ::handle<Adaptor3d_TopolTool>& I1,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PC1,
-                                    const occ::handle<BRepAdaptor_Surface>& HSref1,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PCref1,
-                                    bool&                  Decroch1,
-                                    const TopAbs_Orientation           Or1,
-                                    const occ::handle<BRepAdaptor_Surface>& HS2,
-                                    const occ::handle<Adaptor3d_TopolTool>& I2,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PC2,
-                                    const occ::handle<BRepAdaptor_Surface>& HSref2,
-                                    const occ::handle<BRepAdaptor_Curve2d>& PCref2,
-                                    bool&                  Decroch2,
-                                    const TopAbs_Orientation           Or2,
-                                    const double                MaxStep,
-                                    const double                Fleche,
-                                    const double                TolGuide,
-                                    double&                     First,
-                                    double&                     Last,
-                                    const bool             Inside,
-                                    const bool             Appro,
-                                    const bool             Forward,
-                                    const bool             RecP1,
-                                    const bool             RecRst1,
-                                    const bool             RecP2,
-                                    const bool             RecRst2,
-                                    const math_Vector&                 Soldep)
+void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+                                    const occ::handle<ChFiDS_ElSpine>&                  HGuide,
+                                    const occ::handle<ChFiDS_Spine>&                    Spine,
+                                    const int                                           Choix,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS1,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I1,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PC1,
+                                    const occ::handle<BRepAdaptor_Surface>&             HSref1,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PCref1,
+                                    bool&                                               Decroch1,
+                                    const TopAbs_Orientation                            Or1,
+                                    const occ::handle<BRepAdaptor_Surface>&             HS2,
+                                    const occ::handle<Adaptor3d_TopolTool>&             I2,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PC2,
+                                    const occ::handle<BRepAdaptor_Surface>&             HSref2,
+                                    const occ::handle<BRepAdaptor_Curve2d>&             PCref2,
+                                    bool&                                               Decroch2,
+                                    const TopAbs_Orientation                            Or2,
+                                    const double                                        MaxStep,
+                                    const double                                        Fleche,
+                                    const double                                        TolGuide,
+                                    double&                                             First,
+                                    double&                                             Last,
+                                    const bool                                          Inside,
+                                    const bool                                          Appro,
+                                    const bool                                          Forward,
+                                    const bool                                          RecP1,
+                                    const bool                                          RecRst1,
+                                    const bool                                          RecP2,
+                                    const bool                                          RecRst2,
+                                    const math_Vector&                                  Soldep)
 {
   occ::handle<ChFiDS_SurfData> Data = SeqData(1);
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   occ::handle<BRepBlend_Line> lin;
-  double          PFirst = First;
-  bool       maybesingular;
+  double                      PFirst = First;
+  bool                        maybesingular;
 
   if (fsp->IsConstant())
   {
@@ -2023,8 +2007,8 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
     finv1.Set(PCref1);
     finv2.Set(PCref2);
 
-    int ch1 = 1, ch2 = 2;
-    double    rad = fsp->Radius();
+    int    ch1 = 1, ch2 = 2;
+    double rad = fsp->Radius();
     if (Or1 == TopAbs_REVERSED)
       ch1 = 3;
     if (Or2 == TopAbs_REVERSED)
@@ -2157,28 +2141,28 @@ void ChFi3d_FilBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_Surf
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::SplitSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&    SeqData,
-                                  const occ::handle<BRepBlend_Line>& Line)
+void ChFi3d_FilBuilder::SplitSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
+                                  const occ::handle<BRepBlend_Line>&                  Line)
 {
   int ii, Nbpnt = Line->NbPoints();
   if (Nbpnt < 3)
     return;
-  double               UFirst, ULast, VFirst, VLast;
-  TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  int            ISurf;
-  occ::handle<ChFiDS_SurfData>     ref = SeqData(1);
-  Blend_Point                 P;
+  double                       UFirst, ULast, VFirst, VLast;
+  TopOpeBRepDS_DataStructure&  DStr = myDS->ChangeDS();
+  int                          ISurf;
+  occ::handle<ChFiDS_SurfData> ref = SeqData(1);
+  Blend_Point                  P;
 
-  ISurf                     = ref->Surf();
+  ISurf                          = ref->Surf();
   occ::handle<Geom_Surface> Surf = DStr.Surface(ISurf).Surface();
   Surf->Bounds(UFirst, ULast, VFirst, VLast);
   occ::handle<Geom_Curve> Courbe1 = Surf->UIso(UFirst);
   occ::handle<Geom_Curve> Courbe2 = Surf->UIso(ULast);
-  ChFi3d_SearchSing  Fonc(Courbe1, Courbe2);
+  ChFi3d_SearchSing       Fonc(Courbe1, Courbe2);
 
   NCollection_Sequence<double> LesVi;
-  double          precedant, suivant, courant;
-  double          a, b, c;
+  double                       precedant, suivant, courant;
+  double                       a, b, c;
 
   // (1) Finds vi so that iso v=vi is punctual
   VFirst =
@@ -2262,13 +2246,13 @@ void ChFi3d_FilBuilder::SplitSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfDa
   // (2) Update of the sequence of SurfData
   if (LesVi.Length() > 0)
   {
-    TopOpeBRepDS_DataStructure& DStru = myDS->ChangeDS();
-    occ::handle<ChFiDS_SurfData>     SD;
-    TopOpeBRepDS_Surface        S;
-    TopOpeBRepDS_Curve          C1, C2;
-    double               T, VertexTol;
-    gp_Pnt                      P3d, P1, P2;
-    ChFiDS_CommonPoint          LePoint;
+    TopOpeBRepDS_DataStructure&  DStru = myDS->ChangeDS();
+    occ::handle<ChFiDS_SurfData> SD;
+    TopOpeBRepDS_Surface         S;
+    TopOpeBRepDS_Curve           C1, C2;
+    double                       T, VertexTol;
+    gp_Pnt                       P3d, P1, P2;
+    ChFiDS_CommonPoint           LePoint;
     for (ii = 1; ii <= LesVi.Length(); ii++)
     {
 
@@ -2323,8 +2307,8 @@ void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handl
 {
   // review by using the data at end of fillets (point, radius, normal
   // to the faces and tangents of the guideline).
-  int     Sens  = 0;
-  double        Coeff = 0.5;
+  int                       Sens  = 0;
+  double                    Coeff = 0.5;
   occ::handle<ChFiDS_Spine> Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V, S, Sens);
   double dU = Spine->LastParameter(Spine->NbEdges());
@@ -2350,23 +2334,24 @@ void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handl
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
+void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex&                                V,
+                                        const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
   // Review by using the data at end of fillets (point, radius, normal
   // to faces and tangents to the guideline.
-  int                  Sens;
-  double                     Coeff = 0.3, Eval = 0.0, dU, rad;
+  int                                                    Sens;
+  double                                                 Coeff = 0.3, Eval = 0.0, dU, rad;
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS);
-  bool                  FF = true;
-  occ::handle<ChFiDS_Stripe>             Stripe;
-  occ::handle<ChFiDS_Spine>              Spine;
+  bool                                                   FF = true;
+  occ::handle<ChFiDS_Stripe>                             Stripe;
+  occ::handle<ChFiDS_Spine>                              Spine;
 
   // A value of symmetric extension is calculated
   for (; itel.More(); itel.Next())
   {
-    Stripe                      = itel.Value();
-    Spine                       = Stripe->Spine();
-    dU                          = Spine->LastParameter(Spine->NbEdges()) * Coeff;
+    Stripe                           = itel.Value();
+    Spine                            = Stripe->Spine();
+    dU                               = Spine->LastParameter(Spine->NbEdges()) * Coeff;
     occ::handle<ChFiDS_FilSpine> fsp = occ::down_cast<ChFiDS_FilSpine>(Spine);
     if (fsp->IsConstant())
       rad = fsp->Radius();
@@ -2414,12 +2399,13 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const NCollectio
 
 //=================================================================================================
 
-void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
+void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex&                                V,
+                                          const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
   // Review by using the data at end of fillets (point, radius, normal
   // to faces and tangents to the guideline.
-  int    Sens  = 0;
-  double       Coeff = 0.1;
+  int                                          Sens  = 0;
+  double                                       Coeff = 0.1;
   NCollection_List<occ::handle<ChFiDS_Stripe>> check;
   //  bool FF = true;
   for (NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS); itel.More(); itel.Next())
@@ -2463,11 +2449,11 @@ void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const NCollect
 void ChFi3d_FilBuilder::SetRegul()
 
 {
-  NCollection_List<ChFiDS_Regul>::Iterator  it;
+  NCollection_List<ChFiDS_Regul>::Iterator it;
   NCollection_List<TopoDS_Shape>::Iterator itc;
   NCollection_List<TopoDS_Shape>::Iterator its1;
   NCollection_List<TopoDS_Shape>::Iterator its2;
-  BRep_Builder                       B;
+  BRep_Builder                             B;
   for (it.Initialize(myRegul); it.More(); it.Next())
   {
     const ChFiDS_Regul& reg = it.Value();

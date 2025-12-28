@@ -31,14 +31,15 @@ public:
   Standard_EXPORT StepKinematics_LowOrderKinematicPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-                            const double                         theActualTranslationX,
-                            const double                         theActualTranslationY,
-                            const double                         theActualTranslationZ,
-                            const double                         theActualRotationX,
-                            const double                         theActualRotationY,
-                            const double                         theActualRotationZ);
+  Standard_EXPORT void Init(
+    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+    const double                                     theActualTranslationX,
+    const double                                     theActualTranslationY,
+    const double                                     theActualTranslationZ,
+    const double                                     theActualRotationX,
+    const double                                     theActualRotationY,
+    const double                                     theActualRotationZ);
 
   //! Returns field ActualTranslationX
   Standard_EXPORT double ActualTranslationX() const;

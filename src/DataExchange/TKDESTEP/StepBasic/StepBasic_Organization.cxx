@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Organization, Standard_Transient)
 
 StepBasic_Organization::StepBasic_Organization() {}
 
-void StepBasic_Organization::Init(const bool                  hasAid,
+void StepBasic_Organization::Init(const bool                                   hasAid,
                                   const occ::handle<TCollection_HAsciiString>& aId,
                                   const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<TCollection_HAsciiString>& aDescription)
@@ -62,7 +62,8 @@ occ::handle<TCollection_HAsciiString> StepBasic_Organization::Name() const
   return name;
 }
 
-void StepBasic_Organization::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_Organization::SetDescription(
+  const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   description = aDescription;
 }

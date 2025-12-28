@@ -52,7 +52,8 @@ occ::handle<TCollection_HAsciiString> StepRepr_PropertyDefinitionRelationship::N
 
 //=================================================================================================
 
-void StepRepr_PropertyDefinitionRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
+void StepRepr_PropertyDefinitionRelationship::SetName(
+  const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }

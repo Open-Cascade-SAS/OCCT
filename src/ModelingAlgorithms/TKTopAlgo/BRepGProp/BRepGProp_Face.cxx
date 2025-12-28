@@ -133,7 +133,7 @@ int BRepGProp_Face::IntegrationOrder() const
     case GeomAbs_BSplineCurve: {
       int a = (*((occ::handle<Geom2d_BSplineCurve>*)&(myCurve.Curve())))->Degree() + 1;
       int b = (*((occ::handle<Geom2d_BSplineCurve>*)&(myCurve.Curve())))->NbKnots() - 1;
-      N                  = a * b;
+      N     = a * b;
     }
     break;
 
@@ -147,10 +147,7 @@ int BRepGProp_Face::IntegrationOrder() const
 
 //=================================================================================================
 
-void BRepGProp_Face::Bounds(double& U1,
-                            double& U2,
-                            double& V1,
-                            double& V2) const
+void BRepGProp_Face::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = mySurface.FirstUParameter();
   U2 = mySurface.LastUParameter();
@@ -162,7 +159,7 @@ void BRepGProp_Face::Bounds(double& U1,
 
 bool BRepGProp_Face::Load(const TopoDS_Edge& E)
 {
-  double        a, b;
+  double                    a, b;
   occ::handle<Geom2d_Curve> C = BRep_Tool::CurveOnSurface(E, mySurface.Face(), a, b);
   if (C.IsNull())
   {
@@ -171,9 +168,9 @@ bool BRepGProp_Face::Load(const TopoDS_Edge& E)
   if (E.Orientation() == TopAbs_REVERSED)
   {
     double x = a;
-    a               = C->ReversedParameter(b);
-    b               = C->ReversedParameter(x);
-    C               = C->Reversed();
+    a        = C->ReversedParameter(b);
+    b        = C->ReversedParameter(x);
+    C        = C->Reversed();
   }
   myCurve.Load(C, a, b);
   return true;
@@ -191,10 +188,7 @@ void BRepGProp_Face::Load(const TopoDS_Face& F)
 
 //=================================================================================================
 
-void BRepGProp_Face::Normal(const double U,
-                            const double V,
-                            gp_Pnt&             P,
-                            gp_Vec&             VNor) const
+void BRepGProp_Face::Normal(const double U, const double V, gp_Pnt& P, gp_Vec& VNor) const
 {
   gp_Vec D1U, D1V;
   mySurface.D1(U, V, P, D1U, D1V);
@@ -513,13 +507,13 @@ void BRepGProp_Face::LKnots(NCollection_Array1<double>& Knots) const
 
 void BRepGProp_Face::Load(const bool IsFirstParam, const GeomAbs_IsoType theIsoType)
 {
-  double aLen;
-  double aU1;
-  double aU2;
-  double aV1;
-  double aV2;
-  gp_Pnt2d      aLoc;
-  gp_Dir2d      aDir;
+  double   aLen;
+  double   aU1;
+  double   aU2;
+  double   aV1;
+  double   aV2;
+  gp_Pnt2d aLoc;
+  gp_Dir2d aDir;
 
   Bounds(aU1, aU2, aV1, aV2);
 
@@ -563,15 +557,15 @@ void BRepGProp_Face::Load(const bool IsFirstParam, const GeomAbs_IsoType theIsoT
 
 //=================================================================================================
 
-static void GetRealKnots(const double                  theMin,
-                         const double                  theMax,
+static void GetRealKnots(const double                                    theMin,
+                         const double                                    theMax,
                          const occ::handle<NCollection_HArray1<double>>& theKnots,
                          occ::handle<NCollection_HArray1<double>>&       theRealKnots)
 {
-  int        i       = theKnots->Lower() - 1;
-  int        iU      = theKnots->Upper();
-  int        aStartI = 0;
-  int        aEndI   = 0;
+  int              i       = theKnots->Lower() - 1;
+  int              iU      = theKnots->Upper();
+  int              aStartI = 0;
+  int              aEndI   = 0;
   constexpr double aTol    = Precision::Confusion();
 
   while (++i < iU)
@@ -602,17 +596,17 @@ static void GetRealKnots(const double                  theMin,
 
 //=================================================================================================
 
-static void GetCurveKnots(const double            theMin,
-                          const double            theMax,
-                          const Geom2dAdaptor_Curve&     theCurve,
+static void GetCurveKnots(const double                              theMin,
+                          const double                              theMax,
+                          const Geom2dAdaptor_Curve&                theCurve,
                           occ::handle<NCollection_HArray1<double>>& theKnots)
 {
   bool isSBSpline = theCurve.GetType() == GeomAbs_BSplineCurve;
 
   if (isSBSpline)
   {
-    occ::handle<Geom2d_BSplineCurve>   aCrv;
-    int              aNbKnots;
+    occ::handle<Geom2d_BSplineCurve>         aCrv;
+    int                                      aNbKnots;
     occ::handle<NCollection_HArray1<double>> aCrvKnots;
 
     aCrv      = occ::down_cast<Geom2d_BSplineCurve>(theCurve.Curve());
@@ -631,8 +625,8 @@ static void GetCurveKnots(const double            theMin,
 
 //=================================================================================================
 
-void BRepGProp_Face::GetUKnots(const double            theUMin,
-                               const double            theUMax,
+void BRepGProp_Face::GetUKnots(const double                              theUMin,
+                               const double                              theUMax,
                                occ::handle<NCollection_HArray1<double>>& theUKnots) const
 {
   bool isSBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
@@ -643,7 +637,7 @@ void BRepGProp_Face::GetUKnots(const double            theUMin,
     // Check the basis curve of the surface of linear extrusion.
     if (mySurface.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
-      GeomAdaptor_Curve    aCurve;
+      GeomAdaptor_Curve         aCurve;
       occ::handle<Geom_Surface> aSurf = mySurface.Surface().Surface();
 
       aCurve.Load(occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aSurf)->BasisCurve());
@@ -655,7 +649,7 @@ void BRepGProp_Face::GetUKnots(const double            theUMin,
   {
     // Using span decomposition for BSpline.
     occ::handle<NCollection_HArray1<double>> aKnots;
-    int              aNbKnots;
+    int                                      aNbKnots;
 
     if (isSBSpline)
     {
@@ -672,7 +666,7 @@ void BRepGProp_Face::GetUKnots(const double            theUMin,
     {
       // Get U knots of BSpline curve - basis curve of
       // the surface of linear extrusion.
-      GeomAdaptor_Curve         aCurve;
+      GeomAdaptor_Curve              aCurve;
       occ::handle<Geom_Surface>      aSurf = mySurface.Surface().Surface();
       occ::handle<Geom_BSplineCurve> aBSplCurve;
 
@@ -697,8 +691,8 @@ void BRepGProp_Face::GetUKnots(const double            theUMin,
 
 //=================================================================================================
 
-void BRepGProp_Face::GetTKnots(const double            theTMin,
-                               const double            theTMax,
+void BRepGProp_Face::GetTKnots(const double                              theTMin,
+                               const double                              theTMax,
                                occ::handle<NCollection_HArray1<double>>& theTKnots) const
 {
   bool isBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
@@ -707,7 +701,7 @@ void BRepGProp_Face::GetTKnots(const double            theTMin,
   {
     // Using span decomposition for BSpline.
     occ::handle<NCollection_HArray1<double>> aSurfKnots;
-    int              aNbKnots;
+    int                                      aNbKnots;
 
     // Get V knots of BSpline surface.
     occ::handle<Geom_Surface>        aSurf = mySurface.Surface().Surface();

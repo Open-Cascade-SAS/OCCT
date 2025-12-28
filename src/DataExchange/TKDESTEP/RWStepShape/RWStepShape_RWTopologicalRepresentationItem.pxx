@@ -35,14 +35,15 @@ public:
 
   Standard_HIDDEN RWStepShape_RWTopologicalRepresentationItem();
 
-  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&                 data,
-                                const int                                 num,
-                                occ::handle<Interface_Check>&                               ach,
-                                const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const;
+  Standard_HIDDEN void ReadStep(
+    const occ::handle<StepData_StepReaderData>&                 data,
+    const int                                                   num,
+    occ::handle<Interface_Check>&                               ach,
+    const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                   SW,
-                                 const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const;
-
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter&                                        SW,
+    const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const;
 };
 
 #endif // _RWStepShape_RWTopologicalRepresentationItem_HeaderFile

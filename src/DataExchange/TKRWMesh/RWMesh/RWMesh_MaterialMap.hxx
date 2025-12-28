@@ -60,9 +60,9 @@ public:
   //! @param[out] theResTexture  result texture file path (relative to the model)
   //! @param[in] theTexture  original texture
   //! @param[in] theKey  material key
-  Standard_EXPORT virtual bool CopyTexture(TCollection_AsciiString&       theResTexture,
-                                           const occ::handle<Image_Texture>&   theTexture,
-                                           const TCollection_AsciiString& theKey);
+  Standard_EXPORT virtual bool CopyTexture(TCollection_AsciiString&          theResTexture,
+                                           const occ::handle<Image_Texture>& theTexture,
+                                           const TCollection_AsciiString&    theKey);
 
   //! Virtual method actually defining the material (e.g. export to the file).
   virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
@@ -85,13 +85,13 @@ protected:
   TCollection_AsciiString myShortFileNameBase; //!< output glTF file name without extension
   TCollection_AsciiString myKeyPrefix;         //!< prefix for generated keys
   NCollection_DoubleMap<XCAFPrs_Style, TCollection_AsciiString>
-                                         myStyles;       //!< map of processed styles
+                                              myStyles;       //!< map of processed styles
   NCollection_Map<occ::handle<Image_Texture>> myImageFailMap; //!< map of images failed to be copied
-                                                         // clang-format off
+                                                              // clang-format off
   XCAFPrs_Style           myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
-                                                         // clang-format on
-  int myNbMaterials;                        //!< number of registered materials
-  bool myIsFailed;                           //!< flag indicating failure
+                                                              // clang-format on
+  int  myNbMaterials;                                         //!< number of registered materials
+  bool myIsFailed;                                            //!< flag indicating failure
   bool myMatNameAsKey; //!< flag indicating usage of material name as key
 };
 

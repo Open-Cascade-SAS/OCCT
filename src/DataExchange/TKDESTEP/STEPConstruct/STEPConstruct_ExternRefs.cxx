@@ -21,22 +21,11 @@
 #include <StepAP203_ApprovedItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepAP203_DateTimeItem.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <StepAP203_PersonOrganizationItem.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <StepAP203_PersonOrganizationItem.hxx>
 #include <StepAP214_AppliedDocumentReference.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
 #include <StepAP214_DocumentReferenceItem.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <StepAP214_ExternalIdentificationItem.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
 #include <StepBasic_DocumentFile.hxx>
@@ -111,8 +100,8 @@ void STEPConstruct_ExternRefs::Clear()
 
 static bool findPDWADandExcludeExcess(
   occ::handle<StepAP214_AppliedDocumentReference>&                 ADR,
-  NCollection_Sequence<occ::handle<Standard_Transient>>&                                aSeqOfPDWAD,
-  const Interface_Graph&                                      Graph,
+  NCollection_Sequence<occ::handle<Standard_Transient>>&           aSeqOfPDWAD,
+  const Interface_Graph&                                           Graph,
   occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments>& aPDWAD)
 {
   // WARNING! do not add check for aSeqOfPDWAD.Length() and exit if it < 1,
@@ -145,15 +134,13 @@ static bool findPDWADandExcludeExcess(
           if (!subs.Value()->IsKind(
                 STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments)))
             continue;
-          aPDWAD =
-            occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(subs.Value());
+          aPDWAD = occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(subs.Value());
         }
         // now searching for PDWAD that refer to the same PDF
         for (int pdwadi = 1; pdwadi <= aSeqOfPDWAD.Length(); pdwadi++)
         {
           occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> aCurPDWAD =
-            occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(
-              aSeqOfPDWAD(pdwadi));
+            occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(aSeqOfPDWAD(pdwadi));
           if (!aCurPDWAD.IsNull() && aPDWAD == aCurPDWAD)
           {
             // found the same Product Definition Formation
@@ -173,8 +160,9 @@ bool STEPConstruct_ExternRefs::LoadExternRefs()
   // or PDWADs (for AP203)
   occ::handle<Interface_InterfaceModel> model = Model();
   occ::handle<Standard_Type>            tADR  = STANDARD_TYPE(StepAP214_AppliedDocumentReference);
-  occ::handle<Standard_Type> tPDWAD = STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments);
-  int      nb     = model->NbEntities();
+  occ::handle<Standard_Type>            tPDWAD =
+    STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments);
+  int nb = model->NbEntities();
 
   // PTV 28.01.2003 CAX-IF TRJ11, file ext_ref_master.stp
   // search all ADR and PDWAD and exclude excess PDWADs
@@ -317,7 +305,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
 {
   occ::handle<StepBasic_DocumentFile>                            DocFile;
   occ::handle<StepAP214_AppliedExternalIdentificationAssignment> AEIA;
-  const char*                                          aCStringFileName = 0;
+  const char*                                                    aCStringFileName = 0;
   if (myDocFiles.Length() >= num && !myDocFiles.Value(num).IsNull())
     DocFile = occ::down_cast<StepBasic_DocumentFile>(myDocFiles.Value(num));
   else if (myIsAP214(num) == 1)
@@ -469,7 +457,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
       aCStringFileName = oldFileName;
     }
     occ::handle<Transfer_TransientProcess> aTP = WS()->TransferReader()->TransientProcess();
-    TCollection_AsciiString           aMess("Can not read external file ");
+    TCollection_AsciiString                aMess("Can not read external file ");
     aMess.AssignCat(aCStringFileName);
     aTP->AddFail(DocFile, aMess.ToCString());
   }
@@ -478,7 +466,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
     if (oldFileName && strcmp(oldFileName, aCStringFileName) != 0)
     {
       occ::handle<Transfer_TransientProcess> aTP = WS()->TransferReader()->TransientProcess();
-      TCollection_AsciiString           aMess("External file with name from entity AEIA (");
+      TCollection_AsciiString                aMess("External file with name from entity AEIA (");
       aMess.AssignCat(oldFileName);
       aMess.AssignCat(") not existed => use file name from DocumentFile entity - ");
       aMess.AssignCat(aCStringFileName);
@@ -490,8 +478,7 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinition> STEPConstruct_ExternRefs::ProdDef(
-  const int num) const
+occ::handle<StepBasic_ProductDefinition> STEPConstruct_ExternRefs::ProdDef(const int num) const
 {
   return occ::down_cast<StepBasic_ProductDefinition>(myShapes(num));
 }
@@ -534,15 +521,14 @@ occ::handle<TCollection_HAsciiString> STEPConstruct_ExternRefs::Format(const int
 
 //=================================================================================================
 
-int STEPConstruct_ExternRefs::AddExternRef(
-  const char*                     filename,
-  const occ::handle<StepBasic_ProductDefinition>& PD,
-  const char*                     format)
+int STEPConstruct_ExternRefs::AddExternRef(const char*                                     filename,
+                                           const occ::handle<StepBasic_ProductDefinition>& PD,
+                                           const char*                                     format)
 {
   occ::handle<TCollection_HAsciiString> EmptyString = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString> fmt         = new TCollection_HAsciiString(format);
   occ::handle<TCollection_HAsciiString> tmp         = new TCollection_HAsciiString("203");
-  int                 np          = fmt->Location(tmp, 1, fmt->Length());
+  int                                   np          = fmt->Location(tmp, 1, fmt->Length());
 
   //  if( !(fmt==tmp) ) {
   if (!(np > 0))
@@ -555,14 +541,7 @@ int STEPConstruct_ExternRefs::AddExternRef(
     // PTV 30.01.2003 TRJ11 -  copy external filename as is
     //     DFid->AssignCat ( " file id" );
     occ::handle<StepBasic_DocumentFile> DF = new StepBasic_DocumentFile;
-    DF->Init(DFid,
-             EmptyString,
-             false,
-             EmptyString,
-             DT,
-             EmptyString,
-             false,
-             EmptyString);
+    DF->Init(DFid, EmptyString, false, EmptyString, DT, EmptyString, false, EmptyString);
 
     // create AppliedExternalIdentificationAssignment et al
     occ::handle<StepBasic_IdentificationRole> IR = new StepBasic_IdentificationRole;
@@ -595,8 +574,9 @@ int STEPConstruct_ExternRefs::AddExternRef(
     occ::handle<TCollection_HAsciiString> aFName = new TCollection_HAsciiString(filename);
     ExtIdent->Init(aFName, IR, ES, Items);
     // create DocumentRepresentationType
-    occ::handle<TCollection_HAsciiString>             Dig  = new TCollection_HAsciiString("digital");
-    occ::handle<StepBasic_DocumentRepresentationType> Type = new StepBasic_DocumentRepresentationType;
+    occ::handle<TCollection_HAsciiString>             Dig = new TCollection_HAsciiString("digital");
+    occ::handle<StepBasic_DocumentRepresentationType> Type =
+      new StepBasic_DocumentRepresentationType;
     Type->Init(Dig, DF);
 
     // create AppliedDocumentReference,
@@ -616,7 +596,8 @@ int STEPConstruct_ExternRefs::AddExternRef(
     // create PDR for association with SR
     StepRepr_CharacterizedDefinition CD;
     CD.SetValue(DF);
-    occ::handle<TCollection_HAsciiString> PDname   = new TCollection_HAsciiString("external definition");
+    occ::handle<TCollection_HAsciiString> PDname =
+      new TCollection_HAsciiString("external definition");
     occ::handle<StepRepr_PropertyDefinition> PropD = new StepRepr_PropertyDefinition;
     PropD->Init(PDname, true, EmptyString, CD);
     StepRepr_RepresentedDefinition RD;
@@ -644,14 +625,16 @@ int STEPConstruct_ExternRefs::AddExternRef(
         new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
       fItems->SetValue(1, DRI);
 
-      occ::handle<TCollection_HAsciiString> SRfname  = new TCollection_HAsciiString("document format");
-      occ::handle<StepRepr_Representation>  SRformat = new StepRepr_Representation;
+      occ::handle<TCollection_HAsciiString> SRfname =
+        new TCollection_HAsciiString("document format");
+      occ::handle<StepRepr_Representation> SRformat = new StepRepr_Representation;
       SRformat->Init(SRfname, fItems, RCf);
 
       StepRepr_CharacterizedDefinition CDf;
       CDf.SetValue(DF);
-      occ::handle<TCollection_HAsciiString> PDfname = new TCollection_HAsciiString("document property");
-      occ::handle<StepRepr_PropertyDefinition> PDf  = new StepRepr_PropertyDefinition;
+      occ::handle<TCollection_HAsciiString> PDfname =
+        new TCollection_HAsciiString("document property");
+      occ::handle<StepRepr_PropertyDefinition> PDf = new StepRepr_PropertyDefinition;
       PDf->Init(PDfname, true, EmptyString, CDf);
       StepRepr_RepresentedDefinition RDf;
       RDf.SetValue(PDf);
@@ -688,7 +671,8 @@ int STEPConstruct_ExternRefs::AddExternRef(
     occ::handle<TCollection_HAsciiString> aDescription =
       new TCollection_HAsciiString("CAD Model associated to the part");
     aDoc->Init(EmptyString, fname, true, aDescription, aDocType);
-    occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> aDocIds = new NCollection_HArray1<occ::handle<StepBasic_Document>>(1, 1);
+    occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> aDocIds =
+      new NCollection_HArray1<occ::handle<StepBasic_Document>>(1, 1);
     aDocIds->SetValue(1, aDoc);
 
     // create ProductDefinitionWithAssociatedDocuments
@@ -749,9 +733,9 @@ int STEPConstruct_ExternRefs::AddExternRef(
         occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> HAPOI = CDPAOA->Items();
         for (int i = 1; i <= HAPOI->Length(); i++)
         {
-          StepAP203_PersonOrganizationItem    POI      = HAPOI->Value(i);
+          StepAP203_PersonOrganizationItem         POI      = HAPOI->Value(i);
           occ::handle<StepBasic_ProductDefinition> PDtmp    = POI.ProductDefinition();
-          int                    numPDtmp = Model()->Number(PDtmp);
+          int                                      numPDtmp = Model()->Number(PDtmp);
           if (numProdDef == numPDtmp)
           {
             POI.SetValue(PDWAD);
@@ -767,9 +751,9 @@ int STEPConstruct_ExternRefs::AddExternRef(
         occ::handle<NCollection_HArray1<StepAP203_DateTimeItem>> HADTI = CDDATA->Items();
         for (int i = 1; i <= HADTI->Length(); i++)
         {
-          StepAP203_DateTimeItem              DTI      = HADTI->Value(i);
+          StepAP203_DateTimeItem                   DTI      = HADTI->Value(i);
           occ::handle<StepBasic_ProductDefinition> PDtmp    = DTI.ProductDefinition();
-          int                    numPDtmp = Model()->Number(PDtmp);
+          int                                      numPDtmp = Model()->Number(PDtmp);
           if (numProdDef == numPDtmp)
           {
             DTI.SetValue(PDWAD);
@@ -780,13 +764,14 @@ int STEPConstruct_ExternRefs::AddExternRef(
 
       if (sub2->IsKind(STANDARD_TYPE(StepAP203_CcDesignApproval)))
       {
-        occ::handle<StepAP203_CcDesignApproval> CDA = occ::down_cast<StepAP203_CcDesignApproval>(sub2);
+        occ::handle<StepAP203_CcDesignApproval> CDA =
+          occ::down_cast<StepAP203_CcDesignApproval>(sub2);
         occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> HAAI = CDA->Items();
         for (int i = 1; i <= HAAI->Length(); i++)
         {
-          StepAP203_ApprovedItem              AI       = HAAI->Value(i);
+          StepAP203_ApprovedItem                   AI       = HAAI->Value(i);
           occ::handle<StepBasic_ProductDefinition> PDtmp    = AI.ProductDefinition();
-          int                    numPDtmp = Model()->Number(PDtmp);
+          int                                      numPDtmp = Model()->Number(PDtmp);
           if (numProdDef == numPDtmp)
           {
             AI.SetValue(PDWAD);
@@ -856,7 +841,7 @@ bool STEPConstruct_ExternRefs::addAP214ExterRef(
   const occ::handle<StepAP214_AppliedDocumentReference>& ADR,
   const occ::handle<StepBasic_ProductDefinition>&        PD,
   const occ::handle<StepBasic_DocumentFile>&             DF,
-  const char*                            filename)
+  const char*                                            filename)
 {
   occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>> DRIs =
     new NCollection_HArray1<StepAP214_DocumentReferenceItem>(1, 1);
@@ -875,12 +860,13 @@ bool STEPConstruct_ExternRefs::addAP214ExterRef(
   ADR->Init(aDocument, EmptyString, DRIs);
 
   // create new product
-  occ::handle<StepBasic_Product>          Product    = new StepBasic_Product;
-  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> HProducts  = mySharedPRPC->Products();
-  int                   nbProducts = 0;
+  occ::handle<StepBasic_Product>                                   Product = new StepBasic_Product;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> HProducts =
+    mySharedPRPC->Products();
+  int nbProducts = 0;
   if (!HProducts.IsNull())
     nbProducts = HProducts->Length();
-  int                 intProdId   = 20001 + nbProducts;
+  int                                   intProdId   = 20001 + nbProducts;
   occ::handle<TCollection_HAsciiString> ProductID   = new TCollection_HAsciiString(intProdId);
   occ::handle<TCollection_HAsciiString> ProductName = new TCollection_HAsciiString(filename);
   ProductName->AssignCat("-Doc");
@@ -896,7 +882,7 @@ bool STEPConstruct_ExternRefs::addAP214ExterRef(
   PDF->Init(PDF_ID, EmptyString, Product);
 
   occ::handle<StepBasic_DocumentProductEquivalence> DPE = new StepBasic_DocumentProductEquivalence;
-  occ::handle<TCollection_HAsciiString>         DPEname = new TCollection_HAsciiString("equivalence");
+  occ::handle<TCollection_HAsciiString>    DPEname = new TCollection_HAsciiString("equivalence");
   StepBasic_ProductOrFormationOrDefinition aPOFOD;
   aPOFOD.SetValue(PDF);
   DPE->Init(DPEname, false, EmptyString, aDocument, aPOFOD);
@@ -915,7 +901,8 @@ bool STEPConstruct_ExternRefs::addAP214ExterRef(
   // create new PDWAD
   occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> PDWAD =
     new StepBasic_ProductDefinitionWithAssociatedDocuments;
-  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> aDocIds = new NCollection_HArray1<occ::handle<StepBasic_Document>>(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Document>>> aDocIds =
+    new NCollection_HArray1<occ::handle<StepBasic_Document>>(1, 1);
   aDocIds->SetValue(1, DF);
   occ::handle<TCollection_HAsciiString> PDWAD_ID = new TCollection_HAsciiString("1");
   PDWAD->Init(PDWAD_ID, EmptyString, PDF, mySharedPDC, aDocIds);
@@ -942,9 +929,10 @@ occ::handle<StepBasic_ApplicationProtocolDefinition> STEPConstruct_ExternRefs::G
     // create new APD with new Application Context
     myAPD = new StepBasic_ApplicationProtocolDefinition;
     // examples of the values taken from ext_ref_master.stp
-    occ::handle<TCollection_HAsciiString>     status = new TCollection_HAsciiString("version 1.1");
-    occ::handle<TCollection_HAsciiString>     appSchemaName = new TCollection_HAsciiString("pdm_schema");
-    int                     intProtocolYear = 1999;
+    occ::handle<TCollection_HAsciiString> status = new TCollection_HAsciiString("version 1.1");
+    occ::handle<TCollection_HAsciiString> appSchemaName =
+      new TCollection_HAsciiString("pdm_schema");
+    int                                       intProtocolYear = 1999;
     occ::handle<StepBasic_ApplicationContext> aApplication    = new StepBasic_ApplicationContext;
     occ::handle<TCollection_HAsciiString>     EmptyString     = new TCollection_HAsciiString("");
     aApplication->Init(EmptyString);
@@ -960,7 +948,7 @@ void STEPConstruct_ExternRefs::checkAP214Shared()
   {
     // create new ProductRelatedProductCategory for all extern files.
     occ::handle<TCollection_HAsciiString> PRPCname = new TCollection_HAsciiString("document");
-    mySharedPRPC                              = new StepBasic_ProductRelatedProductCategory;
+    mySharedPRPC                                   = new StepBasic_ProductRelatedProductCategory;
     mySharedPRPC->Init(PRPCname, false, EmptyString, 0);
   }
   if (mySharedDocType.IsNull())
@@ -983,7 +971,7 @@ void STEPConstruct_ExternRefs::checkAP214Shared()
   if (mySharedPC.IsNull())
   {
     // create new shared ProductContext
-    mySharedPC                                        = new StepBasic_ProductContext;
+    mySharedPC                                             = new StepBasic_ProductContext;
     occ::handle<StepBasic_ApplicationContext> anAppContext = GetAP214APD()->Application();
     mySharedPC->Init(EmptyString, anAppContext, EmptyString);
   }

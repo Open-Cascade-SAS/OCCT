@@ -30,16 +30,15 @@ class Message_Messenger;
 
 class PCDM_RetrievalDriver : public PCDM_Reader
 {
-  friend Standard_EXPORT void PCDM_ReferenceIterator::Init(const occ::handle<CDM_MetaData>& aMetaData);
+  friend Standard_EXPORT void PCDM_ReferenceIterator::Init(
+    const occ::handle<CDM_MetaData>& aMetaData);
 
 public:
-  Standard_EXPORT static int DocumentVersion(
-    const TCollection_ExtendedString& theFileName,
-    const occ::handle<Message_Messenger>&  theMsgDriver);
+  Standard_EXPORT static int DocumentVersion(const TCollection_ExtendedString&     theFileName,
+                                             const occ::handle<Message_Messenger>& theMsgDriver);
 
-  Standard_EXPORT static int ReferenceCounter(
-    const TCollection_ExtendedString& theFileName,
-    const occ::handle<Message_Messenger>&  theMsgDriver);
+  Standard_EXPORT static int ReferenceCounter(const TCollection_ExtendedString&     theFileName,
+                                              const occ::handle<Message_Messenger>& theMsgDriver);
 
   Standard_EXPORT void SetFormat(const TCollection_ExtendedString& aformat);
 
@@ -48,9 +47,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(PCDM_RetrievalDriver, PCDM_Reader)
 
 private:
-  Standard_EXPORT static void References(const TCollection_ExtendedString& theFileName,
-                                         NCollection_Sequence<PCDM_Reference>&         theReferences,
-                                         const occ::handle<Message_Messenger>&  theMsgDriver);
+  Standard_EXPORT static void References(const TCollection_ExtendedString&     theFileName,
+                                         NCollection_Sequence<PCDM_Reference>& theReferences,
+                                         const occ::handle<Message_Messenger>& theMsgDriver);
 
   TCollection_ExtendedString myFormat;
 };

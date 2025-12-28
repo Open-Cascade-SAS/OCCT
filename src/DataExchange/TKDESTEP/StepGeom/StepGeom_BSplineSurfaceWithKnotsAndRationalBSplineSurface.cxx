@@ -26,14 +26,14 @@ StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
   const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots,
   const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface)
 {
@@ -52,20 +52,20 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
 }
 
 void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&         aName,
-  const int                          aUDegree,
-  const int                          aVDegree,
+  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const int                                                                     aUDegree,
+  const int                                                                     aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-  const StepData_Logical                          aUClosed,
-  const StepData_Logical                          aVClosed,
-  const StepData_Logical                          aSelfIntersect,
-  const occ::handle<NCollection_HArray1<int>>&         aUMultiplicities,
-  const occ::handle<NCollection_HArray1<int>>&         aVMultiplicities,
-  const occ::handle<NCollection_HArray1<double>>&            aUKnots,
-  const occ::handle<NCollection_HArray1<double>>&            aVKnots,
-  const StepGeom_KnotType                         aKnotSpec,
-  const occ::handle<NCollection_HArray2<double>>&            aWeightsData)
+  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
+  const StepData_Logical                                                        aUClosed,
+  const StepData_Logical                                                        aVClosed,
+  const StepData_Logical                                                        aSelfIntersect,
+  const occ::handle<NCollection_HArray1<int>>&                                  aUMultiplicities,
+  const occ::handle<NCollection_HArray1<int>>&                                  aVMultiplicities,
+  const occ::handle<NCollection_HArray1<double>>&                               aUKnots,
+  const occ::handle<NCollection_HArray1<double>>&                               aVKnots,
+  const StepGeom_KnotType                                                       aKnotSpec,
+  const occ::handle<NCollection_HArray2<double>>&                               aWeightsData)
 {
   // --- classe inherited fields ---
 
@@ -115,8 +115,8 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetBSplineSurfac
   bSplineSurfaceWithKnots = aBSplineSurfaceWithKnots;
 }
 
-occ::handle<StepGeom_BSplineSurfaceWithKnots> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
-  BSplineSurfaceWithKnots() const
+occ::handle<StepGeom_BSplineSurfaceWithKnots>
+  StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::BSplineSurfaceWithKnots() const
 {
   return bSplineSurfaceWithKnots;
 }
@@ -127,8 +127,8 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetRationalBSpli
   rationalBSplineSurface = aRationalBSplineSurface;
 }
 
-occ::handle<StepGeom_RationalBSplineSurface> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
-  RationalBSplineSurface() const
+occ::handle<StepGeom_RationalBSplineSurface>
+  StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::RationalBSplineSurface() const
 {
   return rationalBSplineSurface;
 }
@@ -153,8 +153,7 @@ int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UMultiplicitiesVa
   return bSplineSurfaceWithKnots->UMultiplicitiesValue(num);
 }
 
-int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUMultiplicities()
-  const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbUMultiplicities() const
 {
   return bSplineSurfaceWithKnots->NbUMultiplicities();
 }
@@ -177,8 +176,7 @@ int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VMultiplicitiesVa
   return bSplineSurfaceWithKnots->VMultiplicitiesValue(num);
 }
 
-int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVMultiplicities()
-  const
+int StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::NbVMultiplicities() const
 {
   return bSplineSurfaceWithKnots->NbVMultiplicities();
 }
@@ -189,14 +187,13 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetUKnots(
   bSplineSurfaceWithKnots->SetUKnots(aUKnots);
 }
 
-occ::handle<NCollection_HArray1<double>> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnots()
-  const
+occ::handle<NCollection_HArray1<double>> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+  UKnots() const
 {
   return bSplineSurfaceWithKnots->UKnots();
 }
 
-double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnotsValue(
-  const int num) const
+double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::UKnotsValue(const int num) const
 {
   return bSplineSurfaceWithKnots->UKnotsValue(num);
 }
@@ -212,14 +209,13 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::SetVKnots(
   bSplineSurfaceWithKnots->SetVKnots(aVKnots);
 }
 
-occ::handle<NCollection_HArray1<double>> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnots()
-  const
+occ::handle<NCollection_HArray1<double>> StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::
+  VKnots() const
 {
   return bSplineSurfaceWithKnots->VKnots();
 }
 
-double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnotsValue(
-  const int num) const
+double StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::VKnotsValue(const int num) const
 {
   return bSplineSurfaceWithKnots->VKnotsValue(num);
 }

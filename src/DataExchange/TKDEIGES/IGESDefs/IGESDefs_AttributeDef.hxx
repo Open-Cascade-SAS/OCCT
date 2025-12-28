@@ -21,12 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
@@ -45,13 +42,13 @@ public:
   Standard_EXPORT IGESDefs_AttributeDef();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                       aName,
-    const int                                        aListType,
-    const occ::handle<NCollection_HArray1<int>>&                       attrTypes,
-    const occ::handle<NCollection_HArray1<int>>&                       attrValueDataTypes,
-    const occ::handle<NCollection_HArray1<int>>&                       attrValueCounts,
-    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>&                     attrValues,
-    const occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>& attrValuePointers);
+    const occ::handle<TCollection_HAsciiString>&                             aName,
+    const int                                                                aListType,
+    const occ::handle<NCollection_HArray1<int>>&                             attrTypes,
+    const occ::handle<NCollection_HArray1<int>>&                             attrValueDataTypes,
+    const occ::handle<NCollection_HArray1<int>>&                             attrValueCounts,
+    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& attrValues,
+    const occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>&       attrValuePointers);
 
   //! Returns True if a Table Name is defined
   Standard_EXPORT bool HasTableName() const;
@@ -98,40 +95,35 @@ public:
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
   //! Error if Indices out of Range, or no Value defined, or not an Integer
-  Standard_EXPORT int AttributeAsInteger(const int AttrNum,
-                                                      const int ValueNum) const;
+  Standard_EXPORT int AttributeAsInteger(const int AttrNum, const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Real
   //! Error if Indices out of Range, or no Value defined, or not a Real
-  Standard_EXPORT double AttributeAsReal(const int AttrNum,
-                                                const int ValueNum) const;
+  Standard_EXPORT double AttributeAsReal(const int AttrNum, const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> AttributeAsString(
-    const int AttrNum,
-    const int ValueNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AttributeAsString(const int AttrNum,
+                                                                          const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
   //! Error if Indices out of Range, or no Value defined, or not a Entity
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> AttributeAsEntity(
-    const int AttrNum,
-    const int ValueNum) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> AttributeAsEntity(const int AttrNum,
+                                                                     const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as a Boolean
   //! Error if Indices out of Range, or no Value defined, or not a Logical
-  Standard_EXPORT bool AttributeAsLogical(const int AttrNum,
-                                                      const int ValueNum) const;
+  Standard_EXPORT bool AttributeAsLogical(const int AttrNum, const int ValueNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_AttributeDef, IGESData_IGESEntity)
 
 private:
-  occ::handle<TCollection_HAsciiString>                       theName;
-  int                                       theListType;
-  occ::handle<NCollection_HArray1<int>>                       theAttrTypes;
-  occ::handle<NCollection_HArray1<int>>                       theAttrValueDataTypes;
-  occ::handle<NCollection_HArray1<int>>                       theAttrValueCounts;
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                     theAttrValues;
-  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate> theAttrValuePointers;
+  occ::handle<TCollection_HAsciiString>                             theName;
+  int                                                               theListType;
+  occ::handle<NCollection_HArray1<int>>                             theAttrTypes;
+  occ::handle<NCollection_HArray1<int>>                             theAttrValueDataTypes;
+  occ::handle<NCollection_HArray1<int>>                             theAttrValueCounts;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> theAttrValues;
+  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>       theAttrValuePointers;
 };
 
 #endif // _IGESDefs_AttributeDef_HeaderFile

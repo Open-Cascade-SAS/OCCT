@@ -27,10 +27,8 @@
 #include <gp_XY.hxx>
 #include <Plate_Plate.hxx>
 #include <PLib.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
@@ -45,17 +43,17 @@ public:
   {
   }
 
-  virtual void Evaluate(int* theDimension,
-                        double*    theUStartEnd,
-                        double*    theVStartEnd,
-                        int* theFavorIso,
-                        double*    theConstParam,
-                        int* theNbParams,
-                        double*    theParameters,
-                        int* theUOrder,
-                        int* theVOrder,
-                        double*    theResult,
-                        int* theErrorCode) const;
+  virtual void Evaluate(int*    theDimension,
+                        double* theUStartEnd,
+                        double* theVStartEnd,
+                        int*    theFavorIso,
+                        double* theConstParam,
+                        int*    theNbParams,
+                        double* theParameters,
+                        int*    theUOrder,
+                        int*    theVOrder,
+                        double* theResult,
+                        int*    theErrorCode) const;
 
 private:
   occ::handle<Geom_Surface> mySurf;
@@ -85,8 +83,8 @@ void GeomPlate_MakeApprox_Eval::Evaluate(int* Dimension,
 // Error Code
 {
   *ErrorCode = 0;
-  int idim, jpar;
-  double    Upar, Vpar;
+  int    idim, jpar;
+  double Upar, Vpar;
 
   // Dimension incorrecte
   if (*Dimension != 3)
@@ -137,8 +135,8 @@ void GeomPlate_MakeApprox_Eval::Evaluate(int* Dimension,
     }
   }
 
-  int Order = *UOrder + *VOrder;
-  gp_Pnt           pnt;
+  int    Order = *UOrder + *VOrder;
+  gp_Pnt pnt;
   // gp_Vec vect, v1, v2, v3, v4, v5, v6, v7, v8, v9;
   gp_Vec v1, v2, v3, v4, v5;
 
@@ -269,12 +267,12 @@ void GeomPlate_MakeApprox_Eval::Evaluate(int* Dimension,
 //=================================================================================================
 
 GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
-                                           const AdvApp2Var_Criterion&      PlateCrit,
-                                           const double              Tol3d,
-                                           const int           Nbmax,
-                                           const int           dgmax,
-                                           const GeomAbs_Shape              Continuity,
-                                           const double              EnlargeCoeff)
+                                           const AdvApp2Var_Criterion&           PlateCrit,
+                                           const double                          Tol3d,
+                                           const int                             Nbmax,
+                                           const int                             dgmax,
+                                           const GeomAbs_Shape                   Continuity,
+                                           const double                          EnlargeCoeff)
 {
   myPlate = SurfPlate;
 
@@ -285,7 +283,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>&
   V0 = EnlargeCoeff * V0;
   V1 = EnlargeCoeff * V1;
 
-  int              nb1 = 0, nb2 = 0, nb3 = 1;
+  int                                      nb1 = 0, nb2 = 0, nb3 = 1;
   occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->Init(0.);
   occ::handle<NCollection_HArray2<double>> nul2 = new NCollection_HArray2<double>(1, 1, 1, 4);
@@ -294,8 +292,8 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>&
   eps3D->Init(Tol3d);
   occ::handle<NCollection_HArray2<double>> epsfr = new NCollection_HArray2<double>(1, 1, 1, 4);
   epsfr->Init(Tol3d);
-  GeomAbs_IsoType  myType = GeomAbs_IsoV;
-  int myPrec = 0;
+  GeomAbs_IsoType myType = GeomAbs_IsoV;
+  int             myPrec = 0;
 
   AdvApprox_DichoCutting myDec;
 
@@ -339,13 +337,13 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>&
 //=================================================================================================
 
 GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
-                                           const double              Tol3d,
-                                           const int           Nbmax,
-                                           const int           dgmax,
-                                           const double              dmax,
-                                           const int           CritOrder,
-                                           const GeomAbs_Shape              Continuity,
-                                           const double              EnlargeCoeff)
+                                           const double                          Tol3d,
+                                           const int                             Nbmax,
+                                           const int                             dgmax,
+                                           const double                          dmax,
+                                           const int                             CritOrder,
+                                           const GeomAbs_Shape                   Continuity,
+                                           const double                          EnlargeCoeff)
 {
   myPlate = SurfPlate;
 
@@ -407,7 +405,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>&
               << std::endl;
 #endif
   }
-  int              nb1 = 0, nb2 = 0, nb3 = 1;
+  int                                      nb1 = 0, nb2 = 0, nb3 = 1;
   occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->Init(0.);
   occ::handle<NCollection_HArray2<double>> nul2 = new NCollection_HArray2<double>(1, 1, 1, 4);
@@ -417,8 +415,8 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>&
   occ::handle<NCollection_HArray2<double>> epsfr = new NCollection_HArray2<double>(1, 1, 1, 4);
   epsfr->Init(Tol3d);
 
-  GeomAbs_IsoType  myType = GeomAbs_IsoV;
-  int myPrec = 0;
+  GeomAbs_IsoType myType = GeomAbs_IsoV;
+  int             myPrec = 0;
 
   AdvApprox_DichoCutting myDec;
 

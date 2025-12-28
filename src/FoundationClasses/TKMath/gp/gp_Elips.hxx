@@ -66,9 +66,7 @@ public:
   //! It is not forbidden to create an ellipse with theMajorRadius =
   //! theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < theMinorRadius or theMinorRadius < 0.
-  constexpr gp_Elips(const gp_Ax2&       theA2,
-                     const double theMajorRadius,
-                     const double theMinorRadius)
+  constexpr gp_Elips(const gp_Ax2& theA2, const double theMajorRadius, const double theMinorRadius)
       : pos(theA2),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -155,10 +153,7 @@ public:
 
   //! Computes the focal distance. It is the distance between the
   //! two focus focus1 and focus2 of the ellipse.
-  double Focal() const
-  {
-    return 2.0 * sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
-  }
+  double Focal() const { return 2.0 * sqrt(majorRadius * majorRadius - minorRadius * minorRadius); }
 
   //! Returns the first focus of the ellipse. This focus is on the
   //! positive side of the "XAxis" of the ellipse.
@@ -254,7 +249,7 @@ public:
 
   //! Translates an ellipse from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Elips Translated(const gp_Pnt& theP1,
-                                                   const gp_Pnt& theP2) const noexcept
+                                              const gp_Pnt& theP2) const noexcept
   {
     gp_Elips anE = *this;
     anE.pos.Translate(theP1, theP2);
@@ -262,7 +257,7 @@ public:
   }
 
 private:
-  gp_Ax2        pos;
+  gp_Ax2 pos;
   double majorRadius;
   double minorRadius;
 };
@@ -311,7 +306,7 @@ inline double gp_Elips::Eccentricity() const
 
 inline gp_Pnt gp_Elips::Focus1() const
 {
-  double aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double        aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt& aPP = pos.Location();
   const gp_Dir& aDD = pos.XDirection();
   return gp_Pnt(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y(), aPP.Z() + aC * aDD.Z());
@@ -321,7 +316,7 @@ inline gp_Pnt gp_Elips::Focus1() const
 
 inline gp_Pnt gp_Elips::Focus2() const
 {
-  double aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
+  double        aC  = sqrt(majorRadius * majorRadius - minorRadius * minorRadius);
   const gp_Pnt& aPP = pos.Location();
   const gp_Dir& aDD = pos.XDirection();
   return gp_Pnt(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y(), aPP.Z() - aC * aDD.Z());

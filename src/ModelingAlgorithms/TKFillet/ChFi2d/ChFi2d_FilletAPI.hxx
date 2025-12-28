@@ -74,10 +74,10 @@ public:
   //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt&          thePoint,
-                                     TopoDS_Edge&           theEdge1,
-                                     TopoDS_Edge&           theEdge2,
-                                     const int iSolution = -1);
+  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt& thePoint,
+                                     TopoDS_Edge&  theEdge1,
+                                     TopoDS_Edge&  theEdge2,
+                                     const int     iSolution = -1);
 
 private:
   // Decides whether the input parameters may use an analytical algorithm
@@ -89,7 +89,7 @@ private:
   // Implementation of the fillet algorithm.
   ChFi2d_FilletAlgo    myFilletAlgo;
   ChFi2d_AnaFilletAlgo myAnaFilletAlgo;
-  bool     myIsAnalytical;
+  bool                 myIsAnalytical;
 };
 
 #endif // _CHFI2D_FILLETAPI_H_

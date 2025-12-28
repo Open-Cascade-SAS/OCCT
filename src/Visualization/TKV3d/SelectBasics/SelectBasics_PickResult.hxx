@@ -41,9 +41,7 @@ public:
   }
 
   //! Constructor with initialization.
-  SelectBasics_PickResult(double theDepth,
-                          double theDistToCenter,
-                          const gp_Pnt& theObjPickedPnt)
+  SelectBasics_PickResult(double theDepth, double theDistToCenter, const gp_Pnt& theObjPickedPnt)
       : myObjPickedPnt(theObjPickedPnt),
         myDepth(theDepth),
         myDistToCenter(theDistToCenter)
@@ -102,7 +100,7 @@ public:
 private:
   gp_Pnt                  myObjPickedPnt; //!< User-picked selection point onto object
   NCollection_Vec3<float> myNormal;       //!< surface normal
-  double           myDepth;        //!< Depth to detected point
+  double                  myDepth;        //!< Depth to detected point
   // clang-format off
   double           myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
   // clang-format on

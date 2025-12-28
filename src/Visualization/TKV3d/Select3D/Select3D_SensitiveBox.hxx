@@ -27,7 +27,7 @@ public:
   //! Constructs a sensitive box object defined by the
   //! owner theOwnerId, and the box theBox.
   Standard_EXPORT Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                        const Bnd_Box&                       theBox);
+                                        const Bnd_Box&                            theBox);
 
   //! Constructs a sensitive box object defined by the
   //! owner theOwnerId, and the coordinates theXmin, theYMin, theZMin, theXMax, theYMax, theZMax.
@@ -36,12 +36,12 @@ public:
   //! and theXMax, theYMax and theZMax define the maximum
   //! point in the back upper right hand corner of the box.
   Standard_EXPORT Select3D_SensitiveBox(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                        const double                  theXMin,
-                                        const double                  theYMin,
-                                        const double                  theZMin,
-                                        const double                  theXMax,
-                                        const double                  theYMax,
-                                        const double                  theZMax);
+                                        const double                              theXMin,
+                                        const double                              theYMin,
+                                        const double                              theZMin,
+                                        const double                              theXMax,
+                                        const double                              theYMax,
+                                        const double                              theZMax);
 
   //! Returns the amount of sub-entities in sensitive
   Standard_EXPORT virtual int NbSubElements() const override;
@@ -50,8 +50,7 @@ public:
 
   //! Checks whether the box overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-    override;
+                                       SelectBasics_PickResult&             thePickResult) override;
 
   Bnd_Box Box() const
   {
@@ -79,7 +78,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
 private:
   Select3D_BndBox3d myBox;      //!< 3d coordinates of box corners

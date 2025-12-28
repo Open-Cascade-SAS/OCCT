@@ -23,17 +23,16 @@ Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph)
   GetFromGraph(agraph);
 }
 
-Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph,
-                                               const int stat)
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph& agraph, const int stat)
 {
   GetFromGraph(agraph, stat);
 }
 
-Interface_GraphContent::Interface_GraphContent(const Interface_Graph&            agraph,
+Interface_GraphContent::Interface_GraphContent(const Interface_Graph&                 agraph,
                                                const occ::handle<Standard_Transient>& ent)
 {
   Interface_EntityIterator list = agraph.Shareds(ent);
-  int         nb   = list.NbEntities();
+  int                      nb   = list.NbEntities();
   if (nb == 0)
     return; // Liste redefinie a VIDE
   for (; list.More(); list.Next())
@@ -54,8 +53,7 @@ void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph)
   }
 }
 
-void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph,
-                                          const int stat)
+void Interface_GraphContent::GetFromGraph(const Interface_Graph& agraph, const int stat)
 {
   int nb = agraph.Size();
   for (int i = 1; i <= nb; i++)

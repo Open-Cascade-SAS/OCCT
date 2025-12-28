@@ -69,8 +69,8 @@ public:
   //! Dumps the surface on the stream, if compact is True
   //! use the compact format that can be read back.
   Standard_EXPORT static void PrintSurface(const occ::handle<Geom_Surface>& S,
-                                           Standard_OStream&           OS,
-                                           const bool      compact = false);
+                                           Standard_OStream&                OS,
+                                           const bool                       compact = false);
 
   //! Reads the surface from the stream. The surface is
   //! assumed to have been written with the Print

@@ -39,11 +39,8 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_NSections, GeomFill_SectionLaw)
@@ -53,25 +50,25 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_NSections, GeomFill_SectionLaw)
     #include <DrawTrSurf.hxx>
   #endif
 static bool Affich = 0;
-static int NbSurf = 0;
+static int  NbSurf = 0;
 #endif
 
 #ifdef OCCT_DEBUG
 // verification des fonctions de derivation D1 et D2 par differences finies
-static bool verifD1(const NCollection_Array1<gp_Pnt>&   P1,
-                                const NCollection_Array1<double>& W1,
-                                const NCollection_Array1<gp_Pnt>&   P2,
-                                const NCollection_Array1<double>& W2,
-                                const NCollection_Array1<gp_Vec>&   DPoles,
-                                const NCollection_Array1<double>& DWeights,
-                                const double         pTol,
-                                const double         wTol,
-                                const double         pas)
+static bool verifD1(const NCollection_Array1<gp_Pnt>& P1,
+                    const NCollection_Array1<double>& W1,
+                    const NCollection_Array1<gp_Pnt>& P2,
+                    const NCollection_Array1<double>& W2,
+                    const NCollection_Array1<gp_Vec>& DPoles,
+                    const NCollection_Array1<double>& DWeights,
+                    const double                      pTol,
+                    const double                      wTol,
+                    const double                      pas)
 {
-  bool ok = true;
-  int ii, L = P1.Length();
-  double    dw;
-  gp_Vec           dP;
+  bool   ok = true;
+  int    ii, L = P1.Length();
+  double dw;
+  gp_Vec dP;
   for (ii = 1; ii <= L; ii++)
   {
     dw = (W2(ii) - W1(ii)) / pas;
@@ -103,20 +100,20 @@ static bool verifD1(const NCollection_Array1<gp_Pnt>&   P1,
   return ok;
 }
 
-static bool verifD2(const NCollection_Array1<gp_Vec>&   DP1,
-                                const NCollection_Array1<double>& DW1,
-                                const NCollection_Array1<gp_Vec>&   DP2,
-                                const NCollection_Array1<double>& DW2,
-                                const NCollection_Array1<gp_Vec>&   D2Poles,
-                                const NCollection_Array1<double>& D2Weights,
-                                const double         pTol,
-                                const double         wTol,
-                                const double         pas)
+static bool verifD2(const NCollection_Array1<gp_Vec>& DP1,
+                    const NCollection_Array1<double>& DW1,
+                    const NCollection_Array1<gp_Vec>& DP2,
+                    const NCollection_Array1<double>& DW2,
+                    const NCollection_Array1<gp_Vec>& D2Poles,
+                    const NCollection_Array1<double>& D2Weights,
+                    const double                      pTol,
+                    const double                      wTol,
+                    const double                      pas)
 {
-  bool ok = true;
-  int ii, L = DP1.Length();
-  double    d2w;
-  gp_Vec           d2P;
+  bool   ok = true;
+  int    ii, L = DP1.Length();
+  double d2w;
+  gp_Vec d2P;
   for (ii = 1; ii <= L; ii++)
   {
     double dw1 = DW1(ii), dw2 = DW2(ii);
@@ -152,25 +149,25 @@ static bool verifD2(const NCollection_Array1<gp_Vec>&   DP1,
 
 // fonction d'evaluation des poles et des poids de mySurface pour D1 et D2
 static void ResultEval(const occ::handle<Geom_BSplineSurface>& surf,
-                       const double                V,
-                       const int             deriv,
-                       NCollection_Array1<double>&              Result)
+                       const double                            V,
+                       const int                               deriv,
+                       NCollection_Array1<double>&             Result)
 {
   bool rational = surf->IsVRational();
-  int gap      = 3;
+  int  gap      = 3;
   if (rational)
     gap++;
   int Cdeg = surf->VDegree(), Cdim = surf->NbUPoles() * gap, NbP = surf->NbVPoles();
 
   //  les noeuds plats
-  int     Ksize = NbP + Cdeg + 1;
+  int                        Ksize = NbP + Cdeg + 1;
   NCollection_Array1<double> FKnots(1, Ksize);
   surf->VKnotSequence(FKnots);
 
   //  les poles
-  int     Psize = Cdim * NbP;
+  int                        Psize = Cdim * NbP;
   NCollection_Array1<double> SPoles(1, Psize);
-  int     ii, jj, ipole = 1;
+  int                        ii, jj, ipole = 1;
   for (jj = 1; jj <= NbP; jj++)
   {
     for (ii = 1; ii <= surf->NbUPoles(); ii++)
@@ -191,10 +188,10 @@ static void ResultEval(const occ::handle<Geom_BSplineSurface>& surf,
   double* Padr = (double*)&SPoles(1);
 
   bool periodic_flag = false;
-  int extrap_mode[2];
+  int  extrap_mode[2];
   extrap_mode[0] = extrap_mode[1] = Cdeg;
   NCollection_Array1<double> EvalBS(1, Cdim * (deriv + 1));
-  double*       Eadr = (double*)&EvalBS(1);
+  double*                    Eadr = (double*)&EvalBS(1);
   BSplCLib::Eval(V, periodic_flag, deriv, extrap_mode[0], Cdeg, FKnots, Cdim, *Padr, *Eadr);
 
   for (ii = 1; ii <= Cdim; ii++)
@@ -219,7 +216,7 @@ GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Ge
 //=================================================================================================
 
 GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                       const NCollection_Sequence<double>&   NP)
+                                       const NCollection_Sequence<double>&                  NP)
 {
   mySections = NC;
   myParams   = NP;
@@ -234,9 +231,9 @@ GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Ge
 //=================================================================================================
 
 GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& theNC,
-                                       const NCollection_Sequence<double>&   theNP,
-                                       const double             theUF,
-                                       const double             theUL)
+                                       const NCollection_Sequence<double>&                  theNP,
+                                       const double                                         theUF,
+                                       const double                                         theUL)
 {
   mySections = theNC;
   myParams   = theNP;
@@ -251,11 +248,11 @@ GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Ge
 //=================================================================================================
 
 GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                       const NCollection_Sequence<double>&   NP,
-                                       const double             UF,
-                                       const double             UL,
-                                       const double             VF,
-                                       const double             VL)
+                                       const NCollection_Sequence<double>&                  NP,
+                                       const double                                         UF,
+                                       const double                                         UL,
+                                       const double                                         VF,
+                                       const double                                         VL)
 {
   mySections = NC;
   myParams   = NP;
@@ -269,14 +266,14 @@ GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Ge
 
 //=================================================================================================
 
-GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>&    NC,
-                                       const NCollection_Sequence<gp_Trsf>&     Trsfs,
-                                       const NCollection_Sequence<double>&      NP,
-                                       const double                UF,
-                                       const double                UL,
-                                       const double                VF,
-                                       const double                VL,
-                                       const occ::handle<Geom_BSplineSurface>& Surf)
+GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
+                                       const NCollection_Sequence<gp_Trsf>&                 Trsfs,
+                                       const NCollection_Sequence<double>&                  NP,
+                                       const double                                         UF,
+                                       const double                                         UL,
+                                       const double                                         VF,
+                                       const double                                         VL,
+                                       const occ::handle<Geom_BSplineSurface>&              Surf)
 {
   mySections = NC;
   myTrsfs    = Trsfs;
@@ -292,9 +289,9 @@ GeomFill_NSections::GeomFill_NSections(const NCollection_Sequence<occ::handle<Ge
 //=======================================================
 // Purpose :D0
 //=======================================================
-bool GeomFill_NSections::D0(const double   V,
-                                        NCollection_Array1<gp_Pnt>&   Poles,
-                                        NCollection_Array1<double>& Weights)
+bool GeomFill_NSections::D0(const double                V,
+                            NCollection_Array1<gp_Pnt>& Poles,
+                            NCollection_Array1<double>& Weights)
 {
   if (mySurface.IsNull())
   {
@@ -304,7 +301,7 @@ bool GeomFill_NSections::D0(const double   V,
   {
     occ::handle<Geom_BSplineCurve> Curve =
       occ::down_cast<Geom_BSplineCurve>(mySurface->VIso(V, false));
-    NCollection_Array1<gp_Pnt>   poles(1, mySurface->NbUPoles());
+    NCollection_Array1<gp_Pnt> poles(1, mySurface->NbUPoles());
     NCollection_Array1<double> weights(1, mySurface->NbUPoles());
     Curve->Poles(poles);
     Curve->Weights(weights);
@@ -321,11 +318,11 @@ bool GeomFill_NSections::D0(const double   V,
 //=======================================================
 // Purpose :D1
 //=======================================================
-bool GeomFill_NSections::D1(const double   V,
-                                        NCollection_Array1<gp_Pnt>&   Poles,
-                                        NCollection_Array1<gp_Vec>&   DPoles,
-                                        NCollection_Array1<double>& Weights,
-                                        NCollection_Array1<double>& DWeights)
+bool GeomFill_NSections::D1(const double                V,
+                            NCollection_Array1<gp_Pnt>& Poles,
+                            NCollection_Array1<gp_Vec>& DPoles,
+                            NCollection_Array1<double>& Weights,
+                            NCollection_Array1<double>& DWeights)
 {
   if (mySurface.IsNull())
     return false;
@@ -334,13 +331,13 @@ bool GeomFill_NSections::D1(const double   V,
   if (!ok)
     return false;
 
-  int L = Poles.Length(), derivative_request = 1;
+  int  L = Poles.Length(), derivative_request = 1;
   bool rational = mySurface->IsVRational();
-  int gap      = 3;
+  int  gap      = 3;
   if (rational)
     gap++;
 
-  int            dimResult = mySurface->NbUPoles() * gap;
+  int                              dimResult = mySurface->NbUPoles() * gap;
   occ::handle<Geom_BSplineSurface> surf_deper;
   if (mySurface->IsVPeriodic())
   {
@@ -360,7 +357,7 @@ bool GeomFill_NSections::D1(const double   V,
 
   double           ww;
   constexpr double EpsW       = 10 * Precision::PConfusion();
-  bool        NullWeight = false;
+  bool             NullWeight = false;
   if (!rational)
     DWeights.Init(0.);
   int indice = 1, ii;
@@ -393,12 +390,12 @@ bool GeomFill_NSections::D1(const double   V,
 #ifdef OCCT_DEBUG
   if (!mySurface->IsVPeriodic())
   {
-    double        pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
-    double        V1, V2;
-    bool     ok1, ok2;
+    double                     pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
+    double                     V1, V2;
+    bool                       ok1, ok2;
     NCollection_Array1<double> W1(1, L), W2(1, L);
-    NCollection_Array1<gp_Pnt>   P1(1, L), P2(1, L);
-    gp_Pnt               nul(0., 0., 0.);
+    NCollection_Array1<gp_Pnt> P1(1, L), P2(1, L);
+    gp_Pnt                     nul(0., 0., 0.);
     W1.Init(0.);
     W2.Init(0.);
     P1.Init(nul);
@@ -422,13 +419,13 @@ bool GeomFill_NSections::D1(const double   V,
 //=======================================================
 // Purpose :D2
 //=======================================================
-bool GeomFill_NSections::D2(const double   V,
-                                        NCollection_Array1<gp_Pnt>&   Poles,
-                                        NCollection_Array1<gp_Vec>&   DPoles,
-                                        NCollection_Array1<gp_Vec>&   D2Poles,
-                                        NCollection_Array1<double>& Weights,
-                                        NCollection_Array1<double>& DWeights,
-                                        NCollection_Array1<double>& D2Weights)
+bool GeomFill_NSections::D2(const double                V,
+                            NCollection_Array1<gp_Pnt>& Poles,
+                            NCollection_Array1<gp_Vec>& DPoles,
+                            NCollection_Array1<gp_Vec>& D2Poles,
+                            NCollection_Array1<double>& Weights,
+                            NCollection_Array1<double>& DWeights,
+                            NCollection_Array1<double>& D2Weights)
 {
   if (mySurface.IsNull())
     return false;
@@ -442,13 +439,13 @@ bool GeomFill_NSections::D2(const double   V,
   if (!ok)
     return false;
 
-  int L = Poles.Length(), derivative_request = 2;
+  int  L = Poles.Length(), derivative_request = 2;
   bool rational = mySurface->IsVRational();
-  int gap      = 3;
+  int  gap      = 3;
   if (rational)
     gap++;
 
-  int            dimResult = mySurface->NbUPoles() * gap;
+  int                              dimResult = mySurface->NbUPoles() * gap;
   occ::handle<Geom_BSplineSurface> surf_deper;
   if (mySurface->IsVPeriodic())
   {
@@ -468,7 +465,7 @@ bool GeomFill_NSections::D2(const double   V,
 
   double           ww;
   constexpr double EpsW       = 10 * Precision::PConfusion();
-  bool        NullWeight = false;
+  bool             NullWeight = false;
   if (!rational)
     D2Weights.Init(0.);
   int indice = 1, ii;
@@ -503,14 +500,14 @@ bool GeomFill_NSections::D2(const double   V,
 #ifdef OCCT_DEBUG
   if (!mySurface->IsVPeriodic())
   {
-    double        V1, V2;
-    bool     ok1, ok2;
-    double        pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
+    double                     V1, V2;
+    bool                       ok1, ok2;
+    double                     pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
     NCollection_Array1<double> W1(1, L), W2(1, L), DW1(1, L), DW2(1, L);
-    NCollection_Array1<gp_Pnt>   P1(1, L), P2(1, L);
-    NCollection_Array1<gp_Vec>   DP1(1, L), DP2(1, L);
-    gp_Pnt               nul(0., 0., 0.);
-    gp_Vec               Vnul(0., 0., 0.);
+    NCollection_Array1<gp_Pnt> P1(1, L), P2(1, L);
+    NCollection_Array1<gp_Vec> DP1(1, L), DP2(1, L);
+    gp_Pnt                     nul(0., 0., 0.);
+    gp_Vec                     Vnul(0., 0., 0.);
     W1.Init(0.);
     W2.Init(0.);
     DW1.Init(0.);
@@ -561,8 +558,8 @@ void GeomFill_NSections::ComputeSurface()
   if (myRefSurf.IsNull())
   {
 
-    double    myPres3d = 1.e-06;
-    int i, j, jdeb = 1, jfin = mySections.Length();
+    double myPres3d = 1.e-06;
+    int    i, j, jdeb = 1, jfin = mySections.Length();
 
     if (jfin <= jdeb)
     {
@@ -570,7 +567,7 @@ void GeomFill_NSections::ComputeSurface()
       return;
     }
 
-    GeomFill_SectionGenerator   section;
+    GeomFill_SectionGenerator        section;
     occ::handle<Geom_BSplineSurface> surface;
 
     for (j = jdeb; j <= jfin; j++)
@@ -628,9 +625,9 @@ void GeomFill_NSections::ComputeSurface()
     section.Perform(Precision::PConfusion());
 
     occ::handle<GeomFill_Line> line = new GeomFill_Line(Nbcurves);
-    int      nbIt = 0, degmin = 2, degmax = 6;
-    bool      knownP = Nbpar > 0;
-    GeomFill_AppSurf      anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
+    int                        nbIt = 0, degmin = 2, degmax = 6;
+    bool                       knownP = Nbpar > 0;
+    GeomFill_AppSurf           anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
     anApprox.SetContinuity(GeomAbs_C1);
     bool SpApprox = true;
     anApprox.Perform(line, section, SpApprox);
@@ -694,9 +691,7 @@ void GeomFill_NSections::ComputeSurface()
 //=======================================================
 // Purpose :SectionShape
 //=======================================================
-void GeomFill_NSections::SectionShape(int& NbPoles,
-                                      int& NbKnots,
-                                      int& Degree) const
+void GeomFill_NSections::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
   if (mySurface.IsNull())
     return;
@@ -785,10 +780,9 @@ void GeomFill_NSections::Intervals(NCollection_Array1<double>& T, const GeomAbs_
 // Purpose : SetInterval
 //=======================================================
 // void GeomFill_NSections::SetInterval(const double F,
-void GeomFill_NSections::SetInterval(
-  const double,
-  //                                           const double L)
-  const double)
+void GeomFill_NSections::SetInterval(const double,
+                                     //                                           const double L)
+                                     const double)
 {
   // rien a faire : mySurface est supposee Cn en V
 }
@@ -840,8 +834,8 @@ gp_Pnt GeomFill_NSections::BarycentreOfSurf() const
   if (mySurface.IsNull())
     return Bary;
 
-  int ii, jj;
-  double    U0, U1, V0, V1;
+  int    ii, jj;
+  double U0, U1, V0, V1;
   mySurface->Bounds(U0, U1, V0, V1);
   double V = V0, DeltaV = (V1 - V0) / 20;
   double U = U0, DeltaU = (U1 - U0) / 20;
@@ -863,8 +857,8 @@ gp_Pnt GeomFill_NSections::BarycentreOfSurf() const
 //=======================================================
 double GeomFill_NSections::MaximalSection() const
 {
-  double    L, Lmax = 0.;
-  int ii;
+  double L, Lmax = 0.;
+  int    ii;
   for (ii = 1; ii <= mySections.Length(); ii++)
   {
     GeomAdaptor_Curve AC(mySections(ii));
@@ -885,7 +879,7 @@ void GeomFill_NSections::GetMinimalWeight(NCollection_Array1<double>& Weights) c
 
   if (mySurface->IsURational())
   {
-    int     NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
+    int                        NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
     NCollection_Array2<double> WSurf(1, NbU, 1, NbV);
     mySurface->Weights(WSurf);
     int i, j;
@@ -912,8 +906,8 @@ void GeomFill_NSections::GetMinimalWeight(NCollection_Array1<double>& Weights) c
 bool GeomFill_NSections::IsConstant(double& Error) const
 {
   // on se limite a 2 sections
-  bool isconst = (mySections.Length() == 2);
-  double    Err     = 0.;
+  bool   isconst = (mySections.Length() == 2);
+  double Err     = 0.;
 
   if (isconst)
   {
@@ -927,10 +921,10 @@ bool GeomFill_NSections::IsConstant(double& Error) const
     {
       if (CType == GeomAbs_Circle)
       {
-        gp_Circ          C1  = AC1.Circle();
-        gp_Circ          C2  = AC2.Circle();
-        double    Tol = 1.e-7;
-        bool samedir, samerad, samepos;
+        gp_Circ C1  = AC1.Circle();
+        gp_Circ C2  = AC2.Circle();
+        double  Tol = 1.e-7;
+        bool    samedir, samerad, samepos;
         samedir = (C1.Axis().IsParallel(C2.Axis(), 1.e-4));
         samerad = (std::abs(C1.Radius() - C2.Radius()) < Tol);
         samepos = (C1.Location().Distance(C2.Location()) < Tol);
@@ -943,10 +937,10 @@ bool GeomFill_NSections::IsConstant(double& Error) const
       }
       else if (CType == GeomAbs_Line)
       {
-        gp_Lin           L1  = AC1.Line();
-        gp_Lin           L2  = AC2.Line();
-        double    Tol = 1.e-7;
-        bool samedir, samelength, samepos;
+        gp_Lin L1  = AC1.Line();
+        gp_Lin L2  = AC2.Line();
+        double Tol = 1.e-7;
+        bool   samedir, samelength, samepos;
         samedir    = (L1.Direction().IsParallel(L2.Direction(), 1.e-4));
         gp_Pnt P11 = AC1.Value(AC1.FirstParameter()), P12 = AC1.Value(AC1.LastParameter()),
                P21 = AC2.Value(AC2.FirstParameter()), P22 = AC2.Value(AC2.LastParameter());
@@ -985,8 +979,8 @@ occ::handle<Geom_Curve> GeomFill_NSections::ConstantSection() const
 //=======================================================
 bool GeomFill_NSections::IsConicalLaw(double& Error) const
 {
-  bool isconic = (mySections.Length() == 2);
-  double    Err     = 0.;
+  bool   isconic = (mySections.Length() == 2);
+  double Err     = 0.;
   if (isconic)
   {
     GeomAdaptor_Curve AC1(mySections(1));
@@ -1066,7 +1060,7 @@ occ::handle<Geom_Curve> GeomFill_NSections::CirclSection(const double V) const
   if ((aPeriod == 0.0) || (std::abs(aParL - aParF - aPeriod) > Precision::PConfusion()))
   {
     occ::handle<Geom_Curve> Cbis = new Geom_TrimmedCurve(C, aParF, aParL);
-    C                       = Cbis;
+    C                            = Cbis;
   }
   return C;
 }

@@ -47,11 +47,11 @@ public:
   friend class TNaming_Tool;
 
 private:
-  Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape&               aShape,
+  Standard_EXPORT TNaming_SameShapeIterator(const TopoDS_Shape&                    aShape,
                                             const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_PtrNode  myNode;
-  bool myIsNew;
+  TNaming_PtrNode myNode;
+  bool            myIsNew;
 };
 
 #include <TNaming_SameShapeIterator.lxx>

@@ -31,7 +31,7 @@
 //  Modified by Sergey KHROMOV - Wed Oct 16 11:44:41 2002 Begin
 Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                          const Geom2dGcc_QualifiedCurve& Qualified2,
-                                         const double             Tolang)
+                                         const double                    Tolang)
     : linsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -42,12 +42,12 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
       pararg1(1, 4),
       pararg2(1, 4)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
-  Geom2dAdaptor_Curve         C2    = Qualified2.Qualified();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  Geom2dAdaptor_Curve              C2    = Qualified2.Qualified();
   const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
   const occ::handle<Geom2d_Curve>& CC2   = C2.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
-  GeomAbs_CurveType           Type2 = C2.GetType();
+  GeomAbs_CurveType                Type1 = C1.GetType();
+  GeomAbs_CurveType                Type2 = C2.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -57,12 +57,12 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   if (Type1 == GeomAbs_Circle && Type2 == GeomAbs_Circle)
   {
     occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
+    gp_Circ2d                  c1(CCC1->Circ2d());
     occ::handle<Geom2d_Circle> CCC2 = occ::down_cast<Geom2d_Circle>(CC2);
-    gp_Circ2d             c2(CCC2->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccEnt_QualifiedCirc  Qc2 = GccEnt_QualifiedCirc(c2, Qualified2.Qualifier());
-    GccAna_Lin2d2Tan      Lin(Qc1, Qc2, Tolang);
+    gp_Circ2d                  c2(CCC2->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccEnt_QualifiedCirc       Qc2 = GccEnt_QualifiedCirc(c2, Qualified2.Qualifier());
+    GccAna_Lin2d2Tan           Lin(Qc1, Qc2, Tolang);
     WellDone = Lin.IsDone();
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:50:48 2001 Begin
     if (WellDone)
@@ -81,19 +81,19 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   else
   {
     Geom2dGcc_QCurve Qc1(C1, Qualified1.Qualifier());
-    double    a1FPar      = Geom2dGcc_CurveTool::FirstParameter(C1);
-    double    a1LPar      = Geom2dGcc_CurveTool::LastParameter(C1);
-    int aNbSamples1 = Geom2dGcc_CurveTool::NbSamples(C1);
-    double    aStep1      = (a1LPar - a1FPar) / aNbSamples1;
-    double    Param1      = a1FPar;
+    double           a1FPar      = Geom2dGcc_CurveTool::FirstParameter(C1);
+    double           a1LPar      = Geom2dGcc_CurveTool::LastParameter(C1);
+    int              aNbSamples1 = Geom2dGcc_CurveTool::NbSamples(C1);
+    double           aStep1      = (a1LPar - a1FPar) / aNbSamples1;
+    double           Param1      = a1FPar;
     Geom2dGcc_QCurve Qc2(C2, Qualified2.Qualifier());
-    double    a2FPar      = Geom2dGcc_CurveTool::FirstParameter(C2);
-    double    a2LPar      = Geom2dGcc_CurveTool::LastParameter(C2);
-    int aNbSamples2 = Geom2dGcc_CurveTool::NbSamples(C2);
-    double    aStep2      = (a2LPar - a2FPar) / aNbSamples2;
-    double    Param2      = a2FPar;
-    int i;
-    int j;
+    double           a2FPar      = Geom2dGcc_CurveTool::FirstParameter(C2);
+    double           a2LPar      = Geom2dGcc_CurveTool::LastParameter(C2);
+    int              aNbSamples2 = Geom2dGcc_CurveTool::NbSamples(C2);
+    double           aStep2      = (a2LPar - a2FPar) / aNbSamples2;
+    double           Param2      = a2FPar;
+    int              i;
+    int              j;
 
     for (i = 0; i <= aNbSamples1 && NbrSol < 4; i++)
     {
@@ -119,7 +119,7 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
 
 Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                          const gp_Pnt2d&                 ThePoint,
-                                         const double             Tolang)
+                                         const double                    Tolang)
     : linsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -130,9 +130,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
       pararg1(1, 2),
       pararg2(1, 2)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
   const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
+  GeomAbs_CurveType                Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -142,9 +142,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   if (Type1 == GeomAbs_Circle)
   {
     occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccAna_Lin2d2Tan      Lin(Qc1, ThePoint, Tolang);
+    gp_Circ2d                  c1(CCC1->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccAna_Lin2d2Tan           Lin(Qc1, ThePoint, Tolang);
     WellDone = Lin.IsDone();
 
     if (WellDone)
@@ -162,12 +162,12 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   else
   {
     Geom2dGcc_QCurve Qc1(C1, Qualified1.Qualifier());
-    double    aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
-    double    aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
-    int aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
-    double    aStep      = (aLastPar - aFirstPar) / aNbSamples;
-    double    Param1     = aFirstPar;
-    int i;
+    double           aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
+    double           aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
+    int              aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
+    double           aStep      = (aLastPar - aFirstPar) / aNbSamples;
+    double           Param1     = aFirstPar;
+    int              i;
 
     for (i = 0; i <= aNbSamples && NbrSol < 2; i++)
     {
@@ -190,9 +190,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
 
 Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                          const Geom2dGcc_QualifiedCurve& Qualified2,
-                                         const double             Tolang,
-                                         const double             Param1,
-                                         const double             Param2)
+                                         const double                    Tolang,
+                                         const double                    Param1,
+                                         const double                    Param2)
     : linsol(1, 4),
       qualifier1(1, 4),
       qualifier2(1, 4),
@@ -203,12 +203,12 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
       pararg1(1, 4),
       pararg2(1, 4)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
-  Geom2dAdaptor_Curve         C2    = Qualified2.Qualified();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  Geom2dAdaptor_Curve              C2    = Qualified2.Qualified();
   const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
   const occ::handle<Geom2d_Curve>& CC2   = C2.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
-  GeomAbs_CurveType           Type2 = C2.GetType();
+  GeomAbs_CurveType                Type1 = C1.GetType();
+  GeomAbs_CurveType                Type2 = C2.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -218,12 +218,12 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   if (Type1 == GeomAbs_Circle && Type2 == GeomAbs_Circle)
   {
     occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
+    gp_Circ2d                  c1(CCC1->Circ2d());
     occ::handle<Geom2d_Circle> CCC2 = occ::down_cast<Geom2d_Circle>(CC2);
-    gp_Circ2d             c2(CCC2->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccEnt_QualifiedCirc  Qc2 = GccEnt_QualifiedCirc(c2, Qualified2.Qualifier());
-    GccAna_Lin2d2Tan      Lin(Qc1, Qc2, Tolang);
+    gp_Circ2d                  c2(CCC2->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccEnt_QualifiedCirc       Qc2 = GccEnt_QualifiedCirc(c2, Qualified2.Qualifier());
+    GccAna_Lin2d2Tan           Lin(Qc1, Qc2, Tolang);
     WellDone = Lin.IsDone();
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:50:48 2001 Begin
     if (WellDone)
@@ -260,8 +260,8 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
 
 Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                          const gp_Pnt2d&                 ThePoint,
-                                         const double             Tolang,
-                                         const double             Param1)
+                                         const double                    Tolang,
+                                         const double                    Param1)
     : linsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -272,9 +272,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
       pararg1(1, 2),
       pararg2(1, 2)
 {
-  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
+  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
   const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
-  GeomAbs_CurveType           Type1 = C1.GetType();
+  GeomAbs_CurveType                Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -284,9 +284,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
   if (Type1 == GeomAbs_Circle)
   {
     occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
-    gp_Circ2d             c1(CCC1->Circ2d());
-    GccEnt_QualifiedCirc  Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
-    GccAna_Lin2d2Tan      Lin(Qc1, ThePoint, Tolang);
+    gp_Circ2d                  c1(CCC1->Circ2d());
+    GccEnt_QualifiedCirc       Qc1 = GccEnt_QualifiedCirc(c1, Qualified1.Qualifier());
+    GccAna_Lin2d2Tan           Lin(Qc1, ThePoint, Tolang);
     WellDone = Lin.IsDone();
     //  Modified by Sergey KHROMOV - Thu Apr  5 17:52:32 2001 Begin
     if (WellDone)
@@ -339,9 +339,9 @@ gp_Lin2d Geom2dGcc_Lin2d2Tan::ThisSolution(const int Index) const
   return linsol(Index);
 }
 
-void Geom2dGcc_Lin2d2Tan::WhichQualifier(const int Index,
-                                         GccEnt_Position&       Qualif1,
-                                         GccEnt_Position&       Qualif2) const
+void Geom2dGcc_Lin2d2Tan::WhichQualifier(const int        Index,
+                                         GccEnt_Position& Qualif1,
+                                         GccEnt_Position& Qualif2) const
 {
   if (!WellDone)
   {
@@ -359,9 +359,9 @@ void Geom2dGcc_Lin2d2Tan::WhichQualifier(const int Index,
 }
 
 void Geom2dGcc_Lin2d2Tan::Tangency1(const int Index,
-                                    double&         ParSol,
-                                    double&         ParArg,
-                                    gp_Pnt2d&              PntSol) const
+                                    double&   ParSol,
+                                    double&   ParArg,
+                                    gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -380,9 +380,9 @@ void Geom2dGcc_Lin2d2Tan::Tangency1(const int Index,
 }
 
 void Geom2dGcc_Lin2d2Tan::Tangency2(const int Index,
-                                    double&         ParSol,
-                                    double&         ParArg,
-                                    gp_Pnt2d&              PntSol) const
+                                    double&   ParSol,
+                                    double&   ParArg,
+                                    gp_Pnt2d& PntSol) const
 {
   if (!WellDone)
   {
@@ -400,20 +400,20 @@ void Geom2dGcc_Lin2d2Tan::Tangency2(const int Index,
   }
 }
 
-bool Geom2dGcc_Lin2d2Tan::Add(const int         theIndex,
-                                          const Geom2dGcc_Lin2d2TanIter& theLin,
-                                          const double            theTol,
-                                          const Geom2dAdaptor_Curve&     theC1,
-                                          const Geom2dAdaptor_Curve&     theC2)
+bool Geom2dGcc_Lin2d2Tan::Add(const int                      theIndex,
+                              const Geom2dGcc_Lin2d2TanIter& theLin,
+                              const double                   theTol,
+                              const Geom2dAdaptor_Curve&     theC1,
+                              const Geom2dAdaptor_Curve&     theC2)
 {
-  int i;
-  double    aPar1sol;
-  double    aPar2sol;
-  double    aPar1arg;
-  double    aPar2arg;
-  gp_Pnt2d         aPnt1Sol;
-  gp_Pnt2d         aPnt2Sol;
-  gp_Lin2d         aLin = theLin.ThisSolution();
+  int      i;
+  double   aPar1sol;
+  double   aPar2sol;
+  double   aPar1arg;
+  double   aPar2arg;
+  gp_Pnt2d aPnt1Sol;
+  gp_Pnt2d aPnt2Sol;
+  gp_Lin2d aLin = theLin.ThisSolution();
 
   theLin.Tangency1(aPar1sol, aPar1arg, aPnt1Sol);
   theLin.Tangency2(aPar2sol, aPar2arg, aPnt2Sol);

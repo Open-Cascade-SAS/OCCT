@@ -28,7 +28,7 @@ RWStepFEA_RWFeaAreaDensity::RWStepFEA_RWFeaAreaDensity() {}
 //=================================================================================================
 
 void RWStepFEA_RWFeaAreaDensity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                 num,
+                                          const int                                   num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepFEA_FeaAreaDensity>&  ent) const
 {
@@ -52,7 +52,7 @@ void RWStepFEA_RWFeaAreaDensity::ReadStep(const occ::handle<StepData_StepReaderD
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaAreaDensity::WriteStep(StepData_StepWriter&                  SW,
+void RWStepFEA_RWFeaAreaDensity::WriteStep(StepData_StepWriter&                       SW,
                                            const occ::handle<StepFEA_FeaAreaDensity>& ent) const
 {
 

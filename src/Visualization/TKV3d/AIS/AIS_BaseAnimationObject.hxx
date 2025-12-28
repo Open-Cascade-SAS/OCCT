@@ -26,7 +26,7 @@ protected:
   //! @param[in] theAnimationName animation identifier
   //! @param[in] theContext       interactive context where object have been displayed
   //! @param[in] theObject        object to apply local transformation
-  Standard_EXPORT AIS_BaseAnimationObject(const TCollection_AsciiString&        theAnimationName,
+  Standard_EXPORT AIS_BaseAnimationObject(const TCollection_AsciiString& theAnimationName,
                                           const occ::handle<AIS_InteractiveContext>& theContext,
                                           const occ::handle<AIS_InteractiveObject>&  theObject);
 

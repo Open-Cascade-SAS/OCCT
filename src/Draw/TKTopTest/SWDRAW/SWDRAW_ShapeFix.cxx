@@ -39,7 +39,6 @@
 #include <SWDRAW.hxx>
 #include <SWDRAW_ShapeFix.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_State.hxx>
@@ -51,17 +50,11 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 #ifdef AIX
@@ -71,9 +64,7 @@
 
 //=================================================================================================
 
-static int edgesameparam(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int edgesameparam(Draw_Interpretor& di, int argc, const char** argv)
 {
   //  const char* arg1 = argv[1];
   const char* arg2(argc > 2 ? argv[2] : NULL);
@@ -104,16 +95,16 @@ static int settolerance(Draw_Interpretor& di, int argc, const char** argv)
        << "myshape mode=v-e-f other args : idem but only on vertex-edge-face\n";
     return (argc < 2 ? 0 : 1 /* Error */);
   }
-  const char* arg1  = argv[1];
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
     return 1 /* Error */;
   }
   char             mod2    = arg2[0];
-  int premarg = 2;
+  int              premarg = 2;
   TopAbs_ShapeEnum styp    = TopAbs_SHAPE;
   if (mod2 == 'v')
   {
@@ -198,7 +189,7 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
 
   //  Options
   int i;
-  int              ox, ol, om, orint, oq, ov;
+  int ox, ol, om, orint, oq, ov;
   ox = ol = om = orint = oq = ov = 0;
   for (i = 3; i < argc; i++)
   {
@@ -272,8 +263,8 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
   //  if (ox) {
   for (TopExp_Explorer exp(Shape, TopAbs_EDGE); exp.More(); exp.Next())
   {
-    TopoDS_Edge      E      = TopoDS::Edge(exp.Current());
-    int orient = saw->CheckShapeConnect(E);
+    TopoDS_Edge E      = TopoDS::Edge(exp.Current());
+    int         orient = saw->CheckShapeConnect(E);
     di << "Orientation : " << orient << " LowerDist : " << saw->MinDistance3d() << "\n";
     if (ox)
       sbwd->AddOriented(E, orient);
@@ -337,7 +328,7 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
   if (oq)
   {
     ShapeAnalysis_Edge sae;
-    int   nb = sbwd->NbEdges();
+    int                nb = sbwd->NbEdges();
     di << "NbEdges : " << nb << "\n";
     for (i = 1; i <= nb; i++)
     {
@@ -381,9 +372,9 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
     di << "Nb(End)Vertex : " << nb << "\n";
     for (i = 1; i <= nb; i++)
     {
-      gp_XYZ           pos;
-      double    upre, ufol;
-      int stat = sawv.Data(i, pos, upre, ufol);
+      gp_XYZ pos;
+      double upre, ufol;
+      int    stat = sawv.Data(i, pos, upre, ufol);
       di << i << " : ";
       switch (stat)
       {
@@ -464,9 +455,9 @@ static int reface(Draw_Interpretor& di, int argc, const char** argv)
     di << "Donner un nom de SHAPE (SHELL ou FACE) + un nom de RESULTAT\n";
     return 1 /* Error */;
   }
-  const char* arg1  = argv[1];
-  const char* arg2  = argv[2];
-  TopoDS_Shape     Shape = DBRep::Get(arg1);
+  const char*  arg1  = argv[1];
+  const char*  arg2  = argv[2];
+  TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -481,7 +472,7 @@ static int reface(Draw_Interpretor& di, int argc, const char** argv)
   for (i = 3; i < argc; i++)
   {
     bool valopt = true;
-    char             opt    = argv[i][0];
+    char opt    = argv[i][0];
     if (opt == '+')
       opt = argv[i][1];
     if (opt == '-')
@@ -525,9 +516,9 @@ static int reface(Draw_Interpretor& di, int argc, const char** argv)
   int nbfc = 0;
   for (TopExp_Explorer EF(Shape, TopAbs_FACE); EF.More(); EF.Next())
   {
-    TopoDS_Face F            = TopoDS::Face(EF.Current());
-    face                     = F;
-    bool newface = false;
+    TopoDS_Face F = TopoDS::Face(EF.Current());
+    face          = F;
+    bool newface  = false;
     //    on va voir si ShapeTool_Face trouve qqchose a redire
     //: sw    ShapeTool_Wire STW;
     //: sw    STW.SetFace (F);
@@ -562,7 +553,7 @@ static int fixshape(Draw_Interpretor& di, int argc, const char** argv)
   sfs->SetMsgRegistrator(msg);
 
   const char* res = 0;
-  int par = 0, mess = 0;
+  int         par = 0, mess = 0;
   for (int i = 1; i < argc; i++)
   {
     if (strlen(argv[i]) == 2 && (argv[i][0] == '-' || argv[i][0] == '+' || argv[i][0] == '*'))
@@ -672,14 +663,18 @@ static int fixshape(Draw_Interpretor& di, int argc, const char** argv)
   if (mess)
   {
     NCollection_DataMap<TCollection_AsciiString, int> aMapOfNumberOfFixes;
-    Standard_SStream                    aSStream;
-    TopoDS_Compound                     aCompound;
-    BRep_Builder                        aBuilder;
+    Standard_SStream                                  aSStream;
+    TopoDS_Compound                                   aCompound;
+    BRep_Builder                                      aBuilder;
     aBuilder.MakeCompound(aCompound);
-    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>& map = msg->MapShape();
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>&
+      map = msg->MapShape();
     // Counting the number of each type of fixes. If the switch '*?' store all modified shapes in
     // compound.
-    for (NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>::Iterator it(map); it.More(); it.Next())
+    for (NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>::
+           Iterator it(map);
+         it.More();
+         it.Next())
     {
       for (NCollection_List<Message_Msg>::Iterator iter(it.Value()); iter.More(); iter.Next())
       {
@@ -737,7 +732,7 @@ int fixgaps(Draw_Interpretor& di, int n, const char** a)
   }
 
   occ::handle<ShapeFix_Wireframe> SFWF = new ShapeFix_Wireframe(S);
-  double              prec = (n > 3 ? Draw::Atof(a[3]) : 0.);
+  double                          prec = (n > 3 ? Draw::Atof(a[3]) : 0.);
   SFWF->SetPrecision(prec);
   if (SFWF->FixWireGaps())
   {
@@ -762,7 +757,7 @@ int fixsmall(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  double      prec = (n == 4) ? Draw::Atof(a[3]) : 1.;
+  double             prec = (n == 4) ? Draw::Atof(a[3]) : 1.;
   ShapeFix_Wireframe SFWF(S);
   SFWF.SetPrecision(prec);
 
@@ -786,10 +781,10 @@ static int fixsmalledges(Draw_Interpretor& di, int n, const char** a)
   }
   TopoDS_Shape Sh = DBRep::Get(a[2]);
 
-  int k      = 3;
-  double    tol    = 100000;
-  int mode   = 2;
-  double    tolang = M_PI / 2;
+  int    k      = 3;
+  double tol    = 100000;
+  int    mode   = 2;
+  double tolang = M_PI / 2;
   if (n > k)
     tol = Draw::Atof(a[k++]);
 
@@ -808,8 +803,9 @@ static int fixsmalledges(Draw_Interpretor& di, int n, const char** a)
   if (mode == 2)
     aModeDrop = false;
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                theSmallEdges, theMultyEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEdgeToFaces, theFaceWithSmall;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theSmallEdges, theMultyEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    theEdgeToFaces, theFaceWithSmall;
   aSfwr->CheckSmallEdges(theSmallEdges, theEdgeToFaces, theFaceWithSmall, theMultyEdges);
   aSfwr->MergeSmallEdges(theSmallEdges,
                          theEdgeToFaces,
@@ -825,9 +821,7 @@ static int fixsmalledges(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-int fixsmallfaces(Draw_Interpretor& theDI,
-                               int  theArgc,
-                               const char**      theArgv)
+int fixsmallfaces(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 3)
   {
@@ -895,9 +889,9 @@ static int checkoverlapedges(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  double    aTol        = Precision::Confusion();
-  double    aDistDomain = 0.0;
-  int k           = 3;
+  double aTol        = Precision::Confusion();
+  double aDistDomain = 0.0;
+  int    k           = 3;
   if (k < n)
     aTol = Draw::Atof(a[k++]);
   if (k < n)
@@ -929,9 +923,9 @@ static int checkfclass2d(Draw_Interpretor& di, int n, const char** a)
     di << "Invalid number of arguments\n";
     return 1;
   }
-  TopoDS_Shape  Sh1    = DBRep::Get(a[1]);
-  double ucoord = Draw::Atof(a[2]);
-  double vcoord = Draw::Atof(a[3]);
+  TopoDS_Shape Sh1    = DBRep::Get(a[1]);
+  double       ucoord = Draw::Atof(a[2]);
+  double       vcoord = Draw::Atof(a[3]);
   if (Sh1.IsNull() || Sh1.ShapeType() != TopAbs_FACE)
   {
     di << "Invalid arguments\n";
@@ -978,10 +972,12 @@ static int connectedges(Draw_Interpretor& di, int n, const char** a)
   bool shared = true;
   if (n > 4)
     shared = (Draw::Atoi(a[4]) == 1);
-  TopExp_Explorer                   aExpE(aSh1, TopAbs_EDGE);
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqEdges = new NCollection_HSequence<TopoDS_Shape>;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqWires = new NCollection_HSequence<TopoDS_Shape>;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>        aMapEdges;
+  TopExp_Explorer                                  aExpE(aSh1, TopAbs_EDGE);
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqEdges =
+    new NCollection_HSequence<TopoDS_Shape>;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqWires =
+    new NCollection_HSequence<TopoDS_Shape>;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapEdges;
   for (; aExpE.More(); aExpE.Next())
   {
     aSeqEdges->Append(aExpE.Current());

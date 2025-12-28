@@ -44,10 +44,9 @@ occ::handle<TDF_Attribute> BinMDataXtd_PatternStdDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMDataXtd_PatternStdDriver::Paste(
-  const BinObjMgt_Persistent&  theSource,
-  const occ::handle<TDF_Attribute>& theTarget,
-  BinObjMgt_RRelocationTable&  theRelocTable) const
+bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSource,
+                                         const occ::handle<TDF_Attribute>& theTarget,
+                                         BinObjMgt_RRelocationTable&       theRelocTable) const
 {
   occ::handle<TDataXtd_PatternStd> aP = occ::down_cast<TDataXtd_PatternStd>(theTarget);
 
@@ -67,7 +66,7 @@ bool BinMDataXtd_PatternStdDriver::Paste(
   aP->Axis2Reversed((revFlags & 2) != 0);
 
   occ::handle<TNaming_NamedShape> TNS;
-  int           aNb;
+  int                             aNb;
 
   if (signature == 5) // mirror
   {
@@ -168,9 +167,10 @@ bool BinMDataXtd_PatternStdDriver::Paste(
 
 //=================================================================================================
 
-void BinMDataXtd_PatternStdDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         BinObjMgt_Persistent&        theTarget,
-                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+void BinMDataXtd_PatternStdDriver::Paste(
+  const occ::handle<TDF_Attribute>&                        theSource,
+  BinObjMgt_Persistent&                                    theTarget,
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
 {
   occ::handle<TDataXtd_PatternStd> aP = occ::down_cast<TDataXtd_PatternStd>(theSource);
 
@@ -194,24 +194,24 @@ void BinMDataXtd_PatternStdDriver::Paste(const occ::handle<TDF_Attribute>& theSo
   if (signature == 5) // mirror
   {
     occ::handle<TNaming_NamedShape> Plane = aP->Mirror();
-    aNb                              = theRelocTable.Add(Plane);
+    aNb                                   = theRelocTable.Add(Plane);
     theTarget << aNb;
   }
   else
   {
     // axis 1
     occ::handle<TNaming_NamedShape> Axis = aP->Axis1();
-    aNb                             = theRelocTable.Add(Axis);
+    aNb                                  = theRelocTable.Add(Axis);
     theTarget << aNb;
 
     // real value 1
     occ::handle<TDataStd_Real> Value = aP->Value1();
-    aNb                         = theRelocTable.Add(Value);
+    aNb                              = theRelocTable.Add(Value);
     theTarget << aNb;
 
     // number of instances 1
     occ::handle<TDataStd_Integer> NbInstances = aP->NbInstances1();
-    aNb                                  = theRelocTable.Add(NbInstances);
+    aNb                                       = theRelocTable.Add(NbInstances);
     theTarget << aNb;
 
     if (signature > 2)

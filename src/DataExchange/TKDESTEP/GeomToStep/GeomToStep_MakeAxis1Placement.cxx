@@ -46,7 +46,6 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
   const gp_Ax2d&          A,
   const StepData_Factors& theLocalFactors)
 {
-#include "GeomToStep_MakeAxis1Placement_gen.pxx"
 }
 
 //=============================================================================
@@ -56,11 +55,10 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
 
 GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
   const occ::handle<Geom_Axis1Placement>& Axis1,
-  const StepData_Factors&            theLocalFactors)
+  const StepData_Factors&                 theLocalFactors)
 {
   gp_Ax1 A;
   A = Axis1->Ax1();
-#include "GeomToStep_MakeAxis1Placement_gen.pxx"
 }
 
 //=============================================================================
@@ -70,11 +68,10 @@ GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
 
 GeomToStep_MakeAxis1Placement::GeomToStep_MakeAxis1Placement(
   const occ::handle<Geom2d_AxisPlacement>& Axis1,
-  const StepData_Factors&             theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   gp_Ax2d A;
   A = Axis1->Ax2d();
-#include "GeomToStep_MakeAxis1Placement_gen.pxx"
 }
 
 //=============================================================================

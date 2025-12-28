@@ -92,9 +92,8 @@ PERFORM(const gp_Lin& L, const IntAna_Quadric& Quad)
 
   Quad.Coefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, QCte);
 
-  double A0 =
-    (QCte + Qxx * Lx0 * Lx0 + Qyy * Ly0 * Ly0 + Qzz * Lz0 * Lz0
-     + 2.0 * (Lx0 * (Qx + Qxy * Ly0 + Qxz * Lz0) + Ly0 * (Qy + Qyz * Lz0) + Qz * Lz0));
+  double A0 = (QCte + Qxx * Lx0 * Lx0 + Qyy * Ly0 * Ly0 + Qzz * Lz0 * Lz0
+               + 2.0 * (Lx0 * (Qx + Qxy * Ly0 + Qxz * Lz0) + Ly0 * (Qy + Qyz * Lz0) + Qz * Lz0));
 
   double A1 =
     2.0
@@ -102,7 +101,7 @@ PERFORM(const gp_Lin& L, const IntAna_Quadric& Quad)
        + Lz * (Qz + Qxz * Lx0 + Qyz * Ly0 + Qzz * Lz0));
 
   double A2 = (Qxx * Lx * Lx + Qyy * Ly * Ly + Qzz * Lz * Lz
-                      + 2.0 * (Lx * (Qxy * Ly + Qxz * Lz) + Qyz * Ly * Lz));
+               + 2.0 * (Lx * (Qxy * Ly + Qxz * Lz) + Qyz * Ly * Lz));
 
   math_DirectPolynomialRoots LinQuadPol(A2, A1, A0);
 
@@ -119,7 +118,7 @@ PERFORM(const gp_Lin& L, const IntAna_Quadric& Quad)
 
       for (int i = 1; i <= nbpts; i++)
       {
-        double t = LinQuadPol.Value(i);
+        double t        = LinQuadPol.Value(i);
         paramonc[i - 1] = t;
         pnts[i - 1]     = gp_Pnt(Lx0 + Lx * t, Ly0 + Ly * t, Lz0 + Lz * t);
       }
@@ -187,7 +186,7 @@ PERFORM(const gp_Circ& C, const IntAna_Quadric& Quad)
 
       for (int i = 1; i <= nbpts; i++)
       {
-        double t = CircQuadPol.Value(i);
+        double t        = CircQuadPol.Value(i);
         paramonc[i - 1] = t;
         pnts[i - 1]     = ElCLib::CircleValue(t, C.Position(), R);
       }
@@ -255,7 +254,7 @@ PERFORM(const gp_Elips& E, const IntAna_Quadric& Quad)
       nbpts = ElipsQuadPol.NbSolutions();
       for (int i = 1; i <= nbpts; i++)
       {
-        double t = ElipsQuadPol.Value(i);
+        double t        = ElipsQuadPol.Value(i);
         paramonc[i - 1] = t;
         pnts[i - 1]     = ElCLib::EllipseValue(t, E.Position(), R, r);
       }
@@ -317,7 +316,7 @@ PERFORM(const gp_Parab& P, const IntAna_Quadric& Quad)
 
       for (int i = 1; i <= nbpts; i++)
       {
-        double t = ParabQuadPol.Value(i);
+        double t        = ParabQuadPol.Value(i);
         paramonc[i - 1] = t;
         pnts[i - 1]     = ElCLib::ParabolaValue(t, P.Position(), f);
       }
@@ -379,14 +378,14 @@ PERFORM(const gp_Hypr& H, const IntAna_Quadric& Quad)
     }
     else
     {
-      nbpts                            = HyperQuadPol.NbSolutions();
+      nbpts               = HyperQuadPol.NbSolutions();
       int bonnessolutions = 0;
       for (int i = 1; i <= nbpts; i++)
       {
         double t = HyperQuadPol.Value(i);
         if (t >= RealEpsilon())
         {
-          double Lnt         = std::log(t);
+          double Lnt                = std::log(t);
           paramonc[bonnessolutions] = Lnt;
           pnts[bonnessolutions]     = ElCLib::HyperbolaValue(Lnt, H.Position(), R, r);
           bonnessolutions++;
@@ -399,50 +398,46 @@ PERFORM(const gp_Hypr& H, const IntAna_Quadric& Quad)
 
 //=============================================================================
 
-IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Lin&       L,
-                                         const gp_Pln&       P,
-                                         const double Tolang,
-                                         const double Tol,
-                                         const double Len)
+IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Lin& L,
+                                         const gp_Pln& P,
+                                         const double  Tolang,
+                                         const double  Tol,
+                                         const double  Len)
 {
   Perform(L, P, Tolang, Tol, Len);
 }
 
-IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Circ&      C,
-                                         const gp_Pln&       P,
-                                         const double Tolang,
-                                         const double Tol)
+IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Circ& C,
+                                         const gp_Pln&  P,
+                                         const double   Tolang,
+                                         const double   Tol)
 {
   Perform(C, P, Tolang, Tol);
 }
 
-IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Elips&     E,
-                                         const gp_Pln&       P,
-                                         const double Tolang,
-                                         const double Tol)
+IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Elips& E,
+                                         const gp_Pln&   P,
+                                         const double    Tolang,
+                                         const double    Tol)
 {
   Perform(E, P, Tolang, Tol);
 }
 
-IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Parab&     Pb,
-                                         const gp_Pln&       P,
-                                         const double Tolang)
+IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Parab& Pb, const gp_Pln& P, const double Tolang)
 {
   Perform(Pb, P, Tolang);
 }
 
-IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Hypr&      H,
-                                         const gp_Pln&       P,
-                                         const double Tolang)
+IntAna_IntConicQuad::IntAna_IntConicQuad(const gp_Hypr& H, const gp_Pln& P, const double Tolang)
 {
   Perform(H, P, Tolang);
 }
 
-void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
-                                  const gp_Pln&       P,
-                                  const double Tolang,
-                                  const double Tol,
-                                  const double Len)
+void IntAna_IntConicQuad::Perform(const gp_Lin& L,
+                                  const gp_Pln& P,
+                                  const double  Tolang,
+                                  const double  Tol,
+                                  const double  Len)
 {
 
   // Tolang represents the angular tolerance from which we consider
@@ -503,10 +498,10 @@ void IntAna_IntConicQuad::Perform(const gp_Lin&       L,
   done = true;
 }
 
-void IntAna_IntConicQuad::Perform(const gp_Circ&      C,
-                                  const gp_Pln&       P,
-                                  const double Tolang,
-                                  const double Tol)
+void IntAna_IntConicQuad::Perform(const gp_Circ& C,
+                                  const gp_Pln&  P,
+                                  const double   Tolang,
+                                  const double   Tol)
 {
 
   done = false;
@@ -519,7 +514,7 @@ void IntAna_IntConicQuad::Perform(const gp_Circ&      C,
   }
   if (IntP.TypeInter() == IntAna_Empty)
   {
-    parallel              = true;
+    parallel       = true;
     double distmax = P.Distance(C.Location()) + C.Radius() * Tolang;
     if (distmax < Tol)
     {
@@ -566,9 +561,9 @@ void IntAna_IntConicQuad::Perform(const gp_Circ&      C,
     for (int i = 1; i <= nbpts; i++)
     {
 
-      gp_Pnt2d      resul(Int2d.Point(i).Value());
-      double X = resul.X();
-      double Y = resul.Y();
+      gp_Pnt2d resul(Int2d.Point(i).Value());
+      double   X = resul.X();
+      double   Y = resul.Y();
       pnts[i - 1].SetCoord(Plconic.Location().X() + X * Axex.X() + Y * Axey.X(),
                            Plconic.Location().Y() + X * Axex.Y() + Y * Axey.Y(),
                            Plconic.Location().Z() + X * Axex.Z() + Y * Axey.Z());
@@ -578,10 +573,7 @@ void IntAna_IntConicQuad::Perform(const gp_Circ&      C,
   }
 }
 
-void IntAna_IntConicQuad::Perform(const gp_Elips& E,
-                                  const gp_Pln&   Pln,
-                                  const double,
-                                  const double)
+void IntAna_IntConicQuad::Perform(const gp_Elips& E, const gp_Pln& Pln, const double, const double)
 {
   Perform(E, Pln);
 }

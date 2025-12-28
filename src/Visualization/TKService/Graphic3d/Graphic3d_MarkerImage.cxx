@@ -48,17 +48,15 @@ static const char* THE_MARKER_NAMES[Aspect_TOM_USERDEFINED] = {
 
 //! Returns a parameters for the marker of the specified type and scale.
 static void getMarkerBitMapParam(const Aspect_TypeOfMarker theMarkerType,
-                                 const float  theScale,
-                                 int&         theWidth,
-                                 int&         theHeight,
-                                 int&         theOffset,
-                                 int&         theNumOfBytes)
+                                 const float               theScale,
+                                 int&                      theWidth,
+                                 int&                      theHeight,
+                                 int&                      theOffset,
+                                 int&                      theNumOfBytes)
 {
-  const int aType =
-    int(theMarkerType > Aspect_TOM_O ? Aspect_TOM_O : theMarkerType);
-  const double anIndex = (double)(TEL_NO_OF_SIZES - 1)
-                                * (theScale - (double)TEL_PM_START_SIZE)
-                                / (double)(TEL_PM_END_SIZE - TEL_PM_START_SIZE);
+  const int    aType   = int(theMarkerType > Aspect_TOM_O ? Aspect_TOM_O : theMarkerType);
+  const double anIndex = (double)(TEL_NO_OF_SIZES - 1) * (theScale - (double)TEL_PM_START_SIZE)
+                         / (double)(TEL_PM_END_SIZE - TEL_PM_START_SIZE);
   int anId = (int)(anIndex + 0.5);
   if (anId < 0)
   {
@@ -69,18 +67,18 @@ static void getMarkerBitMapParam(const Aspect_TypeOfMarker theMarkerType,
     anId = TEL_NO_OF_SIZES - 1;
   }
 
-  theWidth                                = (int)arrPMFontInfo[aType][anId].width;
-  theHeight                               = (int)arrPMFontInfo[aType][anId].height;
-  theOffset                               = arrPMFontInfo[aType][anId].offset;
+  theWidth                   = (int)arrPMFontInfo[aType][anId].width;
+  theHeight                  = (int)arrPMFontInfo[aType][anId].height;
+  theOffset                  = arrPMFontInfo[aType][anId].offset;
   const int aNumOfBytesInRow = theWidth / 8 + (theWidth % 8 ? 1 : 0);
-  theNumOfBytes                           = theHeight * aNumOfBytesInRow;
+  theNumOfBytes              = theHeight * aNumOfBytesInRow;
 }
 
 //! Merge two image pixmap into one. Used for creating image for following markers:
 //! Aspect_TOM_O_POINT, Aspect_TOM_O_PLUS, Aspect_TOM_O_STAR, Aspect_TOM_O_X, Aspect_TOM_RING1,
 //! Aspect_TOM_RING2, Aspect_TOM_RING3
 static occ::handle<Image_PixMap> mergeImages(const occ::handle<Image_PixMap>& theImage1,
-                                        const occ::handle<Image_PixMap>& theImage2)
+                                             const occ::handle<Image_PixMap>& theImage2)
 {
   if (theImage1.IsNull() && theImage2.IsNull())
   {
@@ -144,8 +142,9 @@ static occ::handle<Image_PixMap> mergeImages(const occ::handle<Image_PixMap>& th
 //! Draw inner point as filled rectangle
 static occ::handle<NCollection_HArray1<uint8_t>> fillPointBitmap(const int theSize)
 {
-  const int        aNbBytes = (theSize / 8 + (theSize % 8 ? 1 : 0)) * theSize;
-  occ::handle<NCollection_HArray1<uint8_t>> aBitMap  = new NCollection_HArray1<uint8_t>(0, aNbBytes - 1);
+  const int aNbBytes = (theSize / 8 + (theSize % 8 ? 1 : 0)) * theSize;
+  occ::handle<NCollection_HArray1<uint8_t>> aBitMap =
+    new NCollection_HArray1<uint8_t>(0, aNbBytes - 1);
   for (int anIter = 0; anIter < aBitMap->Length(); ++anIter)
   {
     aBitMap->SetValue(anIter, 255);
@@ -155,12 +154,13 @@ static occ::handle<NCollection_HArray1<uint8_t>> fillPointBitmap(const int theSi
 
 //! Returns a marker image for the marker of the specified type and scale.
 static occ::handle<Graphic3d_MarkerImage> getTextureImage(const Aspect_TypeOfMarker theMarkerType,
-                                                     const float  theScale)
+                                                          const float               theScale)
 {
   int aWidth = 0, aHeight = 0, anOffset = 0, aNbBytes = 0;
   getMarkerBitMapParam(theMarkerType, theScale, aWidth, aHeight, anOffset, aNbBytes);
 
-  occ::handle<NCollection_HArray1<uint8_t>> aBitMap = new NCollection_HArray1<uint8_t>(0, aNbBytes - 1);
+  occ::handle<NCollection_HArray1<uint8_t>> aBitMap =
+    new NCollection_HArray1<uint8_t>(0, aNbBytes - 1);
   for (int anIter = 0; anIter < aNbBytes; ++anIter)
   {
     aBitMap->ChangeValue(anIter) = Graphic3d_MarkerImage_myMarkerRaster[anOffset + anIter];
@@ -203,10 +203,10 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const occ::handle<Image_PixMap>& th
 
 //=================================================================================================
 
-Graphic3d_MarkerImage::Graphic3d_MarkerImage(const TCollection_AsciiString& theId,
-                                             const TCollection_AsciiString& theAlphaId,
-                                             const occ::handle<Image_PixMap>&    theImage,
-                                             const occ::handle<Image_PixMap>&    theImageAlpha)
+Graphic3d_MarkerImage::Graphic3d_MarkerImage(const TCollection_AsciiString&   theId,
+                                             const TCollection_AsciiString&   theAlphaId,
+                                             const occ::handle<Image_PixMap>& theImage,
+                                             const occ::handle<Image_PixMap>& theImageAlpha)
     : myImageId(theId),
       myImageAlphaId(theAlphaId),
       myImage(theImage),
@@ -231,9 +231,10 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage(const TCollection_AsciiString& theI
 
 //=================================================================================================
 
-Graphic3d_MarkerImage::Graphic3d_MarkerImage(const occ::handle<NCollection_HArray1<uint8_t>>& theBitMap,
-                                             const int               theWidth,
-                                             const int               theHeight)
+Graphic3d_MarkerImage::Graphic3d_MarkerImage(
+  const occ::handle<NCollection_HArray1<uint8_t>>& theBitMap,
+  const int                                        theWidth,
+  const int                                        theHeight)
     : myBitMap(theBitMap),
       myMargin(1),
       myWidth(theWidth),
@@ -257,20 +258,20 @@ bool Graphic3d_MarkerImage::IsColoredImage() const
 //=================================================================================================
 
 occ::handle<NCollection_HArray1<uint8_t>> Graphic3d_MarkerImage::GetBitMapArray(
-  const double    theAlphaValue,
-  const bool theIsTopDown) const
+  const double theAlphaValue,
+  const bool   theIsTopDown) const
 {
   if (!myBitMap.IsNull() || myImage.IsNull())
   {
     return myBitMap;
   }
 
-  const int aNumOfBytesInRow =
-    (int)(myImage->Width() / 8) + (myImage->Width() % 8 ? 1 : 0);
-  const int aNumOfBytes    = (int)(aNumOfBytesInRow * myImage->Height());
-  const int aHeight        = (int)myImage->Height();
-  const int aWidth         = (int)myImage->Width();
-  occ::handle<NCollection_HArray1<uint8_t>> aBitMap = new NCollection_HArray1<uint8_t>(0, aNumOfBytes - 1);
+  const int aNumOfBytesInRow = (int)(myImage->Width() / 8) + (myImage->Width() % 8 ? 1 : 0);
+  const int aNumOfBytes      = (int)(aNumOfBytesInRow * myImage->Height());
+  const int aHeight          = (int)myImage->Height();
+  const int aWidth           = (int)myImage->Width();
+  occ::handle<NCollection_HArray1<uint8_t>> aBitMap =
+    new NCollection_HArray1<uint8_t>(0, aNumOfBytes - 1);
   aBitMap->Init(0);
   for (int aRow = 0; aRow < aHeight; aRow++)
   {
@@ -278,7 +279,7 @@ occ::handle<NCollection_HArray1<uint8_t>> Graphic3d_MarkerImage::GetBitMapArray(
     for (int aColumn = 0; aColumn < aWidth; aColumn++)
     {
       const Quantity_ColorRGBA aColor = myImage->PixelColor(aColumn, aRow);
-      bool         aBitOn = false;
+      bool                     aBitOn = false;
       if (myImage->Format() == Image_Format_Gray)
       {
         aBitOn = aColor.GetRGB().Red() > theAlphaValue;
@@ -323,10 +324,9 @@ const occ::handle<Image_PixMap>& Graphic3d_MarkerImage::GetImage()
     uint8_t* anImageRow = myImage->ChangeRow(aRowIter + aRowOffset);
     for (int aColumnIter = 0; aColumnIter < myWidth; aColumnIter++)
     {
-      bool aBitOn =
-        (myBitMap->Value(aLowerIndex + aNumOfBytesInRow * aRowIter + aColumnIter / 8)
-         & (0x80 >> (aColumnIter % 8)))
-        != 0;
+      bool aBitOn = (myBitMap->Value(aLowerIndex + aNumOfBytesInRow * aRowIter + aColumnIter / 8)
+                     & (0x80 >> (aColumnIter % 8)))
+                    != 0;
       anImageRow[aColumnIter + aColumnOffset] = aBitOn ? 255 : 0;
     }
   }
@@ -359,9 +359,8 @@ const occ::handle<Image_PixMap>& Graphic3d_MarkerImage::GetImageAlpha()
         uint8_t* anImageRow = myImageAlpha->ChangeRow(aRowIter);
         for (size_t aColumnIter = 0; aColumnIter < myImage->Width(); aColumnIter++)
         {
-          const Quantity_ColorRGBA aColor =
-            myImage->PixelColor((int)aColumnIter, (int)aRowIter);
-          anImageRow[aColumnIter] = static_cast<uint8_t>(255.0 * aColor.Alpha());
+          const Quantity_ColorRGBA aColor = myImage->PixelColor((int)aColumnIter, (int)aRowIter);
+          anImageRow[aColumnIter]         = static_cast<uint8_t>(255.0 * aColor.Alpha());
         }
       }
     }
@@ -386,8 +385,7 @@ const TCollection_AsciiString& Graphic3d_MarkerImage::GetImageAlphaId() const
 
 //=================================================================================================
 
-void Graphic3d_MarkerImage::GetTextureSize(int& theWidth,
-                                           int& theHeight) const
+void Graphic3d_MarkerImage::GetTextureSize(int& theWidth, int& theHeight) const
 {
   theWidth  = myWidth;
   theHeight = myHeight;
@@ -396,9 +394,9 @@ void Graphic3d_MarkerImage::GetTextureSize(int& theWidth,
 //=================================================================================================
 
 occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
-  const Aspect_TypeOfMarker theMarkerType,
-  const float  theScale,
-  const NCollection_Vec4<float>&     theColor)
+  const Aspect_TypeOfMarker      theMarkerType,
+  const float                    theScale,
+  const NCollection_Vec4<float>& theColor)
 {
   if (theMarkerType == Aspect_TOM_USERDEFINED || theMarkerType == Aspect_TOM_EMPTY)
   {
@@ -406,7 +404,7 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
   }
 
   // predefined markers are defined with 0.5 step
-  const int  aScaleInt = int(theScale * 10.0f + 0.5f);
+  const int               aScaleInt = int(theScale * 10.0f + 0.5f);
   TCollection_AsciiString aKey      = TCollection_AsciiString("Graphic3d_MarkerImage_")
                                  + THE_MARKER_NAMES[theMarkerType] + "_" + aScaleInt;
   TCollection_AsciiString aKeyA = TCollection_AsciiString("Graphic3d_MarkerImageAlpha_")
@@ -434,9 +432,9 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
       if (theMarkerType == Aspect_TOM_O_POINT)
       {
         // draw inner point as filled rectangle
-        const int aSize = theScale > 7 ? 7 : (int)(theScale + 0.5F);
+        const int                                 aSize = theScale > 7 ? 7 : (int)(theScale + 0.5F);
         occ::handle<NCollection_HArray1<uint8_t>> aBitMap = fillPointBitmap(aSize);
-        aMarkerImage2                         = new Graphic3d_MarkerImage(aBitMap, aSize, aSize);
+        aMarkerImage2 = new Graphic3d_MarkerImage(aBitMap, aSize, aSize);
       }
       else
       {
@@ -484,16 +482,16 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
 
       NCollection_Vec4<double> aColor(theColor);
 
-      const int aSize    = std::max(aWidth + 2, aHeight + 2); // includes extra margin
-      occ::handle<Image_PixMap>   anImage  = new Image_PixMap();
-      occ::handle<Image_PixMap>   anImageA = new Image_PixMap();
+      const int                 aSize = std::max(aWidth + 2, aHeight + 2); // includes extra margin
+      occ::handle<Image_PixMap> anImage  = new Image_PixMap();
+      occ::handle<Image_PixMap> anImageA = new Image_PixMap();
       anImage->InitZero(Image_Format_RGBA, aSize, aSize);
       anImageA->InitZero(Image_Format_Alpha, aSize, aSize);
 
       // we draw a set of circles
       Image_ColorRGBA aColor32;
       aColor32.a() = 255;
-      double            aHLS[3];
+      double      aHLS[3];
       const float aDelta = 0.1f;
       while (aScale >= 1.0f)
       {
@@ -517,7 +515,7 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
             if (aRowData[aCol] != 0)
             {
               anImage->ChangeValue<Image_ColorRGBA>(aDiffX + aRow, aDiffY + aCol) = aColor32;
-              anImageA->ChangeValue<uint8_t>(aDiffX + aRow, aDiffY + aCol)  = 255;
+              anImageA->ChangeValue<uint8_t>(aDiffX + aRow, aDiffY + aCol)        = 255;
             }
           }
         }
@@ -529,8 +527,8 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
     }
     default: {
       occ::handle<Graphic3d_MarkerImage> aNewMarkerImage = getTextureImage(theMarkerType, theScale);
-      aNewMarkerImage->myImageId                    = aKey;
-      aNewMarkerImage->myImageAlphaId               = aKey;
+      aNewMarkerImage->myImageId                         = aKey;
+      aNewMarkerImage->myImageAlphaId                    = aKey;
       return aNewMarkerImage;
     }
   }

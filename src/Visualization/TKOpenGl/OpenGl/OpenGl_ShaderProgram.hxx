@@ -100,7 +100,7 @@ struct OpenGl_SetterInterface
   //! Sets user-defined uniform variable to specified program.
   virtual void Set(const occ::handle<OpenGl_Context>&           theCtx,
                    const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-                   OpenGl_ShaderProgram*                   theProgram) = 0;
+                   OpenGl_ShaderProgram*                        theProgram) = 0;
 
   //! Destructor
   virtual ~OpenGl_SetterInterface() {}
@@ -123,7 +123,7 @@ public:
   //! Sets user-defined uniform variable to specified program.
   void Set(const occ::handle<OpenGl_Context>&           theCtx,
            const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-           OpenGl_ShaderProgram*                   theProgram) const;
+           OpenGl_ShaderProgram*                        theProgram) const;
 
 private:
   //! List of variable setters.
@@ -196,10 +196,11 @@ public:
   static const char* PredefinedKeywords[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
 
   //! Wrapper for compiling shader object with verbose printing on error.
-  Standard_EXPORT static bool compileShaderVerbose(const occ::handle<OpenGl_Context>&      theCtx,
-                                                   const occ::handle<OpenGl_ShaderObject>& theShader,
-                                                   const TCollection_AsciiString&     theSource,
-                                                   bool theToPrintSource = true);
+  Standard_EXPORT static bool compileShaderVerbose(
+    const occ::handle<OpenGl_Context>&      theCtx,
+    const occ::handle<OpenGl_ShaderObject>& theShader,
+    const TCollection_AsciiString&          theSource,
+    bool                                    theToPrintSource = true);
 
   //! Creates uninitialized shader program.
   //!
@@ -215,7 +216,7 @@ public:
   //! classes without OCCT Viewer itself. If this is not the case - create the program using shared
   //! OpenGl_ShaderManager instance instead.
   Standard_EXPORT OpenGl_ShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProxy = NULL,
-                                       const TCollection_AsciiString&         theId    = "");
+                                       const TCollection_AsciiString&              theId    = "");
 
 protected:
   static OpenGl_VariableSetterSelector mySetterSelector;
@@ -235,25 +236,25 @@ public:
 
   //! Attaches shader object to the program object.
   Standard_EXPORT bool AttachShader(const occ::handle<OpenGl_Context>&      theCtx,
-                                                const occ::handle<OpenGl_ShaderObject>& theShader);
+                                    const occ::handle<OpenGl_ShaderObject>& theShader);
 
   //! Detaches shader object to the program object.
   Standard_EXPORT bool DetachShader(const occ::handle<OpenGl_Context>&      theCtx,
-                                                const occ::handle<OpenGl_ShaderObject>& theShader);
+                                    const occ::handle<OpenGl_ShaderObject>& theShader);
 
   //! Initializes program object with the list of shader objects.
-  Standard_EXPORT bool Initialize(const occ::handle<OpenGl_Context>&     theCtx,
-                                              const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& theShaders);
+  Standard_EXPORT bool Initialize(
+    const occ::handle<OpenGl_Context>&                               theCtx,
+    const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& theShaders);
 
   //! Links the program object.
   //! @param theCtx bound OpenGL context
   //! @param theIsVerbose flag to print log on error
-  Standard_EXPORT bool Link(const occ::handle<OpenGl_Context>& theCtx,
-                                        bool                          theIsVerbose = true);
+  Standard_EXPORT bool Link(const occ::handle<OpenGl_Context>& theCtx, bool theIsVerbose = true);
 
   //! Fetches information log of the last link operation.
   Standard_EXPORT bool FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx,
-                                                TCollection_AsciiString&      theLog);
+                                    TCollection_AsciiString&           theLog);
 
   //! Fetches uniform variables from proxy shader program.
   Standard_EXPORT bool ApplyVariables(const occ::handle<OpenGl_Context>& theCtx);
@@ -319,7 +320,7 @@ public:
 
   //! Returns index of the generic vertex attribute by variable name.
   Standard_EXPORT GLint GetAttributeLocation(const occ::handle<OpenGl_Context>& theCtx,
-                                             const GLchar*                 theName) const;
+                                             const GLchar*                      theName) const;
 
   //! Returns location of the OCCT state uniform variable.
   const OpenGl_ShaderUniformLocation& GetStateLocation(OpenGl_StateVariable theVariable) const
@@ -331,8 +332,8 @@ public:
   //! Returns the value of the uniform variable from given name.
   template <typename ValueType>
   bool GetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                  const GLchar*                 theName,
-                  ValueType&                    theValue) const
+                  const GLchar*                      theName,
+                  ValueType&                         theValue) const
   {
     return GetUniform(theCtx, GetUniformLocation(theCtx, theName), theValue);
   }
@@ -340,21 +341,21 @@ public:
   //! Returns the value of the integer uniform variable.
   //! Wrapper for glGetUniformiv()
   Standard_EXPORT bool GetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              NCollection_Vec4<int>&                 theValue) const;
+                                  GLint                              theLocation,
+                                  NCollection_Vec4<int>&             theValue) const;
 
   //! Returns the value of the float uniform variable.
   //! Wrapper for glGetUniformfv()
   Standard_EXPORT bool GetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              NCollection_Vec4<float>&                  theValue) const;
+                                  GLint                              theLocation,
+                                  NCollection_Vec4<float>&           theValue) const;
 
 public:
   //! Returns the vertex attribute from given name.
   template <typename ValueType>
   bool GetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                    const GLchar*                 theName,
-                    ValueType&                    theValue) const
+                    const GLchar*                      theName,
+                    ValueType&                         theValue) const
   {
     return GetAttribute(theCtx, GetAttributeLocation(theCtx, theName), theValue);
   }
@@ -362,56 +363,56 @@ public:
   //! Returns the integer vertex attribute.
   //! Wrapper for glGetVertexAttribiv()
   Standard_EXPORT bool GetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                NCollection_Vec4<int>&                 theValue) const;
+                                    GLint                              theIndex,
+                                    NCollection_Vec4<int>&             theValue) const;
 
   //! Returns the float vertex attribute.
   //! Wrapper for glGetVertexAttribfv()
   Standard_EXPORT bool GetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                NCollection_Vec4<float>&                  theValue) const;
+                                    GLint                              theIndex,
+                                    NCollection_Vec4<float>&           theValue) const;
 
 public:
   //! Wrapper for glBindAttribLocation()
   Standard_EXPORT bool SetAttributeName(const occ::handle<OpenGl_Context>& theCtx,
-                                                    GLint                         theIndex,
-                                                    const GLchar*                 theName);
+                                        GLint                              theIndex,
+                                        const GLchar*                      theName);
 
   //! Wrapper for glVertexAttrib*() for attribute with the given name.
   template <typename ValueType>
   bool SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                    const GLchar*                 theName,
-                    const ValueType&              theValue)
+                    const GLchar*                      theName,
+                    const ValueType&                   theValue)
   {
     return SetAttribute(theCtx, GetAttributeLocation(theCtx, theName), theValue);
   }
 
   //! Wrapper for glVertexAttrib1f()
   Standard_EXPORT bool SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                GLfloat                       theValue);
+                                    GLint                              theIndex,
+                                    GLfloat                            theValue);
 
   //! Wrapper for glVertexAttrib2fv()
   Standard_EXPORT bool SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                const NCollection_Vec2<float>&            theValue);
+                                    GLint                              theIndex,
+                                    const NCollection_Vec2<float>&     theValue);
 
   //! Wrapper for glVertexAttrib3fv()
   Standard_EXPORT bool SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                const NCollection_Vec3<float>&            theValue);
+                                    GLint                              theIndex,
+                                    const NCollection_Vec3<float>&     theValue);
 
   //! Wrapper for glVertexAttrib4fv()
   Standard_EXPORT bool SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                                GLint                         theIndex,
-                                                const NCollection_Vec4<float>&            theValue);
+                                    GLint                              theIndex,
+                                    const NCollection_Vec4<float>&     theValue);
 
 public:
   //! Specifies the value of the uniform variable with given name.
   template <typename ValueType>
   bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                  const GLchar*                 theName,
-                  const ValueType&              theValue)
+                  const GLchar*                      theName,
+                  const ValueType&                   theValue)
   {
     return SetUniform(theCtx, GetUniformLocation(theCtx, theName), theValue);
   }
@@ -419,87 +420,87 @@ public:
   //! Specifies the value of the integer uniform variable.
   //! Wrapper for glUniform1i()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLint                         theValue);
+                                  GLint                              theLocation,
+                                  GLint                              theValue);
 
   //! Specifies the value of the integer uniform 2D vector.
   //! Wrapper for glUniform2iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec2<int>&           theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec2<int>&       theValue);
 
   //! Specifies the value of the integer uniform 3D vector.
   //! Wrapper for glUniform3iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec3<int>&           theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec3<int>&       theValue);
 
   //! Specifies the value of the integer uniform 4D vector.
   //! Wrapper for glUniform4iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec4<int>&           theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec4<int>&       theValue);
 
 public:
   //! Specifies the value of the unsigned integer uniform 2D vector (uvec2).
   //! Wrapper for glUniform2uiv()
-  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec2<unsigned int>&           theValue);
+  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
+                                  GLint                                 theLocation,
+                                  const NCollection_Vec2<unsigned int>& theValue);
 
   //! Specifies the value of the uvec2 uniform array
   //! Wrapper for glUniform2uiv()
-  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              const GLchar*                 theName,
-                                              const GLsizei                 theCount,
-                                              const NCollection_Vec2<unsigned int>*           theValue);
+  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
+                                  const GLchar*                         theName,
+                                  const GLsizei                         theCount,
+                                  const NCollection_Vec2<unsigned int>* theValue);
 
   //! Specifies the value of the uvec2 uniform array
   //! Wrapper for glUniform2uiv()
-  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const GLsizei                 theCount,
-                                              const NCollection_Vec2<unsigned int>*           theValue);
+  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
+                                  GLint                                 theLocation,
+                                  const GLsizei                         theCount,
+                                  const NCollection_Vec2<unsigned int>* theValue);
 
 public:
   //! Specifies the value of the float uniform variable.
   //! Wrapper for glUniform1f()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLfloat                       theValue);
+                                  GLint                              theLocation,
+                                  GLfloat                            theValue);
 
   //! Specifies the value of the float uniform 2D vector.
   //! Wrapper for glUniform2fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec2<float>&            theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec2<float>&     theValue);
 
   //! Specifies the value of the float uniform 3D vector.
   //! Wrapper for glUniform3fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec3<float>&            theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec3<float>&     theValue);
 
   //! Specifies the value of the float uniform 4D vector.
   //! Wrapper for glUniform4fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Vec4<float>&            theValue);
+                                  GLint                              theLocation,
+                                  const NCollection_Vec4<float>&     theValue);
 
 public:
   //! Specifies the value of the array of float uniform 3x3 matrices.
   //! Wrapper over glUniformMatrix3fv().
-  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>&  theCtx,
-                                              GLint                          theLocation,
-                                              GLuint                         theCount,
-                                              const NCollection_Mat3<float>* theData);
+  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Mat3<float>*     theData);
 
   //! Specifies the value of the float uniform 4x4 matrix.
   //! Wrapper for glUniformMatrix4fv()
   bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                  const GLchar*                 theName,
-                  const NCollection_Mat4<float>&            theValue,
-                  GLboolean                     theTranspose = GL_FALSE)
+                  const GLchar*                      theName,
+                  const NCollection_Mat4<float>&     theValue,
+                  GLboolean                          theTranspose = GL_FALSE)
   {
     return SetUniform(theCtx, GetUniformLocation(theCtx, theName), theValue, theTranspose);
   }
@@ -507,86 +508,86 @@ public:
   //! Specifies the value of the float uniform 4x4 matrix.
   //! Wrapper for glUniformMatrix4fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const NCollection_Mat4<float>&            theValue,
-                                              GLboolean theTranspose = GL_FALSE);
+                                  GLint                              theLocation,
+                                  const NCollection_Mat4<float>&     theValue,
+                                  GLboolean                          theTranspose = GL_FALSE);
 
   //! Specifies the value of the array of float uniform 4x4 matrices.
   //! Wrapper over glUniformMatrix4fv().
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Mat4<float>*            theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Mat4<float>*     theData);
 
   //! Specifies the value of the float uniform array
   //! Wrapper over glUniform1fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const float*     theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const float*                       theData);
 
   //! Specifies the value of the float2 uniform array
   //! Wrapper over glUniform2fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec2<float>*            theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec2<float>*     theData);
 
   //! Specifies the value of the float3 uniform array
   //! Wrapper over glUniform3fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec3<float>*            theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec3<float>*     theData);
 
   //! Specifies the value of the float4 uniform array
   //! Wrapper over glUniform4fv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec4<float>*            theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec4<float>*     theData);
 
   //! Specifies the value of the integer uniform array
   //! Wrapper over glUniform1iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const int*       theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const int*                         theData);
 
   //! Specifies the value of the int2 uniform array
   //! Wrapper over glUniform2iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec2<int>*           theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec2<int>*       theData);
 
   //! Specifies the value of the int3 uniform array
   //! Wrapper over glUniform3iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec3<int>*           theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec3<int>*       theData);
 
   //! Specifies the value of the int4 uniform array
   //! Wrapper over glUniform4iv()
   Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              GLuint                        theCount,
-                                              const NCollection_Vec4<int>*           theData);
+                                  GLint                              theLocation,
+                                  GLuint                             theCount,
+                                  const NCollection_Vec4<int>*       theData);
 
 public:
   //! Specifies the value of the sampler uniform variable.
   bool SetSampler(const occ::handle<OpenGl_Context>& theCtx,
-                  const GLchar*                 theName,
-                  const Graphic3d_TextureUnit   theTextureUnit)
+                  const GLchar*                      theName,
+                  const Graphic3d_TextureUnit        theTextureUnit)
   {
     return SetSampler(theCtx, GetUniformLocation(theCtx, theName), theTextureUnit);
   }
 
   //! Specifies the value of the sampler uniform variable.
   Standard_EXPORT bool SetSampler(const occ::handle<OpenGl_Context>& theCtx,
-                                              GLint                         theLocation,
-                                              const Graphic3d_TextureUnit   theTextureUnit);
+                                  GLint                              theLocation,
+                                  const Graphic3d_TextureUnit        theTextureUnit);
 
 public:
   //! Update the shader program from external files (per shader stage) in the following way:
@@ -600,10 +601,10 @@ public:
   //! folder will be used instead
   //! @param theToBeautify flag improving formatting (add extra newlines)
   //! @param theToReset when TRUE, existing dumps will be overridden
-  Standard_EXPORT bool UpdateDebugDump(const occ::handle<OpenGl_Context>&  theCtx,
-                                                   const TCollection_AsciiString& theFolder = "",
-                                                   bool theToBeautify = false,
-                                                   bool theToReset    = false);
+  Standard_EXPORT bool UpdateDebugDump(const occ::handle<OpenGl_Context>& theCtx,
+                                       const TCollection_AsciiString&     theFolder     = "",
+                                       bool                               theToBeautify = false,
+                                       bool                               theToReset    = false);
 
 protected:
   //! Increments counter of users.
@@ -620,9 +621,10 @@ protected:
   Standard_EXPORT bool link(const occ::handle<OpenGl_Context>& theCtx);
 
 protected:
-  GLuint            myProgramID;                           //!< Handle of OpenGL shader program
-  NCollection_Sequence<occ::handle<OpenGl_ShaderObject>> myShaderObjects;                       //!< List of attached shader objects
-                                                           // clang-format off
+  GLuint myProgramID; //!< Handle of OpenGL shader program
+  NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>
+    myShaderObjects;                                //!< List of attached shader objects
+                                                    // clang-format off
   occ::handle<Graphic3d_ShaderProgram> myProxy;         //!< Proxy shader program (from application layer)
   int                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
   int                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
@@ -637,7 +639,7 @@ protected:
 protected:
 
   size_t myCurrentState[OpenGl_UniformStateType_NB]; //!< defines last modification for variables of each state type
-                                                           // clang-format on
+                                                    // clang-format on
 
   //! Stores locations of OCCT state uniform variables.
   OpenGl_ShaderUniformLocation myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
@@ -648,7 +650,7 @@ struct OpenGl_VariableSetter : public OpenGl_SetterInterface
 {
   virtual void Set(const occ::handle<OpenGl_Context>&           theCtx,
                    const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-                   OpenGl_ShaderProgram*                   theProgram)
+                   OpenGl_ShaderProgram*                        theProgram)
   {
     theProgram->SetUniform(theCtx, theVariable->Name().ToCString(), theVariable->Value()->As<T>());
   }

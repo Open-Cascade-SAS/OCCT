@@ -24,16 +24,11 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Bnd_Box2d.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_DataMap.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeAnalysis_Surface;
 class ShapeFix_Wire;
@@ -73,14 +68,14 @@ public:
   //! Starts the creation of the face
   //! By default it will be FORWARD, or REVERSED if <fwd> is False
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& surf,
-                            const double         preci,
-                            const bool      fwd = true);
+                            const double                     preci,
+                            const bool                       fwd = true);
 
   //! Starts the creation of the face
   //! By default it will be FORWARD, or REVERSED if <fwd> is False
   Standard_EXPORT void Init(const occ::handle<ShapeAnalysis_Surface>& surf,
-                            const double                  preci,
-                            const bool               fwd = true);
+                            const double                              preci,
+                            const bool                                fwd = true);
 
   //! Sets message registrator
   Standard_EXPORT virtual void SetMsgRegistrator(
@@ -187,7 +182,9 @@ public:
   //! Returns True if wires were reversed
   //! OutWires return information about out wires + list of
   //! internal wires for each (for performing split face).
-  Standard_EXPORT bool FixOrientation(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& MapWires);
+  Standard_EXPORT bool FixOrientation(
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+      MapWires);
 
   //! Adds natural boundary on face if it is missing.
   //! Two cases are supported:
@@ -224,7 +221,9 @@ public:
 
   //! Split face if there are more than one out wire
   //! using inrormation after FixOrientation()
-  Standard_EXPORT bool FixSplitFace(const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& MapWires);
+  Standard_EXPORT bool FixSplitFace(const NCollection_DataMap<TopoDS_Shape,
+                                                              NCollection_List<TopoDS_Shape>,
+                                                              TopTools_ShapeMapHasher>& MapWires);
 
   //! Fixes topology for a specific case when face is composed
   //! by a single wire belting a periodic surface. In that case
@@ -254,31 +253,33 @@ public:
 
 protected:
   occ::handle<ShapeAnalysis_Surface> mySurf;
-  TopoDS_Face                   myFace;
-  TopoDS_Shape                  myResult;
+  TopoDS_Face                        myFace;
+  TopoDS_Shape                       myResult;
   occ::handle<ShapeFix_Wire>         myFixWire;
-  bool              myFwd;
-  int              myStatus;
+  bool                               myFwd;
+  int                                myStatus;
 
 private:
   //! Returns True if the face needs to add natural bound and corresponded option of shape healing
   //! is ON
   bool isNeedAddNaturalBound(const NCollection_Sequence<TopoDS_Shape>& theOrientedWires);
 
-  Standard_EXPORT bool SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
-                                             const int              num,
-                                             const double                 param,
-                                             const TopoDS_Vertex&                vert,
-                                             const double                 preci,
-                                             NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes);
+  Standard_EXPORT bool SplitEdge(
+    const occ::handle<ShapeExtend_WireData>&                               sewd,
+    const int                                                              num,
+    const double                                                           param,
+    const TopoDS_Vertex&                                                   vert,
+    const double                                                           preci,
+    NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>& boxes);
 
-  Standard_EXPORT bool SplitEdge(const occ::handle<ShapeExtend_WireData>& sewd,
-                                             const int              num,
-                                             const double                 param1,
-                                             const double                 param2,
-                                             const TopoDS_Vertex&                vert,
-                                             const double                 preci,
-                                             NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>&       boxes);
+  Standard_EXPORT bool SplitEdge(
+    const occ::handle<ShapeExtend_WireData>&                               sewd,
+    const int                                                              num,
+    const double                                                           param1,
+    const double                                                           param2,
+    const TopoDS_Vertex&                                                   vert,
+    const double                                                           preci,
+    NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>& boxes);
 
   int myFixWireMode;
   int myFixOrientationMode;

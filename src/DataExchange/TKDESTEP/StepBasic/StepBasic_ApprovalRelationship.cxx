@@ -21,8 +21,8 @@ StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship() {}
 
 void StepBasic_ApprovalRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                           const occ::handle<TCollection_HAsciiString>& aDescription,
-                                          const occ::handle<StepBasic_Approval>&       aRelatingApproval,
-                                          const occ::handle<StepBasic_Approval>&       aRelatedApproval)
+                                          const occ::handle<StepBasic_Approval>& aRelatingApproval,
+                                          const occ::handle<StepBasic_Approval>& aRelatedApproval)
 {
   // --- classe own fields ---
   name             = aName;

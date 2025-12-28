@@ -146,8 +146,7 @@ public:
   void* Allocate(const size_t theSize) override
   {
     // we use ?: operator instead of if() since it is faster :-)
-    void* aPtr =
-      (myClear ? scalable_calloc(theSize, sizeof(char)) : scalable_malloc(theSize));
+    void* aPtr = (myClear ? scalable_calloc(theSize, sizeof(char)) : scalable_malloc(theSize));
     if (!aPtr)
       throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Allocate(): malloc failed");
     return aPtr;
@@ -229,7 +228,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   #endif
 
   char* aVar;
-  aVar                       = getenv("MMGT_OPT");
+  aVar          = getenv("MMGT_OPT");
   int anAllocId = (aVar ? atoi(aVar) : OCCT_MMGT_OPT_DEFAULT);
 
   #if defined(HAVE_TBB) && defined(_M_IX86)
@@ -262,7 +261,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   }
   #endif
 
-  aVar                     = getenv("MMGT_CLEAR");
+  aVar         = getenv("MMGT_CLEAR");
   bool toClear = (aVar ? (atoi(aVar) != 0) : true);
 
   // on Windows (actual for XP and 2000) activate low fragmentation heap
@@ -282,15 +281,15 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   {
     case 1: // OCCT optimized memory allocator
     {
-      aVar                        = getenv("MMGT_MMAP");
-      bool bMMap      = (aVar ? (atoi(aVar) != 0) : true);
-      aVar                        = getenv("MMGT_CELLSIZE");
+      aVar           = getenv("MMGT_MMAP");
+      bool bMMap     = (aVar ? (atoi(aVar) != 0) : true);
+      aVar           = getenv("MMGT_CELLSIZE");
       int aCellSize  = (aVar ? atoi(aVar) : 200);
-      aVar                        = getenv("MMGT_NBPAGES");
+      aVar           = getenv("MMGT_NBPAGES");
       int aNbPages   = (aVar ? atoi(aVar) : 1000);
-      aVar                        = getenv("MMGT_THRESHOLD");
+      aVar           = getenv("MMGT_THRESHOLD");
       int aThreshold = (aVar ? atoi(aVar) : 40000);
-      myFMMgr = new Standard_MMgrOpt(toClear, bMMap, aCellSize, aNbPages, aThreshold);
+      myFMMgr        = new Standard_MMgrOpt(toClear, bMMap, aCellSize, aNbPages, aThreshold);
       break;
     }
     case 2: // TBB memory allocator
@@ -461,8 +460,7 @@ int Standard::Purge()
 
 //=================================================================================================
 
-void* Standard::AllocateAligned(const size_t theSize,
-                                           const size_t theAlign)
+void* Standard::AllocateAligned(const size_t theSize, const size_t theAlign)
 {
 #ifdef OCCT_MMGT_OPT_JEMALLOC
   return je_aligned_alloc(theAlign, theSize);

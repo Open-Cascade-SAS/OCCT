@@ -30,7 +30,7 @@ int Expr_PolyExpression::NbOperands() const
 }
 
 void Expr_PolyExpression::SetOperand(const occ::handle<Expr_GeneralExpression>& exp,
-                                     const int                index)
+                                     const int                                  index)
 {
   occ::handle<Expr_PolyExpression> me = this;
   if (exp == me)
@@ -63,17 +63,16 @@ int Expr_PolyExpression::NbSubExpressions() const
   return NbOperands();
 }
 
-const occ::handle<Expr_GeneralExpression>& Expr_PolyExpression::SubExpression(
-  const int I) const
+const occ::handle<Expr_GeneralExpression>& Expr_PolyExpression::SubExpression(const int I) const
 {
   return Operand(I);
 }
 
 bool Expr_PolyExpression::ContainsUnknowns() const
 {
-  bool               found = false;
-  int               nbop  = NbOperands();
-  int               i     = 1;
+  bool                                found = false;
+  int                                 nbop  = NbOperands();
+  int                                 i     = 1;
   occ::handle<Expr_GeneralExpression> expop;
 
   while ((!found) && (i <= nbop))
@@ -94,9 +93,9 @@ bool Expr_PolyExpression::ContainsUnknowns() const
 
 bool Expr_PolyExpression::Contains(const occ::handle<Expr_GeneralExpression>& exp) const
 {
-  bool               found = false;
-  int               nbop  = NbOperands();
-  int               i     = 1;
+  bool                                found = false;
+  int                                 nbop  = NbOperands();
+  int                                 i     = 1;
   occ::handle<Expr_GeneralExpression> expop;
 
   while ((!found) && (i <= nbop))
@@ -118,8 +117,8 @@ bool Expr_PolyExpression::Contains(const occ::handle<Expr_GeneralExpression>& ex
 void Expr_PolyExpression::Replace(const occ::handle<Expr_NamedUnknown>&      var,
                                   const occ::handle<Expr_GeneralExpression>& with)
 {
-  int               nbop = NbOperands();
-  int               i;
+  int                                 nbop = NbOperands();
+  int                                 i;
   occ::handle<Expr_GeneralExpression> expop;
 
   for (i = 1; i <= nbop; i++)
@@ -142,8 +141,8 @@ void Expr_PolyExpression::Replace(const occ::handle<Expr_NamedUnknown>&      var
 occ::handle<Expr_GeneralExpression> Expr_PolyExpression::Simplified() const
 {
   occ::handle<Expr_PolyExpression>    cop = occ::down_cast<Expr_PolyExpression>(Copy());
-  int               i;
-  int               max = cop->NbOperands();
+  int                                 i;
+  int                                 max = cop->NbOperands();
   occ::handle<Expr_GeneralExpression> op;
   for (i = 1; i <= max; i++)
   {

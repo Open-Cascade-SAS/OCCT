@@ -49,16 +49,16 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
-static void SetThePCurve(const BRep_Builder&         B,
-                         TopoDS_Edge&                E,
-                         const TopoDS_Face&          F,
-                         const TopAbs_Orientation    O,
+static void SetThePCurve(const BRep_Builder&              B,
+                         TopoDS_Edge&                     E,
+                         const TopoDS_Face&               F,
+                         const TopAbs_Orientation         O,
                          const occ::handle<Geom2d_Curve>& C)
 {
   // check if there is already a pcurve on non planar faces
-  double        f, l;
+  double                    f, l;
   occ::handle<Geom2d_Curve> OC;
-  TopLoc_Location      SL;
+  TopLoc_Location           SL;
   occ::handle<Geom_Plane>   GP = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(F, SL));
   if (GP.IsNull())
     OC = BRep_Tool::CurveOnSurface(E, F, f, l);
@@ -79,8 +79,8 @@ BRepSweep_Translation::BRepSweep_Translation(const TopoDS_Shape&    S,
                                              const Sweep_NumShape&  N,
                                              const TopLoc_Location& L,
                                              const gp_Vec&          V,
-                                             const bool C,
-                                             const bool Canonize)
+                                             const bool             C,
+                                             const bool             Canonize)
     : BRepSweep_Trsf(BRep_Builder(), S, N, L, C),
       myVec(V),
       myCanonize(Canonize)
@@ -114,10 +114,10 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyVertex(const TopoDS_Shape&   aGenV,
 TopoDS_Shape BRepSweep_Translation::MakeEmptyDirectingEdge(const TopoDS_Shape& aGenV,
                                                            const Sweep_NumShape&)
 {
-  gp_Pnt            P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
-  gp_Lin            L(P, myVec);
+  gp_Pnt                 P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
+  gp_Lin                 L(P, myVec);
   occ::handle<Geom_Line> GL = new Geom_Line(L);
-  TopoDS_Edge       E;
+  TopoDS_Edge            E;
   myBuilder.Builder().MakeEdge(E, GL, BRep_Tool::Tolerance(TopoDS::Vertex(aGenV)));
   return E;
 }
@@ -138,8 +138,8 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyGeneratingEdge(const TopoDS_Shape& 
   }
   else
   {
-    TopLoc_Location    L;
-    double      First, Last;
+    TopLoc_Location         L;
+    double                  First, Last;
     occ::handle<Geom_Curve> C = BRep_Tool::Curve(TopoDS::Edge(aGenE), L, First, Last);
     if (!C.IsNull())
     {
@@ -208,17 +208,17 @@ void BRepSweep_Translation::SetGeneratingParameter(const TopoDS_Shape& aNewEdge,
 TopoDS_Shape BRepSweep_Translation::MakeEmptyFace(const TopoDS_Shape&   aGenS,
                                                   const Sweep_NumShape& aDirS)
 {
-  double        toler;
-  TopoDS_Face          F;
+  double                    toler;
+  TopoDS_Face               F;
   occ::handle<Geom_Surface> S;
   if (myDirShapeTool.Type(aDirS) == TopAbs_EDGE)
   {
-    TopLoc_Location    L;
-    double      First, Last;
+    TopLoc_Location         L;
+    double                  First, Last;
     occ::handle<Geom_Curve> C = BRep_Tool::Curve(TopoDS::Edge(aGenS), L, First, Last);
-    toler                = BRep_Tool::Tolerance(TopoDS::Edge(aGenS));
-    gp_Trsf Tr           = L.Transformation();
-    C                    = occ::down_cast<Geom_Curve>(C->Copy());
+    toler                     = BRep_Tool::Tolerance(TopoDS::Edge(aGenS));
+    gp_Trsf Tr                = L.Transformation();
+    C                         = occ::down_cast<Geom_Curve>(C->Copy());
     // extruded surfaces are inverted correspondingly to the topology, so reverse.
     C->Transform(Tr);
     gp_Dir D(myVec);
@@ -226,7 +226,7 @@ TopoDS_Shape BRepSweep_Translation::MakeEmptyFace(const TopoDS_Shape&   aGenS,
 
     if (myCanonize)
     {
-      occ::handle<GeomAdaptor_Curve>            HC = new GeomAdaptor_Curve(C, First, Last);
+      occ::handle<GeomAdaptor_Curve>       HC = new GeomAdaptor_Curve(C, First, Last);
       GeomAdaptor_SurfaceOfLinearExtrusion AS(HC, D);
       switch (AS.GetType())
       {
@@ -276,11 +276,13 @@ void BRepSweep_Translation::SetPCurve(const TopoDS_Shape& aNewFace,
   bool isclosed = BRep_Tool::IsClosed(TopoDS::Edge(aGenE), TopoDS::Face(aGenF));
   if (isclosed)
   {
-    double        First, Last;
-    TopoDS_Edge          anE = TopoDS::Edge(aGenE.Oriented(TopAbs_FORWARD));
-    occ::handle<Geom2d_Curve> aC1 = BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
+    double                    First, Last;
+    TopoDS_Edge               anE = TopoDS::Edge(aGenE.Oriented(TopAbs_FORWARD));
+    occ::handle<Geom2d_Curve> aC1 =
+      BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
     anE.Reverse();
-    occ::handle<Geom2d_Curve> aC2 = BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
+    occ::handle<Geom2d_Curve> aC2 =
+      BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
     myBuilder.Builder().UpdateEdge(TopoDS::Edge(aNewEdge),
                                    aC1,
                                    aC2,
@@ -410,7 +412,7 @@ TopAbs_Orientation BRepSweep_Translation::DirectSolid(const TopoDS_Shape& aGenS,
           du,
           dv);
 
-  double      x      = myVec.DotCross(du, dv);
+  double             x      = myVec.DotCross(du, dv);
   TopAbs_Orientation orient = (x > 0) ? TopAbs_REVERSED : TopAbs_FORWARD;
   return orient;
 }
@@ -418,10 +420,10 @@ TopAbs_Orientation BRepSweep_Translation::DirectSolid(const TopoDS_Shape& aGenS,
 //=================================================================================================
 
 bool BRepSweep_Translation::GGDShapeIsToAdd(const TopoDS_Shape&,
-                                                        const TopoDS_Shape&,
-                                                        const TopoDS_Shape&,
-                                                        const TopoDS_Shape&,
-                                                        const Sweep_NumShape&) const
+                                            const TopoDS_Shape&,
+                                            const TopoDS_Shape&,
+                                            const TopoDS_Shape&,
+                                            const Sweep_NumShape&) const
 {
   return true;
 }
@@ -429,10 +431,10 @@ bool BRepSweep_Translation::GGDShapeIsToAdd(const TopoDS_Shape&,
 //=================================================================================================
 
 bool BRepSweep_Translation::GDDShapeIsToAdd(const TopoDS_Shape&,
-                                                        const TopoDS_Shape&,
-                                                        const TopoDS_Shape&,
-                                                        const Sweep_NumShape&,
-                                                        const Sweep_NumShape&) const
+                                            const TopoDS_Shape&,
+                                            const TopoDS_Shape&,
+                                            const Sweep_NumShape&,
+                                            const Sweep_NumShape&) const
 {
   return true;
 }
@@ -440,18 +442,17 @@ bool BRepSweep_Translation::GDDShapeIsToAdd(const TopoDS_Shape&,
 //=================================================================================================
 
 bool BRepSweep_Translation::SeparatedWires(const TopoDS_Shape&,
-                                                       const TopoDS_Shape&,
-                                                       const TopoDS_Shape&,
-                                                       const TopoDS_Shape&,
-                                                       const Sweep_NumShape&) const
+                                           const TopoDS_Shape&,
+                                           const TopoDS_Shape&,
+                                           const TopoDS_Shape&,
+                                           const Sweep_NumShape&) const
 {
   return false;
 }
 
 //=================================================================================================
 
-bool BRepSweep_Translation::HasShape(const TopoDS_Shape&   aGenS,
-                                                 const Sweep_NumShape& aDirS) const
+bool BRepSweep_Translation::HasShape(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS) const
 {
   if (myDirShapeTool.Type(aDirS) == TopAbs_EDGE)
   {

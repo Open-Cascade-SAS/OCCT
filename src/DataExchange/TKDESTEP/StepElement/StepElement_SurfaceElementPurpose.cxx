@@ -27,16 +27,14 @@ StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose() {}
 
 //=================================================================================================
 
-int StepElement_SurfaceElementPurpose::CaseNum(
-  const occ::handle<Standard_Transient>& /*ent*/) const
+int StepElement_SurfaceElementPurpose::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-int StepElement_SurfaceElementPurpose::CaseMem(
-  const occ::handle<StepData_SelectMember>& ent) const
+int StepElement_SurfaceElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -85,7 +83,7 @@ StepElement_EnumeratedSurfaceElementPurpose StepElement_SurfaceElementPurpose::
     new TCollection_HAsciiString("EnumeratedSurfaceElementPurpose");
   if (name->IsDifferent(nameitem))
     return StepElement_MembraneDirect;
-  int                            numit = SelMem->Enum();
+  int                                         numit = SelMem->Enum();
   StepElement_EnumeratedSurfaceElementPurpose val;
   switch (numit)
   {

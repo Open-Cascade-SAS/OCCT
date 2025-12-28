@@ -23,15 +23,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BoundedSurface.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array2.hxx>
-#include <NCollection_Array2.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
@@ -148,7 +141,7 @@ public:
   //! Raised if PoleWeights (i, j) <= Resolution from gp;
   //! Raised if the number of poles of the surface is lower than 2
   //! or greater than MaxDegree + 1 in one of the two directions U or V.
-  Standard_EXPORT Geom_BezierSurface(const NCollection_Array2<gp_Pnt>&   SurfacePoles,
+  Standard_EXPORT Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& SurfacePoles,
                                      const NCollection_Array2<double>& PoleWeights);
 
   //! Exchanges the direction U and V on a Bezier surface
@@ -173,7 +166,7 @@ public:
   //!
   //! raises if VDegree is greater than MaxDegree.
   //! raises if the Length of CPoles is not equal to NbUPoles
-  Standard_EXPORT void InsertPoleColAfter(const int    VIndex,
+  Standard_EXPORT void InsertPoleColAfter(const int                         VIndex,
                                           const NCollection_Array1<gp_Pnt>& CPoles);
 
   //! Inserts a column of poles and weights.
@@ -185,8 +178,8 @@ public:
   //! . the Length of CPoles is not equal to NbUPoles
   //! . a weight value is lower or equal to Resolution from
   //! package gp
-  Standard_EXPORT void InsertPoleColAfter(const int      VIndex,
-                                          const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void InsertPoleColAfter(const int                         VIndex,
+                                          const NCollection_Array1<gp_Pnt>& CPoles,
                                           const NCollection_Array1<double>& CPoleWeights);
 
   //! Inserts a column of poles. If the surface is rational the weights
@@ -196,7 +189,7 @@ public:
   //!
   //! Raised if VDegree is greater than MaxDegree.
   //! Raised if the Length of CPoles is not equal to NbUPoles
-  Standard_EXPORT void InsertPoleColBefore(const int    VIndex,
+  Standard_EXPORT void InsertPoleColBefore(const int                         VIndex,
                                            const NCollection_Array1<gp_Pnt>& CPoles);
 
   //! Inserts a column of poles and weights.
@@ -208,8 +201,8 @@ public:
   //! . the Length of CPoles is not equal to NbUPoles
   //! . a weight value is lower or equal to Resolution from
   //! package gp
-  Standard_EXPORT void InsertPoleColBefore(const int      VIndex,
-                                           const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void InsertPoleColBefore(const int                         VIndex,
+                                           const NCollection_Array1<gp_Pnt>& CPoles,
                                            const NCollection_Array1<double>& CPoleWeights);
 
   //! Inserts a row of poles. If the surface is rational the weights
@@ -219,7 +212,7 @@ public:
   //!
   //! Raised if UDegree is greater than MaxDegree.
   //! Raised if the Length of CPoles is not equal to NbVPoles
-  Standard_EXPORT void InsertPoleRowAfter(const int    UIndex,
+  Standard_EXPORT void InsertPoleRowAfter(const int                         UIndex,
                                           const NCollection_Array1<gp_Pnt>& CPoles);
 
   //! Inserts a row of poles and weights.
@@ -231,8 +224,8 @@ public:
   //! . the Length of CPoles is not equal to NbVPoles
   //! . a weight value is lower or equal to Resolution from
   //! package gp
-  Standard_EXPORT void InsertPoleRowAfter(const int      UIndex,
-                                          const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void InsertPoleRowAfter(const int                         UIndex,
+                                          const NCollection_Array1<gp_Pnt>& CPoles,
                                           const NCollection_Array1<double>& CPoleWeights);
 
   //! Inserts a row of poles. If the surface is rational the weights
@@ -242,7 +235,7 @@ public:
   //!
   //! Raised if UDegree is greater than MaxDegree.
   //! Raised if the Length of CPoles is not equal to NbVPoles
-  Standard_EXPORT void InsertPoleRowBefore(const int    UIndex,
+  Standard_EXPORT void InsertPoleRowBefore(const int                         UIndex,
                                            const NCollection_Array1<gp_Pnt>& CPoles);
 
   //! Inserts a row of poles and weights.
@@ -254,8 +247,8 @@ public:
   //! . the Length of CPoles is not equal to NbVPoles
   //! . a weight value is lower or equal to Resolution from
   //! package gp
-  Standard_EXPORT void InsertPoleRowBefore(const int      UIndex,
-                                           const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void InsertPoleRowBefore(const int                         UIndex,
+                                           const NCollection_Array1<gp_Pnt>& CPoles,
                                            const NCollection_Array1<double>& CPoleWeights);
 
   //! Removes a column of poles.
@@ -295,10 +288,7 @@ public:
   //! parametric direction is inverted. The orientation of
   //! the surface is inverted if one (and only one)
   //! parametric direction is inverted.
-  Standard_EXPORT void Segment(const double U1,
-                               const double U2,
-                               const double V1,
-                               const double V2);
+  Standard_EXPORT void Segment(const double U1, const double U2, const double V1, const double V2);
 
   //! Modifies a pole value.
   //! If the surface is rational the weight of range (UIndex, VIndex)
@@ -306,9 +296,7 @@ public:
   //!
   //! Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1
   //! or VIndex > NbVPoles.
-  Standard_EXPORT void SetPole(const int UIndex,
-                               const int VIndex,
-                               const gp_Pnt&          P);
+  Standard_EXPORT void SetPole(const int UIndex, const int VIndex, const gp_Pnt& P);
 
   //! Substitutes the pole and the weight of range UIndex, VIndex.
   //! If the surface <me> is not rational it can become rational.
@@ -317,10 +305,10 @@ public:
   //! raises if UIndex < 1 or UIndex > NbUPoles or VIndex < 1
   //! or VIndex > NbVPoles.
   //! Raised if Weight <= Resolution from package gp.
-  Standard_EXPORT void SetPole(const int UIndex,
-                               const int VIndex,
-                               const gp_Pnt&          P,
-                               const double    Weight);
+  Standard_EXPORT void SetPole(const int     UIndex,
+                               const int     VIndex,
+                               const gp_Pnt& P,
+                               const double  Weight);
 
   //! Modifies a column of poles.
   //! The length of CPoles can be lower but not greater than NbUPoles
@@ -341,8 +329,8 @@ public:
   //! Raised if CPoleWeights and CPoles have not the same bounds.
   //! Raised if one of the weight value CPoleWeights (i) is lower
   //! or equal to Resolution from package gp.
-  Standard_EXPORT void SetPoleCol(const int      VIndex,
-                                  const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void SetPoleCol(const int                         VIndex,
+                                  const NCollection_Array1<gp_Pnt>& CPoles,
                                   const NCollection_Array1<double>& CPoleWeights);
 
   //! Modifies a row of poles.
@@ -364,8 +352,8 @@ public:
   //! Raised if CPoleWeights and CPoles have not the same bounds.
   //! Raised if one of the weight value CPoleWeights (i) is lower
   //! or equal to Resolution from gp.
-  Standard_EXPORT void SetPoleRow(const int      UIndex,
-                                  const NCollection_Array1<gp_Pnt>&   CPoles,
+  Standard_EXPORT void SetPoleRow(const int                         UIndex,
+                                  const NCollection_Array1<gp_Pnt>& CPoles,
                                   const NCollection_Array1<double>& CPoleWeights);
 
   //! Modifies the weight of the pole of range UIndex, VIndex.
@@ -375,9 +363,7 @@ public:
   //! Raised if UIndex < 1 or UIndex > NbUPoles or VIndex < 1 or
   //! VIndex > NbVPoles.
   //! Raised if Weight <= Resolution from package gp.
-  Standard_EXPORT void SetWeight(const int UIndex,
-                                 const int VIndex,
-                                 const double    Weight);
+  Standard_EXPORT void SetWeight(const int UIndex, const int VIndex, const double Weight);
 
   //! Modifies a column of weights.
   //! If the surface was rational it can become non-rational.
@@ -390,7 +376,7 @@ public:
   //! NbUPoles
   //! Raised if one of the weight value CPoleWeights (i) is lower
   //! or equal to Resolution from package gp.
-  Standard_EXPORT void SetWeightCol(const int      VIndex,
+  Standard_EXPORT void SetWeightCol(const int                         VIndex,
                                     const NCollection_Array1<double>& CPoleWeights);
 
   //! Modifies a row of weights.
@@ -404,7 +390,7 @@ public:
   //! NbVPoles
   //! Raised if one of the weight value CPoleWeights (i) is lower
   //! or equal to Resolution from package gp.
-  Standard_EXPORT void SetWeightRow(const int      UIndex,
+  Standard_EXPORT void SetWeightRow(const int                         UIndex,
                                     const NCollection_Array1<double>& CPoleWeights);
 
   //! Changes the orientation of this Bezier surface in the
@@ -440,33 +426,28 @@ public:
   //! this Bezier surface.
   //! In the case of a Bezier surface, this function returns
   //! U1 = 0, V1 = 0, U2 = 1, V2 = 1.
-  Standard_EXPORT void Bounds(double& U1,
-                              double& U2,
-                              double& V1,
-                              double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
   //! Returns the continuity of the surface CN : the order of
   //! continuity is infinite.
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
-  Standard_EXPORT void D0(const double U,
-                          const double V,
-                          gp_Pnt&             P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const override;
 
   Standard_EXPORT void D2(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV) const override;
 
   //! Computes P, the point of parameters (U, V) of this Bezier surface, and
   //! - one or more of the following sets of vectors:
@@ -478,16 +459,16 @@ public:
   //! Note: The parameters U and V can be outside the bounds of the surface.
   Standard_EXPORT void D3(const double U,
                           const double V,
-                          gp_Pnt&             P,
-                          gp_Vec&             D1U,
-                          gp_Vec&             D1V,
-                          gp_Vec&             D2U,
-                          gp_Vec&             D2V,
-                          gp_Vec&             D2UV,
-                          gp_Vec&             D3U,
-                          gp_Vec&             D3V,
-                          gp_Vec&             D3UUV,
-                          gp_Vec&             D3UVV) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV,
+                          gp_Vec&      D3U,
+                          gp_Vec&      D3V,
+                          gp_Vec&      D3UUV,
+                          gp_Vec&      D3UVV) const override;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
@@ -496,10 +477,10 @@ public:
   //! Exceptions
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1, or Nu or Nv is negative.
-  Standard_EXPORT gp_Vec DN(const double    U,
-                            const double    V,
-                            const int Nu,
-                            const int Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U,
+                            const double V,
+                            const int    Nu,
+                            const int    Nv) const override;
 
   //! Returns the number of poles in the U direction.
   Standard_EXPORT int NbUPoles() const;
@@ -510,8 +491,7 @@ public:
   //! Returns the pole of range UIndex, VIndex
   //! Raised if UIndex < 1 or UIndex > NbUPoles, or
   //! VIndex < 1 or VIndex > NbVPoles.
-  Standard_EXPORT const gp_Pnt& Pole(const int UIndex,
-                                     const int VIndex) const;
+  Standard_EXPORT const gp_Pnt& Pole(const int UIndex, const int VIndex) const;
 
   //! Returns the poles of the Bezier surface.
   //!
@@ -542,8 +522,7 @@ public:
   //!
   //! Raised if UIndex < 1 or UIndex > NbUPoles, or
   //! VIndex < 1 or VIndex > NbVPoles.
-  Standard_EXPORT double Weight(const int UIndex,
-                                       const int VIndex) const;
+  Standard_EXPORT double Weight(const int UIndex, const int VIndex) const;
 
   //! Returns the weights of the Bezier surface.
   //!
@@ -614,39 +593,38 @@ public:
   //! | u1 - u0 | < UTolerance and
   //! | v1 - v0 | < VTolerance
   //! ====> |f (u1,v1) - f (u0,v0)| < Tolerance3D
-  Standard_EXPORT void Resolution(const double Tolerance3D,
-                                  double&      UTolerance,
-                                  double&      VTolerance);
+  Standard_EXPORT void Resolution(const double Tolerance3D, double& UTolerance, double& VTolerance);
 
   //! Creates a new object which is a copy of this Bezier surface.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int  theDepth = -1) const override;
+                                        int               theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
 private:
-  Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>&   SurfacePoles,
+  Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>& SurfacePoles,
                      const occ::handle<NCollection_HArray2<double>>& PoleWeights,
-                     const bool               IsURational,
-                     const bool               IsVRational);
+                     const bool                                      IsURational,
+                     const bool                                      IsVRational);
 
   //! Set poles to Poles, weights to Weights (not copied).
   //! Create the arrays of coefficients. Poles and Weights
   //! are assumed to have the first coefficient 1.
   //!
   //! if nbpoles < 2 or nbpoles > MaDegree
-  void Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles, const occ::handle<NCollection_HArray2<double>>& Weights);
+  void Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles,
+            const occ::handle<NCollection_HArray2<double>>& Weights);
 
-  bool              urational;
-  bool              vrational;
-  occ::handle<NCollection_HArray2<gp_Pnt>>   poles;
+  bool                                     urational;
+  bool                                     vrational;
+  occ::handle<NCollection_HArray2<gp_Pnt>> poles;
   occ::handle<NCollection_HArray2<double>> weights;
-  double                 umaxderivinv;
-  double                 vmaxderivinv;
-  bool              maxderivinvok;
+  double                                   umaxderivinv;
+  double                                   vmaxderivinv;
+  bool                                     maxderivinvok;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

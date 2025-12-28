@@ -29,7 +29,6 @@ public:
   Standard_EXPORT StepRepr_ExternallyDefinedRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ExternallyDefinedRepresentation, StepRepr_Representation)
-
 };
 
 #endif // _StepRepr_ExternallyDefinedRepresentation_HeaderFile

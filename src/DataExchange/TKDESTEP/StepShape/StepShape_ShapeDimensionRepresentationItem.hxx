@@ -46,11 +46,12 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a CompoundRepresentationItem (Null if another type)
-  Standard_EXPORT occ::handle<StepRepr_CompoundRepresentationItem> CompoundRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_CompoundRepresentationItem> CompoundRepresentationItem()
+    const;
 
   //! returns Value as a DescriptiveRepresentationItem (Null if another type)
-  Standard_EXPORT occ::handle<StepRepr_DescriptiveRepresentationItem> DescriptiveRepresentationItem()
-    const;
+  Standard_EXPORT occ::handle<StepRepr_DescriptiveRepresentationItem>
+                  DescriptiveRepresentationItem() const;
 
   //! returns Value as a MeasureRepresentationItem (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_MeasureRepresentationItem> MeasureRepresentationItem() const;

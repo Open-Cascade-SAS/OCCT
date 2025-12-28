@@ -74,20 +74,20 @@ public:
 
 public:
   //! Registers operator to make it visible for Performer
-  Standard_EXPORT static bool RegisterOperator(const char* name,
-                                                           const occ::handle<ShapeProcess_Operator>& op);
+  Standard_EXPORT static bool RegisterOperator(const char*                               name,
+                                               const occ::handle<ShapeProcess_Operator>& op);
 
   //! Finds operator by its name
-  Standard_EXPORT static bool FindOperator(const char*         name,
-                                                       occ::handle<ShapeProcess_Operator>& op);
+  Standard_EXPORT static bool FindOperator(const char*                         name,
+                                           occ::handle<ShapeProcess_Operator>& op);
 
   //! Performs a specified sequence of operators on Context
   //! Resource file and other data should be already loaded
   //! to Context (including description of sequence seq)
   Standard_EXPORT static bool Perform(
     const occ::handle<ShapeProcess_Context>& context,
-    const char*              seq,
-    const Message_ProgressRange&        theProgress = Message_ProgressRange());
+    const char*                              seq,
+    const Message_ProgressRange&             theProgress = Message_ProgressRange());
 
   //! Performs a specified sequence of operators on @p theContext.
   //! @param theContext Context to perform operations on. Contains the shape to process
@@ -99,8 +99,8 @@ public:
   //! @return true if at least one operation was performed, false otherwise.
   Standard_EXPORT static bool Perform(
     const occ::handle<ShapeProcess_Context>& theContext,
-    const OperationsFlags&              theOperations,
-    const Message_ProgressRange&        theProgress = Message_ProgressRange());
+    const OperationsFlags&                   theOperations,
+    const Message_ProgressRange&             theProgress = Message_ProgressRange());
 
   //! Converts operation name to operation flag.
   //! @param theName Operation name.

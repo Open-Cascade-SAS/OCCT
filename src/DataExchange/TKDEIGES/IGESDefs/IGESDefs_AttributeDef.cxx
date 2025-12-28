@@ -19,26 +19,15 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <IGESGraph_TextDisplayTemplate.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeDef, IGESData_IGESEntity)
 
@@ -47,13 +36,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeDef, IGESData_IGESEntity)
 IGESDefs_AttributeDef::IGESDefs_AttributeDef() {}
 
 void IGESDefs_AttributeDef::Init(
-  const occ::handle<TCollection_HAsciiString>&                       aName,
-  const int                                        aListType,
-  const occ::handle<NCollection_HArray1<int>>&                       attrTypes,
-  const occ::handle<NCollection_HArray1<int>>&                       attrValueDataTypes,
-  const occ::handle<NCollection_HArray1<int>>&                       attrValueCounts,
-  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>&                     attrValues,
-  const occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>& attrValuePointers)
+  const occ::handle<TCollection_HAsciiString>&                             aName,
+  const int                                                                aListType,
+  const occ::handle<NCollection_HArray1<int>>&                             attrTypes,
+  const occ::handle<NCollection_HArray1<int>>&                             attrValueDataTypes,
+  const occ::handle<NCollection_HArray1<int>>&                             attrValueCounts,
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& attrValues,
+  const occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>&       attrValuePointers)
 {
   int nb = attrTypes->Length();
   if (attrTypes->Lower() != 1 || attrValueDataTypes->Lower() != 1
@@ -140,8 +129,7 @@ occ::handle<IGESGraph_TextDisplayTemplate> IGESDefs_AttributeDef::AttributeTextD
   return res;
 }
 
-occ::handle<Standard_Transient> IGESDefs_AttributeDef::AttributeList(
-  const int AttrNum) const
+occ::handle<Standard_Transient> IGESDefs_AttributeDef::AttributeList(const int AttrNum) const
 {
   occ::handle<Standard_Transient> nulres;
   if (!HasValues())
@@ -149,14 +137,12 @@ occ::handle<Standard_Transient> IGESDefs_AttributeDef::AttributeList(
   return theAttrValues->Value(AttrNum);
 }
 
-int IGESDefs_AttributeDef::AttributeAsInteger(const int AttrNum,
-                                                           const int ValueNum) const
+int IGESDefs_AttributeDef::AttributeAsInteger(const int AttrNum, const int ValueNum) const
 {
   return GetCasted(NCollection_HArray1<int>, theAttrValues->Value(AttrNum))->Value(ValueNum);
 }
 
-double IGESDefs_AttributeDef::AttributeAsReal(const int AttrNum,
-                                                     const int ValueNum) const
+double IGESDefs_AttributeDef::AttributeAsReal(const int AttrNum, const int ValueNum) const
 {
   return GetCasted(NCollection_HArray1<double>, theAttrValues->Value(AttrNum))->Value(ValueNum);
 }
@@ -165,18 +151,20 @@ occ::handle<TCollection_HAsciiString> IGESDefs_AttributeDef::AttributeAsString(
   const int AttrNum,
   const int ValueNum) const
 {
-  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, theAttrValues->Value(AttrNum))->Value(ValueNum);
+  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,
+                   theAttrValues->Value(AttrNum))
+    ->Value(ValueNum);
 }
 
-occ::handle<IGESData_IGESEntity> IGESDefs_AttributeDef::AttributeAsEntity(
-  const int AttrNum,
-  const int ValueNum) const
+occ::handle<IGESData_IGESEntity> IGESDefs_AttributeDef::AttributeAsEntity(const int AttrNum,
+                                                                          const int ValueNum) const
 {
-  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>, theAttrValues->Value(AttrNum))->Value(ValueNum);
+  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>,
+                   theAttrValues->Value(AttrNum))
+    ->Value(ValueNum);
 }
 
-bool IGESDefs_AttributeDef::AttributeAsLogical(const int AttrNum,
-                                                           const int ValueNum) const
+bool IGESDefs_AttributeDef::AttributeAsLogical(const int AttrNum, const int ValueNum) const
 {
   return (GetCasted(NCollection_HArray1<int>, theAttrValues->Value(AttrNum))->Value(ValueNum) != 0);
 }

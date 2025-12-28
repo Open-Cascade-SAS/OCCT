@@ -32,8 +32,8 @@ StepFEA_ParametricSurface3dElementCoordinateSystem::
 
 void StepFEA_ParametricSurface3dElementCoordinateSystem::Init(
   const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-  const int                  aAxis,
-  const double                     aAngle)
+  const int                                    aAxis,
+  const double                                 aAngle)
 {
   StepFEA_FeaRepresentationItem::Init(aRepresentationItem_Name);
 

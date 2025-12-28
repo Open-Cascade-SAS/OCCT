@@ -44,7 +44,7 @@ Standard_EXPORT occ::handle<TopOpeBRepTool_HBoxTool> FBOX_GetHBoxTool()
 Standard_EXPORT const Bnd_Box& FBOX_Box(const TopoDS_Shape& S)
 {
   occ::handle<TopOpeBRepTool_HBoxTool> hbt = FBOX_GetHBoxTool();
-  const Bnd_Box&                  b   = hbt->Box(S);
+  const Bnd_Box&                       b   = hbt->Box(S);
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX())
   {

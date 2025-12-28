@@ -22,7 +22,7 @@ StepBasic_ApplicationProtocolDefinition::StepBasic_ApplicationProtocolDefinition
 void StepBasic_ApplicationProtocolDefinition::Init(
   const occ::handle<TCollection_HAsciiString>&     aStatus,
   const occ::handle<TCollection_HAsciiString>&     aApplicationInterpretedModelSchemaName,
-  const int                      aApplicationProtocolYear,
+  const int                                        aApplicationProtocolYear,
   const occ::handle<StepBasic_ApplicationContext>& aApplication)
 {
   // --- classe own fields ---
@@ -72,7 +72,8 @@ void StepBasic_ApplicationProtocolDefinition::SetApplication(
   application = aApplication;
 }
 
-occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationProtocolDefinition::Application() const
+occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationProtocolDefinition::Application()
+  const
 {
   return application;
 }

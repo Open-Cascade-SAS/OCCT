@@ -28,11 +28,7 @@
 #include <NCollection_HSequence.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <NCollection_List.hxx>
-#include <ChFiDS_SurfData.hxx>
-#include <NCollection_Sequence.hxx>
 #include <ChFiDS_Spine.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_SurfData.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -61,18 +57,17 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <NCollection_List.hxx>
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 
-static void Reduce(const double&         p1,
-                   const double&         p2,
+static void Reduce(const double&                     p1,
+                   const double&                     p2,
                    occ::handle<GeomAdaptor_Surface>& hs1,
                    occ::handle<GeomAdaptor_Surface>& hs2)
 {
-  GeomAdaptor_Surface&        s1   = *hs1;
-  GeomAdaptor_Surface&        s2   = *hs2;
+  GeomAdaptor_Surface&             s1   = *hs1;
+  GeomAdaptor_Surface&             s2   = *hs2;
   const occ::handle<Geom_Surface>& surf = s1.Surface();
-  double               ud, uf, vd, vf;
+  double                           ud, uf, vd, vf;
   surf->Bounds(ud, uf, vd, vf);
   double milmoins = 0.51 * vd + 0.49 * vf, milplus = 0.49 * vd + 0.51 * vf;
   if (p1 < p2)
@@ -90,9 +85,9 @@ static void Reduce(const double&         p1,
 static void Reduce(const double& p1, const double& p2, occ::handle<GeomAdaptor_Curve>& hc)
 {
   GeomAdaptor_Curve& c        = *hc;
-  double      f        = c.FirstParameter();
-  double      l        = c.LastParameter();
-  double      milmoins = 0.51 * f + 0.49 * l, milplus = 0.49 * f + 0.51 * l;
+  double             f        = c.FirstParameter();
+  double             l        = c.LastParameter();
+  double             milmoins = 0.51 * f + 0.49 * l, milplus = 0.49 * f + 0.51 * l;
   if (p1 < p2)
   {
     c.Load(c.Curve(), f, milmoins);
@@ -124,18 +119,19 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
   //----------
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator It;
   It.Initialize(myVDataMap(Index));
-  occ::handle<ChFiDS_Stripe>&     Corner1 = It.ChangeValue();
-  int           Sens1;
-  int           IFd1    = ChFi3d_IndexOfSurfData(Vtx, Corner1, Sens1);
-  NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqFil1 = Corner1->ChangeSetOfSurfData()->ChangeSequence();
-  occ::handle<ChFiDS_SurfData>&   Fd1     = SeqFil1.ChangeValue(IFd1);
+  occ::handle<ChFiDS_Stripe>& Corner1 = It.ChangeValue();
+  int                         Sens1;
+  int                         IFd1 = ChFi3d_IndexOfSurfData(Vtx, Corner1, Sens1);
+  NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqFil1 =
+    Corner1->ChangeSetOfSurfData()->ChangeSequence();
+  occ::handle<ChFiDS_SurfData>& Fd1 = SeqFil1.ChangeValue(IFd1);
 
   // the second
   //----------
   It.Next();
   occ::handle<ChFiDS_Stripe>& Corner2 = It.ChangeValue();
-  int       Sens2;
-  int       IFd2;
+  int                         Sens2;
+  int                         IFd2;
   if (Corner2 == Corner1)
   {
     Sens2 = -1;
@@ -145,20 +141,21 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
   {
     IFd2 = ChFi3d_IndexOfSurfData(Vtx, Corner2, Sens2);
   }
-  NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqFil2 = Corner2->ChangeSetOfSurfData()->ChangeSequence();
-  occ::handle<ChFiDS_SurfData>&   Fd2     = SeqFil2.ChangeValue(IFd2);
+  NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqFil2 =
+    Corner2->ChangeSetOfSurfData()->ChangeSequence();
+  occ::handle<ChFiDS_SurfData>& Fd2 = SeqFil2.ChangeValue(IFd2);
 
   // The concavities are analysed in case of different concavities,
   // preview an evolutionary connection of type ThreeCorner of R to 0.
   // Otherwise the opposite face
   // and the eventual intersection of 2 pcurves on this face are found.
 
-  bool isfirst1 = (Sens1 == 1);
-  bool isfirst2 = (Sens2 == 1);
-  bool OkinterCC, Okvisavis, SameSide;
-  int IFaCo1, IFaCo2;
-  double    UIntPC1, UIntPC2;
-  TopoDS_Face      FaCo;
+  bool        isfirst1 = (Sens1 == 1);
+  bool        isfirst2 = (Sens2 == 1);
+  bool        OkinterCC, Okvisavis, SameSide;
+  int         IFaCo1, IFaCo2;
+  double      UIntPC1, UIntPC2;
+  TopoDS_Face FaCo;
   OkinterCC = ChFi3d_IsInFront(DStr,
                                Corner1,
                                Corner2,
@@ -250,15 +247,15 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
   }
 
   TopoDS_Edge pivot;
-  pivot                            = CP1.Arc();
-  double             parCP1 = CP1.ParameterOnArc();
-  double             parCP2 = CP2.ParameterOnArc();
+  pivot                                 = CP1.Arc();
+  double                         parCP1 = CP1.ParameterOnArc();
+  double                         parCP2 = CP2.ParameterOnArc();
   occ::handle<BRepAdaptor_Curve> Hpivot = new BRepAdaptor_Curve(pivot);
   if (!pivot.IsSame(CP2.Arc()))
   {
     occ::handle<Geom_Curve> csau;
-    double      ubid, vbid;
-    csau                         = BRep_Tool::Curve(pivot, ubid, vbid);
+    double                  ubid, vbid;
+    csau                              = BRep_Tool::Curve(pivot, ubid, vbid);
     occ::handle<Geom_BoundedCurve> C1 = occ::down_cast<Geom_BoundedCurve>(csau);
     if (!C1.IsNull())
     {
@@ -269,14 +266,14 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
       parCP2 = ext.Point(1).Parameter();
     }
   }
-  gp_Pnt        psp1      = Hpivot->Value(parCP1);
-  gp_Pnt        psp2      = Hpivot->Value(parCP2);
+  gp_Pnt psp1      = Hpivot->Value(parCP1);
+  gp_Pnt psp2      = Hpivot->Value(parCP2);
   double sameparam = (psp1.Distance(psp2) < 10.0 * tolapp3d);
 
-  TopoDS_Face                        FF1 = TopoDS::Face(DStr.Shape(Fd1->Index(IFaArc1)));
-  TopoDS_Face                        FF2 = TopoDS::Face(DStr.Shape(Fd2->Index(IFaArc2)));
+  TopoDS_Face                              FF1 = TopoDS::Face(DStr.Shape(Fd1->Index(IFaArc1)));
+  TopoDS_Face                              FF2 = TopoDS::Face(DStr.Shape(Fd2->Index(IFaArc2)));
   NCollection_List<TopoDS_Shape>::Iterator Kt;
-  bool                   ok1 = false, ok2 = false;
+  bool                                     ok1 = false, ok2 = false;
   for (Kt.Initialize(myEFMap(pivot)); Kt.More(); Kt.Next())
   {
     TopoDS_Face F = TopoDS::Face(Kt.Value());
@@ -385,17 +382,17 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
       return done;
     }
     // CornerData are updated with results of the intersection.
-    double       WFirst = Gc->FirstParameter();
-    double       WLast  = Gc->LastParameter();
-    int    Ipoin1;
-    int    Ipoin2;
+    double              WFirst = Gc->FirstParameter();
+    double              WLast  = Gc->LastParameter();
+    int                 Ipoin1;
+    int                 Ipoin2;
     ChFiDS_CommonPoint& cpco1   = Fd1->ChangeVertex(isfirst1, IFaCo1);
     ChFiDS_CommonPoint& cpco2   = Fd2->ChangeVertex(isfirst2, IFaCo2);
-    double       tolpco  = std::max(cpco1.Tolerance(), cpco2.Tolerance());
+    double              tolpco  = std::max(cpco1.Tolerance(), cpco2.Tolerance());
     ChFiDS_CommonPoint& cparc1  = Fd1->ChangeVertex(isfirst1, IFaArc1);
     ChFiDS_CommonPoint& cparc2  = Fd2->ChangeVertex(isfirst2, IFaArc2);
-    double       tolparc = std::max(cparc1.Tolerance(), cparc2.Tolerance());
-    int    ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
+    double              tolparc = std::max(cparc1.Tolerance(), cparc2.Tolerance());
+    int                 ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
     // Corner1
     Corner1->SetParameters(isfirst1, WFirst, WLast);
     Corner1->SetCurve(ICurv, isfirst1);
@@ -444,8 +441,8 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     // on the opposing face with the surface of the big,
     // and finally intersect the big with the face at end
     // between this point and the point on arc.
-    bool parcrois = false;
-    TopExp_Explorer  Expl;
+    bool            parcrois = false;
+    TopExp_Explorer Expl;
     for (Expl.Init(pivot.Oriented(TopAbs_FORWARD), TopAbs_VERTEX); Expl.More(); Expl.Next())
     {
       if (Expl.Current().IsSame(Vtx))
@@ -457,9 +454,9 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     occ::handle<ChFiDS_Stripe>       BigCD, SmaCD;
     occ::handle<ChFiDS_SurfData>     BigFD, SmaFD;
     occ::handle<GeomAdaptor_Surface> BigHS, SmaHS;
-    int            IFaCoBig, IFaCoSma, IFaArcBig, IFaArcSma;
-    bool            isfirstBig, isfirstSma;
-    double               UIntPCBig, UIntPCSma;
+    int                              IFaCoBig, IFaCoSma, IFaArcBig, IFaArcSma;
+    bool                             isfirstBig, isfirstSma;
+    double                           UIntPCBig, UIntPCSma;
 
     if ((parcrois && parCP2 > parCP1) || (!parcrois && parCP2 < parCP1))
     {
@@ -517,10 +514,10 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
 
     // Parfin (parameters of point PMil)
     const ChFiDS_FaceInterference& FiArcSma = SmaFD->Interference(IFaArcSma);
-    occ::handle<Geom_Curve>             ctg      = DStr.Curve(FiArcSma.LineIndex()).Curve();
-    occ::handle<GeomAdaptor_Curve>      Hctg     = new GeomAdaptor_Curve();
+    occ::handle<Geom_Curve>        ctg      = DStr.Curve(FiArcSma.LineIndex()).Curve();
+    occ::handle<GeomAdaptor_Curve> Hctg     = new GeomAdaptor_Curve();
     GeomAdaptor_Curve&             bid      = *Hctg;
-    double                  temp, wi;
+    double                         temp, wi;
 
     if (isfirstSma)
     {
@@ -575,15 +572,15 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
       return done;
     }
     // SmaCD is updated, for it this is all.
-    double       WFirst = Gc->FirstParameter();
-    double       WLast  = Gc->LastParameter();
-    int    IpointCo, IpointMil, IpointArc;
+    double              WFirst = Gc->FirstParameter();
+    double              WLast  = Gc->LastParameter();
+    int                 IpointCo, IpointMil, IpointArc;
     ChFiDS_CommonPoint& psmaco  = SmaFD->ChangeVertex(isfirstSma, IFaCoSma);
     ChFiDS_CommonPoint& pbigco  = BigFD->ChangeVertex(isfirstBig, IFaCoBig);
-    double       tolpco  = std::max(psmaco.Tolerance(), pbigco.Tolerance());
+    double              tolpco  = std::max(psmaco.Tolerance(), pbigco.Tolerance());
     ChFiDS_CommonPoint& psmamil = SmaFD->ChangeVertex(isfirstSma, IFaArcSma);
-    double       tolpmil = psmamil.Tolerance();
-    int    ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
+    double              tolpmil = psmamil.Tolerance();
+    int                 ICurv   = DStr.AddCurve(TopOpeBRepDS_Curve(Gc, tolreached));
 
     SmaCD->SetParameters(isfirstSma, WFirst, WLast);
     SmaCD->SetCurve(ICurv, isfirstSma);
@@ -608,7 +605,8 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     BigFD->ChangeVertex(isfirstBig, IFaCoBig) = psmaco;
     BigFD->ChangeInterference(IFaCoBig).SetParameter(UIntPCBig, isfirstBig);
 
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&            Li = DStr.ChangeCurveInterferences(ICurv);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li =
+      DStr.ChangeCurveInterferences(ICurv);
     occ::handle<TopOpeBRepDS_CurvePointInterference> Interfp;
     Interfp = ChFi3d_FilPointInDS(TopAbs_FORWARD, ICurv, IpointCo, WFirst);
     Li.Append(Interfp);
@@ -627,7 +625,7 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
       tracurv = TopAbs::Reverse(tracurv);
 
     occ::handle<TopOpeBRepDS_SurfaceCurveInterference> Interfc;
-    int                              ISurf = BigFD->Surf();
+    int                                                ISurf = BigFD->Surf();
     Interfc = ChFi3d_FilCurveInDS(ICurv, ISurf, PGc2, tracurv);
     DStr.ChangeSurfaceInterferences(ISurf).Append(Interfc);
 
@@ -645,14 +643,14 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     // Pardeb (parameters of PMil)
     // The intersection curve surface is tried again, now with representation
     // pcurve on face of the curve to be sure.
-    TopoDS_Face                 F       = TopoDS::Face(DStr.Shape(SmaFD->Index(IFaArcSma)));
+    TopoDS_Face                      F       = TopoDS::Face(DStr.Shape(SmaFD->Index(IFaArcSma)));
     occ::handle<BRepAdaptor_Surface> HF      = new BRepAdaptor_Surface(F);
-    double               fsma    = FiArcSma.FirstParameter();
-    double               lsma    = FiArcSma.LastParameter();
-    double               deltSma = 0.05 * (lsma - fsma);
+    double                           fsma    = FiArcSma.FirstParameter();
+    double                           lsma    = FiArcSma.LastParameter();
+    double                           deltSma = 0.05 * (lsma - fsma);
     occ::handle<Geom2d_Curve>        pcpc    = SmaFD->Interference(IFaArcSma).PCurveOnFace();
-    fsma                                = std::max(pcpc->FirstParameter(), wi - deltSma);
-    lsma                                = std::min(pcpc->LastParameter(), wi + deltSma);
+    fsma                                     = std::max(pcpc->FirstParameter(), wi - deltSma);
+    lsma                                     = std::min(pcpc->LastParameter(), wi + deltSma);
     if (lsma < fsma)
     {
       done = false;
@@ -660,7 +658,7 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     }
     occ::handle<Geom2dAdaptor_Curve> c2df =
       new Geom2dAdaptor_Curve(SmaFD->Interference(IFaArcSma).PCurveOnFace(), fsma, lsma);
-    Adaptor3d_CurveOnSurface         consf(c2df, HF);
+    Adaptor3d_CurveOnSurface              consf(c2df, HF);
     occ::handle<Adaptor3d_CurveOnSurface> Hconsf = new Adaptor3d_CurveOnSurface(consf);
     if (!ChFi3d_IntCS(BigHS, Hconsf, UVi, wi))
     {
@@ -678,7 +676,7 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     gp_Pnt2d ppff1 = UVi;
 
     // Parfin (parameters of the point cpend)
-    double ptg         = BigFD->Interference(IFaArcBig).Parameter(isfirstBig);
+    double ptg                = BigFD->Interference(IFaArcBig).Parameter(isfirstBig);
     UVi                       = BigFD->Interference(IFaArcBig).PCurveOnSurf()->Value(ptg);
     Parfin(3)                 = UVi.X();
     Parfin(4)                 = UVi.Y();
@@ -726,7 +724,8 @@ bool ChFi3d_Builder::PerformTwoCornerbyInter(const int Index)
     IpointArc = ChFi3d_IndexPointInDS(cpend, DStr);
     BigCD->SetIndexPoint(IpointArc, isfirstBig, IFaArcBig);
 
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li7 = DStr.ChangeCurveInterferences(ICurv);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Li7 =
+      DStr.ChangeCurveInterferences(ICurv);
     Interfp = ChFi3d_FilPointInDS(TopAbs_FORWARD, ICurv, IpointMil, WFirst);
     Li7.Append(Interfp);
     Interfp = ChFi3d_FilPointInDS(TopAbs_REVERSED, ICurv, IpointArc, WLast);
@@ -790,7 +789,7 @@ void ChFi3d_Builder::UpdateTolesp()
   {
     occ::handle<ChFiDS_Stripe>& curStripe             = itel.ChangeValue();
     occ::handle<ChFiDS_Spine>&  Spine                 = curStripe->ChangeSpine();
-    const double    current_stripe_tolesp = Spine->GetTolesp();
+    const double                current_stripe_tolesp = Spine->GetTolesp();
     if (tolesp > current_stripe_tolesp)
     {
       tolesp = current_stripe_tolesp;

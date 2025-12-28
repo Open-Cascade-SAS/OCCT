@@ -24,18 +24,12 @@
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_List.hxx>
 #include <Expr_GeneralRelation.hxx>
-#include <NCollection_List.hxx>
 #include <Expr_GeneralFunction.hxx>
-#include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_List.hxx>
 #include <Expr_NamedFunction.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Expr_NamedExpression.hxx>
-#include <NCollection_Sequence.hxx>
-#include <Standard_Integer.hxx>
 class ExprIntrp_Generator;
 class Expr_GeneralExpression;
 class Expr_GeneralRelation;
@@ -88,14 +82,14 @@ public:
   Standard_EXPORT occ::handle<Expr_NamedFunction> GetFunction(const TCollection_AsciiString& name);
 
 private:
-  NCollection_List<occ::handle<Expr_GeneralExpression>>  myGEStack;
-  NCollection_List<occ::handle<Expr_GeneralRelation>>    myGRStack;
-  NCollection_List<occ::handle<Expr_GeneralFunction>>    myGFStack;
-  NCollection_List<TCollection_AsciiString>           myNameStack;
-  NCollection_List<int>               myValueStack;
+  NCollection_List<occ::handle<Expr_GeneralExpression>>   myGEStack;
+  NCollection_List<occ::handle<Expr_GeneralRelation>>     myGRStack;
+  NCollection_List<occ::handle<Expr_GeneralFunction>>     myGFStack;
+  NCollection_List<TCollection_AsciiString>               myNameStack;
+  NCollection_List<int>                                   myValueStack;
   NCollection_Sequence<occ::handle<Expr_NamedFunction>>   myFunctions;
   NCollection_Sequence<occ::handle<Expr_NamedExpression>> myNamed;
-  occ::handle<ExprIntrp_Generator>         myMaster;
+  occ::handle<ExprIntrp_Generator>                        myMaster;
 };
 
 #endif // _ExprIntrp_Analysis_HeaderFile

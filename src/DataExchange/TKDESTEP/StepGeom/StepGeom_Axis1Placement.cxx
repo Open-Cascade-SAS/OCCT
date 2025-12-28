@@ -22,7 +22,7 @@ StepGeom_Axis1Placement::StepGeom_Axis1Placement() {}
 
 void StepGeom_Axis1Placement::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const occ::handle<StepGeom_CartesianPoint>&  aLocation,
-                                   const bool                  hasAaxis,
+                                   const bool                                   hasAaxis,
                                    const occ::handle<StepGeom_Direction>&       aAxis)
 {
   // --- classe own fields ---

@@ -215,10 +215,7 @@ inline const IntSurf_PntOn2S& IntPatch_Point::PntOn2S() const
   return pt;
 }
 
-inline void IntPatch_Point::Parameters(double& U1,
-                                       double& V1,
-                                       double& U2,
-                                       double& V2) const
+inline void IntPatch_Point::Parameters(double& U1, double& V1, double& U2, double& V2) const
 {
   pt.Parameters(U1, V1, U2, V2);
 }

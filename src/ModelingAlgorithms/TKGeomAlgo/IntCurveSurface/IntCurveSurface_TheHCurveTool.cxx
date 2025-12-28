@@ -23,7 +23,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Array1.hxx>
 #include <gce_MakeLin.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
@@ -32,12 +31,12 @@
 #define myMinPnts 5
 
 int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>& C,
-                                                          const double            U0,
-                                                          const double            U1)
+                                             const double                        U0,
+                                             const double                        U1)
 {
-  GeomAbs_CurveType   typC     = C->GetType();
-  const double nbsOther = 10.0;
-  double       nbs      = nbsOther;
+  GeomAbs_CurveType typC     = C->GetType();
+  const double      nbsOther = 10.0;
+  double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -57,16 +56,16 @@ int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>&
   return ((int)nbs);
 }
 
-void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve>& C,
-                                               const double            U0,
-                                               const double            U1,
-                                               const double            Defl,
-                                               const int         NbMin,
+void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve>&       C,
+                                               const double                              U0,
+                                               const double                              U1,
+                                               const double                              Defl,
+                                               const int                                 NbMin,
                                                occ::handle<NCollection_HArray1<double>>& Pars)
 {
-  GeomAbs_CurveType   typC     = C->GetType();
-  const double nbsOther = 10.0;
-  double       nbs      = nbsOther;
+  GeomAbs_CurveType typC     = C->GetType();
+  const double      nbsOther = 10.0;
+  double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -81,13 +80,13 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
       nbs = 50;
     int nnbs = (int)nbs;
 
-    Pars             = new NCollection_HArray1<double>(1, nnbs);
+    Pars      = new NCollection_HArray1<double>(1, nnbs);
     double du = (U1 - U0) / (nnbs - 1);
 
     Pars->SetValue(1, U0);
     Pars->SetValue(nnbs, U1);
-    int i;
-    double    u;
+    int    i;
+    double u;
     for (i = 2, u = U0 + du; i < nnbs; ++i, u += du)
     {
       Pars->SetValue(i, u);
@@ -97,10 +96,10 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
 
   const occ::handle<Geom_BSplineCurve>& aBC = C->BSpline();
 
-  int i, j, k, nbi;
-  double    t1, t2, dt;
-  int ui1 = aBC->FirstUKnotIndex();
-  int ui2 = aBC->LastUKnotIndex();
+  int    i, j, k, nbi;
+  double t1, t2, dt;
+  int    ui1 = aBC->FirstUKnotIndex();
+  int    ui2 = aBC->LastUKnotIndex();
 
   for (i = ui1; i < ui2; ++i)
   {
@@ -129,8 +128,8 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
     bUniform = true;
   }
 
-  NCollection_Array1<double>    aPars(1, nbsu);
-  NCollection_Array1<bool> aFlg(1, nbsu);
+  NCollection_Array1<double> aPars(1, nbsu);
+  NCollection_Array1<bool>   aFlg(1, nbsu);
   // Filling of sample parameters
   if (bUniform)
   {
@@ -174,15 +173,15 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
   }
   // Analysis of deflection
 
-  double    aDefl2 = std::max(Defl * Defl, 1.e-9);
-  double    tol    = std::max(0.01 * aDefl2, 1.e-9);
-  int l;
+  double aDefl2 = std::max(Defl * Defl, 1.e-9);
+  double tol    = std::max(0.01 * aDefl2, 1.e-9);
+  int    l;
 
   int NbSamples = 2;
-  aFlg(1)                    = true;
-  aFlg(nbsu)                 = true;
-  j                          = 1;
-  bool bCont     = true;
+  aFlg(1)       = true;
+  aFlg(nbsu)    = true;
+  j             = 1;
+  bool bCont    = true;
   while (j < nbsu - 1 && bCont)
   {
     if (aFlg(j + 1))
@@ -201,9 +200,9 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
       if (p1.SquareDistance(p2) <= tol)
         continue;
 
-      gce_MakeLin      MkLin(p1, p2);
-      const gp_Lin&    lin = MkLin.Value();
-      bool ok  = true;
+      gce_MakeLin   MkLin(p1, p2);
+      const gp_Lin& lin = MkLin.Value();
+      bool          ok  = true;
       for (l = j + 1; l < k; ++l)
       {
         if (aFlg(l))
@@ -212,7 +211,7 @@ void IntCurveSurface_TheHCurveTool::SamplePars(const occ::handle<Adaptor3d_Curve
           break;
         }
 
-        gp_Pnt        pp = aBC->Value(aPars(l));
+        gp_Pnt pp = aBC->Value(aPars(l));
         double d  = lin.SquareDistance(pp);
 
         if (d <= aDefl2)

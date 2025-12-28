@@ -21,7 +21,7 @@
 #include <StdFail_NotDone.hxx>
 
 math_Gauss::math_Gauss(const math_Matrix&           A,
-                       const double          MinPivot,
+                       const double                 MinPivot,
                        const Message_ProgressRange& theProgress)
     : LU(1, A.RowNumber(), 1, A.ColNumber()),
       Index(1, A.RowNumber()),
@@ -29,7 +29,7 @@ math_Gauss::math_Gauss(const math_Matrix&           A,
       Done(false)
 {
   math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");
-  LU                     = A;
+  LU        = A;
   int Error = LU_Decompose(LU, Index, D, MinPivot, theProgress);
   if (!Error)
   {
@@ -84,9 +84,9 @@ void math_Gauss::Invert(math_Matrix& Inv) const
                                      || (Inv.ColNumber() != LU.ColNumber()),
                                    " ");
 
-  int LowerRow = Inv.LowerRow();
-  int LowerCol = Inv.LowerCol();
-  math_Vector      Column(1, LU.UpperRow());
+  int         LowerRow = Inv.LowerRow();
+  int         LowerCol = Inv.LowerCol();
+  math_Vector Column(1, LU.UpperRow());
 
   int I, J;
   for (J = 1; J <= LU.UpperRow(); J++)

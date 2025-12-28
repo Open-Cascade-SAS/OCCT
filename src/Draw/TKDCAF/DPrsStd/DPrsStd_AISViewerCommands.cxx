@@ -35,9 +35,7 @@
 // purpose  : AISInitViewer (DOC)
 //=======================================================================
 
-static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
-                                              int  theArgNb,
-                                              const char**      theArgVec)
+static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   if (theArgNb != 2)
   {
@@ -51,9 +49,9 @@ static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
     return 1;
   }
 
-  TDF_Label                 aRoot = aDoc->GetData()->Root();
+  TDF_Label                      aRoot = aDoc->GetData()->Root();
   occ::handle<TPrsStd_AISViewer> aDocViewer;
-  TCollection_AsciiString   aViewName =
+  TCollection_AsciiString        aViewName =
     TCollection_AsciiString("Driver1/Document_") + theArgVec[1] + "/View1";
   if (!TPrsStd_AISViewer::Find(aRoot, aDocViewer))
   {
@@ -67,9 +65,7 @@ static int DPrsStd_AISInitViewer(Draw_Interpretor& theDI,
 
 //=================================================================================================
 
-static int DPrsStd_AISRepaint(Draw_Interpretor& di,
-                                           int  nb,
-                                           const char**      arg)
+static int DPrsStd_AISRepaint(Draw_Interpretor& di, int nb, const char** arg)
 {
   if (nb == 2)
   {

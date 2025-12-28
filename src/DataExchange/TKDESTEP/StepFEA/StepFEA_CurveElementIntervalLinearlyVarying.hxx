@@ -38,19 +38,24 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<StepFEA_CurveElementLocation>& aCurveElementInterval_FinishPosition,
     const occ::handle<StepBasic_EulerAngles>&        aCurveElementInterval_EuAngles,
-    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& aSections);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>&
+      aSections);
 
   //! Returns field Sections
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>> Sections() const;
+  Standard_EXPORT occ::handle<
+    NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>
+    Sections() const;
 
   //! Set field Sections
   Standard_EXPORT void SetSections(
-    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& Sections);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>&
+      Sections);
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_CurveElementIntervalLinearlyVarying, StepFEA_CurveElementInterval)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>> theSections;
+  occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>
+    theSections;
 };
 
 #endif // _StepFEA_CurveElementIntervalLinearlyVarying_HeaderFile

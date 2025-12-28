@@ -20,7 +20,6 @@
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <NCollection_Array1.hxx>
 
 //! @brief Batch evaluator for offset curve grid points.
 //!
@@ -98,14 +97,15 @@ public:
   //! @param theParams array of parameter values
   //! @param theN derivative order (N >= 1)
   //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theParams,
-                                                            int                         theN) const;
+  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluateGridDN(
+    const NCollection_Array1<double>& theParams,
+    int                               theN) const;
 
 private:
   occ::handle<Geom_OffsetCurve> myGeom;
   occ::handle<Geom_Curve>       myBasis;
-  double                   myOffset;
-  gp_Dir                   myDirection;
+  double                        myOffset;
+  gp_Dir                        myDirection;
 };
 
 #endif // _GeomGridEval_OffsetCurve_HeaderFile

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveQuad, Select3D_SensitiveEntity)
 //=================================================================================================
 
 MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                           const NCollection_Array1<gp_Pnt>&            theQuadVerts)
+                                           const NCollection_Array1<gp_Pnt>&         theQuadVerts)
     : Select3D_SensitiveEntity(theOwner)
 {
   const int aLowerIdx = theQuadVerts.Lower();
@@ -33,10 +33,10 @@ MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwn
 //=================================================================================================
 
 MeshVS_SensitiveQuad::MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                           const gp_Pnt&                        thePnt1,
-                                           const gp_Pnt&                        thePnt2,
-                                           const gp_Pnt&                        thePnt3,
-                                           const gp_Pnt&                        thePnt4)
+                                           const gp_Pnt&                             thePnt1,
+                                           const gp_Pnt&                             thePnt2,
+                                           const gp_Pnt&                             thePnt3,
+                                           const gp_Pnt&                             thePnt4)
     : Select3D_SensitiveEntity(theOwner)
 {
   myVertices[0] = thePnt1;
@@ -61,7 +61,7 @@ occ::handle<Select3D_SensitiveEntity> MeshVS_SensitiveQuad::GetConnected()
 // purpose  : Checks whether the box overlaps current selecting volume
 //=======================================================================
 bool MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                               SelectBasics_PickResult&             thePickResult)
+                                   SelectBasics_PickResult&             thePickResult)
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
@@ -129,8 +129,9 @@ Select3D_BndBox3d MeshVS_SensitiveQuad::BoundingBox()
   Select3D_BndBox3d aBox;
   for (int aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
   {
-    aBox.Add(
-      NCollection_Vec3<double>(myVertices[aPntIdx].X(), myVertices[aPntIdx].Y(), myVertices[aPntIdx].Z()));
+    aBox.Add(NCollection_Vec3<double>(myVertices[aPntIdx].X(),
+                                      myVertices[aPntIdx].Y(),
+                                      myVertices[aPntIdx].Z()));
   }
 
   return aBox;

@@ -18,7 +18,6 @@
 #include <TDataStd_ReferenceList.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Tool.hxx>
 #include <XmlMDataStd_ReferenceListDriver.hxx>
@@ -51,11 +50,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_ReferenceListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
-                                                        const occ::handle<TDF_Attribute>& theTarget,
-                                                        XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
+                                            const occ::handle<TDF_Attribute>& theTarget,
+                                            XmlObjMgt_RRelocationTable&) const
 {
-  int         aFirstInd, aLastInd;
+  int                      aFirstInd, aLastInd;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -165,7 +164,7 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&  theSour
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ReferenceListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                            XmlObjMgt_Persistent&        theTarget,
+                                            XmlObjMgt_Persistent&             theTarget,
                                             XmlObjMgt_SRelocationTable&) const
 {
   const occ::handle<TDataStd_ReferenceList> aReferenceList =
@@ -177,7 +176,7 @@ void XmlMDataStd_ReferenceListDriver::Paste(const occ::handle<TDF_Attribute>& th
     return;
   }
 
-  int   anU       = aReferenceList->Extent();
+  int                anU       = aReferenceList->Extent();
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
   if (anU == 0)
@@ -204,7 +203,7 @@ void XmlMDataStd_ReferenceListDriver::Paste(const occ::handle<TDF_Attribute>& th
   if (aReferenceList->ID() != TDataStd_ReferenceList::GetID())
   {
     // convert GUID
-    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aReferenceList->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

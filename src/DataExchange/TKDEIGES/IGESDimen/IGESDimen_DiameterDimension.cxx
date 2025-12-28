@@ -32,7 +32,7 @@ IGESDimen_DiameterDimension::IGESDimen_DiameterDimension() {}
 void IGESDimen_DiameterDimension::Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                                        const occ::handle<IGESDimen_LeaderArrow>& aLeader,
                                        const occ::handle<IGESDimen_LeaderArrow>& anotherLeader,
-                                       const gp_XY&                         aCenter)
+                                       const gp_XY&                              aCenter)
 {
   theNote         = aNote;
   theFirstLeader  = aLeader;

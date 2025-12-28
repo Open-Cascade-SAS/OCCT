@@ -53,8 +53,8 @@ const Standard_GUID& TDataStd_AsciiString::ID() const
 // purpose  : Implements Set functionality
 //=======================================================================
 static occ::handle<TDataStd_AsciiString> SetAttr(const TDF_Label&               label,
-                                            const TCollection_AsciiString& theString,
-                                            const Standard_GUID&           theGuid)
+                                                 const TCollection_AsciiString& theString,
+                                                 const Standard_GUID&           theGuid)
 {
   occ::handle<TDataStd_AsciiString> A;
   if (!label.FindAttribute(theGuid, A))
@@ -137,8 +137,8 @@ occ::handle<TDF_Attribute> TDataStd_AsciiString::NewEmpty() const
 void TDataStd_AsciiString::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   occ::handle<TDataStd_AsciiString> R = occ::down_cast<TDataStd_AsciiString>(theWith);
-  myString                       = R->Get();
-  myID                           = R->ID();
+  myString                            = R->Get();
+  myID                                = R->ID();
 }
 
 //=================================================================================================

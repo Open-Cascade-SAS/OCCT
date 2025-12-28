@@ -28,10 +28,11 @@ StepFEA_ElementRepresentation::StepFEA_ElementRepresentation() {}
 //=================================================================================================
 
 void StepFEA_ElementRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&  aNodeList)
+  const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
+                                                     aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>& aNodeList)
 {
   StepRepr_Representation::Init(aRepresentation_Name,
                                 aRepresentation_Items,
@@ -42,7 +43,8 @@ void StepFEA_ElementRepresentation::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> StepFEA_ElementRepresentation::NodeList() const
+occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>
+  StepFEA_ElementRepresentation::NodeList() const
 {
   return theNodeList;
 }

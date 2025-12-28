@@ -45,7 +45,6 @@ protected:
   //! Sets a File Modifier to keep the graph of dependences
   //! unchanges (because it works on the model already produced)
   Standard_EXPORT IGESSelect_FileModifier();
-
 };
 
 #endif // _IGESSelect_FileModifier_HeaderFile

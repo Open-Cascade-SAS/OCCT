@@ -37,7 +37,8 @@ public:
                             const occ::handle<TCollection_HAsciiString>&       aName,
                             const occ::handle<Standard_Transient>&             aConversionFactor);
 
-  Standard_EXPORT void SetPlaneAngleUnit(const occ::handle<StepBasic_PlaneAngleUnit>& aPlaneAngleUnit);
+  Standard_EXPORT void SetPlaneAngleUnit(
+    const occ::handle<StepBasic_PlaneAngleUnit>& aPlaneAngleUnit);
 
   Standard_EXPORT occ::handle<StepBasic_PlaneAngleUnit> PlaneAngleUnit() const;
 

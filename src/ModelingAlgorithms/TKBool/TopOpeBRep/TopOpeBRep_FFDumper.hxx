@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 class TopOpeBRep_LineInter;
@@ -49,27 +48,26 @@ public:
 
   Standard_EXPORT void DumpVP(const TopOpeBRep_VPointInter& VP, const int ISI);
 
-  Standard_EXPORT int ExploreIndex(const TopoDS_Shape&    S,
-                                                const int ISI) const;
+  Standard_EXPORT int ExploreIndex(const TopoDS_Shape& S, const int ISI) const;
 
   Standard_EXPORT void DumpDSP(const TopOpeBRep_VPointInter& VP,
                                const TopOpeBRepDS_Kind       GK,
-                               const int        G,
-                               const bool        newinDS) const;
+                               const int                     G,
+                               const bool                    newinDS) const;
 
   Standard_EXPORT TopOpeBRep_PFacesFiller PFacesFillerDummy() const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRep_FFDumper, Standard_Transient)
 
 private:
-  TopOpeBRep_PFacesFiller        myPFF;
-  TopoDS_Face                    myF1;
-  TopoDS_Face                    myF2;
+  TopOpeBRep_PFacesFiller                                         myPFF;
+  TopoDS_Face                                                     myF1;
+  TopoDS_Face                                                     myF2;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myEM1;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myEM2;
-  int               myEn1;
-  int               myEn2;
-  int               myLineIndex;
+  int                                                             myEn1;
+  int                                                             myEn2;
+  int                                                             myLineIndex;
 };
 
 #endif // _TopOpeBRep_FFDumper_HeaderFile

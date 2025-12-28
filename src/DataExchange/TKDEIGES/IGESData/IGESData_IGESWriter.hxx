@@ -27,8 +27,6 @@
 #include <IGESData_DirPart.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
 #include <IGESData_ReadStage.hxx>
 #include <Interface_LineBuffer.hxx>
 #include <Interface_FloatWriter.hxx>
@@ -144,13 +142,13 @@ public:
   //! If <val> is Null, "0" will be sent
   //! If <negative> is True, "Pointer" is sent as negative
   Standard_EXPORT void Send(const occ::handle<IGESData_IGESEntity>& val,
-                            const bool             negative = false);
+                            const bool                              negative = false);
 
   //! Helper method to avoid ambiguity of calls to above methods Send() for
   //! classes derived from IGESData_IGESEntity, for VC++ 10 and 11 compilers
   template <class T>
   void Send(const occ::handle<T>& val,
-            bool negative = false,
+            bool                  negative = false,
             typename opencascade::std::enable_if<
               opencascade::std::is_base_of<IGESData_IGESEntity, T>::value>::type* = 0)
   {
@@ -170,8 +168,8 @@ public:
   //! 1 : Start (if not empty)  2 : Global  3 or 4 : Parameters
   //! RQ: no string list for Directory section
   //! An empty section gives a null handle
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> SectionStrings(
-    const int numsec) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
+                  SectionStrings(const int numsec) const;
 
   //! Writes result on an output defined as an OStream
   //! resolves stored infos at this time; in particular, numbers of
@@ -185,7 +183,7 @@ private:
   //! <more>, if precised, requires that <more> characters will
   //! remain free on the current line once this AddString done
   Standard_EXPORT void AddString(const occ::handle<TCollection_HAsciiString>& val,
-                                 const int                  more = 0);
+                                 const int                                    more = 0);
 
   //! Basic action of adding a string to current parameter list as a
   //! line. Manages size limit (64 or 72 according Sestion G or P)
@@ -193,9 +191,7 @@ private:
   //! given, it is computed by strlen(val).
   //! <more>, if precised, requires that <more> characters will
   //! remain free on the current line once this AddString done
-  Standard_EXPORT void AddString(const char* val,
-                                 const int lnval = 0,
-                                 const int more  = 0);
+  Standard_EXPORT void AddString(const char* val, const int lnval = 0, const int more = 0);
 
   //! Adds a string defined as a single character (for instance, the
   //! parameter separator). Manages size limit
@@ -204,19 +200,19 @@ private:
   Standard_EXPORT void AddChar(const char val, const int more = 0);
 
 private:
-  occ::handle<IGESData_IGESModel>              themodel;
+  occ::handle<IGESData_IGESModel>                                           themodel;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thestar;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thehead;
-  char                      thesep;
-  char                      theendm;
-  NCollection_Array1<IGESData_DirPart>                thedirs;
-  NCollection_Array1<int>                 thepnum;
+  char                                                                      thesep;
+  char                                                                      theendm;
+  NCollection_Array1<IGESData_DirPart>                                      thedirs;
+  NCollection_Array1<int>                                                   thepnum;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thepars;
-  int                        thesect;
-  IGESData_ReadStage                      thestep;
-  Interface_LineBuffer                    thecurr;
-  int                        themodew;
-  Interface_FloatWriter                   thefloatw;
+  int                                                                       thesect;
+  IGESData_ReadStage                                                        thestep;
+  Interface_LineBuffer                                                      thecurr;
+  int                                                                       themodew;
+  Interface_FloatWriter                                                     thefloatw;
 };
 
 #endif // _IGESData_IGESWriter_HeaderFile

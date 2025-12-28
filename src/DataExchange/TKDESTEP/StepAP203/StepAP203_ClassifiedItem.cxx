@@ -40,15 +40,16 @@ int StepAP203_ClassifiedItem::CaseNum(const occ::handle<Standard_Transient>& ent
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ClassifiedItem::ProductDefinitionFormation()
-  const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ClassifiedItem::
+  ProductDefinitionFormation() const
 {
   return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }
 
 //=================================================================================================
 
-occ::handle<StepRepr_AssemblyComponentUsage> StepAP203_ClassifiedItem::AssemblyComponentUsage() const
+occ::handle<StepRepr_AssemblyComponentUsage> StepAP203_ClassifiedItem::AssemblyComponentUsage()
+  const
 {
   return occ::down_cast<StepRepr_AssemblyComponentUsage>(Value());
 }

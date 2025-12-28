@@ -47,10 +47,10 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EqualDistanceRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_EqualDistanceRelation::PrsDim_EqualDistanceRelation(const TopoDS_Shape&       aShape1,
-                                                           const TopoDS_Shape&       aShape2,
-                                                           const TopoDS_Shape&       aShape3,
-                                                           const TopoDS_Shape&       aShape4,
+PrsDim_EqualDistanceRelation::PrsDim_EqualDistanceRelation(const TopoDS_Shape&            aShape1,
+                                                           const TopoDS_Shape&            aShape2,
+                                                           const TopoDS_Shape&            aShape3,
+                                                           const TopoDS_Shape&            aShape4,
                                                            const occ::handle<Geom_Plane>& aPlane)
     : PrsDim_Relation()
 {
@@ -202,8 +202,9 @@ void PrsDim_EqualDistanceRelation::Compute(const occ::handle<PrsMgr_Presentation
 
 //=================================================================================================
 
-void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                                    const int)
+void PrsDim_EqualDistanceRelation::ComputeSelection(
+  const occ::handle<SelectMgr_Selection>& aSelection,
+  const int)
 {
   occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
   occ::handle<Select3D_SensitiveSegment> seg;
@@ -220,15 +221,15 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
   seg = new Select3D_SensitiveSegment(own, Middle12, Middle34);
   aSelection->Add(seg);
 
-  gp_Pnt                        Middle((Middle12.XYZ() + Middle34.XYZ()) * 0.5);
-  double                 SmallDist = .001;
+  gp_Pnt                             Middle((Middle12.XYZ() + Middle34.XYZ()) * 0.5);
+  double                             SmallDist = .001;
   occ::handle<Select3D_SensitiveBox> box       = new Select3D_SensitiveBox(own,
-                                                                Middle.X() - SmallDist,
-                                                                Middle.Y() - SmallDist,
-                                                                Middle.Z() - SmallDist,
-                                                                Middle.X() + SmallDist,
-                                                                Middle.Y() + SmallDist,
-                                                                Middle.Z() + SmallDist);
+                                                                     Middle.X() - SmallDist,
+                                                                     Middle.Y() - SmallDist,
+                                                                     Middle.Z() - SmallDist,
+                                                                     Middle.X() + SmallDist,
+                                                                     Middle.Y() + SmallDist,
+                                                                     Middle.Z() + SmallDist);
   aSelection->Add(box);
 
   if (myFShape.ShapeType() == TopAbs_EDGE)
@@ -243,8 +244,8 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
     else if (aCurve.GetType() == GeomAbs_Circle)
     {
       occ::handle<Geom_Circle> aCircle  = occ::down_cast<Geom_Circle>(aCurve.Curve().Curve());
-      double       FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint1),
-                    LastPar        = ElCLib::Parameter(aCircle->Circ(), myPoint1);
+      double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint1),
+             LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint1);
       if (LastPar < FirstPar)
         LastPar += M_PI * 2;
       occ::handle<Select3D_SensitivePoly> circ =
@@ -270,8 +271,8 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
     else if (aCurve.GetType() == GeomAbs_Circle)
     {
       occ::handle<Geom_Circle> aCircle  = occ::down_cast<Geom_Circle>(aCurve.Curve().Curve());
-      double       FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint2),
-                    LastPar        = ElCLib::Parameter(aCircle->Circ(), myPoint2);
+      double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint2),
+             LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint2);
       if (LastPar < FirstPar)
         LastPar += M_PI * 2;
       occ::handle<Select3D_SensitivePoly> circ =
@@ -297,8 +298,8 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
     else if (aCurve.GetType() == GeomAbs_Circle)
     {
       occ::handle<Geom_Circle> aCircle  = occ::down_cast<Geom_Circle>(aCurve.Curve().Curve());
-      double       FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint3),
-                    LastPar        = ElCLib::Parameter(aCircle->Circ(), myPoint3);
+      double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint3),
+             LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint3);
       if (LastPar < FirstPar)
         LastPar += M_PI * 2;
       occ::handle<Select3D_SensitivePoly> circ =
@@ -329,8 +330,8 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
     else if (aCurve.GetType() == GeomAbs_Circle)
     {
       occ::handle<Geom_Circle> aCircle  = occ::down_cast<Geom_Circle>(aCurve.Curve().Curve());
-      double       FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint4),
-                    LastPar        = ElCLib::Parameter(aCircle->Circ(), myPoint4);
+      double                   FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint4),
+             LastPar                    = ElCLib::Parameter(aCircle->Circ(), myPoint4);
       if (LastPar < FirstPar)
         LastPar += M_PI * 2;
       occ::handle<Select3D_SensitivePoly> circ =
@@ -350,19 +351,19 @@ void PrsDim_EqualDistanceRelation::ComputeSelection(const occ::handle<SelectMgr_
 void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
   const occ::handle<Prs3d_Presentation>& aPresentation,
   const occ::handle<Prs3d_Drawer>&       aDrawer,
-  const double               ArrowSize,
-  const TopoDS_Edge&                FirstEdge,
-  const TopoDS_Edge&                SecondEdge,
+  const double                           ArrowSize,
+  const TopoDS_Edge&                     FirstEdge,
+  const TopoDS_Edge&                     SecondEdge,
   const occ::handle<Geom_Plane>&         Plane,
-  const bool            AutomaticPos,
-  const bool            IsSetBndBox,
-  const Bnd_Box&                    BndBox,
-  gp_Pnt&                           Position,
-  gp_Pnt&                           FirstAttach,
-  gp_Pnt&                           SecondAttach,
-  gp_Pnt&                           FirstExtreme,
-  gp_Pnt&                           SecondExtreme,
-  DsgPrs_ArrowSide&                 SymbolPrs)
+  const bool                             AutomaticPos,
+  const bool                             IsSetBndBox,
+  const Bnd_Box&                         BndBox,
+  gp_Pnt&                                Position,
+  gp_Pnt&                                FirstAttach,
+  gp_Pnt&                                SecondAttach,
+  gp_Pnt&                                FirstExtreme,
+  gp_Pnt&                                SecondExtreme,
+  DsgPrs_ArrowSide&                      SymbolPrs)
 {
   gp_Dir            DirAttach;
   BRepAdaptor_Curve cu1(FirstEdge);
@@ -370,13 +371,13 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
   // 3d lines
   occ::handle<Geom_Curve> geom1, geom2;
-  gp_Pnt             ptat11, ptat12, ptat21, ptat22;
+  gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
 
-  bool   isInfinite1(false), isInfinite2(false);
+  bool                    isInfinite1(false), isInfinite2(false);
   occ::handle<Geom_Curve> extCurv;
-  double      arrsize = ArrowSize; // size
-  double      Val     = 0.;
-  bool   isInPlane1, isInPlane2;
+  double                  arrsize = ArrowSize; // size
+  double                  Val     = 0.;
+  bool                    isInPlane1, isInPlane2;
 
   if (!PrsDim::ComputeGeometry(FirstEdge,
                                geom1,
@@ -403,8 +404,8 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
   {
     occ::handle<Geom_Line> geom_lin1(occ::down_cast<Geom_Line>(geom1));
     occ::handle<Geom_Line> geom_lin2(occ::down_cast<Geom_Line>(geom2));
-    const gp_Lin&     l1 = geom_lin1->Lin();
-    const gp_Lin&     l2 = geom_lin2->Lin();
+    const gp_Lin&          l1 = geom_lin1->Lin();
+    const gp_Lin&          l2 = geom_lin2->Lin();
 
     // Get Val value
     Val = l1.Distance(l2);
@@ -414,7 +415,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     if (AutomaticPos)
     {
       // compute position of offset point
-      gp_Pnt        curpos;
+      gp_Pnt curpos;
       double par1 = 0., par2 = 0.;
       if (!(isInfinite1 || isInfinite2))
       {
@@ -513,8 +514,8 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     // Get first and last points of circles
     occ::handle<Geom_Circle> aCir1(occ::down_cast<Geom_Circle>(geom1));
     occ::handle<Geom_Circle> aCir2(occ::down_cast<Geom_Circle>(geom2));
-    gp_Circ             aCirc1 = aCir1->Circ();
-    gp_Circ             aCirc2 = aCir2->Circ();
+    gp_Circ                  aCirc1 = aCir1->Circ();
+    gp_Circ                  aCirc2 = aCir2->Circ();
 
     // To avoid circles with different orientation
     constexpr double aTol = Precision::Confusion();
@@ -529,7 +530,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
     if (AutomaticPos)
     {
       double par1 = 0, par2 = 0;
-      gp_Pln        aPln = Plane->Pln();
+      gp_Pln aPln = Plane->Pln();
       // Project ptat12 and ptat22 on constraint plane
       gp_Pnt PrPnt12 = PrsDim::ProjectPointOnPlane(ptat12, aPln);
       gp_Pnt PrPnt22 = PrsDim::ProjectPointOnPlane(ptat22, aPln);
@@ -541,7 +542,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
       if (PrPnt12.Distance(PrCenter) > Precision::Confusion())
       {
-        gp_Dir        aDir1(PrPnt12.XYZ() - PrCenter.XYZ());
+        gp_Dir aDir1(PrPnt12.XYZ() - PrCenter.XYZ());
         double anAngle = aDir1.Angle(XDir); // Get the angle in range [0, M_PI]
         if (aDir1.Dot(YDir) < 0)
           anAngle = 2 * M_PI - anAngle;
@@ -550,7 +551,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
       if (PrPnt22.Distance(PrCenter) > Precision::Confusion())
       {
-        gp_Dir        aDir2(PrPnt22.XYZ() - PrCenter.XYZ());
+        gp_Dir aDir2(PrPnt22.XYZ() - PrCenter.XYZ());
         double anAngle = aDir2.Angle(XDir); // Get the angle in range [0, M_PI]
         if (aDir2.Dot(YDir) < 0)
           anAngle = 2 * M_PI - anAngle;
@@ -559,23 +560,23 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 
       if (par1 > par2)
       {
-        FirstExtreme        = ptat12;
-        double aPar1 = ElCLib::Parameter(aCirc2, ptat12);
-        SecondExtreme       = ElCLib::Value(aPar1, aCirc2);
+        FirstExtreme  = ptat12;
+        double aPar1  = ElCLib::Parameter(aCirc2, ptat12);
+        SecondExtreme = ElCLib::Value(aPar1, aCirc2);
       }
       else
       {
-        double aPar2 = ElCLib::Parameter(aCirc1, ptat22);
-        FirstExtreme        = ElCLib::Value(aPar2, aCirc1);
-        SecondExtreme       = ptat22;
+        double aPar2  = ElCLib::Parameter(aCirc1, ptat22);
+        FirstExtreme  = ElCLib::Value(aPar2, aCirc1);
+        SecondExtreme = ptat22;
       }
     }
     else
     {
       double pospar = ElCLib::Parameter(aCirc1, Position);
-      FirstExtreme         = ElCLib::Value(pospar, aCirc1);
-      pospar               = ElCLib::Parameter(aCirc2, Position);
-      SecondExtreme        = ElCLib::Value(pospar, aCirc2);
+      FirstExtreme  = ElCLib::Value(pospar, aCirc1);
+      pospar        = ElCLib::Parameter(aCirc2, Position);
+      SecondExtreme = ElCLib::Value(pospar, aCirc2);
     }
 
     DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(aPresentation,
@@ -616,28 +617,28 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength(
 void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(
   const occ::handle<Prs3d_Presentation>& aPresentation,
   const occ::handle<Prs3d_Drawer>&       aDrawer,
-  const double               ArrowSize,
-  const TopoDS_Vertex&              FirstVertex,
-  const TopoDS_Vertex&              SecondVertex,
+  const double                           ArrowSize,
+  const TopoDS_Vertex&                   FirstVertex,
+  const TopoDS_Vertex&                   SecondVertex,
   const occ::handle<Geom_Plane>&         Plane,
-  const bool            AutomaticPos,
-  const bool            IsSetBndBox,
-  const Bnd_Box&                    BndBox,
-  const PrsDim_TypeOfDist           TypeDist,
-  gp_Pnt&                           Position,
-  gp_Pnt&                           FirstAttach,
-  gp_Pnt&                           SecondAttach,
-  gp_Pnt&                           FirstExtreme,
-  gp_Pnt&                           SecondExtreme,
-  DsgPrs_ArrowSide&                 SymbolPrs)
+  const bool                             AutomaticPos,
+  const bool                             IsSetBndBox,
+  const Bnd_Box&                         BndBox,
+  const PrsDim_TypeOfDist                TypeDist,
+  gp_Pnt&                                Position,
+  gp_Pnt&                                FirstAttach,
+  gp_Pnt&                                SecondAttach,
+  gp_Pnt&                                FirstExtreme,
+  gp_Pnt&                                SecondExtreme,
+  DsgPrs_ArrowSide&                      SymbolPrs)
 {
-  bool isOnPlane1, isOnPlane2;
-  gp_Dir           DirAttach;
+  bool   isOnPlane1, isOnPlane2;
+  gp_Dir DirAttach;
   PrsDim::ComputeGeometry(FirstVertex, FirstAttach, Plane, isOnPlane1);
   PrsDim::ComputeGeometry(SecondVertex, SecondAttach, Plane, isOnPlane2);
 
   constexpr double confusion(Precision::Confusion());
-  bool        samePoint(FirstAttach.IsEqual(SecondAttach, confusion));
+  bool             samePoint(FirstAttach.IsEqual(SecondAttach, confusion));
 
   if (TypeDist == PrsDim_TypeOfDist_Vertical)
     DirAttach = Plane->Pln().XAxis().Direction();
@@ -710,30 +711,30 @@ void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength(
 void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
   const occ::handle<Prs3d_Presentation>& aPresentation,
   const occ::handle<Prs3d_Drawer>&       aDrawer,
-  const double               ArrowSize,
-  const TopoDS_Shape&               FirstShape,
-  const TopoDS_Shape&               SecondShape,
+  const double                           ArrowSize,
+  const TopoDS_Shape&                    FirstShape,
+  const TopoDS_Shape&                    SecondShape,
   const occ::handle<Geom_Plane>&         Plane,
-  const bool            AutomaticPos,
-  const bool            IsSetBndBox,
-  const Bnd_Box&                    BndBox,
-  gp_Pnt&                           Position,
-  gp_Pnt&                           FirstAttach,
-  gp_Pnt&                           SecondAttach,
-  gp_Pnt&                           FirstExtreme,
-  gp_Pnt&                           SecondExtreme,
-  DsgPrs_ArrowSide&                 SymbolPrs)
+  const bool                             AutomaticPos,
+  const bool                             IsSetBndBox,
+  const Bnd_Box&                         BndBox,
+  gp_Pnt&                                Position,
+  gp_Pnt&                                FirstAttach,
+  gp_Pnt&                                SecondAttach,
+  gp_Pnt&                                FirstExtreme,
+  gp_Pnt&                                SecondExtreme,
+  DsgPrs_ArrowSide&                      SymbolPrs)
 {
   TopoDS_Vertex thevertex;
   TopoDS_Edge   theedge;
 
-  gp_Pnt             ptonedge1, ptonedge2;
+  gp_Pnt                  ptonedge1, ptonedge2;
   occ::handle<Geom_Curve> aCurve;
   occ::handle<Geom_Curve> extCurv;
-  bool   isInfinite;
-  double      Val;
-  bool   isOnPlanEdge, isOnPlanVertex;
-  int   edgenum;
+  bool                    isInfinite;
+  double                  Val;
+  bool                    isOnPlanEdge, isOnPlanVertex;
+  int                     edgenum;
 
   if (FirstShape.ShapeType() == TopAbs_VERTEX)
   {
@@ -762,7 +763,7 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
   if (aCurve->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
     occ::handle<Geom_Line> geom_lin(occ::down_cast<Geom_Line>(aCurve));
-    const gp_Lin&     l = geom_lin->Lin();
+    const gp_Lin&          l = geom_lin->Lin();
 
     // computation of Val
     Val = l.Distance(FirstAttach);
@@ -832,8 +833,8 @@ void PrsDim_EqualDistanceRelation::ComputeOneEdgeOneVertexLength(
     }
     else
     {
-      double aPar = ElCLib::Parameter(aCirc1, Position);
-      SecondAttach       = ElCLib::Value(aPar, aCirc1);
+      double aPar  = ElCLib::Parameter(aCirc1, Position);
+      SecondAttach = ElCLib::Value(aPar, aCirc1);
     }
 
     occ::handle<Geom_Circle> aCurve2 = new Geom_Circle(aCirc2);

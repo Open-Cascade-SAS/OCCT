@@ -59,29 +59,32 @@ public:
 
   //! Add alert with specified gravity.
   //! This method is thread-safe, i.e. alerts can be added from parallel threads safely.
-  Standard_EXPORT void AddAlert(Message_Gravity theGravity, const occ::handle<Message_Alert>& theAlert);
+  Standard_EXPORT void AddAlert(Message_Gravity                   theGravity,
+                                const occ::handle<Message_Alert>& theAlert);
 
   //! Returns list of collected alerts with specified gravity
-  Standard_EXPORT const NCollection_List<occ::handle<Message_Alert>>& GetAlerts(Message_Gravity theGravity) const;
+  Standard_EXPORT const NCollection_List<occ::handle<Message_Alert>>& GetAlerts(
+    Message_Gravity theGravity) const;
 
   //! Returns true if specific type of alert is recorded
   Standard_EXPORT bool HasAlert(const occ::handle<Standard_Type>& theType);
 
   //! Returns true if specific type of alert is recorded with specified gravity
   Standard_EXPORT bool HasAlert(const occ::handle<Standard_Type>& theType,
-                                            Message_Gravity              theGravity);
+                                Message_Gravity                   theGravity);
 
   //! Returns true if a report printer for the current report is registered in the messenger
   //! @param theMessenger the messenger. If it's NULL, the default messenger is used
-  Standard_EXPORT bool
-    IsActiveInMessenger(const occ::handle<Message_Messenger>& theMessenger = NULL) const;
+  Standard_EXPORT bool IsActiveInMessenger(
+    const occ::handle<Message_Messenger>& theMessenger = NULL) const;
 
   //! Creates an instance of Message_PrinterToReport with the current report and register it in
   //! messenger
   //! @param toActivate if true, activated else deactivated
   //! @param theMessenger the messenger. If it's NULL, the default messenger is used
-  Standard_EXPORT void ActivateInMessenger(const bool           toActivate,
-                                           const occ::handle<Message_Messenger>& theMessenger = NULL);
+  Standard_EXPORT void ActivateInMessenger(
+    const bool                            toActivate,
+    const occ::handle<Message_Messenger>& theMessenger = NULL);
 
   //! Updates internal flag IsActiveInMessenger.
   //! It becomes true if messenger contains at least one instance of Message_PrinterToReport.
@@ -114,7 +117,7 @@ public:
   //! Sets metrics to compute when alerts are performed
   //! @param theMetrics container of metrics
   Standard_EXPORT void SetActiveMetric(const Message_MetricType theMetricType,
-                                       const bool   theActivate);
+                                       const bool               theActivate);
 
   //! Removes all activated metrics
   void ClearMetrics() { myActiveMetrics.Clear(); }
@@ -141,13 +144,14 @@ public:
   //! Default implementation creates Message_Msg object with a message
   //! key returned by alert, and sends it in the messenger.
   Standard_EXPORT virtual void SendMessages(const occ::handle<Message_Messenger>& theMessenger,
-                                            Message_Gravity                  theGravity);
+                                            Message_Gravity                       theGravity);
 
   //! Merges data from theOther report into this
   Standard_EXPORT void Merge(const occ::handle<Message_Report>& theOther);
 
   //! Merges alerts with specified gravity from theOther report into this
-  Standard_EXPORT void Merge(const occ::handle<Message_Report>& theOther, Message_Gravity theGravity);
+  Standard_EXPORT void Merge(const occ::handle<Message_Report>& theOther,
+                             Message_Gravity                    theGravity);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -164,12 +168,12 @@ protected:
 
   //! Sends alerts to messenger
   Standard_EXPORT void sendMessages(const occ::handle<Message_Messenger>&       theMessenger,
-                                    Message_Gravity                        theGravity,
+                                    Message_Gravity                             theGravity,
                                     const occ::handle<Message_CompositeAlerts>& theCompositeAlert);
 
   //! Dumps collected alerts with specified gravity to stream
-  Standard_EXPORT void dumpMessages(Standard_OStream&                      theOS,
-                                    Message_Gravity                        theGravity,
+  Standard_EXPORT void dumpMessages(Standard_OStream&                           theOS,
+                                    Message_Gravity                             theGravity,
                                     const occ::handle<Message_CompositeAlerts>& theCompositeAlert);
 
 protected:
@@ -182,7 +186,7 @@ protected:
   // clang-format on
   NCollection_IndexedMap<Message_MetricType> myActiveMetrics; //!< metrics to compute on alerts
 
-  int myLimit;               //!< Maximum number of collected alerts on the top level
+  int  myLimit;               //!< Maximum number of collected alerts on the top level
   bool myIsActiveInMessenger; //! state whether the report is activated in messenger
 };
 

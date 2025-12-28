@@ -109,7 +109,7 @@ private:
   NCollection_Vector<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
   // clang-format on
   typename OpenGl::MatrixType<T>::Mat4 myCurrent;   //!< Current matrix
-  int                     myStackHead; //!< Index of stack head
+  int                                  myStackHead; //!< Index of stack head
 };
 
 #endif // _OpenGl_MatrixState_H__

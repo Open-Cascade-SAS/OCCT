@@ -39,7 +39,8 @@ public:
 
   void operator=(const TopOpeBRepDS_GeometryData& Other) { Assign(Other); }
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences() const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& Interferences()
+    const;
 
   Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeInterferences();
 

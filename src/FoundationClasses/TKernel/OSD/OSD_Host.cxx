@@ -225,7 +225,7 @@ static BOOL                    fInit = FALSE;
 static TCollection_AsciiString hostName;
 static TCollection_AsciiString version;
 static TCollection_AsciiString interAddr;
-static int        memSize;
+static int                     memSize;
 
 OSD_Host ::OSD_Host()
 {

@@ -72,10 +72,11 @@ const Standard_GUID& XCAFDoc_Datum::GetID()
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_Datum> XCAFDoc_Datum::Set(const TDF_Label&                        theLabel,
-                                         const occ::handle<TCollection_HAsciiString>& theName,
-                                         const occ::handle<TCollection_HAsciiString>& theDescription,
-                                         const occ::handle<TCollection_HAsciiString>& theIdentification)
+occ::handle<XCAFDoc_Datum> XCAFDoc_Datum::Set(
+  const TDF_Label&                             theLabel,
+  const occ::handle<TCollection_HAsciiString>& theName,
+  const occ::handle<TCollection_HAsciiString>& theDescription,
+  const occ::handle<TCollection_HAsciiString>& theIdentification)
 {
   occ::handle<XCAFDoc_Datum> aDatum;
   if (!theLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
@@ -173,7 +174,7 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
   }
 
   XCAFDimTolObjects_DatumModifWithValue aM;
-  double                         aV;
+  double                                aV;
   theObject->GetModifierWithValue(aM, aV);
   if (aM != XCAFDimTolObjects_DatumModifWithValue_None)
   {
@@ -189,8 +190,9 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
 
   if (theObject->IsDatumTarget())
   {
-    occ::handle<TDataStd_Integer> aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetType),
-                                                           theObject->GetDatumTargetType());
+    occ::handle<TDataStd_Integer> aType =
+      TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetType),
+                            theObject->GetDatumTargetType());
 
     if (theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
     {
@@ -202,7 +204,7 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
     }
     else if (theObject->HasDatumTargetParams())
     {
-      gp_Ax2                        anAx    = theObject->GetDatumTargetAxis();
+      gp_Ax2                                   anAx    = theObject->GetDatumTargetAxis();
       occ::handle<NCollection_HArray1<double>> aLocArr = new NCollection_HArray1<double>(1, 3);
       for (int i = 1; i <= 3; i++)
         aLocArr->SetValue(i, anAx.Location().Coord(i));
@@ -229,16 +231,18 @@ void XCAFDoc_Datum::SetObject(const occ::handle<XCAFDimTolObjects_DatumObject>& 
 
       if (theObject->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
       {
-        occ::handle<TDataStd_Real> aLen = TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
-                                                        theObject->GetDatumTargetLength());
+        occ::handle<TDataStd_Real> aLen =
+          TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetLength),
+                             theObject->GetDatumTargetLength());
         if (theObject->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
           occ::handle<TDataStd_Real> aWidth =
             TDataStd_Real::Set(Label().FindChild(ChildLab_DTargetWidth),
                                theObject->GetDatumTargetWidth());
       }
     }
-    occ::handle<TDataStd_Integer> aNum = TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetNumber),
-                                                          theObject->GetDatumTargetNumber());
+    occ::handle<TDataStd_Integer> aNum =
+      TDataStd_Integer::Set(Label().FindChild(ChildLab_DTargetNumber),
+                            theObject->GetDatumTargetNumber());
   }
 
   if (theObject->HasPlane())
@@ -482,7 +486,7 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
   }
 
   occ::handle<TNaming_NamedShape> aNS;
-  TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
+  TDF_Label                       aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
 

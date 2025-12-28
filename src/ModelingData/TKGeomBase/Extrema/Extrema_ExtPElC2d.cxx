@@ -45,20 +45,20 @@ Extrema_ExtPElC2d::Extrema_ExtPElC2d()
 
 //=============================================================================
 
-Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&     P,
-                                     const gp_Lin2d&     L,
-                                     const double Tol,
-                                     const double Uinf,
-                                     const double Usup)
+Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d& P,
+                                     const gp_Lin2d& L,
+                                     const double    Tol,
+                                     const double    Uinf,
+                                     const double    Usup)
 {
   Perform(P, L, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
-                                const gp_Lin2d&     L,
-                                const double Tol,
-                                const double Uinf,
-                                const double Usup)
+void Extrema_ExtPElC2d::Perform(const gp_Pnt2d& P,
+                                const gp_Lin2d& L,
+                                const double    Tol,
+                                const double    Uinf,
+                                const double    Usup)
 {
   myDone = true;
   gp_Pnt2d OR, MyP;
@@ -66,8 +66,8 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
 
   gp_Vec2d V1 = gp_Vec2d(L.Direction());
   OR          = L.Location();
-  gp_Vec2d      V(OR, P);
-  double Mydist = V1.Dot(V);
+  gp_Vec2d V(OR, P);
+  double   Mydist = V1.Dot(V);
   if ((Mydist >= Uinf - Tol) && (Mydist <= Usup + Tol))
   {
     myNbExt = 1;
@@ -81,20 +81,20 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
 
 //=============================================================================
 
-Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&     P,
-                                     const gp_Circ2d&    C,
-                                     const double Tol,
-                                     const double Uinf,
-                                     const double Usup)
+Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&  P,
+                                     const gp_Circ2d& C,
+                                     const double     Tol,
+                                     const double     Uinf,
+                                     const double     Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
-                                const gp_Circ2d&    C,
-                                const double Tol,
-                                const double Uinf,
-                                const double Usup)
+void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&  P,
+                                const gp_Circ2d& C,
+                                const double     Tol,
+                                const double     Uinf,
+                                const double     Usup)
 {
   //  gp_Pnt2d OC, P1, P2, OL;
   gp_Pnt2d OC(C.Location());
@@ -106,16 +106,16 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
   }
   else
   {
-    double radius, U1, U2;
-    gp_Pnt2d      P1, P2;
+    double   radius, U1, U2;
+    gp_Pnt2d P1, P2;
 
     myDone = true;
     gp_Dir2d V(gp_Vec2d(P, OC));
-    radius               = C.Radius();
-    P1                   = OC.Translated(radius * V);
-    U1                   = ElCLib::Parameter(C, P1);
-    U2                   = U1 + M_PI;
-    P2                   = OC.Translated(-radius * V);
+    radius        = C.Radius();
+    P1            = OC.Translated(radius * V);
+    U1            = ElCLib::Parameter(C, P1);
+    U2            = U1 + M_PI;
+    P2            = OC.Translated(-radius * V);
     double myuinf = Uinf;
     ElCLib::AdjustPeriodic(Uinf, Uinf + 2 * M_PI, Precision::PConfusion(), myuinf, U1);
     ElCLib::AdjustPeriodic(Uinf, Uinf + 2 * M_PI, Precision::PConfusion(), myuinf, U2);
@@ -155,20 +155,20 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
 
 //=============================================================================
 
-Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&     P,
-                                     const gp_Elips2d&   E,
-                                     const double Tol,
-                                     const double Uinf,
-                                     const double Usup)
+Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&   P,
+                                     const gp_Elips2d& E,
+                                     const double      Tol,
+                                     const double      Uinf,
+                                     const double      Usup)
 {
   Perform(P, E, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
-                                const gp_Elips2d&   E,
-                                const double Tol,
-                                const double Uinf,
-                                const double Usup)
+void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&   P,
+                                const gp_Elips2d& E,
+                                const double      Tol,
+                                const double      Uinf,
+                                const double      Usup)
 {
   myDone  = false;
   myNbExt = 0;
@@ -176,10 +176,10 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
   gp_Pnt2d OR;
   OR = E.Location();
 
-  int NoSol, NbSol;
-  double    A = E.MajorRadius();
-  double    B = E.MinorRadius();
-  gp_Vec2d         V(OR, P);
+  int      NoSol, NbSol;
+  double   A = E.MajorRadius();
+  double   B = E.MinorRadius();
+  gp_Vec2d V(OR, P);
 
   if (OR.IsEqual(P, Precision::Confusion()) && (std::abs(A - B) <= Tol))
   {
@@ -196,8 +196,8 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
     {
       return;
     }
-    gp_Pnt2d      Cu;
-    double Us;
+    gp_Pnt2d Cu;
+    double   Us;
     NbSol   = Sol.NbSolutions();
     myNbExt = 0;
     for (NoSol = 1; NoSol <= NbSol; NoSol++)
@@ -215,43 +215,43 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
 
 //=============================================================================
 
-Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&     P,
-                                     const gp_Hypr2d&    C,
-                                     const double Tol,
-                                     const double Uinf,
-                                     const double Usup)
+Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&  P,
+                                     const gp_Hypr2d& C,
+                                     const double     Tol,
+                                     const double     Uinf,
+                                     const double     Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
-                                const gp_Hypr2d&    H,
-                                const double Tol,
-                                const double Uinf,
-                                const double Usup)
+void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&  P,
+                                const gp_Hypr2d& H,
+                                const double     Tol,
+                                const double     Uinf,
+                                const double     Usup)
 {
   gp_Pnt2d O = H.Location();
   myDone     = false;
   myNbExt    = 0;
 
-  double              R = H.MajorRadius();
-  double              r = H.MinorRadius();
+  double                     R = H.MajorRadius();
+  double                     r = H.MinorRadius();
   gp_Vec2d                   OPp(O, P);
-  double              Tol2 = Tol * Tol;
-  double              X    = OPp.Dot(gp_Vec2d(H.XAxis().Direction()));
-  double              Y    = OPp.Dot(gp_Vec2d(H.YAxis().Direction()));
-  double              C1   = (R * R + r * r) / 4.;
+  double                     Tol2 = Tol * Tol;
+  double                     X    = OPp.Dot(gp_Vec2d(H.XAxis().Direction()));
+  double                     Y    = OPp.Dot(gp_Vec2d(H.YAxis().Direction()));
+  double                     C1   = (R * R + r * r) / 4.;
   math_DirectPolynomialRoots Sol(C1, -(X * R + Y * r) / 2., 0., (X * R - Y * r) / 2., -C1);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt2d         Cu;
-  double    Us, Vs;
-  int NbSol = Sol.NbSolutions();
-  bool DejaEnr;
-  int NoExt;
-  gp_Pnt2d         TbExt[4];
+  gp_Pnt2d Cu;
+  double   Us, Vs;
+  int      NbSol = Sol.NbSolutions();
+  bool     DejaEnr;
+  int      NoExt;
+  gp_Pnt2d TbExt[4];
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Vs = Sol.Value(NoSol);
@@ -286,42 +286,42 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
 
 //=============================================================================
 
-Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&     P,
-                                     const gp_Parab2d&   C,
-                                     const double Tol,
-                                     const double Uinf,
-                                     const double Usup)
+Extrema_ExtPElC2d::Extrema_ExtPElC2d(const gp_Pnt2d&   P,
+                                     const gp_Parab2d& C,
+                                     const double      Tol,
+                                     const double      Uinf,
+                                     const double      Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
-                                const gp_Parab2d&   C,
-                                const double Tol,
-                                const double Uinf,
-                                const double Usup)
+void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&   P,
+                                const gp_Parab2d& C,
+                                const double      Tol,
+                                const double      Uinf,
+                                const double      Usup)
 {
   myDone     = false;
   myNbExt    = 0;
   gp_Pnt2d O = C.Location();
 
-  double Tol2 = Tol * Tol;
-  double F    = C.Focal();
-  gp_Vec2d      OPp(O, P);
-  double X = OPp.Dot(gp_Vec2d(C.MirrorAxis().Direction()));
-  double Y = OPp.Dot(gp_Vec2d(C.Axis().YAxis().Direction()));
+  double   Tol2 = Tol * Tol;
+  double   F    = C.Focal();
+  gp_Vec2d OPp(O, P);
+  double   X = OPp.Dot(gp_Vec2d(C.MirrorAxis().Direction()));
+  double   Y = OPp.Dot(gp_Vec2d(C.Axis().YAxis().Direction()));
 
   math_DirectPolynomialRoots Sol(1. / (4. * F), 0., 2. * F - X, -2. * F * Y);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt2d         Cu;
-  double    Us;
-  int NbSol = Sol.NbSolutions();
-  bool DejaEnr;
-  int NoExt;
-  gp_Pnt2d         TbExt[3];
+  gp_Pnt2d Cu;
+  double   Us;
+  int      NbSol = Sol.NbSolutions();
+  bool     DejaEnr;
+  int      NoExt;
+  gp_Pnt2d TbExt[3];
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Us = Sol.Value(NoSol);

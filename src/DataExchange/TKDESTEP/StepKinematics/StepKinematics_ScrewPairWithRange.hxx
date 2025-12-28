@@ -35,16 +35,16 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-    const bool                       hasItemDefinedTransformation_Description,
+    const bool                                        hasItemDefinedTransformation_Description,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
     const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-    const double                          theScrewPair_Pitch,
-    const bool                       hasLowerLimitActualRotation,
-    const double                          theLowerLimitActualRotation,
-    const bool                       hasUpperLimitActualRotation,
-    const double                          theUpperLimitActualRotation);
+    const double                                      theScrewPair_Pitch,
+    const bool                                        hasLowerLimitActualRotation,
+    const double                                      theLowerLimitActualRotation,
+    const bool                                        hasUpperLimitActualRotation,
+    const double                                      theUpperLimitActualRotation);
 
   //! Returns field LowerLimitActualRotation
   Standard_EXPORT double LowerLimitActualRotation() const;
@@ -63,9 +63,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_ScrewPairWithRange, StepKinematics_ScrewPair)
 
 private:
-  double    myLowerLimitActualRotation;  //!< optional
-  double    myUpperLimitActualRotation;  //!< optional
-  bool defLowerLimitActualRotation; //!< flag "is LowerLimitActualRotation defined"
-  bool defUpperLimitActualRotation; //!< flag "is UpperLimitActualRotation defined"
+  double myLowerLimitActualRotation;  //!< optional
+  double myUpperLimitActualRotation;  //!< optional
+  bool   defLowerLimitActualRotation; //!< flag "is LowerLimitActualRotation defined"
+  bool   defUpperLimitActualRotation; //!< flag "is UpperLimitActualRotation defined"
 };
 #endif // _StepKinematics_ScrewPairWithRange_HeaderFile_

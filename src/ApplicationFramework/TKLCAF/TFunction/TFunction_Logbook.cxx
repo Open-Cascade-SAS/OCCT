@@ -98,8 +98,7 @@ bool TFunction_Logbook::IsEmpty() const
 // purpose  : Returns true if the label is modified
 //=======================================================================
 
-bool TFunction_Logbook::IsModified(const TDF_Label&       L,
-                                               const bool WithChildren) const
+bool TFunction_Logbook::IsModified(const TDF_Label& L, const bool WithChildren) const
 {
   if (myTouched.Contains(L))
     return true;
@@ -282,7 +281,7 @@ occ::handle<TDF_Attribute> TFunction_Logbook::NewEmpty() const
 Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
 {
   NCollection_Map<TDF_Label>::Iterator itr;
-  TCollection_AsciiString   as;
+  TCollection_AsciiString              as;
 
   stream << "Done = " << isDone << std::endl;
   stream << "Touched labels: " << std::endl;

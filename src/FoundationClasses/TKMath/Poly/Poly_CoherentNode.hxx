@@ -127,14 +127,14 @@ public:
   /**
    * Connect a triangle to this Node.
    */
-  Standard_EXPORT void AddTriangle(const Poly_CoherentTriangle&             theTri,
+  Standard_EXPORT void AddTriangle(const Poly_CoherentTriangle&                  theTri,
                                    const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Disconnect a triangle from this Node.
    */
-  Standard_EXPORT bool RemoveTriangle(const Poly_CoherentTriangle&             theTri,
-                                                  const occ::handle<NCollection_BaseAllocator>& theA);
+  Standard_EXPORT bool RemoveTriangle(const Poly_CoherentTriangle&                  theTri,
+                                      const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
    * Create an iterator of incident triangles.
@@ -151,10 +151,10 @@ public:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  double        myUV[2];
+  double               myUV[2];
   Poly_CoherentTriPtr* myTriangles;
-  int     myIndex;
-  float   myNormal[3];
+  int                  myIndex;
+  float                myNormal[3];
 };
 
 #endif

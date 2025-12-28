@@ -47,14 +47,14 @@ IGESGeom_ToolPlane::IGESGeom_ToolPlane() {}
 
 void IGESGeom_ToolPlane::ReadOwnParams(const occ::handle<IGESGeom_Plane>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_ParamReader&                  PR) const
+                                       IGESData_ParamReader&                       PR) const
 {
   // MGE 30/07/98
 
-  double               A, B = 0., C = 0., D = 0., aSize = 0.;
+  double                           A, B = 0., C = 0., D = 0., aSize = 0.;
   occ::handle<IGESData_IGESEntity> aCurve;
-  gp_XYZ                      attach(0., 0., 0.);
-  IGESData_Status             aStatus;
+  gp_XYZ                           attach(0., 0., 0.);
+  IGESData_Status                  aStatus;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   /*  PR.ReadReal(PR.Current(), Msg135, A); //szv#4:S4163:12Mar99 `st=` not needed
@@ -127,7 +127,7 @@ void IGESGeom_ToolPlane::ReadOwnParams(const occ::handle<IGESGeom_Plane>&       
 //=================================================================================================
 
 void IGESGeom_ToolPlane::WriteOwnParams(const occ::handle<IGESGeom_Plane>& ent,
-                                        IGESData_IGESWriter&          IW) const
+                                        IGESData_IGESWriter&               IW) const
 {
   double A, B, C, D;
   ent->Equation(A, B, C, D);
@@ -147,7 +147,7 @@ void IGESGeom_ToolPlane::WriteOwnParams(const occ::handle<IGESGeom_Plane>& ent,
 //=================================================================================================
 
 void IGESGeom_ToolPlane::OwnShared(const occ::handle<IGESGeom_Plane>& ent,
-                                   Interface_EntityIterator&     iter) const
+                                   Interface_EntityIterator&          iter) const
 {
   iter.GetOneItem(ent->BoundingCurve());
 }
@@ -156,11 +156,11 @@ void IGESGeom_ToolPlane::OwnShared(const occ::handle<IGESGeom_Plane>& ent,
 
 void IGESGeom_ToolPlane::OwnCopy(const occ::handle<IGESGeom_Plane>& another,
                                  const occ::handle<IGESGeom_Plane>& ent,
-                                 Interface_CopyTool&           TC) const
+                                 Interface_CopyTool&                TC) const
 {
   double A, B, C, D;
   another->Equation(A, B, C, D);
-  gp_XYZ        attach = (another->SymbolAttach()).XYZ();
+  gp_XYZ attach = (another->SymbolAttach()).XYZ();
   double aSize  = another->SymbolSize();
   DeclareAndCast(IGESData_IGESEntity, aCurve, TC.Transferred(another->BoundingCurve()));
   ent->Init(A, B, C, D, aCurve, attach, aSize);
@@ -240,9 +240,9 @@ void IGESGeom_ToolPlane::OwnCheck(const occ::handle<IGESGeom_Plane>& ent,
 //=================================================================================================
 
 void IGESGeom_ToolPlane::OwnDump(const occ::handle<IGESGeom_Plane>& ent,
-                                 const IGESData_IGESDumper&    dumper,
-                                 Standard_OStream&             S,
-                                 const int        level) const
+                                 const IGESData_IGESDumper&         dumper,
+                                 Standard_OStream&                  S,
+                                 const int                          level) const
 {
   S << "IGESGeom_Plane\n";
   double A, B, C, D;

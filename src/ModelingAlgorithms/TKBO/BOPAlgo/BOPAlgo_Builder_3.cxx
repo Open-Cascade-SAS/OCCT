@@ -39,7 +39,6 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Set.hxx>
 #include <NCollection_Map.hxx>
-#include <BOPTools_Set.hxx>
 #include <BOPTools_Parallel.hxx>
 //
 #include <BOPAlgo_Tools.hxx>
@@ -48,22 +47,13 @@
 
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
-#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-#include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 
 #include <algorithm>
 
-static void OwnInternalShapes(const TopoDS_Shape&, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&);
+static void OwnInternalShapes(const TopoDS_Shape&,
+                              NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 
 //=================================================================================================
 
@@ -104,8 +94,9 @@ void BOPAlgo_Builder::FillImagesSolids(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
-                                    const Message_ProgressRange&  theRange)
+void BOPAlgo_Builder::FillIn3DParts(
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+  const Message_ProgressRange&                                              theRange)
 {
   Message_ProgressScope aPS(theRange, NULL, 2);
 
@@ -134,7 +125,7 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
       return;
     }
 
-    const TopoDS_Shape&         aS    = aSI.Shape();
+    const TopoDS_Shape&                   aS    = aSI.Shape();
     const NCollection_List<TopoDS_Shape>* pLSIm = myImages.Seek(aS);
 
     if (pLSIm)
@@ -159,9 +150,12 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
   // Get all solids
   NCollection_List<TopoDS_Shape> aLSolids(anAlloc);
   // Keep INTERNAL faces of the solids
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aSolidsIF(1, anAlloc);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aSolidsIF(1, anAlloc);
   // Draft solids
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aDraftSolid(1, anAlloc);
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aDraftSolid(
+    1,
+    anAlloc);
 
   for (i = 0; i < aNbS; ++i)
   {
@@ -184,7 +178,7 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
 
     // Build Draft Solid
     NCollection_List<TopoDS_Shape> aLIF;
-    TopoDS_Solid         aSD;
+    TopoDS_Solid                   aSD;
     aBB.MakeSolid(aSD);
     BuildDraftSolid(aSolid, aSD, aLIF);
 
@@ -195,7 +189,8 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
   }
 
   // Perform classification of the faces
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anInParts;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    anInParts;
 
   BOPAlgo_Tools::ClassifyFaces(aLFaces,
                                aLSolids,
@@ -214,8 +209,8 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
     {
       return;
     }
-    const TopoDS_Solid&         aSolid     = TopoDS::Solid(aDraftSolid.FindKey(i));
-    const TopoDS_Solid&         aSDraft    = TopoDS::Solid(aDraftSolid(i));
+    const TopoDS_Solid&                   aSolid     = TopoDS::Solid(aDraftSolid.FindKey(i));
+    const TopoDS_Solid&                   aSDraft    = TopoDS::Solid(aDraftSolid(i));
     const NCollection_List<TopoDS_Shape>& aLInFaces  = anInParts.FindFromKey(aSDraft);
     const NCollection_List<TopoDS_Shape>& aLInternal = aSolidsIF.Find(aSDraft);
 
@@ -239,7 +234,8 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
     if (aNbInt || aNbIN)
     {
       // Combine the lists
-      NCollection_List<TopoDS_Shape>* pLIN = myInParts.Bound(aSolid, NCollection_List<TopoDS_Shape>());
+      NCollection_List<TopoDS_Shape>* pLIN =
+        myInParts.Bound(aSolid, NCollection_List<TopoDS_Shape>());
 
       NCollection_List<TopoDS_Shape>::Iterator aItLS(aLInFaces);
       for (; aItLS.More(); aItLS.Next())
@@ -254,17 +250,17 @@ void BOPAlgo_Builder::FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Sha
 
 //=================================================================================================
 
-void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape&   theSolid,
-                                      TopoDS_Shape&         theDraftSolid,
+void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape&             theSolid,
+                                      TopoDS_Shape&                   theDraftSolid,
                                       NCollection_List<TopoDS_Shape>& theLIF)
 {
-  bool                   bToReverse;
-  int                   iFlag;
-  TopAbs_Orientation                 aOrF, aOrSh, aOrSd;
-  TopoDS_Iterator                    aIt1, aIt2;
-  TopoDS_Shell                       aShD;
-  TopoDS_Shape                       aFx;
-  BRep_Builder                       aBB;
+  bool                                     bToReverse;
+  int                                      iFlag;
+  TopAbs_Orientation                       aOrF, aOrSh, aOrSd;
+  TopoDS_Iterator                          aIt1, aIt2;
+  TopoDS_Shell                             aShD;
+  TopoDS_Shape                             aFx;
+  BRep_Builder                             aBB;
   NCollection_List<TopoDS_Shape>::Iterator aItS;
   //
   aOrSd = theSolid.Orientation();
@@ -400,21 +396,22 @@ typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
 
 //=================================================================================================
 
-void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
-                                       const Message_ProgressRange&  theRange)
+void BOPAlgo_Builder::BuildSplitSolids(
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+  const Message_ProgressRange&                                              theRange)
 {
-  bool                   bFlagSD;
-  int                   i, aNbS;
-  TopExp_Explorer                    aExp;
+  bool                                     bFlagSD;
+  int                                      i, aNbS;
+  TopExp_Explorer                          aExp;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
   //
   occ::handle<NCollection_BaseAllocator> aAlr0;
   aAlr0 = NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  NCollection_List<TopoDS_Shape>         aSFS(aAlr0), aLSEmpty(aAlr0);
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          aMFence(100, aAlr0);
-  NCollection_Map<BOPTools_Set>            aMST(100, aAlr0);
-  BOPAlgo_VectorOfBuilderSolid aVBS;
+  NCollection_List<TopoDS_Shape>                         aSFS(aAlr0), aLSEmpty(aAlr0);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence(100, aAlr0);
+  NCollection_Map<BOPTools_Set>                          aMST(100, aAlr0);
+  BOPAlgo_VectorOfBuilderSolid                           aVBS;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
   // 0. Find same domain solids for non-interfered solids
@@ -451,7 +448,8 @@ void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_
   //
   // Build temporary map of solids images to avoid rebuilding
   // of the solids without internal faces
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aSolidsIm;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aSolidsIm;
   // 1. Build solids for interfered source solids
   for (i = 0; i < aNbS; ++i)
   {
@@ -464,7 +462,7 @@ void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_
     if (!theDraftSolids.IsBound(aS))
       continue;
 
-    const TopoDS_Shape&         aSD   = theDraftSolids.Find(aS);
+    const TopoDS_Shape&                   aSD   = theDraftSolids.Find(aS);
     const NCollection_List<TopoDS_Shape>* pLFIN = myInParts.Seek(aS);
     if (!pLFIN || pLFIN->IsEmpty())
     {
@@ -530,11 +528,13 @@ void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_
     // have been generated for it.
     // Convert all errors of BuilderSolid into warnings for main report.
     const occ::handle<Message_Report>& aBSReport       = aBS.GetReport();
-    Message_Gravity               anAlertTypes[2] = {Message_Warning, Message_Fail};
+    Message_Gravity                    anAlertTypes[2] = {Message_Warning, Message_Fail};
     for (int iGravity = 0; iGravity < 2; iGravity++)
     {
-      const NCollection_List<occ::handle<Message_Alert>>& anLAlerts = aBSReport->GetAlerts(anAlertTypes[iGravity]);
-      for (NCollection_List<occ::handle<Message_Alert>>::Iterator itA(anLAlerts); itA.More(); itA.Next())
+      const NCollection_List<occ::handle<Message_Alert>>& anLAlerts =
+        aBSReport->GetAlerts(anAlertTypes[iGravity]);
+      for (NCollection_List<occ::handle<Message_Alert>>::Iterator itA(anLAlerts); itA.More();
+           itA.Next())
       {
         occ::handle<Message_Alert> anAlert = itA.Value();
 
@@ -560,7 +560,7 @@ void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_
   aNbBS = aSolidsIm.Extent();
   for (k = 1; k <= aNbBS; ++k)
   {
-    const TopoDS_Shape&         aS   = aSolidsIm.FindKey(k);
+    const TopoDS_Shape&                   aS   = aSolidsIm.FindKey(k);
     const NCollection_List<TopoDS_Shape>& aLSR = aSolidsIm(k);
     //
     if (!myImages.IsBound(aS))
@@ -601,26 +601,27 @@ void BOPAlgo_Builder::BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_
 
 void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
 {
-  int                   i, j, aNbS, aNbSI, aNbSx;
-  TopAbs_ShapeEnum                   aType;
-  TopAbs_State                       aState;
-  TopoDS_Iterator                    aItS;
-  BRep_Builder                       aBB;
+  int                                      i, j, aNbS, aNbSI, aNbSx;
+  TopAbs_ShapeEnum                         aType;
+  TopAbs_State                             aState;
+  TopoDS_Iterator                          aItS;
+  BRep_Builder                             aBB;
   NCollection_List<TopoDS_Shape>::Iterator aIt, aIt1;
   //
   occ::handle<NCollection_BaseAllocator> aAllocator;
   //-----------------------------------------------------scope f
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   //
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMSx(100, aAllocator);
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                aMx(100, aAllocator);
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                aMSI(100, aAllocator);
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                       aMFence(100, aAllocator);
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                       aMSOr(100, aAllocator);
-  NCollection_List<TopoDS_Shape>                      aLSd(aAllocator);
-  NCollection_List<TopoDS_Shape>                      aLArgs(aAllocator);
-  NCollection_List<TopoDS_Shape>                      aLSC(aAllocator);
-  NCollection_List<TopoDS_Shape>                      aLSI(aAllocator);
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                                aMSx(100, aAllocator);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMx(100, aAllocator);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMSI(100, aAllocator);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        aMFence(100, aAllocator);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        aMSOr(100, aAllocator);
+  NCollection_List<TopoDS_Shape>                                aLSd(aAllocator);
+  NCollection_List<TopoDS_Shape>                                aLArgs(aAllocator);
+  NCollection_List<TopoDS_Shape>                                aLSC(aAllocator);
+  NCollection_List<TopoDS_Shape>                                aLSI(aAllocator);
 
   Message_ProgressScope aPS(theRange, NULL, 10);
   //
@@ -775,7 +776,7 @@ void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
     if (aMSx.Contains(aSI))
     {
       const NCollection_List<TopoDS_Shape>& aLSx = aMSx.FindFromKey(aSI);
-      aNbSx                            = aLSx.Extent();
+      aNbSx                                      = aLSx.Extent();
       if (!aNbSx)
       {
         aLSI.Append(aSI);
@@ -839,7 +840,8 @@ void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
         NCollection_List<TopoDS_Shape>* pLS = myImages.Bound(aSd, NCollection_List<TopoDS_Shape>());
         pLS->Append(aSdx);
         //
-        NCollection_List<TopoDS_Shape>* pLOr = myOrigins.Bound(aSdx, NCollection_List<TopoDS_Shape>());
+        NCollection_List<TopoDS_Shape>* pLOr =
+          myOrigins.Bound(aSdx, NCollection_List<TopoDS_Shape>());
         pLOr->Append(aSd);
         //
         aMSOr.Remove(aSd);
@@ -866,7 +868,8 @@ void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void OwnInternalShapes(const TopoDS_Shape& theS, NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMx)
+void OwnInternalShapes(const TopoDS_Shape&                                            theS,
+                       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMx)
 {
   TopoDS_Iterator aIt;
   //

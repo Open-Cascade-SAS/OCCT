@@ -88,7 +88,7 @@ bool CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder)
 {
 
   TCollection_ExtendedString theFolder(aFolder);
-  int           aLen = theFolder.Length();
+  int                        aLen = theFolder.Length();
 
   // if the last character is the folder separator, remove it.
   if (aLen > 1 && (theFolder.Value(aLen) == '/' || theFolder.Value(aLen) == '\\'))

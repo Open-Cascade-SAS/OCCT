@@ -26,14 +26,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible, IGESData_ViewKindEnti
 IGESDraw_SegmentedViewsVisible::IGESDraw_SegmentedViewsVisible() {}
 
 void IGESDraw_SegmentedViewsVisible::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>&  allViews,
-  const occ::handle<NCollection_HArray1<double>>&             allBreakpointParameters,
-  const occ::handle<NCollection_HArray1<int>>&          allDisplayFlags,
-  const occ::handle<NCollection_HArray1<int>>&          allColorValues,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&          allColorDefinitions,
-  const occ::handle<NCollection_HArray1<int>>&          allLineFontValues,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>& allLineFontDefinitions,
-  const occ::handle<NCollection_HArray1<int>>&          allLineWeights)
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+  const occ::handle<NCollection_HArray1<double>>&                       allBreakpointParameters,
+  const occ::handle<NCollection_HArray1<int>>&                          allDisplayFlags,
+  const occ::handle<NCollection_HArray1<int>>&                          allColorValues,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>& allColorDefinitions,
+  const occ::handle<NCollection_HArray1<int>>&                          allLineFontValues,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>&
+                                               allLineFontDefinitions,
+  const occ::handle<NCollection_HArray1<int>>& allLineWeights)
 {
   int Len = allViews->Length();
   if (allViews->Lower() != 1
@@ -78,8 +79,7 @@ occ::handle<IGESData_ViewKindEntity> IGESDraw_SegmentedViewsVisible::ViewItem(
   return theViews->Value(ViewIndex);
 }
 
-double IGESDraw_SegmentedViewsVisible::BreakpointParameter(
-  const int BreakpointIndex) const
+double IGESDraw_SegmentedViewsVisible::BreakpointParameter(const int BreakpointIndex) const
 {
   return theBreakpointParameters->Value(BreakpointIndex);
 }
@@ -89,8 +89,7 @@ int IGESDraw_SegmentedViewsVisible::DisplayFlag(const int FlagIndex) const
   return theDisplayFlags->Value(FlagIndex);
 }
 
-bool IGESDraw_SegmentedViewsVisible::IsColorDefinition(
-  const int ColorIndex) const
+bool IGESDraw_SegmentedViewsVisible::IsColorDefinition(const int ColorIndex) const
 {
   return (!theColorDefinitions->Value(ColorIndex).IsNull());
 }
@@ -106,14 +105,12 @@ occ::handle<IGESGraph_Color> IGESDraw_SegmentedViewsVisible::ColorDefinition(
   return theColorDefinitions->Value(ColorIndex);
 }
 
-bool IGESDraw_SegmentedViewsVisible::IsFontDefinition(
-  const int FontIndex) const
+bool IGESDraw_SegmentedViewsVisible::IsFontDefinition(const int FontIndex) const
 {
   return (!theLineFontDefinitions->Value(FontIndex).IsNull());
 }
 
-int IGESDraw_SegmentedViewsVisible::LineFontValue(
-  const int FontIndex) const
+int IGESDraw_SegmentedViewsVisible::LineFontValue(const int FontIndex) const
 {
   return theLineFontValues->Value(FontIndex);
 }
@@ -124,8 +121,7 @@ occ::handle<IGESData_LineFontEntity> IGESDraw_SegmentedViewsVisible::LineFontDef
   return theLineFontDefinitions->Value(FontIndex);
 }
 
-int IGESDraw_SegmentedViewsVisible::LineWeightItem(
-  const int WeightIndex) const
+int IGESDraw_SegmentedViewsVisible::LineWeightItem(const int WeightIndex) const
 {
   return theLineWeights->Value(WeightIndex);
 }

@@ -57,16 +57,15 @@ public:
   //! Specific action : corrects entities when it is absolutely
   //! obvious, i.e. non equivoque (by DirChecker and specific
   //! service OwnCorrect) : works with a protocol.
-  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&               TC) const override;
+                                  Interface_CopyTool&                    TC) const override;
 
   //! Returns a text which is
   //! "Auto-correction of IGES Entities"
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_AutoCorrect, IGESSelect_ModelModifier)
-
 };
 
 #endif // _IGESSelect_AutoCorrect_HeaderFile

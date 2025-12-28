@@ -20,12 +20,11 @@
 #include <StepVisual_TextOrCharacter.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <StepVisual_TextOrCharacter.hxx>
 
 RWStepVisual_RWCompositeText::RWStepVisual_RWCompositeText() {}
 
 void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                  num,
+                                            const int                                    num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepVisual_CompositeText>& ent) const
 {
@@ -44,13 +43,13 @@ void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReade
   // --- own field : collectedText ---
 
   occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> aCollectedText;
-  StepVisual_TextOrCharacter                  aCollectedTextItem;
-  int                            nsub2;
+  StepVisual_TextOrCharacter                                   aCollectedTextItem;
+  int                                                          nsub2;
   nsub2 = data->SubListNumber(num, 2, false);
   if (nsub2 != 0)
   {
-    int nb2 = data->NbParams(nsub2);
-    aCollectedText       = new NCollection_HArray1<StepVisual_TextOrCharacter>(1, nb2);
+    int nb2        = data->NbParams(nsub2);
+    aCollectedText = new NCollection_HArray1<StepVisual_TextOrCharacter>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -68,7 +67,7 @@ void RWStepVisual_RWCompositeText::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aCollectedText);
 }
 
-void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&                    SW,
+void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&                         SW,
                                              const occ::handle<StepVisual_CompositeText>& ent) const
 {
 
@@ -87,7 +86,7 @@ void RWStepVisual_RWCompositeText::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepVisual_RWCompositeText::Share(const occ::handle<StepVisual_CompositeText>& ent,
-                                         Interface_EntityIterator&               iter) const
+                                         Interface_EntityIterator&                    iter) const
 {
 
   int nbElem1 = ent->NbCollectedText();

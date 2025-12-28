@@ -23,14 +23,8 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <gp_Dir.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 #include <gp_Vec.hxx>
-#include <NCollection_Sequence.hxx>
-#include <NCollection_HSequence.hxx>
 
 class ShapePersistent_HSequence
 {
@@ -111,9 +105,9 @@ class ShapePersistent_HSequence
     Standard_EXPORT occ::handle<SequenceClass> Import() const;
 
   private:
-    occ::handle<Node>     myFirst;
-    occ::handle<Node>     myLast;
-    int mySize;
+    occ::handle<Node> myFirst;
+    occ::handle<Node> myLast;
+    int               mySize;
   };
 
 public:

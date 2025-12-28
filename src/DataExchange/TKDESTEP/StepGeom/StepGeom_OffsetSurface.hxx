@@ -34,8 +34,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Surface>&         aBasisSurface,
-                            const double                     aDistance,
-                            const StepData_Logical                  aSelfIntersect);
+                            const double                                 aDistance,
+                            const StepData_Logical                       aSelfIntersect);
 
   Standard_EXPORT void SetBasisSurface(const occ::handle<StepGeom_Surface>& aBasisSurface);
 
@@ -53,8 +53,8 @@ public:
 
 private:
   occ::handle<StepGeom_Surface> basisSurface;
-  double            distance;
-  StepData_Logical         selfIntersect;
+  double                        distance;
+  StepData_Logical              selfIntersect;
 };
 
 #endif // _StepGeom_OffsetSurface_HeaderFile

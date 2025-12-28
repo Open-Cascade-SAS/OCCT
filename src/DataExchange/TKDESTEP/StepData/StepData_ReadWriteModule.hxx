@@ -51,7 +51,7 @@ public:
   //! Warning : The methods CaseStep, StepType and Recognize,
   //! must be in phase (triplets CaseNum-StepType-Type of Object)
   Standard_EXPORT int CaseNum(const occ::handle<Interface_FileReaderData>& data,
-                                           const int num) const override;
+                              const int                                    num) const override;
 
   //! Defines Case Numbers corresponding to the recognized Types
   //! Called by CaseNum (data,num) above for a Simple Type Entity
@@ -92,30 +92,30 @@ public:
   //! complex type, this method returns False. Else it returns True
   //! and fills the list in alphabetic order.
   //! The default returns False. To be redefined as required.
-  Standard_EXPORT virtual bool ComplexType(const int         CN,
-                                                       NCollection_Sequence<TCollection_AsciiString>& types) const;
+  Standard_EXPORT virtual bool ComplexType(
+    const int                                      CN,
+    NCollection_Sequence<TCollection_AsciiString>& types) const;
 
   //! General Read Function, calls ReadStep
-  Standard_EXPORT void Read(const int                  CN,
+  Standard_EXPORT void Read(const int                                    CN,
                             const occ::handle<Interface_FileReaderData>& data,
-                            const int                  num,
+                            const int                                    num,
                             occ::handle<Interface_Check>&                ach,
                             const occ::handle<Standard_Transient>&       ent) const override;
 
   //! Specific Read Function. Works with StepReaderData
-  Standard_EXPORT virtual void ReadStep(const int                 CN,
+  Standard_EXPORT virtual void ReadStep(const int                                   CN,
                                         const occ::handle<StepData_StepReaderData>& data,
-                                        const int                 num,
+                                        const int                                   num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<Standard_Transient>&      ent) const = 0;
 
   //! Write Function, switched by CaseNum
-  Standard_EXPORT virtual void WriteStep(const int            CN,
-                                         StepData_StepWriter&              SW,
+  Standard_EXPORT virtual void WriteStep(const int                              CN,
+                                         StepData_StepWriter&                   SW,
                                          const occ::handle<Standard_Transient>& ent) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(StepData_ReadWriteModule, Interface_ReaderModule)
-
 };
 
 #endif // _StepData_ReadWriteModule_HeaderFile

@@ -48,12 +48,11 @@ public:
 
   //! Returns Value as AlignedCurve3dElementCoordinateSystem (or Null if another type)
   Standard_EXPORT occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem>
-    AlignedCurve3dElementCoordinateSystem() const;
+                  AlignedCurve3dElementCoordinateSystem() const;
 
   //! Returns Value as ParametricCurve3dElementCoordinateSystem (or Null if another type)
   Standard_EXPORT occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>
-    ParametricCurve3dElementCoordinateSystem() const;
-
+                  ParametricCurve3dElementCoordinateSystem() const;
 };
 
 #endif // _StepFEA_CurveElementEndCoordinateSystem_HeaderFile

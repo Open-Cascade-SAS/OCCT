@@ -19,7 +19,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <BOPDS_Curve.hxx>
-#include <NCollection_Vector.hxx>
 #include <BOPDS_Point.hxx>
 
 /**
@@ -125,10 +124,7 @@ public:
    * @return
    *   true if the interference contains given index
    */
-  bool Contains(const int theIndex) const
-  {
-    return (myIndex1 == theIndex || myIndex2 == theIndex);
-  }
+  bool Contains(const int theIndex) const { return (myIndex1 == theIndex || myIndex2 == theIndex); }
 
   //
   /**
@@ -193,9 +189,9 @@ protected:
   virtual ~BOPDS_Interf() {}
 
 protected:
-  int                  myIndex1;
-  int                  myIndex2;
-  int                  myIndexNew;
+  int                                    myIndex1;
+  int                                    myIndex2;
+  int                                    myIndexNew;
   occ::handle<NCollection_BaseAllocator> myAllocator;
 };
 
@@ -601,7 +597,7 @@ public:
 
   //
 protected:
-  bool    myTangentFaces;
+  bool                            myTangentFaces;
   NCollection_Vector<BOPDS_Curve> myCurves;
   NCollection_Vector<BOPDS_Point> myPoints;
 };

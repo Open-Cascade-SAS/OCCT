@@ -42,7 +42,7 @@ public:
 
 private:
   CPnts_RealFunction myFunction;
-  void*   myData;
+  void*              myData;
 };
 
 #include <CPnts_MyGaussFunction.lxx>

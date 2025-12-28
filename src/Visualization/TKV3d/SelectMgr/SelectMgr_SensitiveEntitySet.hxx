@@ -30,7 +30,8 @@ class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet3d
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 public:
   //! Empty constructor.
-  Standard_EXPORT SelectMgr_SensitiveEntitySet(const occ::handle<Select3D_BVHBuilder3d>& theBuilder);
+  Standard_EXPORT SelectMgr_SensitiveEntitySet(
+    const occ::handle<Select3D_BVHBuilder3d>& theBuilder);
 
   virtual ~SelectMgr_SensitiveEntitySet() {}
 
@@ -46,21 +47,17 @@ public:
   Standard_EXPORT void Remove(const occ::handle<SelectMgr_Selection>& theSelection);
 
   //! Returns bounding box of entity with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIndex) const
-    override;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIndex) const override;
 
   //! Make inherited method Box() visible to avoid CLang warning
   using BVH_PrimitiveSet3d::Box;
 
   //! Returns geometry center of sensitive entity index theIdx
   //! along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIndex,
-                                               const int theAxis) const
-    override;
+  Standard_EXPORT virtual double Center(const int theIndex, const int theAxis) const override;
 
   //! Swaps items with indexes theIdx1 and theIdx2
-  Standard_EXPORT virtual void Swap(const int theIndex1,
-                                    const int theIndex2) override;
+  Standard_EXPORT virtual void Swap(const int theIndex1, const int theIndex2) override;
 
   //! Returns the amount of entities
   Standard_EXPORT virtual int Size() const override;
@@ -70,10 +67,16 @@ public:
     const int theIndex) const;
 
   //! Returns map of entities.
-  const NCollection_IndexedMap<occ::handle<SelectMgr_SensitiveEntity>>& Sensitives() const { return mySensitives; }
+  const NCollection_IndexedMap<occ::handle<SelectMgr_SensitiveEntity>>& Sensitives() const
+  {
+    return mySensitives;
+  }
 
   //! Returns map of owners.
-  const NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>, int>& Owners() const { return myOwnersMap; }
+  const NCollection_DataMap<occ::handle<SelectMgr_EntityOwner>, int>& Owners() const
+  {
+    return myOwnersMap;
+  }
 
   //! Returns map of entities.
   bool HasEntityWithPersistence() const { return myNbEntityWithPersistence > 0; }

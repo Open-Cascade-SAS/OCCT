@@ -86,8 +86,8 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance(
   const gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + aV * aTc;
   thePickResult.SetDepth(myNearPickedPnt.Distance(aClosestPnt) * myScale);
 
-  const gp_Vec        aPickedVec    = aClosestPnt.XYZ() - theSegPnt1.XYZ();
-  const gp_Vec        aFigureVec    = theSegPnt2.XYZ() - theSegPnt1.XYZ();
+  const gp_Vec aPickedVec    = aClosestPnt.XYZ() - theSegPnt1.XYZ();
+  const gp_Vec aFigureVec    = theSegPnt2.XYZ() - theSegPnt1.XYZ();
   const double aPickedVecMod = aPickedVec.Magnitude();
   const double aFigureVecMod = aFigureVec.Magnitude();
   if (aPickedVecMod <= gp::Resolution() || aFigureVecMod <= gp::Resolution())
@@ -96,9 +96,8 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance(
     return;
   }
 
-  const double aCosOfAngle = aFigureVec.Dot(aPickedVec) / (aPickedVecMod * aFigureVecMod);
-  const double aSegPntShift =
-    std::min(aFigureVecMod, std::max(0.0, aCosOfAngle * aPickedVecMod));
+  const double aCosOfAngle  = aFigureVec.Dot(aPickedVec) / (aPickedVecMod * aFigureVecMod);
+  const double aSegPntShift = std::min(aFigureVecMod, std::max(0.0, aCosOfAngle * aPickedVecMod));
   thePickResult.SetPickedPoint(theSegPnt1.XYZ()
                                + aFigureVec.XYZ() * (aSegPntShift / aFigureVecMod));
 }
@@ -113,7 +112,7 @@ bool SelectMgr_RectangularFrustum::segmentPlaneIntersection(
   // clang-format off
   gp_XYZ anU = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ(); // use unnormalized vector instead of myViewRayDir to clip solutions behind Far plane by > 1.0 check
   // clang-format on
-  gp_XYZ        aW = myNearPickedPnt.XYZ() - thePntOnPlane.XYZ();
+  gp_XYZ aW = myNearPickedPnt.XYZ() - thePntOnPlane.XYZ();
   double aD = thePlane.Dot(anU);
   double aN = -thePlane.Dot(aW);
 
@@ -150,11 +149,11 @@ namespace
 // function : computeFrustum
 // purpose  : Computes base frustum data: its vertices and edge directions
 // =======================================================================
-void computeFrustum(const gp_Pnt2d                          theMinPnt,
-                    const gp_Pnt2d&                         theMaxPnt,
+void computeFrustum(const gp_Pnt2d                               theMinPnt,
+                    const gp_Pnt2d&                              theMaxPnt,
                     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder,
-                    gp_Pnt*                                 theVertices,
-                    gp_Vec*                                 theEdges)
+                    gp_Pnt*                                      theVertices,
+                    gp_Vec*                                      theEdges)
 {
   // LeftTopNear
   theVertices[0] = theBuilder->ProjectPntOnViewPlane(theMinPnt.X(), theMaxPnt.Y(), 0.0);
@@ -223,12 +222,12 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
     // one another, only 2 vertices that belong to opposite faces can be projected
     // to simplify calculations.
     int aVertIdxs[6] = {LeftTopNear,
-                                     LeftBottomNear, // opposite planes in height direction
-                                     LeftBottomNear,
-                                     RightBottomNear,  // opposite planes in width direction
-                                                       // clang-format off
+                        LeftBottomNear, // opposite planes in height direction
+                        LeftBottomNear,
+                        RightBottomNear,  // opposite planes in width direction
+                                          // clang-format off
                                       LeftBottomFar, RightBottomNear };  // opposite planes in depth direction
-                                                       // clang-format on
+                                          // clang-format on
     for (int aPlaneIdx = 0; aPlaneIdx < 5; aPlaneIdx += 2)
     {
       double aProj1 = theFrustum->myPlanes[aPlaneIdx].XYZ().Dot(
@@ -244,14 +243,14 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
     // project all vertices onto frustum normals
     for (int aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
     {
-      double aMax   = -DBL_MAX;
-      double aMin   = DBL_MAX;
+      double        aMax   = -DBL_MAX;
+      double        aMin   = DBL_MAX;
       const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
       for (int aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
       {
         double aProjection = aPlane.Dot(theFrustum->myVertices[aVertIdx].XYZ());
-        aMin                      = std::min(aMin, aProjection);
-        aMax                      = std::max(aMax, aProjection);
+        aMin               = std::min(aMin, aProjection);
+        aMax               = std::max(aMax, aProjection);
       }
       theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
       theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
@@ -350,8 +349,8 @@ void SelectMgr_RectangularFrustum::Build()
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
 occ::handle<SelectMgr_BaseIntersector> SelectMgr_RectangularFrustum::ScaleAndTransform(
-  const int                  theScaleFactor,
-  const gp_GTrsf&                         theTrsf,
+  const int                                    theScaleFactor,
+  const gp_GTrsf&                              theTrsf,
   const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
@@ -363,8 +362,8 @@ occ::handle<SelectMgr_BaseIntersector> SelectMgr_RectangularFrustum::ScaleAndTra
                         "Error! Pixel tolerance for selection should not be negative");
 
   occ::handle<SelectMgr_RectangularFrustum> aRes      = new SelectMgr_RectangularFrustum();
-  const bool               isToScale = theScaleFactor != 1;
-  const bool               isToTrsf  = theTrsf.Form() != gp_Identity;
+  const bool                                isToScale = theScaleFactor != 1;
+  const bool                                isToTrsf  = theTrsf.Form() != gp_Identity;
 
   if (!isToScale && !isToTrsf)
   {
@@ -462,9 +461,9 @@ occ::handle<SelectMgr_BaseIntersector> SelectMgr_RectangularFrustum::CopyWithBui
     "Error! SelectMgr_RectangularFrustum::CopyWithBuilder() should be called with valid builder");
 
   occ::handle<SelectMgr_RectangularFrustum> aRes = new SelectMgr_RectangularFrustum();
-  aRes->mySelectionType                     = mySelectionType;
-  aRes->mySelRectangle                      = mySelRectangle;
-  aRes->myPixelTolerance                    = myPixelTolerance;
+  aRes->mySelectionType                          = mySelectionType;
+  aRes->mySelRectangle                           = mySelRectangle;
+  aRes->myPixelTolerance                         = myPixelTolerance;
   aRes->SetBuilder(theBuilder);
 
   return aRes;
@@ -484,8 +483,8 @@ bool SelectMgr_RectangularFrustum::IsScalable() const
 //            theMinPnt and maximum at point theMaxPnt
 // =======================================================================
 bool SelectMgr_RectangularFrustum::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
-                                                           const NCollection_Vec3<double>& theBoxMax,
-                                                           bool*     theInside) const
+                                               const NCollection_Vec3<double>& theBoxMax,
+                                               bool*                           theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -500,11 +499,10 @@ bool SelectMgr_RectangularFrustum::OverlapsBox(const NCollection_Vec3<double>& t
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 // =======================================================================
-bool SelectMgr_RectangularFrustum::OverlapsBox(
-  const NCollection_Vec3<double>&          theBoxMin,
-  const NCollection_Vec3<double>&          theBoxMax,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
+                                               const NCollection_Vec3<double>& theBoxMax,
+                                               const SelectMgr_ViewClipRange&  theClipRange,
+                                               SelectBasics_PickResult&        thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -519,11 +517,7 @@ bool SelectMgr_RectangularFrustum::OverlapsBox(
     NCollection_Vec3<double>(myNearPickedPnt.X(), myNearPickedPnt.Y(), myNearPickedPnt.Z()),
     NCollection_Vec3<double>(myViewRayDir.X(), myViewRayDir.Y(), myViewRayDir.Z()));
   double aTimeEnter, aTimeLeave;
-  if (!BVH_Tools<double, 3>::RayBoxIntersection(aRay,
-                                                       theBoxMin,
-                                                       theBoxMax,
-                                                       aTimeEnter,
-                                                       aTimeLeave))
+  if (!BVH_Tools<double, 3>::RayBoxIntersection(aRay, theBoxMin, theBoxMax, aTimeEnter, aTimeLeave))
   {
     gp_Pnt aNearestPnt(RealLast(), RealLast(), RealLast());
     aNearestPnt.SetX(std::max(std::min(myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
@@ -552,10 +546,9 @@ bool SelectMgr_RectangularFrustum::OverlapsBox(
 // function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
-bool SelectMgr_RectangularFrustum::OverlapsPoint(
-  const gp_Pnt&                  thePnt,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsPoint(const gp_Pnt&                  thePnt,
+                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                 SelectBasics_PickResult&       thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -565,7 +558,7 @@ bool SelectMgr_RectangularFrustum::OverlapsPoint(
   if (!hasPointOverlap(thePnt))
     return false;
 
-  gp_XYZ              aV     = thePnt.XYZ() - myNearPickedPnt.XYZ();
+  gp_XYZ       aV     = thePnt.XYZ() - myNearPickedPnt.XYZ();
   const double aDepth = aV.Dot(myViewRayDir.XYZ());
 
   thePickResult.SetDepth(std::abs(aDepth) * myScale);
@@ -592,11 +585,10 @@ bool SelectMgr_RectangularFrustum::OverlapsPoint(const gp_Pnt& thePnt) const
 // function : OverlapsSegment
 // purpose  : Checks if line segment overlaps selecting frustum
 // =======================================================================
-bool SelectMgr_RectangularFrustum::OverlapsSegment(
-  const gp_Pnt&                  thePnt1,
-  const gp_Pnt&                  thePnt2,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsSegment(const gp_Pnt&                  thePnt1,
+                                                   const gp_Pnt&                  thePnt2,
+                                                   const SelectMgr_ViewClipRange& theClipRange,
+                                                   SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -618,11 +610,10 @@ bool SelectMgr_RectangularFrustum::OverlapsSegment(
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-bool SelectMgr_RectangularFrustum::OverlapsPolygon(
-  const NCollection_Array1<gp_Pnt>&      theArrayOfPnts,
-  Select3D_TypeOfSensitivity     theSensType,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
+                                                   Select3D_TypeOfSensitivity        theSensType,
+                                                   const SelectMgr_ViewClipRange&    theClipRange,
+                                                   SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -631,7 +622,7 @@ bool SelectMgr_RectangularFrustum::OverlapsPolygon(
 
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    int        aMatchingSegmentsNb = -1;
+    int                     aMatchingSegmentsNb = -1;
     SelectBasics_PickResult aPickResult;
     thePickResult.Invalidate();
     const int aLower  = theArrayOfPnts.Lower();
@@ -680,13 +671,12 @@ bool SelectMgr_RectangularFrustum::OverlapsPolygon(
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 // =======================================================================
-bool SelectMgr_RectangularFrustum::OverlapsTriangle(
-  const gp_Pnt&                  thePnt1,
-  const gp_Pnt&                  thePnt2,
-  const gp_Pnt&                  thePnt3,
-  Select3D_TypeOfSensitivity     theSensType,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsTriangle(const gp_Pnt&                  thePnt1,
+                                                    const gp_Pnt&                  thePnt2,
+                                                    const gp_Pnt&                  thePnt3,
+                                                    Select3D_TypeOfSensitivity     theSensType,
+                                                    const SelectMgr_ViewClipRange& theClipRange,
+                                                    SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -695,7 +685,7 @@ bool SelectMgr_RectangularFrustum::OverlapsTriangle(
 
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
-    const gp_Pnt             aPntsArrayBuf[4] = {thePnt1, thePnt2, thePnt3, thePnt1};
+    const gp_Pnt                     aPntsArrayBuf[4] = {thePnt1, thePnt2, thePnt3, thePnt1};
     const NCollection_Array1<gp_Pnt> aPntsArray(aPntsArrayBuf[0], 1, 4);
     return OverlapsPolygon(aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
   }
@@ -720,7 +710,7 @@ bool SelectMgr_RectangularFrustum::OverlapsTriangle(
                     : OverlapsPoint(thePnt1, theClipRange, thePickResult));
     }
 
-    const gp_Pnt        aPnts[3] = {thePnt1, thePnt2, thePnt3};
+    const gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};
     const double anAlpha  = aTriangleNormal.XYZ().Dot(myViewRayDir.XYZ());
     if (std::abs(anAlpha) < gp::Resolution())
     {
@@ -742,12 +732,11 @@ bool SelectMgr_RectangularFrustum::OverlapsTriangle(
     const gp_XYZ anEdge = (thePnt1.XYZ() - myNearPickedPnt.XYZ()) * (1.0 / anAlpha);
 
     const double aTime = aTriangleNormal.Dot(anEdge);
-    const gp_XYZ        aVec  = myViewRayDir.XYZ().Crossed(anEdge);
+    const gp_XYZ aVec  = myViewRayDir.XYZ().Crossed(anEdge);
     const double anU   = aVec.Dot(aTrEdges[2]);
     const double aV    = aVec.Dot(aTrEdges[0]);
 
-    const bool isInterior =
-      (aTime >= 0.0) && (anU >= 0.0) && (aV >= 0.0) && (anU + aV <= 1.0);
+    const bool   isInterior = (aTime >= 0.0) && (anU >= 0.0) && (aV >= 0.0) && (anU + aV <= 1.0);
     const gp_Pnt aPtOnPlane = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTime;
     if (isInterior)
     {
@@ -757,23 +746,21 @@ bool SelectMgr_RectangularFrustum::OverlapsTriangle(
       return !theClipRange.IsClipped(thePickResult.Depth());
     }
 
-    double    aMinDist         = RealLast();
-    int aNearestEdgeIdx1 = -1;
+    double aMinDist         = RealLast();
+    int    aNearestEdgeIdx1 = -1;
     for (int anEdgeIdx = 0; anEdgeIdx < 3; ++anEdgeIdx)
     {
-      gp_XYZ        aW = aPtOnPlane.XYZ() - aPnts[anEdgeIdx].XYZ();
-      double aCoef =
-        aTrEdges[anEdgeIdx].Dot(aW) / aTrEdges[anEdgeIdx].Dot(aTrEdges[anEdgeIdx]);
-      double aDist =
-        aPtOnPlane.Distance(aPnts[anEdgeIdx].XYZ() + aCoef * aTrEdges[anEdgeIdx]);
+      gp_XYZ aW    = aPtOnPlane.XYZ() - aPnts[anEdgeIdx].XYZ();
+      double aCoef = aTrEdges[anEdgeIdx].Dot(aW) / aTrEdges[anEdgeIdx].Dot(aTrEdges[anEdgeIdx]);
+      double aDist = aPtOnPlane.Distance(aPnts[anEdgeIdx].XYZ() + aCoef * aTrEdges[anEdgeIdx]);
       if (aDist < aMinDist)
       {
         aMinDist         = aDist;
         aNearestEdgeIdx1 = anEdgeIdx;
       }
     }
-    int aNearestEdgeIdx2 = (aNearestEdgeIdx1 + 1) % 3;
-    const gp_Vec     aVec12(aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]);
+    int          aNearestEdgeIdx2 = (aNearestEdgeIdx1 + 1) % 3;
+    const gp_Vec aVec12(aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]);
     if (aVec12.SquareMagnitude() > gp::Resolution()
         && myViewRayDir.IsParallel(aVec12, Precision::Angular()))
     {
@@ -788,20 +775,19 @@ bool SelectMgr_RectangularFrustum::OverlapsTriangle(
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsCylinder(
-  const double            theBottomRad,
-  const double            theTopRad,
-  const double            theHeight,
-  const gp_Trsf&                 theTrsf,
-  const bool         theIsHollow,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsCylinder(const double                   theBottomRad,
+                                                    const double                   theTopRad,
+                                                    const double                   theHeight,
+                                                    const gp_Trsf&                 theTrsf,
+                                                    const bool                     theIsHollow,
+                                                    const SelectMgr_ViewClipRange& theClipRange,
+                                                    SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
                         "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after "
                         "selection frustum initialization");
-  double aTimes[2] = {0.0, 0.0};
+  double        aTimes[2] = {0.0, 0.0};
   const gp_Trsf aTrsfInv  = theTrsf.Inverted();
   const gp_Pnt  aLoc      = myNearPickedPnt.Transformed(aTrsfInv);
   const gp_Dir  aRayDir   = myViewRayDir.Transformed(aTrsfInv);
@@ -845,18 +831,17 @@ bool SelectMgr_RectangularFrustum::OverlapsCylinder(
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsCircle(
-  const double            theRadius,
-  const gp_Trsf&                 theTrsf,
-  const bool         theIsFilled,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsCircle(const double                   theRadius,
+                                                  const gp_Trsf&                 theTrsf,
+                                                  const bool                     theIsFilled,
+                                                  const SelectMgr_ViewClipRange& theClipRange,
+                                                  SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
                         "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after "
                         "selection frustum initialization");
-  double aTime    = 0.0;
+  double        aTime    = 0.0;
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
   const gp_Pnt  aLoc     = myNearPickedPnt.Transformed(aTrsfInv);
   const gp_Dir  aRayDir  = myViewRayDir.Transformed(aTrsfInv);
@@ -899,9 +884,9 @@ bool SelectMgr_RectangularFrustum::OverlapsCircle(
 //=================================================================================================
 
 bool SelectMgr_RectangularFrustum::isIntersectCircle(
-  const double       theRadius,
-  const gp_Pnt&             theCenter,
-  const gp_Trsf&            theTrsf,
+  const double                      theRadius,
+  const gp_Pnt&                     theCenter,
+  const gp_Trsf&                    theTrsf,
   const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
@@ -949,9 +934,9 @@ bool SelectMgr_RectangularFrustum::isIntersectCircle(
 //=================================================================================================
 
 bool SelectMgr_RectangularFrustum::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1,
-                                                                   const gp_Pnt& thePnt2Seg1,
-                                                                   const gp_Pnt& thePnt1Seg2,
-                                                                   const gp_Pnt& thePnt2Seg2) const
+                                                       const gp_Pnt& thePnt2Seg1,
+                                                       const gp_Pnt& thePnt1Seg2,
+                                                       const gp_Pnt& thePnt2Seg2) const
 {
   const gp_Mat aMatPln(thePnt2Seg1.X() - thePnt1Seg1.X(),
                        thePnt2Seg1.Y() - thePnt1Seg1.Y(),
@@ -1007,12 +992,12 @@ bool SelectMgr_RectangularFrustum::isSegmentsIntersect(const gp_Pnt& thePnt1Seg1
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsCylinder(const double    theBottomRad,
-                                                                const double    theTopRad,
-                                                                const double    theHeight,
-                                                                const gp_Trsf&         theTrsf,
-                                                                const bool theIsHollow,
-                                                                bool* theInside) const
+bool SelectMgr_RectangularFrustum::OverlapsCylinder(const double   theBottomRad,
+                                                    const double   theTopRad,
+                                                    const double   theHeight,
+                                                    const gp_Trsf& theTrsf,
+                                                    const bool     theIsHollow,
+                                                    bool*          theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -1024,10 +1009,10 @@ bool SelectMgr_RectangularFrustum::OverlapsCylinder(const double    theBottomRad
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsCircle(const double    theRadius,
-                                                              const gp_Trsf&         theTrsf,
-                                                              const bool theIsFilled,
-                                                              bool* theInside) const
+bool SelectMgr_RectangularFrustum::OverlapsCircle(const double   theRadius,
+                                                  const gp_Trsf& theTrsf,
+                                                  const bool     theIsFilled,
+                                                  bool*          theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -1050,11 +1035,10 @@ const gp_Pnt2d& SelectMgr_RectangularFrustum::GetMousePosition() const
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsSphere(
-  const gp_Pnt&                  theCenter,
-  const double            theRadius,
-  const SelectMgr_ViewClipRange& theClipRange,
-  SelectBasics_PickResult&       thePickResult) const
+bool SelectMgr_RectangularFrustum::OverlapsSphere(const gp_Pnt&                  theCenter,
+                                                  const double                   theRadius,
+                                                  const SelectMgr_ViewClipRange& theClipRange,
+                                                  SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -1085,9 +1069,9 @@ bool SelectMgr_RectangularFrustum::OverlapsSphere(
 
 //=================================================================================================
 
-bool SelectMgr_RectangularFrustum::OverlapsSphere(const gp_Pnt&       theCenter,
-                                                              const double theRadius,
-                                                              bool*   theInside) const
+bool SelectMgr_RectangularFrustum::OverlapsSphere(const gp_Pnt& theCenter,
+                                                  const double  theRadius,
+                                                  bool*         theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point
                           || mySelectionType == SelectMgr_SelectionType_Box,
@@ -1148,8 +1132,7 @@ void SelectMgr_RectangularFrustum::GetPlanes(
 
 //=================================================================================================
 
-void SelectMgr_RectangularFrustum::DumpJson(Standard_OStream& theOStream,
-                                            int  theDepth) const
+void SelectMgr_RectangularFrustum::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_RectangularFrustum)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, SelectMgr_Frustum)

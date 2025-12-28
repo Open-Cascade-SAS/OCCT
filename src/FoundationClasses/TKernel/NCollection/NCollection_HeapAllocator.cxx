@@ -24,7 +24,7 @@ void* NCollection_HeapAllocator::Allocate(const size_t theSize)
 {
   // the size is rounded up to word size.
   const size_t aRoundSize = (theSize + 3) & ~0x3;
-  void*               aResult    = malloc(aRoundSize);
+  void*        aResult    = malloc(aRoundSize);
   if (aResult == NULL)
   {
     char aBuffer[96];

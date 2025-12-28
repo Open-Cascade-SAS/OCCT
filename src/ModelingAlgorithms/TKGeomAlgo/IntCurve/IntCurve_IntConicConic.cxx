@@ -55,12 +55,12 @@ static inline bool BOUNDED_DOMAIN(const IntRes2d_Domain& domain)
 }
 
 static bool SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
-                                           double&         binf,
-                                           double&         tolinf,
-                                           gp_Pnt2d&              Pntinf,
-                                           double&         bsup,
-                                           double&         tolsup,
-                                           gp_Pnt2d&              Pntsup)
+                               double&                binf,
+                               double&                tolinf,
+                               gp_Pnt2d&              Pntinf,
+                               double&                bsup,
+                               double&                tolsup,
+                               gp_Pnt2d&              Pntsup)
 {
   if (domain.HasFirstPoint())
   {
@@ -87,22 +87,22 @@ static bool SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
 }
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             double&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       pntinf,
-                             double&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       pntsup,
                              const gp_Hypr2d&                H,
-                             const double             maxtol,
-                             const double             LIMITE);
+                             const double                    maxtol,
+                             const double                    LIMITE);
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             double&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       pntinf,
-                             double&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       pntsup,
                              const gp_Parab2d&               PR,
-                             const double             maxtol,
-                             const double             LIMITE);
+                             const double                    maxtol,
+                             const double                    LIMITE);
 
 //=======================================================================
 // function : Perform
@@ -112,8 +112,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
 
   this->ResetFields();
@@ -231,8 +231,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
                                      const IntRes2d_Domain& DL,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(L);
@@ -241,8 +241,8 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
 
   Inter.SetReversedParameters(ReversedParameters());
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -334,8 +334,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -349,8 +349,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
     D.SetEquivalentParameters(DC.FirstParameter(), DC.FirstParameter() + M_PI + M_PI);
   }
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = C.Radius() / 10.0;
   gp_Circ2d Cp(C);
   Cp.SetRadius(C.Radius() + maxtol);
@@ -438,8 +438,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -487,8 +487,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
                                      const IntRes2d_Domain& DC,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(C);
@@ -501,8 +501,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d&       C,
   {
     D.SetEquivalentParameters(DC.FirstParameter(), DC.FirstParameter() + M_PI + M_PI);
   }
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = C.Radius() / 10.0;
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
@@ -588,8 +588,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
                                      const IntRes2d_Domain& DP1,
                                      const gp_Parab2d&      P2,
                                      const IntRes2d_Domain& DP2,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(P1);
@@ -597,8 +597,8 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   PCurve.SetAccuracy(20);
   Inter.SetReversedParameters(ReversedParameters());
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -691,8 +691,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E);
@@ -708,8 +708,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
 
   //-- std::cout<<" Parab Elips "<<std::endl;
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -807,16 +807,16 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
                                      const IntRes2d_Domain& DP,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(P);
   IntCurve_PConic     PCurve(H);
   Inter.SetReversedParameters(ReversedParameters());
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -909,8 +909,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E1,
                                      const IntRes2d_Domain& DE1,
                                      const gp_Elips2d&      E2,
                                      const IntRes2d_Domain& DE2,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E1);
@@ -958,8 +958,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
                                      const IntRes2d_Domain& DE,
                                      const gp_Hypr2d&       H,
                                      const IntRes2d_Domain& DH,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(E);
@@ -973,8 +973,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
     DEModif.SetEquivalentParameters(DE.FirstParameter(), DE.FirstParameter() + M_PI + M_PI);
   }
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   maxtol = E.MinorRadius() / 10.0;
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
@@ -1066,8 +1066,8 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
                                      const IntRes2d_Domain& DH1,
                                      const gp_Hypr2d&       H2,
                                      const IntRes2d_Domain& DH2,
-                                     const double    TolConf,
-                                     const double    Tol)
+                                     const double           TolConf,
+                                     const double           Tol)
 {
   this->ResetFields();
   IntCurve_IConicTool ITool(H1);
@@ -1076,8 +1076,8 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
 
   Inter.SetReversedParameters(ReversedParameters());
 
-  double binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
-  gp_Pnt2d      Pntinf, Pntsup;
+  double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
+  gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
     maxtol = Tol;
   else
@@ -1162,13 +1162,13 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
 //----------------------------------------------------------------------
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             double&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       Pntinf,
-                             double&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       Pntsup,
                              const gp_Parab2d&               PR,
-                             const double             maxtol,
-                             const double             LIMITE)
+                             const double                    maxtol,
+                             const double                    LIMITE)
 {
 
   if (theIntAna2d.IsDone())
@@ -1208,13 +1208,13 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
 }
 
 void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
-                             double&                  binf,
+                             double&                         binf,
                              gp_Pnt2d&                       Pntinf,
-                             double&                  bsup,
+                             double&                         bsup,
                              gp_Pnt2d&                       Pntsup,
                              const gp_Hypr2d&                H,
-                             const double             maxtol,
-                             const double             LIMITE)
+                             const double                    maxtol,
+                             const double                    LIMITE)
 {
 
   if (theIntAna2d.IsDone())

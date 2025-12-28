@@ -24,19 +24,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
-#include <Standard_Integer.hxx>
 class IGESData_ViewKindEntity;
 class gp_Pnt;
 class IGESDimen_LeaderArrow;
@@ -63,11 +54,12 @@ public:
   //! raises exception if Lengths of allViews, allTextLocations,
   //! allLeaderEntities, allLabelLevels and allDisplayedEntities are
   //! not same.
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-                            const occ::handle<NCollection_HArray1<gp_XYZ>>&              allTextLocations,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>&   allLeaderEntities,
-                            const occ::handle<NCollection_HArray1<int>>&         allLabelLevels,
-                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayedEntities);
+  Standard_EXPORT void Init(
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+    const occ::handle<NCollection_HArray1<gp_XYZ>>&                               allTextLocations,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>&   allLeaderEntities,
+    const occ::handle<NCollection_HArray1<int>>&                                  allLabelLevels,
+    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayedEntities);
 
   //! returns the number of label placements in <me>
   Standard_EXPORT int NbLabels() const;
@@ -83,8 +75,7 @@ public:
 
   //! returns the Leader entity in the view indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or ViewIndex > NbLabels().
-  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> LeaderEntity(
-    const int ViewIndex) const;
+  Standard_EXPORT occ::handle<IGESDimen_LeaderArrow> LeaderEntity(const int ViewIndex) const;
 
   //! returns the Entity label level number in the view indicated
   //! by ViewIndex
@@ -93,8 +84,7 @@ public:
 
   //! returns the entity indicated by EntityIndex
   //! raises an exception if EntityIndex <= 0 or EntityIndex > NbLabels().
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> DisplayedEntity(
-    const int EntityIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> DisplayedEntity(const int EntityIndex) const;
 
   //! returns the transformed 3d-Point coordinates of the text
   //! location, in the view indicated by ViewIndex
@@ -105,9 +95,9 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViews;
-  occ::handle<NCollection_HArray1<gp_XYZ>>              theTextLocations;
+  occ::handle<NCollection_HArray1<gp_XYZ>>                               theTextLocations;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>   theLeaderEntities;
-  occ::handle<NCollection_HArray1<int>>         theLabelLevels;
+  occ::handle<NCollection_HArray1<int>>                                  theLabelLevels;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     theDisplayedEntities;
 };
 

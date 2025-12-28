@@ -54,9 +54,7 @@ void ChFiDS_Stripe::Reset()
 
 //=================================================================================================
 
-void ChFiDS_Stripe::Parameters(const bool First,
-                               double&         Pdeb,
-                               double&         Pfin) const
+void ChFiDS_Stripe::Parameters(const bool First, double& Pdeb, double& Pfin) const
 {
   if (First)
   {
@@ -72,9 +70,7 @@ void ChFiDS_Stripe::Parameters(const bool First,
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetParameters(const bool First,
-                                  const double    Pdeb,
-                                  const double    Pfin)
+void ChFiDS_Stripe::SetParameters(const bool First, const double Pdeb, const double Pfin)
 {
   if (First)
   {
@@ -173,8 +169,7 @@ void ChFiDS_Stripe::SetOrientation(const TopAbs_Orientation Or, const bool First
 
 //=================================================================================================
 
-int ChFiDS_Stripe::IndexPoint(const bool First,
-                                           const int OnS) const
+int ChFiDS_Stripe::IndexPoint(const bool First, const int OnS) const
 {
   if (First)
   {
@@ -194,9 +189,7 @@ int ChFiDS_Stripe::IndexPoint(const bool First,
 
 //=================================================================================================
 
-void ChFiDS_Stripe::SetIndexPoint(const int Index,
-                                  const bool First,
-                                  const int OnS)
+void ChFiDS_Stripe::SetIndexPoint(const int Index, const bool First, const int OnS)
 {
   if (First)
   {
@@ -227,7 +220,7 @@ void ChFiDS_Stripe::SetSolidIndex(const int Index)
 //=================================================================================================
 
 void ChFiDS_Stripe::InDS(const bool First,
-                         const int Nb) // eap, Apr 29 2002, occ293
+                         const int  Nb) // eap, Apr 29 2002, occ293
 {
   if (First)
   {

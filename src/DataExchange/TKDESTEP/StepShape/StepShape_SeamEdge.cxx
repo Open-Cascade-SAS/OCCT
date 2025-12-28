@@ -28,9 +28,9 @@ StepShape_SeamEdge::StepShape_SeamEdge() {}
 //=================================================================================================
 
 void StepShape_SeamEdge::Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                              const occ::handle<StepShape_Edge>&           aOrientedEdge_EdgeElement,
-                              const bool                  aOrientedEdge_Orientation,
-                              const occ::handle<StepGeom_Pcurve>&          aPcurveReference)
+                              const occ::handle<StepShape_Edge>&  aOrientedEdge_EdgeElement,
+                              const bool                          aOrientedEdge_Orientation,
+                              const occ::handle<StepGeom_Pcurve>& aPcurveReference)
 {
   StepShape_OrientedEdge::Init(aRepresentationItem_Name,
                                aOrientedEdge_EdgeElement,

@@ -31,11 +31,11 @@ public:
 
   Standard_EXPORT Bisector_PointOnBis();
 
-  Standard_EXPORT Bisector_PointOnBis(const double Param1,
-                                      const double Param2,
-                                      const double ParamBis,
-                                      const double Distance,
-                                      const gp_Pnt2d&     Point);
+  Standard_EXPORT Bisector_PointOnBis(const double    Param1,
+                                      const double    Param2,
+                                      const double    ParamBis,
+                                      const double    Distance,
+                                      const gp_Pnt2d& Point);
 
   Standard_EXPORT void ParamOnC1(const double Param);
 
@@ -64,12 +64,12 @@ public:
   Standard_EXPORT void Dump() const;
 
 private:
-  double    param1;
-  double    param2;
-  double    paramBis;
-  double    distance;
-  bool infinite;
-  gp_Pnt2d         point;
+  double   param1;
+  double   param2;
+  double   paramBis;
+  double   distance;
+  bool     infinite;
+  gp_Pnt2d point;
 };
 
 #endif // _Bisector_PointOnBis_HeaderFile

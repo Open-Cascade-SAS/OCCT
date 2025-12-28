@@ -29,7 +29,7 @@ RWStepElement_RWSurfaceSectionField::RWStepElement_RWSurfaceSectionField() {}
 
 void RWStepElement_RWSurfaceSectionField::ReadStep(
   const occ::handle<StepData_StepReaderData>& data,
-  const int                 num,
+  const int                                   num,
   occ::handle<Interface_Check>&               ach,
   const occ::handle<StepElement_SurfaceSectionField>& /*ent*/) const
 {

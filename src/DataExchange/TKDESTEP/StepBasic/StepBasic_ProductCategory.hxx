@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepBasic_ProductCategory();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                  hasAdescription,
+                            const bool                                   hasAdescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
@@ -52,7 +52,7 @@ public:
 private:
   occ::handle<TCollection_HAsciiString> name;
   occ::handle<TCollection_HAsciiString> description;
-  bool                 hasDescription;
+  bool                                  hasDescription;
 };
 
 #endif // _StepBasic_ProductCategory_HeaderFile

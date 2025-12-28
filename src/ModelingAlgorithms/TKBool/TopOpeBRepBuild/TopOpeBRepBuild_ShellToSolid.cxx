@@ -40,7 +40,8 @@ void TopOpeBRepBuild_ShellToSolid::AddShell(const TopoDS_Shell& Sh)
 
 //=================================================================================================
 
-void TopOpeBRepBuild_ShellToSolid::MakeSolids(const TopoDS_Solid& So, NCollection_List<TopoDS_Shape>& LSo)
+void TopOpeBRepBuild_ShellToSolid::MakeSolids(const TopoDS_Solid&             So,
+                                              NCollection_List<TopoDS_Shape>& LSo)
 {
   LSo.Clear();
 
@@ -48,7 +49,7 @@ void TopOpeBRepBuild_ShellToSolid::MakeSolids(const TopoDS_Solid& So, NCollectio
   for (NCollection_List<TopoDS_Shape>::Iterator it(myLSh); it.More(); it.Next())
     sfs.AddShape(it.Value());
 
-  bool             ForceClass = true;
+  bool                         ForceClass = true;
   TopOpeBRepBuild_SolidBuilder SB;
   SB.InitSolidBuilder(sfs, ForceClass);
 

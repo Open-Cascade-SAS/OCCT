@@ -21,8 +21,8 @@
 //=================================================================================================
 
 void IntPolyh_Point::Middle(const occ::handle<Adaptor3d_Surface>& MySurface,
-                            const IntPolyh_Point&            Point1,
-                            const IntPolyh_Point&            Point2)
+                            const IntPolyh_Point&                 Point1,
+                            const IntPolyh_Point&                 Point2)
 {
   myU = (Point1.U() + Point2.U()) * 0.5;
   myV = (Point1.V() + Point2.V()) * 0.5;
@@ -110,7 +110,7 @@ double IntPolyh_Point::SquareModulus() const
 double IntPolyh_Point::SquareDistance(const IntPolyh_Point& P2) const
 {
   double res = (myX - P2.myX) * (myX - P2.myX) + (myY - P2.myY) * (myY - P2.myY)
-                      + (myZ - P2.myZ) * (myZ - P2.myZ);
+               + (myZ - P2.myZ) * (myZ - P2.myZ);
   return res;
 }
 

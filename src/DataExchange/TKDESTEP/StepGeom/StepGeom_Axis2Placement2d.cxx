@@ -22,7 +22,7 @@ StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d() {}
 
 void StepGeom_Axis2Placement2d::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                      const occ::handle<StepGeom_CartesianPoint>&  aLocation,
-                                     const bool                  hasArefDirection,
+                                     const bool                                   hasArefDirection,
                                      const occ::handle<StepGeom_Direction>&       aRefDirection)
 {
   // --- classe own fields ---
@@ -32,7 +32,8 @@ void StepGeom_Axis2Placement2d::Init(const occ::handle<TCollection_HAsciiString>
   StepGeom_Placement::Init(aName, aLocation);
 }
 
-void StepGeom_Axis2Placement2d::SetRefDirection(const occ::handle<StepGeom_Direction>& aRefDirection)
+void StepGeom_Axis2Placement2d::SetRefDirection(
+  const occ::handle<StepGeom_Direction>& aRefDirection)
 {
   refDirection    = aRefDirection;
   hasRefDirection = true;

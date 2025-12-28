@@ -41,15 +41,11 @@ public:
   Standard_EXPORT void* Allocate(const int aSize);
   // General Memory allocator
 
-  const char* HashedAllocate(const char*            aString,
-                             const int theLen,
-                             int&      theHash);
+  const char* HashedAllocate(const char* aString, const int theLen, int& theHash);
   // Memory allocation with access via hash table. No new allocation
   // if already present
 
-  void HashedAllocate(const char*            aString,
-                      const int theLen,
-                      LDOMBasicString&       theResult);
+  void HashedAllocate(const char* aString, const int theLen, LDOMBasicString& theResult);
 
   // Memory allocation with access via hash table. No new allocation
   // if already present
@@ -59,9 +55,9 @@ public:
     return HashTable::Hash(theString, theLen);
   }
 
-  static bool CompareStrings(const char*            theString,
-                                         const int theHashValue,
-                                         const char*            theHashedStr);
+  static bool CompareStrings(const char* theString,
+                             const int   theHashValue,
+                             const char* theHashedStr);
 
   //  LDOM_Document           Doc           () const
   //                                { return LDOM_Document (* this); }
@@ -85,11 +81,11 @@ private:
 
     MemBlock* Next() { return myNext; }
 
-    int  mySize;
-    int* myBlock;
-    int* myEndBlock;
-    int* myFreeSpace;
-    MemBlock*         myNext;
+    int       mySize;
+    int*      myBlock;
+    int*      myEndBlock;
+    int*      myFreeSpace;
+    MemBlock* myNext;
   };
 
   // ---- CLASS HashTable ----
@@ -98,10 +94,8 @@ private:
     friend class LDOM_MemManager;
     HashTable(/* const int theMask, */
               LDOM_MemManager& theMemManager);
-    const char*             AddString(const char*            theString,
-                                      const int theLen,
-                                      int&      theHashIndex);
-    static int Hash(const char* theString, const int theLen);
+    const char* AddString(const char* theString, const int theLen, int& theHashIndex);
+    static int  Hash(const char* theString, const int theLen);
 
     struct TableItem
     {
@@ -125,7 +119,7 @@ private:
   const LDOM_BasicElement* myRootElement;
   MemBlock*                myFirstBlock;
   MemBlock*                myFirstWithoutRoom;
-  int         myBlockSize;
+  int                      myBlockSize;
   HashTable*               myHashTable;
 
 public:

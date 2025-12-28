@@ -30,7 +30,7 @@ StepFEA_FeaShellShearStiffness::StepFEA_FeaShellShearStiffness() {}
 
 void StepFEA_FeaShellShearStiffness::Init(
   const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-  const StepFEA_SymmetricTensor22d&       aFeaConstants)
+  const StepFEA_SymmetricTensor22d&            aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

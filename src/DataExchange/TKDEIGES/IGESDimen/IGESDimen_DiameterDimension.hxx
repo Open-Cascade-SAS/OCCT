@@ -44,7 +44,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                             const occ::handle<IGESDimen_LeaderArrow>& aLeader,
                             const occ::handle<IGESDimen_LeaderArrow>& anotherLeader,
-                            const gp_XY&                         aCenter);
+                            const gp_XY&                              aCenter);
 
   //! returns the General Note Entity
   Standard_EXPORT occ::handle<IGESDimen_GeneralNote> Note() const;
@@ -71,7 +71,7 @@ private:
   occ::handle<IGESDimen_GeneralNote> theNote;
   occ::handle<IGESDimen_LeaderArrow> theFirstLeader;
   occ::handle<IGESDimen_LeaderArrow> theSecondLeader;
-  gp_XY                         theCenter;
+  gp_XY                              theCenter;
 };
 
 #endif // _IGESDimen_DiameterDimension_HeaderFile

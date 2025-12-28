@@ -43,12 +43,14 @@ class Vrml_AsciiText : public Standard_Transient
 public:
   Standard_EXPORT Vrml_AsciiText();
 
-  Standard_EXPORT Vrml_AsciiText(const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
-                                 const double                         aSpacing,
-                                 const Vrml_AsciiTextJustification           aJustification,
-                                 const double                         aWidth);
+  Standard_EXPORT Vrml_AsciiText(
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
+    const double                                                     aSpacing,
+    const Vrml_AsciiTextJustification                                aJustification,
+    const double                                                     aWidth);
 
-  Standard_EXPORT void SetString(const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString);
+  Standard_EXPORT void SetString(
+    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<TCollection_AsciiString>> String() const;
 
@@ -70,9 +72,9 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<TCollection_AsciiString>> myString;
-  double                        mySpacing;
-  Vrml_AsciiTextJustification          myJustification;
-  double                        myWidth;
+  double                                                    mySpacing;
+  Vrml_AsciiTextJustification                               myJustification;
+  double                                                    myWidth;
 };
 
 #endif // _Vrml_AsciiText_HeaderFile

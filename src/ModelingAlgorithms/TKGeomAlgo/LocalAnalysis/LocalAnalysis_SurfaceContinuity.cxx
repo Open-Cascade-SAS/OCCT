@@ -36,7 +36,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC0(const GeomLProp_SLProps& Surf1,
 
 void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 {
-  gp_Vec        V1u, V2u, V1v, V2v;
+  gp_Vec V1u, V2u, V1v, V2v;
   double norm1u, norm2u, norm1v, norm2v, angu, angv;
 
   V1u = Surf1.D1U();
@@ -83,7 +83,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp
 void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 
 {
-  gp_Vec        V11u, V12u, V21u, V22u, V11v, V12v, V21v, V22v;
+  gp_Vec V11u, V12u, V21u, V22u, V11v, V12v, V21v, V22v;
   double norm11u, norm12u, norm21u, norm22u, norm11v, norm12v, norm21v, norm22v;
   double ang;
   V11u    = Surf1.D1U();
@@ -175,8 +175,8 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
 {
   if (Surf1.IsNormalDefined() && Surf2.IsNormalDefined())
   {
-    gp_Dir        D1  = Surf1.Normal();
-    gp_Dir        D2  = Surf2.Normal();
+    gp_Dir D1  = Surf1.Normal();
+    gp_Dir D2  = Surf2.Normal();
     double ang = D1.Angle(D2);
     if (ang > M_PI / 2)
       myContG1 = M_PI - ang;
@@ -194,7 +194,7 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
 
 void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 {
-  gp_Dir        DMIN1, DMIN2, DMAX1, DMAX2;
+  gp_Dir DMIN1, DMIN2, DMAX1, DMAX2;
   double RMIN1, RMIN2, RMAX1, RMAX2;
   double x1, x2, y1, y2, z1, z2;
 
@@ -314,20 +314,21 @@ void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
 
 /*********************************************************************************/
 
-LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const occ::handle<Geom_Surface>& Surf1,
-                                                                 const double         u1,
-                                                                 const double         v1,
-                                                                 const occ::handle<Geom_Surface>& Surf2,
-                                                                 const double         u2,
-                                                                 const double         v2,
-                                                                 const GeomAbs_Shape         Ordre,
-                                                                 const double         EpsNul,
-                                                                 const double         EpsC0,
-                                                                 const double         EpsC1,
-                                                                 const double         EpsC2,
-                                                                 const double         EpsG1,
-                                                                 const double Percent,
-                                                                 const double Maxlen)
+LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
+  const occ::handle<Geom_Surface>& Surf1,
+  const double                     u1,
+  const double                     v1,
+  const occ::handle<Geom_Surface>& Surf2,
+  const double                     u2,
+  const double                     v2,
+  const GeomAbs_Shape              Ordre,
+  const double                     EpsNul,
+  const double                     EpsC0,
+  const double                     EpsC1,
+  const double                     EpsC2,
+  const double                     EpsG1,
+  const double                     Percent,
+  const double                     Maxlen)
     : myContC0(0.0),
       myContC1U(0.0),
       myContC1V(0.0),
@@ -401,19 +402,20 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const occ::hand
 
 /*********************************************************************************/
 
-LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const occ::handle<Geom2d_Curve>& curv1,
-                                                                 const occ::handle<Geom2d_Curve>& curv2,
-                                                                 const double         U,
-                                                                 const occ::handle<Geom_Surface>& Surf1,
-                                                                 const occ::handle<Geom_Surface>& Surf2,
-                                                                 const GeomAbs_Shape         Ordre,
-                                                                 const double         EpsNul,
-                                                                 const double         EpsC0,
-                                                                 const double         EpsC1,
-                                                                 const double         EpsC2,
-                                                                 const double         EpsG1,
-                                                                 const double Percent,
-                                                                 const double Maxlen)
+LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
+  const occ::handle<Geom2d_Curve>& curv1,
+  const occ::handle<Geom2d_Curve>& curv2,
+  const double                     U,
+  const occ::handle<Geom_Surface>& Surf1,
+  const occ::handle<Geom_Surface>& Surf2,
+  const GeomAbs_Shape              Ordre,
+  const double                     EpsNul,
+  const double                     EpsC0,
+  const double                     EpsC1,
+  const double                     EpsC2,
+  const double                     EpsG1,
+  const double                     Percent,
+  const double                     Maxlen)
     : myContC0(0.0),
       myContC1U(0.0),
       myContC1V(0.0),
@@ -582,8 +584,8 @@ bool LocalAnalysis_SurfaceContinuity::IsG1() const
 
 bool LocalAnalysis_SurfaceContinuity::IsG2() const
 {
-  double    EPSNL;
-  int itype;
+  double EPSNL;
+  int    itype;
 
   if (!myIsDone)
   {

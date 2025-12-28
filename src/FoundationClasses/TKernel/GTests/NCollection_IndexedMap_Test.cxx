@@ -345,10 +345,10 @@ TEST(NCollection_IndexedMapTest, Iterator)
   aMap.Add(30);
 
   // Use iterator to check all elements
-  bool found10 = false;
-  bool found20 = false;
-  bool found30 = false;
-  size_t    count   = 0;
+  bool   found10 = false;
+  bool   found20 = false;
+  bool   found30 = false;
+  size_t count   = 0;
 
   for (NCollection_IndexedMap<KeyType>::Iterator it(aMap); it.More(); it.Next(), ++count)
   {
@@ -377,10 +377,10 @@ TEST(NCollection_IndexedMapTest, StlIterator)
   aMap.Add(30);
 
   // Use STL-style iterator
-  bool found10 = false;
-  bool found20 = false;
-  bool found30 = false;
-  size_t    count   = 0;
+  bool   found10 = false;
+  bool   found20 = false;
+  bool   found30 = false;
+  size_t count   = 0;
 
   for (auto it = aMap.cbegin(); it != aMap.cend(); ++it, ++count)
   {
@@ -521,7 +521,7 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_MinMax)
   NCollection_IndexedMap<int> aMap;
   std::vector<int>            aVector;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -545,7 +545,7 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   NCollection_IndexedMap<int> aMap;
   std::vector<int>            aVector;
 
-  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -555,9 +555,9 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   }
 
   // Test std::find compatibility
-  int aSearchValue = aVector[10];
-  auto             aFoundOCCT   = std::find(aMap.cbegin(), aMap.cend(), aSearchValue);
-  auto             aFoundStd    = std::find(aVector.begin(), aVector.end(), aSearchValue);
+  int  aSearchValue = aVector[10];
+  auto aFoundOCCT   = std::find(aMap.cbegin(), aMap.cend(), aSearchValue);
+  auto aFoundStd    = std::find(aVector.begin(), aVector.end(), aSearchValue);
 
   EXPECT_TRUE(aFoundOCCT != aMap.cend());
   EXPECT_TRUE(aFoundStd != aVector.end());

@@ -39,21 +39,21 @@ public:
   //! Builds the prism of base S and vector V. If C is true,
   //! S is copied. If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
-  Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape&    S,
-                                  const gp_Vec&          V,
-                                  const bool Copy     = false,
-                                  const bool Canonize = true);
+  Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape& S,
+                                  const gp_Vec&       V,
+                                  const bool          Copy     = false,
+                                  const bool          Canonize = true);
 
   //! Builds a semi-infinite or an infinite prism of base S.
   //! If Copy is true S is copied. If Inf is true the prism
   //! is infinite, if Inf is false the prism is infinite in
   //! the direction D. If Canonize is true then generated surfaces
   //! are attempted to be canonized in simple types
-  Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape&    S,
-                                  const gp_Dir&          D,
-                                  const bool Inf      = true,
-                                  const bool Copy     = false,
-                                  const bool Canonize = true);
+  Standard_EXPORT BRepSweep_Prism(const TopoDS_Shape& S,
+                                  const gp_Dir&       D,
+                                  const bool          Inf      = true,
+                                  const bool          Copy     = false,
+                                  const bool          Canonize = true);
 
   //! Returns the TopoDS Shape attached to the prism.
   Standard_EXPORT TopoDS_Shape Shape();

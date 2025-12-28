@@ -123,9 +123,9 @@ static int setLayer(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_LayerTool>  localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                  aLabel;
-  TCollection_ExtendedString aLayer = argv[3];
+  occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
+  TDF_Label                      aLabel;
+  TCollection_ExtendedString     aLayer = argv[3];
 
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   if (!aLabel.IsNull())
@@ -159,7 +159,7 @@ static int getLayers(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
   occ::handle<NCollection_HSequence<TCollection_ExtendedString>> aLayerS;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   if (!aLabel.IsNull())
@@ -183,9 +183,7 @@ static int getLayers(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getLayerLabels(Draw_Interpretor& di,
-                                       int  argc,
-                                       const char**      argv)
+static int getLayerLabels(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -199,8 +197,8 @@ static int getLayerLabels(Draw_Interpretor& di,
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  NCollection_Sequence<TDF_Label>         aLabs;
+  occ::handle<XCAFDoc_LayerTool>  localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> aLabs;
   localLayerTool->GetLayerLabels(aLabs);
   if (aLabs.Length() == 0)
   {
@@ -235,7 +233,7 @@ static int getOneLayer(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   if (!aLabel.IsNull())
   {
@@ -264,7 +262,7 @@ static int setLinkLayer(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                 aLabel, layerLabel;
+  TDF_Label                      aLabel, layerLabel;
   TDF_Tool::Label(Doc->GetData(), argv[3], layerLabel);
 
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -300,14 +298,14 @@ static int getAllLayers(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  NCollection_Sequence<TDF_Label>         aLabs;
+  occ::handle<XCAFDoc_LayerTool>  localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
+  NCollection_Sequence<TDF_Label> aLabs;
   localLayerTool->GetLayerLabels(aLabs);
   if (aLabs.Length() == 0)
   {
     return 0;
   }
-  int           i = 1;
+  int                        i = 1;
   TCollection_ExtendedString layerName;
 
   for (; i <= aLabs.Length(); i++)
@@ -337,9 +335,9 @@ static int unSetLayer(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_LayerTool>  localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                  aLabel;
-  TCollection_ExtendedString aLayer = argv[3];
+  occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
+  TDF_Label                      aLabel;
+  TCollection_ExtendedString     aLayer = argv[3];
 
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   if (!aLabel.IsNull())
@@ -357,9 +355,7 @@ static int unSetLayer(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int unSetAllLayers(Draw_Interpretor& di,
-                                       int  argc,
-                                       const char**      argv)
+static int unSetAllLayers(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
@@ -374,7 +370,7 @@ static int unSetAllLayers(Draw_Interpretor& di,
     return 1;
   }
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  TDF_Label                 aLabel;
+  TDF_Label                      aLabel;
 
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
   if (!aLabel.IsNull())
@@ -392,9 +388,7 @@ static int unSetAllLayers(Draw_Interpretor& di,
   return 0;
 }
 
-static int removeAllLayers(Draw_Interpretor& di,
-                                        int  argc,
-                                        const char**      argv)
+static int removeAllLayers(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
   {
@@ -428,9 +422,7 @@ static int removeAllLayers(Draw_Interpretor& di,
   return 0;
 }
 
-static int setVisibility(Draw_Interpretor& di,
-                                      int  argc,
-                                      const char**      argv)
+static int setVisibility(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
   {
@@ -445,7 +437,7 @@ static int setVisibility(Draw_Interpretor& di,
     return 1;
   }
   occ::handle<XCAFDoc_LayerTool> localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
-  bool          isvisible      = false;
+  bool                           isvisible      = false;
   if ((argc == 4) && (Draw::Atoi(argv[3]) == 1))
     isvisible = true;
 
@@ -494,9 +486,7 @@ static int isVisible(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getLayerRefs(Draw_Interpretor& theDI,
-                                     int  theArgc,
-                                     const char**      theArgv)
+static int getLayerRefs(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 3)
   {
@@ -535,7 +525,7 @@ static int getLayerRefs(Draw_Interpretor& theDI,
     for (int anIndex = 1; anIndex <= aGraphNode->NbChildren(); ++anIndex)
     {
       occ::handle<XCAFDoc_GraphNode> aChild = aGraphNode->GetChild(anIndex);
-      TCollection_AsciiString   anEntry;
+      TCollection_AsciiString        anEntry;
       TDF_Tool::Entry(aChild->Label(), anEntry);
       theDI << anEntry << "\n";
     }
@@ -547,7 +537,7 @@ static int getLayerRefs(Draw_Interpretor& theDI,
     for (int anIndex = 1; anIndex <= aGraphNode->NbFathers(); ++anIndex)
     {
       occ::handle<XCAFDoc_GraphNode> aFather = aGraphNode->GetFather(anIndex);
-      TCollection_AsciiString   anEntry;
+      TCollection_AsciiString        anEntry;
       TDF_Tool::Entry(aFather->Label(), anEntry);
       theDI << anEntry << "\n";
     }

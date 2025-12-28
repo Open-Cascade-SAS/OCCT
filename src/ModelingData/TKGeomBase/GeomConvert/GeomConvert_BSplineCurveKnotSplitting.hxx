@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Array1.hxx>
 class Geom_BSplineCurve;
 
 //! An algorithm to determine points at which a BSpline
@@ -63,8 +60,9 @@ public:
   //! SplitBSplineCurve (provided by the package GeomConvert) to split the curve.
   //! Exceptions
   //! Standard_RangeError if ContinuityRange is less than zero.
-  Standard_EXPORT GeomConvert_BSplineCurveKnotSplitting(const occ::handle<Geom_BSplineCurve>& BasisCurve,
-                                                        const int ContinuityRange);
+  Standard_EXPORT GeomConvert_BSplineCurveKnotSplitting(
+    const occ::handle<Geom_BSplineCurve>& BasisCurve,
+    const int                             ContinuityRange);
 
   //! Returns the number of points at which the analyzed
   //! BSpline curve should be split, in order to obtain arcs

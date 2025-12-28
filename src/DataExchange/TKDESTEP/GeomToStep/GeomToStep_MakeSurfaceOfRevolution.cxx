@@ -32,7 +32,7 @@
 //=============================================================================
 GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution(
   const occ::handle<Geom_SurfaceOfRevolution>& S,
-  const StepData_Factors&                 theLocalFactors)
+  const StepData_Factors&                      theLocalFactors)
 {
   occ::handle<StepGeom_SurfaceOfRevolution> Surf;
   occ::handle<StepGeom_Curve>               aSweptCurve;
@@ -40,9 +40,9 @@ GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution(
 
   GeomToStep_MakeCurve          MkSwept(S->BasisCurve(), theLocalFactors);
   GeomToStep_MakeAxis1Placement MkAxis1(S->Axis(), theLocalFactors);
-  aSweptCurve                           = MkSwept.Value();
-  aAxisPosition                         = MkAxis1.Value();
-  Surf                                  = new StepGeom_SurfaceOfRevolution;
+  aSweptCurve                                = MkSwept.Value();
+  aAxisPosition                              = MkAxis1.Value();
+  Surf                                       = new StepGeom_SurfaceOfRevolution;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   Surf->Init(name, aSweptCurve, aAxisPosition);
   theSurfaceOfRevolution = Surf;

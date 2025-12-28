@@ -24,7 +24,6 @@
 #include <NCollection_HSequence.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
 #include <Transfer_FindHasher.hxx>
 #include <Message_ProgressRange.hxx>
 
@@ -55,7 +54,7 @@ public:
   //! (indicative) for the Map when known (default is 10000).
   //! Sets a specified printer.
   Standard_EXPORT Transfer_ProcessForFinder(const occ::handle<Message_Messenger>& printer,
-                                            const int           nb = 10000);
+                                            const int                             nb = 10000);
 
   //! Resets a TransferProcess as ready for a completely new work.
   //! Clears general data (roots) and the Map
@@ -85,7 +84,8 @@ public:
   //! pre-binding).
   //! If no Binder is linked with <start>, returns a Null Handle
   //! Considers a category number, by default 0
-  Standard_EXPORT occ::handle<Transfer_Binder> Find(const occ::handle<Transfer_Finder>& start) const;
+  Standard_EXPORT occ::handle<Transfer_Binder> Find(
+    const occ::handle<Transfer_Finder>& start) const;
 
   //! Returns True if a Result (whatever its form) is Bound with
   //! a starting Object. I.e., if a Binder with a Result set,
@@ -123,7 +123,8 @@ public:
   //! Returns a Binder for a starting entity, as follows :
   //! Tries to Find the already bound one
   //! If none found, creates a VoidBinder and Binds it
-  Standard_EXPORT occ::handle<Transfer_Binder> FindElseBind(const occ::handle<Transfer_Finder>& start);
+  Standard_EXPORT occ::handle<Transfer_Binder> FindElseBind(
+    const occ::handle<Transfer_Finder>& start);
 
   //! Sets Messenger used for outputting messages.
   Standard_EXPORT void SetMessenger(const occ::handle<Message_Messenger>& messenger);
@@ -149,7 +150,8 @@ public:
   Standard_EXPORT void SendFail(const occ::handle<Transfer_Finder>& start, const Message_Msg& amsg);
 
   //! New name for AddWarning (Msg)
-  Standard_EXPORT void SendWarning(const occ::handle<Transfer_Finder>& start, const Message_Msg& amsg);
+  Standard_EXPORT void SendWarning(const occ::handle<Transfer_Finder>& start,
+                                   const Message_Msg&                  amsg);
 
   //! Adds an information message
   //! Trace is filled if trace level is at least 3
@@ -158,13 +160,13 @@ public:
   //! Adds an Error message to a starting entity (to the check of
   //! its Binder of category 0, as a Fail)
   Standard_EXPORT void AddFail(const occ::handle<Transfer_Finder>& start,
-                               const char*         mess,
-                               const char*         orig = "");
+                               const char*                         mess,
+                               const char*                         orig = "");
 
   //! (other name of AddFail, maintained for compatibility)
   Standard_EXPORT void AddError(const occ::handle<Transfer_Finder>& start,
-                                const char*         mess,
-                                const char*         orig = "");
+                                const char*                         mess,
+                                const char*                         orig = "");
 
   //! Adds an Error Message to a starting entity from the definition
   //! of a Msg (Original+Value)
@@ -173,12 +175,13 @@ public:
   //! Adds a Warning message to a starting entity (to the check of
   //! its Binder of category 0)
   Standard_EXPORT void AddWarning(const occ::handle<Transfer_Finder>& start,
-                                  const char*         mess,
-                                  const char*         orig = "");
+                                  const char*                         mess,
+                                  const char*                         orig = "");
 
   //! Adds a Warning Message to a starting entity from the definition
   //! of a Msg (Original+Value)
-  Standard_EXPORT void AddWarning(const occ::handle<Transfer_Finder>& start, const Message_Msg& amsg);
+  Standard_EXPORT void AddWarning(const occ::handle<Transfer_Finder>& start,
+                                  const Message_Msg&                  amsg);
 
   Standard_EXPORT void Mend(const occ::handle<Transfer_Finder>& start, const char* pref = "");
 
@@ -209,7 +212,8 @@ public:
   //! By default, considers all the attribute names
   //! If <rootname> is given, considers only the attribute names
   //! which begin by <rootname>
-  Standard_EXPORT occ::handle<Interface_Check> Check(const occ::handle<Transfer_Finder>& start) const;
+  Standard_EXPORT occ::handle<Interface_Check> Check(
+    const occ::handle<Transfer_Finder>& start) const;
 
   //! Binds a starting object with a Transient Result.
   //! Uses a SimpleBinderOfTransient to work. If there is already
@@ -250,14 +254,14 @@ public:
   //! found with the good type, it is loaded in <val> and can be
   //! immediately used, well initialised
   Standard_EXPORT bool FindTypedTransient(const occ::handle<Transfer_Finder>& start,
-                                                      const occ::handle<Standard_Type>&   atype,
-                                                      occ::handle<Standard_Transient>&    val) const;
+                                          const occ::handle<Standard_Type>&   atype,
+                                          occ::handle<Standard_Transient>&    val) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
   bool FindTypedTransient(const occ::handle<Transfer_Finder>& start,
-                                      const occ::handle<Standard_Type>&   atype,
-                                      occ::handle<T>&                     val) const
+                          const occ::handle<Standard_Type>&   atype,
+                          occ::handle<T>&                     val) const
   {
     occ::handle<Standard_Transient> aVal = val;
     return FindTypedTransient(start, atype, aVal) && !(val = occ::down_cast<T>(aVal)).IsNull();
@@ -271,14 +275,14 @@ public:
   //!
   //! Apart from this, works as FindTypedTransient
   Standard_EXPORT bool GetTypedTransient(const occ::handle<Transfer_Binder>& binder,
-                                                     const occ::handle<Standard_Type>&   atype,
-                                                     occ::handle<Standard_Transient>&    val) const;
+                                         const occ::handle<Standard_Type>&   atype,
+                                         occ::handle<Standard_Transient>&    val) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
   bool GetTypedTransient(const occ::handle<Transfer_Binder>& start,
-                                     const occ::handle<Standard_Type>&   atype,
-                                     occ::handle<T>&                     val) const
+                         const occ::handle<Standard_Type>&   atype,
+                         occ::handle<T>&                     val) const
   {
     occ::handle<Standard_Transient> aVal = val;
     return GetTypedTransient(start, atype, aVal) && !(val = occ::down_cast<T>(aVal)).IsNull();
@@ -345,13 +349,12 @@ public:
   //! already Bound, an exception is raised in case of error.
   Standard_EXPORT occ::handle<Transfer_Binder> Transferring(
     const occ::handle<Transfer_Finder>& start,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+    const Message_ProgressRange&        theProgress = Message_ProgressRange());
 
   //! Same as Transferring but does not return the Binder.
   //! Simply returns True in case of success (for user call)
-  Standard_EXPORT bool
-    Transfer(const occ::handle<Transfer_Finder>& start,
-             const Message_ProgressRange&   theProgress = Message_ProgressRange());
+  Standard_EXPORT bool Transfer(const occ::handle<Transfer_Finder>& start,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Allows controls if exceptions will be handled
   //! Transfer Operations
@@ -371,13 +374,13 @@ public:
   //! 0 neutral, 1 for Error, 2 for Warning message, 3 for new Root
   Standard_EXPORT void StartTrace(const occ::handle<Transfer_Binder>& binder,
                                   const occ::handle<Transfer_Finder>& start,
-                                  const int         level,
-                                  const int         mode) const;
+                                  const int                           level,
+                                  const int                           mode) const;
 
   //! Prints a short information on a starting object. By default
   //! prints its Dynamic Type. Can be redefined
   Standard_EXPORT virtual void PrintTrace(const occ::handle<Transfer_Finder>& start,
-                                          Standard_OStream&              S) const;
+                                          Standard_OStream&                   S) const;
 
   //! Returns True if we are surely in a DeadLoop. Evaluation is not
   //! exact, it is a "majorant" which must be computed fast.
@@ -415,22 +418,22 @@ public:
   //! <level> = 2 : object plus all its scoped ones
   Standard_EXPORT Transfer_IteratorOfProcessForFinder
     ResultOne(const occ::handle<Transfer_Finder>& start,
-              const int         level,
-              const bool         withstart = false) const;
+              const int                           level,
+              const bool                          withstart = false) const;
 
   //! Returns a CheckList for one starting object
   //! <level> interpreted as by ResultOne
   //! If <erronly> is True, checks with Warnings only are ignored
   Standard_EXPORT Interface_CheckIterator CheckListOne(const occ::handle<Transfer_Finder>& start,
-                                                       const int         level,
+                                                       const int                           level,
                                                        const bool erronly) const;
 
   //! Returns True if no check message is attached to a starting
   //! object. <level> interpreted as by ResultOne
   //! If <erronly> is True, checks with Warnings only are ignored
   Standard_EXPORT bool IsCheckListEmpty(const occ::handle<Transfer_Finder>& start,
-                                                    const int         level,
-                                                    const bool         erronly) const;
+                                        const int                           level,
+                                        const bool                          erronly) const;
 
   //! Removes Results attached to (== Unbinds) a given object and,
   //! according <level> :
@@ -438,8 +441,8 @@ public:
   //! <level> = 1 : it plus its immediately owned sub-results(scope)
   //! <level> = 2 : it plus all its owned sub-results(scope)
   Standard_EXPORT void RemoveResult(const occ::handle<Transfer_Finder>& start,
-                                    const int         level,
-                                    const bool         compute = true);
+                                    const int                           level,
+                                    const bool                          compute = true);
 
   //! Computes a number to be associated to a starting object in
   //! a check or a check-list
@@ -453,7 +456,8 @@ private:
   //! faster access on next calls (as Bind does too)
   //! Considers a category number, by default 0
   //! C++ : return const &
-  Standard_EXPORT occ::handle<Transfer_Binder> FindAndMask(const occ::handle<Transfer_Finder>& start);
+  Standard_EXPORT occ::handle<Transfer_Binder> FindAndMask(
+    const occ::handle<Transfer_Finder>& start);
 
   //! Internal action of Transfer, called by Transferring, with or
   //! without ErrorHandle. It invokes the Actor to work (set by
@@ -463,20 +467,23 @@ private:
   //! if a Starting Entity has not been recognized at all.
   Standard_EXPORT occ::handle<Transfer_Binder> TransferProduct(
     const occ::handle<Transfer_Finder>& start,
-    const Message_ProgressRange&   theProgress = Message_ProgressRange());
+    const Message_ProgressRange&        theProgress = Message_ProgressRange());
 
-  bool                         theerrh;
-  int                         thetrace;
+  bool                                          theerrh;
+  int                                           thetrace;
   occ::handle<Message_Messenger>                themessenger;
-  int                         thelevel;
-  int                         therootl;
-  bool                         therootm;
-  NCollection_IndexedMap<int>              theroots;
+  int                                           thelevel;
+  int                                           therootl;
+  bool                                          therootm;
+  NCollection_IndexedMap<int>                   theroots;
   occ::handle<Transfer_Finder>                  thelastobj;
   occ::handle<Transfer_Binder>                  thelastbnd;
-  int                         theindex;
+  int                                           theindex;
   occ::handle<Transfer_ActorOfProcessForFinder> theactor;
-  NCollection_IndexedDataMap<occ::handle<Transfer_Finder>, occ::handle<Transfer_Binder>, Transfer_FindHasher>   themap;
+  NCollection_IndexedDataMap<occ::handle<Transfer_Finder>,
+                             occ::handle<Transfer_Binder>,
+                             Transfer_FindHasher>
+    themap;
 };
 
 #endif // _Transfer_ProcessForFinder_HeaderFile

@@ -23,9 +23,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_Array1.hxx>
 class Law_BSpline;
 
 //! This class is used to interpolate a BsplineCurve
@@ -46,8 +43,8 @@ public:
   //! least 2 points. If PeriodicFlag is True then the curve
   //! will be periodic be periodic
   Standard_EXPORT Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& Points,
-                                  const bool               PeriodicFlag,
-                                  const double                  Tolerance);
+                                  const bool                                      PeriodicFlag,
+                                  const double                                    Tolerance);
 
   //! Tolerance is to check if the points are not too close
   //! to one an other. It is also used to check if the
@@ -56,8 +53,8 @@ public:
   //! will be periodic be periodic
   Standard_EXPORT Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& Points,
                                   const occ::handle<NCollection_HArray1<double>>& Parameters,
-                                  const bool               PeriodicFlag,
-                                  const double                  Tolerance);
+                                  const bool                                      PeriodicFlag,
+                                  const double                                    Tolerance);
 
   //! loads initial and final tangents if any.
   Standard_EXPORT void Load(const double InitialTangent, const double FinalTangent);
@@ -86,15 +83,15 @@ private:
   //! Interpolates in a C1 periodic fashion.
   Standard_EXPORT void PerformPeriodic();
 
-  double                    myTolerance;
-  occ::handle<NCollection_HArray1<double>>    myPoints;
-  bool                 myIsDone;
-  occ::handle<Law_BSpline>              myCurve;
-  occ::handle<NCollection_HArray1<double>>    myTangents;
-  occ::handle<NCollection_HArray1<bool>> myTangentFlags;
-  occ::handle<NCollection_HArray1<double>>    myParameters;
-  bool                 myPeriodic;
-  bool                 myTangentRequest;
+  double                                   myTolerance;
+  occ::handle<NCollection_HArray1<double>> myPoints;
+  bool                                     myIsDone;
+  occ::handle<Law_BSpline>                 myCurve;
+  occ::handle<NCollection_HArray1<double>> myTangents;
+  occ::handle<NCollection_HArray1<bool>>   myTangentFlags;
+  occ::handle<NCollection_HArray1<double>> myParameters;
+  bool                                     myPeriodic;
+  bool                                     myTangentRequest;
 };
 
 #endif // _Law_Interpolate_HeaderFile

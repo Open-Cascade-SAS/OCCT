@@ -26,7 +26,7 @@ TEST(IGESExportTest, SharedCurvesBRepMode)
 {
   TopoDS_Shape aSolid = (TopoDS_Solid)BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 1, 1, 1);
 
-  int   aBRepMode = 1;
+  int                aBRepMode = 1;
   IGESControl_Writer aWriter("MM", aBRepMode);
   aWriter.AddShape(aSolid);
 
