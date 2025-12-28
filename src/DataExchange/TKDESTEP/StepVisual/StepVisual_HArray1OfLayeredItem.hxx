@@ -18,8 +18,6 @@
 #define StepVisual_HArray1OfLayeredItem_HeaderFile
 
 #include <StepVisual_Array1OfLayeredItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfLayeredItem, StepVisual_Array1OfLayeredItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_LayeredItem> StepVisual_HArray1OfLayeredItem;
 #endif

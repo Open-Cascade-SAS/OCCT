@@ -18,8 +18,6 @@
 #define IGESData_HArray1OfIGESEntity_HeaderFile
 
 #include <IGESData_Array1OfIGESEntity.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESData_HArray1OfIGESEntity, IGESData_Array1OfIGESEntity)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESData_IGESEntity)> IGESData_HArray1OfIGESEntity;
 #endif

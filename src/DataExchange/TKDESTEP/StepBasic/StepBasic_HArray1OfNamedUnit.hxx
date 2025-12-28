@@ -18,8 +18,6 @@
 #define StepBasic_HArray1OfNamedUnit_HeaderFile
 
 #include <StepBasic_Array1OfNamedUnit.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepBasic_HArray1OfNamedUnit, StepBasic_Array1OfNamedUnit)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepBasic_NamedUnit)> StepBasic_HArray1OfNamedUnit;
 #endif

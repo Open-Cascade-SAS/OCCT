@@ -19,8 +19,6 @@
 
 #include <TCollection_HAsciiString.hxx>
 #include <Interface_Array1OfHAsciiString.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Interface_HArray1OfHAsciiString, Interface_Array1OfHAsciiString)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(TCollection_HAsciiString)> Interface_HArray1OfHAsciiString;
 #endif

@@ -19,8 +19,6 @@
 
 #include <gp_Pnt.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColgp_HArray1OfPnt, TColgp_Array1OfPnt)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<gp_Pnt> TColgp_HArray1OfPnt;
 #endif

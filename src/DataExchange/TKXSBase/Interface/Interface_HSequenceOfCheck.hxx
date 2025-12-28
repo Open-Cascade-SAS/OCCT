@@ -18,8 +18,6 @@
 #define Interface_HSequenceOfCheck_HeaderFile
 
 #include <Interface_SequenceOfCheck.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Interface_HSequenceOfCheck, Interface_SequenceOfCheck)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Interface_Check)> Interface_HSequenceOfCheck;
 #endif

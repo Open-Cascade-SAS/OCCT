@@ -18,8 +18,6 @@
 #define AppParCurves_HArray1OfConstraintCouple_HeaderFile
 
 #include <AppParCurves_Array1OfConstraintCouple.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(AppParCurves_HArray1OfConstraintCouple, AppParCurves_Array1OfConstraintCouple)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<AppParCurves_ConstraintCouple> AppParCurves_HArray1OfConstraintCouple;
 #endif

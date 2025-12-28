@@ -25,10 +25,7 @@ set(OCCT_NCollection_FILES
   NCollection_DataMap.hxx
   NCollection_DefaultHasher.hxx
   NCollection_DefineAlloc.hxx
-  NCollection_DefineHArray1.hxx
-  NCollection_DefineHArray2.hxx
   NCollection_DefineHasher.hxx
-  NCollection_DefineHSequence.hxx
   NCollection_DoubleMap.hxx
   NCollection_DynamicArray.hxx
   NCollection_EBTree.hxx

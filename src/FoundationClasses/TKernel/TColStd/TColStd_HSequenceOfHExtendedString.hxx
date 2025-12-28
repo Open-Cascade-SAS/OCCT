@@ -16,8 +16,7 @@
 #define TColStd_HSequenceOfHExtendedString_HeaderFile
 
 #include <TColStd_SequenceOfHExtendedString.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfHExtendedString, TColStd_SequenceOfHExtendedString)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(TCollection_HExtendedString)>
+  TColStd_HSequenceOfHExtendedString;
 #endif

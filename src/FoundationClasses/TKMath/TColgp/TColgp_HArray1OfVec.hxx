@@ -18,8 +18,6 @@
 #define TColgp_HArray1OfVec_HeaderFile
 
 #include <TColgp_Array1OfVec.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColgp_HArray1OfVec, TColgp_Array1OfVec)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<gp_Vec> TColgp_HArray1OfVec;
 #endif

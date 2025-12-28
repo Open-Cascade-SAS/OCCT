@@ -19,8 +19,6 @@
 
 #include <IGESAppli_Flow.hxx>
 #include <IGESAppli_Array1OfFlow.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESAppli_HArray1OfFlow, IGESAppli_Array1OfFlow)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESAppli_Flow)> IGESAppli_HArray1OfFlow;
 #endif

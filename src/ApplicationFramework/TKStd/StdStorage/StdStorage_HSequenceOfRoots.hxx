@@ -15,8 +15,6 @@
 #define StdStorage_HSequenceOfRoots_HeaderFile
 
 #include <StdStorage_SequenceOfRoots.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(StdStorage_HSequenceOfRoots, StdStorage_SequenceOfRoots)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(StdStorage_Root)> StdStorage_HSequenceOfRoots;
 #endif // StdStorage_HSequenceOfRoots_HeaderFile

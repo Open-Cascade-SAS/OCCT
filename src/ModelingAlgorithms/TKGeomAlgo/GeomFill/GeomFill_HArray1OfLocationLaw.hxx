@@ -18,8 +18,6 @@
 #define GeomFill_HArray1OfLocationLaw_HeaderFile
 
 #include <GeomFill_Array1OfLocationLaw.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(GeomFill_HArray1OfLocationLaw, GeomFill_Array1OfLocationLaw)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(GeomFill_LocationLaw)> GeomFill_HArray1OfLocationLaw;
 #endif

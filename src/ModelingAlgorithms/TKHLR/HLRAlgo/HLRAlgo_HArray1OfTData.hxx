@@ -18,8 +18,6 @@
 #define HLRAlgo_HArray1OfTData_HeaderFile
 
 #include <HLRAlgo_Array1OfTData.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(HLRAlgo_HArray1OfTData, HLRAlgo_Array1OfTData)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<HLRAlgo_TriangleData> HLRAlgo_HArray1OfTData;
 #endif

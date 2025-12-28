@@ -18,8 +18,7 @@
 #define StepAP203_HArray1OfPersonOrganizationItem_HeaderFile
 
 #include <StepAP203_Array1OfPersonOrganizationItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP203_HArray1OfPersonOrganizationItem, StepAP203_Array1OfPersonOrganizationItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP203_PersonOrganizationItem>
+  StepAP203_HArray1OfPersonOrganizationItem;
 #endif

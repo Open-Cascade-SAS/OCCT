@@ -18,8 +18,6 @@
 #define TColgp_HArray1OfXYZ_HeaderFile
 
 #include <TColgp_Array1OfXYZ.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColgp_HArray1OfXYZ, TColgp_Array1OfXYZ)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<gp_XYZ> TColgp_HArray1OfXYZ;
 #endif

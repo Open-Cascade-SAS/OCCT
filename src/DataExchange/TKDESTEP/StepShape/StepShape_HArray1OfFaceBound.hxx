@@ -18,8 +18,6 @@
 #define StepShape_HArray1OfFaceBound_HeaderFile
 
 #include <StepShape_Array1OfFaceBound.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepShape_HArray1OfFaceBound, StepShape_Array1OfFaceBound)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepShape_FaceBound)> StepShape_HArray1OfFaceBound;
 #endif

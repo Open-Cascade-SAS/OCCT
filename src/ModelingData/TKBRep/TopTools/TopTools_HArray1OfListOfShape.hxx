@@ -18,8 +18,6 @@
 #define TopTools_HArray1OfListOfShape_HeaderFile
 
 #include <TopTools_Array1OfListOfShape.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TopTools_HArray1OfListOfShape, TopTools_Array1OfListOfShape)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TopTools_ListOfShape> TopTools_HArray1OfListOfShape;
 #endif

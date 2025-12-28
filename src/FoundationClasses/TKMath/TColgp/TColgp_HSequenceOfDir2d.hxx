@@ -19,8 +19,6 @@
 
 #include <gp_Dir2d.hxx>
 #include <TColgp_SequenceOfDir2d.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColgp_HSequenceOfDir2d, TColgp_SequenceOfDir2d)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<gp_Dir2d> TColgp_HSequenceOfDir2d;
 #endif

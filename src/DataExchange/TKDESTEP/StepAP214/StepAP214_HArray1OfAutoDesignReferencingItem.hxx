@@ -18,9 +18,7 @@
 #define StepAP214_HArray1OfAutoDesignReferencingItem_HeaderFile
 
 #include <StepAP214_Array1OfAutoDesignReferencingItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignReferencingItem,
-               StepAP214_Array1OfAutoDesignReferencingItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_AutoDesignReferencingItem>
+  StepAP214_HArray1OfAutoDesignReferencingItem;
 #endif

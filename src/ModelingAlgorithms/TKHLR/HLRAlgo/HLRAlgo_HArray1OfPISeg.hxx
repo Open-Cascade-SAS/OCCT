@@ -18,8 +18,6 @@
 #define HLRAlgo_HArray1OfPISeg_HeaderFile
 
 #include <HLRAlgo_Array1OfPISeg.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(HLRAlgo_HArray1OfPISeg, HLRAlgo_Array1OfPISeg)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<HLRAlgo_PolyInternalSegment> HLRAlgo_HArray1OfPISeg;
 #endif

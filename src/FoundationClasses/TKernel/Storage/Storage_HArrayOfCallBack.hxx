@@ -18,8 +18,6 @@
 #define Storage_HArrayOfCallBack_HeaderFile
 
 #include <Storage_ArrayOfCallBack.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Storage_HArrayOfCallBack, Storage_ArrayOfCallBack)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Storage_CallBack)> Storage_HArrayOfCallBack;
 #endif

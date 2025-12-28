@@ -18,8 +18,6 @@
 #define TopOpeBRep_HArray1OfVPointInter_HeaderFile
 
 #include <TopOpeBRep_Array1OfVPointInter.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TopOpeBRep_HArray1OfVPointInter, TopOpeBRep_Array1OfVPointInter)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TopOpeBRep_VPointInter> TopOpeBRep_HArray1OfVPointInter;
 #endif

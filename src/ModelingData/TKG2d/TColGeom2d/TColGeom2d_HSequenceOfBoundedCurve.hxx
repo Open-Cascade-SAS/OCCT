@@ -18,8 +18,6 @@
 #define TColGeom2d_HSequenceOfBoundedCurve_HeaderFile
 
 #include <TColGeom2d_SequenceOfBoundedCurve.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColGeom2d_HSequenceOfBoundedCurve, TColGeom2d_SequenceOfBoundedCurve)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Geom2d_BoundedCurve)> TColGeom2d_HSequenceOfBoundedCurve;
 #endif

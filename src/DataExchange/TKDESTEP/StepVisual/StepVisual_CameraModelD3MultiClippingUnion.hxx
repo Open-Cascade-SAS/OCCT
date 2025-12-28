@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
-class StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect;
+#include <StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx>
 class TCollection_HAsciiString;
 
 DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingUnion,

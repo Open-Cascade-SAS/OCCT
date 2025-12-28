@@ -19,8 +19,6 @@
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <TColGeom2d_Array1OfBSplineCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColGeom2d_HArray1OfBSplineCurve, TColGeom2d_Array1OfBSplineCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Geom2d_BSplineCurve)> TColGeom2d_HArray1OfBSplineCurve;
 #endif

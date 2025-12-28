@@ -18,8 +18,6 @@
 #define StepAP203_HArray1OfWorkItem_HeaderFile
 
 #include <StepAP203_Array1OfWorkItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP203_HArray1OfWorkItem, StepAP203_Array1OfWorkItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP203_WorkItem> StepAP203_HArray1OfWorkItem;
 #endif

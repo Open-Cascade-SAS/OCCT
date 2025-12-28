@@ -18,8 +18,6 @@
 #define GeomFill_HArray1OfSectionLaw_HeaderFile
 
 #include <GeomFill_Array1OfSectionLaw.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(GeomFill_HArray1OfSectionLaw, GeomFill_Array1OfSectionLaw)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(GeomFill_SectionLaw)> GeomFill_HArray1OfSectionLaw;
 #endif

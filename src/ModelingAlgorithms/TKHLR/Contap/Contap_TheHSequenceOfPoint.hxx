@@ -19,8 +19,6 @@
 
 #include <Contap_Point.hxx>
 #include <Contap_TheSequenceOfPoint.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Contap_TheHSequenceOfPoint, Contap_TheSequenceOfPoint)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Contap_Point> Contap_TheHSequenceOfPoint;
 #endif

@@ -17,10 +17,10 @@
 #ifndef StepVisual_HArray1OfTessellatedStructuredItem_HeaderFile
 #define StepVisual_HArray1OfTessellatedStructuredItem_HeaderFile
 
-#include <StepVisual_Array1OfTessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-DEFINE_HARRAY1(StepVisual_HArray1OfTessellatedStructuredItem,
-               StepVisual_Array1OfTessellatedStructuredItem);
+typedef NCollection_HArray1<Handle(StepVisual_TessellatedStructuredItem)>
+  StepVisual_HArray1OfTessellatedStructuredItem;
 
 #endif

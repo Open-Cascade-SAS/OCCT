@@ -16,8 +16,6 @@
 #define TColStd_HSequenceOfReal_HeaderFile
 
 #include <TColStd_SequenceOfReal.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfReal, TColStd_SequenceOfReal)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Standard_Real> TColStd_HSequenceOfReal;
 #endif

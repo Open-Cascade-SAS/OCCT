@@ -18,8 +18,6 @@
 #define Poly_HArray1OfTriangle_HeaderFile
 
 #include <Poly_Array1OfTriangle.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Poly_HArray1OfTriangle, Poly_Array1OfTriangle)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Poly_Triangle> Poly_HArray1OfTriangle;
 #endif

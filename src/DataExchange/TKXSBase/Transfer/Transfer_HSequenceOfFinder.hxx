@@ -18,8 +18,6 @@
 #define Transfer_HSequenceOfFinder_HeaderFile
 
 #include <Transfer_SequenceOfFinder.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Transfer_HSequenceOfFinder, Transfer_SequenceOfFinder)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Transfer_Finder)> Transfer_HSequenceOfFinder;
 #endif

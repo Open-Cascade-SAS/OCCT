@@ -18,8 +18,6 @@
 #define IGESSolid_HArray1OfLoop_HeaderFile
 
 #include <IGESSolid_Array1OfLoop.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESSolid_HArray1OfLoop, IGESSolid_Array1OfLoop)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESSolid_Loop)> IGESSolid_HArray1OfLoop;
 #endif

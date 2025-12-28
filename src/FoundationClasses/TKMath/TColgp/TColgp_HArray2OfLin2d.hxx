@@ -19,8 +19,6 @@
 
 #include <gp_Lin2d.hxx>
 #include <TColgp_Array2OfLin2d.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColgp_HArray2OfLin2d, TColgp_Array2OfLin2d)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<gp_Lin2d> TColgp_HArray2OfLin2d;
 #endif

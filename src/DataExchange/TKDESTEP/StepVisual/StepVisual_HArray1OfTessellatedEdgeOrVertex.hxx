@@ -17,10 +17,10 @@
 #ifndef StepVisual_HArray1OfTessellatedEdgeOrVertex_HeaderFile
 #define StepVisual_HArray1OfTessellatedEdgeOrVertex_HeaderFile
 
-#include <StepVisual_Array1OfTessellatedEdgeOrVertex.hxx>
+#include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <NCollection_HArray1.hxx>
 
-DEFINE_HARRAY1(StepVisual_HArray1OfTessellatedEdgeOrVertex,
-               StepVisual_Array1OfTessellatedEdgeOrVertex);
+typedef NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>
+  StepVisual_HArray1OfTessellatedEdgeOrVertex;
 
 #endif

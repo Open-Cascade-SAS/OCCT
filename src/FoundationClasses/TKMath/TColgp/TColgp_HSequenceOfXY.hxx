@@ -19,8 +19,6 @@
 
 #include <gp_XY.hxx>
 #include <TColgp_SequenceOfXY.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColgp_HSequenceOfXY, TColgp_SequenceOfXY)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<gp_XY> TColgp_HSequenceOfXY;
 #endif

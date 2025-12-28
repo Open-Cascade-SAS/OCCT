@@ -19,8 +19,6 @@
 
 #include <gp_Dir2d.hxx>
 #include <TColgp_Array2OfDir2d.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColgp_HArray2OfDir2d, TColgp_Array2OfDir2d)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<gp_Dir2d> TColgp_HArray2OfDir2d;
 #endif

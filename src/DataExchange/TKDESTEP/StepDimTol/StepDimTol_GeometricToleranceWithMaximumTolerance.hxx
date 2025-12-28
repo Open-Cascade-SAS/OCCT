@@ -20,11 +20,11 @@
 
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;
-class StepDimTol_HArray1OfGeometricToleranceModifier;
 
 class StepDimTol_GeometricToleranceWithMaximumTolerance;
 DEFINE_STANDARD_HANDLE(StepDimTol_GeometricToleranceWithMaximumTolerance,

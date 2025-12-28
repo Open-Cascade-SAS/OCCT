@@ -19,8 +19,6 @@
 
 #include <gp_Circ2d.hxx>
 #include <TColgp_Array2OfCirc2d.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColgp_HArray2OfCirc2d, TColgp_Array2OfCirc2d)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<gp_Circ2d> TColgp_HArray2OfCirc2d;
 #endif

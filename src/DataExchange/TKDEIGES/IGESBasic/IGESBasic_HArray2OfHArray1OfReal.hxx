@@ -18,8 +18,6 @@
 #define IGESBasic_HArray2OfHArray1OfReal_HeaderFile
 
 #include <IGESBasic_Array2OfHArray1OfReal.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(IGESBasic_HArray2OfHArray1OfReal, IGESBasic_Array2OfHArray1OfReal)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Handle(TColStd_HArray1OfReal)> IGESBasic_HArray2OfHArray1OfReal;
 #endif

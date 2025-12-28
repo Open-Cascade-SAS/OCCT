@@ -18,8 +18,6 @@
 #define StepShape_HArray1OfConnectedEdgeSet_HeaderFile
 
 #include <StepShape_Array1OfConnectedEdgeSet.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepShape_HArray1OfConnectedEdgeSet, StepShape_Array1OfConnectedEdgeSet)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepShape_ConnectedEdgeSet)> StepShape_HArray1OfConnectedEdgeSet;
 #endif

@@ -18,9 +18,7 @@
 #define StepAP214_HArray1OfAutoDesignGeneralOrgItem_HeaderFile
 
 #include <StepAP214_Array1OfAutoDesignGeneralOrgItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignGeneralOrgItem,
-               StepAP214_Array1OfAutoDesignGeneralOrgItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>
+  StepAP214_HArray1OfAutoDesignGeneralOrgItem;
 #endif

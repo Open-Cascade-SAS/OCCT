@@ -18,8 +18,6 @@
 #define IGESAppli_HArray1OfNode_HeaderFile
 
 #include <IGESAppli_Array1OfNode.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESAppli_HArray1OfNode, IGESAppli_Array1OfNode)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESAppli_Node)> IGESAppli_HArray1OfNode;
 #endif

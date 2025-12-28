@@ -19,8 +19,6 @@
 
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_Array2OfPOnCurv.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(Extrema_HArray2OfPOnCurv, Extrema_Array2OfPOnCurv)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Extrema_POnCurv> Extrema_HArray2OfPOnCurv;
 #endif

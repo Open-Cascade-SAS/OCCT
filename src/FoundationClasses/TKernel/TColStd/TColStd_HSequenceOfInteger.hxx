@@ -17,8 +17,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfInteger, TColStd_SequenceOfInteger)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Standard_Integer> TColStd_HSequenceOfInteger;
 #endif

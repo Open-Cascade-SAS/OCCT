@@ -19,11 +19,9 @@
 #define TObj_SequenceOfObject_HeaderFile
 
 #include <NCollection_Sequence.hxx>
-#include <NCollection_DefineHSequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 class TObj_Object;
-typedef NCollection_Sequence<Handle(TObj_Object)> TObj_SequenceOfObject;
-
-DEFINE_HSEQUENCE(TObj_HSequenceOfObject, TObj_SequenceOfObject)
-
+typedef NCollection_Sequence<Handle(TObj_Object)>  TObj_SequenceOfObject;
+typedef NCollection_HSequence<Handle(TObj_Object)> TObj_HSequenceOfObject;
 #endif

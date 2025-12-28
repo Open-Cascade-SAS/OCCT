@@ -18,9 +18,7 @@
 #define TransferBRep_HSequenceOfTransferResultInfo_HeaderFile
 
 #include <TransferBRep_SequenceOfTransferResultInfo.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TransferBRep_HSequenceOfTransferResultInfo,
-                 TransferBRep_SequenceOfTransferResultInfo)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(TransferBRep_TransferResultInfo)>
+  TransferBRep_HSequenceOfTransferResultInfo;
 #endif

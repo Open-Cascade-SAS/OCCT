@@ -19,8 +19,7 @@
 
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_Array1OfProductDefinition.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepBasic_HArray1OfProductDefinition, StepBasic_Array1OfProductDefinition)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepBasic_ProductDefinition)>
+  StepBasic_HArray1OfProductDefinition;
 #endif

@@ -17,8 +17,7 @@
 #define _StepDimTol_HArray1OfGeometricToleranceModifier_HeaderFile
 
 #include <StepDimTol_Array1OfGeometricToleranceModifier.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepDimTol_HArray1OfGeometricToleranceModifier,
-               StepDimTol_Array1OfGeometricToleranceModifier)
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepDimTol_GeometricToleranceModifier>
+  StepDimTol_HArray1OfGeometricToleranceModifier;
 #endif // _StepDimTol_HArray1OfGeometricToleranceModifier_HeaderFile

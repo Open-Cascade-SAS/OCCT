@@ -18,8 +18,6 @@
 #define StepShape_HArray1OfOrientedEdge_HeaderFile
 
 #include <StepShape_Array1OfOrientedEdge.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepShape_HArray1OfOrientedEdge, StepShape_Array1OfOrientedEdge)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepShape_OrientedEdge)> StepShape_HArray1OfOrientedEdge;
 #endif

@@ -19,8 +19,6 @@
 
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_Array1OfPinpointConstraint.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Plate_HArray1OfPinpointConstraint, Plate_Array1OfPinpointConstraint)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Plate_PinpointConstraint> Plate_HArray1OfPinpointConstraint;
 #endif

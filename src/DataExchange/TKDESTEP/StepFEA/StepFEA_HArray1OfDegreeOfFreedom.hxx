@@ -15,8 +15,6 @@
 #define StepFEA_HArray1OfDegreeOfFreedom_HeaderFile
 
 #include <StepFEA_Array1OfDegreeOfFreedom.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepFEA_HArray1OfDegreeOfFreedom, StepFEA_Array1OfDegreeOfFreedom)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepFEA_DegreeOfFreedom> StepFEA_HArray1OfDegreeOfFreedom;
 #endif

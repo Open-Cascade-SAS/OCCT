@@ -19,8 +19,6 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Array1OfBox.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Bnd_HArray1OfBox, Bnd_Array1OfBox)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Bnd_Box> Bnd_HArray1OfBox;
 #endif

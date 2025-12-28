@@ -19,8 +19,6 @@
 
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomPlate_Array1OfSequenceOfReal.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(GeomPlate_HArray1OfSequenceOfReal, GeomPlate_Array1OfSequenceOfReal)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TColStd_SequenceOfReal> GeomPlate_HArray1OfSequenceOfReal;
 #endif

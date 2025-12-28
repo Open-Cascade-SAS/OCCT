@@ -18,8 +18,6 @@
 #define StepAP214_HArray1OfOrganizationItem_HeaderFile
 
 #include <StepAP214_Array1OfOrganizationItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfOrganizationItem, StepAP214_Array1OfOrganizationItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_OrganizationItem> StepAP214_HArray1OfOrganizationItem;
 #endif

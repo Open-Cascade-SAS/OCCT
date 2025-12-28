@@ -18,8 +18,6 @@
 #define StepAP203_HArray1OfChangeRequestItem_HeaderFile
 
 #include <StepAP203_Array1OfChangeRequestItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP203_HArray1OfChangeRequestItem, StepAP203_Array1OfChangeRequestItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP203_ChangeRequestItem> StepAP203_HArray1OfChangeRequestItem;
 #endif

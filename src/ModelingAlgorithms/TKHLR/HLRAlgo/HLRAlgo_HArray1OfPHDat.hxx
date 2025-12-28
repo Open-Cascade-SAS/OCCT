@@ -18,8 +18,6 @@
 #define HLRAlgo_HArray1OfPHDat_HeaderFile
 
 #include <HLRAlgo_Array1OfPHDat.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(HLRAlgo_HArray1OfPHDat, HLRAlgo_Array1OfPHDat)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<HLRAlgo_PolyHidingData> HLRAlgo_HArray1OfPHDat;
 #endif

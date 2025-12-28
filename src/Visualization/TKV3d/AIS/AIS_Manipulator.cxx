@@ -42,8 +42,6 @@
 IMPLEMENT_STANDARD_HANDLE(AIS_Manipulator, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Manipulator, AIS_InteractiveObject)
 
-IMPLEMENT_HSEQUENCE(AIS_ManipulatorObjectSequence)
-
 namespace
 {
 //! Return Ax1 for specified direction of Ax2.

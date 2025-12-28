@@ -18,8 +18,6 @@
 #define Storage_HArrayOfSchema_HeaderFile
 
 #include <Storage_ArrayOfSchema.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Storage_HArrayOfSchema, Storage_ArrayOfSchema)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Storage_Schema)> Storage_HArrayOfSchema;
 #endif

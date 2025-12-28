@@ -18,8 +18,6 @@
 #define BRepAdaptor_HArray1OfCurve_HeaderFile
 
 #include <BRepAdaptor_Array1OfCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(BRepAdaptor_HArray1OfCurve, BRepAdaptor_Array1OfCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<BRepAdaptor_Curve> BRepAdaptor_HArray1OfCurve;
 #endif

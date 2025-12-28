@@ -18,9 +18,7 @@
 #define StepVisual_HArray1OfPresentationStyleSelect_HeaderFile
 
 #include <StepVisual_Array1OfPresentationStyleSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfPresentationStyleSelect,
-               StepVisual_Array1OfPresentationStyleSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_PresentationStyleSelect>
+  StepVisual_HArray1OfPresentationStyleSelect;
 #endif

@@ -19,8 +19,6 @@
 
 #include <AppParCurves_MultiPoint.hxx>
 #include <AppParCurves_Array1OfMultiPoint.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(AppParCurves_HArray1OfMultiPoint, AppParCurves_Array1OfMultiPoint)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<AppParCurves_MultiPoint> AppParCurves_HArray1OfMultiPoint;
 #endif

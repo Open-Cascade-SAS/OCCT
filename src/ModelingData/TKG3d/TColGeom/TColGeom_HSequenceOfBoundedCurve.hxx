@@ -19,8 +19,6 @@
 
 #include <Geom_BoundedCurve.hxx>
 #include <TColGeom_SequenceOfBoundedCurve.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColGeom_HSequenceOfBoundedCurve, TColGeom_SequenceOfBoundedCurve)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Geom_BoundedCurve)> TColGeom_HSequenceOfBoundedCurve;
 #endif

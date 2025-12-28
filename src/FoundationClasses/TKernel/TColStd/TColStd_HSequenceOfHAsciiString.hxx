@@ -16,8 +16,6 @@
 #define TColStd_HSequenceOfHAsciiString_HeaderFile
 
 #include <TColStd_SequenceOfHAsciiString.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfHAsciiString, TColStd_SequenceOfHAsciiString)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(TCollection_HAsciiString)> TColStd_HSequenceOfHAsciiString;
 #endif

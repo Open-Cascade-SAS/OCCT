@@ -18,8 +18,6 @@
 #define Bnd_HArray1OfBox2d_HeaderFile
 
 #include <Bnd_Array1OfBox2d.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Bnd_HArray1OfBox2d, Bnd_Array1OfBox2d)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Bnd_Box2d> Bnd_HArray1OfBox2d;
 #endif

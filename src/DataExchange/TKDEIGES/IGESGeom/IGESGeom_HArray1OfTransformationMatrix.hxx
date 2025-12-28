@@ -18,8 +18,7 @@
 #define IGESGeom_HArray1OfTransformationMatrix_HeaderFile
 
 #include <IGESGeom_Array1OfTransformationMatrix.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESGeom_HArray1OfTransformationMatrix, IGESGeom_Array1OfTransformationMatrix)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESGeom_TransformationMatrix)>
+  IGESGeom_HArray1OfTransformationMatrix;
 #endif

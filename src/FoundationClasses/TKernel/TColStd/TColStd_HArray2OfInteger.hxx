@@ -17,8 +17,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TColStd_Array2OfInteger.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColStd_HArray2OfInteger, TColStd_Array2OfInteger)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Standard_Integer> TColStd_HArray2OfInteger;
 #endif

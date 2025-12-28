@@ -18,8 +18,6 @@
 #define StepData_HArray1OfField_HeaderFile
 
 #include <StepData_Array1OfField.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepData_HArray1OfField, StepData_Array1OfField)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepData_Field> StepData_HArray1OfField;
 #endif

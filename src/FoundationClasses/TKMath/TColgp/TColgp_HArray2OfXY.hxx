@@ -19,8 +19,6 @@
 
 #include <gp_XY.hxx>
 #include <TColgp_Array2OfXY.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColgp_HArray2OfXY, TColgp_Array2OfXY)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<gp_XY> TColgp_HArray2OfXY;
 #endif

@@ -18,9 +18,7 @@
 #define StepVisual_HArray1OfBoxCharacteristicSelect_HeaderFile
 
 #include <StepVisual_Array1OfBoxCharacteristicSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfBoxCharacteristicSelect,
-               StepVisual_Array1OfBoxCharacteristicSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_BoxCharacteristicSelect>
+  StepVisual_HArray1OfBoxCharacteristicSelect;
 #endif

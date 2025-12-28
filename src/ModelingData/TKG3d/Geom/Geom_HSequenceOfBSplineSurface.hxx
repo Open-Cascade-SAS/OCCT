@@ -18,8 +18,6 @@
 #define Geom_HSequenceOfBSplineSurface_HeaderFile
 
 #include <Geom_SequenceOfBSplineSurface.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Geom_HSequenceOfBSplineSurface, Geom_SequenceOfBSplineSurface)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Geom_BSplineSurface)> Geom_HSequenceOfBSplineSurface;
 #endif

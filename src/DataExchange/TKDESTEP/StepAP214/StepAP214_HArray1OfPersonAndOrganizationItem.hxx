@@ -18,9 +18,7 @@
 #define StepAP214_HArray1OfPersonAndOrganizationItem_HeaderFile
 
 #include <StepAP214_Array1OfPersonAndOrganizationItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfPersonAndOrganizationItem,
-               StepAP214_Array1OfPersonAndOrganizationItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_PersonAndOrganizationItem>
+  StepAP214_HArray1OfPersonAndOrganizationItem;
 #endif

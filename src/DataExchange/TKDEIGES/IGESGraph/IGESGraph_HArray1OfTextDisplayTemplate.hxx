@@ -18,8 +18,7 @@
 #define IGESGraph_HArray1OfTextDisplayTemplate_HeaderFile
 
 #include <IGESGraph_Array1OfTextDisplayTemplate.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESGraph_HArray1OfTextDisplayTemplate, IGESGraph_Array1OfTextDisplayTemplate)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESGraph_TextDisplayTemplate)>
+  IGESGraph_HArray1OfTextDisplayTemplate;
 #endif

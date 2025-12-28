@@ -21,11 +21,12 @@
 #include <StdObjMgt_ReadData.hxx>
 #include <StdObjMgt_WriteData.hxx>
 
+#include <NCollection_HArray1.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
-DEFINE_HARRAY1(StdLPersistent_HArray1OfPersistent, NCollection_Array1<Handle(StdObjMgt_Persistent)>)
+typedef NCollection_HArray1<Handle(StdObjMgt_Persistent)> StdLPersistent_HArray1OfPersistent;
 
 class StdLPersistent_HArray1
 {

@@ -104,7 +104,7 @@ class StepGeom_Vector;
 class StepGeom_SuParameters;
 class StepKinematics_SpatialRotation;
 class StepRepr_GlobalUnitAssignedContext;
-class TColStd_HArray1OfReal;
+#include <TColStd_HArray1OfReal.hxx>
 
 //! This class provides static methods to convert STEP geometric entities to OCCT.
 //! The methods returning handles will return null handle in case of error.

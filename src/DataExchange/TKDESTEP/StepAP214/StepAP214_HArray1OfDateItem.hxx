@@ -18,8 +18,6 @@
 #define StepAP214_HArray1OfDateItem_HeaderFile
 
 #include <StepAP214_Array1OfDateItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfDateItem, StepAP214_Array1OfDateItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_DateItem> StepAP214_HArray1OfDateItem;
 #endif
