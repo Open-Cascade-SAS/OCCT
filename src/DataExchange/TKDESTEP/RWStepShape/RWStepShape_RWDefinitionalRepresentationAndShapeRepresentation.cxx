@@ -21,8 +21,7 @@
 #include <StepShape_DefinitionalRepresentationAndShapeRepresentation.hxx>
 
 RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::
-  RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation()
-= default;
+  RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation() = default;
 
 void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                    data,

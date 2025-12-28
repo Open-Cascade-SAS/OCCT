@@ -289,8 +289,8 @@ public:
 
 protected:
   Standard_EXPORT int chooseLeftWay(const int                    theNode,
-                                            const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const override;
+                                    const int                    theSegIndex,
+                                    const NCollection_List<int>& theLstIndS) const override;
 
   const Helper* getHelper() const
   {
@@ -328,8 +328,8 @@ public:
 
 protected:
   Standard_EXPORT int chooseLeftWay(const int                    theNode,
-                                            const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const override;
+                                    const int                    theSegIndex,
+                                    const NCollection_List<int>& theLstIndS) const override;
 
   const Helper* getHelper() const
   {

@@ -151,7 +151,8 @@ void OpenGl_Texture::Release(OpenGl_Context* theGlCtx)
   // application can not handle this case by exception - this is bug in code
   Standard_ASSERT_RETURN(
     theGlCtx != nullptr,
-    "OpenGl_Texture destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+    "OpenGl_Texture destroyed without GL context! Possible GPU memory leakage...",
+    Standard_VOID_RETURN);
 
   if (theGlCtx->IsValid())
   {

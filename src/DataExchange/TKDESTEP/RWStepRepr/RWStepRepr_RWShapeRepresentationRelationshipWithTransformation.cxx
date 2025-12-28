@@ -20,8 +20,7 @@
 #include <StepRepr_Transformation.hxx>
 
 RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::
-  RWStepRepr_RWShapeRepresentationRelationshipWithTransformation()
-= default;
+  RWStepRepr_RWShapeRepresentationRelationshipWithTransformation() = default;
 
 void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                    data,

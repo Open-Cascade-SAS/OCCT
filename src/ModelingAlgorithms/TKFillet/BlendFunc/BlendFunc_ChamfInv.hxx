@@ -51,9 +51,7 @@ public:
 
   using Blend_FuncInv::Set;
 
-  Standard_EXPORT void Set(const double Dist1,
-                                   const double Dist2,
-                                   const int    Choix) override;
+  Standard_EXPORT void Set(const double Dist1, const double Dist2, const int Choix) override;
 
 private:
   BlendFunc_Corde corde1;

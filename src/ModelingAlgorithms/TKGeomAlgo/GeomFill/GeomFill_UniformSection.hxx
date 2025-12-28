@@ -44,28 +44,28 @@ public:
 
   //! compute the section for v = param
   Standard_EXPORT bool D0(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<double>& Weigths) override;
+                          NCollection_Array1<gp_Pnt>& Poles,
+                          NCollection_Array1<double>& Weigths) override;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT bool D1(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths) override;
+                          NCollection_Array1<gp_Pnt>& Poles,
+                          NCollection_Array1<gp_Vec>& DPoles,
+                          NCollection_Array1<double>& Weigths,
+                          NCollection_Array1<double>& DWeigths) override;
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C2 approximation
   Standard_EXPORT bool D2(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<gp_Vec>& D2Poles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths,
-                                  NCollection_Array1<double>& D2Weigths) override;
+                          NCollection_Array1<gp_Pnt>& Poles,
+                          NCollection_Array1<gp_Vec>& DPoles,
+                          NCollection_Array1<gp_Vec>& D2Poles,
+                          NCollection_Array1<double>& Weigths,
+                          NCollection_Array1<double>& DWeigths,
+                          NCollection_Array1<double>& D2Weigths) override;
 
   //! give if possible an bspline Surface, like iso-v are the
   //! section. If it is not possible this method have to
@@ -101,7 +101,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
@@ -124,9 +124,9 @@ public:
   //! Boundary (in radian) SurfTol error inside the
   //! surface.
   Standard_EXPORT void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
-                                            NCollection_Array1<double>& Tol3d) const override;
+                                    const double                SurfTol,
+                                    const double                AngleTol,
+                                    NCollection_Array1<double>& Tol3d) const override;
 
   //! Get the barycentre of Surface.
   //! An very poor estimation is sufficient.

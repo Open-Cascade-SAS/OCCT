@@ -204,7 +204,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver(const occ::handle<Aspect_DisplayConne
   }
 
   Display* aDisplay = (Display*)myDisplayConnection->GetDisplayAspect();
-  Bool     toSync   = ::getenv("CSF_GraphicSync") != nullptr || ::getenv("CALL_SYNCHRO_X") != nullptr;
+  Bool     toSync = ::getenv("CSF_GraphicSync") != nullptr || ::getenv("CALL_SYNCHRO_X") != nullptr;
   XSynchronize(aDisplay, toSync);
 #endif
   if (theToInitialize && !InitContext())

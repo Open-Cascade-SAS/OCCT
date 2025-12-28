@@ -2933,7 +2933,16 @@ void BSplCLib::Trimming(const int                         Degree,
   int                        mm[2] = {Degree, Degree};
   NCollection_Array1<double> K(kk[0], 1, 2);
   NCollection_Array1<int>    M(mm[0], 1, 2);
-  if (!PrepareInsertKnots(Degree, Periodic, Knots, Mults, K, &M, nbpoles, nbknots, Epsilon(U1), false))
+  if (!PrepareInsertKnots(Degree,
+                          Periodic,
+                          Knots,
+                          Mults,
+                          K,
+                          &M,
+                          nbpoles,
+                          nbknots,
+                          Epsilon(U1),
+                          false))
   {
     throw Standard_OutOfRange();
   }

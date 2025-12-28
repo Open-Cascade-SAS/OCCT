@@ -66,27 +66,25 @@ public:
   Standard_EXPORT void Swap(const int theIdx1, const int theIdx2) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveWire, Select3D_SensitiveSet)
 
 protected:
   //! Checks whether the entity with index theIdx overlaps the current selecting volume
   Standard_EXPORT bool overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                               SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+                                       SelectBasics_SelectingVolumeManager& theMgr,
+                                       int                                  theElemIdx,
+                                       bool theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
   Standard_EXPORT bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+                                       int                                  theElemIdx,
+                                       bool theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT double distanceToCOG(
-    SelectBasics_SelectingVolumeManager& theMgr) override;
+  Standard_EXPORT double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr) override;
 
 private:
   // clang-format off

@@ -31,9 +31,8 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
 //=================================================================================================
 
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(const Graphic3d_FrameStatsData& theOther)
-    
-      
-= default;
+
+  = default;
 
 //=================================================================================================
 

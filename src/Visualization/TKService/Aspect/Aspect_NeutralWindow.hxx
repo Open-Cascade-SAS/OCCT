@@ -40,7 +40,10 @@ public:
 
   //! Set native handle.
   //! @return true if definition has been changed
-  bool SetNativeHandle(Aspect_Drawable theWindow) { return SetNativeHandles(theWindow, 0, nullptr); }
+  bool SetNativeHandle(Aspect_Drawable theWindow)
+  {
+    return SetNativeHandles(theWindow, 0, nullptr);
+  }
 
   //! Set native handles.
   //! @return true if definition has been changed

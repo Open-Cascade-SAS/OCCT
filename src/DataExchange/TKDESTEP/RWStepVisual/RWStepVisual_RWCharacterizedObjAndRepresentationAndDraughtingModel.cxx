@@ -24,8 +24,7 @@
 //=================================================================================================
 
 RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::
-  RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel()
-= default;
+  RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel() = default;
 
 //=================================================================================================
 

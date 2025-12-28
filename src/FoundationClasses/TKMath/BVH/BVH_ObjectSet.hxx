@@ -62,10 +62,7 @@ public:
   using BVH_Set<T, N>::Box;
 
   //! Returns AABB of the given object.
-  BVH_Box<T, N> Box(const int theIndex) const override
-  {
-    return myObjects.Value(theIndex)->Box();
-  }
+  BVH_Box<T, N> Box(const int theIndex) const override { return myObjects.Value(theIndex)->Box(); }
 
   //! Returns centroid position along the given axis.
   T Center(const int theIndex, const int theAxis) const override

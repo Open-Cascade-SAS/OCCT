@@ -52,11 +52,10 @@ public:
     const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>& aEdgeList)
     override;
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>>
-    EdgeList() const override;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> EdgeList()
+    const override;
 
-  Standard_EXPORT occ::handle<StepShape_OrientedEdge> EdgeListValue(
-    const int num) const override;
+  Standard_EXPORT occ::handle<StepShape_OrientedEdge> EdgeListValue(const int num) const override;
 
   Standard_EXPORT int NbEdgeList() const override;
 

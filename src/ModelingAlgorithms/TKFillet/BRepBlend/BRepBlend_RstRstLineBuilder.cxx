@@ -335,7 +335,7 @@ bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Fu
   math_Vector                    infbound(1, 2), supbound(1, 2), tolerance(1, 2);
   math_Vector                    solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
   occ::handle<Adaptor3d_HVertex> Vtxp1, Vtxp2, Vtxrst1, Vtxrst2, Vtxc;
-  bool                           IsVtxp1 = false, IsVtxp2 = false, IsVtxrst1 = false, IsVtxrst2 = false;
+  bool IsVtxp1 = false, IsVtxp2 = false, IsVtxrst1 = false, IsVtxrst2 = false;
   occ::handle<Adaptor2d_Curve2d> Arc;
   wp1 = wp2 = wrst1 = wrst2 = Pmax;
   param                     = Pdep;
@@ -617,8 +617,8 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
   math_Vector                    parinit(1, 2), tolerance(1, 2);
   math_Vector                    solinvp1(1, 2), solinvp2(1, 2), solinvrst1(1, 3), solinvrst2(1, 3);
   occ::handle<Adaptor3d_HVertex> Vtxp1, Vtxp2, Vtxrst1, Vtxrst2;
-  bool                           IsVtxp1 = false, IsVtxp2 = false, IsVtxrst1 = false, IsVtxrst2 = false;
-  BRepBlend_Extremity            Extrst1, Extrst2;
+  bool                IsVtxp1 = false, IsVtxp2 = false, IsVtxrst1 = false, IsVtxrst2 = false;
+  BRepBlend_Extremity Extrst1, Extrst2;
 
   // IntSurf_Transition Tline, Tarc;
 

@@ -85,8 +85,7 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S) override;
 
 private:
   gp_Trsf         myTrsf;

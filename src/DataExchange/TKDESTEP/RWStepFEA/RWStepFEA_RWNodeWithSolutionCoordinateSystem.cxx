@@ -29,7 +29,8 @@
 
 //=================================================================================================
 
-RWStepFEA_RWNodeWithSolutionCoordinateSystem::RWStepFEA_RWNodeWithSolutionCoordinateSystem() = default;
+RWStepFEA_RWNodeWithSolutionCoordinateSystem::RWStepFEA_RWNodeWithSolutionCoordinateSystem() =
+  default;
 
 //=================================================================================================
 

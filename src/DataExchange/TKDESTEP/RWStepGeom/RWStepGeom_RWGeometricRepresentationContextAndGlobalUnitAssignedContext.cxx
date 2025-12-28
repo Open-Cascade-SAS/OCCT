@@ -19,8 +19,7 @@
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 
 RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::
-  RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext()
-= default;
+  RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext() = default;
 
 void RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                             data,

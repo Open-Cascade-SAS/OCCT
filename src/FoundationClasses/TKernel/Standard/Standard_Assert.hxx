@@ -145,8 +145,10 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
     }                                                                                              \
     else                                                                                           \
       Standard_ASSERT_DO_NOTHING()
-  #define Standard_ASSERT_SKIP(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
-  #define Standard_ASSERT_VOID(theExpr, theDesc) Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
+  #define Standard_ASSERT_SKIP(theExpr, theDesc)                                                   \
+    Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
+  #define Standard_ASSERT_VOID(theExpr, theDesc)                                                   \
+    Standard_ASSERT(theExpr, theDesc, Standard_VOID_RETURN)
 #else
 
   // dummy block

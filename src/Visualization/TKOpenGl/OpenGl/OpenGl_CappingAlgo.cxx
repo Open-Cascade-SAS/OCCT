@@ -114,7 +114,7 @@ static void renderCappingForStructure(StencilTestSentry&                      th
       aRenderPlane->ToUseObjectProperties() ? aGroupIter.Value()->GlAspects() : nullptr;
     thePlane->Update(aContext,
                      anObjAspectFace != nullptr ? anObjAspectFace->Aspect()
-                                             : occ::handle<Graphic3d_Aspects>());
+                                                : occ::handle<Graphic3d_Aspects>());
     theWorkspace->SetAspects(thePlane->AspectFace());
     theWorkspace->SetRenderFilter(aPrevFilter);
     if (!theWorkspace->ShouldRender(&thePlane->Primitives(), aGroupIter.Value()))

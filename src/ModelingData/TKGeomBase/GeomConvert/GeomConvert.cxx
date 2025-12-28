@@ -465,10 +465,10 @@ public:
   }
 
   void Evaluate(const int     theDerivativeRequest,
-                        const double* theStartEnd,
-                        const double  theParameter,
-                        double&       theResult,
-                        int&          theErrorCode) const override
+                const double* theStartEnd,
+                const double  theParameter,
+                double&       theResult,
+                int&          theErrorCode) const override
   {
     theErrorCode = 0;
     if (!myAncore.IsNull() && theParameter >= theStartEnd[0] && theParameter <= theStartEnd[1]
@@ -748,10 +748,10 @@ public:
   }
 
   void Evaluate(const int theDerivativeRequest,
-                        const double* /*theStartEnd*/,
-                        const double theParameter,
-                        double&      theResult,
-                        int&         theErrorCode) const override
+                const double* /*theStartEnd*/,
+                const double theParameter,
+                double&      theResult,
+                int&         theErrorCode) const override
   {
     theErrorCode = 0;
     PLib::EvalPolynomial(

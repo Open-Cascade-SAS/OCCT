@@ -37,15 +37,14 @@ public:
   Standard_EXPORT bool IsPointOnCurve() const override;
 
   Standard_EXPORT bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
-                                              const TopLoc_Location&         L) const override;
+                                      const TopLoc_Location&         L) const override;
 
   Standard_EXPORT const occ::handle<Geom_Curve>& Curve() const override;
 
   Standard_EXPORT void Curve(const occ::handle<Geom_Curve>& C) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 

@@ -81,7 +81,7 @@ public:
   //! If incompatible shape type is encountered, it is ignored
   //! and flag FAIL1 is set in Status.
   Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape&    shape,
-                                             const TopAbs_ShapeEnum until = TopAbs_SHAPE) override;
+                                     const TopAbs_ShapeEnum until = TopAbs_SHAPE) override;
 
   //! Returns a complete substitution status for a shape
   //! 0  : not recorded,   <newsh> = original <shape>
@@ -91,8 +91,8 @@ public:
   //! the map directly for the shape, if True and status > 0 then
   //! recursively searches for the last status and new shape.
   Standard_EXPORT int Status(const TopoDS_Shape& shape,
-                                     TopoDS_Shape&       newsh,
-                                     const bool          last = false) override;
+                             TopoDS_Shape&       newsh,
+                             const bool          last = false) override;
 
   //! Queries the status of last call to Apply(shape,enum)
   //! OK   : no (sub)shapes replaced or removed

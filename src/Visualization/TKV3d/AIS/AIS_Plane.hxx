@@ -158,9 +158,8 @@ public:
     myTypeOfSensitivity = theTypeOfSensitivity;
   }
 
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
@@ -168,8 +167,8 @@ public:
 
 private:
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void ComputeFrame();
 

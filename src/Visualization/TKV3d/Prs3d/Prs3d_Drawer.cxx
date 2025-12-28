@@ -592,7 +592,8 @@ bool Prs3d_Drawer::SetupOwnFaceBoundaryAspect(const occ::handle<Prs3d_Drawer>& t
 
   const occ::handle<Prs3d_Drawer>& aLink =
     (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->FaceBoundaryAspect().get() : nullptr)
+  if (const Prs3d_LineAspect* aLinked =
+        !aLink.IsNull() ? aLink->FaceBoundaryAspect().get() : nullptr)
   {
     *myFaceBoundaryAspect->Aspect() = *aLinked->Aspect();
   }
@@ -657,7 +658,8 @@ bool Prs3d_Drawer::SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefault
   {
     isUpdateNeeded     = true;
     myHiddenLineAspect = new Prs3d_LineAspect(THE_DEF_COLOR_HiddenLine, Aspect_TOL_DASH, 1.0);
-    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->HiddenLineAspect().get() : nullptr)
+    if (const Prs3d_LineAspect* aLinked =
+          !aLink.IsNull() ? aLink->HiddenLineAspect().get() : nullptr)
     {
       *myHiddenLineAspect->Aspect() = *aLinked->Aspect();
     }
@@ -736,7 +738,8 @@ bool Prs3d_Drawer::SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaul
 
 //! Assign the shader program.
 template <typename T>
-inline void setAspectProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram, const T& thePrsAspect)
+inline void setAspectProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
+                             const T&                                    thePrsAspect)
 {
   if (!thePrsAspect.IsNull())
   {
@@ -791,7 +794,8 @@ bool Prs3d_Drawer::SetShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& 
       {
         isUpdateNeeded = true;
         myTextAspect   = new Prs3d_TextAspect();
-        if (const Prs3d_TextAspect* aLinked = !myLink.IsNull() ? myLink->TextAspect().get() : nullptr)
+        if (const Prs3d_TextAspect* aLinked =
+              !myLink.IsNull() ? myLink->TextAspect().get() : nullptr)
         {
           *myTextAspect->Aspect() = *aLinked->Aspect();
         }

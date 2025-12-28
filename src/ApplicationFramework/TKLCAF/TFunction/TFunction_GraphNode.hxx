@@ -97,7 +97,7 @@ public:
   Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& with) override;
 
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
-                                     const occ::handle<TDF_RelocationTable>& RT) const override;
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 

@@ -86,9 +86,9 @@ public:
   Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
 
   Standard_EXPORT bool Values(const math_Vector& X,
-                                      double&            F,
-                                      math_Vector&       G,
-                                      math_Matrix&       H) override;
+                              double&            F,
+                              math_Vector&       G,
+                              math_Matrix&       H) override;
 
 private:
   Extrema_GlobOptFuncCCC2& operator=(const Extrema_GlobOptFuncCCC2& theOther) = delete;

@@ -68,7 +68,8 @@ unsigned int OpenGl_LineAttributes::init(const OpenGl_Context*                  
 bool OpenGl_LineAttributes::SetTypeOfHatch(const OpenGl_Context*                    theGlCtx,
                                            const occ::handle<Graphic3d_HatchStyle>& theStyle)
 {
-  if (theStyle.IsNull() || theStyle->HatchType() == Aspect_HS_SOLID || theGlCtx->core11ffp == nullptr)
+  if (theStyle.IsNull() || theStyle->HatchType() == Aspect_HS_SOLID
+      || theGlCtx->core11ffp == nullptr)
   {
     return false;
   }

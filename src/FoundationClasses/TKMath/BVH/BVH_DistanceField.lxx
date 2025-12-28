@@ -182,9 +182,7 @@ public:
 
 public:
   //! Defines the rules for node rejection
-  bool RejectNode(const BVH_VecNt& theCMin,
-                          const BVH_VecNt& theCMax,
-                          T&               theMetric) const override
+  bool RejectNode(const BVH_VecNt& theCMin, const BVH_VecNt& theCMax, T& theMetric) const override
   {
     theMetric = DistanceToBox<T, N>(this->myObject, theCMin, theCMax);
     return theMetric > this->myDistance;

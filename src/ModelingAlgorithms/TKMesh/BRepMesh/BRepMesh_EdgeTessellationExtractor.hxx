@@ -43,8 +43,8 @@ public:
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
   Standard_EXPORT bool Value(const int theIndex,
-                                     gp_Pnt&   thePoint,
-                                     double&   theParameter) const override;
+                             gp_Pnt&   thePoint,
+                             double&   theParameter) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 

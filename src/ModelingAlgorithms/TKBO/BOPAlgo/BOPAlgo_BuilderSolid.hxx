@@ -128,8 +128,7 @@ protected: //! @name Protected methods performing the operation
   //! Classifies the unused faces relatively the created solids.
   //! Puts the classified faces into the closest solids as internal shells.
   //! Warns the user about unclassified faces if any.
-  Standard_EXPORT void PerformInternalShapes(
-    const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformInternalShapes(const Message_ProgressRange& theRange) override;
 
 private:
   NCollection_DataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher>

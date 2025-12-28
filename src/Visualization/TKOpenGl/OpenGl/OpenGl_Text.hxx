@@ -57,8 +57,7 @@ public:
   Standard_EXPORT void SetFontSize(const occ::handle<OpenGl_Context>& theContext,
                                    const int                          theFontSize);
 
-  Standard_EXPORT void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
   Standard_EXPORT void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
@@ -67,7 +66,7 @@ public:
 
   //! Increment draw calls statistics.
   Standard_EXPORT void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
-                                               bool theIsDetailed) const override;
+                                       bool                         theIsDetailed) const override;
 
 public: //! @name methods for compatibility with layers
   //! Empty constructor
@@ -107,8 +106,7 @@ public: //! @name methods for compatibility with layers
     Font_Hinting theFontHinting = Font_Hinting_Off) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   //! @name obsolete methods
 public:

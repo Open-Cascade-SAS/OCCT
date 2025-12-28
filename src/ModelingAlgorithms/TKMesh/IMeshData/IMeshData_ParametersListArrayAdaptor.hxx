@@ -46,7 +46,8 @@ private:
   IMeshData_ParametersListArrayAdaptor(
     const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther) = delete;
 
-  void operator=(const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther) = delete;
+  void operator=(const IMeshData_ParametersListArrayAdaptor<ParametersListPtrType>& theOther) =
+    delete;
 
   const ParametersListPtrType myParameters;
 };

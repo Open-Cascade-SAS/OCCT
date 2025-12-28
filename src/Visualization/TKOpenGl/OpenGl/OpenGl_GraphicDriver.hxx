@@ -80,8 +80,7 @@ public:
   Standard_EXPORT occ::handle<Graphic3d_CStructure> CreateStructure(
     const occ::handle<Graphic3d_StructureManager>& theManager) override;
 
-  Standard_EXPORT void RemoveStructure(
-    occ::handle<Graphic3d_CStructure>& theCStructure) override;
+  Standard_EXPORT void RemoveStructure(occ::handle<Graphic3d_CStructure>& theCStructure) override;
 
   Standard_EXPORT occ::handle<Graphic3d_CView> CreateView(
     const occ::handle<Graphic3d_StructureManager>& theMgr) override;
@@ -117,16 +116,16 @@ public:
   //! @param[in] theSettings   new layer settings
   //! @param[in] theLayerAfter id of layer to append new layer before
   Standard_EXPORT void InsertLayerBefore(const Graphic3d_ZLayerId        theNewLayerId,
-                                                 const Graphic3d_ZLayerSettings& theSettings,
-                                                 const Graphic3d_ZLayerId theLayerAfter) override;
+                                         const Graphic3d_ZLayerSettings& theSettings,
+                                         const Graphic3d_ZLayerId        theLayerAfter) override;
 
   //! Adds a layer to all views.
   //! @param[in] theNewLayerId  id of created layer
   //! @param[in] theSettings    new layer settings
   //! @param[in] theLayerBefore id of layer to append new layer after
   Standard_EXPORT void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
-                                                const Graphic3d_ZLayerSettings& theSettings,
-                                                const Graphic3d_ZLayerId theLayerBefore) override;
+                                        const Graphic3d_ZLayerSettings& theSettings,
+                                        const Graphic3d_ZLayerId        theLayerBefore) override;
 
   //! Removes Z layer. All structures displayed at the moment in layer will be displayed in
   //! default layer (the bottom-level z layer). By default, there are always default

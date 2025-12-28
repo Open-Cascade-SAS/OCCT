@@ -78,13 +78,13 @@ public:
   Standard_EXPORT void AfterResume() override;
 
   Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+                                  const bool                             forceIt = false) override;
 
   //! update draw viewer according to delta
   //! private methods
   //! ===============
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+                                 const bool                             forceIt = false) override;
 
   DEFINE_STANDARD_RTTIEXT(DDataStd_DrawPresentation, TDF_Attribute)
 

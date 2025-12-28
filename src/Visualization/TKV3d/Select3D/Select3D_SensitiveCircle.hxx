@@ -46,7 +46,7 @@ public:
 
   //! Checks whether the circle overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns a copy of this sensitive circle
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;

@@ -155,8 +155,9 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
                aGroupIter.Next())
           {
             // Extract OpenGL elements from the group (primitives arrays)
-            for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != nullptr;
-                 aNode                           = aNode->next)
+            for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode();
+                 aNode != nullptr;
+                 aNode = aNode->next)
             {
               OpenGl_PrimitiveArray* aPrimArray = dynamic_cast<OpenGl_PrimitiveArray*>(aNode->elem);
 
@@ -540,8 +541,8 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
     int aMatID = static_cast<int>(myRaytraceGeometry.Materials.size());
 
     // Use group material if available, otherwise use structure material
-    myRaytraceGeometry.Materials.push_back(aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial
-                                                                                   : theStructMat);
+    myRaytraceGeometry.Materials.push_back(
+      aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != nullptr;

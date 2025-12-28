@@ -17,7 +17,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_IsoAspect, VrmlConverter_LineAspect)
 
 VrmlConverter_IsoAspect::VrmlConverter_IsoAspect()
-     
+
 {
   myNumber = 10;
 }

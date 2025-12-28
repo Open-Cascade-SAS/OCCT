@@ -24,8 +24,7 @@
 #include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::
-  RWStepAP214_RWAutoDesignActualDateAndTimeAssignment()
-= default;
+  RWStepAP214_RWAutoDesignActualDateAndTimeAssignment() = default;
 
 void RWStepAP214_RWAutoDesignActualDateAndTimeAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,

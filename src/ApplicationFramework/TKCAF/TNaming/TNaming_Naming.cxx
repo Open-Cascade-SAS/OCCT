@@ -1462,7 +1462,8 @@ static occ::handle<TNaming_NamedShape> BuildNameWire(const TDF_Label&    F,
             continue;
           if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current())))
             continue;
-          theName.Append(TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, true, false));
+          theName.Append(
+            TNaming_Naming::Name(Naming->Label(), exp.Current(), Context, Geom, true, false));
         }
       }
     } //

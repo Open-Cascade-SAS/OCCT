@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CameraModelD3MultiClippingIntersection,
 //=================================================================================================
 
 StepVisual_CameraModelD3MultiClippingIntersection::
-  StepVisual_CameraModelD3MultiClippingIntersection()
-= default;
+  StepVisual_CameraModelD3MultiClippingIntersection() = default;
 
 //=================================================================================================
 

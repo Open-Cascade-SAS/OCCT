@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithDatumReference,
 
 //=================================================================================================
 
-StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWithDatumReference()
-= default;
+StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWithDatumReference() =
+  default;
 
 //=================================================================================================
 

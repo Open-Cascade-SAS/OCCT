@@ -24,6 +24,5 @@ Plate_D1::Plate_D1(const gp_XYZ& du, const gp_XYZ& dv)
 }
 
 Plate_D1::Plate_D1(const Plate_D1& ref)
-    
-      
-= default;
+
+  = default;

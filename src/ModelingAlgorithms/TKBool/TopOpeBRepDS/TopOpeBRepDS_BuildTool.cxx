@@ -555,10 +555,10 @@ bool FUN_getUV(const occ::handle<Geom_Surface>& surf,
 }
 
 bool FUN_reversePC(const occ::handle<Geom2d_Curve>& PCnew,
-                   const TopoDS_Face&        F,
-                   const gp_Pnt&             P3DC3D,
-                   const double              par2d,
-                   const double              tol)
+                   const TopoDS_Face&               F,
+                   const gp_Pnt&                    P3DC3D,
+                   const double                     par2d,
+                   const double                     tol)
 {
   gp_Pnt2d P2D;
   PCnew->D0(par2d, P2D);
@@ -584,8 +584,8 @@ bool FUN_reversePC(const occ::handle<Geom2d_Curve>& PCnew,
 
 bool FUN_makeUisoLineOnSphe(const TopoDS_Face&             F, // with geometry the spherical surface
                             const occ::handle<Geom_Curve>& C3D,
-                            const occ::handle<Geom2d_Curve>&      PCnew,
-                            const double                   tol3d)
+                            const occ::handle<Geom2d_Curve>& PCnew,
+                            const double                     tol3d)
 {
   // p3df,p3dl : C3d first and last parameters
   double p3df = C3D->FirstParameter();

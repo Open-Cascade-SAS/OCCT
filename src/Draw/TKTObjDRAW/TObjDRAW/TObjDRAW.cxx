@@ -43,13 +43,10 @@ class TObjDRAW_Model : public TObj_Model
 {
 public:
   Standard_EXPORT TObjDRAW_Model()
-       
-  = default;
 
-  Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override
-  {
-    return new TObjDRAW_Model();
-  }
+    = default;
+
+  Standard_EXPORT occ::handle<TObj_Model> NewEmpty() override { return new TObjDRAW_Model(); }
 
 public:
   //! CASCADE RTTI

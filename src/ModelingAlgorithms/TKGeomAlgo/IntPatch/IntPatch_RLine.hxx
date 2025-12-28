@@ -148,17 +148,11 @@ public:
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 1st surface
-  bool IsOutSurf1Box(const gp_Pnt2d& theP) const override
-  {
-    return curv->IsOutSurf1Box(theP);
-  }
+  bool IsOutSurf1Box(const gp_Pnt2d& theP) const override { return curv->IsOutSurf1Box(theP); }
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 2nd surface
-  bool IsOutSurf2Box(const gp_Pnt2d& theP) const override
-  {
-    return curv->IsOutSurf2Box(theP);
-  }
+  bool IsOutSurf2Box(const gp_Pnt2d& theP) const override { return curv->IsOutSurf2Box(theP); }
 
   //! Returns TRUE if theP is out of the box built from 3D-points.
   bool IsOutBox(const gp_Pnt& theP) const override { return curv->IsOutBox(theP); }

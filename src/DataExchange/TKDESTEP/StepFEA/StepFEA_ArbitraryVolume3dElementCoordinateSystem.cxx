@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ArbitraryVolume3dElementCoordinateSystem,
 
 //=================================================================================================
 
-StepFEA_ArbitraryVolume3dElementCoordinateSystem::StepFEA_ArbitraryVolume3dElementCoordinateSystem()
-= default;
+StepFEA_ArbitraryVolume3dElementCoordinateSystem::
+  StepFEA_ArbitraryVolume3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

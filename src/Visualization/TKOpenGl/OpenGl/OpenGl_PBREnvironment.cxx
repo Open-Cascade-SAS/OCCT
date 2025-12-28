@@ -108,7 +108,7 @@ private:
   }
 
 private:
-  OpenGl_PBREnvironmentSentry(const OpenGl_PBREnvironmentSentry&) = delete;
+  OpenGl_PBREnvironmentSentry(const OpenGl_PBREnvironmentSentry&)            = delete;
   OpenGl_PBREnvironmentSentry& operator=(const OpenGl_PBREnvironmentSentry&) = delete;
 
 private:

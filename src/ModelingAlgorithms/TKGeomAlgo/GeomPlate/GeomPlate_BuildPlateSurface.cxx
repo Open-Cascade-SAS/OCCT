@@ -107,7 +107,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(
     : myAnisotropie(Anisotropie),
       myDegree(Degree),
       myNbIter(NbIter),
-      
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),
@@ -165,7 +165,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const occ::handle<Geom_
       myDegree(Degree),
       myNbPtsOnCur(NbPtsOnCur),
       myNbIter(NbIter),
-      
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),
@@ -198,7 +198,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface(const int    Degree,
       myDegree(Degree),
       myNbPtsOnCur(NbPtsOnCur),
       myNbIter(NbIter),
-      
+
       myTol2d(Tol2d),
       myTol3d(Tol3d),
       myTolAng(TolAng),

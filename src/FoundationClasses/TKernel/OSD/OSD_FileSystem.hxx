@@ -92,8 +92,8 @@ public:
   //! @return pointer to newly created opened stream buffer or NULL in case of failure.
   virtual std::shared_ptr<std::streambuf> OpenStreamBuffer(const TCollection_AsciiString& theUrl,
                                                            const std::ios_base::openmode  theMode,
-                                                           const int64_t theOffset     = 0,
-                                                           int64_t*      theOutBufSize = nullptr) = 0;
+                                                           const int64_t theOffset = 0,
+                                                           int64_t* theOutBufSize  = nullptr) = 0;
 
   //! Constructor.
   Standard_EXPORT OSD_FileSystem();

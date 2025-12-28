@@ -812,7 +812,10 @@ struct CDelaBella : IDelaBella
     return true;
   }
 
-  int Triangulate(int points, const float* x, const float* y = nullptr, int advance_bytes = 0) override
+  int Triangulate(int          points,
+                  const float* x,
+                  const float* y             = nullptr,
+                  int          advance_bytes = 0) override
   {
     if (!x)
       return 0;

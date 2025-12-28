@@ -143,8 +143,7 @@ protected:
   public:
     //! Copy constructor.
     EnumeratedThread(const EnumeratedThread& theCopy)
-        : 
-          myPool(nullptr),
+        : myPool(nullptr),
           myJob(nullptr),
           myWakeEvent(false),
           myIdleEvent(false),
@@ -258,7 +257,7 @@ public:
     Standard_EXPORT void wait();
 
   private:
-    Launcher(const Launcher& theCopy) = delete;
+    Launcher(const Launcher& theCopy)            = delete;
     Launcher& operator=(const Launcher& theCopy) = delete;
 
   private:
@@ -293,7 +292,7 @@ protected:
     int It() const { return myIt.fetch_add(1); }
 
   private:
-    JobRange(const JobRange& theCopy) = delete;
+    JobRange(const JobRange& theCopy)            = delete;
     JobRange& operator=(const JobRange& theCopy) = delete;
 
   private:
@@ -324,7 +323,7 @@ protected:
     }
 
   private:
-    Job(const Job& theCopy) = delete;
+    Job(const Job& theCopy)            = delete;
     Job& operator=(const Job& theCopy) = delete;
 
   private:                       //! @name private fields

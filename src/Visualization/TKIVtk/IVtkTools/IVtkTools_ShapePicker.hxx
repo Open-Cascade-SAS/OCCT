@@ -53,7 +53,11 @@ public:
 
   //! Pick entities in the given rectangle area.
   //! @return Number of detected entities.
-  int Pick(double theX0, double theY0, double theX1, double theY1, vtkRenderer* theRenderer = nullptr);
+  int Pick(double       theX0,
+           double       theY0,
+           double       theX1,
+           double       theY1,
+           vtkRenderer* theRenderer = nullptr);
 
   //! Pick entities in the given polygonal area.
   //! @return Number of detected entities.
@@ -147,7 +151,7 @@ protected:
                                     double       theWorldCoord[3]);
 
 private: // not copyable
-  IVtkTools_ShapePicker(const IVtkTools_ShapePicker&) = delete;
+  IVtkTools_ShapePicker(const IVtkTools_ShapePicker&)            = delete;
   IVtkTools_ShapePicker& operator=(const IVtkTools_ShapePicker&) = delete;
 
   //! Implementation of picking algorithm.

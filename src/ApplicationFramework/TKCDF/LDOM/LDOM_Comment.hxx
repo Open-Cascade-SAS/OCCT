@@ -30,8 +30,8 @@ public:
   // Empty constructor
 
   LDOM_Comment(const LDOM_Comment& theOther)
-       
-  = default;
+
+    = default;
 
   // Copy constructor
 

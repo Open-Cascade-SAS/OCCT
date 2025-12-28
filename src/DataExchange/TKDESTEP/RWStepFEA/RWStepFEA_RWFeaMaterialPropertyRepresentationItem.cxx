@@ -24,8 +24,7 @@
 //=================================================================================================
 
 RWStepFEA_RWFeaMaterialPropertyRepresentationItem::
-  RWStepFEA_RWFeaMaterialPropertyRepresentationItem()
-= default;
+  RWStepFEA_RWFeaMaterialPropertyRepresentationItem() = default;
 
 //=================================================================================================
 

@@ -291,10 +291,7 @@ public:
   //! the derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis surface.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.

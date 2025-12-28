@@ -588,7 +588,8 @@ bool IsRaytracedGroup(const OpenGl_Group* theGroup)
     return false;
   }
 
-  for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != nullptr; aNode = aNode->next)
+  for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != nullptr;
+       aNode                           = aNode->next)
   {
     if (IsRaytracedElement(aNode))
     {

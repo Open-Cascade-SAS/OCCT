@@ -51,11 +51,10 @@ public:
   Standard_EXPORT void SetBounds(
     const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds) override;
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>
-    Bounds() const override;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> Bounds()
+    const override;
 
-  Standard_EXPORT occ::handle<StepShape_FaceBound> BoundsValue(
-    const int num) const override;
+  Standard_EXPORT occ::handle<StepShape_FaceBound> BoundsValue(const int num) const override;
 
   Standard_EXPORT int NbBounds() const override;
 

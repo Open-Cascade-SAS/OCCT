@@ -105,8 +105,7 @@ public:
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public:
   //! Returns the list of available face triangulations.

@@ -34,9 +34,9 @@ public:
 protected:
   //! Read the mesh from specified file.
   Standard_EXPORT bool performMesh(std::istream&                  theStream,
-                                           const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe) override;
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe) override;
 
 protected:
   //! Create reader context.
@@ -49,9 +49,9 @@ protected:
   //! @param theMaterial    shape material
   //! @param theIsRootShape indicates that this is a root object (free shape)
   Standard_EXPORT void BindNamedShape(const TopoDS_Shape&            theShape,
-                                              const TCollection_AsciiString& theName,
-                                              const RWObj_Material*          theMaterial,
-                                              const bool theIsRootShape) override;
+                                      const TCollection_AsciiString& theName,
+                                      const RWObj_Material*          theMaterial,
+                                      const bool                     theIsRootShape) override;
 
 protected:
   NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>> myObjMaterialMap;

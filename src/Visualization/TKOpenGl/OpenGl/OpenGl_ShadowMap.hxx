@@ -77,7 +77,8 @@ public:
   //! Compute camera.
   //! @param[in] theView    active view
   //! @param[in] theOrigin  when not-NULL - displace shadow map camera to specified Z-Layer origin
-  Standard_EXPORT bool UpdateCamera(const Graphic3d_CView& theView, const gp_XYZ* theOrigin = nullptr);
+  Standard_EXPORT bool UpdateCamera(const Graphic3d_CView& theView,
+                                    const gp_XYZ*          theOrigin = nullptr);
 
 private:
   occ::handle<OpenGl_FrameBuffer> myShadowMapFbo;  //!< frame buffer for rendering shadow map

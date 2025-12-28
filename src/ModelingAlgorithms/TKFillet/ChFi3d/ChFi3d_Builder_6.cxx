@@ -243,12 +243,12 @@ static bool IsObst(const ChFiDS_CommonPoint& CP, const TopoDS_Vertex& Vref, cons
 
 //=================================================================================================
 
-static void CompParam(const Geom2dAdaptor_Curve& Carc,
-                      const occ::handle<Geom2d_Curve>&  Ctg,
-                      double&                    parc,
-                      double&                    ptg,
-                      const double               prefarc,
-                      const double               preftg)
+static void CompParam(const Geom2dAdaptor_Curve&       Carc,
+                      const occ::handle<Geom2d_Curve>& Ctg,
+                      double&                          parc,
+                      double&                          ptg,
+                      const double                     prefarc,
+                      const double                     preftg)
 {
   bool found = false;
   //(1) It is checked if the provided parameters are good

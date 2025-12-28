@@ -44,8 +44,7 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT void SetEdgeStart(
-    const occ::handle<StepShape_Vertex>& aEdgeStart) override;
+  Standard_EXPORT void SetEdgeStart(const occ::handle<StepShape_Vertex>& aEdgeStart) override;
 
   Standard_EXPORT occ::handle<StepShape_Vertex> EdgeStart() const override;
 

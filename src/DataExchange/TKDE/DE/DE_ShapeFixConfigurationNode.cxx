@@ -30,8 +30,8 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 //=================================================================================================
 
 DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode()
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 

@@ -33,10 +33,9 @@ public:
   Prs3d_DatumParts DatumPart() const { return myDatumPart; }
 
   //! Highlights selectable object's presentation.
-  Standard_EXPORT void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int theMode) override;
 
   //! Returns true if the presentation manager thePM
   //! highlights selections corresponding to the selection mode aMode.
@@ -46,7 +45,7 @@ public:
   //! Removes highlighting from the owner of a detected
   //! selectable object in the presentation manager thePM.
   Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                         const int theMode) override;
+                                 const int                                      theMode) override;
 
 protected:
   Prs3d_DatumParts myDatumPart; //!< part of datum selected

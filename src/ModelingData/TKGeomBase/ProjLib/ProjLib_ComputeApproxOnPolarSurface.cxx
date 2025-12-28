@@ -588,8 +588,8 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
 
 static occ::handle<Geom2d_BSplineCurve> Concat(const occ::handle<Geom2d_BSplineCurve>& C1,
                                                const occ::handle<Geom2d_BSplineCurve>& C2,
-                                               double                           theUJump,
-                                               double                           theVJump)
+                                               double                                  theUJump,
+                                               double                                  theVJump)
 {
   int deg, deg1, deg2;
   deg1 = C1->Degree();

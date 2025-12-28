@@ -22,5 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicPropertyDefinitionRepresentat
 //=================================================================================================
 
 StepKinematics_KinematicPropertyDefinitionRepresentation::
-  StepKinematics_KinematicPropertyDefinitionRepresentation()
-= default;
+  StepKinematics_KinematicPropertyDefinitionRepresentation() = default;

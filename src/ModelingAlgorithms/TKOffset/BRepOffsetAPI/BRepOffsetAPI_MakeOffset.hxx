@@ -88,8 +88,7 @@ public:
 
   //! returns a list of the created shapes
   //! from the shape <S>.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Converts each wire of the face into contour consisting only of
   //! arcs and segments. New 3D curves are built too.

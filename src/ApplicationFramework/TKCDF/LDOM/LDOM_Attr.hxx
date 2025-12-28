@@ -33,8 +33,8 @@ public:
   //    Empty constructor
 
   LDOM_Attr(const LDOM_Attr& anOther)
-       
-  = default;
+
+    = default;
 
   //    Copy constructor
 

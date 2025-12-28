@@ -24,8 +24,7 @@
 //=================================================================================================
 
 OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
-    : 
-      myReferenceOrigin((float)theReferenceSystem.Location().X(),
+    : myReferenceOrigin((float)theReferenceSystem.Location().X(),
                         (float)theReferenceSystem.Location().Y(),
                         (float)theReferenceSystem.Location().Z(),
                         1.0f),

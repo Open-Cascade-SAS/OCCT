@@ -27,7 +27,8 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedShapeRepresentation::RWStepVisual_RWTessellatedShapeRepresentation() = default;
+RWStepVisual_RWTessellatedShapeRepresentation::RWStepVisual_RWTessellatedShapeRepresentation() =
+  default;
 
 //=================================================================================================
 

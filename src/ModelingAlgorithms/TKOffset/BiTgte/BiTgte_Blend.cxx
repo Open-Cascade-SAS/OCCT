@@ -210,7 +210,7 @@ static bool IsInFace(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-static void KPartCurve3d(const TopoDS_Edge&        Edge,
+static void KPartCurve3d(const TopoDS_Edge&               Edge,
                          const occ::handle<Geom2d_Curve>& Curve,
                          const occ::handle<Geom_Surface>& Surf)
 {

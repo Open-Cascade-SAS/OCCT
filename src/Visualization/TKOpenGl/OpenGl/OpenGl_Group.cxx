@@ -253,7 +253,7 @@ void OpenGl_Group::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) con
   theWorkspace->SetAllowFaceCulling(
     myIsClosed && !theWorkspace->GetGlContext()->Clipping().IsClippingOrCappingOn());
   const OpenGl_Aspects* aBackAspects = theWorkspace->Aspects();
-  const bool            isAspectSet  = myAspects != nullptr && renderFiltered(theWorkspace, myAspects);
+  const bool isAspectSet = myAspects != nullptr && renderFiltered(theWorkspace, myAspects);
 
   // Render group elements
   for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != nullptr; aNodeIter = aNodeIter->next)

@@ -20,8 +20,8 @@
 
 //=================================================================================================
 
-StepRepr_RepresentationOrRepresentationReference::StepRepr_RepresentationOrRepresentationReference()
-= default;
+StepRepr_RepresentationOrRepresentationReference::
+  StepRepr_RepresentationOrRepresentationReference() = default;
 
 //=================================================================================================
 

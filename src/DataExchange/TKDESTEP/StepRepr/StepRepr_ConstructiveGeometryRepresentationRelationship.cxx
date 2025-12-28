@@ -20,5 +20,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ConstructiveGeometryRepresentationRelationsh
                            StepRepr_RepresentationRelationship)
 
 StepRepr_ConstructiveGeometryRepresentationRelationship::
-  StepRepr_ConstructiveGeometryRepresentationRelationship()
-= default;
+  StepRepr_ConstructiveGeometryRepresentationRelationship() = default;

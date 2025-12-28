@@ -25,8 +25,7 @@
 //=================================================================================================
 
 RWStepFEA_RWParametricCurve3dElementCoordinateSystem::
-  RWStepFEA_RWParametricCurve3dElementCoordinateSystem()
-= default;
+  RWStepFEA_RWParametricCurve3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

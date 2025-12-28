@@ -158,8 +158,7 @@ public:
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepBuilderAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods AddWire and AddVertex).
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the list of original wires
   const NCollection_List<TopoDS_Shape>& Wires() const { return myInputWires; }

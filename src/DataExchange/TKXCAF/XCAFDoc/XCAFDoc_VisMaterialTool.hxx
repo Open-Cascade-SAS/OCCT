@@ -125,14 +125,11 @@ public:
   void Restore(const occ::handle<TDF_Attribute>&) override {}
 
   //! Creates new instance of this tool.
-  occ::handle<TDF_Attribute> NewEmpty() const override
-  {
-    return new XCAFDoc_VisMaterialTool();
-  }
+  occ::handle<TDF_Attribute> NewEmpty() const override { return new XCAFDoc_VisMaterialTool(); }
 
   //! Does nothing.
   void Paste(const occ::handle<TDF_Attribute>&,
-                     const occ::handle<TDF_RelocationTable>&) const override
+             const occ::handle<TDF_RelocationTable>&) const override
   {
   }
 

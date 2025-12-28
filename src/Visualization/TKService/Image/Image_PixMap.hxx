@@ -490,7 +490,7 @@ protected:
 
 private:
   //! Copying allowed only within Handles
-  Image_PixMap(const Image_PixMap&) = delete;
+  Image_PixMap(const Image_PixMap&)            = delete;
   Image_PixMap& operator=(const Image_PixMap&) = delete;
 };
 

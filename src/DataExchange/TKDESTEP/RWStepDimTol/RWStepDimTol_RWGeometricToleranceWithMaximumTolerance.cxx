@@ -28,8 +28,7 @@
 //=================================================================================================
 
 RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::
-  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance()
-= default;
+  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance() = default;
 
 //=================================================================================================
 

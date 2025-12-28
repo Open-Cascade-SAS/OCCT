@@ -170,7 +170,7 @@ private:
   void FillOffsetData(const TopoDS_Shape& theInputShape);
 
   //! Copy-assignment constructor and copy constructor are not allowed.
-  void operator=(const BRepOffset_SimpleOffset&) = delete;
+  void operator=(const BRepOffset_SimpleOffset&)          = delete;
   BRepOffset_SimpleOffset(const BRepOffset_SimpleOffset&) = delete;
 
   //! Map of faces to new faces information.

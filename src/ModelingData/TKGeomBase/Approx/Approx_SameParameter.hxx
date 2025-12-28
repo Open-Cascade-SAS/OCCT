@@ -118,7 +118,7 @@ private:
     }
   };
 
-  Approx_SameParameter(const Approx_SameParameter&) = delete;
+  Approx_SameParameter(const Approx_SameParameter&)            = delete;
   Approx_SameParameter& operator=(const Approx_SameParameter&) = delete;
 
   //! Computes the pcurve (internal use only).

@@ -46,7 +46,7 @@ static bool HasAncestorFace(const BOPAlgo_PPaveFiller&, int, const TopoDS_Shape&
 //=================================================================================================
 
 BRepAlgoAPI_Section::BRepAlgoAPI_Section()
-     
+
 {
   Init(false);
 }

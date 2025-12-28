@@ -279,7 +279,8 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
         occ::handle<VrmlData_Geometry> aTShapeNode = makeTShapeNode(aShape, ShapeType[i], aLoc);
         if (!aTShapeNode.IsNull())
         {
-          const occ::handle<VrmlData_ShapeNode> aShapeNode = new VrmlData_ShapeNode(myScene, nullptr);
+          const occ::handle<VrmlData_ShapeNode> aShapeNode =
+            new VrmlData_ShapeNode(myScene, nullptr);
           aShapeNode->SetAppearance(ShapeType[i] == TopAbs_FACE ? defaultMaterialFace()
                                                                 : defaultMaterialEdge());
           myScene.AddNode(aShapeNode, false);
@@ -340,10 +341,10 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 
   const occ::handle<VrmlData_IndexedFaceSet> aFaceSet =
     new VrmlData_IndexedFaceSet(myScene,
-                                nullptr,     // no name
-                                true,   // IsCCW
-                                false,  // IsSolid
-                                false); // IsConvex
+                                nullptr, // no name
+                                true,    // IsCCW
+                                false,   // IsSolid
+                                false);  // IsConvex
   const occ::handle<NCollection_IncAllocator>& anAlloc = myScene.Allocator();
   const bool isReverse                                 = (theFace.Orientation() == TopAbs_REVERSED);
 
@@ -487,7 +488,8 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::polToIndexedLineSet(
   const NCollection_Array1<gp_Pnt>&            arrPolyNodes = thePol->Nodes();
   const occ::handle<NCollection_IncAllocator>& anAlloc      = myScene.Allocator();
 
-  const occ::handle<VrmlData_IndexedLineSet> aLineSet = new VrmlData_IndexedLineSet(myScene, nullptr);
+  const occ::handle<VrmlData_IndexedLineSet> aLineSet =
+    new VrmlData_IndexedLineSet(myScene, nullptr);
 
   // Create the array of polygons (1 member)
   const int** arrPolygons = static_cast<const int**>(anAlloc->Allocate(sizeof(const int*)));

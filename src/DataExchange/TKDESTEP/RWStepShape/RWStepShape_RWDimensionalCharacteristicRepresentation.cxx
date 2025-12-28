@@ -25,8 +25,7 @@
 //=================================================================================================
 
 RWStepShape_RWDimensionalCharacteristicRepresentation::
-  RWStepShape_RWDimensionalCharacteristicRepresentation()
-= default;
+  RWStepShape_RWDimensionalCharacteristicRepresentation() = default;
 
 //=================================================================================================
 

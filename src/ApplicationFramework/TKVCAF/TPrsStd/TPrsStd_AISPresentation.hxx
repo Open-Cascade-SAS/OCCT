@@ -186,15 +186,14 @@ public:
   Standard_EXPORT void AfterResume() override;
 
   Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+                                  const bool                             forceIt = false) override;
 
   //! update AIS viewer according to delta
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+                                 const bool                             forceIt = false) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_AISPresentation, TDF_Attribute)
 

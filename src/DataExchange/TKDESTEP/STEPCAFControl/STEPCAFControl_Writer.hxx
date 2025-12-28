@@ -334,11 +334,11 @@ protected:
   //! @param theProdDef The product definition.
   //! @param theItem The representation item to write.
   void writeMetadataRepresentationItem(
-    const TCollection_AsciiString&                             theKey,
-    const occ::handle<StepData_StepModel>&                     theModel,
+    const TCollection_AsciiString&                              theKey,
+    const occ::handle<StepData_StepModel>&                      theModel,
     const occ::handle<StepShape_ShapeDefinitionRepresentation>& theShapeDefRep,
-    const occ::handle<StepBasic_ProductDefinition>&            theProdDef,
-    const occ::handle<StepRepr_RepresentationItem>&            theItem) const;
+    const occ::handle<StepBasic_ProductDefinition>&             theProdDef,
+    const occ::handle<StepRepr_RepresentationItem>&             theItem) const;
 
   //! Write D&GTs assigned to specified labels, to STEP model
   bool writeDGTs(const occ::handle<XSControl_WorkSession>& theWS,

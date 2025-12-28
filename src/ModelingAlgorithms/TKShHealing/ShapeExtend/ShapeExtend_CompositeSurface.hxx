@@ -235,10 +235,7 @@ public:
   Standard_EXPORT double VReversedParameter(const double V) const override;
 
   //! Returns the parametric bounds of grid
-  Standard_EXPORT void Bounds(double& U1,
-                                      double& U2,
-                                      double& V1,
-                                      double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
 
   //! Returns True if grid is closed in U direction
   //! (i.e. connected with Precision::Confusion)
@@ -275,43 +272,43 @@ public:
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
   Standard_EXPORT void D1(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V) const override;
+                          const double V,
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V) const override;
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
   Standard_EXPORT void D2(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV) const override;
+                          const double V,
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV) const override;
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
   Standard_EXPORT void D3(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV,
-                                  gp_Vec&      D3U,
-                                  gp_Vec&      D3V,
-                                  gp_Vec&      D3UUV,
-                                  gp_Vec&      D3UVV) const override;
+                          const double V,
+                          gp_Pnt&      P,
+                          gp_Vec&      D1U,
+                          gp_Vec&      D1V,
+                          gp_Vec&      D2U,
+                          gp_Vec&      D2V,
+                          gp_Vec&      D2UV,
+                          gp_Vec&      D3U,
+                          gp_Vec&      D3V,
+                          gp_Vec&      D3UUV,
+                          gp_Vec&      D3UVV) const override;
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
   Standard_EXPORT gp_Vec DN(const double U,
-                                    const double V,
-                                    const int    Nu,
-                                    const int    Nv) const override;
+                            const double V,
+                            const int    Nu,
+                            const int    Nv) const override;
 
   //! Computes the point of parameter pnt on the grid.
   Standard_EXPORT gp_Pnt Value(const gp_Pnt2d& pnt) const;

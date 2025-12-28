@@ -42,9 +42,8 @@ public:
 
   public:
     BVHThread()
-        : 
-          myPool(nullptr),
-          
+        : myPool(nullptr),
+
           myToCatchFpe(false)
     {
     }
@@ -52,7 +51,7 @@ public:
     BVHThread(const BVHThread& theOther)
         : OSD_Thread(theOther),
           myPool(theOther.myPool),
-          
+
           myToCatchFpe(theOther.myToCatchFpe)
     {
     }

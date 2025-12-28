@@ -71,8 +71,8 @@ public:
   //! Description for External Refs
   //! Auxiliary for other
   Standard_EXPORT int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_GeneralModule, IGESData_GeneralModule)
 };

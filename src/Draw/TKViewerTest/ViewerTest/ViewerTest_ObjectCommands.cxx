@@ -298,8 +298,8 @@ static bool convertToDatumAxes(const TCollection_AsciiString& theValue,
   return true;
 }
 
-static bool setTrihedronParams(int                        theArgsNb,
-                               const char**               theArgVec,
+static bool setTrihedronParams(int                               theArgsNb,
+                               const char**                      theArgVec,
                                const occ::handle<AIS_Trihedron>& theTrihedron)
 {
   NCollection_DataMap<TCollection_AsciiString,
@@ -1973,11 +1973,10 @@ private:
 
   // Virtual methods implementation
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
 protected:
   occ::handle<Geom_Circle> myCircle;
@@ -3349,11 +3348,10 @@ public:
 
 private:
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
   bool CheckInputCommand(
     const TCollection_AsciiString&                                   theCommand,
@@ -5465,11 +5463,10 @@ public:
 
 private:
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
 protected:
   gp_XYZ                                myStartPoint;
@@ -6373,9 +6370,9 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
 
     protected:
       void addPoint(const gp_Pnt&   thePoint,
-                            const gp_Vec&   theNorm,
-                            const gp_Pnt2d& theUV,
-                            const TopoDS_Shape&) override
+                    const gp_Vec&   theNorm,
+                    const gp_Pnt2d& theUV,
+                    const TopoDS_Shape&) override
       {
         const int aPntIndex = myPoints->AddVertex(thePoint, theUV);
         if (theNorm.SquareMagnitude() > gp::Resolution())
@@ -6566,8 +6563,8 @@ public:
 protected:
   //! Compute presentation.
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 

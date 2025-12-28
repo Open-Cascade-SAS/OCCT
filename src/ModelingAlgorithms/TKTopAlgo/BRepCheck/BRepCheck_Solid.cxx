@@ -46,7 +46,7 @@ public:
   //
   Standard_EXPORT BRepCheck_HSC() = default;
   //
-  Standard_EXPORT ~BRepCheck_HSC() override= default;
+  Standard_EXPORT ~BRepCheck_HSC() override = default;
 
   //
   Standard_EXPORT BRepClass3d_SolidClassifier& SolidClassifier() { return mySC; };

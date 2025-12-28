@@ -51,8 +51,8 @@ public:
 public:
   //! Builds BVH using specific algorithm.
   void Build(BVH_Set<T, N>*       theSet,
-                     BVH_Tree<T, N>*      theBVH,
-                     const BVH_Box<T, N>& theBox) const override;
+             BVH_Tree<T, N>*      theBVH,
+             const BVH_Box<T, N>& theBox) const override;
 
 protected:
   //! Stores range of primitives belonging to a BVH node.
@@ -217,7 +217,9 @@ void BVH_QueueBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
                                    BVH_Tree<T, N>*      theBVH,
                                    const BVH_Box<T, N>& theBox) const
 {
-  Standard_ASSERT_RETURN(theBVH != nullptr, "Error! BVH tree to construct is NULL", Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(theBVH != nullptr,
+                         "Error! BVH tree to construct is NULL",
+                         Standard_VOID_RETURN);
 
   theBVH->Clear();
   const int aSetSize = theSet->Size();

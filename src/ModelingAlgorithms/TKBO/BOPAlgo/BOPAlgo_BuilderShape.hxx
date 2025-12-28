@@ -119,8 +119,7 @@ public: //! @name Enabling/Disabling the history collection.
 protected: //! @name Constructors
   //! Empty constructor
   BOPAlgo_BuilderShape()
-      : 
-        myFillHistory(true)
+      : myFillHistory(true)
   {
   }
 

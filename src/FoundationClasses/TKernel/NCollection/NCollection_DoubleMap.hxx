@@ -133,8 +133,9 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_DoubleMap(const int                                     theNbBuckets,
-                                 const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+  explicit NCollection_DoubleMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, false, theAllocator)
   {
   }

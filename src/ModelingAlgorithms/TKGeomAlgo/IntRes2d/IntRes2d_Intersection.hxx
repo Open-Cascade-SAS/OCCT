@@ -77,8 +77,7 @@ protected:
   IntRes2d_Intersection(const IntRes2d_Intersection& Other);
 
   //! Assignment
-  IntRes2d_Intersection& operator=(const IntRes2d_Intersection& theOther)
-  = default;
+  IntRes2d_Intersection& operator=(const IntRes2d_Intersection& theOther) = default;
 
   //! Destructor is protected, for safe inheritance
   ~IntRes2d_Intersection() = default;

@@ -69,7 +69,7 @@ private:
   bool IsInside(const math_Vector& X);
 
   const Extrema_FuncPSDist& operator=(const Extrema_FuncPSDist&) = delete;
-  Extrema_FuncPSDist(const Extrema_FuncPSDist&) = delete;
+  Extrema_FuncPSDist(const Extrema_FuncPSDist&)                  = delete;
 
   const Adaptor3d_Surface& mySurf;
   const gp_Pnt&            myP;

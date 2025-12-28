@@ -188,11 +188,11 @@ public:
   //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
   Standard_EXPORT bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                               const occ::handle<V3d_View>&               theView,
-                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
-                                               const NCollection_Vec2<int>& theDragFrom,
-                                               const NCollection_Vec2<int>& theDragTo,
-                                               const AIS_DragAction         theAction) override;
+                                       const occ::handle<V3d_View>&               theView,
+                                       const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+                                       const NCollection_Vec2<int>&               theDragFrom,
+                                       const NCollection_Vec2<int>&               theDragTo,
+                                       const AIS_DragAction theAction) override;
 
   //! Init start (reference) transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
@@ -393,14 +393,13 @@ public: //! @name Presentation computation
   //! @note Manipulator presentation does not use display mode and for all modes has the same
   //! presentation.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode = 0) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode = 0) override;
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
   //! @param[in] theNode  Selection mode that is treated as transformation mode.
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
@@ -448,8 +447,7 @@ protected:
   //! without need for recomputing presentation.
   //! @warning Invokes debug assertion in debug to catch incompatible usage of the
   //! method, silently does nothing in release mode.
-  Standard_EXPORT void setLocalTransformation(
-    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
+  Standard_EXPORT void setLocalTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf) override;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxiliary classes to fill presentation with proper primitives

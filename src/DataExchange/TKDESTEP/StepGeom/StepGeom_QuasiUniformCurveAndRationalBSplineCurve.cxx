@@ -20,8 +20,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_QuasiUniformCurveAndRationalBSplineCurve, StepGeom_BSplineCurve)
 
 StepGeom_QuasiUniformCurveAndRationalBSplineCurve::
-  StepGeom_QuasiUniformCurveAndRationalBSplineCurve()
-= default;
+  StepGeom_QuasiUniformCurveAndRationalBSplineCurve() = default;
 
 void StepGeom_QuasiUniformCurveAndRationalBSplineCurve::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

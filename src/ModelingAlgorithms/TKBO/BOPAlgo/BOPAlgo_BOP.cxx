@@ -58,7 +58,7 @@ static void MapFacesToBuildSolids(
 //=================================================================================================
 
 BOPAlgo_BOP::BOPAlgo_BOP()
-     
+
 {
   Clear();
 }

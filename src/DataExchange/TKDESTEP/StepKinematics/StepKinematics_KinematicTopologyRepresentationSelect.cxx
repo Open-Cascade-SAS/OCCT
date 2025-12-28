@@ -23,8 +23,7 @@
 //=================================================================================================
 
 StepKinematics_KinematicTopologyRepresentationSelect::
-  StepKinematics_KinematicTopologyRepresentationSelect()
-= default;
+  StepKinematics_KinematicTopologyRepresentationSelect() = default;
 
 //=================================================================================================
 

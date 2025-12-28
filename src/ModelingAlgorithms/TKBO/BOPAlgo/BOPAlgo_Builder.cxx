@@ -40,8 +40,7 @@
 //=================================================================================================
 
 BOPAlgo_Builder::BOPAlgo_Builder()
-    : 
-      myArguments(myAllocator),
+    : myArguments(myAllocator),
       myMapFence(100, myAllocator),
       myPaveFiller(nullptr),
       myDS(nullptr),

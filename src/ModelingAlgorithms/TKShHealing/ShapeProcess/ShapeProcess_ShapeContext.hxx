@@ -104,9 +104,10 @@ public:
   //! either by call to SetResult(), or by another call to
   //! RecordModification() which contains mapping of current
   //! result to a new one explicitly
-  Standard_EXPORT void RecordModification(const TopoDS_Shape&                            sh,
-                                          const BRepTools_Modifier&                      repl,
-                                          const occ::handle<ShapeExtend_MsgRegistrator>& msg = nullptr);
+  Standard_EXPORT void RecordModification(
+    const TopoDS_Shape&                            sh,
+    const BRepTools_Modifier&                      repl,
+    const occ::handle<ShapeExtend_MsgRegistrator>& msg = nullptr);
 
   //! Record a message for shape S
   //! Shape S should be one of subshapes of original shape

@@ -18,8 +18,7 @@
 //=================================================================================================
 
 HelixGeom_BuilderHelixGen::HelixGeom_BuilderHelixGen()
-    : 
-      myT1(0.0),
+    : myT1(0.0),
       myT2(2.0 * M_PI),
       myPitch(1.0),
       myRStart(1.0),

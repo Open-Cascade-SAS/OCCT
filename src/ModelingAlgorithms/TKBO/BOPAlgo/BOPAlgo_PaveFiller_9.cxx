@@ -34,8 +34,8 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange
 {
 public:
   BOPAlgo_ShrunkRange()
-       
-  = default;
+
+    = default;
 
   //
   ~BOPAlgo_ShrunkRange() override = default;

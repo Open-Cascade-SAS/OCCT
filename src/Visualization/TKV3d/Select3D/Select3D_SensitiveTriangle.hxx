@@ -39,7 +39,7 @@ public:
 
   //! Checks whether the triangle overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
   void Points3D(gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
@@ -68,8 +68,7 @@ public:
   gp_Pnt CenterOfGeometry() const override { return myCentroid; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 

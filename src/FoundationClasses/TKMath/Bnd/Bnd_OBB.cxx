@@ -41,8 +41,7 @@ class OBB_ExtremePointsSelector
 public:
   //! Constructor
   OBB_ExtremePointsSelector()
-      : 
-        myPrmMin(RealLast()),
+      : myPrmMin(RealLast()),
         myPrmMax(RealFirst())
   {
   }
@@ -75,8 +74,8 @@ public: //! @name Getting the results
 public: //! @name Definition of rejection/acceptance rules
   //! Defines the rules for node rejection
   bool RejectNode(const BVH_Vec3d& theCMin,
-                          const BVH_Vec3d& theCMax,
-                          Bnd_Range&       theMetric) const override
+                  const BVH_Vec3d& theCMax,
+                  Bnd_Range&       theMetric) const override
   {
     if (myPrmMin > myPrmMax)
       // No parameters computed yet

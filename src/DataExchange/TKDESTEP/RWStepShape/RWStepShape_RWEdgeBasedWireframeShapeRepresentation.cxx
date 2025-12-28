@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepShape_RWEdgeBasedWireframeShapeRepresentation::
-  RWStepShape_RWEdgeBasedWireframeShapeRepresentation()
-= default;
+  RWStepShape_RWEdgeBasedWireframeShapeRepresentation() = default;
 
 //=================================================================================================
 

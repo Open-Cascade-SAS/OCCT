@@ -65,8 +65,8 @@ public:
 
   //! Returns the points of the segment <Index> in the Polygon.
   Standard_EXPORT void Segment(const int theIndex,
-                                       gp_Pnt2d& theBegin,
-                                       gp_Pnt2d& theEnd) const override;
+                               gp_Pnt2d& theBegin,
+                               gp_Pnt2d& theEnd) const override;
 
   //! Returns the parameter (On the curve)
   //! of the first point of the Polygon

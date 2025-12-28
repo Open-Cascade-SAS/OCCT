@@ -74,7 +74,7 @@ double OSD_Timer::GetWallClockTime()
   // to avoid loss of precision due to big values of tv_sec (counted since 1970)
   static const time_t aStartSec = (gettimeofday(&aTime, nullptr) == 0 ? aTime.tv_sec : 0);
   return gettimeofday(&aTime, nullptr) == 0 ? (aTime.tv_sec - aStartSec) + 0.000001 * aTime.tv_usec
-                                         : 0.0;
+                                            : 0.0;
 #endif
 }
 

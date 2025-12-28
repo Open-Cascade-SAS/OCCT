@@ -57,7 +57,7 @@ public:
 
 private:
   //! Copy should be performed only within Handles!
-  OpenGl_Resource(const OpenGl_Resource&) = delete;
+  OpenGl_Resource(const OpenGl_Resource&)            = delete;
   OpenGl_Resource& operator=(const OpenGl_Resource&) = delete;
 
 public:

@@ -25,7 +25,8 @@
 
 //=================================================================================================
 
-RWStepAP242_RWDraughtingModelItemAssociation::RWStepAP242_RWDraughtingModelItemAssociation() = default;
+RWStepAP242_RWDraughtingModelItemAssociation::RWStepAP242_RWDraughtingModelItemAssociation() =
+  default;
 
 //=================================================================================================
 

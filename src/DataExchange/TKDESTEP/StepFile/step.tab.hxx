@@ -817,7 +817,9 @@ namespace step
 class scanner : public stepFlexLexer
 {
 public:
-  explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = nullptr, std::ostream* out = nullptr);
+  explicit scanner(StepFile_ReadData* theDataModel,
+                   std::istream*      in  = nullptr,
+                   std::ostream*      out = nullptr);
 
   int lex(step::parser::semantic_type* yylval);
 

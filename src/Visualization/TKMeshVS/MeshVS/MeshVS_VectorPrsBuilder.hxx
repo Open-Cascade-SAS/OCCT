@@ -51,10 +51,10 @@ public:
 
   //! Builds vector data presentation
   Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int theDisplayMode) const override;
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              theDisplayMode) const override;
 
   //! Adds to array of polygons and polylines some primitive representing single vector
   Standard_EXPORT void DrawVector(const gp_Trsf&                                  theTrsf,

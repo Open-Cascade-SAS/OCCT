@@ -25,8 +25,8 @@
 
 //=================================================================================================
 
-RWStepFEA_RWFeaCurveSectionGeometricRelationship::RWStepFEA_RWFeaCurveSectionGeometricRelationship()
-= default;
+RWStepFEA_RWFeaCurveSectionGeometricRelationship::
+  RWStepFEA_RWFeaCurveSectionGeometricRelationship() = default;
 
 //=================================================================================================
 

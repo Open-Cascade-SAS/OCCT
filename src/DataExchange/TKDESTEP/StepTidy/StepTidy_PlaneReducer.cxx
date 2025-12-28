@@ -27,9 +27,9 @@ StepTidy_PlaneReducer::StepTidy_PlaneReducer(const occ::handle<XSControl_WorkSes
 
 //==================================================================================================
 
-bool StepTidy_PlaneReducer::replaceAdvancedFace(const occ::handle<StepGeom_Plane>& theOldEntity,
-                                                const occ::handle<StepGeom_Plane>& theNewEntity,
-                                                const occ::handle<Standard_Transient>&    theSharing)
+bool StepTidy_PlaneReducer::replaceAdvancedFace(const occ::handle<StepGeom_Plane>&     theOldEntity,
+                                                const occ::handle<StepGeom_Plane>&     theNewEntity,
+                                                const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepShape_AdvancedFace> aSharing = occ::down_cast<StepShape_AdvancedFace>(theSharing);
   if (aSharing->FaceGeometry() == theOldEntity)
@@ -41,9 +41,9 @@ bool StepTidy_PlaneReducer::replaceAdvancedFace(const occ::handle<StepGeom_Plane
 }
 
 //==================================================================================================
-bool StepTidy_PlaneReducer::replacePcurve(const occ::handle<StepGeom_Plane>& theOldEntity,
-                                          const occ::handle<StepGeom_Plane>& theNewEntity,
-                                          const occ::handle<Standard_Transient>&    theSharing)
+bool StepTidy_PlaneReducer::replacePcurve(const occ::handle<StepGeom_Plane>&     theOldEntity,
+                                          const occ::handle<StepGeom_Plane>&     theNewEntity,
+                                          const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_Pcurve> aSharing = occ::down_cast<StepGeom_Pcurve>(theSharing);
   if (aSharing->BasisSurface() == theOldEntity)

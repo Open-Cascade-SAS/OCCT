@@ -90,7 +90,7 @@ public:
 
 private:
   //! Private to avoid copy.
-  TDF_Transaction(const TDF_Transaction& aTrans) = delete;
+  TDF_Transaction(const TDF_Transaction& aTrans)              = delete;
   TDF_Transaction& operator=(const TDF_Transaction& theOther) = delete;
 
 private:

@@ -58,7 +58,7 @@ bool BinMXCAFDoc_MaterialDriver::Paste(const BinObjMgt_Persistent&       theSour
   return true;
 }
 
-static void pasteString(BinObjMgt_Persistent&                 theTarget,
+static void pasteString(BinObjMgt_Persistent&                        theTarget,
                         const occ::handle<TCollection_HAsciiString>& theStr)
 {
   if (!theStr.IsNull())

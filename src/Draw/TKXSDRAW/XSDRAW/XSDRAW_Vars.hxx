@@ -37,8 +37,7 @@ class XSDRAW_Vars : public XSControl_Vars
 public:
   Standard_EXPORT XSDRAW_Vars();
 
-  Standard_EXPORT void Set(const char*                            name,
-                                   const occ::handle<Standard_Transient>& val) override;
+  Standard_EXPORT void Set(const char* name, const occ::handle<Standard_Transient>& val) override;
 
   Standard_EXPORT occ::handle<Geom_Geometry> GetGeom(const char*& name) const override;
 

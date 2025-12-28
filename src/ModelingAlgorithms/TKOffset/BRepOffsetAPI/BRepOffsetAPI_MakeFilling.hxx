@@ -208,8 +208,7 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the maximum distance between the result and
   //! the constraints. This is set at construction time.

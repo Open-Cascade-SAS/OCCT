@@ -167,7 +167,8 @@ public:
   //! resulting Shape. In some specific cases the shape
   //! can be geometrically inexsistant, then this
   //! function returns false.
-  Standard_EXPORT bool HasShape(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS) const override;
+  Standard_EXPORT bool HasShape(const TopoDS_Shape&   aGenS,
+                                const Sweep_NumShape& aDirS) const override;
 
   //! Returns always false because here the
   //! transformation is a translation.

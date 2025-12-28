@@ -74,7 +74,7 @@ protected:
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
   Standard_EXPORT void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+                            const Message_Gravity          theGravity) const override;
 
 private:
   void* myStream;

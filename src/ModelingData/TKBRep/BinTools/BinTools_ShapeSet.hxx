@@ -120,7 +120,8 @@ public:
   Standard_EXPORT virtual void ReadSubs(TopoDS_Shape& S, Standard_IStream& IS, const int NbShapes);
 
   //! An empty virtual method for redefinition in shape-reader.
-  Standard_EXPORT void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) override {};
+  Standard_EXPORT void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) override {
+  };
 
   //! Writes the shape <S> on the stream <OS> in a
   //! binary format that can be read back by Read.

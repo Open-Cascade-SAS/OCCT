@@ -21,8 +21,7 @@
 #include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
 
 RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation::
-  RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation()
-= default;
+  RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation() = default;
 
 void RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                    data,

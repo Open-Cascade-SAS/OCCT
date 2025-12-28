@@ -177,12 +177,12 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override = 0;
+                                 const GeomAbs_Shape         S) const override = 0;
 
   Standard_EXPORT void GetShape(int& NbPoles,
-                                        int& NbKnots,
-                                        int& Degree,
-                                        int& NbPoles2d) override = 0;
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) override = 0;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
@@ -190,44 +190,44 @@ public:
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.
   Standard_EXPORT void GetTolerance(const double BoundTol,
-                                            const double SurfTol,
-                                            const double AngleTol,
-                                            math_Vector& Tol3d,
-                                            math_Vector& Tol1D) const override = 0;
+                                    const double SurfTol,
+                                    const double AngleTol,
+                                    math_Vector& Tol3d,
+                                    math_Vector& Tol1D) const override = 0;
 
   Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) override = 0;
 
   Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) override = 0;
 
   Standard_EXPORT void Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>&   Weigths) override = 0;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>&   Weigths) override = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
   Standard_EXPORT bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths) override = 0;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths) override = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
   Standard_EXPORT bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Vec>&   D2Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths,
-                                       NCollection_Array1<double>&   D2Weigths) override = 0;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths) override = 0;
 };
 
 #endif // _Blend_RstRstFunction_HeaderFile

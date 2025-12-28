@@ -57,8 +57,7 @@ PrsDim_OffsetDimension::PrsDim_OffsetDimension(const TopoDS_Shape&              
                                                const TopoDS_Shape&               SecondShape,
                                                const double                      aVal,
                                                const TCollection_ExtendedString& aText)
-    : 
-      myFAttach(0., 0., 0.),
+    : myFAttach(0., 0., 0.),
       mySAttach(0., 0., 0.)
 {
   myFShape    = FistShape;

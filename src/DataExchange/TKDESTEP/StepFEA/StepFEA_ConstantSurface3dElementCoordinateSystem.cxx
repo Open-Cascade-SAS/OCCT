@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_ConstantSurface3dElementCoordinateSystem,
 
 //=================================================================================================
 
-StepFEA_ConstantSurface3dElementCoordinateSystem::StepFEA_ConstantSurface3dElementCoordinateSystem()
-= default;
+StepFEA_ConstantSurface3dElementCoordinateSystem::
+  StepFEA_ConstantSurface3dElementCoordinateSystem() = default;
 
 //=================================================================================================
 

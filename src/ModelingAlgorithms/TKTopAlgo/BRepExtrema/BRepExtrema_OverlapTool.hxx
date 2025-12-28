@@ -86,10 +86,10 @@ public:
 public: //! @name Reject/Accept implementations
   //! Defines the rules for node rejection by bounding box
   Standard_EXPORT bool RejectNode(const BVH_Vec3d& theCornerMin1,
-                                          const BVH_Vec3d& theCornerMax1,
-                                          const BVH_Vec3d& theCornerMin2,
-                                          const BVH_Vec3d& theCornerMax2,
-                                          double&) const override;
+                                  const BVH_Vec3d& theCornerMax1,
+                                  const BVH_Vec3d& theCornerMin2,
+                                  const BVH_Vec3d& theCornerMax2,
+                                  double&) const override;
   //! Defines the rules for leaf acceptance
   Standard_EXPORT bool Accept(const int theLeaf1, const int theLeaf2) override;
 

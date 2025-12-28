@@ -70,8 +70,8 @@ public:
   //! Shape for all, but Drawing for :
   //! Flash; Point with a symbol; Plane with a symbol
   Standard_EXPORT int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_GeneralModule, IGESData_GeneralModule)
 };

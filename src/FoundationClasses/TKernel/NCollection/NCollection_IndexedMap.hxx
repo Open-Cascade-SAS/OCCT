@@ -143,8 +143,9 @@ public:
   }
 
   //! Constructor
-  explicit NCollection_IndexedMap(const int                                     theNbBuckets,
-                                  const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+  explicit NCollection_IndexedMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
   {
   }

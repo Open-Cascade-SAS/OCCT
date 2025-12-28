@@ -126,7 +126,7 @@ private:
 
 private:
   //! To protect the connection from closing copying allowed only through the handles.
-  Aspect_DisplayConnection(const Aspect_DisplayConnection&) = delete;
+  Aspect_DisplayConnection(const Aspect_DisplayConnection&)            = delete;
   Aspect_DisplayConnection& operator=(const Aspect_DisplayConnection&) = delete;
 };
 

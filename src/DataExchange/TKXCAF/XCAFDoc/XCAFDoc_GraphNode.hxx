@@ -123,7 +123,7 @@ public:
   Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& with) override;
 
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
-                                     const occ::handle<TDF_RelocationTable>& RT) const override;
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
@@ -134,8 +134,7 @@ public:
   Standard_EXPORT void BeforeForget() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_GraphNode, TDF_Attribute)
 

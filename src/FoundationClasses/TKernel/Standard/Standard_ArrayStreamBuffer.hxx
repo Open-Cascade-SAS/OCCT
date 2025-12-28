@@ -87,12 +87,11 @@ protected:
 
   //! Seek to specified position.
   Standard_EXPORT pos_type seekoff(off_type                theOff,
-                                           std::ios_base::seekdir  theWay,
-                                           std::ios_base::openmode theWhich) override;
+                                   std::ios_base::seekdir  theWay,
+                                   std::ios_base::openmode theWhich) override;
 
   //! Change to specified position, according to mode.
-  Standard_EXPORT pos_type seekpos(pos_type                thePosition,
-                                           std::ios_base::openmode theWhich) override;
+  Standard_EXPORT pos_type seekpos(pos_type thePosition, std::ios_base::openmode theWhich) override;
 
 public:
   //! Read a bunch of bytes at once.
@@ -100,7 +99,7 @@ public:
 
 private:
   // copying is not allowed
-  Standard_ArrayStreamBuffer(const Standard_ArrayStreamBuffer&) = delete;
+  Standard_ArrayStreamBuffer(const Standard_ArrayStreamBuffer&)            = delete;
   Standard_ArrayStreamBuffer& operator=(const Standard_ArrayStreamBuffer&) = delete;
 
 protected:

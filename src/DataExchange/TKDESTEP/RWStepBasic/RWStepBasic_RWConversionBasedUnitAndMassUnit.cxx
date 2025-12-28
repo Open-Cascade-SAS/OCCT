@@ -22,7 +22,8 @@
 
 //=================================================================================================
 
-RWStepBasic_RWConversionBasedUnitAndMassUnit::RWStepBasic_RWConversionBasedUnitAndMassUnit() = default;
+RWStepBasic_RWConversionBasedUnitAndMassUnit::RWStepBasic_RWConversionBasedUnitAndMassUnit() =
+  default;
 
 //=================================================================================================
 

@@ -27,8 +27,7 @@
 //=================================================================================================
 
 BOPAlgo_WireSplitter::BOPAlgo_WireSplitter()
-    : 
-      myWES(nullptr),
+    : myWES(nullptr),
       myLCB(myAllocator)
 {
 }
@@ -121,7 +120,7 @@ void BOPAlgo_WireSplitter::Perform(const Message_ProgressRange& theRange)
 class BOPAlgo_WS_ConnexityBlock
 {
 public:
-  BOPAlgo_WS_ConnexityBlock() = default;
+  BOPAlgo_WS_ConnexityBlock()  = default;
   ~BOPAlgo_WS_ConnexityBlock() = default;
 
   void SetFace(const TopoDS_Face& theF) { myFace = theF; }

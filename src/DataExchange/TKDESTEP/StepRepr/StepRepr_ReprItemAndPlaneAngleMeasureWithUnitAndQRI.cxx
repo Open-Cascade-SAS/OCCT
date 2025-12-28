@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI,
 
 StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI::
   StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI()
-     
+
 {
   myPlaneAngleMeasureWithUnit = new StepBasic_PlaneAngleMeasureWithUnit();
 }

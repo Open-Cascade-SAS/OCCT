@@ -25,8 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaSecantCoefficientOfLinearThermalExpansion,
 //=================================================================================================
 
 StepFEA_FeaSecantCoefficientOfLinearThermalExpansion::
-  StepFEA_FeaSecantCoefficientOfLinearThermalExpansion()
-= default;
+  StepFEA_FeaSecantCoefficientOfLinearThermalExpansion() = default;
 
 //=================================================================================================
 

@@ -918,7 +918,8 @@ void OpenGl_FrameBuffer::Release(OpenGl_Context* theGlCtx)
     // application can not handle this case by exception - this is bug in code
     Standard_ASSERT_RETURN(
       !myIsOwnBuffer || theGlCtx != nullptr,
-      "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+      "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...",
+      Standard_VOID_RETURN);
     if (myIsOwnBuffer && theGlCtx->IsValid())
     {
       theGlCtx->arbFBO->glDeleteFramebuffers(1, &myGlFBufferId);

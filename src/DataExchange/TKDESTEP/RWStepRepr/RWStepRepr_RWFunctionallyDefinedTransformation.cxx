@@ -18,7 +18,8 @@
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_FunctionallyDefinedTransformation.hxx>
 
-RWStepRepr_RWFunctionallyDefinedTransformation::RWStepRepr_RWFunctionallyDefinedTransformation() = default;
+RWStepRepr_RWFunctionallyDefinedTransformation::RWStepRepr_RWFunctionallyDefinedTransformation() =
+  default;
 
 void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,

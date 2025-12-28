@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_KinematicTopologyNetworkStructure,
 
 //=================================================================================================
 
-StepKinematics_KinematicTopologyNetworkStructure::StepKinematics_KinematicTopologyNetworkStructure()
-= default;
+StepKinematics_KinematicTopologyNetworkStructure::
+  StepKinematics_KinematicTopologyNetworkStructure() = default;
 
 //=================================================================================================
 

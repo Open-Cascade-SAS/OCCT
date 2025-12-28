@@ -130,8 +130,7 @@ public:
   const TCollection_AsciiString& ValueStringFormat() const { return myValueStringFormat; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   occ::handle<Prs3d_LineAspect>         myLineAspect;

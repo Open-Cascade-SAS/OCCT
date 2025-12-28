@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWKinematicPropertyMechanismRepresentation::
-  RWStepKinematics_RWKinematicPropertyMechanismRepresentation()
-= default;
+  RWStepKinematics_RWKinematicPropertyMechanismRepresentation() = default;
 
 //=================================================================================================
 

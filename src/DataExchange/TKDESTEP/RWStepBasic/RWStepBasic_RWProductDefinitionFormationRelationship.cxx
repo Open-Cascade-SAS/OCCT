@@ -25,8 +25,7 @@
 //=================================================================================================
 
 RWStepBasic_RWProductDefinitionFormationRelationship::
-  RWStepBasic_RWProductDefinitionFormationRelationship()
-= default;
+  RWStepBasic_RWProductDefinitionFormationRelationship() = default;
 
 //=================================================================================================
 

@@ -30,8 +30,8 @@ public:
   // Empty constructor
 
   LDOM_CDATASection(const LDOM_CDATASection& theOther)
-       
-  = default;
+
+    = default;
 
   // Copy constructor
 

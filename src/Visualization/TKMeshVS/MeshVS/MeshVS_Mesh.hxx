@@ -47,12 +47,12 @@ public:
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theDispMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theDispMode) override;
 
   //! Computes selection according to SelectMode
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theSelMode) override;
+                                        const int theSelMode) override;
 
   //! Draw selected owners presentation
   Standard_EXPORT void HilightSelected(

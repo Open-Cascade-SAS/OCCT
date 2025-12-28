@@ -44,7 +44,7 @@ private:
   FT_Library myFTLib;
 
 private:
-  Font_FTLibrary(const Font_FTLibrary&) = delete;
+  Font_FTLibrary(const Font_FTLibrary&)            = delete;
   Font_FTLibrary& operator=(const Font_FTLibrary&) = delete;
 
 public:

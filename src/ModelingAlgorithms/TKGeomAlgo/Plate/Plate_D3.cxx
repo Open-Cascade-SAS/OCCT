@@ -25,6 +25,5 @@ Plate_D3::Plate_D3(const gp_XYZ& duuu, const gp_XYZ& duuv, const gp_XYZ& duvv, c
 }
 
 Plate_D3::Plate_D3(const Plate_D3& ref)
-    
-      
-= default;
+
+  = default;

@@ -30,9 +30,9 @@ StepTidy_CircleReducer::StepTidy_CircleReducer(const occ::handle<XSControl_WorkS
 
 //==================================================================================================
 
-bool StepTidy_CircleReducer::replaceEdgeCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
-                                              const occ::handle<StepGeom_Circle>& theNewEntity,
-                                              const occ::handle<Standard_Transient>&     theSharing)
+bool StepTidy_CircleReducer::replaceEdgeCurve(const occ::handle<StepGeom_Circle>&    theOldEntity,
+                                              const occ::handle<StepGeom_Circle>&    theNewEntity,
+                                              const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepShape_EdgeCurve> aSharing = occ::down_cast<StepShape_EdgeCurve>(theSharing);
   if (aSharing->EdgeGeometry() == theOldEntity)
@@ -47,7 +47,7 @@ bool StepTidy_CircleReducer::replaceEdgeCurve(const occ::handle<StepGeom_Circle>
 
 bool StepTidy_CircleReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
                                                  const occ::handle<StepGeom_Circle>& theNewEntity,
-                                                 const occ::handle<Standard_Transient>&     theSharing)
+                                                 const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_SurfaceCurve> aSharing = occ::down_cast<StepGeom_SurfaceCurve>(theSharing);
   if (aSharing->Curve3d() == theOldEntity)
@@ -60,9 +60,9 @@ bool StepTidy_CircleReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Circ
 
 //==================================================================================================
 
-bool StepTidy_CircleReducer::replaceSeamCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
-                                              const occ::handle<StepGeom_Circle>& theNewEntity,
-                                              const occ::handle<Standard_Transient>&     theSharing)
+bool StepTidy_CircleReducer::replaceSeamCurve(const occ::handle<StepGeom_Circle>&    theOldEntity,
+                                              const occ::handle<StepGeom_Circle>&    theNewEntity,
+                                              const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_SeamCurve> aSharing = occ::down_cast<StepGeom_SeamCurve>(theSharing);
   if (aSharing->Curve3d() == theOldEntity)

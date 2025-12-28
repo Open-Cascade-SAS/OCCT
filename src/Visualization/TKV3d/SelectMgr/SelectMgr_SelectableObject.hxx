@@ -187,8 +187,7 @@ public:
   Standard_EXPORT virtual const occ::handle<SelectMgr_EntityOwner>& GetAssemblyOwner() const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! Protected empty constructor.

@@ -74,8 +74,8 @@
 // GeomToIGES_GeomCurve
 //=============================================================================
 GeomToIGES_GeomCurve::GeomToIGES_GeomCurve()
-     
-= default;
+
+  = default;
 
 //=============================================================================
 // GeomToIGES_GeomCurve

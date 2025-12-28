@@ -61,7 +61,7 @@ public:
 protected:
   //! Flush active sub-mesh.
   Standard_EXPORT bool addMesh(const RWObj_SubMesh&      theMesh,
-                                       const RWObj_SubMeshReason theReason) override;
+                               const RWObj_SubMeshReason theReason) override;
 
   //! Retrieve sub-mesh node position.
   gp_Pnt getNode(int theIndex) const override { return myNodes.Value(theIndex - 1); }

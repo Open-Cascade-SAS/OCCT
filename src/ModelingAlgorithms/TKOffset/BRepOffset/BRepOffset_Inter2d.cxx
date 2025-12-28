@@ -268,7 +268,7 @@ static void Store(
   const NCollection_List<TopoDS_Shape>& theLV,
   const double                          theTol,
   const bool                            IsToUpdate,
-  const occ::handle<BRepAlgo_AsDes>&           theAsDes2d,
+  const occ::handle<BRepAlgo_AsDes>&    theAsDes2d,
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theDMVV)
 {
@@ -387,7 +387,7 @@ static void Store(
   const NCollection_List<TopoDS_Shape>& theLV1,
   const NCollection_List<TopoDS_Shape>& theLV2,
   const double                          theTol,
-  const occ::handle<BRepAlgo_AsDes>&           theAsDes2d,
+  const occ::handle<BRepAlgo_AsDes>&    theAsDes2d,
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     theDMVV)
 {

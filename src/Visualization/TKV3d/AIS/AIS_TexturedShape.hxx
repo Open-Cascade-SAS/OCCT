@@ -176,16 +176,13 @@ public: //! @name methods to alter texture mapping properties
   bool TextureModulate() const { return myModulate; }
 
   //! Return true if specified display mode is supported (extends AIS_Shape with Display Mode 3).
-  bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode >= 0 && theMode <= 3;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode >= 0 && theMode <= 3; }
 
 protected: //! @name overridden methods
   //! Compute presentation with texture mapping support.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void updateAttributes(const occ::handle<Prs3d_Presentation>& thePrs);
 

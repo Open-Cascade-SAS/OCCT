@@ -57,8 +57,7 @@ public:
   DEFINE_STANDARD_ALLOC
   //
   BOPAlgo_EdgeEdge()
-      : 
-        BOPAlgo_ParallelAlgo() {};
+      : BOPAlgo_ParallelAlgo() {};
   //
   ~BOPAlgo_EdgeEdge() override = default;
 

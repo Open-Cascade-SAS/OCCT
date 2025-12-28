@@ -67,9 +67,9 @@ public:
   //! TransferProcess. If this called produces a Null Binder, then
   //! the standard, inherited Copy is called
   Standard_EXPORT bool Copy(const occ::handle<Standard_Transient>& entfrom,
-                                    occ::handle<Standard_Transient>&       entto,
-                                    const bool                             mapped,
-                                    const bool                             errstat) override;
+                            occ::handle<Standard_Transient>&       entto,
+                            const bool                             mapped,
+                            const bool                             errstat) override;
 };
 
 #endif // _Transfer_TransferDispatch_HeaderFile

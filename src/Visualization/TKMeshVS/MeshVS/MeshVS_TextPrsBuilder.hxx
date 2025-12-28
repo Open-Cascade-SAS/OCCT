@@ -45,10 +45,10 @@ public:
 
   //! Builds presentation of text data
   Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int theDisplayMode) const override;
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              theDisplayMode) const override;
 
   //! Returns map of text assigned with nodes ( IsElement = False ) or elements ( IsElement = True )
   Standard_EXPORT const NCollection_DataMap<int, TCollection_AsciiString>& GetTexts(

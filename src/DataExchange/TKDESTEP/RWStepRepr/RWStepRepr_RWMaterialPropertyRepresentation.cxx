@@ -25,7 +25,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWMaterialPropertyRepresentation::RWStepRepr_RWMaterialPropertyRepresentation() = default;
+RWStepRepr_RWMaterialPropertyRepresentation::RWStepRepr_RWMaterialPropertyRepresentation() =
+  default;
 
 //=================================================================================================
 

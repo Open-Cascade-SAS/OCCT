@@ -81,10 +81,7 @@ public: //! @name Necessary overrides for BVH construction
   using BVH_PrimitiveSet<NumType, Dimension>::Box;
 
   //! Returns the bounding box with the given index.
-  BVH_Box<NumType, Dimension> Box(const int theIndex) const override
-  {
-    return myBoxes[theIndex];
-  }
+  BVH_Box<NumType, Dimension> Box(const int theIndex) const override { return myBoxes[theIndex]; }
 
   //! Returns centroid position along specified axis.
   double Center(const int theIndex, const int theAxis) const override

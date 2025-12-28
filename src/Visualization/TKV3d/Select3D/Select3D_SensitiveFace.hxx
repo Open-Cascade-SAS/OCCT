@@ -53,7 +53,7 @@ public:
 
   //! Checks whether the face overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
@@ -75,8 +75,7 @@ public:
   Standard_EXPORT int NbSubElements() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   Select3D_TypeOfSensitivity mySensType; //!< Type of sensitivity: interior or boundary

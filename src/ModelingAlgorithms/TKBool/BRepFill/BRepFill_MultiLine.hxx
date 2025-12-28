@@ -97,13 +97,13 @@ public:
 
   //! Returns the point at parameter <theU>.
   Standard_EXPORT bool Value(const double                  theU,
-                                     NCollection_Array1<gp_Pnt2d>& thePnt2d,
-                                     NCollection_Array1<gp_Pnt>&   thePnt) const override;
+                             NCollection_Array1<gp_Pnt2d>& thePnt2d,
+                             NCollection_Array1<gp_Pnt>&   thePnt) const override;
 
   //! Returns the derivative at parameter <theU>.
   Standard_EXPORT bool D1(const double                  theU,
-                                  NCollection_Array1<gp_Vec2d>& theVec2d,
-                                  NCollection_Array1<gp_Vec>&   theVec) const override;
+                          NCollection_Array1<gp_Vec2d>& theVec2d,
+                          NCollection_Array1<gp_Vec>&   theVec) const override;
 
 private:
   TopoDS_Face         myFace1;

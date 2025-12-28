@@ -45,22 +45,18 @@ public:
   Standard_EXPORT double GetDistance() const override;
 
   //! @return The world coordinates of the camera position
-  Standard_EXPORT void GetEyePosition(double& theX,
-                                              double& theY,
-                                              double& theZ) const override;
+  Standard_EXPORT void GetEyePosition(double& theX, double& theY, double& theZ) const override;
 
   //! @return The world coordinates of the view position
   Standard_EXPORT void GetPosition(double& theX, double& theY, double& theZ) const override;
 
   //! @return The "view up" direction of the view
-  Standard_EXPORT void GetViewUp(double& theDx,
-                                         double& theDy,
-                                         double& theDz) const override;
+  Standard_EXPORT void GetViewUp(double& theDx, double& theDy, double& theDz) const override;
 
   //! @return The projection direction vector of this view
   Standard_EXPORT void GetDirectionOfProjection(double& theDx,
-                                                        double& theDy,
-                                                        double& theDz) const override;
+                                                double& theDy,
+                                                double& theDz) const override;
 
   //! @return Three doubles containing scale components of the view transformation
   Standard_EXPORT void GetScale(double& theX, double& theY, double& theZ) const override;
@@ -85,21 +81,21 @@ public:
 
   //! Gets camera projection and orientation matrices
   Standard_EXPORT void GetCamera(NCollection_Mat4<double>& theProj,
-                                         NCollection_Mat4<double>& theOrient,
-                                         bool&                     theIsOrtho) const override;
+                                 NCollection_Mat4<double>& theOrient,
+                                 bool&                     theIsOrtho) const override;
 
   //! Gets viewport coordinates
   Standard_EXPORT void GetViewport(double& theX,
-                                           double& theY,
-                                           double& theWidth,
-                                           double& theHeight) const override;
+                                   double& theY,
+                                   double& theWidth,
+                                   double& theHeight) const override;
 
   //! Converts 3D display coordinates into 3D world coordinates.
   //! @param[in]  theDisplayPnt 2d point of display coordinates
   //! @param[out]  theWorldPnt 3d point of world coordinates
   //! @return true if conversion was successful, false otherwise
   Standard_EXPORT bool DisplayToWorld(const gp_XY& theDisplayPnt,
-                                              gp_XYZ&      theWorldPnt) const override;
+                                      gp_XYZ&      theWorldPnt) const override;
 
   DEFINE_STANDARD_RTTIEXT(IVtkVTK_View, IVtk_IView)
 

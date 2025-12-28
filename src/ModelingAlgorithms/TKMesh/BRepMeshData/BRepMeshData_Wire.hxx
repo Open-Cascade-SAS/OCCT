@@ -39,7 +39,7 @@ public:
   //! Adds new discrete edge with specified orientation to wire chain.
   //! @return index of added edge in wire chain.
   Standard_EXPORT int AddEdge(const IMeshData::IEdgePtr& theDEdge,
-                                      const TopAbs_Orientation   theOrientation) override;
+                              const TopAbs_Orientation   theOrientation) override;
 
   //! Gets edge with the given index.
   Standard_EXPORT const IMeshData::IEdgePtr& GetEdge(const int theIndex) const override;

@@ -23,8 +23,7 @@
 //=================================================================================================
 
 RWStepShape_RWContextDependentShapeRepresentation::
-  RWStepShape_RWContextDependentShapeRepresentation()
-= default;
+  RWStepShape_RWContextDependentShapeRepresentation() = default;
 
 //=================================================================================================
 

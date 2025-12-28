@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentRetrievalDriver,
 //=================================================================================================
 
 BinTObjDrivers_DocumentRetrievalDriver::BinTObjDrivers_DocumentRetrievalDriver()
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 

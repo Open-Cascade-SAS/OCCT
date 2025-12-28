@@ -20,8 +20,7 @@
 //=================================================================================================
 
 BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
-    : 
-      myShapes(myAllocator),
+    : myShapes(myAllocator),
       myLoops(myAllocator),
       myLoopsInternal(myAllocator),
       myAreas(myAllocator),

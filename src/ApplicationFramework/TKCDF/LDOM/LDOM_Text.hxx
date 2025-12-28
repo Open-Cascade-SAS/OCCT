@@ -30,8 +30,8 @@ public:
   // Empty constructor
 
   LDOM_Text(const LDOM_Text& anOther)
-       
-  = default;
+
+    = default;
 
   // Copy constructor
 

@@ -40,38 +40,38 @@ class BRepBlend_AppFuncRoot : public Approx_SweepFunction
 public:
   //! compute the section for v = param
   Standard_EXPORT bool D0(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<double>&   Weigths) override;
+                          const double                  First,
+                          const double                  Last,
+                          NCollection_Array1<gp_Pnt>&   Poles,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                          NCollection_Array1<double>&   Weigths) override;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   Standard_EXPORT bool D1(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Vec>&   DPoles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<double>&   Weigths,
-                                  NCollection_Array1<double>&   DWeigths) override;
+                          const double                  First,
+                          const double                  Last,
+                          NCollection_Array1<gp_Pnt>&   Poles,
+                          NCollection_Array1<gp_Vec>&   DPoles,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                          NCollection_Array1<gp_Vec2d>& DPoles2d,
+                          NCollection_Array1<double>&   Weigths,
+                          NCollection_Array1<double>&   DWeigths) override;
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   Standard_EXPORT bool D2(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Vec>&   DPoles,
-                                  NCollection_Array1<gp_Vec>&   D2Poles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                  NCollection_Array1<double>&   Weigths,
-                                  NCollection_Array1<double>&   DWeigths,
-                                  NCollection_Array1<double>&   D2Weigths) override;
+                          const double                  First,
+                          const double                  Last,
+                          NCollection_Array1<gp_Pnt>&   Poles,
+                          NCollection_Array1<gp_Vec>&   DPoles,
+                          NCollection_Array1<gp_Vec>&   D2Poles,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                          NCollection_Array1<gp_Vec2d>& DPoles2d,
+                          NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                          NCollection_Array1<double>&   Weigths,
+                          NCollection_Array1<double>&   DWeigths,
+                          NCollection_Array1<double>&   D2Weigths) override;
 
   //! get the number of 2d curves to approximate.
   Standard_EXPORT int Nb2dCurves() const override;
@@ -98,7 +98,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the fonction
@@ -110,9 +110,9 @@ public:
   //! This information is useful to find a good tolerance in
   //! 2d approximation
   Standard_EXPORT void Resolution(const int    Index,
-                                          const double Tol,
-                                          double&      TolU,
-                                          double&      TolV) const override;
+                                  const double Tol,
+                                  double&      TolU,
+                                  double&      TolV) const override;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
@@ -120,9 +120,9 @@ public:
   //! AngleTol tangent error at the Boundary (in radian)
   //! SurfTol error inside the surface.
   Standard_EXPORT void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
-                                            NCollection_Array1<double>& Tol3d) const override;
+                                    const double                SurfTol,
+                                    const double                AngleTol,
+                                    NCollection_Array1<double>& Tol3d) const override;
 
   //! Is useful, if (me) has to be run numerical
   //! algorithm to perform D0, D1 or D2

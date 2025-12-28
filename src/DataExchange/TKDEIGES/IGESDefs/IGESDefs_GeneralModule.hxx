@@ -69,8 +69,8 @@ public:
   //! Returns a category number which characterizes an entity
   //! Auxiliary for all
   Standard_EXPORT int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_GeneralModule, IGESData_GeneralModule)
 };

@@ -244,11 +244,13 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
     rsnld.Root(sol);
 
     if (clasonS1)
-      situ1 = domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
+      situ1 =
+        domain1->Classify(gp_Pnt2d(sol(1), sol(2)), std::min(tolerance(1), tolerance(2)), false);
     else
       situ1 = TopAbs_IN;
     if (clasonS2)
-      situ2 = domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
+      situ2 =
+        domain2->Classify(gp_Pnt2d(sol(3), sol(4)), std::min(tolerance(3), tolerance(4)), false);
     else
       situ2 = TopAbs_IN;
 

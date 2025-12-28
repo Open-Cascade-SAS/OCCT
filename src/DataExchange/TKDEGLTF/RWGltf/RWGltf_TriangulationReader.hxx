@@ -58,10 +58,9 @@ protected:
   //! @param theDestMesh      triangulation to be modified
   //! @param theFileSystem    shared file system to read from
   //! Note: this method skips "stream data" that should be loaded by LoadStreamData() call.
-  Standard_EXPORT bool load(
-    const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
-    const occ::handle<Poly_Triangulation>&         theDestMesh,
-    const occ::handle<OSD_FileSystem>&             theFileSystem) const override;
+  Standard_EXPORT bool load(const occ::handle<RWMesh_TriangulationSource>& theSourceMesh,
+                            const occ::handle<Poly_Triangulation>&         theDestMesh,
+                            const occ::handle<OSD_FileSystem>& theFileSystem) const override;
 
   //! Performs additional actions to finalize data loading.
   //! @param theSourceMesh source triangulation

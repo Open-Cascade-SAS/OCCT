@@ -21,8 +21,7 @@
 //=================================================================================================
 
 StepVisual_CameraModelD3MultiClippingInterectionSelect::
-  StepVisual_CameraModelD3MultiClippingInterectionSelect()
-= default;
+  StepVisual_CameraModelD3MultiClippingInterectionSelect() = default;
 
 //=================================================================================================
 

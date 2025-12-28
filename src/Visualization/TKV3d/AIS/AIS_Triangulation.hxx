@@ -62,11 +62,11 @@ protected:
 
 private:
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+                                        const int                               theMode) override;
 
   //! Attenuates 32-bit color by a given attenuation factor (0...1):
   //! aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red

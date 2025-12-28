@@ -89,8 +89,7 @@ public:
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
   //! Returns ListOfShape from TopTools.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;

@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::
-  RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI()
-= default;
+  RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI() = default;
 
 //=================================================================================================
 

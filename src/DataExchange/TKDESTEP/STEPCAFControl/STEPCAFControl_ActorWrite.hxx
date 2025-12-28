@@ -36,7 +36,7 @@ public:
   //! Check whether shape S is assembly
   //! Returns True if shape is registered in assemblies map
   Standard_EXPORT bool IsAssembly(const occ::handle<StepData_StepModel>& theModel,
-                                          TopoDS_Shape&                          S) const override;
+                                  TopoDS_Shape&                          S) const override;
 
   //! Set standard mode of work
   //! In standard mode Actor (default) behaves exactly as its

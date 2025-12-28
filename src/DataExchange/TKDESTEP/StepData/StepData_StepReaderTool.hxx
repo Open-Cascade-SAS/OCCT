@@ -89,8 +89,7 @@ public:
 
   //! Ends file reading after reading all the entities
   //! Here, it binds in the model, Idents to Entities (for checks)
-  Standard_EXPORT void EndRead(
-    const occ::handle<Interface_InterfaceModel>& amodel) override;
+  Standard_EXPORT void EndRead(const occ::handle<Interface_InterfaceModel>& amodel) override;
 
 private:
   occ::handle<StepData_FileRecognizer> thereco;

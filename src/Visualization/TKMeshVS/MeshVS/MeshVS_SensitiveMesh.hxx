@@ -34,7 +34,7 @@ public:
 
   //! Checks whether sensitive overlaps current selecting volume.
   bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+               SelectBasics_PickResult&             thePickResult) override
   {
     (void)theMgr;
     (void)thePickResult;

@@ -78,20 +78,20 @@ public:
 
   //! Handle mouse button click event.
   Standard_EXPORT bool UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
-                                                Aspect_VKeyMouse             theButton,
-                                                Aspect_VKeyFlags             theModifiers,
-                                                bool theIsDoubleClick) override;
+                                        Aspect_VKeyMouse             theButton,
+                                        Aspect_VKeyFlags             theModifiers,
+                                        bool                         theIsDoubleClick) override;
 
   //! Handle mouse button press/release event.
   Standard_EXPORT bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                                  Aspect_VKeyMouse             theButtons,
-                                                  Aspect_VKeyFlags             theModifiers,
-                                                  bool theIsEmulated) override;
+                                          Aspect_VKeyMouse             theButtons,
+                                          Aspect_VKeyFlags             theModifiers,
+                                          bool                         theIsEmulated) override;
 
   //! Release key.
   Standard_EXPORT void KeyDown(Aspect_VKey theKey,
-                                       double      theTime,
-                                       double      thePressure = 1.0) override;
+                               double      theTime,
+                               double      thePressure = 1.0) override;
 
   //! Release key.
   Standard_EXPORT void KeyUp(Aspect_VKey theKey, double theTime) override;
@@ -101,7 +101,7 @@ public:
 
   //! Handle redraw.
   Standard_EXPORT void handleViewRedraw(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                const occ::handle<V3d_View>& theView) override;
+                                        const occ::handle<V3d_View>& theView) override;
 
   //! Resize View.
   Standard_EXPORT void ProcessConfigure(bool theIsResized = true) override;
@@ -115,8 +115,8 @@ public:
   //! Callback called on Selection of another (sub)view.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT void OnSubviewChanged(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                const occ::handle<V3d_View>& theOldView,
-                                                const occ::handle<V3d_View>& theNewView) override;
+                                        const occ::handle<V3d_View>&               theOldView,
+                                        const occ::handle<V3d_View>& theNewView) override;
 
 protected:
   //! Register hot-keys for specified Action.

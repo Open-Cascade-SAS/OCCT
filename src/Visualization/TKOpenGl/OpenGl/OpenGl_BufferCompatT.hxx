@@ -80,25 +80,25 @@ public: //! @name advanced methods
 
   //! Initialize buffer with new data (data will be copied).
   inline bool init(const occ::handle<OpenGl_Context>& theGlCtx,
-                           const unsigned int                 theComponentsNb,
-                           const int                          theElemsNb,
-                           const void*                        theData,
-                           const unsigned int                 theDataType,
-                           const int                          theStride) override;
+                   const unsigned int                 theComponentsNb,
+                   const int                          theElemsNb,
+                   const void*                        theData,
+                   const unsigned int                 theDataType,
+                   const int                          theStride) override;
 
   //! Update part of the buffer with new data.
   inline bool subData(const occ::handle<OpenGl_Context>& theGlCtx,
-                              const int                          theElemFrom,
-                              const int                          theElemsNb,
-                              const void*                        theData,
-                              const unsigned int                 theDataType) override;
+                      const int                          theElemFrom,
+                      const int                          theElemsNb,
+                      const void*                        theData,
+                      const unsigned int                 theDataType) override;
 
   //! Read back buffer sub-range.
   inline bool getSubData(const occ::handle<OpenGl_Context>& theGlCtx,
-                                 const int                          theElemFrom,
-                                 const int                          theElemsNb,
-                                 void*                              theData,
-                                 const unsigned int                 theDataType) override;
+                         const int                          theElemFrom,
+                         const int                          theElemsNb,
+                         void*                              theData,
+                         const unsigned int                 theDataType) override;
 
 protected:
   occ::handle<NCollection_Buffer> myData; //!< buffer data

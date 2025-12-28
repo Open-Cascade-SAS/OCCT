@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESControl_AlgoContainer, IGESToBRep_AlgoContainer)
 //=================================================================================================
 
 IGESControl_AlgoContainer::IGESControl_AlgoContainer()
-     
+
 {
   SetToolContainer(new IGESControl_ToolContainer);
 }

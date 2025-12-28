@@ -63,9 +63,9 @@ public:
   //! Returns True if the computation was done
   //! successfully, False otherwise.
   Standard_EXPORT bool Values(const math_Vector& X,
-                                      double&            E,
-                                      math_Vector&       G,
-                                      math_Matrix&       H) override;
+                              double&            E,
+                              math_Vector&       G,
+                              math_Matrix&       H) override;
 
   //! compute the variables <X> which correspond with the field <MyPoles>
   Standard_EXPORT virtual bool Variable(math_Vector& X) const;

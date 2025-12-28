@@ -269,8 +269,7 @@ public:
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepOffsetAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods Add).
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   Standard_EXPORT double ErrorOnSurface() const;
 

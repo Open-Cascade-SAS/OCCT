@@ -49,9 +49,9 @@ public:
                             const occ::handle<Interface_InterfaceModel>& model) const override;
 
   Standard_EXPORT bool Update(const occ::handle<IFSelect_EditForm>&        form,
-                                      const int                                    num,
-                                      const occ::handle<TCollection_HAsciiString>& newval,
-                                      const bool enforce) const override;
+                              const int                                    num,
+                              const occ::handle<TCollection_HAsciiString>& newval,
+                              const bool                                   enforce) const override;
 
   Standard_EXPORT bool Apply(const occ::handle<IFSelect_EditForm>&        form,
                              const occ::handle<Standard_Transient>&       ent,

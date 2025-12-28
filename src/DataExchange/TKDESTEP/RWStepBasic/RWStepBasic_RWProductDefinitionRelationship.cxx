@@ -23,7 +23,8 @@
 
 //=================================================================================================
 
-RWStepBasic_RWProductDefinitionRelationship::RWStepBasic_RWProductDefinitionRelationship() = default;
+RWStepBasic_RWProductDefinitionRelationship::RWStepBasic_RWProductDefinitionRelationship() =
+  default;
 
 //=================================================================================================
 

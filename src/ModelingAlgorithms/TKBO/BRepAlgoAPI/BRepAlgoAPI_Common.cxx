@@ -21,7 +21,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Common::BRepAlgoAPI_Common()
-     
+
 {
   myOperation = BOPAlgo_COMMON;
 }

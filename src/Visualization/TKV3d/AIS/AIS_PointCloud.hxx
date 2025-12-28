@@ -107,13 +107,12 @@ public:
 protected:
   //! Prepare presentation for this object.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Prepare selection for this object.
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
 private:
   occ::handle<Graphic3d_ArrayOfPoints> myPoints; //!< points array for presentation
@@ -145,18 +144,17 @@ public:
   Standard_EXPORT bool IsForcedHilight() const override;
 
   //! Handle dynamic highlighting.
-  Standard_EXPORT void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int theMode) override;
 
   //! Removes highlighting.
   Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                         const int theMode) override;
+                                 const int                                      theMode) override;
 
   //! Clears presentation.
   Standard_EXPORT void Clear(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                     const int theMode) override;
+                             const int                                      theMode) override;
 
 protected:
   occ::handle<TColStd_HPackedMapOfInteger> myDetPoints; //!< last detected points

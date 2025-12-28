@@ -60,7 +60,7 @@ public:
 
   //! Calls GlobalCheck for each of its recorded resources
   Standard_EXPORT bool GlobalCheck(const Interface_Graph&        G,
-                                           occ::handle<Interface_Check>& ach) const override;
+                                   occ::handle<Interface_Check>& ach) const override;
 
   //! Returns the Schema Name attached to each class of Protocol
   //! To be redefined by each sub-class

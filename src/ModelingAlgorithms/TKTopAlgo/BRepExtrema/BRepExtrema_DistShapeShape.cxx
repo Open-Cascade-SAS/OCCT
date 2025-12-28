@@ -699,7 +699,7 @@ struct TreatmentFunctor
         DistRef(nullptr),
         InnerSol(nullptr),
         IsDone(nullptr)
-        
+
   {
     for (int i = 0; i < theArrayOfArrays->Size(); ++i)
     {

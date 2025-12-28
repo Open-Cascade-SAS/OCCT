@@ -212,7 +212,7 @@ private:
     }
 
   private:
-    FunctorWrapperIter(const FunctorWrapperIter&) = delete;
+    FunctorWrapperIter(const FunctorWrapperIter&)       = delete;
     void           operator=(const FunctorWrapperIter&) = delete;
     const Functor& myFunctor;
   };
@@ -234,7 +234,7 @@ private:
     }
 
   private:
-    FunctorWrapperInt(const FunctorWrapperInt&) = delete;
+    FunctorWrapperInt(const FunctorWrapperInt&)        = delete;
     void           operator=(const FunctorWrapperInt&) = delete;
     const Functor& myFunctor;
   };
@@ -257,7 +257,7 @@ private:
 
   private:
     FunctorWrapperForThreadPool(const FunctorWrapperForThreadPool&) = delete;
-    void           operator=(const FunctorWrapperForThreadPool&) = delete;
+    void           operator=(const FunctorWrapperForThreadPool&)    = delete;
     const Functor& myFunctor;
   };
 

@@ -69,14 +69,10 @@ public:
   }
 
   //! Returns the owner of mode for selection of object as a whole
-  occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
-  {
-    return myAssemblyOwner;
-  }
+  occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override { return myAssemblyOwner; }
 
   //! Assigns interactive context.
-  Standard_EXPORT void SetContext(
-    const occ::handle<AIS_InteractiveContext>& theCtx) override;
+  Standard_EXPORT void SetContext(const occ::handle<AIS_InteractiveContext>& theCtx) override;
 
 public: // short aliases to Connect() method
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
@@ -124,8 +120,8 @@ protected:
   //! presentation of this last object, with
   //! a transformation if there's one stored.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its
   //! reference. Locates instance in theLocation and applies specified transformation persistence
@@ -139,7 +135,7 @@ protected:
 private:
   //! Computes the selection for whole subtree in scene hierarchy.
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                                const int aMode) override;
+                                        const int                               aMode) override;
 
 protected:
   occ::handle<SelectMgr_EntityOwner> myAssemblyOwner;

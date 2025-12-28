@@ -34,8 +34,8 @@ public:
   //    Empty constructor
 
   LDOM_Element(const LDOM_Element& anOther)
-       
-  = default;
+
+    = default;
 
   //    Copy constructor
 

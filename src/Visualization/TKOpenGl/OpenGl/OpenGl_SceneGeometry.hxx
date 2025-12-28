@@ -178,8 +178,7 @@ public:
 public:
   //! Creates uninitialized ray-tracing geometry.
   OpenGl_RaytraceGeometry()
-      : 
-        myTopLevelTreeDepth(0),
+      : myTopLevelTreeDepth(0),
         myBotLevelTreeDepth(0)
   {
     //

@@ -78,8 +78,8 @@ public:
 
   //! Creates and maps rendering window to the view.
   Standard_EXPORT void SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
-                                         const occ::handle<Aspect_Window>&   theWindow,
-                                         const Aspect_RenderingContext       theContext) override;
+                                 const occ::handle<Aspect_Window>&   theWindow,
+                                 const Aspect_RenderingContext       theContext) override;
 
   //! Returns window associated with the view.
   Standard_EXPORT occ::handle<Aspect_Window> Window() const override;
@@ -106,13 +106,13 @@ public:
   //! In Ray-Tracing allow to get a raw HDR buffer using Graphic3d_BT_RGB_RayTraceHdrLeft buffer
   //! type, only Left view will be dumped ignoring stereoscopic parameter.
   Standard_EXPORT bool BufferDump(Image_PixMap&               theImage,
-                                          const Graphic3d_BufferType& theBufferType) override;
+                                  const Graphic3d_BufferType& theBufferType) override;
 
   //! Dumps the graphical contents of a shadowmap framebuffer into an image.
   //! @param theImage the image to store the shadow map.
   //! @param[in] theLightName  name of the light used to generate the shadow map.
   Standard_EXPORT bool ShadowMapDump(Image_PixMap&                  theImage,
-                                             const TCollection_AsciiString& theLightName) override;
+                                     const TCollection_AsciiString& theLightName) override;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId
   //! as outdated.
@@ -124,8 +124,8 @@ public:
   //! @param[in] theSettings    new layer settings
   //! @param[in] theLayerAfter  id of layer to append new layer before
   Standard_EXPORT void InsertLayerBefore(const Graphic3d_ZLayerId        theLayerId,
-                                                 const Graphic3d_ZLayerSettings& theSettings,
-                                                 const Graphic3d_ZLayerId theLayerAfter) override;
+                                         const Graphic3d_ZLayerSettings& theSettings,
+                                         const Graphic3d_ZLayerId        theLayerAfter) override;
 
   //! Add a layer to the view.
   //! @param[in] theNewLayerId   id of new layer, should be > 0 (negative values are reserved for
@@ -133,24 +133,22 @@ public:
   //! @param[in] theSettings     new layer settings
   //! @param[in] theLayerBefore  id of layer to append new layer after
   Standard_EXPORT void InsertLayerAfter(const Graphic3d_ZLayerId        theNewLayerId,
-                                                const Graphic3d_ZLayerSettings& theSettings,
-                                                const Graphic3d_ZLayerId theLayerBefore) override;
+                                        const Graphic3d_ZLayerSettings& theSettings,
+                                        const Graphic3d_ZLayerId        theLayerBefore) override;
 
   //! Remove a z layer with the given ID.
   Standard_EXPORT void RemoveZLayer(const Graphic3d_ZLayerId theLayerId) override;
 
   //! Sets the settings for a single Z layer of specified view.
-  Standard_EXPORT void SetZLayerSettings(
-    const Graphic3d_ZLayerId        theLayerId,
-    const Graphic3d_ZLayerSettings& theSettings) override;
+  Standard_EXPORT void SetZLayerSettings(const Graphic3d_ZLayerId        theLayerId,
+                                         const Graphic3d_ZLayerSettings& theSettings) override;
 
   //! Returns the maximum Z layer ID.
   //! First layer ID is Graphic3d_ZLayerId_Default, last ID is ZLayerMax().
   Standard_EXPORT int ZLayerMax() const override;
 
   //! Returns the list of layers.
-  Standard_EXPORT const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers()
-    const override;
+  Standard_EXPORT const NCollection_List<occ::handle<Graphic3d_Layer>>& Layers() const override;
 
   //! Returns layer with given ID or NULL if undefined.
   Standard_EXPORT occ::handle<Graphic3d_Layer> Layer(
@@ -173,22 +171,22 @@ public:
   //! Generate offscreen FBO in the graphic library.
   //! If not supported on hardware returns NULL.
   Standard_EXPORT occ::handle<Standard_Transient> FBOCreate(const int theWidth,
-                                                                    const int theHeight) override;
+                                                            const int theHeight) override;
 
   //! Remove offscreen FBO from the graphic library
   Standard_EXPORT void FBORelease(occ::handle<Standard_Transient>& theFbo) override;
 
   //! Read offscreen FBO configuration.
   Standard_EXPORT void FBOGetDimensions(const occ::handle<Standard_Transient>& theFbo,
-                                                int&                                   theWidth,
-                                                int&                                   theHeight,
-                                                int&                                   theWidthMax,
-                                                int& theHeightMax) override;
+                                        int&                                   theWidth,
+                                        int&                                   theHeight,
+                                        int&                                   theWidthMax,
+                                        int& theHeightMax) override;
 
   //! Change offscreen FBO viewport.
   Standard_EXPORT void FBOChangeViewport(const occ::handle<Standard_Transient>& theFbo,
-                                                 const int                              theWidth,
-                                                 const int theHeight) override;
+                                         const int                              theWidth,
+                                         const int                              theHeight) override;
 
   //! Returns additional buffers for depth peeling OIT.
   const occ::handle<OpenGl_DepthPeeling>& DepthPeelingFbos() const { return myDepthPeelingFbos; }
@@ -206,9 +204,8 @@ public:
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
   //! @param[in] theToUpdatePBREnv  defines whether IBL maps will be generated or not
   //!                               (see GeneratePBREnvironment())
-  Standard_EXPORT void SetBackgroundImage(
-    const occ::handle<Graphic3d_TextureMap>& theTextureMap,
-    bool                                     theToUpdatePBREnv = true) override;
+  Standard_EXPORT void SetBackgroundImage(const occ::handle<Graphic3d_TextureMap>& theTextureMap,
+                                          bool theToUpdatePBREnv = true) override;
 
   //! Sets environment texture for the view.
   Standard_EXPORT void SetTextureEnv(
@@ -218,8 +215,7 @@ public:
   Standard_EXPORT Aspect_FillMethod BackgroundImageStyle() const override;
 
   //! Sets background image fill style.
-  Standard_EXPORT void SetBackgroundImageStyle(
-    const Aspect_FillMethod theFillStyle) override;
+  Standard_EXPORT void SetBackgroundImageStyle(const Aspect_FillMethod theFillStyle) override;
 
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
@@ -430,9 +426,8 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
 
 private:
   //! Adds the structure to display lists of the view.
-  Standard_EXPORT void displayStructure(
-    const occ::handle<Graphic3d_CStructure>& theStructure,
-    const Graphic3d_DisplayPriority          thePriority) override;
+  Standard_EXPORT void displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
+                                        const Graphic3d_DisplayPriority thePriority) override;
 
   //! Erases the structure from display lists of the view.
   Standard_EXPORT void eraseStructure(
@@ -440,12 +435,11 @@ private:
 
   //! Change Z layer of a structure already presented in view.
   Standard_EXPORT void changeZLayer(const occ::handle<Graphic3d_CStructure>& theCStructure,
-                                            const Graphic3d_ZLayerId theNewLayerId) override;
+                                    const Graphic3d_ZLayerId theNewLayerId) override;
 
   //! Changes the priority of a structure within its Z layer in the specified view.
-  Standard_EXPORT void changePriority(
-    const occ::handle<Graphic3d_CStructure>& theCStructure,
-    const Graphic3d_DisplayPriority          theNewPriority) override;
+  Standard_EXPORT void changePriority(const occ::handle<Graphic3d_CStructure>& theCStructure,
+                                      const Graphic3d_DisplayPriority theNewPriority) override;
 
 private:
   //! Release sRGB resources (frame-buffers, textures, etc.).

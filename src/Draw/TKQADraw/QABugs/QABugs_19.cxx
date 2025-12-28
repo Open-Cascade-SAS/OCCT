@@ -1415,8 +1415,7 @@ public:
     return new XmlDrivers_DocumentRetrievalDriver();
   }
 
-  occ::handle<PCDM_StorageDriver> WriterFromFormat(
-    const TCollection_ExtendedString&) override
+  occ::handle<PCDM_StorageDriver> WriterFromFormat(const TCollection_ExtendedString&) override
   {
     return new XmlDrivers_DocumentStorageDriver("Test");
   }
@@ -1712,7 +1711,7 @@ public:
   }
 
 private:
-  ParallelTest_Saxpy(const ParallelTest_Saxpy&) = delete;
+  ParallelTest_Saxpy(const ParallelTest_Saxpy&)      = delete;
   ParallelTest_Saxpy& operator=(ParallelTest_Saxpy&) = delete;
 
 protected:
@@ -1908,7 +1907,7 @@ public:
   }
 
 private:
-  ParallelTest_MatMult(const ParallelTest_MatMult&) = delete;
+  ParallelTest_MatMult(const ParallelTest_MatMult&)      = delete;
   ParallelTest_MatMult& operator=(ParallelTest_MatMult&) = delete;
 
 protected:
@@ -3988,8 +3987,8 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(OCC27700_Text, AIS_InteractiveObject)
 
   void Compute(const occ::handle<PrsMgr_PresentationManager>&,
-                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                       const int) override
+               const occ::handle<Prs3d_Presentation>& thePresentation,
+               const int) override
   {
     occ::handle<Graphic3d_ArrayOfTriangles> aFrame = new Graphic3d_ArrayOfTriangles(6, 6);
     aFrame->AddVertex(gp_Pnt(-1, 0, 0));
@@ -4021,7 +4020,7 @@ public:
   }
 
   void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*theSelection*/,
-                                const int /*theMode*/) override
+                        const int /*theMode*/) override
   {
   }
 };

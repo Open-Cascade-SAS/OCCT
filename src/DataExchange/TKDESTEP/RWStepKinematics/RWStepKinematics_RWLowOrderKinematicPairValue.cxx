@@ -26,7 +26,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWLowOrderKinematicPairValue::RWStepKinematics_RWLowOrderKinematicPairValue() = default;
+RWStepKinematics_RWLowOrderKinematicPairValue::RWStepKinematics_RWLowOrderKinematicPairValue() =
+  default;
 
 //=================================================================================================
 

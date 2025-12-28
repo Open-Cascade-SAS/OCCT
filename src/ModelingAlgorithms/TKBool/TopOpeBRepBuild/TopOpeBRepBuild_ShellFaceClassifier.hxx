@@ -45,10 +45,12 @@ public:
   Standard_EXPORT void Clear();
 
   //! classify shell <B1> with shell <B2>
-  Standard_EXPORT TopAbs_State CompareShapes(const TopoDS_Shape& B1, const TopoDS_Shape& B2) override;
+  Standard_EXPORT TopAbs_State CompareShapes(const TopoDS_Shape& B1,
+                                             const TopoDS_Shape& B2) override;
 
   //! classify face <F> with shell <S>
-  Standard_EXPORT TopAbs_State CompareElementToShape(const TopoDS_Shape& F, const TopoDS_Shape& S) override;
+  Standard_EXPORT TopAbs_State CompareElementToShape(const TopoDS_Shape& F,
+                                                     const TopoDS_Shape& S) override;
 
   //! prepare classification involving shell <S>
   //! calls ResetElement on first face of <S>

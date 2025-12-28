@@ -71,8 +71,8 @@ public:
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                                            const double Last,
-                                                            const double Tol) const override;
+                                                    const double Last,
+                                                    const double Tol) const override;
 
   Standard_EXPORT double Resolution(const double R3d) const override;
 
@@ -90,16 +90,13 @@ public:
 
   Standard_EXPORT void D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const override;
 
-  Standard_EXPORT void D2(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2) const override;
+  Standard_EXPORT void D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
 
   Standard_EXPORT void D3(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const override;
+                          gp_Pnt&      P,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2,
+                          gp_Vec&      V3) const override;
 
   Standard_EXPORT void FirstParameter(const double P);
 

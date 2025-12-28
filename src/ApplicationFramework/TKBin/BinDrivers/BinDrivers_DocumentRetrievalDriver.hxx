@@ -43,7 +43,7 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void CheckShapeSection(const Storage_Position& thePos,
-                                                 Standard_IStream&       theIS) override;
+                                         Standard_IStream&       theIS) override;
 
   //! Clears the NamedShape driver
   Standard_EXPORT void Clear() override;

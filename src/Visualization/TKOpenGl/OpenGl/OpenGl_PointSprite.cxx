@@ -49,7 +49,8 @@ void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
   {
     Standard_ASSERT_RETURN(
       theGlCtx != nullptr,
-      "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+      "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...",
+      Standard_VOID_RETURN);
 
     if (theGlCtx->IsValid())
     {

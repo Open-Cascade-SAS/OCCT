@@ -26,8 +26,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWProductDefinitionRelationshipKinematics::
-  RWStepKinematics_RWProductDefinitionRelationshipKinematics()
-= default;
+  RWStepKinematics_RWProductDefinitionRelationshipKinematics() = default;
 
 //=================================================================================================
 

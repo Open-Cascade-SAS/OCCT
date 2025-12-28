@@ -21,5 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem,
 //=================================================================================================
 
 StepVisual_AnnotationCurveOccurrenceAndGeomReprItem::
-  StepVisual_AnnotationCurveOccurrenceAndGeomReprItem()
-= default;
+  StepVisual_AnnotationCurveOccurrenceAndGeomReprItem() = default;

@@ -3263,7 +3263,7 @@ public:
   gp_Pnt& xP2(const int i, const int j) { return myP2[Index(i, j)]; };
 
 private:
-  IntPatch_InfoPD(const IntPatch_InfoPD&) = delete;
+  IntPatch_InfoPD(const IntPatch_InfoPD&)            = delete;
   IntPatch_InfoPD& operator=(const IntPatch_InfoPD&) = delete;
 
 private:

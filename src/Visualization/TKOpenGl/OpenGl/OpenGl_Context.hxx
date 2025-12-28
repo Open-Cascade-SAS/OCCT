@@ -1204,7 +1204,7 @@ private:                                                //! @name fields trackin
 
 private:
   //! Copying allowed only within Handles
-  OpenGl_Context(const OpenGl_Context&) = delete;
+  OpenGl_Context(const OpenGl_Context&)            = delete;
   OpenGl_Context& operator=(const OpenGl_Context&) = delete;
 };
 

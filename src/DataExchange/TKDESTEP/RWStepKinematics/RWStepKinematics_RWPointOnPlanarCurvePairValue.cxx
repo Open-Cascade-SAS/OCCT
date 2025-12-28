@@ -27,7 +27,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPointOnPlanarCurvePairValue::RWStepKinematics_RWPointOnPlanarCurvePairValue() = default;
+RWStepKinematics_RWPointOnPlanarCurvePairValue::RWStepKinematics_RWPointOnPlanarCurvePairValue() =
+  default;
 
 //=================================================================================================
 

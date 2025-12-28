@@ -38,8 +38,7 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                      const int                                    thePxTop,
                      const int                                    thePxWidth,
                      const int                                    thePxHeight)
-    : 
-      myXWindow(0),
+    : myXWindow(0),
       myFBConfig(nullptr),
       myXLeft(thePxLeft),
       myYTop(thePxTop),
@@ -101,7 +100,14 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
   aSizeHints.width  = thePxWidth;
   aSizeHints.height = thePxHeight;
   aSizeHints.flags |= PSize;
-  XSetStandardProperties(aDisp, (Window)myXWindow, theTitle, theTitle, None, nullptr, 0, &aSizeHints);
+  XSetStandardProperties(aDisp,
+                         (Window)myXWindow,
+                         theTitle,
+                         theTitle,
+                         None,
+                         nullptr,
+                         0,
+                         &aSizeHints);
 
   /*XTextProperty aTitleProperty;
   aTitleProperty.encoding = None;
@@ -126,8 +132,7 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
 Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
                      const Aspect_Drawable                        theXWin,
                      const Aspect_FBConfig                        theFBConfig)
-    : 
-      myXWindow(theXWin),
+    : myXWindow(theXWin),
       myFBConfig(theFBConfig),
       myXLeft(0),
       myYTop(0),

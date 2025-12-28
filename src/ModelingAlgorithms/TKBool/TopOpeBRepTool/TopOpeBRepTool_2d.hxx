@@ -80,10 +80,10 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_EditableCurveOnSurface(const Topo
                                                                       double&            l,
                                                                       double&            tol,
                                                                       const bool trim3d = false);
-Standard_EXPORT int                       FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
-                                                                    const TopoDS_Edge&        E,
-                                                                    const TopoDS_Face&        F,
-                                                                    const double&             f,
-                                                                    const double&             l,
-                                                                    const double&             tol);
+Standard_EXPORT int FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
+                                              const TopoDS_Edge&               E,
+                                              const TopoDS_Face&               F,
+                                              const double&                    f,
+                                              const double&                    l,
+                                              const double&                    tol);
 #endif

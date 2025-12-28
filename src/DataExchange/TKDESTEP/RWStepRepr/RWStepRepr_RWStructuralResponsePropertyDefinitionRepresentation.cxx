@@ -26,8 +26,7 @@
 //=================================================================================================
 
 RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation::
-  RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation()
-= default;
+  RWStepRepr_RWStructuralResponsePropertyDefinitionRepresentation() = default;
 
 //=================================================================================================
 

@@ -21,5 +21,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CharacterizedObjAndRepresentationAndDraugh
 //=================================================================================================
 
 StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel::
-  StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel()
-= default;
+  StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel() = default;

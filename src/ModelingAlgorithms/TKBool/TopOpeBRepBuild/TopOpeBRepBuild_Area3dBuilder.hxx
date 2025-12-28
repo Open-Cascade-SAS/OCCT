@@ -50,8 +50,8 @@ public:
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
-                                               TopOpeBRepBuild_LoopClassifier& LC,
-                                               const bool ForceClass = false) override;
+                                       TopOpeBRepBuild_LoopClassifier& LC,
+                                       const bool                      ForceClass = false) override;
 };
 
 #endif // _TopOpeBRepBuild_Area3dBuilder_HeaderFile

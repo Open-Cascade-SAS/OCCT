@@ -110,20 +110,19 @@ protected:
   //! presentation of this last object, with
   //! a transformation if there's one stored.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         theprs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         theprs,
+                               const int                                      theMode) override;
 
   //! Computes the presentation according to a point of view.
   Standard_EXPORT void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
-                                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
-                                          const occ::handle<Prs3d_Presentation>& thePrs) override;
+                                  const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                                  const occ::handle<Prs3d_Presentation>& thePrs) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference selection, creates and sets an entity
   //! owner for this entities and adds them to theSelection
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Generates sensitive entities by copying
   //! them from myReference sub shapes selection, creates and sets an entity

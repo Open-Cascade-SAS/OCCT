@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepShape_RWNonManifoldSurfaceShapeRepresentation::
-  RWStepShape_RWNonManifoldSurfaceShapeRepresentation()
-= default;
+  RWStepShape_RWNonManifoldSurfaceShapeRepresentation() = default;
 
 //=================================================================================================
 

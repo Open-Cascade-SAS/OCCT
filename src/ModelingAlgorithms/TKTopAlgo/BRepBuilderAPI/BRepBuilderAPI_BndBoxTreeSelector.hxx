@@ -34,8 +34,8 @@ class BRepBuilderAPI_BndBoxTreeSelector : public NCollection_UBTree<int, Bnd_Box
 public:
   //! Constructor; calls the base class constructor
   BRepBuilderAPI_BndBoxTreeSelector()
-       
-  = default;
+
+    = default;
 
   //! Implementation of rejection method
   //! @return

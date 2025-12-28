@@ -66,8 +66,8 @@ public:
 
   //! This method returns information about what node this element consist of.
   Standard_EXPORT bool GetNodesByElement(const int                theID,
-                                                 NCollection_Array1<int>& theNodeIDs,
-                                                 int& theNbNodes) const override;
+                                         NCollection_Array1<int>& theNodeIDs,
+                                         int&                     theNbNodes) const override;
 
   //! This method returns map of all nodes the object consist of.
   Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const override;
@@ -78,10 +78,10 @@ public:
   //! This method calculates normal of face, which is using for correct reflection presentation.
   //! There is default method, for advance reflection this method can be redefined.
   Standard_EXPORT bool GetNormal(const int theID,
-                                         const int theMax,
-                                         double&   theNx,
-                                         double&   theNy,
-                                         double&   theNz) const override;
+                                 const int theMax,
+                                 double&   theNx,
+                                 double&   theNy,
+                                 double&   theNz) const override;
 
   DEFINE_STANDARD_RTTIEXT(XSDRAWSTL_DataSource3D, MeshVS_DataSource)
 

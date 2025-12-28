@@ -64,7 +64,8 @@ void XmlObjMgt::SetStringValue(XmlObjMgt_Element&         theElement,
 XmlObjMgt_DOMString XmlObjMgt::GetStringValue(const XmlObjMgt_Element& theElement)
 {
   XmlObjMgt_DOMString aString;
-  for (LDOM_Node aNode = theElement.getFirstChild(); aNode != nullptr; aNode = aNode.getNextSibling())
+  for (LDOM_Node aNode = theElement.getFirstChild(); aNode != nullptr;
+       aNode           = aNode.getNextSibling())
   {
     if (aNode.getNodeType() == LDOM_Node::TEXT_NODE)
     {

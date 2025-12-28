@@ -25,8 +25,8 @@
 
 //=================================================================================================
 
-RWStepElement_RWAnalysisItemWithinRepresentation::RWStepElement_RWAnalysisItemWithinRepresentation()
-= default;
+RWStepElement_RWAnalysisItemWithinRepresentation::
+  RWStepElement_RWAnalysisItemWithinRepresentation() = default;
 
 //=================================================================================================
 

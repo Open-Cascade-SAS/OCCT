@@ -735,7 +735,8 @@ void AIS_InteractiveContext::HilightWithColor(const occ::handle<AIS_InteractiveO
 void AIS_InteractiveContext::Unhilight(const occ::handle<AIS_InteractiveObject>& theObj,
                                        const bool                                theToUpdateViewer)
 {
-  occ::handle<AIS_GlobalStatus>* aStatus = !theObj.IsNull() ? myObjects.ChangeSeek(theObj) : nullptr;
+  occ::handle<AIS_GlobalStatus>* aStatus =
+    !theObj.IsNull() ? myObjects.ChangeSeek(theObj) : nullptr;
   if (aStatus == nullptr)
   {
     return;
@@ -1850,7 +1851,8 @@ void AIS_InteractiveContext::ClearGlobalPrs(const occ::handle<AIS_InteractiveObj
                                             const int                                 theMode,
                                             const bool theToUpdateViewer)
 {
-  const occ::handle<AIS_GlobalStatus>* aStatus = !theIObj.IsNull() ? myObjects.Seek(theIObj) : nullptr;
+  const occ::handle<AIS_GlobalStatus>* aStatus =
+    !theIObj.IsNull() ? myObjects.Seek(theIObj) : nullptr;
   if (aStatus == nullptr)
   {
     return;
@@ -3960,7 +3962,8 @@ void AIS_InteractiveContext::SetPolygonOffsets(const occ::handle<AIS_Interactive
   setContextToObject(theObj);
   theObj->SetPolygonOffsets(theMode, theFactor, theUnits);
 
-  const occ::handle<AIS_GlobalStatus>* aStatus = theToUpdateViewer ? myObjects.Seek(theObj) : nullptr;
+  const occ::handle<AIS_GlobalStatus>* aStatus =
+    theToUpdateViewer ? myObjects.Seek(theObj) : nullptr;
   if (aStatus != nullptr && theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
   {
     myMainVwr->Update();

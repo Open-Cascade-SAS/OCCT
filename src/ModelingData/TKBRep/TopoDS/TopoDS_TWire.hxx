@@ -28,8 +28,8 @@ class TopoDS_TWire : public TopoDS_TShape
 public:
   //! Creates an empty TWire.
   TopoDS_TWire()
-       
-  = default;
+
+    = default;
 
   //! Returns WIRE.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;

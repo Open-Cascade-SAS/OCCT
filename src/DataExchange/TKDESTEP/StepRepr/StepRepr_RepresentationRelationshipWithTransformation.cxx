@@ -20,8 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationRelationshipWithTransformation
                            StepRepr_ShapeRepresentationRelationship)
 
 StepRepr_RepresentationRelationshipWithTransformation::
-  StepRepr_RepresentationRelationshipWithTransformation()
-= default;
+  StepRepr_RepresentationRelationshipWithTransformation() = default;
 
 void StepRepr_RepresentationRelationshipWithTransformation::Init(
   const occ::handle<TCollection_HAsciiString>& aName,

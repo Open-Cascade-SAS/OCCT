@@ -67,10 +67,7 @@ public: //! @name Definition of the rules for tree descend
   }
 
   //! Rejects the branch by the metric
-  bool RejectMetric(const NumType& theMetric) const override
-  {
-    return theMetric > myDistance;
-  }
+  bool RejectMetric(const NumType& theMetric) const override { return theMetric > myDistance; }
 
   //! Returns the flag controlling the tree descend
   bool Stop() const override { return myDistance == static_cast<NumType>(0); }

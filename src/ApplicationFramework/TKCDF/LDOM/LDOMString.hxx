@@ -40,9 +40,8 @@ public:
   //    Empty constructor
 
   LDOMString(const LDOMString& anOther)
-      
-        
-  = default;
+
+    = default;
 
   //    Copy constructor
 
@@ -72,8 +71,7 @@ public:
     return *this;
   }
 
-  LDOMString& operator=(const LDOMString& anOther)
-  = default;
+  LDOMString& operator=(const LDOMString& anOther) = default;
 
 private:
   friend class LDOM_Document;

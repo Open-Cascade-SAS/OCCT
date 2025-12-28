@@ -43,7 +43,7 @@ public:
   //! is opened correctly, or any other value of the
   //! Storage_Error enumeration which specifies the problem encountered.
   Standard_EXPORT Storage_Error Open(const TCollection_AsciiString& aName,
-                                             const Storage_OpenMode         aMode) override;
+                                     const Storage_OpenMode         aMode) override;
 
   Standard_EXPORT bool IsEnd() override;
 
@@ -69,19 +69,18 @@ public:
 
   Standard_EXPORT Storage_Error BeginReadInfoSection() override;
 
-  Standard_EXPORT void ReadInfo(
-    int&                                           nbObj,
-    TCollection_AsciiString&                       dbVersion,
-    TCollection_AsciiString&                       date,
-    TCollection_AsciiString&                       schemaName,
-    TCollection_AsciiString&                       schemaVersion,
-    TCollection_ExtendedString&                    appName,
-    TCollection_AsciiString&                       appVersion,
-    TCollection_ExtendedString&                    objectType,
-    NCollection_Sequence<TCollection_AsciiString>& userInfo) override;
+  Standard_EXPORT void ReadInfo(int&                                           nbObj,
+                                TCollection_AsciiString&                       dbVersion,
+                                TCollection_AsciiString&                       date,
+                                TCollection_AsciiString&                       schemaName,
+                                TCollection_AsciiString&                       schemaVersion,
+                                TCollection_ExtendedString&                    appName,
+                                TCollection_AsciiString&                       appVersion,
+                                TCollection_ExtendedString&                    objectType,
+                                NCollection_Sequence<TCollection_AsciiString>& userInfo) override;
 
   Standard_EXPORT void ReadCompleteInfo(Standard_IStream&          theIStream,
-                                                occ::handle<Storage_Data>& theData) override;
+                                        occ::handle<Storage_Data>& theData) override;
 
   Standard_EXPORT Storage_Error EndReadInfoSection() override;
 
@@ -103,9 +102,8 @@ public:
 
   Standard_EXPORT void SetTypeSectionSize(const int aSize) override;
 
-  Standard_EXPORT void WriteTypeInformations(
-    const int                      typeNum,
-    const TCollection_AsciiString& typeName) override;
+  Standard_EXPORT void WriteTypeInformations(const int                      typeNum,
+                                             const TCollection_AsciiString& typeName) override;
 
   Standard_EXPORT Storage_Error EndWriteTypeSection() override;
 
@@ -114,7 +112,7 @@ public:
   Standard_EXPORT int TypeSectionSize() override;
 
   Standard_EXPORT void ReadTypeInformations(int&                     typeNum,
-                                                    TCollection_AsciiString& typeName) override;
+                                            TCollection_AsciiString& typeName) override;
 
   Standard_EXPORT Storage_Error EndReadTypeSection() override;
 
@@ -123,8 +121,8 @@ public:
   Standard_EXPORT void SetRootSectionSize(const int aSize) override;
 
   Standard_EXPORT void WriteRoot(const TCollection_AsciiString& rootName,
-                                         const int                      aRef,
-                                         const TCollection_AsciiString& aType) override;
+                                 const int                      aRef,
+                                 const TCollection_AsciiString& aType) override;
 
   Standard_EXPORT Storage_Error EndWriteRootSection() override;
 
@@ -133,8 +131,8 @@ public:
   Standard_EXPORT int RootSectionSize() override;
 
   Standard_EXPORT void ReadRoot(TCollection_AsciiString& rootName,
-                                        int&                     aRef,
-                                        TCollection_AsciiString& aType) override;
+                                int&                     aRef,
+                                TCollection_AsciiString& aType) override;
 
   Standard_EXPORT Storage_Error EndReadRootSection() override;
 
@@ -156,8 +154,7 @@ public:
 
   Standard_EXPORT Storage_Error BeginWriteDataSection() override;
 
-  Standard_EXPORT void WritePersistentObjectHeader(const int aRef,
-                                                           const int aType) override;
+  Standard_EXPORT void WritePersistentObjectHeader(const int aRef, const int aType) override;
 
   Standard_EXPORT void BeginWritePersistentObjectData() override;
 

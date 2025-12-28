@@ -41,8 +41,7 @@ public:
   Standard_EXPORT void Initialize() override;
 
   //! Initializes me by surface
-  Standard_EXPORT void Initialize(
-    const occ::handle<Adaptor3d_Surface>& theSurface) override;
+  Standard_EXPORT void Initialize(const occ::handle<Adaptor3d_Surface>& theSurface) override;
 
   Standard_EXPORT void ComputeSamplePoints() override;
 
@@ -68,8 +67,8 @@ public:
   //! theDefl is a required deflection
   //! theNUmin, theNVmin are minimal nb points for U and V.
   Standard_EXPORT void SamplePnts(const double theDefl,
-                                          const int    theNUmin,
-                                          const int    theNVmin) override;
+                                  const int    theNUmin,
+                                  const int    theNVmin) override;
 
   DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 

@@ -47,9 +47,9 @@ public:
 
   //! Passes viewport parameters to builder
   Standard_EXPORT void SetViewport(const double theX,
-                                           const double theY,
-                                           const double theWidth,
-                                           const double theHeight) override;
+                                   const double theY,
+                                   const double theWidth,
+                                   const double theHeight) override;
 
   //! Checks whether the boundary of the current volume selection intersects with a sphere or are
   //! there it's boundaries lying inside the sphere
@@ -60,8 +60,7 @@ public:
                                                  bool& theBoundaryInside) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 

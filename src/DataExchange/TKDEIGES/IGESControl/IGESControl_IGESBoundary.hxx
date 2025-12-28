@@ -50,9 +50,9 @@ public:
   //! checks 2D and 3D representation and updates the resulting
   //! wire to contain only closed representation.
   Standard_EXPORT void Check(const bool result,
-                                     const bool checkclosure,
-                                     const bool okCurve3d,
-                                     const bool okCurve2d) override;
+                             const bool checkclosure,
+                             const bool okCurve3d,
+                             const bool okCurve2d) override;
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_IGESBoundary, IGESToBRep_IGESBoundary)
 

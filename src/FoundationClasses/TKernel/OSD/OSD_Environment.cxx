@@ -119,7 +119,7 @@ void OSD_Environment::Build()
   // Note that they need to be static since putenv does not make a copy
   // of the string, but just adds its pointer to the environment.
   static char** buffer  = nullptr; // JPT:
-  static int    Ibuffer = 0; // Tout ca pour putenv,getenv
+  static int    Ibuffer = 0;       // Tout ca pour putenv,getenv
 
   // Use mutex to avoid concurrent access to the buffer
   static std::mutex           aMutex;

@@ -392,7 +392,8 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
 
   if (theUChar == 0
       || FT_Load_Char(myActiveFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
-      || myActiveFTFace->glyph == nullptr || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
+      || myActiveFTFace->glyph == nullptr
+      || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
     return false;
   }

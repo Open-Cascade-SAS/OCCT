@@ -247,7 +247,7 @@ void TDF_Attribute::RemoveBackup()
 #endif
   myBackup->BeforeRemoval();
   myBackup->myLabelNode = nullptr; // Absolutely necessary!
-  myBackup->myNext.Nullify();   // Absolutely necessary!
+  myBackup->myNext.Nullify();      // Absolutely necessary!
   myBackup = myBackup->myBackup;
   if (!myBackup.IsNull())
     myBackup->myNext = this; // New back reference.

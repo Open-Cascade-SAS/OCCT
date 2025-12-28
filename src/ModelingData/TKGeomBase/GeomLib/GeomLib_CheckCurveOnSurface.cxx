@@ -165,9 +165,9 @@ public:
 
   // returns value, gradient and hessian
   bool Values(const math_Vector& theX,
-                      double&            theVal,
-                      math_Vector&       theGrad,
-                      math_Matrix&       theHessian) override
+              double&            theVal,
+              math_Vector&       theGrad,
+              math_Matrix&       theHessian) override
   {
     if (!Value(theX, theVal))
     {

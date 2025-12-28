@@ -20,7 +20,7 @@
 //=================================================================================================
 
 ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea()
-     
+
 {
   myMaxArea  = Precision::Infinite();
   myNbParts  = 0;

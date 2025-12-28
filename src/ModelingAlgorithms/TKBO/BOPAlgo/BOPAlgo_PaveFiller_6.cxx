@@ -141,8 +141,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceFace()
-      : 
-        BOPAlgo_ParallelAlgo(),
+      : BOPAlgo_ParallelAlgo(),
         myIF1(-1),
         myIF2(-1),
         myTolFF(1.e-7)

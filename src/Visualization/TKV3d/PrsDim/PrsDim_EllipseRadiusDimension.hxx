@@ -33,10 +33,7 @@ class PrsDim_EllipseRadiusDimension : public PrsDim_Relation
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_EllipseRadiusDimension, PrsDim_Relation)
 public:
-  PrsDim_KindOfDimension KindOfDimension() const override
-  {
-    return PrsDim_KOD_ELLIPSERADIUS;
-  }
+  PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_ELLIPSERADIUS; }
 
   bool IsMovable() const override { return true; }
 

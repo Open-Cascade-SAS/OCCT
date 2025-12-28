@@ -1766,7 +1766,10 @@ occ::handle<Transfer_Binder> STEPControl_ActorWrite::TransferSubShape(
     SDRTool.ReadSDR(sdr);
   else
   {
-    SDRTool.MakeSDR(nullptr, myContext.GetProductName(), myContext.GetAPD()->Application(), aStepModel);
+    SDRTool.MakeSDR(nullptr,
+                    myContext.GetProductName(),
+                    myContext.GetAPD()->Application(),
+                    aStepModel);
     sdr = SDRTool.SDRValue();
   }
   //  resultat = GetCasted(StepShape_ShapeRepresentation,sdr->UsedRepresentation());

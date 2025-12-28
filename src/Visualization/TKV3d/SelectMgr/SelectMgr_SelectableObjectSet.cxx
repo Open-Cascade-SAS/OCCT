@@ -185,10 +185,7 @@ public:
   }
 
   //! Returns bounding box of object with index theIndex
-  Select3D_BndBox3d Box(const int theIndex) const override
-  {
-    return *myBoundings(theIndex + 1);
-  }
+  Select3D_BndBox3d Box(const int theIndex) const override { return *myBoundings(theIndex + 1); }
 
   //! Returns bounding box of the whole subset.
   Select3D_BndBox3d Box() const override

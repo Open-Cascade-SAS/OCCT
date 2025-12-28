@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_TFace, TopoDS_TFace)
 //=================================================================================================
 
 BRep_TFace::BRep_TFace()
-    : 
-      myTolerance(RealEpsilon()),
+    : myTolerance(RealEpsilon()),
       myNaturalRestriction(false)
 {
 }

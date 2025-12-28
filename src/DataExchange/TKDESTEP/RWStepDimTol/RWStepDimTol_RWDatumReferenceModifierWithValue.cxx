@@ -22,7 +22,8 @@
 
 //=================================================================================================
 
-RWStepDimTol_RWDatumReferenceModifierWithValue::RWStepDimTol_RWDatumReferenceModifierWithValue() = default;
+RWStepDimTol_RWDatumReferenceModifierWithValue::RWStepDimTol_RWDatumReferenceModifierWithValue() =
+  default;
 
 //=================================================================================================
 

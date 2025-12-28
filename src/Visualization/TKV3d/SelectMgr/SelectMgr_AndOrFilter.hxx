@@ -34,8 +34,7 @@ public:
   Standard_EXPORT SelectMgr_AndOrFilter(const SelectMgr_FilterType theFilterType);
 
   //! Indicates that the selected Interactive Object passes the filter.
-  Standard_EXPORT bool IsOk(
-    const occ::handle<SelectMgr_EntityOwner>& theObj) const override;
+  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& theObj) const override;
 
   //! Disable selection of specified objects.
   Standard_EXPORT void SetDisabledObjects(

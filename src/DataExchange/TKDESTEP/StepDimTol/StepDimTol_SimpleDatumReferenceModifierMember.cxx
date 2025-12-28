@@ -44,7 +44,8 @@ static StepData_EnumTool tool(".ANY_CROSS_SECTION.",
 
 //=================================================================================================
 
-StepDimTol_SimpleDatumReferenceModifierMember::StepDimTol_SimpleDatumReferenceModifierMember() = default;
+StepDimTol_SimpleDatumReferenceModifierMember::StepDimTol_SimpleDatumReferenceModifierMember() =
+  default;
 
 //=================================================================================================
 

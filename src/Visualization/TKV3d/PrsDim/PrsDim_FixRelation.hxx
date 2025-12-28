@@ -77,11 +77,11 @@ public:
 
 private:
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+                                        const int                               theMode) override;
 
   //! computes the presentation for <myFixShape> if it's a vertex.
   Standard_EXPORT void ComputeVertex(const TopoDS_Vertex& FixVertex, gp_Pnt& curpos);

@@ -56,25 +56,25 @@ public:
 
   Standard_EXPORT void DumpSS() override;
 
-  Standard_EXPORT TCollection_AsciiString SName(
-    const TopoDS_Shape&            S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+  Standard_EXPORT TCollection_AsciiString
+    SName(const TopoDS_Shape&            S,
+          const TCollection_AsciiString& sb = "",
+          const TCollection_AsciiString& sa = "") const override;
 
-  Standard_EXPORT TCollection_AsciiString SName(
-    const NCollection_List<TopoDS_Shape>& S,
-    const TCollection_AsciiString&        sb = "",
-    const TCollection_AsciiString&        sa = "") const override;
+  Standard_EXPORT TCollection_AsciiString
+    SName(const NCollection_List<TopoDS_Shape>& S,
+          const TCollection_AsciiString&        sb = "",
+          const TCollection_AsciiString&        sa = "") const override;
 
-  Standard_EXPORT TCollection_AsciiString SNameori(
-    const TopoDS_Shape&            S,
-    const TCollection_AsciiString& sb = "",
-    const TCollection_AsciiString& sa = "") const override;
+  Standard_EXPORT TCollection_AsciiString
+    SNameori(const TopoDS_Shape&            S,
+             const TCollection_AsciiString& sb = "",
+             const TCollection_AsciiString& sa = "") const override;
 
-  Standard_EXPORT TCollection_AsciiString SNameori(
-    const NCollection_List<TopoDS_Shape>& S,
-    const TCollection_AsciiString&        sb = "",
-    const TCollection_AsciiString&        sa = "") const override;
+  Standard_EXPORT TCollection_AsciiString
+    SNameori(const NCollection_List<TopoDS_Shape>& S,
+             const TCollection_AsciiString&        sb = "",
+             const TCollection_AsciiString&        sa = "") const override;
 
 private:
   TopoDS_Solid mySolid;

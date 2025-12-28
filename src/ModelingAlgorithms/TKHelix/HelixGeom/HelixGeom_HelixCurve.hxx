@@ -66,7 +66,7 @@ public:
 
   //! Gets parametric intervals
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Gets parametric resolution
   Standard_EXPORT double Resolution(const double R3d) const override;

@@ -52,8 +52,7 @@ public:
 
   //! returns identity transformation.
   constexpr gp_GTrsf2d() noexcept
-      : 
-        loc(0.0, 0.0),
+      : loc(0.0, 0.0),
         shape(gp_Identity),
         scale(1.0)
   {

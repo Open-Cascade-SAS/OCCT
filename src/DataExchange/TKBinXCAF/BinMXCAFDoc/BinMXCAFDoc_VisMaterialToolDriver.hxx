@@ -30,8 +30,8 @@ public:
 
   //! Paste attribute from persistence into document.
   Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     BinObjMgt_RRelocationTable& theRelocTable) const override;
+                             const occ::handle<TDF_Attribute>& theTarget,
+                             BinObjMgt_RRelocationTable&       theRelocTable) const override;
 
   //! Paste attribute from document into persistence.
   Standard_EXPORT void Paste(

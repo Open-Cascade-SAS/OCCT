@@ -112,11 +112,11 @@ public:
 private:
   // Virtual methods implementation
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
   void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int                               theMode) override;
+                        const int                               theMode) override;
 
   // Called by VUserDrawElement
   void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const;

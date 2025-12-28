@@ -639,10 +639,11 @@ void Graphic3d_Layer::UpdateCulling(
             aLeft.IsFullInside = false;
           }
 
-          isRightChildIn = !theSelector.IsCulled(aCullCtx,
-                                                 aBVHTree->MinPoint(aRight.Id),
-                                                 aBVHTree->MaxPoint(aRight.Id),
-                                                 toCheckFullInside ? &aRight.IsFullInside : nullptr);
+          isRightChildIn =
+            !theSelector.IsCulled(aCullCtx,
+                                  aBVHTree->MinPoint(aRight.Id),
+                                  aBVHTree->MaxPoint(aRight.Id),
+                                  toCheckFullInside ? &aRight.IsFullInside : nullptr);
           if (!isRightChildIn)
           {
             aRight.IsFullInside = false;

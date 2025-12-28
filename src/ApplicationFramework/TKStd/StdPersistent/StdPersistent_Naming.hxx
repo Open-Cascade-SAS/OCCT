@@ -117,7 +117,7 @@ public:
 
     //! Import transient object from the persistent data.
     Standard_EXPORT void Import(TNaming_Name&                theName,
-                                        const occ::handle<TDF_Data>& theDF) const override;
+                                const occ::handle<TDF_Data>& theDF) const override;
 
   private:
     Handle(StdLPersistent_HString::Ascii) myContextLabel;
@@ -142,7 +142,7 @@ public:
 
     //! Import transient object from the persistent data.
     Standard_EXPORT void Import(TNaming_Name&                theName,
-                                        const occ::handle<TDF_Data>& theDF) const override;
+                                const occ::handle<TDF_Data>& theDF) const override;
 
   private:
     int myOrientation;

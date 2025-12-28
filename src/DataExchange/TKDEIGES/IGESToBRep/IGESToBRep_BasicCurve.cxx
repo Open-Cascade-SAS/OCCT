@@ -127,7 +127,7 @@ static bool checkBSplineCurve(IGESToBRep_BasicCurve*                    theCurve
 //=================================================================================================
 
 IGESToBRep_BasicCurve::IGESToBRep_BasicCurve()
-     
+
 {
   SetModeTransfer(false);
 }

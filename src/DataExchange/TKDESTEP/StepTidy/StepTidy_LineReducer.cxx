@@ -35,9 +35,9 @@ StepTidy_LineReducer::StepTidy_LineReducer(const occ::handle<XSControl_WorkSessi
 
 //==================================================================================================
 
-bool StepTidy_LineReducer::replaceEdgeCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                            const occ::handle<StepGeom_Line>& theNewEntity,
-                                            const occ::handle<Standard_Transient>&   theSharing)
+bool StepTidy_LineReducer::replaceEdgeCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                            const occ::handle<StepGeom_Line>&      theNewEntity,
+                                            const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepShape_EdgeCurve> aSharing = occ::down_cast<StepShape_EdgeCurve>(theSharing);
   if (aSharing->EdgeGeometry() == theOldEntity)
@@ -50,9 +50,9 @@ bool StepTidy_LineReducer::replaceEdgeCurve(const occ::handle<StepGeom_Line>& th
 
 //==================================================================================================
 
-bool StepTidy_LineReducer::replaceTrimmedCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                               const occ::handle<StepGeom_Line>& theNewEntity,
-                                               const occ::handle<Standard_Transient>&   theSharing)
+bool StepTidy_LineReducer::replaceTrimmedCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                               const occ::handle<StepGeom_Line>&      theNewEntity,
+                                               const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_TrimmedCurve> aSharing = occ::down_cast<StepGeom_TrimmedCurve>(theSharing);
   if (aSharing->BasisCurve() == theOldEntity)
@@ -65,9 +65,9 @@ bool StepTidy_LineReducer::replaceTrimmedCurve(const occ::handle<StepGeom_Line>&
 
 //==================================================================================================
 
-bool StepTidy_LineReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                               const occ::handle<StepGeom_Line>& theNewEntity,
-                                               const occ::handle<Standard_Transient>&   theSharing)
+bool StepTidy_LineReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                               const occ::handle<StepGeom_Line>&      theNewEntity,
+                                               const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_SurfaceCurve> aSharing = occ::down_cast<StepGeom_SurfaceCurve>(theSharing);
   if (aSharing->Curve3d() == theOldEntity)
@@ -81,9 +81,9 @@ bool StepTidy_LineReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Line>&
 //==================================================================================================
 
 bool StepTidy_LineReducer::replaceDefinitionalRepresentation(
-  const occ::handle<StepGeom_Line>& theOldEntity,
-  const occ::handle<StepGeom_Line>& theNewEntity,
-  const occ::handle<Standard_Transient>&   theSharing)
+  const occ::handle<StepGeom_Line>&      theOldEntity,
+  const occ::handle<StepGeom_Line>&      theNewEntity,
+  const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepRepr_DefinitionalRepresentation> aSharing =
     occ::down_cast<StepRepr_DefinitionalRepresentation>(theSharing);
@@ -104,9 +104,9 @@ bool StepTidy_LineReducer::replaceDefinitionalRepresentation(
 
 //==================================================================================================
 
-bool StepTidy_LineReducer::replaceSeamCurve(const occ::handle<StepGeom_Line>& theOldEntity,
-                                            const occ::handle<StepGeom_Line>& theNewEntity,
-                                            const occ::handle<Standard_Transient>&   theSharing)
+bool StepTidy_LineReducer::replaceSeamCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
+                                            const occ::handle<StepGeom_Line>&      theNewEntity,
+                                            const occ::handle<Standard_Transient>& theSharing)
 {
   occ::handle<StepGeom_SeamCurve> aSharing = occ::down_cast<StepGeom_SeamCurve>(theSharing);
   if (aSharing->Curve3d() == theOldEntity)

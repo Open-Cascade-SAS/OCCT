@@ -21,8 +21,7 @@
 //=================================================================================================
 
 BRepAlgoAPI_Check::BRepAlgoAPI_Check()
-    : 
-      myTestSE(true),
+    : myTestSE(true),
       myTestSI(true),
       myOperation(BOPAlgo_UNKNOWN)
 {
@@ -34,8 +33,7 @@ BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape&          theS,
                                      const bool                   bTestSE,
                                      const bool                   bTestSI,
                                      const Message_ProgressRange& theRange)
-    : 
-      myS1(theS),
+    : myS1(theS),
       myTestSE(bTestSE),
       myTestSI(bTestSI),
       myOperation(BOPAlgo_UNKNOWN)
@@ -51,8 +49,7 @@ BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape&          theS1,
                                      const bool                   bTestSE,
                                      const bool                   bTestSI,
                                      const Message_ProgressRange& theRange)
-    : 
-      myS1(theS1),
+    : myS1(theS1),
       myS2(theS2),
       myTestSE(bTestSE),
       myTestSI(bTestSI),

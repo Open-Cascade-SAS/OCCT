@@ -92,9 +92,9 @@ public:
 protected:
   //! Read the mesh from specified file.
   Standard_EXPORT bool performMesh(std::istream&                  theStream,
-                                           const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe) override;
+                                   const TCollection_AsciiString& theFile,
+                                   const Message_ProgressRange&   theProgress,
+                                   const bool                     theToProbe) override;
 
   //! Fill document with new root shapes.
   Standard_EXPORT void fillDocument() override;

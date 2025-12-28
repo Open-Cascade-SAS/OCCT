@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ToolContainer, IGESToBRep_ToolContainer)
 //=================================================================================================
 
 IGESControl_ToolContainer::IGESControl_ToolContainer()
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 

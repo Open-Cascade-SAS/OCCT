@@ -24,8 +24,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWMechanismStateRepresentation::RWStepKinematics_RWMechanismStateRepresentation()
-= default;
+RWStepKinematics_RWMechanismStateRepresentation::RWStepKinematics_RWMechanismStateRepresentation() =
+  default;
 
 //=================================================================================================
 

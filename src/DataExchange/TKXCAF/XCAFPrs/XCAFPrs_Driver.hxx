@@ -31,8 +31,7 @@ class XCAFPrs_Driver : public TPrsStd_Driver
 {
 
 public:
-  Standard_EXPORT bool Update(const TDF_Label&                    L,
-                                      occ::handle<AIS_InteractiveObject>& ais) override;
+  Standard_EXPORT bool Update(const TDF_Label& L, occ::handle<AIS_InteractiveObject>& ais) override;
 
   //! returns GUID of the driver
   Standard_EXPORT static const Standard_GUID& GetID();

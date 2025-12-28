@@ -52,8 +52,7 @@ public:
   Standard_EXPORT void SetGraphicValues(const double Radius, const double OffSet);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   Standard_EXPORT void UpdateDisplay() override;

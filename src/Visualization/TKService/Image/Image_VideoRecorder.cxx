@@ -168,7 +168,8 @@ bool Image_VideoRecorder::Open(const char* theFileName, const Image_VideoParams&
   // allocate the output media context
   avformat_alloc_output_context2(&myAVContext,
                                  nullptr,
-                                 theParams.Format.IsEmpty() ? nullptr : theParams.Format.ToCString(),
+                                 theParams.Format.IsEmpty() ? nullptr
+                                                            : theParams.Format.ToCString(),
                                  theFileName);
   if (myAVContext == nullptr)
   {

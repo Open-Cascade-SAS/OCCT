@@ -50,8 +50,7 @@ PrsDim_MidPointRelation::PrsDim_MidPointRelation(const TopoDS_Shape&            
                                                  const TopoDS_Shape&            FirstShape,
                                                  const TopoDS_Shape&            SecondShape,
                                                  const occ::handle<Geom_Plane>& aPlane)
-    : 
-      myTool(aMidPointTool)
+    : myTool(aMidPointTool)
 {
   SetFirstShape(FirstShape);
   SetSecondShape(SecondShape);

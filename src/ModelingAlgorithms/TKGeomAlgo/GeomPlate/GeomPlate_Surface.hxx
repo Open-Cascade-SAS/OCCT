@@ -95,9 +95,7 @@ public:
   //!
   //! It can be redefined. For example on the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.
-  Standard_EXPORT void TransformParameters(double&        U,
-                                                   double&        V,
-                                                   const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.

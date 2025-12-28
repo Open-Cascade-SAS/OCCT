@@ -29,8 +29,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair::
-  RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair()
-= default;
+  RWStepKinematics_RWLinearFlexibleAndPlanarCurvePair() = default;
 
 //=================================================================================================
 

@@ -203,8 +203,7 @@ class BOPAlgo_SolidSolid : public BOPAlgo_ShapeSolid
 public:
   DEFINE_STANDARD_ALLOC
 
-  BOPAlgo_SolidSolid()
-       = default;
+  BOPAlgo_SolidSolid() = default;
   //
   ~BOPAlgo_SolidSolid() override = default;
 

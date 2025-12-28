@@ -183,13 +183,11 @@ public: //! @name interface implementation
   //! Paste this attribute into another one.
   //! @param theInto [in/out] target attribute to copy this into
   //! @param[in] theRelTable  relocation table
-  Standard_EXPORT void Paste(
-    const occ::handle<TDF_Attribute>&       theInto,
-    const occ::handle<TDF_RelocationTable>& theRelTable) const override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theInto,
+                             const occ::handle<TDF_RelocationTable>& theRelTable) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   occ::handle<TCollection_HAsciiString> myRawName;   //!< material name / tag (transient data)

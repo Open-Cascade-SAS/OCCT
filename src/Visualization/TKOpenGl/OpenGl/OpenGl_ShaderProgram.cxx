@@ -163,7 +163,8 @@ void OpenGl_VariableSetterSelector::Set(const occ::handle<OpenGl_Context>&      
                                         OpenGl_ShaderProgram* theProgram) const
 {
   Standard_ASSERT_RETURN(mySetterList.IsBound(theVariable->Value()->TypeID()),
-                         "The type of user-defined uniform variable is not supported...", Standard_VOID_RETURN);
+                         "The type of user-defined uniform variable is not supported...",
+                         Standard_VOID_RETURN);
 
   mySetterList.Find(theVariable->Value()->TypeID())->Set(theCtx, theVariable, theProgram);
 }
@@ -1492,7 +1493,8 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
 
   Standard_ASSERT_RETURN(
     theCtx != nullptr,
-    "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+    "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...",
+    Standard_VOID_RETURN);
 
   for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
        anIter.More();

@@ -24,8 +24,7 @@
 //=================================================================================================
 
 HatchGen_PointOnElement::HatchGen_PointOnElement()
-    : 
-      myType(HatchGen_UNDETERMINED)
+    : myType(HatchGen_UNDETERMINED)
 {
 }
 

@@ -324,8 +324,7 @@ public:
 
 protected:
   //! Read image.
-  occ::handle<Image_PixMap> ReadImage(
-    const occ::handle<Image_SupportedFormats>&) const override
+  occ::handle<Image_PixMap> ReadImage(const occ::handle<Image_SupportedFormats>&) const override
   {
     occ::handle<VRImagePixmap> aPixmap = new VRImagePixmap();
     if (!aPixmap->Load(myVrTextureId, myVrModelName))

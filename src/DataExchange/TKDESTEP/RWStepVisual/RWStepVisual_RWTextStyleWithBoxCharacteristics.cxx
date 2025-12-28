@@ -20,7 +20,8 @@
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
 
-RWStepVisual_RWTextStyleWithBoxCharacteristics::RWStepVisual_RWTextStyleWithBoxCharacteristics() = default;
+RWStepVisual_RWTextStyleWithBoxCharacteristics::RWStepVisual_RWTextStyleWithBoxCharacteristics() =
+  default;
 
 void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,

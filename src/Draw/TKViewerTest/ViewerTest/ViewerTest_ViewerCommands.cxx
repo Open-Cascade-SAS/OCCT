@@ -4864,8 +4864,8 @@ public:
 
 private:
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
   void ComputeSelection(const occ::handle<SelectMgr_Selection>&, const int) override {}
 
@@ -5812,15 +5812,12 @@ public:
   }
 
   //! Returns TRUE for accepted display modes.
-  bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode == 0 || theMode == 1;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode == 0 || theMode == 1; }
 
   //! Compute presentation.
   void Compute(const occ::handle<PrsMgr_PresentationManager>&,
-                       const occ::handle<Prs3d_Presentation>& thePrs,
-                       const int                              theMode) override
+               const occ::handle<Prs3d_Presentation>& thePrs,
+               const int                              theMode) override
   {
     switch (theMode)
     {
@@ -5846,8 +5843,7 @@ public:
   }
 
   //! Compute selection.
-  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override
   {
     if (theMode == 0)
     {
@@ -6630,9 +6626,9 @@ public:
 
   //! Start playback.
   void StartTimer(const double theStartPts,
-                          const double thePlaySpeed,
-                          const bool   theToUpdate,
-                          const bool   theToStopTimer) override
+                  const double thePlaySpeed,
+                  const bool   theToUpdate,
+                  const bool   theToStopTimer) override
   {
     base_type::StartTimer(theStartPts, thePlaySpeed, theToUpdate, theToStopTimer);
     if (theToStopTimer)

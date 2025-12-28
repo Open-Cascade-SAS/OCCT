@@ -29,13 +29,12 @@ public:
   Standard_EXPORT ~RWObj_ObjMaterialMap() override;
 
   //! Add material
-  Standard_EXPORT TCollection_AsciiString AddMaterial(
-    const XCAFPrs_Style& theStyle) override;
+  Standard_EXPORT TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle) override;
 
   //! Virtual method actually defining the material (e.g. export to the file).
   Standard_EXPORT void DefineMaterial(const XCAFPrs_Style&           theStyle,
-                                              const TCollection_AsciiString& theKey,
-                                              const TCollection_AsciiString& theName) override;
+                                      const TCollection_AsciiString& theKey,
+                                      const TCollection_AsciiString& theName) override;
 
 private:
   FILE*                                                                    myFile;

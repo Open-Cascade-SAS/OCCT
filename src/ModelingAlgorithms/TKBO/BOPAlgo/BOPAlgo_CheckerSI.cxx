@@ -46,8 +46,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceSelfIntersect()
-      : 
-        BOPAlgo_ParallelAlgo(),
+      : BOPAlgo_ParallelAlgo(),
         myIF(-1),
         myTolF(1.e-7)
   {
@@ -101,7 +100,7 @@ typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIn
 //=================================================================================================
 
 BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
-     
+
 {
   myLevelOfCheck   = BOPDS_DS::NbInterfTypes() - 1;
   myNonDestructive = true;

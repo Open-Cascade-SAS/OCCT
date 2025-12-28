@@ -24,8 +24,8 @@
 // Geom2dToIGES_Geom2dPoint
 //=============================================================================
 Geom2dToIGES_Geom2dPoint::Geom2dToIGES_Geom2dPoint()
-     
-= default;
+
+  = default;
 
 //=============================================================================
 // Geom2dToIGES_Geom2dPoint

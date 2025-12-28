@@ -105,7 +105,7 @@ protected:
 private:
   // copying is prohibited
   IVtkDraw_Interactor(const IVtkDraw_Interactor&) = delete;
-  void operator=(const IVtkDraw_Interactor&) = delete;
+  void operator=(const IVtkDraw_Interactor&)      = delete;
 
 private:
 #ifdef _WIN32

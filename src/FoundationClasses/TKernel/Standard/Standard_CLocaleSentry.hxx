@@ -84,7 +84,7 @@ private:
 
 private:
   //! Copying disallowed
-  Standard_CLocaleSentry(const Standard_CLocaleSentry&) = delete;
+  Standard_CLocaleSentry(const Standard_CLocaleSentry&)            = delete;
   Standard_CLocaleSentry& operator=(const Standard_CLocaleSentry&) = delete;
 };
 

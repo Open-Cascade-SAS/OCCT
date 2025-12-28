@@ -90,8 +90,7 @@ typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
 //=================================================================================================
 
 BOPAlgo_ShellSplitter::BOPAlgo_ShellSplitter()
-    : 
-      myStartShapes(myAllocator),
+    : myStartShapes(myAllocator),
       myShells(myAllocator),
       myLCB(myAllocator)
 {

@@ -129,11 +129,7 @@ public:
 
 public: //! @name Constructor
   //! Empty constructor
-  BOPAlgo_MakePeriodic()
-       
-  {
-    myRepeatPeriod[0] = myRepeatPeriod[1] = myRepeatPeriod[2] = 0.0;
-  }
+  BOPAlgo_MakePeriodic() { myRepeatPeriod[0] = myRepeatPeriod[1] = myRepeatPeriod[2] = 0.0; }
 
 public: //! @name Setting the shape to make it periodic
   //! Sets the shape to make it periodic.
@@ -486,9 +482,10 @@ protected: //! @name Protected methods performing the operation
   //!                      for coinciding parts.
   //! @param[out] theSplitShapeHistory  The history of shape split
   //! @param[out] theSplitToolsHistory  The history of tools modifications during the split
-  Standard_EXPORT void SplitShape(const NCollection_List<TopoDS_Shape>& theTools,
-                                  const occ::handle<BRepTools_History>&        theSplitShapeHistory = nullptr,
-                                  const occ::handle<BRepTools_History>& theSplitToolsHistory = nullptr);
+  Standard_EXPORT void SplitShape(
+    const NCollection_List<TopoDS_Shape>& theTools,
+    const occ::handle<BRepTools_History>& theSplitShapeHistory = nullptr,
+    const occ::handle<BRepTools_History>& theSplitToolsHistory = nullptr);
 
   //! Updates the map of twins after periodic shape repetition.
   //! @param[in] theTranslationHistory  The history of translation of the periodic shape.

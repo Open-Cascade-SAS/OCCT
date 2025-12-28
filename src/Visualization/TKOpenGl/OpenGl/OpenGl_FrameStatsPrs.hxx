@@ -34,8 +34,7 @@ public:
   Standard_EXPORT ~OpenGl_FrameStatsPrs() override;
 
   //! Render element.
-  Standard_EXPORT void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
   //! Release OpenGL resources.
   Standard_EXPORT void Release(OpenGl_Context* theCtx) override;
@@ -50,8 +49,7 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! Update chart presentation.

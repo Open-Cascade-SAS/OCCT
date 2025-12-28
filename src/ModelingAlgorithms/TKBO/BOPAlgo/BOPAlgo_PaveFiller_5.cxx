@@ -59,8 +59,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_EdgeFace()
-      : 
-        BOPAlgo_ParallelAlgo(),
+      : BOPAlgo_ParallelAlgo(),
         myIE(-1),
         myIF(-1) {};
   //

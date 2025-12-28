@@ -110,47 +110,42 @@ public:
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT void Value(const int    CuIndex,
-                                     const double U,
-                                     gp_Pnt2d&    Pt) const override;
+  Standard_EXPORT void Value(const int CuIndex, const double U, gp_Pnt2d& Pt) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
-  Standard_EXPORT void D1(const int    CuIndex,
-                                  const double U,
-                                  gp_Pnt&      Pt,
-                                  gp_Vec&      V1) const override;
+  Standard_EXPORT void D1(const int CuIndex, const double U, gp_Pnt& Pt, gp_Vec& V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
   Standard_EXPORT void D1(const int    CuIndex,
-                                  const double U,
-                                  gp_Pnt2d&    Pt,
-                                  gp_Vec2d&    V1) const override;
+                          const double U,
+                          gp_Pnt2d&    Pt,
+                          gp_Vec2d&    V1) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 3d.
   Standard_EXPORT void D2(const int    CuIndex,
-                                  const double U,
-                                  gp_Pnt&      Pt,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2) const override;
+                          const double U,
+                          gp_Pnt&      Pt,
+                          gp_Vec&      V1,
+                          gp_Vec&      V2) const override;
 
   //! returns the value of the point with a parameter U
   //! on the BSpline curve number CuIndex.
   //! An exception is raised if CuIndex <0 or > NbCurves.
   //! An exception is raised if the curve dimension is 2d.
   Standard_EXPORT void D2(const int    CuIndex,
-                                  const double U,
-                                  gp_Pnt2d&    Pt,
-                                  gp_Vec2d&    V1,
-                                  gp_Vec2d&    V2) const override;
+                          const double U,
+                          gp_Pnt2d&    Pt,
+                          gp_Vec2d&    V1,
+                          gp_Vec2d&    V2) const override;
 
   //! Prints on the stream o information on the current
   //! state of the object.

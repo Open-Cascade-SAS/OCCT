@@ -113,15 +113,9 @@ public:
 
   GeomAbs_Shape VContinuity() const override { return mySurf.VContinuity(); }
 
-  int NbUIntervals(const GeomAbs_Shape theS) const override
-  {
-    return mySurf.NbUIntervals(theS);
-  }
+  int NbUIntervals(const GeomAbs_Shape theS) const override { return mySurf.NbUIntervals(theS); }
 
-  int NbVIntervals(const GeomAbs_Shape theS) const override
-  {
-    return mySurf.NbVIntervals(theS);
-  }
+  int NbVIntervals(const GeomAbs_Shape theS) const override { return mySurf.NbVIntervals(theS); }
 
   Standard_EXPORT void UIntervals(NCollection_Array1<double>& theT,
                                   const GeomAbs_Shape         theS) const override;
@@ -198,15 +192,9 @@ public:
                             const int    theNu,
                             const int    theNv) const final;
 
-  double UResolution(const double theR3d) const override
-  {
-    return mySurf.UResolution(theR3d);
-  }
+  double UResolution(const double theR3d) const override { return mySurf.UResolution(theR3d); }
 
-  double VResolution(const double theR3d) const override
-  {
-    return mySurf.VResolution(theR3d);
-  }
+  double VResolution(const double theR3d) const override { return mySurf.VResolution(theR3d); }
 
   GeomAbs_SurfaceType GetType() const override { return mySurf.GetType(); }
 

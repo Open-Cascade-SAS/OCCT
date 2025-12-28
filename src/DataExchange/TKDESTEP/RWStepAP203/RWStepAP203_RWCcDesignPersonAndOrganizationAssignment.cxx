@@ -31,8 +31,7 @@
 //=================================================================================================
 
 RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::
-  RWStepAP203_RWCcDesignPersonAndOrganizationAssignment()
-= default;
+  RWStepAP203_RWCcDesignPersonAndOrganizationAssignment() = default;
 
 //=================================================================================================
 

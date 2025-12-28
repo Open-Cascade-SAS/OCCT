@@ -106,8 +106,7 @@ public:
   void SetAspect(const occ::handle<Graphic3d_AspectText3d>& theAspect) { myTextAspect = theAspect; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   occ::handle<Graphic3d_AspectText3d> myTextAspect;

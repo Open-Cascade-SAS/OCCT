@@ -52,8 +52,8 @@ public:
 
   //! Reuses the base driver to read the base fields
   bool Paste(const XmlObjMgt_Persistent&       theSource,
-                     const occ::handle<TDF_Attribute>& theTarget,
-                     XmlObjMgt_RRelocationTable&       theRelocTable) const override
+             const occ::handle<TDF_Attribute>& theTarget,
+             XmlObjMgt_RRelocationTable&       theRelocTable) const override
   {
     bool aResult = myBaseDirver->Paste(theSource, theTarget, theRelocTable);
     // clang-format off
@@ -64,8 +64,8 @@ public:
 
   //! Reuses the base driver to store the base fields
   void Paste(const occ::handle<TDF_Attribute>& theSource,
-                     XmlObjMgt_Persistent&             theTarget,
-                     XmlObjMgt_SRelocationTable&       theRelocTable) const override
+             XmlObjMgt_Persistent&             theTarget,
+             XmlObjMgt_SRelocationTable&       theRelocTable) const override
   {
     myBaseDirver->Paste(theSource, theTarget, theRelocTable);
   }

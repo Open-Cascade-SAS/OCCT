@@ -45,8 +45,7 @@ public: //! @name discrete faces
   Standard_EXPORT int FacesNb() const override;
 
   //! Adds new face to shape model.
-  Standard_EXPORT const IMeshData::IFaceHandle& AddFace(
-    const TopoDS_Face& theFace) override;
+  Standard_EXPORT const IMeshData::IFaceHandle& AddFace(const TopoDS_Face& theFace) override;
 
   //! Gets model's face with the given index.
   Standard_EXPORT const IMeshData::IFaceHandle& GetFace(const int theIndex) const override;
@@ -56,8 +55,7 @@ public: //! @name discrete edges
   Standard_EXPORT int EdgesNb() const override;
 
   //! Adds new edge to shape model.
-  Standard_EXPORT const IMeshData::IEdgeHandle& AddEdge(
-    const TopoDS_Edge& theEdge) override;
+  Standard_EXPORT const IMeshData::IEdgeHandle& AddEdge(const TopoDS_Edge& theEdge) override;
 
   //! Gets model's edge with the given index.
   Standard_EXPORT const IMeshData::IEdgeHandle& GetEdge(const int theIndex) const override;

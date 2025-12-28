@@ -59,34 +59,34 @@ public:
 
   //! compute Location and 2d points
   Standard_EXPORT bool D0(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d) override;
+                          gp_Mat&                       M,
+                          gp_Vec&                       V,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d) override;
 
   //! compute location 2d points and associated
   //! first derivatives.
   //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT bool D1(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  gp_Mat&                       DM,
-                                  gp_Vec&                       DV,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d) override;
+                          gp_Mat&                       M,
+                          gp_Vec&                       V,
+                          gp_Mat&                       DM,
+                          gp_Vec&                       DV,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                          NCollection_Array1<gp_Vec2d>& DPoles2d) override;
 
   //! compute location 2d points and associated
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
   Standard_EXPORT bool D2(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  gp_Mat&                       DM,
-                                  gp_Vec&                       DV,
-                                  gp_Mat&                       D2M,
-                                  gp_Vec&                       D2V,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<gp_Vec2d>& D2Poles2d) override;
+                          gp_Mat&                       M,
+                          gp_Vec&                       V,
+                          gp_Mat&                       DM,
+                          gp_Vec&                       DV,
+                          gp_Mat&                       D2M,
+                          gp_Vec&                       D2V,
+                          NCollection_Array1<gp_Pnt2d>& Poles2d,
+                          NCollection_Array1<gp_Vec2d>& DPoles2d,
+                          NCollection_Array1<gp_Vec2d>& D2Poles2d) override;
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
@@ -98,7 +98,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function

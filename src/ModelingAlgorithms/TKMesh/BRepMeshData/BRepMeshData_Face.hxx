@@ -41,7 +41,7 @@ public:
 
   //! Adds wire to discrete model of face.
   Standard_EXPORT const IMeshData::IWireHandle& AddWire(const TopoDS_Wire& theWire,
-                                                                const int theEdgeNb = 0) override;
+                                                        const int          theEdgeNb = 0) override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)
 

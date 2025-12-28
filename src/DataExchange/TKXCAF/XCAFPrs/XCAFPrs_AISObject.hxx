@@ -49,8 +49,8 @@ public:
 protected:
   //! Redefined method to compute presentation.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.

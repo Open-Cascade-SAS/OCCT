@@ -101,7 +101,7 @@ public:
 
   //! Checks whether the circle overlaps current selecting volume
   bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+               SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveCircle::Matches(theMgr, thePickResult);
   }
@@ -121,7 +121,7 @@ public:
 
   //! Checks whether the circle overlaps current selecting volume
   bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+               SelectBasics_PickResult&             thePickResult) override
   {
     return isValidRay(theMgr) && Select3D_SensitiveTriangulation::Matches(theMgr, thePickResult);
   }
@@ -1211,7 +1211,8 @@ void AIS_Manipulator::SetTransformPersistence(
 {
   Standard_ASSERT_RETURN(!myIsZoomPersistentMode,
                          "AIS_Manipulator::SetTransformPersistence: "
-                         "Custom settings are not allowed by this class in ZoomPersistence mode", Standard_VOID_RETURN);
+                         "Custom settings are not allowed by this class in ZoomPersistence mode",
+                         Standard_VOID_RETURN);
 
   setTransformPersistence(theTrsfPers);
 }

@@ -22,7 +22,8 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 
-RWStepBasic_RWConversionBasedUnitAndVolumeUnit::RWStepBasic_RWConversionBasedUnitAndVolumeUnit() = default;
+RWStepBasic_RWConversionBasedUnitAndVolumeUnit::RWStepBasic_RWConversionBasedUnitAndVolumeUnit() =
+  default;
 
 void RWStepBasic_RWConversionBasedUnitAndVolumeUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,

@@ -264,7 +264,8 @@ void OpenGl_ShaderObject::Release(OpenGl_Context* theCtx)
 
   Standard_ASSERT_RETURN(
     theCtx != nullptr,
-    "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+    "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...",
+    Standard_VOID_RETURN);
 
   if (theCtx->core20fwd != nullptr && theCtx->IsValid())
   {
@@ -402,7 +403,10 @@ bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>& the
     if (aLength > 0)
     {
       TCollection_AsciiString aSource(aLength - 1, '\0');
-      theCtx->core20fwd->glGetShaderSource(myShaderID, aLength, nullptr, (GLchar*)aSource.ToCString());
+      theCtx->core20fwd->glGetShaderSource(myShaderID,
+                                           aLength,
+                                           nullptr,
+                                           (GLchar*)aSource.ToCString());
       dumpShaderSource(aFileName, aSource, theToBeautify);
       isDumped = true;
     }

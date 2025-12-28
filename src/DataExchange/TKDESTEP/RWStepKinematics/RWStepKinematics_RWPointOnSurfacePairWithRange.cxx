@@ -30,7 +30,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWPointOnSurfacePairWithRange::RWStepKinematics_RWPointOnSurfacePairWithRange() = default;
+RWStepKinematics_RWPointOnSurfacePairWithRange::RWStepKinematics_RWPointOnSurfacePairWithRange() =
+  default;
 
 //=================================================================================================
 

@@ -168,24 +168,24 @@ public:
 
   //! Used for the first and last section
   Standard_EXPORT bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths) override;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths) override;
 
   //! Used for the first and last section
   Standard_EXPORT bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Vec>&   D2Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths,
-                                       NCollection_Array1<double>&   D2Weigths) override;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths) override;
 
   Standard_EXPORT void Resolution(const int    IC2d,
                                   const double Tol,

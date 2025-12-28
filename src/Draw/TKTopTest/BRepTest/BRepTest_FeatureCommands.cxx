@@ -1275,8 +1275,15 @@ int offsetload(Draw_Interpretor&, int n, const char** a)
   TheRadius = Of;
   //  bool Inter = true;
 
-  TheOffset
-    .Initialize(S, Of, TheTolerance, BRepOffset_Skin, TheInter, false, TheJoin, false, RemoveIntEdges);
+  TheOffset.Initialize(S,
+                       Of,
+                       TheTolerance,
+                       BRepOffset_Skin,
+                       TheInter,
+                       false,
+                       TheJoin,
+                       false,
+                       RemoveIntEdges);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------

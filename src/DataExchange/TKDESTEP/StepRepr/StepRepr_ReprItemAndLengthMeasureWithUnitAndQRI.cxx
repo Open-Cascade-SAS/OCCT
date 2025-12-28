@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI,
 //=================================================================================================
 
 StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI::StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI()
-     
+
 {
   myLengthMeasureWithUnit = new StepBasic_LengthMeasureWithUnit();
 }

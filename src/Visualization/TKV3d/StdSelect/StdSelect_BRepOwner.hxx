@@ -95,22 +95,21 @@ public:
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& aPM,
-                                           const int aMode = 0) const override;
+                                   const int aMode = 0) const override;
 
-  Standard_EXPORT void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                                        const int theMode) override;
 
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.
   Standard_EXPORT void Unhilight(const occ::handle<PrsMgr_PresentationManager>& aPM,
-                                         const int aMode = 0) override;
+                                 const int                                      aMode = 0) override;
 
   //! Clears the presentation manager object aPM of all
   //! shapes with the selection mode aMode.
   Standard_EXPORT void Clear(const occ::handle<PrsMgr_PresentationManager>& aPM,
-                                     const int aMode = 0) override;
+                             const int                                      aMode = 0) override;
 
   Standard_EXPORT void SetLocation(const TopLoc_Location& aLoc) override;
 
@@ -122,8 +121,7 @@ public:
     const int                                      theDispMode) override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   TopoDS_Shape                 myShape;

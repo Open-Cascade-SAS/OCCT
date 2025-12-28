@@ -28,7 +28,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWKinematicTopologyStructure::RWStepKinematics_RWKinematicTopologyStructure() = default;
+RWStepKinematics_RWKinematicTopologyStructure::RWStepKinematics_RWKinematicTopologyStructure() =
+  default;
 
 //=================================================================================================
 

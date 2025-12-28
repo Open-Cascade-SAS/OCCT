@@ -96,8 +96,7 @@ public:
   Standard_EXPORT bool IsDeleted(const TopoDS_Shape& F) override;
 
   //! Returns the list of generated Faces.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
 private:
   LocOpe_Gluer myGluer;

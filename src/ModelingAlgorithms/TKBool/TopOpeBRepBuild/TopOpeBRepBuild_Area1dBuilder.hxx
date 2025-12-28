@@ -47,8 +47,8 @@ public:
   //! Sets a Area1dBuilder to find the areas of
   //! the shapes described by <LS> using the classifier <LC>.
   Standard_EXPORT void InitAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
-                                               TopOpeBRepBuild_LoopClassifier& LC,
-                                               const bool ForceClass = false) override;
+                                       TopOpeBRepBuild_LoopClassifier& LC,
+                                       const bool                      ForceClass = false) override;
 
   Standard_EXPORT void ADD_Loop_TO_LISTOFLoop(
     const occ::handle<TopOpeBRepBuild_Loop>&             L,

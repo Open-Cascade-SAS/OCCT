@@ -21,8 +21,8 @@
 
 #include "RWStepGeom_RWTransitionCode.pxx"
 
-RWStepGeom_RWReparametrisedCompositeCurveSegment::RWStepGeom_RWReparametrisedCompositeCurveSegment()
-= default;
+RWStepGeom_RWReparametrisedCompositeCurveSegment::
+  RWStepGeom_RWReparametrisedCompositeCurveSegment() = default;
 
 void RWStepGeom_RWReparametrisedCompositeCurveSegment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                      data,

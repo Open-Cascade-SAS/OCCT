@@ -100,8 +100,7 @@ protected:
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const override;
 
 private:
   bool theReadOnlyVisible;

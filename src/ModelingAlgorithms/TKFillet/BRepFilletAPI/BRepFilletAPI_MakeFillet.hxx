@@ -320,8 +320,7 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <F>.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
   Standard_EXPORT bool IsDeleted(const TopoDS_Shape& F) override;
 

@@ -437,8 +437,9 @@ void SelectMgr_ViewerSelector::traverseObject(
     }
   }
 
-  SelectMgr_SelectingVolumeManager aMgr =
-    aInversedTrsf.Form() != gp_Identity ? theMgr.ScaleAndTransform(1, aInversedTrsf, nullptr) : theMgr;
+  SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
+                                            ? theMgr.ScaleAndTransform(1, aInversedTrsf, nullptr)
+                                            : theMgr;
   if (!hasEntityTrsfPers
       && !aMgr.OverlapsBox(aSensitivesTree->MinPoint(0), aSensitivesTree->MaxPoint(0)))
   {

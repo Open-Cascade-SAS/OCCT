@@ -386,7 +386,7 @@ double GCPnts_AbscissaPoint::length(const TheCurve& theC,
     }
     case GCPnts_Parametrized: {
       return theTol != nullptr ? CPnts_AbscissaPoint::Length(theC, theU1, theU2, *theTol)
-                            : CPnts_AbscissaPoint::Length(theC, theU1, theU2);
+                               : CPnts_AbscissaPoint::Length(theC, theU1, theU2);
     }
     case GCPnts_AbsComposite: {
       const int                  aNbIntervals = theC.NbIntervals(GeomAbs_CN);

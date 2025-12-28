@@ -517,7 +517,7 @@ void BRepExtrema_OverlapTool::intersectTrianglesExact(const int theTrgIdx1, cons
 
   BRepExtrema_ElementFilter::FilterResult aResult =
     myFilter == nullptr ? BRepExtrema_ElementFilter::DoCheck
-                     : myFilter->PreCheckElements(theTrgIdx1, theTrgIdx2);
+                        : myFilter->PreCheckElements(theTrgIdx1, theTrgIdx2);
 
   if (aResult == BRepExtrema_ElementFilter::Overlap)
   {
@@ -598,7 +598,7 @@ void BRepExtrema_OverlapTool::intersectTrianglesToler(const int    theTrgIdx1,
 
   BRepExtrema_ElementFilter::FilterResult aResult =
     myFilter == nullptr ? BRepExtrema_ElementFilter::DoCheck
-                     : myFilter->PreCheckElements(theTrgIdx1, theTrgIdx2);
+                        : myFilter->PreCheckElements(theTrgIdx1, theTrgIdx2);
 
   if (aResult == BRepExtrema_ElementFilter::Overlap)
   {

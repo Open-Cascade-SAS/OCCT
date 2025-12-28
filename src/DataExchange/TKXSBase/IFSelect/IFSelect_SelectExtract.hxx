@@ -49,8 +49,7 @@ public:
   //! Returns the list of selected entities. Works by calling the
   //! method Sort on each input Entity : the Entity is kept as
   //! output if Sort returns the same value as Direct status
-  Standard_EXPORT Interface_EntityIterator RootResult(
-    const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns True for an Entity if it satisfies the Sort criterium
   //! It receives :

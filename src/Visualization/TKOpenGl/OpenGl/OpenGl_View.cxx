@@ -2644,7 +2644,7 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
   {
     const NCollection_Vec2<int> aSizeXY =
       theReadDrawFbo != nullptr ? theReadDrawFbo->GetVPSize()
-                             : NCollection_Vec2<int>(myWindow->Width(), myWindow->Height());
+                                : NCollection_Vec2<int>(myWindow->Width(), myWindow->Height());
 
     toRenderGL = !initRaytraceResources(aSizeXY.x(), aSizeXY.y(), aCtx)
                  || !updateRaytraceGeometry(OpenGl_GUM_CHECK, myId, aCtx);

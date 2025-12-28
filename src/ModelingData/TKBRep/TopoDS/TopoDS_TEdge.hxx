@@ -34,10 +34,7 @@ public:
 
 protected:
   //! Construct an edge.
-  TopoDS_TEdge()
-       
-  {
-  }
+  TopoDS_TEdge() {}
 };
 
 #endif // _TopoDS_TEdge_HeaderFile

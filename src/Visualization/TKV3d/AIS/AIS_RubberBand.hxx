@@ -140,12 +140,12 @@ protected:
 
   //! Computes presentation of rubber band.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Does not fill selection primitives for rubber band.
   void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
-                                const int /*aMode*/) override {};
+                        const int /*aMode*/) override {};
 
   //! Fills triangles primitive array for rubber band filling.
   //! It uses Delaunay triangulation.

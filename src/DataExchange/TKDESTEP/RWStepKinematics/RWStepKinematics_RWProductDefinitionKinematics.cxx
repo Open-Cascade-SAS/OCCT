@@ -25,7 +25,8 @@
 
 //=================================================================================================
 
-RWStepKinematics_RWProductDefinitionKinematics::RWStepKinematics_RWProductDefinitionKinematics() = default;
+RWStepKinematics_RWProductDefinitionKinematics::RWStepKinematics_RWProductDefinitionKinematics() =
+  default;
 
 //=================================================================================================
 

@@ -111,7 +111,7 @@ public:
 private:
   //! Private, to forbid implicit or hidden accesses to
   //! the copy constructor.
-  TDF_IDFilter(const TDF_IDFilter& aFilter) = delete;
+  TDF_IDFilter(const TDF_IDFilter& aFilter)             = delete;
   TDF_IDFilter& operator=(const TDF_IDFilter& theOther) = delete;
 
 private:

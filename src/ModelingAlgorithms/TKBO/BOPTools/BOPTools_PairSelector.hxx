@@ -76,10 +76,10 @@ public: //! @name public interfaces
 public: //! @name Rejection/Acceptance rules
   //! Basing on the bounding boxes of the nodes checks if the pair of nodes should be rejected.
   bool RejectNode(const BVH_VecNd& theCMin1,
-                          const BVH_VecNd& theCMax1,
-                          const BVH_VecNd& theCMin2,
-                          const BVH_VecNd& theCMax2,
-                          double&) const override
+                  const BVH_VecNd& theCMax1,
+                  const BVH_VecNd& theCMin2,
+                  const BVH_VecNd& theCMax2,
+                  double&) const override
   {
     return BVH_Box<double, 3>(theCMin1, theCMax1).IsOut(theCMin2, theCMax2);
   }

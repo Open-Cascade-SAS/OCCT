@@ -53,7 +53,7 @@ public:
   //! Remark : an entity attached to a Level List is added for
   //! " LEVEL LIST", and for each of its constituent levels
   Standard_EXPORT void AddSign(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model) override;
+                               const occ::handle<Interface_InterfaceModel>& model) override;
 
   //! The internal action to record a new level number, positive,
   //! null (no level) or negative (level list)

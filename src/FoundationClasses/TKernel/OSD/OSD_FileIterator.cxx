@@ -194,7 +194,7 @@ void OSD_FileIterator::Next()
 
     if (!myEntry)
     {                          // No file found
-      myEntry = nullptr;          // Keep pointer clean
+      myEntry = nullptr;       // Keep pointer clean
       myFlag  = false;         // No more files/directory
       closedir((DIR*)myDescr); // so close directory
       myDescr = nullptr;

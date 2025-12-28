@@ -78,7 +78,7 @@
 //=================================================================================================
 
 IGESToBRep_BRepEntity::IGESToBRep_BRepEntity()
-     
+
 {
   SetModeTransfer(false);
   SetContinuity(0);

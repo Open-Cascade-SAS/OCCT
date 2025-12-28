@@ -18,8 +18,7 @@
 
 inline Geom2dHatch_Intersector::Geom2dHatch_Intersector(const double Confusion,
                                                         const double Tangency)
-    : 
-      myConfusionTolerance(Confusion),
+    : myConfusionTolerance(Confusion),
       myTangencyTolerance(Tangency)
 {
 }

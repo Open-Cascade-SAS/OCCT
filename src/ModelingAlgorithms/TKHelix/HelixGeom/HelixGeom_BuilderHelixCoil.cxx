@@ -19,7 +19,7 @@
 //=================================================================================================
 
 HelixGeom_BuilderHelixCoil::HelixGeom_BuilderHelixCoil()
-     
+
 {
   myT1          = 0.;
   myT2          = 2. * M_PI;

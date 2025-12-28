@@ -74,8 +74,8 @@ public:
 
   //! Constructor.
   NCollection_OccAllocator(const NCollection_OccAllocator& theOther)
-       
-  = default;
+
+    = default;
 
   //! Constructor.
   NCollection_OccAllocator(NCollection_OccAllocator&& theOther) noexcept
@@ -84,8 +84,7 @@ public:
   }
 
   //! Assignment operator
-  NCollection_OccAllocator& operator=(const NCollection_OccAllocator& theOther)
-  = default;
+  NCollection_OccAllocator& operator=(const NCollection_OccAllocator& theOther) = default;
 
   //! Assignment operator
   NCollection_OccAllocator& operator=(NCollection_OccAllocator&& theOther) noexcept

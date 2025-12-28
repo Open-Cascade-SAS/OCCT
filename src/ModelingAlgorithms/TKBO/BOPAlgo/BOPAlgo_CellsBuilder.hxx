@@ -235,7 +235,7 @@ protected:
   //! Redefined method PerformInternal1 - makes all split parts,
   //! nullifies the result <myShape>, and index all parts.
   Standard_EXPORT void PerformInternal1(const BOPAlgo_PaveFiller&    thePF,
-                                                const Message_ProgressRange& theRange) override;
+                                        const Message_ProgressRange& theRange) override;
 
   //! Indexes the parts for quick access to the arguments.
   Standard_EXPORT void IndexParts();

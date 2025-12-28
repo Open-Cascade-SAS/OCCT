@@ -37,7 +37,7 @@ public:
   //! Returns <True> if information was found
   //! and AISObject updated.
   Standard_EXPORT bool Update(const TDF_Label&                    aLabel,
-                                      occ::handle<AIS_InteractiveObject>& anAISObject) override;
+                              occ::handle<AIS_InteractiveObject>& anAISObject) override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_PlaneDriver, TPrsStd_Driver)
 };

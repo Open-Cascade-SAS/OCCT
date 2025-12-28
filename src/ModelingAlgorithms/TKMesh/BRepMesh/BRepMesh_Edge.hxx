@@ -25,8 +25,7 @@ class BRepMesh_Edge : public BRepMesh_OrientedEdge
 public:
   //! Default constructor.
   BRepMesh_Edge()
-      : 
-        myMovability(BRepMesh_Deleted)
+      : myMovability(BRepMesh_Deleted)
   {
   }
 

@@ -36,8 +36,7 @@ class BOPDS_TSR : public BOPTools_BoxTreeSelector
 {
 public:
   BOPDS_TSR()
-      : 
-        myHasBRep(false),
+      : myHasBRep(false),
         myIndex(-1)
   {
   }

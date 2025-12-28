@@ -91,8 +91,7 @@ TCollection_AsciiString OpenGl_Buffer::FormatTarget(unsigned int theTarget)
 //=================================================================================================
 
 OpenGl_Buffer::OpenGl_Buffer()
-    : 
-      myOffset(nullptr),
+    : myOffset(nullptr),
       myBufferId(NO_BUFFER),
       myComponentsNb(4),
       myElemsNb(0),
@@ -131,7 +130,8 @@ void OpenGl_Buffer::Release(OpenGl_Context* theGlCtx)
   // application can not handle this case by exception - this is bug in code
   Standard_ASSERT_RETURN(
     theGlCtx != nullptr,
-    "OpenGl_Buffer destroyed without GL context! Possible GPU memory leakage...", Standard_VOID_RETURN);
+    "OpenGl_Buffer destroyed without GL context! Possible GPU memory leakage...",
+    Standard_VOID_RETURN);
 
   if (theGlCtx->IsValid())
   {

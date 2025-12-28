@@ -45,7 +45,7 @@ public:
 
   //! Checks whether the box overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns center of the box
   Standard_EXPORT gp_Pnt CenterOfGeometry() const override;

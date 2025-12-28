@@ -53,7 +53,8 @@ void BinTools_ShapeSetBase::SetFormatNb(const int theFormatNb)
 {
   Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_LOWER
                            && theFormatNb <= BinTools_FormatVersion_UPPER,
-                         "Error: unsupported BinTools version.", Standard_VOID_RETURN);
+                         "Error: unsupported BinTools version.",
+                         Standard_VOID_RETURN);
 
   myFormatNb = theFormatNb;
 }

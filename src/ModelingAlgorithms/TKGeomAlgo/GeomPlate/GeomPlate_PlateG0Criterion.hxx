@@ -42,8 +42,7 @@ public:
     const AdvApp2Var_CriterionType        Type   = AdvApp2Var_Absolute,
     const AdvApp2Var_CriterionRepartition Repart = AdvApp2Var_Regular);
 
-  Standard_EXPORT void Value(AdvApp2Var_Patch&         P,
-                                     const AdvApp2Var_Context& C) const override;
+  Standard_EXPORT void Value(AdvApp2Var_Patch& P, const AdvApp2Var_Context& C) const override;
 
   Standard_EXPORT bool IsSatisfied(const AdvApp2Var_Patch& P) const override;
 

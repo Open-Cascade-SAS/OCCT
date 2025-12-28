@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod,
 //=================================================================================================
 
 StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod()
-= default;
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod() = default;
 
 //=================================================================================================
 

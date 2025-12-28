@@ -54,8 +54,8 @@ public: //! @name Set selectable shapes and selection modes
   //! @param[in]  theMode Selection mode to be activated
   //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   Standard_EXPORT void SetSelectionMode(const IVtk_IShape::Handle& theShape,
-                                                const IVtk_SelectionMode   theMode,
-                                                const bool theIsTurnOn = true) override;
+                                        const IVtk_SelectionMode   theMode,
+                                        const bool                 theIsTurnOn = true) override;
 
   //! Activates/deactivates the given selection mode for the shape.
   //! If mode == SM_None, the shape becomes non-selectable and
@@ -63,18 +63,17 @@ public: //! @name Set selectable shapes and selection modes
   //! @param[in]  theShapes List of shapes for which the selection mode should be activated
   //! @param[in]  theMode Selection mode to be activated
   //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
-  Standard_EXPORT void SetSelectionMode(
-    const NCollection_List<IVtk_IShape::Handle>& theShapes,
-    const IVtk_SelectionMode                     theMode,
-    const bool                                   theIsTurnOn = true) override;
+  Standard_EXPORT void SetSelectionMode(const NCollection_List<IVtk_IShape::Handle>& theShapes,
+                                        const IVtk_SelectionMode                     theMode,
+                                        const bool theIsTurnOn = true) override;
 
 public: //! @name Picking methods
   Standard_EXPORT bool Pick(const double theX, const double theY) override;
 
   Standard_EXPORT bool Pick(const double theXMin,
-                                    const double theYMin,
-                                    const double theXMax,
-                                    const double theYMax) override;
+                            const double theYMin,
+                            const double theXMax,
+                            const double theYMax) override;
 
   Standard_EXPORT bool Pick(double** thePolyLine, const int theNbPoints) override;
 
@@ -88,9 +87,8 @@ public: //! @name Obtain picking results
   //! @param[out]  theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
   //! in the order of increasing depth (the ID of the sub-shape closest to the eye
   //! is the first in the list)
-  Standard_EXPORT void SubShapesPicked(
-    const IVtk_IdType              theId,
-    NCollection_List<IVtk_IdType>& theShapeList) const override;
+  Standard_EXPORT void SubShapesPicked(const IVtk_IdType              theId,
+                                       NCollection_List<IVtk_IdType>& theShapeList) const override;
 
   //! Remove selectable object from the picker (from internal maps).
   //! @param[in]  theShape the selectable shape

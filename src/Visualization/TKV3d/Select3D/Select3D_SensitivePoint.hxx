@@ -37,7 +37,7 @@ public:
 
   //! Checks whether the point overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the point used at the time of construction.
   const gp_Pnt& Point() const { return myPoint; }
@@ -54,8 +54,7 @@ public:
   bool ToBuildBVH() const override { return false; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   gp_Pnt myPoint; //!< 3d coordinates of the point

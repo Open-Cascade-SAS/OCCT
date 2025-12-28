@@ -98,8 +98,7 @@ public:
 
 public: //! @name public methods
   NCollection_DynamicArray(const int theIncrement = 256)
-      : 
-        myAlloc(),
+      : myAlloc(),
         myInternalSize(theIncrement),
         myUsedSize(0)
   {
@@ -108,8 +107,7 @@ public: //! @name public methods
   // Constructor taking an allocator
   explicit NCollection_DynamicArray(const int                                     theIncrement,
                                     const occ::handle<NCollection_BaseAllocator>& theAllocator)
-      : 
-        myAlloc(allocator_type(theAllocator)),
+      : myAlloc(allocator_type(theAllocator)),
         myInternalSize(theIncrement),
         myUsedSize(0)
   {
@@ -117,8 +115,7 @@ public: //! @name public methods
 
   // Constructor taking an allocator
   explicit NCollection_DynamicArray(const int theIncrement, const allocator_type& theAllocator)
-      : 
-        myAlloc(theAllocator),
+      : myAlloc(theAllocator),
         myInternalSize(theIncrement),
         myUsedSize(0)
   {

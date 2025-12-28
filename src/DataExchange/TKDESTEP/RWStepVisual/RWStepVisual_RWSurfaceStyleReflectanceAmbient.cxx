@@ -23,7 +23,8 @@
 
 //=================================================================================================
 
-RWStepVisual_RWSurfaceStyleReflectanceAmbient::RWStepVisual_RWSurfaceStyleReflectanceAmbient() = default;
+RWStepVisual_RWSurfaceStyleReflectanceAmbient::RWStepVisual_RWSurfaceStyleReflectanceAmbient() =
+  default;
 
 //=================================================================================================
 

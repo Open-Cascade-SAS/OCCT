@@ -403,12 +403,12 @@ public:
 
   //! Compute presentation.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePresentation,
+                               const int                                      theMode) override;
 
   //! Compute selection - not implemented for color scale.
   void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
-                                const int /*aMode*/) override
+                        const int /*aMode*/) override
   {
   }
 

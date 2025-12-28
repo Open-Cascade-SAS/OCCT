@@ -37,7 +37,7 @@ public:
 
   //! Checks whether the cylinder overlaps current selecting volume
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the copy of this
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;

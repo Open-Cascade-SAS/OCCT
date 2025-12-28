@@ -79,11 +79,10 @@ constexpr int THE_LOCAL_SEL_PRIORITY   = 6;
 //=================================================================================================
 
 PrsDim_Dimension::PrsDim_Dimension(const PrsDim_KindOfDimension theType)
-    : 
-      mySelToleranceForText2d(0.0),
+    : mySelToleranceForText2d(0.0),
       myValueType(ValueType_Computed),
       myCustomValue(0.0),
-      
+
       myIsTextPositionFixed(false),
       mySpecialSymbol(' '),
       myDisplaySpecialSymbol(PrsDim_DisplaySpecialSymbol_No),

@@ -22,5 +22,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ProductDefinitionRelationshipKinematic
 //=================================================================================================
 
 StepKinematics_ProductDefinitionRelationshipKinematics::
-  StepKinematics_ProductDefinitionRelationshipKinematics()
-= default;
+  StepKinematics_ProductDefinitionRelationshipKinematics() = default;

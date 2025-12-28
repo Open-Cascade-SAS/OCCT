@@ -55,9 +55,8 @@ public:
   //    Empty constructor
 
   LDOM_Node(const LDOM_Node& anOther)
-      
-        
-  = default;
+
+    = default;
 
   //    Copy constructor
 

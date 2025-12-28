@@ -20,8 +20,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepGeom_UniformSurfaceAndRationalBSplineSurface,
                            StepGeom_BSplineSurface)
 
-StepGeom_UniformSurfaceAndRationalBSplineSurface::StepGeom_UniformSurfaceAndRationalBSplineSurface()
-= default;
+StepGeom_UniformSurfaceAndRationalBSplineSurface::
+  StepGeom_UniformSurfaceAndRationalBSplineSurface() = default;
 
 void StepGeom_UniformSurfaceAndRationalBSplineSurface::Init(
   const occ::handle<TCollection_HAsciiString>&                                  aName,

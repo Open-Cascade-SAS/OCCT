@@ -72,8 +72,7 @@ protected:
   Standard_EXPORT void PerformAreas(const Message_ProgressRange& theRange) override;
 
   //! Build finalized faces with internals
-  Standard_EXPORT void PerformInternalShapes(
-    const Message_ProgressRange& theRange) override;
+  Standard_EXPORT void PerformInternalShapes(const Message_ProgressRange& theRange) override;
 
   Standard_EXPORT void CheckData() override;
 

@@ -134,7 +134,7 @@ static bool checkBSplineSurface(IGESToBRep_BasicSurface*                    theS
 //=================================================================================================
 
 IGESToBRep_BasicSurface::IGESToBRep_BasicSurface()
-     
+
 {
   SetModeTransfer(false);
 }

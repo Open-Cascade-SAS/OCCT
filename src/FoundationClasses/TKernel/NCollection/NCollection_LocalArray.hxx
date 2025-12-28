@@ -54,7 +54,7 @@ public:
   operator theItem*() const noexcept { return myPtr; }
 
 private:
-  NCollection_LocalArray(const NCollection_LocalArray&) = delete;
+  NCollection_LocalArray(const NCollection_LocalArray&)            = delete;
   NCollection_LocalArray& operator=(const NCollection_LocalArray&) = delete;
 
 protected:

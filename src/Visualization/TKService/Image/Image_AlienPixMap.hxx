@@ -88,9 +88,9 @@ public:
   //! @param[in] theSizeRowBytes may be ignored by this class and required alignment will be used
   //! instead!
   Standard_EXPORT bool InitTrash(Image_Format thePixelFormat,
-                                         const size_t theSizeX,
-                                         const size_t theSizeY,
-                                         const size_t theSizeRowBytes = 0) override;
+                                 const size_t theSizeX,
+                                 const size_t theSizeY,
+                                 const size_t theSizeRowBytes = 0) override;
 
   //! Initialize by copying data.
   Standard_EXPORT bool InitCopy(const Image_PixMap& theCopy) override;
@@ -109,16 +109,16 @@ public:
 
 private:
   //! Copying allowed only within Handles
-  Image_AlienPixMap(const Image_AlienPixMap&) = delete;
+  Image_AlienPixMap(const Image_AlienPixMap&)            = delete;
   Image_AlienPixMap& operator=(const Image_AlienPixMap&) = delete;
 
   //! Wrapper initialization is disallowed for this class (will return false in any case)!
   //! Use only copying and allocation initializers.
   Standard_EXPORT bool InitWrapper(Image_Format thePixelFormat,
-                                           uint8_t*     theDataPtr,
-                                           const size_t theSizeX,
-                                           const size_t theSizeY,
-                                           const size_t theSizeRowBytes) override;
+                                   uint8_t*     theDataPtr,
+                                   const size_t theSizeX,
+                                   const size_t theSizeY,
+                                   const size_t theSizeRowBytes) override;
 
   //! Built-in PPM export
   Standard_EXPORT bool savePPM(const TCollection_AsciiString& theFileName) const;

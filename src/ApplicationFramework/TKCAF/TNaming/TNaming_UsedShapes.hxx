@@ -67,7 +67,7 @@ public:
 
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+                                 const bool                             forceIt = false) override;
 
   //! this method returns a null handle (no delta).
   Standard_EXPORT occ::handle<TDF_DeltaOnAddition> DeltaOnAddition() const override;

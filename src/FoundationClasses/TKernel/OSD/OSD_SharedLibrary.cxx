@@ -171,7 +171,7 @@ OSD_Function OSD_SharedLibrary::DlSymb(const char* aName) const
   }
   else
   {
-    return (OSD_Function)nullptr;
+    return (OSD_Function) nullptr;
   }
 }
 

@@ -28,8 +28,8 @@ class TopoDS_TShell : public TopoDS_TShape
 public:
   //! Creates an empty TShell.
   TopoDS_TShell()
-       
-  = default;
+
+    = default;
 
   //! Returns SHELL.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;

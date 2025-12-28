@@ -42,8 +42,7 @@ LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_NullPtr* theNull)
 // purpose  : Assignment
 //=======================================================================
 
-LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theOther)
-= default;
+LDOM_CharacterData& LDOM_CharacterData::operator=(const LDOM_CharacterData& theOther) = default;
 
 //=================================================================================================
 

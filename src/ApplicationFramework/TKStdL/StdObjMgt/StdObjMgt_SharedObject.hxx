@@ -16,6 +16,7 @@
 
 #include <Standard_NoSuchObject.hxx>
 #include <StdObjMgt_Persistent.hxx>
+
 // NOLINTBEGIN(modernize-use-override)
 class StdObjMgt_SharedObject
 {
@@ -168,5 +169,6 @@ public:
     }
   };
 };
-  // NOLINTEND(modernize-use-override)
+
+// NOLINTEND(modernize-use-override)
 #endif

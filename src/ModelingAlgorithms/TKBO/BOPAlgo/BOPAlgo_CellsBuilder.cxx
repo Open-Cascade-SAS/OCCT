@@ -37,8 +37,7 @@ static void CollectMaterialBoundaries(
 //=================================================================================================
 
 BOPAlgo_CellsBuilder::BOPAlgo_CellsBuilder()
-    : 
-      myIndex(100, myAllocator),
+    : myIndex(100, myAllocator),
       myMaterials(100, myAllocator),
       myShapeMaterial(100, myAllocator),
       myMapModified(100, myAllocator)

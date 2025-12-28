@@ -23,8 +23,7 @@
 #include <StepShape_ValueQualifier.hxx>
 
 RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::
-  RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem()
-= default;
+  RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem() = default;
 
 void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                           data,

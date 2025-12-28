@@ -65,29 +65,27 @@ public:
   Standard_EXPORT void NextVertex() override;
 
   Standard_EXPORT TopAbs_State Classify(const gp_Pnt2d& P2d,
-                                                const double    Tol,
-                                                const bool      RecadreOnPeriodic = true) override;
+                                        const double    Tol,
+                                        const bool      RecadreOnPeriodic = true) override;
 
   //! see the code for specifications)
   Standard_EXPORT bool IsThePointOn(const gp_Pnt2d& P2d,
-                                            const double    Tol,
-                                            const bool      RecadreOnPeriodic = true) override;
+                                    const double    Tol,
+                                    const bool      RecadreOnPeriodic = true) override;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT TopAbs_Orientation Orientation(
-    const occ::handle<Adaptor2d_Curve2d>& C) override;
+  Standard_EXPORT TopAbs_Orientation Orientation(const occ::handle<Adaptor2d_Curve2d>& C) override;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT TopAbs_Orientation Orientation(
-    const occ::handle<Adaptor3d_HVertex>& C) override;
+  Standard_EXPORT TopAbs_Orientation Orientation(const occ::handle<Adaptor3d_HVertex>& C) override;
 
   Standard_EXPORT void Destroy();
 

@@ -124,8 +124,7 @@ private:
 //=================================================================================================
 
 StepFile_ReadData::StepFile_ReadData()
-    : 
-      myModePrint(0),
+    : myModePrint(0),
       myNbRec(0),
       myNbHead(0),
       myNbPar(0),

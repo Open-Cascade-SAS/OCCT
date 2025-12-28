@@ -22,7 +22,8 @@
 
 //=================================================================================================
 
-RWStepVisual_RWTessellatedAnnotationOccurrence::RWStepVisual_RWTessellatedAnnotationOccurrence() = default;
+RWStepVisual_RWTessellatedAnnotationOccurrence::RWStepVisual_RWTessellatedAnnotationOccurrence() =
+  default;
 
 //=================================================================================================
 

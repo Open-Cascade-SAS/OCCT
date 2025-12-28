@@ -47,8 +47,7 @@ public:
 protected:
   //! Performs processing of generated mesh. Generates surface nodes and inserts them into
   //! structure.
-  void postProcessMesh(BRepMesh_Delaun&             theMesher,
-                               const Message_ProgressRange& theRange) override
+  void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange) override
   {
     Message_ProgressScope aPS(theRange, "Post process mesh", 2);
     // Insert surface nodes.

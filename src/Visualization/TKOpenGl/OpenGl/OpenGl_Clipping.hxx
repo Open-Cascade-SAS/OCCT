@@ -160,7 +160,7 @@ private:
 
 private:
   //! Copying allowed only within Handles
-  OpenGl_Clipping(const OpenGl_Clipping&) = delete;
+  OpenGl_Clipping(const OpenGl_Clipping&)            = delete;
   OpenGl_Clipping& operator=(const OpenGl_Clipping&) = delete;
 };
 

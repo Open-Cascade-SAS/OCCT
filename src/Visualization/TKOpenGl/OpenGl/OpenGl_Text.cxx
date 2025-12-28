@@ -58,7 +58,7 @@ struct BackPolygonOffsetSentry
   }
 
 private:
-  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&) = delete;
+  BackPolygonOffsetSentry(const BackPolygonOffsetSentry&)            = delete;
   BackPolygonOffsetSentry& operator=(const BackPolygonOffsetSentry&) = delete;
 
 private:

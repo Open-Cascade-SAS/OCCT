@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWPropertyDefinitionRelationship::RWStepRepr_RWPropertyDefinitionRelationship() = default;
+RWStepRepr_RWPropertyDefinitionRelationship::RWStepRepr_RWPropertyDefinitionRelationship() =
+  default;
 
 //=================================================================================================
 

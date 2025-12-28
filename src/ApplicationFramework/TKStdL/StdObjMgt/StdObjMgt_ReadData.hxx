@@ -42,7 +42,7 @@ public:
   private:
     StdObjMgt_ReadData* myReadData;
 
-    ObjectSentry(const ObjectSentry&) = delete;
+    ObjectSentry(const ObjectSentry&)            = delete;
     ObjectSentry& operator=(const ObjectSentry&) = delete;
   };
 

@@ -81,7 +81,7 @@ public:
   //! Specific printing to trace an entity : prints label and type
   //! (if model is set)
   Standard_EXPORT void PrintTrace(const occ::handle<Standard_Transient>& start,
-                                          Standard_OStream&                      S) const override;
+                                  Standard_OStream&                      S) const override;
 
   //! Specific number of a starting object for check-list : Number
   //! in model

@@ -322,9 +322,7 @@ public:
   //! me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT void TransformParameters(double&        U,
-                                                   double&        V,
-                                                   const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -374,8 +372,7 @@ public:
   inline GeomAbs_Shape GetBasisSurfContinuity() const { return myBasisSurfContinuity; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 

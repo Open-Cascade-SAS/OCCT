@@ -36,12 +36,11 @@ public:
 
   //! Inserts new discretization point at the given position.
   Standard_EXPORT void InsertPoint(const int       thePosition,
-                                           const gp_Pnt2d& thePoint,
-                                           const double    theParamOnPCurve) override;
+                                   const gp_Pnt2d& thePoint,
+                                   const double    theParamOnPCurve) override;
 
   //! Adds new discretization point to pcurve.
-  Standard_EXPORT void AddPoint(const gp_Pnt2d& thePoint,
-                                        const double    theParamOnPCurve) override;
+  Standard_EXPORT void AddPoint(const gp_Pnt2d& thePoint, const double theParamOnPCurve) override;
 
   //! Returns discretization point with the given index.
   Standard_EXPORT gp_Pnt2d& GetPoint(const int theIndex) override;

@@ -49,8 +49,7 @@ public:
   //! (i.e.arguments are modified) or not.
   //! If the Function label itself is modified, the function must
   //! be executed.
-  Standard_EXPORT bool MustExecute(
-    const occ::handle<TFunction_Logbook>& theLog) const override;
+  Standard_EXPORT bool MustExecute(const occ::handle<TFunction_Logbook>& theLog) const override;
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).

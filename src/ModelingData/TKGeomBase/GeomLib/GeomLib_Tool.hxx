@@ -89,11 +89,11 @@ public:
                                                  const double               theFPar,
                                                  const double               theLPar,
                                                  const double               theStartParameter,
-                                                 const int                  theNbIters     = 100,
-                                                 double* const              thePrmOnCurve  = nullptr,
-                                                 gp_Pnt2d* const            thePtOnCurve   = nullptr,
-                                                 gp_Vec2d* const            theVecCurvLine = nullptr,
-                                                 gp_Lin2d* const            theLine        = nullptr);
+                                                 const int                  theNbIters    = 100,
+                                                 double* const              thePrmOnCurve = nullptr,
+                                                 gp_Pnt2d* const            thePtOnCurve  = nullptr,
+                                                 gp_Vec2d* const theVecCurvLine           = nullptr,
+                                                 gp_Lin2d* const theLine = nullptr);
 
   //! Computes parameter in theCurve (*thePrmOnCurve) where maximal deviation
   //! between theCurve and the linear segment joining its points with
@@ -117,8 +117,8 @@ public:
                                                  const double               theFPar,
                                                  const double               theLPar,
                                                  const int                  theNbSubIntervals,
-                                                 const int                  theNbIters    = 10,
-                                                 double* const              thePrmOnCurve = nullptr);
+                                                 const int                  theNbIters = 10,
+                                                 double* const thePrmOnCurve           = nullptr);
 };
 
 #endif // _GeomLib_Tool_HeaderFile

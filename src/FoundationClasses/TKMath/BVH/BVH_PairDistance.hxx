@@ -66,10 +66,10 @@ public: //! @name Definition of the rules for tree descend
 
   //! Computes the distance between boxes of the nodes
   bool RejectNode(const BVH_VecNt& theCornerMin1,
-                          const BVH_VecNt& theCornerMax1,
-                          const BVH_VecNt& theCornerMin2,
-                          const BVH_VecNt& theCornerMax2,
-                          NumType&         theMetric) const override
+                  const BVH_VecNt& theCornerMax1,
+                  const BVH_VecNt& theCornerMin2,
+                  const BVH_VecNt& theCornerMax2,
+                  NumType&         theMetric) const override
   {
     theMetric = BVH_Tools<NumType, Dimension>::BoxBoxSquareDistance(theCornerMin1,
                                                                     theCornerMax1,
@@ -79,10 +79,7 @@ public: //! @name Definition of the rules for tree descend
   }
 
   //! Rejects the branch by the metric
-  bool RejectMetric(const NumType& theMetric) const override
-  {
-    return theMetric > myDistance;
-  }
+  bool RejectMetric(const NumType& theMetric) const override { return theMetric > myDistance; }
 
   //! Returns the flag controlling the tree descend
   bool Stop() const override { return myDistance == static_cast<NumType>(0); }

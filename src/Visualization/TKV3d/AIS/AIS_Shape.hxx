@@ -77,10 +77,7 @@ public:
   bool AcceptShapeDecomposition() const override { return true; }
 
   //! Return true if specified display mode is supported.
-  bool AcceptDisplayMode(const int theMode) const override
-  {
-    return theMode >= 0 && theMode <= 2;
-  }
+  bool AcceptDisplayMode(const int theMode) const override { return theMode >= 0 && theMode <= 2; }
 
   //! Returns this shape object.
   const TopoDS_Shape& Shape() const { return myshape; }
@@ -272,13 +269,13 @@ public: //! @name methods to alter texture mapping properties
 protected:
   //! Compute normal presentation.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute projected presentation.
   void computeHLR(const occ::handle<Graphic3d_Camera>&   theProjector,
-                          const occ::handle<TopLoc_Datum3D>&     theTrsf,
-                          const occ::handle<Prs3d_Presentation>& thePrs) override
+                  const occ::handle<TopLoc_Datum3D>&     theTrsf,
+                  const occ::handle<Prs3d_Presentation>& thePrs) override
   {
     if (!theTrsf.IsNull() && theTrsf->Form() != gp_Identity)
     {
@@ -293,9 +290,8 @@ protected:
   }
 
   //! Compute selection.
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
@@ -327,8 +323,7 @@ public:
     const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   TopoDS_Shape myshape;    //!< shape to display

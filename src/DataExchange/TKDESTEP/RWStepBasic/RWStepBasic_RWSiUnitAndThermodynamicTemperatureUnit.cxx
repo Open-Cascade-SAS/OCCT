@@ -25,8 +25,7 @@
 //=================================================================================================
 
 RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::
-  RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit()
-= default;
+  RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit() = default;
 
 //=================================================================================================
 

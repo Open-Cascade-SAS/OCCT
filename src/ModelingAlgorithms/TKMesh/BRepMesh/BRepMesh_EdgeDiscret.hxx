@@ -72,8 +72,8 @@ public:
 protected:
   //! Performs processing of edges of the given model.
   Standard_EXPORT bool performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                               const IMeshTools_Parameters&        theParameters,
-                                               const Message_ProgressRange& theRange) override;
+                                       const IMeshTools_Parameters&        theParameters,
+                                       const Message_ProgressRange&        theRange) override;
 
 private:
   //! Checks existing discretization of the edge and updates data model.

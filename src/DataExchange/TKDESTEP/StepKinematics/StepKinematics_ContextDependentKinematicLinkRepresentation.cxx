@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ContextDependentKinematicLinkRepresent
 //=================================================================================================
 
 StepKinematics_ContextDependentKinematicLinkRepresentation::
-  StepKinematics_ContextDependentKinematicLinkRepresentation()
-= default;
+  StepKinematics_ContextDependentKinematicLinkRepresentation() = default;
 
 //=================================================================================================
 

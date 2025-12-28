@@ -116,7 +116,7 @@ public:
   }
 
 private:
-  ProjLib_OnSurface(const ProjLib_OnSurface&) = delete;
+  ProjLib_OnSurface(const ProjLib_OnSurface&)            = delete;
   ProjLib_OnSurface& operator=(const ProjLib_OnSurface&) = delete;
 
 private:

@@ -47,9 +47,8 @@ Geom_OsculatingSurface::Geom_OsculatingSurface(const occ::handle<Geom_Surface>& 
 //=================================================================================================
 
 Geom_OsculatingSurface::Geom_OsculatingSurface(const Geom_OsculatingSurface& theOther)
-    
-      
-= default;
+
+  = default;
 
 //=================================================================================================
 

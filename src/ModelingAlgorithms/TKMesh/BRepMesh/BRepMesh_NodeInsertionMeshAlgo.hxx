@@ -41,8 +41,8 @@ public:
 
   //! Performs processing of the given face.
   void Perform(const IMeshData::IFaceHandle& theDFace,
-                       const IMeshTools_Parameters&  theParameters,
-                       const Message_ProgressRange&  theRange) override
+               const IMeshTools_Parameters&  theParameters,
+               const Message_ProgressRange&  theRange) override
   {
     myRangeSplitter.Reset(theDFace, theParameters);
     myClassifier = new BRepMesh_Classifier;
@@ -115,9 +115,9 @@ protected:
   //! Adds the given 2d point to mesh data structure.
   //! Returns index of node in the structure.
   int addNodeToStructure(const gp_Pnt2d&                thePoint,
-                                 const int                      theLocation3d,
-                                 const BRepMesh_DegreeOfFreedom theMovability,
-                                 const bool                     isForceAdd) override
+                         const int                      theLocation3d,
+                         const BRepMesh_DegreeOfFreedom theMovability,
+                         const bool                     isForceAdd) override
   {
     return BaseAlgo::addNodeToStructure(myRangeSplitter.Scale(thePoint, true),
                                         theLocation3d,

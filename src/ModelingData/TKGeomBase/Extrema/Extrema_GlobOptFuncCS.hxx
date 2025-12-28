@@ -38,9 +38,9 @@ public:
   Standard_EXPORT bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override;
 
   Standard_EXPORT bool Values(const math_Vector& theX,
-                                      double&            theF,
-                                      math_Vector&       theG,
-                                      math_Matrix&       theH) override;
+                              double&            theF,
+                              math_Vector&       theG,
+                              math_Matrix&       theH) override;
 
 private:
   bool checkInputData(const math_Vector& X, double& cu, double& su, double& sv);

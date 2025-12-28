@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresen
 //=================================================================================================
 
 StepBasic_ProductDefinitionReferenceWithLocalRepresentation::
-  StepBasic_ProductDefinitionReferenceWithLocalRepresentation()
-= default;
+  StepBasic_ProductDefinitionReferenceWithLocalRepresentation() = default;
 
 //=================================================================================================
 

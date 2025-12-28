@@ -40,9 +40,9 @@ public:
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                            const occ::handle<Geom_Surface>& S2,
-                                            const TopLoc_Location&           L1,
-                                            const TopLoc_Location&           L2) const override;
+                                    const occ::handle<Geom_Surface>& S2,
+                                    const TopLoc_Location&           L1,
+                                    const TopLoc_Location&           L2) const override;
 
   //! Raises an error.
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const;
@@ -61,8 +61,7 @@ public:
   Standard_EXPORT occ::handle<BRep_CurveRepresentation> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces, BRep_CurveRepresentation)
 

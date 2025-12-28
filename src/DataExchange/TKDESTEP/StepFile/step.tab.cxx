@@ -222,8 +222,8 @@ parser::by_kind::by_kind(by_kind&& that)
 #endif
 
 parser::by_kind::by_kind(const by_kind& that)
-     
-= default;
+
+  = default;
 
 parser::by_kind::by_kind(token_kind_type t)
     : kind_(yytranslate_(t))

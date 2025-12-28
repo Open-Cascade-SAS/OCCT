@@ -26,8 +26,8 @@
 
 //=================================================================================================
 
-RWStepFEA_RWCurveElementIntervalLinearlyVarying::RWStepFEA_RWCurveElementIntervalLinearlyVarying()
-= default;
+RWStepFEA_RWCurveElementIntervalLinearlyVarying::RWStepFEA_RWCurveElementIntervalLinearlyVarying() =
+  default;
 
 //=================================================================================================
 

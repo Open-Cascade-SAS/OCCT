@@ -233,8 +233,8 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
           if (theNbArgs > k + 1)
             theDI << " " << theArgVec[k + 1];
           theDI << " : ";
-          list =
-            XSDRAW::Session()->GiveList(theArgVec[k], (theNbArgs > (k + 1) ? theArgVec[k + 1] : nullptr));
+          list = XSDRAW::Session()->GiveList(theArgVec[k],
+                                             (theNbArgs > (k + 1) ? theArgVec[k + 1] : nullptr));
         }
         if (list.IsNull())
         {

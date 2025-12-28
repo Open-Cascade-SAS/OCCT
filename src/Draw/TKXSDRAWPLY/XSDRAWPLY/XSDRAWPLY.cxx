@@ -198,9 +198,9 @@ static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
     protected:
       void addPoint(const gp_Pnt&       thePoint,
-                            const gp_Vec&       theNorm,
-                            const gp_Pnt2d&     theUV,
-                            const TopoDS_Shape& theFace) override
+                    const gp_Vec&       theNorm,
+                    const gp_Pnt2d&     theUV,
+                    const TopoDS_Shape& theFace) override
       {
         NCollection_Vec4<uint8_t> aColor;
         myFaceColor.Find(theFace, aColor);

@@ -247,7 +247,8 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
     return;
   }
 
-  if (theCtx->core20fwd != nullptr && (!theCtx->caps->pntSpritesDisable || theCtx->core11ffp == nullptr))
+  if (theCtx->core20fwd != nullptr
+      && (!theCtx->caps->pntSpritesDisable || theCtx->core11ffp == nullptr))
   {
     // Creating texture resource for using it with point sprites
     occ::handle<Image_PixMap> anImage = aNewMarkerImage->GetImage();

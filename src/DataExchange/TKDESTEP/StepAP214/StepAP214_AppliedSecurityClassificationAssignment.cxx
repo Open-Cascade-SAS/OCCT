@@ -19,8 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedSecurityClassificationAssignment,
                            StepBasic_SecurityClassificationAssignment)
 
 StepAP214_AppliedSecurityClassificationAssignment::
-  StepAP214_AppliedSecurityClassificationAssignment()
-= default;
+  StepAP214_AppliedSecurityClassificationAssignment() = default;
 
 void StepAP214_AppliedSecurityClassificationAssignment::Init(
   const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,

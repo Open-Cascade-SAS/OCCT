@@ -213,11 +213,11 @@ Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
 
 // ------------------------------------------------------------------------------------
 int FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& C2D,
-                              const TopoDS_Edge&        E,
-                              const TopoDS_Face&        F,
-                              const double&             f2d,
-                              const double&             l2d,
-                              const double&             tol)
+                              const TopoDS_Edge&               E,
+                              const TopoDS_Face&               F,
+                              const double&                    f2d,
+                              const double&                    l2d,
+                              const double&                    tol)
 {
   if (C2D.IsNull())
     return 1;

@@ -289,8 +289,8 @@ static bool IsPointOnBoundary(const double theParameter,
 // function : AdjustByNeighbour
 // purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
-static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&                  theaNeighbourPoint,
-                                  const gp_Pnt2d&                  theOriginalPoint,
+static gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&                         theaNeighbourPoint,
+                                  const gp_Pnt2d&                         theOriginalPoint,
                                   const occ::handle<GeomAdaptor_Surface>& theGASurface)
 {
   gp_Pnt2d ap1 = theaNeighbourPoint;

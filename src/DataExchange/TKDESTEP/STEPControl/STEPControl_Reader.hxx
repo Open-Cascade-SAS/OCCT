@@ -89,7 +89,7 @@ public:
 
   //! Loads a file from stream and returns the read status
   Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*   theName,
-                                                           std::istream& theIStream) override;
+                                                   std::istream& theIStream) override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
@@ -136,8 +136,7 @@ protected:
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const override;
 
 private:
   //! Returns units for length, angle and solidangle for shape representations

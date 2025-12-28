@@ -114,8 +114,7 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns the initial edge corresponding to the edge E
   //! resulting from the computation of the projection.

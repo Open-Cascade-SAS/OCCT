@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepFEA_FeaCurveSectionGeometricRelationship, Standar
 
 //=================================================================================================
 
-StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship() = default;
+StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship() =
+  default;
 
 //=================================================================================================
 

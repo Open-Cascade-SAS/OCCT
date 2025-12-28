@@ -252,8 +252,7 @@ public: //! @name advanced methods
 
 public:
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! Binds a buffer object to an indexed buffer target.

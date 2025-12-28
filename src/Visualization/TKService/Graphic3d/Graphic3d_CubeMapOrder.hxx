@@ -134,8 +134,8 @@ public:
 
   //! Copy constructor.
   Graphic3d_ValidatedCubeMapOrder(const Graphic3d_ValidatedCubeMapOrder& theOther)
-       
-  = default;
+
+    = default;
 
 public:
   const Graphic3d_CubeMapOrder Order; //!< Completely valid order

@@ -41,7 +41,7 @@ public:
   Standard_EXPORT occ::handle<Select3D_SensitiveEntity> GetConnected() override;
 
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
   //! Returns the amount of nodes of polyhedron
   Standard_EXPORT int NbSubElements() const override;

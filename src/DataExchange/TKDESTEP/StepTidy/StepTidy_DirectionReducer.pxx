@@ -40,7 +40,7 @@ private:
   //! @return true if the direction was replaced, false otherwise.
   static bool replaceAxis1Placement(const occ::handle<StepGeom_Direction>& theOldEntity,
                                     const occ::handle<StepGeom_Direction>& theNewEntity,
-                                    const occ::handle<Standard_Transient>&        theSharing);
+                                    const occ::handle<Standard_Transient>& theSharing);
 
   //! Replaces the old direction with the new one in the StepGeom_Axis2Placement3d entity.
   //! @param theOldEntity the old direction.
@@ -49,7 +49,7 @@ private:
   //! @return true if the direction was replaced, false otherwise.
   static bool replaceAxis2Placement3d(const occ::handle<StepGeom_Direction>& theOldEntity,
                                       const occ::handle<StepGeom_Direction>& theNewEntity,
-                                      const occ::handle<Standard_Transient>&        theSharing);
+                                      const occ::handle<Standard_Transient>& theSharing);
 
   //! Replaces the old direction with the new one in the StepGeom_Vector entity.
   //! @param theOldEntity the old direction.
@@ -58,7 +58,7 @@ private:
   //! @return true if the direction was replaced, false otherwise.
   static bool replaceVector(const occ::handle<StepGeom_Direction>& theOldEntity,
                             const occ::handle<StepGeom_Direction>& theNewEntity,
-                            const occ::handle<Standard_Transient>&        theSharing);
+                            const occ::handle<Standard_Transient>& theSharing);
 };
 
 #endif // _StepTidy_DirectionReducer_HeaderFile

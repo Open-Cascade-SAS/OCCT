@@ -36,8 +36,7 @@
 //=================================================================================================
 
 StepAP242_ItemIdentifiedRepresentationUsageDefinition::
-  StepAP242_ItemIdentifiedRepresentationUsageDefinition()
-= default;
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition() = default;
 
 //=================================================================================================
 

@@ -31,8 +31,8 @@ public:
 
   //! Creates a zero vector.
   constexpr gp_Vec2d() noexcept
-       
-  = default;
+
+    = default;
 
   //! Creates a unitary vector from a direction theV.
   constexpr gp_Vec2d(const gp_Dir2d& theV);

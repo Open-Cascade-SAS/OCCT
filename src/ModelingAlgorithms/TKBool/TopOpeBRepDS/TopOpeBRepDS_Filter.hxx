@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                      const TopOpeBRepTool_PShapeClassifier&          pClassif = nullptr);
+                                      const TopOpeBRepTool_PShapeClassifier& pClassif = nullptr);
 
   Standard_EXPORT void ProcessInterferences();
 

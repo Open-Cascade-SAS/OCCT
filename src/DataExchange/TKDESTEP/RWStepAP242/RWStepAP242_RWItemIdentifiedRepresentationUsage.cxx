@@ -22,8 +22,8 @@
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 
-RWStepAP242_RWItemIdentifiedRepresentationUsage::RWStepAP242_RWItemIdentifiedRepresentationUsage()
-= default;
+RWStepAP242_RWItemIdentifiedRepresentationUsage::RWStepAP242_RWItemIdentifiedRepresentationUsage() =
+  default;
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,

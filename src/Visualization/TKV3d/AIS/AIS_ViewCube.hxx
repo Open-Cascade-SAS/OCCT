@@ -527,16 +527,15 @@ public: //! @name Presentation computation
   //! @param[in] theMode  display mode.
   //! @warning this object accept only 0 display mode.
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode = 0) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode = 0) override;
 
   //! Redefine computing of sensitive entities for View Cube.
   //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
   //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
@@ -710,9 +709,9 @@ public:
 
   //! Handle mouse button click event.
   bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                Aspect_VKeyMouse             theButton,
-                                Aspect_VKeyFlags             theModifiers,
-                                bool                         theIsDoubleClick) override
+                        Aspect_VKeyMouse             theButton,
+                        Aspect_VKeyFlags             theModifiers,
+                        bool                         theIsDoubleClick) override
   {
     (void)thePoint;
     (void)theButton;
@@ -738,7 +737,7 @@ public:
 
   //! Checks whether element overlaps current selecting volume.
   Standard_EXPORT bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                               SelectBasics_PickResult&             thePickResult) override;
 
 protected:
   //! Checks if picking ray can be used for detection.

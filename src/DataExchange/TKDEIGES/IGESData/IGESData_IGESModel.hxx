@@ -140,7 +140,7 @@ public:
   //! entity, i.e. its directory entry number (2*Number-1)
   //! in the log file format.
   Standard_EXPORT void PrintToLog(const occ::handle<Standard_Transient>& ent,
-                                          Standard_OStream&                      S) const override;
+                                  Standard_OStream&                      S) const override;
 
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)

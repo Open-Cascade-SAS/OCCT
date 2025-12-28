@@ -37,8 +37,7 @@ public:
   Standard_EXPORT void Apply() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DeltaOnResume, TDF_AttributeDelta)
 };

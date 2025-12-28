@@ -2365,7 +2365,7 @@ void ChFi3d_FilDS(const int                         SolidIndex,
   TopExp_Explorer           ex;
   occ::handle<ChFiDS_Spine> spine  = CorDat->Spine();
   bool                      Closed = false;
-  bool                      Degene = false, isVertex1 = false, isVertex2 = false, Singulier_en_Bout = false;
+  bool Degene = false, isVertex1 = false, isVertex2 = false, Singulier_en_Bout = false;
   if (!spine.IsNull())
   {
     Closed = spine->IsPeriodic();

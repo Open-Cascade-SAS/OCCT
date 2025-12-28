@@ -63,8 +63,8 @@ public:
   }
 
   bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+                  const BVH_VecNt& theMax,
+                  double&          theMetric) const override
   {
     // Reject if box doesn't intersect with selection box
     theMetric = 0.0;
@@ -100,8 +100,8 @@ public:
   }
 
   bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+                  const BVH_VecNt& theMax,
+                  double&          theMetric) const override
   {
     // Compute squared distance from point to box
     theMetric = PointBoxSquareDistance(myPoint, theMin, theMax);
@@ -124,10 +124,7 @@ public:
     return theLeft < theRight; // Closer is better
   }
 
-  bool RejectMetric(const double& theMetric) const override
-  {
-    return theMetric > myMaxDistSq;
-  }
+  bool RejectMetric(const double& theMetric) const override { return theMetric > myMaxDistSq; }
 
   int AcceptedCount() const { return myAcceptedCount; }
 
@@ -209,10 +206,10 @@ public:
   }
 
   bool RejectNode(const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          double& theMetric) const override
+                  const BVH_VecNt&,
+                  const BVH_VecNt&,
+                  const BVH_VecNt&,
+                  double& theMetric) const override
   {
     theMetric = 0.0;
     return false; // Never reject
@@ -241,10 +238,10 @@ public:
   }
 
   bool RejectNode(const BVH_VecNt& theMin1,
-                          const BVH_VecNt& theMax1,
-                          const BVH_VecNt& theMin2,
-                          const BVH_VecNt& theMax2,
-                          double&          theMetric) const override
+                  const BVH_VecNt& theMax1,
+                  const BVH_VecNt& theMin2,
+                  const BVH_VecNt& theMax2,
+                  double&          theMetric) const override
   {
     ++myRejectCount;
     theMetric = 0.0;

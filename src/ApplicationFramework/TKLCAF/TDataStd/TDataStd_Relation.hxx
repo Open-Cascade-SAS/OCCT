@@ -51,8 +51,7 @@ public:
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 };

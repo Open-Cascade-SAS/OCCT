@@ -81,8 +81,7 @@ protected:
 //=================================================================================================
 
 BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation()
-    : 
-      myOperation(BOPAlgo_UNKNOWN)
+    : myOperation(BOPAlgo_UNKNOWN)
 {
 }
 
@@ -99,8 +98,7 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const BOPAlgo_PaveFil
 BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape&     theS1,
                                                            const TopoDS_Shape&     theS2,
                                                            const BOPAlgo_Operation theOp)
-    : 
-      myOperation(theOp)
+    : myOperation(theOp)
 {
   myArguments.Append(theS1);
   myTools.Append(theS2);

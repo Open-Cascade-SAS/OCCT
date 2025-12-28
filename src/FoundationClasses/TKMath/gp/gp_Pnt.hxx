@@ -35,8 +35,8 @@ public:
 
   //! Creates a point with zero coordinates.
   constexpr gp_Pnt() noexcept
-       
-  = default;
+
+    = default;
 
   //! Creates a point from a XYZ object.
   constexpr gp_Pnt(const gp_XYZ& theCoord) noexcept

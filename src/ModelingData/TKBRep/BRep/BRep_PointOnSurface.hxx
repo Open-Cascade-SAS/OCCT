@@ -37,7 +37,7 @@ public:
   Standard_EXPORT bool IsPointOnSurface() const override;
 
   Standard_EXPORT bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const override;
+                                        const TopLoc_Location&           L) const override;
 
   Standard_EXPORT double Parameter2() const override;
 

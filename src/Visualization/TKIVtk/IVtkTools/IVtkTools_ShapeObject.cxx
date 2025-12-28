@@ -133,8 +133,7 @@ vtkStandardNewMacro(IVtkTools_ShapeObject)
   //  Method: Constructor
   // Purpose: Protected constructor.
   //============================================================================
-  IVtkTools_ShapeObject::IVtkTools_ShapeObject()
-= default;
+  IVtkTools_ShapeObject::IVtkTools_ShapeObject() = default;
 
 //=================================================================================================
 

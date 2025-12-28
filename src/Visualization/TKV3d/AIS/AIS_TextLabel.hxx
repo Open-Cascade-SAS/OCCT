@@ -135,13 +135,12 @@ public:
 protected:
   //! Compute
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   //! Compute selection
-  Standard_EXPORT void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                        const int                               theMode) override;
 
   //! Calculate label center, width and height
   Standard_EXPORT bool calculateLabelParams(const gp_Pnt& thePosition,

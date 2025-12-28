@@ -305,7 +305,7 @@ public:
 
 private:
   // ---------- PRIVATE METHODS (PROHIBITED) ----------
-  VrmlData_Scene(const VrmlData_Scene&) = delete;
+  VrmlData_Scene(const VrmlData_Scene&)            = delete;
   VrmlData_Scene& operator=(const VrmlData_Scene&) = delete;
 
 protected:

@@ -57,8 +57,7 @@ public:
   //! Give the law build on a concatenated section
   Standard_EXPORT occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
 
-  Standard_EXPORT GeomAbs_Shape Continuity(const int    Index,
-                                                   const double TolAngular) const override;
+  Standard_EXPORT GeomAbs_Shape Continuity(const int Index, const double TolAngular) const override;
 
   Standard_EXPORT double VertexTol(const int Index, const double Param) const override;
 

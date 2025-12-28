@@ -308,13 +308,12 @@ void Bnd_VoxelGrid::AppendSliceZ(const int theVoxelIndexMin,
 //==================================================================================================
 
 Bnd_BoundSortBox::Bnd_BoundSortBox()
-    : 
-      myBoxes(nullptr),
+    : myBoxes(nullptr),
       myCoeffX(0.),
       myCoeffY(0.),
       myCoeffZ(0.),
       myResolution(0),
-      
+
       myVoxelGrid(nullptr)
 {
 }

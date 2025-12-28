@@ -180,9 +180,9 @@ protected:
   //! @param[out] theLineBegPoint  the first attach point of linear dimension.
   //! @param[out] theLineEndPoint  the second attach point of linear dimension.
   Standard_EXPORT void ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint,
-                                                       const gp_Pnt& theSecondPoint,
-                                                       gp_Pnt&       theLineBegPoint,
-                                                       gp_Pnt&       theLineEndPoint) override;
+                                               const gp_Pnt& theSecondPoint,
+                                               gp_Pnt&       theLineBegPoint,
+                                               gp_Pnt&       theLineEndPoint) override;
 
   Standard_EXPORT void ComputeFlyoutSelection(
     const occ::handle<SelectMgr_Selection>&   theSelection,

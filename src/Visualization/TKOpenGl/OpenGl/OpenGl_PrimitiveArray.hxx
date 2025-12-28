@@ -52,8 +52,7 @@ public:
   Standard_EXPORT ~OpenGl_PrimitiveArray() override;
 
   //! Render primitives to the window
-  Standard_EXPORT void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
 
   //! Release OpenGL resources (VBOs)
   Standard_EXPORT void Release(OpenGl_Context* theContext) override;
@@ -64,7 +63,7 @@ public:
 
   //! Increment draw calls statistics.
   Standard_EXPORT void UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats,
-                                               bool theIsDetailed) const override;
+                                       bool                         theIsDetailed) const override;
 
   //! Return true if VBOs initialization has been performed.
   //! VBO initialization is performed during first Render() call.
@@ -107,8 +106,7 @@ public:
   const occ::handle<OpenGl_VertexBuffer>& AttributesVbo() const { return myVboAttribs; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! VBO initialization procedures

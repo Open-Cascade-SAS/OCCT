@@ -92,7 +92,7 @@ public:
 #endif
 
 private:
-  TableauRejection(const TableauRejection&) = delete;
+  TableauRejection(const TableauRejection&)            = delete;
   TableauRejection& operator=(const TableauRejection&) = delete;
 
 public:

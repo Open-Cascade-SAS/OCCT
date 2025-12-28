@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_ActuatedKinPairAndOrderKinPair,
 
 //=================================================================================================
 
-StepKinematics_ActuatedKinPairAndOrderKinPair::StepKinematics_ActuatedKinPairAndOrderKinPair() = default;
+StepKinematics_ActuatedKinPairAndOrderKinPair::StepKinematics_ActuatedKinPairAndOrderKinPair() =
+  default;
 
 //=================================================================================================
 

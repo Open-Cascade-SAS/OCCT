@@ -54,28 +54,28 @@ public:
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Guide() const override;
 
   Standard_EXPORT bool D0(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      BiNormal) override;
+                          gp_Vec&      Tangent,
+                          gp_Vec&      Normal,
+                          gp_Vec&      BiNormal) override;
 
   Standard_EXPORT bool D1(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal) override;
+                          gp_Vec&      Tangent,
+                          gp_Vec&      DTangent,
+                          gp_Vec&      Normal,
+                          gp_Vec&      DNormal,
+                          gp_Vec&      BiNormal,
+                          gp_Vec&      DBiNormal) override;
 
   Standard_EXPORT bool D2(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      D2Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      D2Normal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal,
-                                  gp_Vec&      D2BiNormal) override;
+                          gp_Vec&      Tangent,
+                          gp_Vec&      DTangent,
+                          gp_Vec&      D2Tangent,
+                          gp_Vec&      Normal,
+                          gp_Vec&      DNormal,
+                          gp_Vec&      D2Normal,
+                          gp_Vec&      BiNormal,
+                          gp_Vec&      DBiNormal,
+                          gp_Vec&      D2BiNormal) override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
@@ -94,13 +94,11 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape         S) const override;
 
   //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational surfaces.
-  Standard_EXPORT void GetAverageLaw(gp_Vec& ATangent,
-                                             gp_Vec& ANormal,
-                                             gp_Vec& ABiNormal) override;
+  Standard_EXPORT void GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal) override;
 
   //! Say if the law is Constant
   Standard_EXPORT bool IsConstant() const override;

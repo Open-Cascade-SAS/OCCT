@@ -3204,7 +3204,8 @@ double Strtod(const char* s00, char** se)
   U           aadj2, adj, rv, rv0;
   ULong       y, z;
   BCinfo      bc;
-  Bigint *    bb = nullptr, *bb1 = nullptr, *bd = nullptr, *bd0 = nullptr, *bs = nullptr, *delta = nullptr;
+  Bigint *    bb = nullptr, *bb1 = nullptr, *bd = nullptr, *bd0 = nullptr, *bs = nullptr,
+         *delta = nullptr;
 #ifdef USE_BF96
   ULLong      bhi, blo, brv, t00, t01, t02, t10, t11, terv, tg, tlo, yz;
   const BF96* p10;

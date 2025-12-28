@@ -46,9 +46,7 @@ public:
   Standard_EXPORT void DrawOn(Draw_Display& dis) const override;
 
   //! Returns always false
-  Standard_EXPORT bool PickReject(const double X,
-                                          const double Y,
-                                          const double Prec) const override;
+  Standard_EXPORT bool PickReject(const double X, const double Y, const double Prec) const override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Marker2D, Draw_Drawable2D)
 

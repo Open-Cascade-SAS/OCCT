@@ -27,8 +27,7 @@
 //=================================================================================================
 
 RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::
-  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol()
-= default;
+  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol() = default;
 
 //=================================================================================================
 

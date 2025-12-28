@@ -45,14 +45,14 @@ public:
                                             const double                          theMagnify);
 
   Standard_EXPORT bool GetGeom(const int                   ID,
-                                       const bool                  IsElement,
-                                       NCollection_Array1<double>& Coords,
-                                       int&                        NbNodes,
-                                       MeshVS_EntityType&          Type) const override;
+                               const bool                  IsElement,
+                               NCollection_Array1<double>& Coords,
+                               int&                        NbNodes,
+                               MeshVS_EntityType&          Type) const override;
 
   Standard_EXPORT bool GetGeomType(const int          ID,
-                                           const bool         IsElement,
-                                           MeshVS_EntityType& Type) const override;
+                                   const bool         IsElement,
+                                   MeshVS_EntityType& Type) const override;
 
   Standard_EXPORT bool Get3DGeom(
     const int                                                    ID,
@@ -62,8 +62,8 @@ public:
   Standard_EXPORT void* GetAddr(const int ID, const bool IsElement) const override;
 
   Standard_EXPORT bool GetNodesByElement(const int                ID,
-                                                 NCollection_Array1<int>& NodeIDs,
-                                                 int&                     NbNodes) const override;
+                                         NCollection_Array1<int>& NodeIDs,
+                                         int&                     NbNodes) const override;
 
   Standard_EXPORT const TColStd_PackedMapOfInteger& GetAllNodes() const override;
 

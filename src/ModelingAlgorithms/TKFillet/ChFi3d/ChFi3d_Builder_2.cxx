@@ -3394,12 +3394,34 @@ void ChFi3d_Builder::PerformSetOfKGen(occ::handle<ChFiDS_Stripe>& Stripe, const 
       if (pointuon1)
       {
         newsurf->VReverse(); // we return to direction 1 from  2;
-        done = CompleteData(cursd, newsurf, S1, PC1, S2, PC2, F2.Orientation(), false, false, false, false, false);
+        done = CompleteData(cursd,
+                            newsurf,
+                            S1,
+                            PC1,
+                            S2,
+                            PC2,
+                            F2.Orientation(),
+                            false,
+                            false,
+                            false,
+                            false,
+                            false);
         cursd->ChangeIndexOfS1(0);
       }
       else
       {
-        done = CompleteData(cursd, newsurf, S1, PC1, S2, PC2, F1.Orientation(), true, false, false, false, false);
+        done = CompleteData(cursd,
+                            newsurf,
+                            S1,
+                            PC1,
+                            S2,
+                            PC2,
+                            F1.Orientation(),
+                            true,
+                            false,
+                            false,
+                            false,
+                            false);
         if (pointuon2)
           cursd->ChangeIndexOfS2(0);
       }

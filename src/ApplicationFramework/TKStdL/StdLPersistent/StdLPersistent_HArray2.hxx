@@ -77,9 +77,9 @@ protected:
     }
 
     void createArray(const int theLowerRow,
-                             const int theLowerCol,
-                             const int theUpperRow,
-                             const int theUpperCol) override
+                     const int theLowerCol,
+                     const int theUpperRow,
+                     const int theUpperCol) override
     {
       myArray = new ArrayClass(theLowerRow, theUpperRow, theLowerCol, theUpperCol);
     }
@@ -90,8 +90,8 @@ protected:
     }
 
     void writeValue(StdObjMgt_WriteData& theWriteData,
-                            const int            theRow,
-                            const int            theCol) const override
+                    const int            theRow,
+                    const int            theCol) const override
     {
       theWriteData << myArray->Value(theRow, theCol);
     }

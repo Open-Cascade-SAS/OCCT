@@ -285,8 +285,8 @@ protected:
   Standard_EXPORT double ComputeValue() const override;
 
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode = 0) override;
+                               const occ::handle<Prs3d_Presentation>&         thePresentation,
+                               const int                                      theMode = 0) override;
 
   Standard_EXPORT void ComputeFlyoutSelection(
     const occ::handle<SelectMgr_Selection>&   theSelection,

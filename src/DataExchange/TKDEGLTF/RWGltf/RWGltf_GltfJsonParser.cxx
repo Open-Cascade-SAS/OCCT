@@ -1733,8 +1733,8 @@ bool RWGltf_GltfJsonParser::gltfParseMesh(TopoDS_Shape&                  theMesh
     return true;
   }
 
-  const TCollection_AsciiString aUserName((aName != nullptr && aName->IsString()) ? aName->GetString()
-                                                                               : "");
+  const TCollection_AsciiString aUserName(
+    (aName != nullptr && aName->IsString()) ? aName->GetString() : "");
 
   BRep_Builder    aBuilder;
   TopoDS_Compound aMeshShape;
@@ -2287,7 +2287,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
   if (myIsBinary)
   {
     isBinary = IsEqual("binary_glTF", theName) // glTF 1.0
-               || anUriVal == nullptr;            // glTF 2.0
+               || anUriVal == nullptr;         // glTF 2.0
   }
   if (isBinary)
   {

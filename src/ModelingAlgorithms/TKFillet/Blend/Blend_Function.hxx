@@ -99,23 +99,23 @@ public:
   Standard_EXPORT virtual bool TwistOnS2() const;
 
   Standard_EXPORT void Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>&   Weigths) override = 0;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<double>&   Weigths) override = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false
   Standard_EXPORT bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Vec>&   D2Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths,
-                                       NCollection_Array1<double>&   D2Weigths) override;
+                               NCollection_Array1<gp_Pnt>&   Poles,
+                               NCollection_Array1<gp_Vec>&   DPoles,
+                               NCollection_Array1<gp_Vec>&   D2Poles,
+                               NCollection_Array1<gp_Pnt2d>& Poles2d,
+                               NCollection_Array1<gp_Vec2d>& DPoles2d,
+                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                               NCollection_Array1<double>&   Weigths,
+                               NCollection_Array1<double>&   DWeigths,
+                               NCollection_Array1<double>&   D2Weigths) override;
 };
 
 #endif // _Blend_Function_HeaderFile

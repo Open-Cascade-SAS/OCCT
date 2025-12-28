@@ -28,8 +28,8 @@
 // GeomToIGES_GeomVector
 //=============================================================================
 GeomToIGES_GeomVector::GeomToIGES_GeomVector()
-     
-= default;
+
+  = default;
 
 //=============================================================================
 // GeomToIGES_GeomVector

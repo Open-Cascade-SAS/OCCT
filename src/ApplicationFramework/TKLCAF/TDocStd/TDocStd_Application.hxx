@@ -174,7 +174,7 @@ public:
   //! application, the new document is handled by the
   //! applicative session.
   Standard_EXPORT void NewDocument(const TCollection_ExtendedString& format,
-                                           occ::handle<CDM_Document>&        aDoc) override;
+                                   occ::handle<CDM_Document>&        aDoc) override;
 
   //! A non-virtual method taking a TDocStd_Documment object as an input.
   //! Internally it calls a virtual method NewDocument() with CDM_Document object.

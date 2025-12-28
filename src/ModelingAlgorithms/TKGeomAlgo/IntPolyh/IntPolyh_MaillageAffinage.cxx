@@ -151,10 +151,10 @@ public:
 
   //! Rejects the node
   bool RejectNode(const BVH_Vec3d& theCMin1,
-                          const BVH_Vec3d& theCMax1,
-                          const BVH_Vec3d& theCMin2,
-                          const BVH_Vec3d& theCMax2,
-                          double&) const override
+                  const BVH_Vec3d& theCMax1,
+                  const BVH_Vec3d& theCMin2,
+                  const BVH_Vec3d& theCMax2,
+                  double&) const override
   {
     return BVH_Box<double, 3>(theCMin1, theCMax1).IsOut(theCMin2, theCMax2);
   }

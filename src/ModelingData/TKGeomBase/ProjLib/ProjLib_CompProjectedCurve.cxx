@@ -1809,7 +1809,8 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
   double Tl, Tr, Ul, Ur, Vl, Vr, Tol;
 
-  occ::handle<NCollection_HArray1<double>> BArr = nullptr, CArr = nullptr, UArr = nullptr, VArr = nullptr;
+  occ::handle<NCollection_HArray1<double>> BArr = nullptr, CArr = nullptr, UArr = nullptr,
+                                           VArr = nullptr;
 
   // processing projection bounds
   BArr = new NCollection_HArray1<double>(1, 2 * myNbCurves);

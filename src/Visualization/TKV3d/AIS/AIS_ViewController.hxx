@@ -265,8 +265,8 @@ public: //! @name keyboard input
   //! @param theKey key pressed
   //! @param theTime event timestamp
   Standard_EXPORT void KeyDown(Aspect_VKey theKey,
-                                       double      theTime,
-                                       double      thePressure = 1.0) override;
+                               double      theTime,
+                               double      thePressure = 1.0) override;
 
   //! Release key.
   //! Default implementation updates internal cache.
@@ -277,9 +277,9 @@ public: //! @name keyboard input
   //! Simulate key up/down events from axis value.
   //! Default implementation updates internal cache.
   Standard_EXPORT void KeyFromAxis(Aspect_VKey theNegative,
-                                           Aspect_VKey thePositive,
-                                           double      theTime,
-                                           double      thePressure) override;
+                                   Aspect_VKey thePositive,
+                                   double      theTime,
+                                   double      thePressure) override;
 
   //! Fetch active navigation actions.
   Standard_EXPORT AIS_WalkDelta FetchNavigationKeys(double theCrouchRatio, double theRunRatio);
@@ -371,9 +371,9 @@ public: //! @name mouse input
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if View should be redrawn
   Standard_EXPORT bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                                  Aspect_VKeyMouse             theButtons,
-                                                  Aspect_VKeyFlags             theModifiers,
-                                                  bool theIsEmulated) override;
+                                          Aspect_VKeyMouse             theButtons,
+                                          Aspect_VKeyFlags             theModifiers,
+                                          bool                         theIsEmulated) override;
 
   //! Handle mouse cursor movement event.
   //! This method is expected to be called from UI thread.
@@ -384,9 +384,9 @@ public: //! @name mouse input
   //!                      but emulated from non-precise input like touch on screen
   //! @return TRUE if View should be redrawn
   Standard_EXPORT bool UpdateMousePosition(const NCollection_Vec2<int>& thePoint,
-                                                   Aspect_VKeyMouse             theButtons,
-                                                   Aspect_VKeyFlags             theModifiers,
-                                                   bool theIsEmulated) override;
+                                           Aspect_VKeyMouse             theButtons,
+                                           Aspect_VKeyFlags             theModifiers,
+                                           bool                         theIsEmulated) override;
 
   //! Handle mouse button click event (emulated by UpdateMouseButtons() while releasing single
   //! button). Note that as this method is called by UpdateMouseButtons(), it should be executed
@@ -423,16 +423,15 @@ public: //! @name multi-touch input
   //! @param thePnt touch coordinates
   //! @param theClearBefore if TRUE previously registered touches will be removed
   Standard_EXPORT void AddTouchPoint(size_t                          theId,
-                                             const NCollection_Vec2<double>& thePnt,
-                                             bool theClearBefore = false) override;
+                                     const NCollection_Vec2<double>& thePnt,
+                                     bool theClearBefore = false) override;
 
   //! Remove touch point with the given ID.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
   //! @param theClearSelectPnts if TRUE will initiate clearing of selection points
   //! @return TRUE if point has been removed
-  Standard_EXPORT bool RemoveTouchPoint(size_t theId,
-                                                bool   theClearSelectPnts = false) override;
+  Standard_EXPORT bool RemoveTouchPoint(size_t theId, bool theClearSelectPnts = false) override;
 
   //! Update touch point with the given ID.
   //! If point with specified ID was not registered before, it will be added.
@@ -440,7 +439,7 @@ public: //! @name multi-touch input
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
   Standard_EXPORT void UpdateTouchPoint(size_t                          theId,
-                                                const NCollection_Vec2<double>& thePnt) override;
+                                        const NCollection_Vec2<double>& thePnt) override;
 
   using Aspect_WindowInputListener::HasTouchPoints;
 

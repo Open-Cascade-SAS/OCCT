@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentStorageDriver, BinLDrivers_Doc
 //=================================================================================================
 
 BinTObjDrivers_DocumentStorageDriver::BinTObjDrivers_DocumentStorageDriver()
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 

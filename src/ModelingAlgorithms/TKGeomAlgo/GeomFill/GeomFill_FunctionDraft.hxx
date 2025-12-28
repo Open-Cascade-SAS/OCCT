@@ -55,9 +55,7 @@ public:
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Values(const math_Vector& X,
-                                      math_Vector&       F,
-                                      math_Matrix&       D) override;
+  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
 
   //! returns the values <F> of the T derivatives for
   //! the parameter Param.

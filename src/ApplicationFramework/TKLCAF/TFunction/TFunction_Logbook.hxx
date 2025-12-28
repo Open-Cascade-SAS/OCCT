@@ -104,7 +104,7 @@ public:
 
   //! Pastes the attribute to another label.
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       into,
-                                     const occ::handle<TDF_RelocationTable>& RT) const override;
+                             const occ::handle<TDF_RelocationTable>& RT) const override;
 
   //! Returns a new empty instance of the attribute.
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;

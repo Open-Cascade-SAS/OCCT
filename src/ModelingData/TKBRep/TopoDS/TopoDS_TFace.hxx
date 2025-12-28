@@ -30,8 +30,8 @@ class TopoDS_TFace : public TopoDS_TShape
 public:
   //! Creates an empty TFace.
   TopoDS_TFace()
-       
-  = default;
+
+    = default;
 
   //! returns FACE.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;

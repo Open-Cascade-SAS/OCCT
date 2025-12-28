@@ -63,10 +63,7 @@ public:
   Standard_EXPORT void Unhighlight();
 
   //! Return TRUE if structure has been displayed and in no hidden state.
-  bool IsDisplayed() const override
-  {
-    return base_type::IsDisplayed() && base_type::IsVisible();
-  }
+  bool IsDisplayed() const override { return base_type::IsDisplayed() && base_type::IsVisible(); }
 
   //! removes the whole content of the presentation.
   //! Does not remove the other connected presentations.
@@ -76,8 +73,7 @@ public:
   Standard_EXPORT void Compute() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! Main constructor.
@@ -89,9 +85,8 @@ protected:
   //! Displays myStructure.
   Standard_EXPORT void display(const bool theIsHighlight);
 
-  Standard_EXPORT void computeHLR(
-    const occ::handle<Graphic3d_Camera>& theProjector,
-    occ::handle<Graphic3d_Structure>&    theGivenStruct) override;
+  Standard_EXPORT void computeHLR(const occ::handle<Graphic3d_Camera>& theProjector,
+                                  occ::handle<Graphic3d_Structure>&    theGivenStruct) override;
 
   Standard_EXPORT void RecomputeTransformation(
     const occ::handle<Graphic3d_Camera>& theProjector) override;

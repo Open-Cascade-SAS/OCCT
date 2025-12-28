@@ -90,10 +90,7 @@ public:
   Standard_EXPORT double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT void Position(int& theX1,
-                                        int& theY1,
-                                        int& theX2,
-                                        int& theY2) const override;
+  Standard_EXPORT void Position(int& theX1, int& theY1, int& theX2, int& theY2) const override;
 
   //! Return the window size in pixels.
   Standard_EXPORT void Size(int& theWidth, int& theHeight) const override;

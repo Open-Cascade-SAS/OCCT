@@ -98,11 +98,11 @@ public:
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
   Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-                                          const bool isForced = false) override;
+                                  const bool                             isForced = false) override;
 
   //! It is necessary for tranzaction mechanism (Undo/Redo).
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-                                         const bool isForced = false) override;
+                                 const bool                             isForced = false) override;
 
   //! Check if back reference exists for reference.
   Standard_EXPORT void AfterResume() override;

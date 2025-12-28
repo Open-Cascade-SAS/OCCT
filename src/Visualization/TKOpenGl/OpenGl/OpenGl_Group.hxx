@@ -71,19 +71,18 @@ public:
       theMap) override;
 
   //! Add primitive array element
-  Standard_EXPORT void AddPrimitiveArray(
-    const Graphic3d_TypeOfPrimitiveArray      theType,
-    const occ::handle<Graphic3d_IndexBuffer>& theIndices,
-    const occ::handle<Graphic3d_Buffer>&      theAttribs,
-    const occ::handle<Graphic3d_BoundBuffer>& theBounds,
-    const bool                                theToEvalMinMax) override;
+  Standard_EXPORT void AddPrimitiveArray(const Graphic3d_TypeOfPrimitiveArray      theType,
+                                         const occ::handle<Graphic3d_IndexBuffer>& theIndices,
+                                         const occ::handle<Graphic3d_Buffer>&      theAttribs,
+                                         const occ::handle<Graphic3d_BoundBuffer>& theBounds,
+                                         const bool theToEvalMinMax) override;
 
   //! Adds a text for display
   Standard_EXPORT void AddText(const occ::handle<Graphic3d_Text>& theTextParams,
-                                       const bool                         theToEvalMinMax) override;
+                               const bool                         theToEvalMinMax) override;
   //! Add flipping element
   Standard_EXPORT void SetFlippingOptions(const bool    theIsEnabled,
-                                                  const gp_Ax2& theRefPlane) override;
+                                          const gp_Ax2& theRefPlane) override;
 
   //! Add stencil test element
   Standard_EXPORT void SetStencilTestOptions(const bool theIsEnabled) override;
@@ -109,8 +108,7 @@ public:
   bool IsRaytracable() const { return myIsRaytracable; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   Standard_EXPORT ~OpenGl_Group() override;

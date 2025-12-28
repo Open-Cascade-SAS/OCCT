@@ -18,5 +18,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricallyBoundedWireframeShapeRepresent
                            StepShape_ShapeRepresentation)
 
 StepShape_GeometricallyBoundedWireframeShapeRepresentation::
-  StepShape_GeometricallyBoundedWireframeShapeRepresentation()
-= default;
+  StepShape_GeometricallyBoundedWireframeShapeRepresentation() = default;

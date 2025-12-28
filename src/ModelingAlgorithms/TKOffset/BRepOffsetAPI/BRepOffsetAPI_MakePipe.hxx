@@ -77,8 +77,7 @@ public:
   //! Returns the TopoDS Shape of the top of the prism.
   Standard_EXPORT TopoDS_Shape LastShape() override;
 
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   Standard_EXPORT TopoDS_Shape Generated(const TopoDS_Shape& SSpine, const TopoDS_Shape& SProfile);
 

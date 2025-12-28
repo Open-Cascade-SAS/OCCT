@@ -37,8 +37,8 @@ public:
   Standard_EXPORT const occ::handle<Standard_Type>& SourceType() const override;
 
   Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
-                                     const occ::handle<TDF_Attribute>& Target,
-                                     BinObjMgt_RRelocationTable&       RelocTable) const override;
+                             const occ::handle<TDF_Attribute>& Target,
+                             BinObjMgt_RRelocationTable&       RelocTable) const override;
 
   Standard_EXPORT void Paste(
     const occ::handle<TDF_Attribute>&                        Source,

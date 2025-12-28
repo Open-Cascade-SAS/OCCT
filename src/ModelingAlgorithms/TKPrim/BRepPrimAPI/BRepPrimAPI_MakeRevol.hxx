@@ -95,8 +95,7 @@ public:
   //! Returns list of shape generated from shape S
   //! Warning: shape S must be shape of type VERTEX, EDGE, FACE, SOLID.
   //! For shapes of other types method always returns empty list
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S) override;
 
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT bool IsDeleted(const TopoDS_Shape& S) override;

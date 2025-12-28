@@ -23,8 +23,7 @@
 #include "RWStepBasic_RWSource.pxx"
 
 RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::
-  RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource()
-= default;
+  RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource() = default;
 
 void RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                 data,

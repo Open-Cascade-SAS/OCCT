@@ -154,7 +154,8 @@ int IVtkTools_SubPolyDataFilter::RequestData(vtkInformation*        vtkNotUsed(t
     vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
     anIdList->Allocate(myIdsSet.Extent()); // Allocate the list of ids
 
-    const vtkIdType aSize = aDataArray.GetPointer() != nullptr ? aDataArray->GetNumberOfTuples() : 0;
+    const vtkIdType aSize =
+      aDataArray.GetPointer() != nullptr ? aDataArray->GetNumberOfTuples() : 0;
     if (aSize != 0)
     {
       anIdList->Allocate(aSize); // Allocate the list of ids

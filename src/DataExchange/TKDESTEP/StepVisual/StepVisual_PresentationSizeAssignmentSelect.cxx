@@ -18,7 +18,8 @@
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 #include <StepVisual_PresentationView.hxx>
 
-StepVisual_PresentationSizeAssignmentSelect::StepVisual_PresentationSizeAssignmentSelect() = default;
+StepVisual_PresentationSizeAssignmentSelect::StepVisual_PresentationSizeAssignmentSelect() =
+  default;
 
 int StepVisual_PresentationSizeAssignmentSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const

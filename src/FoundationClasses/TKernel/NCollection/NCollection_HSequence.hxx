@@ -59,8 +59,9 @@ public:
   //! Append items from another HSequence.
   //! @param theOther handle to another HSequence
   template <class T>
-  void Append(const opencascade::handle<T>& theOther,
-              typename std::enable_if<std::is_base_of<NCollection_HSequence, T>::value>::type* = nullptr)
+  void Append(
+    const opencascade::handle<T>& theOther,
+    typename std::enable_if<std::is_base_of<NCollection_HSequence, T>::value>::type* = nullptr)
   {
     SequenceType::Append(theOther->ChangeSequence());
   }

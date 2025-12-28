@@ -66,9 +66,9 @@ public:
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
   Standard_EXPORT void TransferRange(TopoDS_Edge& newEdge,
-                                             const double prevPar,
-                                             const double currPar,
-                                             const bool   Is2d) override;
+                                     const double prevPar,
+                                     const double currPar,
+                                     const bool   Is2d) override;
 
   //! Returns False;
   Standard_EXPORT bool IsSameRange() const override;

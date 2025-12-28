@@ -119,18 +119,17 @@ public:
 
   //! Something to do before applying <anAttDelta>
   Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+                                  const bool                             forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+                                 const bool                             forceIt = false) override;
 
   //! Dumps the attribute on <aStream>.
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   friend class TNaming_Builder;
   friend class TNaming_Iterator;

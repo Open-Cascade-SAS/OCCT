@@ -23,8 +23,7 @@
 //=================================================================================================
 
 RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp::
-  RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp()
-= default;
+  RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp() = default;
 
 //=================================================================================================
 

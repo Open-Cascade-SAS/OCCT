@@ -65,8 +65,8 @@ public:
 public:
   //! Defines the rules for node rejection by bounding box
   bool RejectNode(const BVH_Vec3d& theCornerMin,
-                          const BVH_Vec3d& theCornerMax,
-                          bool&            theIsInside) const override
+                  const BVH_Vec3d& theCornerMax,
+                  bool&            theIsInside) const override
   {
     bool hasOverlap;
     theIsInside = myBox.Contains(theCornerMin, theCornerMax, hasOverlap);
@@ -118,8 +118,8 @@ public:
 public:
   //! Defines the rules for node rejection by bounding box
   bool RejectNode(const BVH_Vec3d& theCornerMin,
-                          const BVH_Vec3d& theCornerMax,
-                          bool&            theIsInside) const override
+                  const BVH_Vec3d& theCornerMax,
+                  bool&            theIsInside) const override
   {
     bool hasOverlap;
     theIsInside = myBox.Contains(theCornerMin, theCornerMax, hasOverlap);
@@ -259,10 +259,10 @@ public:
 public:
   //! Defines the rules for node rejection
   bool RejectNode(const BVH_Vec3d& theCornerMin1,
-                          const BVH_Vec3d& theCornerMax1,
-                          const BVH_Vec3d& theCornerMin2,
-                          const BVH_Vec3d& theCornerMax2,
-                          double&) const override
+                  const BVH_Vec3d& theCornerMax1,
+                  const BVH_Vec3d& theCornerMin2,
+                  const BVH_Vec3d& theCornerMax2,
+                  double&) const override
   {
     return BVH_Box<double, 3>(theCornerMin1, theCornerMax1)
       .IsOut(BVH_Box<double, 3>(theCornerMin2, theCornerMax2));
@@ -311,10 +311,10 @@ public:
 public:
   //! Defines the rules for node rejection
   bool RejectNode(const BVH_Vec3d& theCornerMin1,
-                          const BVH_Vec3d& theCornerMax1,
-                          const BVH_Vec3d& theCornerMin2,
-                          const BVH_Vec3d& theCornerMax2,
-                          double&) const override
+                  const BVH_Vec3d& theCornerMax1,
+                  const BVH_Vec3d& theCornerMin2,
+                  const BVH_Vec3d& theCornerMax2,
+                  double&) const override
   {
     return BVH_Box<double, 3>(theCornerMin1, theCornerMax1)
       .IsOut(BVH_Box<double, 3>(theCornerMin2, theCornerMax2));
@@ -662,8 +662,8 @@ class QABVH_TriangleSet : public BVH_Triangulation<double, 3>
 {
 public:
   QABVH_TriangleSet()
-       
-  = default;
+
+    = default;
 
 public:
   //! Creates the triangulation from a face
@@ -709,8 +709,8 @@ class QABVH_Geometry : public BVH_Geometry<double, 3>
 {
 public:
   QABVH_Geometry()
-       
-  = default;
+
+    = default;
 
 public:
   //! Creates the triangulation from a face

@@ -41,8 +41,7 @@ const LDOM_MemManager& LDOM_Node::getOwnerDocument() const
 // purpose  : Assignment
 //=======================================================================
 
-LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther)
-= default;
+LDOM_Node& LDOM_Node::operator=(const LDOM_Node& theOther) = default;
 
 //=======================================================================
 // function : operator =

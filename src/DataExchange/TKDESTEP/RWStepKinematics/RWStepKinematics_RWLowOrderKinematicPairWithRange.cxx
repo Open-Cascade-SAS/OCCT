@@ -29,8 +29,7 @@
 //=================================================================================================
 
 RWStepKinematics_RWLowOrderKinematicPairWithRange::
-  RWStepKinematics_RWLowOrderKinematicPairWithRange()
-= default;
+  RWStepKinematics_RWLowOrderKinematicPairWithRange() = default;
 
 //=================================================================================================
 

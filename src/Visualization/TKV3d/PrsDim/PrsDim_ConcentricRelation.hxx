@@ -43,8 +43,8 @@ public:
 
 private:
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
   Standard_EXPORT void ComputeTwoEdgesConcentric(const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
@@ -55,7 +55,7 @@ private:
     const occ::handle<Prs3d_Presentation>& thePrsMgr);
 
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+                                        const int                               theMode) override;
 
 private:
   gp_Pnt myCenter;

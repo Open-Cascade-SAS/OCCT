@@ -57,7 +57,7 @@ static void MakeInternalWires(const NCollection_IndexedMap<TopoDS_Shape, TopTool
 //=================================================================================================
 
 BOPAlgo_BuilderFace::BOPAlgo_BuilderFace()
-     
+
 {
   myOrientation = TopAbs_EXTERNAL;
 }

@@ -127,8 +127,8 @@ protected:
   Standard_EXPORT double ComputeValue() const override;
 
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
 protected:
   Standard_EXPORT bool IsValidCircle(const gp_Circ& theCircle) const;

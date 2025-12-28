@@ -90,8 +90,8 @@ public:
   //! allows you to control the precision of computation, and
   //! the maximum number of iterations allows you to set a limit on computation time.
   Standard_EXPORT bool Compute(FairCurve_AnalysisCode& ACode,
-                                       const int               NbIterations = 50,
-                                       const double            Tolerance    = 1.0e-3) override;
+                               const int               NbIterations = 50,
+                               const double            Tolerance    = 1.0e-3) override;
 
   //! Returns the first established curvature.
   double GetCurvature1() const;

@@ -46,7 +46,7 @@ public:
 
 private:
   // prevent copies
-  Media_BufferPool(const Media_BufferPool& theCopy) = delete;
+  Media_BufferPool(const Media_BufferPool& theCopy)            = delete;
   Media_BufferPool& operator=(const Media_BufferPool& theCopy) = delete;
 
 protected:

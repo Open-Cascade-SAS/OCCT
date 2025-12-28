@@ -49,13 +49,12 @@ public:
 
   //! Return transformation from eye to head.
   //! vr::GetEyeToHeadTransform() wrapper.
-  Standard_EXPORT NCollection_Mat4<double> EyeToHeadTransform(
-    Aspect_Eye theEye) const override;
+  Standard_EXPORT NCollection_Mat4<double> EyeToHeadTransform(Aspect_Eye theEye) const override;
 
   //! Return projection matrix.
   Standard_EXPORT NCollection_Mat4<double> ProjectionMatrix(Aspect_Eye theEye,
-                                                                    double     theZNear,
-                                                                    double theZFar) const override;
+                                                            double     theZNear,
+                                                            double     theZFar) const override;
 
   //! Return TRUE.
   bool HasProjectionFrustums() const override { return true; }
@@ -72,28 +71,27 @@ public:
   //! @param[in] theEye  eye to display
   //! @return FALSE on error
   Standard_EXPORT bool SubmitEye(void*                  theTexture,
-                                         Aspect_GraphicsLibrary theGraphicsLib,
-                                         Aspect_ColorSpace      theColorSpace,
-                                         Aspect_Eye             theEye) override;
+                                 Aspect_GraphicsLibrary theGraphicsLib,
+                                 Aspect_ColorSpace      theColorSpace,
+                                 Aspect_Eye             theEye) override;
 
   //! Query information.
   Standard_EXPORT TCollection_AsciiString GetString(InfoString theInfo) const override;
 
   //! Return index of tracked device of known role.
-  Standard_EXPORT int NamedTrackedDevice(
-    Aspect_XRTrackedDeviceRole theDevice) const override;
+  Standard_EXPORT int NamedTrackedDevice(Aspect_XRTrackedDeviceRole theDevice) const override;
 
   //! Fetch data for digital input action (like button).
-  Standard_EXPORT Aspect_XRDigitalActionData GetDigitalActionData(
-    const occ::handle<Aspect_XRAction>& theAction) const override;
+  Standard_EXPORT Aspect_XRDigitalActionData
+    GetDigitalActionData(const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Fetch data for analog input action (like axis).
-  Standard_EXPORT Aspect_XRAnalogActionData GetAnalogActionData(
-    const occ::handle<Aspect_XRAction>& theAction) const override;
+  Standard_EXPORT Aspect_XRAnalogActionData
+    GetAnalogActionData(const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Fetch data for pose input action (like fingertip position).
-  Standard_EXPORT Aspect_XRPoseActionData GetPoseActionDataForNextFrame(
-    const occ::handle<Aspect_XRAction>& theAction) const override;
+  Standard_EXPORT Aspect_XRPoseActionData
+    GetPoseActionDataForNextFrame(const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Set tracking origin.
   Standard_EXPORT void SetTrackingOrigin(TrackingUniverseOrigin theOrigin) override;

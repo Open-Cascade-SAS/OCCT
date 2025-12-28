@@ -46,8 +46,8 @@ public: //! @name public interfaces
 public: //! @name Rejection/Acceptance rules
   //! Checks if the box should be rejected
   bool RejectNode(const BVH_VecNd& theCMin,
-                          const BVH_VecNd& theCMax,
-                          bool&            theIsInside) const override
+                  const BVH_VecNd& theCMax,
+                  bool&            theIsInside) const override
   {
     bool hasOverlap;
     theIsInside = myBox.Contains(theCMin, theCMax, hasOverlap);

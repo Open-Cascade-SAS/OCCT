@@ -1927,11 +1927,11 @@ static double SquareDistance(const occ::handle<IntPatch_GLine>& theGLine,
   return aSQDist;
 }
 
-static bool IsRLineGood(const IntSurf_Quadric&            Quad1,
-                        const IntSurf_Quadric&            Quad2,
+static bool IsRLineGood(const IntSurf_Quadric&             Quad1,
+                        const IntSurf_Quadric&             Quad2,
                         const occ::handle<IntPatch_GLine>& theGLine,
                         const occ::handle<IntPatch_RLine>& theRLine,
-                        const double                      theTol)
+                        const double                       theTol)
 {
   const double         aSQTol    = theTol * theTol;
   const IntPatch_IType aGType    = theGLine->ArcType();

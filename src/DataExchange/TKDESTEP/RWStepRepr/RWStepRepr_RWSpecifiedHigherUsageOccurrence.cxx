@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWSpecifiedHigherUsageOccurrence::RWStepRepr_RWSpecifiedHigherUsageOccurrence() = default;
+RWStepRepr_RWSpecifiedHigherUsageOccurrence::RWStepRepr_RWSpecifiedHigherUsageOccurrence() =
+  default;
 
 //=================================================================================================
 

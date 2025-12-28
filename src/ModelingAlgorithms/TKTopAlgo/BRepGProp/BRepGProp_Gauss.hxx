@@ -197,7 +197,7 @@ public: //! @name public API
                                  gp_Mat&           theOutInertia);
 
 private: //! @name private methods
-  BRepGProp_Gauss(BRepGProp_Gauss const&) = delete;
+  BRepGProp_Gauss(BRepGProp_Gauss const&)            = delete;
   BRepGProp_Gauss& operator=(BRepGProp_Gauss const&) = delete;
 
   void computeVInertiaOfElementaryPart(const gp_Pnt&             thePoint,

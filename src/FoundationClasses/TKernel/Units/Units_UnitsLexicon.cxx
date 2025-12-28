@@ -29,8 +29,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_UnitsLexicon, Units_Lexicon)
 //=================================================================================================
 
 Units_UnitsLexicon::Units_UnitsLexicon()
-     
-= default;
+
+  = default;
 
 //=================================================================================================
 

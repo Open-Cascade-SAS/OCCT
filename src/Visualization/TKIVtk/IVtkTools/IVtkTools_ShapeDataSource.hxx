@@ -78,8 +78,8 @@ protected: //! @name Interface to override
   //! stage of the VTK pipeline, theInputVector is empty and not used (no input port).
   //! @param[in] theOutputVector  the pointer to output data, that is filled in this method.
   int RequestData(vtkInformation*        theRequest,
-                          vtkInformationVector** theInputVector,
-                          vtkInformationVector*  theOutputVector) override;
+                  vtkInformationVector** theInputVector,
+                  vtkInformationVector*  theOutputVector) override;
 
 protected: //! @name Internals
   //! Transforms the passed polygonal data by the given OCCT transformation
@@ -94,7 +94,7 @@ protected:
   ~IVtkTools_ShapeDataSource() override;
 
 private:
-  IVtkTools_ShapeDataSource(const IVtkTools_ShapeDataSource&) = delete;
+  IVtkTools_ShapeDataSource(const IVtkTools_ShapeDataSource&)            = delete;
   IVtkTools_ShapeDataSource& operator=(const IVtkTools_ShapeDataSource&) = delete;
 
 protected:

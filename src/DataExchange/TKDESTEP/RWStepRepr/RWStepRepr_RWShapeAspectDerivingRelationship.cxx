@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepRepr_RWShapeAspectDerivingRelationship::RWStepRepr_RWShapeAspectDerivingRelationship() = default;
+RWStepRepr_RWShapeAspectDerivingRelationship::RWStepRepr_RWShapeAspectDerivingRelationship() =
+  default;
 
 //=================================================================================================
 

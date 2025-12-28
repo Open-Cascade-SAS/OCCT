@@ -80,11 +80,11 @@ public:
 
   //! Something to do before applying <anAttDelta>.
   Standard_EXPORT bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+                                  const bool                             forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+                                 const bool                             forceIt = false) override;
 
   //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.

@@ -593,8 +593,7 @@ public: //! @name obsolete Graduated Trihedron functionality
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 public: //! @name subview properties
   //! Return TRUE if this is a subview of another view.

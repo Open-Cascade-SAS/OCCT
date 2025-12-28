@@ -32,7 +32,7 @@ TDF_LabelNode::TDF_LabelNode(TDF_Data* aDataPtr)
 #endif
       myFirstChild(nullptr),
       myLastFoundChild(nullptr), // jfa 10.01.2003
-      myTag(0),               // Always 0 for root.
+      myTag(0),                  // Always 0 for root.
       myFlags(0),
 #ifdef KEEP_LOCAL_ROOT
       myData(aDataPtr)

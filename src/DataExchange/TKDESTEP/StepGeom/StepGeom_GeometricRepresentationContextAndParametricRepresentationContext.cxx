@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(
   StepRepr_RepresentationContext)
 
 StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
-  StepGeom_GeometricRepresentationContextAndParametricRepresentationContext()
-= default;
+  StepGeom_GeometricRepresentationContextAndParametricRepresentationContext() = default;
 
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::Init(
   const occ::handle<TCollection_HAsciiString>&                 aContextIdentifier,

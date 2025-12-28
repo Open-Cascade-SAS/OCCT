@@ -45,8 +45,7 @@
 //=================================================================================================
 
 BOPAlgo_ArgumentAnalyzer::BOPAlgo_ArgumentAnalyzer()
-    : 
-      myStopOnFirst(false),
+    : myStopOnFirst(false),
       myOperation(BOPAlgo_UNKNOWN),
       myArgumentTypeMode(false),
       mySelfInterMode(false),

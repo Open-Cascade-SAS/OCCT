@@ -31,7 +31,8 @@
 
 //=================================================================================================
 
-RWStepVisual_RWComplexTriangulatedSurfaceSet::RWStepVisual_RWComplexTriangulatedSurfaceSet() = default;
+RWStepVisual_RWComplexTriangulatedSurfaceSet::RWStepVisual_RWComplexTriangulatedSurfaceSet() =
+  default;
 
 //=================================================================================================
 

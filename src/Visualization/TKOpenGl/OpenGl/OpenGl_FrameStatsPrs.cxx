@@ -458,8 +458,12 @@ void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorksp
     aCtx->core15fwd->glDisable(GL_BLEND);
 
     myChartLines->Bind(aCtx);
-    myChartLines
-      ->bindAttribute(aCtx, Graphic3d_TOA_POS, 3, GL_FLOAT, myChartLines->GetComponentsNb(), nullptr);
+    myChartLines->bindAttribute(aCtx,
+                                Graphic3d_TOA_POS,
+                                3,
+                                GL_FLOAT,
+                                myChartLines->GetComponentsNb(),
+                                nullptr);
     myChartLines->bindAttribute(aCtx,
                                 Graphic3d_TOA_COLOR,
                                 4,

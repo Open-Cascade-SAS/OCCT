@@ -34,8 +34,8 @@ public:
   //! @param[in] theViewportWidth  the width of viewport.
   //! @param[in] theViewportHeight  the height of viewport.
   Standard_EXPORT double persistentScale(const occ::handle<Graphic3d_Camera>& theCamera,
-                                                 const int theViewportWidth,
-                                                 const int theViewportHeight) const override;
+                                         const int                            theViewportWidth,
+                                         const int theViewportHeight) const override;
 
 public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)

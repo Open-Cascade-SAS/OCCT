@@ -30,8 +30,7 @@ static const int DegeneratedMask = 4;
 //=================================================================================================
 
 BRep_TEdge::BRep_TEdge()
-    : 
-      myTolerance(RealEpsilon()),
+    : myTolerance(RealEpsilon()),
       myFlags(0)
 {
   SameParameter(true);

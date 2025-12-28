@@ -209,8 +209,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfVV()
-       
-  = default;
+
+    = default;
 
   //
   /**
@@ -246,8 +246,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfVE()
-      : 
-        myParameter(0.)
+      : myParameter(0.)
   {
   }
 
@@ -309,8 +308,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfVF()
-      : 
-        myU(0.),
+      : myU(0.),
         myV(0.)
   {
   }
@@ -387,8 +385,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfEE()
-       
-  = default;
+
+    = default;
 
   //
   /**
@@ -443,8 +441,8 @@ public:
    *  Constructor
    */
   BOPDS_InterfEF()
-       
-  = default;
+
+    = default;
 
   //
   /**
@@ -506,8 +504,7 @@ public:
    *  Constructor
    */
   BOPDS_InterfFF()
-      : 
-        myTangentFaces(false),
+      : myTangentFaces(false),
         myCurves(0, myAllocator),
         myPoints(0, myAllocator)
   {
@@ -612,8 +609,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfVZ()
-       = default;
+  BOPDS_InterfVZ() = default;
   //
   /**
    *  Constructor
@@ -643,8 +639,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfEZ()
-       = default;
+  BOPDS_InterfEZ() = default;
   //
   /**
    *  Constructor
@@ -674,8 +669,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfFZ()
-       = default;
+  BOPDS_InterfFZ() = default;
   //
   /**
    *  Constructor
@@ -705,8 +699,7 @@ public:
   /**
    *  Constructor
    */
-  BOPDS_InterfZZ()
-       = default;
+  BOPDS_InterfZZ() = default;
   //
   /**
    *  Constructor

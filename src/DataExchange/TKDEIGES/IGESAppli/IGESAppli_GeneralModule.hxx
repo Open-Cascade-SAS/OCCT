@@ -71,8 +71,8 @@ public:
   //! Piping for : Flow & Co
   //! Professional for : others (in fact Schematics)
   Standard_EXPORT int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_GeneralModule, IGESData_GeneralModule)
 };

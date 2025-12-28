@@ -60,7 +60,7 @@ public:
   //! Checks whether one or more entities of the set overlap current selecting volume.
   //! Implements the traverse of BVH tree built for the set
   bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+               SelectBasics_PickResult&             thePickResult) override
   {
     return matches(theMgr, thePickResult, false);
   }
@@ -99,8 +99,7 @@ public:
   int GetLeafNodeSize() const { return myContent.Builder()->LeafNodeSize(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   //! Checks whether one or more entities of the set overlap current selecting volume.
@@ -189,10 +188,7 @@ protected:
     int Size() const override { return mySensitiveSet->Size(); }
 
     //! Returns bounding box of sensitive with index theIdx
-    Select3D_BndBox3d Box(const int theIdx) const override
-    {
-      return mySensitiveSet->Box(theIdx);
-    }
+    Select3D_BndBox3d Box(const int theIdx) const override { return mySensitiveSet->Box(theIdx); }
 
     //! Make inherited method Box() visible to avoid CLang warning
     using BVH_PrimitiveSet3d::Box;

@@ -46,8 +46,8 @@ public:
 
   //! Builds BVH.
   void Build(BVH_Set<T, N>*       theSet,
-                     BVH_Tree<T, N>*      theBVH,
-                     const BVH_Box<T, N>& theBox) const override;
+             BVH_Tree<T, N>*      theBVH,
+             const BVH_Box<T, N>& theBox) const override;
 
 protected:
   typedef NCollection_Array1<BVH_EncodedLink>::iterator LinkIterator;

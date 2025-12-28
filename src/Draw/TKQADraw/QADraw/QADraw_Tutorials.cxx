@@ -59,11 +59,10 @@ public:
 
 public:
   void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+               const occ::handle<Prs3d_Presentation>&         thePrs,
+               const int                                      theMode) override;
 
-  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+  void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel, const int theMode) override;
 
   bool AcceptDisplayMode(const int theMode) const override
   {
@@ -172,17 +171,17 @@ public:
   void SetAnimation(const occ::handle<AIS_Animation>& theAnim) { myAnim = theAnim; }
 
   void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                const occ::handle<Prs3d_Drawer>&               theStyle,
-                                const int                                      theMode) override;
+                        const occ::handle<Prs3d_Drawer>&               theStyle,
+                        const int                                      theMode) override;
   void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                         const int                                      theMode) override;
+                 const int                                      theMode) override;
 
   bool IsForcedHilight() const override { return true; }
 
   bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                Aspect_VKeyMouse             theButton,
-                                Aspect_VKeyFlags             theModifiers,
-                                bool                         theIsDoubleClick) override;
+                        Aspect_VKeyMouse             theButton,
+                        Aspect_VKeyFlags             theModifiers,
+                        bool                         theIsDoubleClick) override;
 
   void SetLocation(const TopLoc_Location& theLocation) override
   {

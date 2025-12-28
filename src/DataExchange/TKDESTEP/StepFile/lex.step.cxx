@@ -520,7 +520,6 @@ static const flex_int16_t yy_chk[373] = {
 #define YY_NO_INPUT 1
 
 #include <step.tab.hxx>
-#include <cstdio>
 
 // Tell flex which function to define
 #ifdef YY_DECL
@@ -1741,7 +1740,7 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
     return;
 
   if (b == YY_CURRENT_BUFFER) /* Not sure if we should pop here. */
-    YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE)nullptr;
+    YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) nullptr;
 
   if (b->yy_is_our_buffer)
     yyfree((void*)b->yy_ch_buf);

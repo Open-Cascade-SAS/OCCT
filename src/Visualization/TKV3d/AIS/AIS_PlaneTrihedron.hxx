@@ -87,12 +87,12 @@ public:
 
 protected:
   Standard_EXPORT void Compute(const occ::handle<PrsMgr_PresentationManager>& theprsMgr,
-                                       const occ::handle<Prs3d_Presentation>&         thePrs,
-                                       const int theMode) override;
+                               const occ::handle<Prs3d_Presentation>&         thePrs,
+                               const int                                      theMode) override;
 
 private:
   Standard_EXPORT void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                                const int theMode) override;
+                                        const int                               theMode) override;
 
 private:
   occ::handle<Geom_Plane>            myPlane;

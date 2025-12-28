@@ -91,19 +91,17 @@ public:
     const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
   //! Dumps the geometry of <S> on the stream <OS>.
-  Standard_EXPORT void DumpGeometry(const TopoDS_Shape& S,
-                                            Standard_OStream&   OS) const override;
+  Standard_EXPORT void DumpGeometry(const TopoDS_Shape& S, Standard_OStream& OS) const override;
 
   //! Writes the geometry of <S> on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT void WriteGeometry(const TopoDS_Shape& S,
-                                             Standard_OStream&   OS) const override;
+  Standard_EXPORT void WriteGeometry(const TopoDS_Shape& S, Standard_OStream& OS) const override;
 
   //! Reads the geometry of a shape of type <T> from the
   //! stream <IS> and returns it in <S>.
   Standard_EXPORT void ReadGeometry(const TopAbs_ShapeEnum T,
-                                            Standard_IStream&      IS,
-                                            TopoDS_Shape&          S) override;
+                                    Standard_IStream&      IS,
+                                    TopoDS_Shape&          S) override;
 
   //! Inserts the shape <S2> in the shape <S1>. This
   //! method must be redefined to use the correct

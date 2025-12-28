@@ -1207,7 +1207,7 @@ void Run_Appli(bool (*interprete)(const char*))
   Tcl_CreateFileHandler(ConnectionNumber(Draw_WindowDisplay),
                         TCL_READABLE,
                         processXEvents,
-                        (ClientData)nullptr);
+                        (ClientData) nullptr);
   #endif // __APPLE__
 
   Draw_Interpretor& aCommands = Draw::GetInterpretor();

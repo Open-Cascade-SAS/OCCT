@@ -65,8 +65,7 @@ public:
   //! Direct Mode, rejected in Reversed Mode
   //!
   //! Query works on the sending count recorded as status in Graph
-  Standard_EXPORT Interface_EntityIterator RootResult(
-    const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
 
   //! Returns always False because RootResult has done the work
   Standard_EXPORT bool Sort(const int                                    rank,

@@ -17,5 +17,4 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationshipWithTransform
                            StepRepr_RepresentationRelationshipWithTransformation)
 
 StepRepr_ShapeRepresentationRelationshipWithTransformation::
-  StepRepr_ShapeRepresentationRelationshipWithTransformation()
-= default;
+  StepRepr_ShapeRepresentationRelationshipWithTransformation() = default;

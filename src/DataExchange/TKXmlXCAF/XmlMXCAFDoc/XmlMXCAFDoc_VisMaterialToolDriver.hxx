@@ -30,13 +30,13 @@ public:
 
   //! Paste attribute from persistence into document.
   Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     XmlObjMgt_RRelocationTable& theRelocTable) const override;
+                             const occ::handle<TDF_Attribute>& theTarget,
+                             XmlObjMgt_RRelocationTable&       theRelocTable) const override;
 
   //! Paste attribute from document into persistence.
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& theSource,
-                                     XmlObjMgt_Persistent&             theTarget,
-                                     XmlObjMgt_SRelocationTable& theRelocTable) const override;
+                             XmlObjMgt_Persistent&             theTarget,
+                             XmlObjMgt_SRelocationTable&       theRelocTable) const override;
 };
 
 #endif // _XmlMXCAFDoc_VisMaterialToolDriver_HeaderFile

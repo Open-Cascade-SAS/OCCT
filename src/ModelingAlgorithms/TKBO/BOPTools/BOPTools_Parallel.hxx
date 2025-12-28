@@ -43,7 +43,7 @@ class BOPTools_Parallel
     }
 
   private:
-    Functor(const Functor&) = delete;
+    Functor(const Functor&)            = delete;
     Functor& operator=(const Functor&) = delete;
 
   private:
@@ -99,7 +99,7 @@ class BOPTools_Parallel
     }
 
   private:
-    ContextFunctor(const ContextFunctor&) = delete;
+    ContextFunctor(const ContextFunctor&)            = delete;
     ContextFunctor& operator=(const ContextFunctor&) = delete;
 
   private:
@@ -143,7 +143,7 @@ class BOPTools_Parallel
     }
 
   private:
-    ContextFunctor2(const ContextFunctor2&) = delete;
+    ContextFunctor2(const ContextFunctor2&)            = delete;
     ContextFunctor2& operator=(const ContextFunctor2&) = delete;
 
   private:

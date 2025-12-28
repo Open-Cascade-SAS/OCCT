@@ -144,8 +144,7 @@ public:
   //! me->Value(U).Transformed(T)
   //!
   //! This methods returns <U> * T.ScaleFactor()
-  Standard_EXPORT double TransformedParameter(const double   U,
-                                                      const gp_Trsf& T) const override;
+  Standard_EXPORT double TransformedParameter(const double U, const gp_Trsf& T) const override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -164,8 +163,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Line, Geom_Curve)
 

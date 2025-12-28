@@ -65,7 +65,7 @@ public:
 
   //! Defines method Show of Progress Indicator
   Standard_EXPORT void Show(const Message_ProgressScope& theScope,
-                                    const bool                   force = true) override;
+                            const bool                   force = true) override;
 
   //! Redefines method UserBreak of Progress Indicator
   Standard_EXPORT bool UserBreak() override;

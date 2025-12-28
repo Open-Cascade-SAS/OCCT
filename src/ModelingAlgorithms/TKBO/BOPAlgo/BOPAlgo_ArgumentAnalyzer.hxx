@@ -91,7 +91,8 @@ public:
   bool& CurveOnSurfaceMode();
 
   //! performs analysis
-  Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+  Standard_EXPORT void Perform(
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   //! result of test
   Standard_EXPORT bool HasFaulty() const;

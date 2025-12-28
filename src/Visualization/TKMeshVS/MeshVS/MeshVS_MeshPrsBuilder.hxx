@@ -47,10 +47,10 @@ public:
 
   //! Builds base mesh presentation by calling the methods below
   Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int DisplayMode) const override;
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              DisplayMode) const override;
 
   //! Builds nodes presentation
   Standard_EXPORT virtual void BuildNodes(const occ::handle<Prs3d_Presentation>& Prs,

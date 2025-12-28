@@ -45,10 +45,10 @@ public:
 
   //! Builds presentation of elements with assigned colors.
   Standard_EXPORT void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int DisplayMode) const override;
+                             const TColStd_PackedMapOfInteger&      IDs,
+                             TColStd_PackedMapOfInteger&            IDsToExclude,
+                             const bool                             IsElement,
+                             const int                              DisplayMode) const override;
 
   //! Returns map of colors same for front and back side of face.
   Standard_EXPORT const NCollection_DataMap<int, Quantity_Color>& GetColors1() const;

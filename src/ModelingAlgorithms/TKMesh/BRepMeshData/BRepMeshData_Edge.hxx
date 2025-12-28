@@ -47,8 +47,7 @@ public:
     const TopAbs_Orientation   theOrientation) const override;
 
   //! Returns pcurve with the given index.
-  Standard_EXPORT const IMeshData::IPCurveHandle& GetPCurve(
-    const int theIndex) const override;
+  Standard_EXPORT const IMeshData::IPCurveHandle& GetPCurve(const int theIndex) const override;
 
   //! Returns an array of pcurves indices for the specified discrete face.
   Standard_EXPORT const IMeshData::ListOfInteger& GetPCurves(

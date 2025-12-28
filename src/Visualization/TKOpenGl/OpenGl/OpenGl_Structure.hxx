@@ -53,8 +53,7 @@ public:
   Standard_EXPORT void Disconnect(Graphic3d_CStructure& theStructure) override;
 
   //! Synchronize structure transformation
-  Standard_EXPORT void SetTransformation(
-    const occ::handle<TopLoc_Datum3D>& theTrsf) override;
+  Standard_EXPORT void SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf) override;
 
   //! Set transformation persistence.
   Standard_EXPORT void SetTransformPersistence(
@@ -121,8 +120,7 @@ public:
   Standard_EXPORT void updateLayerTransformation() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   Standard_EXPORT ~OpenGl_Structure() override;

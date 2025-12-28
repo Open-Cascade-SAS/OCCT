@@ -70,8 +70,7 @@ static bool InDomain(const double fpar, const double lpar, const double para)
 PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
                                        const occ::handle<Geom_Plane>& aPlane,
                                        const TopoDS_Wire&             aWire)
-    : 
-      myWire(aWire)
+    : myWire(aWire)
 {
   myFShape            = aShape;
   myPlane             = aPlane;
@@ -86,8 +85,7 @@ PrsDim_FixRelation::PrsDim_FixRelation(const TopoDS_Shape&            aShape,
                                        const TopoDS_Wire&             aWire,
                                        const gp_Pnt&                  aPosition,
                                        const double                   anArrowSize)
-    : 
-      myWire(aWire)
+    : myWire(aWire)
 {
   myFShape   = aShape;
   myPlane    = aPlane;

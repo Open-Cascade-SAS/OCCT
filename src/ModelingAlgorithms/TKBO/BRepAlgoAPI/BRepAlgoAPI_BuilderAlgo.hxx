@@ -153,8 +153,7 @@ public: //! @name History support
   //! Returns the shapes modified from the shape <theS>.
   //! If any, the list will contain only those splits of the
   //! given shape, contained in the result.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& theS) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS) override;
 
   //! Returns the list of shapes generated from the shape <theS>.
   //! In frames of Boolean Operations algorithms only Edges and Faces

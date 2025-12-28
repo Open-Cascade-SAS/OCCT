@@ -24,7 +24,8 @@
 
 //=================================================================================================
 
-RWStepElement_RWSurfaceSectionFieldConstant::RWStepElement_RWSurfaceSectionFieldConstant() = default;
+RWStepElement_RWSurfaceSectionFieldConstant::RWStepElement_RWSurfaceSectionFieldConstant() =
+  default;
 
 //=================================================================================================
 

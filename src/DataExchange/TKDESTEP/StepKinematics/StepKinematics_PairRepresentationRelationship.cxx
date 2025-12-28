@@ -21,7 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship,
 
 //=================================================================================================
 
-StepKinematics_PairRepresentationRelationship::StepKinematics_PairRepresentationRelationship() = default;
+StepKinematics_PairRepresentationRelationship::StepKinematics_PairRepresentationRelationship() =
+  default;
 
 //=================================================================================================
 

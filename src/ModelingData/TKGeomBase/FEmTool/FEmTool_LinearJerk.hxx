@@ -39,9 +39,7 @@ public:
 
   Standard_EXPORT double Value() override;
 
-  Standard_EXPORT void Hessian(const int    Dimension1,
-                                       const int    Dimension2,
-                                       math_Matrix& H) override;
+  Standard_EXPORT void Hessian(const int Dimension1, const int Dimension2, math_Matrix& H) override;
 
   Standard_EXPORT void Gradient(const int Dimension, math_Vector& G) override;
 

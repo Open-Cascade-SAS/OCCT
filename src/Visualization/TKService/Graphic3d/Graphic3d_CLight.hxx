@@ -266,7 +266,7 @@ private:
   }
 
 private:
-  Graphic3d_CLight(const Graphic3d_CLight&) = delete;
+  Graphic3d_CLight(const Graphic3d_CLight&)            = delete;
   Graphic3d_CLight& operator=(const Graphic3d_CLight&) = delete;
 
 protected:

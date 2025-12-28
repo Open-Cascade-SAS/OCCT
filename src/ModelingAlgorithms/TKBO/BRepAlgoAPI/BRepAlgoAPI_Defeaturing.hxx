@@ -105,8 +105,7 @@ public:
 public: //! @name Constructors
   //! Empty constructor
   BRepAlgoAPI_Defeaturing()
-      : 
-        myFillHistory(true)
+      : myFillHistory(true)
   {
   }
 
@@ -149,8 +148,7 @@ public: //! @name History Methods
   bool HasHistory() const { return myFillHistory; }
 
   //! Returns the list of shapes modified from the shape <theS> during the operation.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& theS) override;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS) override;
 
   //! Returns the list of shapes generated from the shape <theS> during the operation.
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& Generated(

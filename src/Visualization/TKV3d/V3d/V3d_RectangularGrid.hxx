@@ -38,7 +38,7 @@ public:
   Standard_EXPORT ~V3d_RectangularGrid() override;
 
   Standard_EXPORT void SetColors(const Quantity_Color& aColor,
-                                         const Quantity_Color& aTenthColor) override;
+                                 const Quantity_Color& aTenthColor) override;
 
   Standard_EXPORT void Display() override;
 
@@ -53,8 +53,7 @@ public:
                                         const double OffSet);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 protected:
   Standard_EXPORT void UpdateDisplay() override;

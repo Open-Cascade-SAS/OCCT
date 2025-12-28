@@ -56,9 +56,9 @@ public:
 
   //! returns the point of the grid the closest to the point X,Y
   Standard_EXPORT void Compute(const double X,
-                                       const double Y,
-                                       double&      gridX,
-                                       double&      gridY) const override;
+                               const double Y,
+                               double&      gridX,
+                               double&      gridY) const override;
 
   //! returns the x step of the grid.
   Standard_EXPORT double XStep() const;
@@ -75,8 +75,7 @@ public:
   Standard_EXPORT void Init() override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
   Standard_EXPORT bool CheckAngle(const double alpha, const double beta) const;

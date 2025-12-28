@@ -190,7 +190,7 @@ OpenGl_Context::OpenGl_Context(const occ::handle<OpenGl_Caps>& theCaps)
       mySharedResources(new OpenGl_ResourcesMap()),
       myDelayed(new OpenGl_DelayReleaseMap()),
       myUnusedResources(new OpenGl_ResourcesStack()),
-      
+
       myGlLibHandle(nullptr),
       myFuncs(new OpenGl_GlFunctions()),
       myGapi(
@@ -1332,7 +1332,8 @@ void OpenGl_Context::init(const bool theIsCoreProfile)
   bool toReverseDFdxSign =
     myGapi == Aspect_GraphicsLibrary_OpenGLES && myVendor.Search("qualcomm") != -1;
   myShaderManager->SetFlatShading(hasFlatShading != OpenGl_FeatureNotAvailable, toReverseDFdxSign);
-  myShaderManager->SetUseRedAlpha(myGapi != Aspect_GraphicsLibrary_OpenGLES && core11ffp == nullptr);
+  myShaderManager->SetUseRedAlpha(myGapi != Aspect_GraphicsLibrary_OpenGLES
+                                  && core11ffp == nullptr);
 #define checkGlslExtensionShort(theName)                                                           \
   myShaderManager->EnableGlslExtension(Graphic3d_GlslExtension_##theName, CheckExtension(#theName))
   if (myGapi == Aspect_GraphicsLibrary_OpenGLES)

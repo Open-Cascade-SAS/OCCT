@@ -34,8 +34,7 @@
 #include "RWStepGeom_RWKnotType.pxx"
 
 RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::
-  RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve()
-= default;
+  RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve() = default;
 
 void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&                               data,

@@ -153,8 +153,8 @@ public:
 public: //! @name Constructors
   //! Empty constructor
   BOPAlgo_RemoveFeatures()
-       
-  = default;
+
+    = default;
 
 public: //! @name Setting input data for the algorithm
   //! Sets the shape for processing.

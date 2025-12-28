@@ -81,8 +81,7 @@ protected:
 
   //! Performs processing of generated mesh. Generates surface nodes and inserts them into
   //! structure.
-  void postProcessMesh(BRepMesh_Delaun&             theMesher,
-                               const Message_ProgressRange& theRange) override
+  void postProcessMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange) override
   {
     if (!theRange.More())
     {

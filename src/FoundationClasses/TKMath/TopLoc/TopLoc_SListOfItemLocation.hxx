@@ -54,8 +54,8 @@ public:
 
   //! Creates a list from an other one. The lists are shared.
   TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other)
-       
-  = default;
+
+    = default;
 
   //! Sets a list from an other one. The lists are
   //! shared. The list itself is returned.

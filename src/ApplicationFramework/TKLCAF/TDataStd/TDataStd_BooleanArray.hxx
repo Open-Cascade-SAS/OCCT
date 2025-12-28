@@ -94,8 +94,7 @@ public:
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& OS) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanArray, TDF_Attribute)
 

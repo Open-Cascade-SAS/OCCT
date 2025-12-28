@@ -183,9 +183,7 @@ public: //! @name methods for accessing serialized tree data
   }
 
   //! Dumps the content of node into the stream
-  void DumpNode(const int         theNodeIndex,
-                        Standard_OStream& theOStream,
-                        int               theDepth) const override
+  void DumpNode(const int theNodeIndex, Standard_OStream& theOStream, int theDepth) const override
   {
     OCCT_DUMP_CLASS_BEGIN(theOStream, BVH_TreeNode)
 

@@ -136,8 +136,8 @@ public:
 public: //! @name Constructor
   //! Empty constructor
   BOPAlgo_MakeConnected()
-       
-  = default;
+
+    = default;
 
 public: //! @name Setters for the shapes to make connected
   //! Sets the shape for making them connected.

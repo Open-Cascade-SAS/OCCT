@@ -57,8 +57,8 @@ public:
   //! Lists the Implied References of <ent>. Here, these are the
   //! Associativities, plus the Entities defined by OwnSharedCase
   Standard_EXPORT void ListImpliedCase(const int                              CN,
-                                               const occ::handle<Standard_Transient>& ent,
-                                               Interface_EntityIterator& iter) const override;
+                                       const occ::handle<Standard_Transient>& ent,
+                                       Interface_EntityIterator&              iter) const override;
 
   //! Specific list of Entities implied by a given IGESEntity <ent>
   //! (in addition to Associativities). By default, there are none,
@@ -91,11 +91,11 @@ public:
   //! Specific answer to the question "is Copy properly implemented"
   //! For IGES, answer is always True
   Standard_EXPORT bool CanCopy(const int                              CN,
-                                       const occ::handle<Standard_Transient>& ent) const override;
+                               const occ::handle<Standard_Transient>& ent) const override;
 
   //! Specific creation of a new void entity
   Standard_EXPORT bool NewVoid(const int                        CN,
-                                       occ::handle<Standard_Transient>& entto) const override = 0;
+                               occ::handle<Standard_Transient>& entto) const override = 0;
 
   //! Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
@@ -116,9 +116,9 @@ public:
   //! For IGESEntities, Copies general data(List of Associativities)
   //! and calls OwnRenewCase
   Standard_EXPORT void RenewImpliedCase(const int                              CN,
-                                                const occ::handle<Standard_Transient>& entfrom,
-                                                const occ::handle<Standard_Transient>& entto,
-                                                const Interface_CopyTool& TC) const override;
+                                        const occ::handle<Standard_Transient>& entfrom,
+                                        const occ::handle<Standard_Transient>& entto,
+                                        const Interface_CopyTool&              TC) const override;
 
   //! Renews parameters which are specific of each Type of Entity :
   //! the provided default does nothing, but this method may be
@@ -133,8 +133,8 @@ public:
   //! While dispatch requires to copy the entities, <dispatched> is
   //! ignored, entities are cleared in any case
   Standard_EXPORT void WhenDeleteCase(const int                              CN,
-                                              const occ::handle<Standard_Transient>& ent,
-                                              const bool dispatched) const override;
+                                      const occ::handle<Standard_Transient>& ent,
+                                      const bool dispatched) const override;
 
   //! Specific preparation for delete, acts on own parameters
   //! Default does nothing, to be redefined as required
