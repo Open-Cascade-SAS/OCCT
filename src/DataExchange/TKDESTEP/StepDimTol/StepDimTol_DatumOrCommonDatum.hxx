@@ -27,7 +27,8 @@
 class Standard_Transient;
 class StepDimTol_Datum;
 class StepDimTol_DatumReferenceElement;
-typedef NCollection_HArray1<Handle(StepDimTol_DatumReferenceElement)> StepDimTol_HArray1OfDatumReferenceElement;
+typedef NCollection_HArray1<Handle(StepDimTol_DatumReferenceElement)>
+  StepDimTol_HArray1OfDatumReferenceElement;
 
 class StepDimTol_DatumOrCommonDatum : public StepData_SelectType
 {

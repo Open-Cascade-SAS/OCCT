@@ -20,6 +20,7 @@
 #include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <NCollection_HArray1.hxx>
 
-typedef NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex> StepVisual_HArray1OfTessellatedEdgeOrVertex;
+typedef NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>
+  StepVisual_HArray1OfTessellatedEdgeOrVertex;
 
 #endif

@@ -16,5 +16,6 @@
 
 #include <StepElement_Array1OfMeasureOrUnspecifiedValue.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue> StepElement_HArray1OfMeasureOrUnspecifiedValue;
+typedef NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>
+  StepElement_HArray1OfMeasureOrUnspecifiedValue;
 #endif

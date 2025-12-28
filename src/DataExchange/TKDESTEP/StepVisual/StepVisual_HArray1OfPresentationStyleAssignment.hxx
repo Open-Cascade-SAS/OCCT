@@ -19,5 +19,6 @@
 
 #include <StepVisual_Array1OfPresentationStyleAssignment.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepVisual_PresentationStyleAssignment)> StepVisual_HArray1OfPresentationStyleAssignment;
+typedef NCollection_HArray1<Handle(StepVisual_PresentationStyleAssignment)>
+  StepVisual_HArray1OfPresentationStyleAssignment;
 #endif

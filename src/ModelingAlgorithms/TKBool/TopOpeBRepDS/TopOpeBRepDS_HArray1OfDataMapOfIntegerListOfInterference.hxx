@@ -19,5 +19,6 @@
 
 #include <TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference;
+typedef NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference>
+  TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference;
 #endif

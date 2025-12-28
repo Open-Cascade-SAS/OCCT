@@ -19,5 +19,6 @@
 
 #include <StepGeom_Array1OfCompositeCurveSegment.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepGeom_CompositeCurveSegment)> StepGeom_HArray1OfCompositeCurveSegment;
+typedef NCollection_HArray1<Handle(StepGeom_CompositeCurveSegment)>
+  StepGeom_HArray1OfCompositeCurveSegment;
 #endif

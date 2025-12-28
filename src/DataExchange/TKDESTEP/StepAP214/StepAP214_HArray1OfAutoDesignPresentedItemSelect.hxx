@@ -19,5 +19,6 @@
 
 #include <StepAP214_Array1OfAutoDesignPresentedItemSelect.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> StepAP214_HArray1OfAutoDesignPresentedItemSelect;
+typedef NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>
+  StepAP214_HArray1OfAutoDesignPresentedItemSelect;
 #endif

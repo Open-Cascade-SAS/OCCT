@@ -17,5 +17,6 @@
 #include <StepElement_CurveElementPurposeMember.hxx>
 #include <StepElement_Array2OfCurveElementPurposeMember.hxx>
 #include <NCollection_HArray2.hxx>
-typedef NCollection_HArray2<Handle(StepElement_CurveElementPurposeMember)> StepElement_HArray2OfCurveElementPurposeMember;
+typedef NCollection_HArray2<Handle(StepElement_CurveElementPurposeMember)>
+  StepElement_HArray2OfCurveElementPurposeMember;
 #endif

@@ -19,5 +19,6 @@
 
 #include <StepBasic_Array1OfDerivedUnitElement.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepBasic_DerivedUnitElement)> StepBasic_HArray1OfDerivedUnitElement;
+typedef NCollection_HArray1<Handle(StepBasic_DerivedUnitElement)>
+  StepBasic_HArray1OfDerivedUnitElement;
 #endif

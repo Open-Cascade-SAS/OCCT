@@ -19,5 +19,6 @@
 
 #include <StepAP214_Array1OfAutoDesignGeneralOrgItem.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem> StepAP214_HArray1OfAutoDesignGeneralOrgItem;
+typedef NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>
+  StepAP214_HArray1OfAutoDesignGeneralOrgItem;
 #endif

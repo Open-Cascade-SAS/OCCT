@@ -21,7 +21,6 @@
 
 #include <StepVisual_TessellatedItem.hxx>
 #include <NCollection_Array1.hxx>
-// #include <NCollection_DefineHArray1.hxx>
 #include <NCollection_Handle.hxx>
 
 typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellatedItem;

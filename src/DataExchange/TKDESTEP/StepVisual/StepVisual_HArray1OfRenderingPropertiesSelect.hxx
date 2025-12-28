@@ -19,5 +19,6 @@
 
 #include <StepVisual_Array1OfRenderingPropertiesSelect.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepVisual_RenderingPropertiesSelect> StepVisual_HArray1OfRenderingPropertiesSelect;
+typedef NCollection_HArray1<StepVisual_RenderingPropertiesSelect>
+  StepVisual_HArray1OfRenderingPropertiesSelect;
 #endif

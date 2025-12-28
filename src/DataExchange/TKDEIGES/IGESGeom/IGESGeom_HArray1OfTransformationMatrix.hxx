@@ -19,5 +19,6 @@
 
 #include <IGESGeom_Array1OfTransformationMatrix.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(IGESGeom_TransformationMatrix)> IGESGeom_HArray1OfTransformationMatrix;
+typedef NCollection_HArray1<Handle(IGESGeom_TransformationMatrix)>
+  IGESGeom_HArray1OfTransformationMatrix;
 #endif

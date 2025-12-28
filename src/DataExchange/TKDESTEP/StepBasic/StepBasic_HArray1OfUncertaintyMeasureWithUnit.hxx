@@ -19,5 +19,6 @@
 
 #include <StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepBasic_UncertaintyMeasureWithUnit)> StepBasic_HArray1OfUncertaintyMeasureWithUnit;
+typedef NCollection_HArray1<Handle(StepBasic_UncertaintyMeasureWithUnit)>
+  StepBasic_HArray1OfUncertaintyMeasureWithUnit;
 #endif

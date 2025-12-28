@@ -16,5 +16,6 @@
 
 #include <StepFEA_SequenceOfElementGeometricRelationship.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(StepFEA_ElementGeometricRelationship)> StepFEA_HSequenceOfElementGeometricRelationship;
+typedef NCollection_HSequence<Handle(StepFEA_ElementGeometricRelationship)>
+  StepFEA_HSequenceOfElementGeometricRelationship;
 #endif

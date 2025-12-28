@@ -16,5 +16,6 @@
 
 #include <StepElement_Array1OfCurveElementSectionDefinition.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepElement_CurveElementSectionDefinition)> StepElement_HArray1OfCurveElementSectionDefinition;
+typedef NCollection_HArray1<Handle(StepElement_CurveElementSectionDefinition)>
+  StepElement_HArray1OfCurveElementSectionDefinition;
 #endif

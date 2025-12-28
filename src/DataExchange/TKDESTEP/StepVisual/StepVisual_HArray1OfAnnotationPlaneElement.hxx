@@ -18,5 +18,6 @@
 
 #include <StepVisual_Array1OfAnnotationPlaneElement.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement> StepVisual_HArray1OfAnnotationPlaneElement;
+typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement>
+  StepVisual_HArray1OfAnnotationPlaneElement;
 #endif // _StepVisual_HArray1OfAnnotationPlaneElement_HeaderFile

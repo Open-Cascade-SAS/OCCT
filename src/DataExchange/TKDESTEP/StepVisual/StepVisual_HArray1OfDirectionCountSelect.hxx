@@ -19,5 +19,6 @@
 
 #include <StepVisual_Array1OfDirectionCountSelect.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepVisual_DirectionCountSelect> StepVisual_HArray1OfDirectionCountSelect;
+typedef NCollection_HArray1<StepVisual_DirectionCountSelect>
+  StepVisual_HArray1OfDirectionCountSelect;
 #endif

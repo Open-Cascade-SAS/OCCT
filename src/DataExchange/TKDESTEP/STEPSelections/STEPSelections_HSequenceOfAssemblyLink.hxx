@@ -19,5 +19,6 @@
 
 #include <STEPSelections_SequenceOfAssemblyLink.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(STEPSelections_AssemblyLink)> STEPSelections_HSequenceOfAssemblyLink;
+typedef NCollection_HSequence<Handle(STEPSelections_AssemblyLink)>
+  STEPSelections_HSequenceOfAssemblyLink;
 #endif

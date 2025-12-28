@@ -16,5 +16,6 @@
 
 #include <StepFEA_SequenceOfElementRepresentation.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(StepFEA_ElementRepresentation)> StepFEA_HSequenceOfElementRepresentation;
+typedef NCollection_HSequence<Handle(StepFEA_ElementRepresentation)>
+  StepFEA_HSequenceOfElementRepresentation;
 #endif

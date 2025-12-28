@@ -16,5 +16,6 @@
 
 #include <StepFEA_Array1OfCurveElementEndOffset.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepFEA_CurveElementEndOffset)> StepFEA_HArray1OfCurveElementEndOffset;
+typedef NCollection_HArray1<Handle(StepFEA_CurveElementEndOffset)>
+  StepFEA_HArray1OfCurveElementEndOffset;
 #endif

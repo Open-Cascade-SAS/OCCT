@@ -19,5 +19,6 @@
 
 #include <StepVisual_Array1OfSurfaceStyleElementSelect.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepVisual_SurfaceStyleElementSelect> StepVisual_HArray1OfSurfaceStyleElementSelect;
+typedef NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>
+  StepVisual_HArray1OfSurfaceStyleElementSelect;
 #endif

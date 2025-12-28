@@ -16,5 +16,6 @@
 
 #include <StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepElement_HSequenceOfSurfaceElementPurposeMember)> StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember;
+typedef NCollection_HArray1<Handle(StepElement_HSequenceOfSurfaceElementPurposeMember)>
+  StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember;
 #endif

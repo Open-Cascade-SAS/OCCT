@@ -19,5 +19,6 @@
 
 #include <StepAP214_Array1OfAutoDesignDateAndTimeItem.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> StepAP214_HArray1OfAutoDesignDateAndTimeItem;
+typedef NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>
+  StepAP214_HArray1OfAutoDesignDateAndTimeItem;
 #endif

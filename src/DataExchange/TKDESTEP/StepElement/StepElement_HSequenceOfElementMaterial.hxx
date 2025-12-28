@@ -16,5 +16,6 @@
 
 #include <StepElement_SequenceOfElementMaterial.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(StepElement_ElementMaterial)> StepElement_HSequenceOfElementMaterial;
+typedef NCollection_HSequence<Handle(StepElement_ElementMaterial)>
+  StepElement_HSequenceOfElementMaterial;
 #endif

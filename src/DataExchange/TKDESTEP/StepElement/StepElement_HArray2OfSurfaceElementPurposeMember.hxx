@@ -17,5 +17,6 @@
 #include <StepElement_SurfaceElementPurposeMember.hxx>
 #include <StepElement_Array2OfSurfaceElementPurposeMember.hxx>
 #include <NCollection_HArray2.hxx>
-typedef NCollection_HArray2<Handle(StepElement_SurfaceElementPurposeMember)> StepElement_HArray2OfSurfaceElementPurposeMember;
+typedef NCollection_HArray2<Handle(StepElement_SurfaceElementPurposeMember)>
+  StepElement_HArray2OfSurfaceElementPurposeMember;
 #endif

@@ -20,6 +20,7 @@
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-typedef NCollection_HArray1<Handle(StepVisual_TessellatedStructuredItem)> StepVisual_HArray1OfTessellatedStructuredItem;
+typedef NCollection_HArray1<Handle(StepVisual_TessellatedStructuredItem)>
+  StepVisual_HArray1OfTessellatedStructuredItem;
 
 #endif

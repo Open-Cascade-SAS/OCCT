@@ -22,6 +22,6 @@
 #include <NCollection_HSequence.hxx>
 
 class TObj_Object;
-typedef NCollection_Sequence<Handle(TObj_Object)> TObj_SequenceOfObject;
+typedef NCollection_Sequence<Handle(TObj_Object)>  TObj_SequenceOfObject;
 typedef NCollection_HSequence<Handle(TObj_Object)> TObj_HSequenceOfObject;
 #endif

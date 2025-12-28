@@ -17,5 +17,6 @@
 #include <StepElement_CurveElementPurposeMember.hxx>
 #include <StepElement_SequenceOfCurveElementPurposeMember.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(StepElement_CurveElementPurposeMember)> StepElement_HSequenceOfCurveElementPurposeMember;
+typedef NCollection_HSequence<Handle(StepElement_CurveElementPurposeMember)>
+  StepElement_HSequenceOfCurveElementPurposeMember;
 #endif

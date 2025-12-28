@@ -19,5 +19,6 @@
 
 #include <StepAP214_Array1OfPersonAndOrganizationItem.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<StepAP214_PersonAndOrganizationItem> StepAP214_HArray1OfPersonAndOrganizationItem;
+typedef NCollection_HArray1<StepAP214_PersonAndOrganizationItem>
+  StepAP214_HArray1OfPersonAndOrganizationItem;
 #endif

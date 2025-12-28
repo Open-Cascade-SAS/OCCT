@@ -20,5 +20,6 @@
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_Array1OfProductDefinition.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepBasic_ProductDefinition)> StepBasic_HArray1OfProductDefinition;
+typedef NCollection_HArray1<Handle(StepBasic_ProductDefinition)>
+  StepBasic_HArray1OfProductDefinition;
 #endif

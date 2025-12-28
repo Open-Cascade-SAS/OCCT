@@ -19,5 +19,6 @@
 
 #include <StepRepr_Array1OfRepresentationItem.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepRepr_RepresentationItem)> StepRepr_HArray1OfRepresentationItem;
+typedef NCollection_HArray1<Handle(StepRepr_RepresentationItem)>
+  StepRepr_HArray1OfRepresentationItem;
 #endif

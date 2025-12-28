@@ -19,5 +19,6 @@
 
 #include <StepRepr_Array1OfMaterialPropertyRepresentation.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepRepr_MaterialPropertyRepresentation)> StepRepr_HArray1OfMaterialPropertyRepresentation;
+typedef NCollection_HArray1<Handle(StepRepr_MaterialPropertyRepresentation)>
+  StepRepr_HArray1OfMaterialPropertyRepresentation;
 #endif

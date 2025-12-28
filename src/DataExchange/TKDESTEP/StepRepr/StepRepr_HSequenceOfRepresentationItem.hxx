@@ -20,5 +20,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(StepRepr_RepresentationItem)> StepRepr_HSequenceOfRepresentationItem;
+typedef NCollection_HSequence<Handle(StepRepr_RepresentationItem)>
+  StepRepr_HSequenceOfRepresentationItem;
 #endif

@@ -19,5 +19,6 @@
 
 #include <GeomPlate_SequenceOfPointConstraint.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(GeomPlate_PointConstraint)> GeomPlate_HSequenceOfPointConstraint;
+typedef NCollection_HSequence<Handle(GeomPlate_PointConstraint)>
+  GeomPlate_HSequenceOfPointConstraint;
 #endif

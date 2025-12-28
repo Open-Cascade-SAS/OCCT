@@ -19,5 +19,6 @@
 
 #include <StepShape_Array1OfOrientedClosedShell.hxx>
 #include <NCollection_HArray1.hxx>
-typedef NCollection_HArray1<Handle(StepShape_OrientedClosedShell)> StepShape_HArray1OfOrientedClosedShell;
+typedef NCollection_HArray1<Handle(StepShape_OrientedClosedShell)>
+  StepShape_HArray1OfOrientedClosedShell;
 #endif

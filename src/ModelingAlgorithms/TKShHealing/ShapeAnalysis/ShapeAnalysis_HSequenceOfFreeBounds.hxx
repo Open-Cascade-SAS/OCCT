@@ -19,5 +19,6 @@
 
 #include <ShapeAnalysis_SequenceOfFreeBounds.hxx>
 #include <NCollection_HSequence.hxx>
-typedef NCollection_HSequence<Handle(ShapeAnalysis_FreeBoundData)> ShapeAnalysis_HSequenceOfFreeBounds;
+typedef NCollection_HSequence<Handle(ShapeAnalysis_FreeBoundData)>
+  ShapeAnalysis_HSequenceOfFreeBounds;
 #endif
