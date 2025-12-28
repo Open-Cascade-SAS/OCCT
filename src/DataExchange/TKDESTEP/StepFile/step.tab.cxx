@@ -43,6 +43,8 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// NOLINTBEGIN - Bison-generated file, do not modify with clang-tidy
+
 // DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
@@ -1175,3 +1177,5 @@ void step::parser::error(const std::string& m)
 
   StepData->AddError(newmess);
 }
+
+// NOLINTEND

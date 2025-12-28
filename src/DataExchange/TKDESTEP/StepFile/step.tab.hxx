@@ -43,6 +43,8 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// NOLINTBEGIN - Bison-generated file, do not modify with clang-tidy
+
 /**
  ** \file StepFile/step.tab.hxx
  ** Define the step::parser class.
@@ -222,7 +224,7 @@ public:
     {
     }
 
-    ~syntax_error() YY_NOEXCEPT override YY_NOTHROW;
+    ~syntax_error() YY_NOEXCEPT YY_NOTHROW;
   };
 
   /// Token kinds.
@@ -827,5 +829,7 @@ public:
 };
 
 }; // namespace step
+
+// NOLINTEND
 
 #endif // !YY_STEP_STEPFILE_STEP_TAB_HXX_INCLUDED

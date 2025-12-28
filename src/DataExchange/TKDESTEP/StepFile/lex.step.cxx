@@ -1,6 +1,8 @@
 // This file is part of Open CASCADE Technology software library.
 // This file is generated, do not modify it directly; edit source file step.lex instead.
 
+// NOLINTBEGIN - Flex-generated file, do not modify with clang-tidy
+
 // Pre-include stdlib.h to avoid redefinition of integer type macros (INT8_MIN and similar in
 // generated code)
 #if !defined(_MSC_VER) || (_MSC_VER >= 1600) // Visual Studio 2010+
@@ -2018,3 +2020,5 @@ step::scanner::scanner(StepFile_ReadData* theDataModel, std::istream* in, std::o
       myDataModel(theDataModel)
 {
 }
+
+// NOLINTEND
